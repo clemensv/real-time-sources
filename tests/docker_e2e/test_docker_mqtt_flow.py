@@ -6129,3 +6129,35 @@ class TestDMIMqttDockerFlow:
         types_seen = {m['user_properties'].get('type') for m in messages}
         assert all(not (t or '').startswith('dk.dmi.lightning.') for t in types_seen), \
             f"lightning event types leaked to MQTT: {types_seen}"
+
+@pytest.fixture(scope='module')
+def digitraffic_maritime_mqtt_image():
+    return build_image('digitraffic-maritime', dockerfile='Dockerfile.mqtt', tag='test-digitraffic-maritime-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_digitraffic_maritime():
+    container, network, host_port = _generic_mosquitto('digitraffic-maritime-mqtt-e2e', 'digitraffic-maritime-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'digitraffic-maritime-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestDigitrafficMaritimeMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_digitraffic_maritime, digitraffic_maritime_mqtt_image):
+        _run_mqtt_contract_flow(
+            'digitraffic-maritime',
+            digitraffic_maritime_mqtt_image,
+            mosquitto_digitraffic_maritime,
+            extra_env={'DIGITRAFFIC_MODE': 'port-calls'},
+            timeout=360,
+        )
+

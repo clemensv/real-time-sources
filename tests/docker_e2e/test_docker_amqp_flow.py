@@ -190,6 +190,18 @@ class TestAisstreamAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"AISSTREAM_MOCK": "true"}
     expected_types = {"IO.AISstream.mqtt.PositionReport", "IO.AISstream.mqtt.ShipStatic", "IO.AISstream.mqtt.AidToNavigation"}
 
+
+class TestDigitrafficMaritimeAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "digitraffic-maritime"
+    image = "digitraffic-maritime-amqp"
+    env = {"DIGITRAFFIC_MODE": "port-calls", "ONCE_MODE": "true"}
+    expected_types = {
+        "fi.digitraffic.marine.portcall.PortCall",
+        "fi.digitraffic.marine.portcall.VesselDetails",
+        "fi.digitraffic.marine.portcall.PortLocation",
+    }
+    expected_count = 3
+
 class TestAustraliaWildfiresAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "australia-wildfires"
     image = "australia-wildfires-amqp"
@@ -855,4 +867,3 @@ class TestSmhiWeatherAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"SMHI_WEATHER_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'SE.Gov.SMHI.Weather.WeatherObservation', 'SE.Gov.SMHI.Weather.Station'}
     expected_count = 2
-

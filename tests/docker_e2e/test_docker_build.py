@@ -28,6 +28,8 @@ PROJECTS = [
     ('bluesky', 'bluesky', 'Dockerfile'),
     ('chmi-hydro', 'chmi_hydro', 'Dockerfile'),
     ('digitraffic-maritime', 'digitraffic_maritime', 'Dockerfile'),
+    ('digitraffic-maritime', 'digitraffic_maritime_mqtt', 'Dockerfile.mqtt'),
+    ('digitraffic-maritime', 'digitraffic_maritime_amqp', 'Dockerfile.amqp'),
     ('epa-uv', 'epa_uv', 'Dockerfile'),
     ('gtfs', 'gtfs_rt_bridge', 'Dockerfile'),
     ('hubeau-hydrometrie', 'hubeau_hydrometrie', 'Dockerfile'),

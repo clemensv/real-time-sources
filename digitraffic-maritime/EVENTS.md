@@ -1,12 +1,12 @@
-# Digitraffic Marine Bridge Usage Guide Events
+# Digitraffic Maritime feeder Events
 
 Digitraffic Maritime publishes maritime traffic and fairway updates from Fintraffic Digitraffic for Finnish maritime fairways and vessels. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
 ## At a glance
 
-- **Event types:** 5 documented event types.
-- **Transports:** KAFKA
-- **Reference vs telemetry:** 0 reference/catalog event types and 5 telemetry event types.
+- **Event types:** 15 documented event types.
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
+- **Reference vs telemetry:** 2 reference/catalog event types and 13 telemetry event types.
 - **Identity:** `{mmsi}`, `{port_call_id}`, `{vessel_id}`, `{locode}` identifies the resource each event is about.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
@@ -28,6 +28,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `maritime/fi/fintraffic/digitraffic-maritime/vessels/+/location`, `maritime/fi/fintraffic/digitraffic-maritime/vessels/+/metadata`, `maritime/fi/fintraffic/digitraffic-maritime/port-calls/+/port-call`, `maritime/fi/fintraffic/digitraffic-maritime/vessels/+/vessel-details`, `maritime/fi/fintraffic/digitraffic-maritime/ports/+/port-location`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('maritime/fi/fintraffic/digitraffic-maritime/vessels/+/location', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `digitraffic-maritime`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/digitraffic-maritime')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -454,6 +482,356 @@ Synthetic example values are generated deterministically from the schema: consta
 
 This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
 
+### Location
+
+CloudEvents type: `fi.digitraffic.marine.ais.mqtt.location`
+
+#### What it tells you
+
+MQTT transport projection of location using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `MQTT/5.0` | topic `maritime/fi/fintraffic/digitraffic-maritime/vessels/{mmsi}/location`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Location` payloads are JSON schema. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+"string"
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Metadata
+
+CloudEvents type: `fi.digitraffic.marine.ais.mqtt.metadata`
+
+#### What it tells you
+
+MQTT transport projection of metadata using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `MQTT/5.0` | topic `maritime/fi/fintraffic/digitraffic-maritime/vessels/{mmsi}/metadata`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Metadata` payloads are JSON schema. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+"string"
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
+
+### Location
+
+CloudEvents type: `fi.digitraffic.marine.ais.amqp.location`
+
+#### What it tells you
+
+AMQP transport projection of location using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-maritime`, message subject `{mmsi}` |
+
+#### Payload
+
+`Location` payloads are JSON schema. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+"string"
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Metadata
+
+CloudEvents type: `fi.digitraffic.marine.ais.amqp.metadata`
+
+#### What it tells you
+
+AMQP transport projection of metadata using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-maritime`, message subject `{mmsi}` |
+
+#### Payload
+
+`Metadata` payloads are JSON schema. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+"string"
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+
+### Port Call
+
+CloudEvents type: `fi.digitraffic.marine.portcall.mqtt.port_call`
+
+#### What it tells you
+
+MQTT transport projection of port_call using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `MQTT/5.0` | topic `maritime/fi/fintraffic/digitraffic-maritime/port-calls/{port_call_id}/port-call`, retain `false`, QoS `1` |
+
+#### Payload
+
+`Port Call` payloads are JSON schema. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+"string"
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Port Call
+
+CloudEvents type: `fi.digitraffic.marine.portcall.amqp.port_call`
+
+#### What it tells you
+
+AMQP transport projection of port_call using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-maritime`, message subject `{port_call_id}` |
+
+#### Payload
+
+`Port Call` payloads are JSON schema. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+"string"
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Vessel Details
+
+CloudEvents type: `fi.digitraffic.marine.portcall.vesseldetails.mqtt.vessel_details`
+
+#### What it tells you
+
+MQTT transport projection of vessel_details using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `MQTT/5.0` | topic `maritime/fi/fintraffic/digitraffic-maritime/vessels/{vessel_id}/vessel-details`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Vessel Details` payloads are JSON schema. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+"string"
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Vessel Details
+
+CloudEvents type: `fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details`
+
+#### What it tells you
+
+AMQP transport projection of vessel_details using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-maritime`, message subject `{vessel_id}` |
+
+#### Payload
+
+`Vessel Details` payloads are JSON schema. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+"string"
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Port Location
+
+CloudEvents type: `fi.digitraffic.marine.portcall.portlocation.mqtt.port_location`
+
+#### What it tells you
+
+MQTT transport projection of port_location using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `MQTT/5.0` | topic `maritime/fi/fintraffic/digitraffic-maritime/ports/{locode}/port-location`, retain `true`, QoS `1` |
+
+#### Payload
+
+`Port Location` payloads are JSON schema. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+"string"
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Port Location
+
+CloudEvents type: `fi.digitraffic.marine.portcall.portlocation.amqp.port_location`
+
+#### What it tells you
+
+AMQP transport projection of port_location using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-maritime`, message subject `{locode}` |
+
+#### Payload
+
+`Port Location` payloads are JSON schema. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+"string"
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
 ## Conventions
 
 CloudEvents is the envelope around each JSON payload. It supplies metadata such as `specversion` (`1.0`), `type` (what kind of event this is), `source` (who produced it), `id` (the event occurrence identifier), `time`, and `subject` (the resource the event is about). For this source, `subject` is the stable routing identity described in each event above; the unique event occurrence is identified by CloudEvents `id` together with `source`. This repository convention mirrors the same identity to transport-native routing fields where available: Kafka message key (or the `partitionkey` extension when present), MQTT topic identity segments, and AMQP message `subject` or application properties. Those mirrors are application conventions, not generic CloudEvents binding rules. The AMQP link address identifies the stream as a whole, not an individual station or entity.
@@ -478,3 +856,4 @@ No source-specific polling cadence, rate limit, or stream characteristic is docu
 - xRegistry manifest: [`xreg/digitraffic_maritime.xreg.json`](xreg/digitraffic_maritime.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- ![Deploy AMQP + Service Bus: <https://img.shields.io/badge/Azure-AMQP%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white>
