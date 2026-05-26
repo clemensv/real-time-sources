@@ -120,24 +120,16 @@
           "name": "Station",
           "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{station_id}",
-              "description": "Kafka partition key — stable station identifier matching the CloudEvent subject."
-            }
+          "protocoloptions": {
+            "key": "{station_id}"
           }
         },
         "de.wsv.pegelonline.kafka.CurrentMeasurement": {
           "name": "CurrentMeasurement",
           "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{station_id}",
-              "description": "Kafka partition key — stable station identifier matching the CloudEvent subject."
-            }
+          "protocoloptions": {
+            "key": "{station_id}"
           }
         }
       }

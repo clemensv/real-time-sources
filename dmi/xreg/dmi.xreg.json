@@ -227,24 +227,16 @@
           "name": "Station",
           "basemessageuri": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsStation",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{station_id}",
-              "description": "Kafka partition key - stable DMI station identifier matching the CloudEvent subject."
-            }
+          "protocoloptions": {
+            "key": "{station_id}"
           }
         },
         "dk.dmi.metObs.kafka.Observation": {
           "name": "Observation",
           "basemessageuri": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{station_id}/{parameter_id}",
-              "description": "Kafka partition key - stationId/parameterId, matching the CloudEvent subject so all values for one (station,parameter) land in the same partition."
-            }
+          "protocoloptions": {
+            "key": "{station_id}/{parameter_id}"
           }
         }
       }
@@ -255,44 +247,32 @@
           "name": "OceanStation",
           "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{station_id}"
-            }
+          "protocoloptions": {
+            "key": "{station_id}"
           }
         },
         "dk.dmi.oceanObs.kafka.TidewaterStation": {
           "name": "TidewaterStation",
           "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{station_id}"
-            }
+          "protocoloptions": {
+            "key": "{station_id}"
           }
         },
         "dk.dmi.oceanObs.kafka.Observation": {
           "name": "OceanObservation",
           "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{station_id}/{parameter_id}"
-            }
+          "protocoloptions": {
+            "key": "{station_id}/{parameter_id}"
           }
         },
         "dk.dmi.oceanObs.kafka.TidewaterPrediction": {
           "name": "TidewaterPrediction",
           "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{station_id}"
-            }
+          "protocoloptions": {
+            "key": "{station_id}"
           }
         }
       }
@@ -303,23 +283,16 @@
           "name": "LightningSensor",
           "basemessageuri": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningSensor",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{sensor_id}"
-            }
+          "protocoloptions": {
+            "key": "{sensor_id}"
           }
         },
         "dk.dmi.lightning.kafka.Strike": {
           "name": "LightningStrike",
           "basemessageuri": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningStrike",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{strike_id}",
-              "description": "Kafka partition key - DMI-assigned strike identifier (e.g. 'u1xrxj10262553824830001-03'). Stable per strike."
-            }
+          "protocoloptions": {
+            "key": "{strike_id}"
           }
         }
       }
@@ -332,11 +305,7 @@
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
-              "topic": {
-                "type": "uritemplate",
-                "value": "weather/dk/dmi/met-obs/{station_id}/info",
-                "description": "Unified Namespace topic carrying the station's identity and location as a retained last-known-value."
-              },
+              "topic": "weather/dk/dmi/met-obs/{station_id}/info",
               "qos": {
                 "type": "integer",
                 "value": 1
@@ -354,11 +323,7 @@
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
-              "topic": {
-                "type": "uritemplate",
-                "value": "weather/dk/dmi/met-obs/{station_id}/{parameter_id}",
-                "description": "Unified Namespace topic carrying the latest meteorological observation value for one (station, parameter) pair as a retained LKV."
-              },
+              "topic": "weather/dk/dmi/met-obs/{station_id}/{parameter_id}",
               "qos": {
                 "type": "integer",
                 "value": 1
@@ -380,10 +345,7 @@
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
-              "topic": {
-                "type": "uritemplate",
-                "value": "ocean/dk/dmi/ocean-obs/{station_id}/info"
-              },
+              "topic": "ocean/dk/dmi/ocean-obs/{station_id}/info",
               "qos": {
                 "type": "integer",
                 "value": 1
@@ -401,10 +363,7 @@
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
-              "topic": {
-                "type": "uritemplate",
-                "value": "ocean/dk/dmi/tidewater/{station_id}/info"
-              },
+              "topic": "ocean/dk/dmi/tidewater/{station_id}/info",
               "qos": {
                 "type": "integer",
                 "value": 1
@@ -422,10 +381,7 @@
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
-              "topic": {
-                "type": "uritemplate",
-                "value": "ocean/dk/dmi/ocean-obs/{station_id}/{parameter_id}"
-              },
+              "topic": "ocean/dk/dmi/ocean-obs/{station_id}/{parameter_id}",
               "qos": {
                 "type": "integer",
                 "value": 1
@@ -443,10 +399,7 @@
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
-              "topic": {
-                "type": "uritemplate",
-                "value": "ocean/dk/dmi/tidewater/{station_id}/prediction"
-              },
+              "topic": "ocean/dk/dmi/tidewater/{station_id}/prediction",
               "qos": {
                 "type": "integer",
                 "value": 1

@@ -101,12 +101,8 @@
           "name": "PropagatedSolarWind",
           "basemessageuri": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{spacecraft}",
-              "description": "Kafka partition key — stable spacecraft channel identifier (`dscovr` for the operational primary; `ace` reserved for backup). Matches the CloudEvent `subject` exactly so the partition assignment is deterministic per channel."
-            }
+          "protocoloptions": {
+            "key": "{spacecraft}"
           }
         }
       }
