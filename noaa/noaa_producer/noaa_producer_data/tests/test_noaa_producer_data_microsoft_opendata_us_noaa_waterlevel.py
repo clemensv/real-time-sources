@@ -29,11 +29,11 @@ class Test_WaterLevel(unittest.TestCase):
         Create instance of WaterLevel for testing
         """
         instance = WaterLevel(
-            station_id='udwzyffvznrsoiogvxia',
-            timestamp='fumbgdqehrhzmvaafgvs',
-            value=float(15.19201582216887),
-            stddev=float(88.90991849884975),
-            outside_sigma_band=True,
+            station_id='wfpomksvoraddalxhjtw',
+            timestamp='hzhfgrkcswazxputdvfs',
+            value=float(43.03426625808429),
+            stddev=float(0.7958717717080899),
+            outside_sigma_band=False,
             flat_tolerance_limit=True,
             rate_of_change_limit=True,
             max_min_expected_height=False,
@@ -46,7 +46,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'udwzyffvznrsoiogvxia'
+        test_value = 'wfpomksvoraddalxhjtw'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'fumbgdqehrhzmvaafgvs'
+        test_value = 'hzhfgrkcswazxputdvfs'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -62,7 +62,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(15.19201582216887)
+        test_value = float(43.03426625808429)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -70,7 +70,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test stddev property
         """
-        test_value = float(88.90991849884975)
+        test_value = float(0.7958717717080899)
         self.instance.stddev = test_value
         self.assertEqual(self.instance.stddev, test_value)
     
@@ -78,7 +78,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test outside_sigma_band property
         """
-        test_value = True
+        test_value = False
         self.instance.outside_sigma_band = test_value
         self.assertEqual(self.instance.outside_sigma_band, test_value)
     

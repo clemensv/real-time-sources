@@ -5196,58 +5196,57 @@ class TestTepcoDenkiyohoMqttDockerFlow:
             broker.kill(); network.remove()
 
 
-def _run_b4_aq_mqtt_flow(source: str, image_name: str, extra_env: dict, topic_filter: str, expected_types: set) -> None:
-    """Helper for batch B4 air-quality MQTT feeders.
+class TestCanadaEcccWaterofficeMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(0)
 
-    Spins a throwaway mosquitto, builds the source's MQTT Dockerfile, runs the
-    feeder in ONCE_MODE with the given mock env, collects retained messages on
-    ``topic_filter``, and asserts the CloudEvents attributes plus the union of
-    emitted CE ``type`` values intersects ``expected_types``.
-    """
-    network_name = f"{source}-mqtt-e2e"
-    broker_name = f"{source}-mqtt-e2e-broker"
-    broker, network, host_port = _generic_mosquitto(network_name, broker_name)
-    client = docker.from_env()
-    feeder = None
-    try:
-        image = build_image(source, dockerfile='Dockerfile.mqtt', tag=f'test-{image_name}')
-        env = {
-            'MQTT_BROKER_URL': f'mqtt://{broker_name}:1883',
-            'ONCE_MODE': 'true',
-            'PYTHONUNBUFFERED': '1',
-        }
-        env.update(extra_env or {})
-        feeder = client.containers.run(
-            image.id, detach=True, remove=False, network=network.name, environment=env,
-        )
-        result = feeder.wait(timeout=600)
-        logs = feeder.logs().decode('utf-8', errors='replace')
-        assert result.get('StatusCode') == 0, f"feeder exited non-zero: {result}\n{logs[-4000:]}"
-        messages = _collect_messages_topic('127.0.0.1', host_port, topic_filter, timeout=30.0)
-        assert messages, f"no messages received on {topic_filter}\n{logs[-2000:]}"
-        for msg in messages:
-            up = msg['user_properties']
-            for required in ('id', 'source', 'type', 'subject', 'specversion'):
-                assert required in up, (required, msg)
-            assert msg['qos'] == 1
-        seen_types = {m['user_properties'].get('type') for m in messages}
-        assert seen_types & expected_types, (
-            f"none of expected types {expected_types} seen; got {seen_types}"
-        )
-    finally:
-        if feeder is not None:
-            try:
-                feeder.remove(force=True)
-            except docker.errors.APIError:
-                pass
-        try:
-            broker.kill()
-        except docker.errors.APIError:
-            pass
-        try:
-            network.remove()
-        except docker.errors.APIError:
-            pass
+class TestCdecReservoirsMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(1)
+
+class TestHubeauHydrometrieMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(2)
+
+class TestImgwHydroMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(3)
+
+class TestIrelandOpwWaterlevelMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(4)
+
+class TestNepalBipadHydrologyMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(5)
+
+class TestNoaaNdbcMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(6)
+
+class TestNoaaMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(7)
+
+class TestSnotelMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(8)
+
+class TestSykeHydroMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(9)
+
+class TestUkEaFloodMonitoringMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(10)
+
+class TestUsgsNwisWqMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(11)
+
+class TestWaterinfoVmmMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(12)
 
 
 class TestCanadaAqhiMqttDockerFlow:

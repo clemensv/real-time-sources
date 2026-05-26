@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from imgw_hydro_producer_kafka_producer.producer import PLGovIMGWHydroEventProducer
+from imgw_hydro_producer_kafka_producer.producer import PLGovIMGWHydroMqttEventProducer
+from imgw_hydro_producer_kafka_producer.producer import PLGovIMGWHydroAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +74,54 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'PL.Gov.IMGW.Hydro.WaterLevelObservation' event to Kafka topic.
     await plgov_imgwhydro_event_producer.send_pl_gov_imgw_hydro_water_level_observation(_station_id = 'TODO: replace me', data = _water_level_observation)
     print(f"Sent 'PL.Gov.IMGW.Hydro.WaterLevelObservation' event: {_water_level_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        plgov_imgwhydro_mqtt_event_producer = PLGovIMGWHydroMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        plgov_imgwhydro_mqtt_event_producer = PLGovIMGWHydroMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- PL.Gov.IMGW.Hydro.mqtt.Station ----
+    # TODO: Supply event data for the PL.Gov.IMGW.Hydro.mqtt.Station event
+    _station = Station()
+
+    # sends the 'PL.Gov.IMGW.Hydro.mqtt.Station' event to Kafka topic.
+    await plgov_imgwhydro_mqtt_event_producer.send_pl_gov_imgw_hydro_mqtt_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'PL.Gov.IMGW.Hydro.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- PL.Gov.IMGW.Hydro.mqtt.WaterLevelObservation ----
+    # TODO: Supply event data for the PL.Gov.IMGW.Hydro.mqtt.WaterLevelObservation event
+    _water_level_observation = WaterLevelObservation()
+
+    # sends the 'PL.Gov.IMGW.Hydro.mqtt.WaterLevelObservation' event to Kafka topic.
+    await plgov_imgwhydro_mqtt_event_producer.send_pl_gov_imgw_hydro_mqtt_water_level_observation(_station_id = 'TODO: replace me', data = _water_level_observation)
+    print(f"Sent 'PL.Gov.IMGW.Hydro.mqtt.WaterLevelObservation' event: {_water_level_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        plgov_imgwhydro_amqp_event_producer = PLGovIMGWHydroAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        plgov_imgwhydro_amqp_event_producer = PLGovIMGWHydroAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- PL.Gov.IMGW.Hydro.amqp.Station ----
+    # TODO: Supply event data for the PL.Gov.IMGW.Hydro.amqp.Station event
+    _station = Station()
+
+    # sends the 'PL.Gov.IMGW.Hydro.amqp.Station' event to Kafka topic.
+    await plgov_imgwhydro_amqp_event_producer.send_pl_gov_imgw_hydro_amqp_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'PL.Gov.IMGW.Hydro.amqp.Station' event: {_station.to_json()}")
+
+    # ---- PL.Gov.IMGW.Hydro.amqp.WaterLevelObservation ----
+    # TODO: Supply event data for the PL.Gov.IMGW.Hydro.amqp.WaterLevelObservation event
+    _water_level_observation = WaterLevelObservation()
+
+    # sends the 'PL.Gov.IMGW.Hydro.amqp.WaterLevelObservation' event to Kafka topic.
+    await plgov_imgwhydro_amqp_event_producer.send_pl_gov_imgw_hydro_amqp_water_level_observation(_station_id = 'TODO: replace me', data = _water_level_observation)
+    print(f"Sent 'PL.Gov.IMGW.Hydro.amqp.WaterLevelObservation' event: {_water_level_observation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

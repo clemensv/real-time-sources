@@ -1,0 +1,2 @@
+pip install .\uk_ea_flood_monitoring_mqtt_producer_data
+pip install .\uk_ea_flood_monitoring_mqtt_producer_mqtt_client

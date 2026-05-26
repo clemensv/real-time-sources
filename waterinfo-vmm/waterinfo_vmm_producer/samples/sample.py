@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from waterinfo_vmm_producer_kafka_producer.producer import BEVlaanderenWaterinfoVMMEventProducer
+from waterinfo_vmm_producer_kafka_producer.producer import BEVlaanderenWaterinfoVMMMqttEventProducer
+from waterinfo_vmm_producer_kafka_producer.producer import BEVlaanderenWaterinfoVMMAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +74,54 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading' event to Kafka topic.
     await bevlaanderen_waterinfo_vmmevent_producer.send_be_vlaanderen_waterinfo_vmm_water_level_reading(_station_no = 'TODO: replace me', data = _water_level_reading)
     print(f"Sent 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading' event: {_water_level_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        bevlaanderen_waterinfo_vmmmqtt_event_producer = BEVlaanderenWaterinfoVMMMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        bevlaanderen_waterinfo_vmmmqtt_event_producer = BEVlaanderenWaterinfoVMMMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- BE.Vlaanderen.Waterinfo.VMM.mqtt.Station ----
+    # TODO: Supply event data for the BE.Vlaanderen.Waterinfo.VMM.mqtt.Station event
+    _station = Station()
+
+    # sends the 'BE.Vlaanderen.Waterinfo.VMM.mqtt.Station' event to Kafka topic.
+    await bevlaanderen_waterinfo_vmmmqtt_event_producer.send_be_vlaanderen_waterinfo_vmm_mqtt_station(_station_no = 'TODO: replace me', data = _station)
+    print(f"Sent 'BE.Vlaanderen.Waterinfo.VMM.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- BE.Vlaanderen.Waterinfo.VMM.mqtt.WaterLevelReading ----
+    # TODO: Supply event data for the BE.Vlaanderen.Waterinfo.VMM.mqtt.WaterLevelReading event
+    _water_level_reading = WaterLevelReading()
+
+    # sends the 'BE.Vlaanderen.Waterinfo.VMM.mqtt.WaterLevelReading' event to Kafka topic.
+    await bevlaanderen_waterinfo_vmmmqtt_event_producer.send_be_vlaanderen_waterinfo_vmm_mqtt_water_level_reading(_station_no = 'TODO: replace me', data = _water_level_reading)
+    print(f"Sent 'BE.Vlaanderen.Waterinfo.VMM.mqtt.WaterLevelReading' event: {_water_level_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        bevlaanderen_waterinfo_vmmamqp_event_producer = BEVlaanderenWaterinfoVMMAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        bevlaanderen_waterinfo_vmmamqp_event_producer = BEVlaanderenWaterinfoVMMAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- BE.Vlaanderen.Waterinfo.VMM.amqp.Station ----
+    # TODO: Supply event data for the BE.Vlaanderen.Waterinfo.VMM.amqp.Station event
+    _station = Station()
+
+    # sends the 'BE.Vlaanderen.Waterinfo.VMM.amqp.Station' event to Kafka topic.
+    await bevlaanderen_waterinfo_vmmamqp_event_producer.send_be_vlaanderen_waterinfo_vmm_amqp_station(_station_no = 'TODO: replace me', data = _station)
+    print(f"Sent 'BE.Vlaanderen.Waterinfo.VMM.amqp.Station' event: {_station.to_json()}")
+
+    # ---- BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading ----
+    # TODO: Supply event data for the BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading event
+    _water_level_reading = WaterLevelReading()
+
+    # sends the 'BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading' event to Kafka topic.
+    await bevlaanderen_waterinfo_vmmamqp_event_producer.send_be_vlaanderen_waterinfo_vmm_amqp_water_level_reading(_station_no = 'TODO: replace me', data = _water_level_reading)
+    print(f"Sent 'BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading' event: {_water_level_reading.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

@@ -19,7 +19,7 @@ import avro.io
 @dataclass
 class Station:
     """
-    Station
+    Reference details for one monitoring station or site in the Hub'Eau Hydrométrie source.
     Attributes:
         code_station (str): 
         libelle_station (str): 
@@ -44,7 +44,7 @@ class Station:
     date_ouverture_station: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_ouverture_station"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"code_station\", \"type\": \"string\"}, {\"name\": \"libelle_station\", \"type\": \"string\"}, {\"name\": \"code_site\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"longitude_station\", \"type\": \"double\"}, {\"name\": \"latitude_station\", \"type\": \"double\"}, {\"name\": \"libelle_cours_eau\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"libelle_commune\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"code_departement\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"en_service\", \"type\": [\"null\", \"boolean\"], \"default\": null}, {\"name\": \"date_ouverture_station\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"FR.Gov.Eaufrance.HubEau.Hydrometrie\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Reference details for one monitoring station or site in the Hub'Eau Hydrom\u00e9trie source.\", \"fields\": [{\"name\": \"code_station\", \"type\": \"string\"}, {\"name\": \"libelle_station\", \"type\": \"string\"}, {\"name\": \"code_site\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"longitude_station\", \"type\": \"double\"}, {\"name\": \"latitude_station\", \"type\": \"double\"}, {\"name\": \"libelle_cours_eau\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"libelle_commune\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"code_departement\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"en_service\", \"type\": [\"null\", \"boolean\"], \"default\": null}, {\"name\": \"date_ouverture_station\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"FR.Gov.Eaufrance.HubEau.Hydrometrie\", \"description\": \"Reference details for one monitoring station or site in the Hub'Eau Hydrom\u00e9trie source.\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

@@ -509,6 +509,98 @@ class TestTepcoDenkiyohoAmqpDockerFlow(AmqpDockerFlowBase):
     expected_count = 1
 
 
+class TestCanadaEcccWaterofficeAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "canada-eccc-wateroffice"
+    image = "canada-eccc-wateroffice-amqp"
+    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {'CA.Gov.ECCC.Hydro.Station', 'CA.Gov.ECCC.Hydro.Observation'}
+    expected_count = 2
+
+class TestCdecReservoirsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "cdec-reservoirs"
+    image = "cdec-reservoirs-amqp"
+    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {'gov.ca.water.cdec.ReservoirReading'}
+    expected_count = 1
+
+class TestHubeauHydrometrieAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "hubeau-hydrometrie"
+    image = "hubeau-hydrometrie-amqp"
+    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {'FR.Gov.Eaufrance.HubEau.Hydrometrie.Station', 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation'}
+    expected_count = 2
+
+class TestImgwHydroAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "imgw-hydro"
+    image = "imgw-hydro-amqp"
+    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {'PL.Gov.IMGW.Hydro.WaterLevelObservation', 'PL.Gov.IMGW.Hydro.Station'}
+    expected_count = 2
+
+class TestIrelandOpwWaterlevelAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "ireland-opw-waterlevel"
+    image = "ireland-opw-waterlevel-amqp"
+    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {'ie.gov.opw.waterlevel.WaterLevelReading', 'ie.gov.opw.waterlevel.Station'}
+    expected_count = 2
+
+class TestNepalBipadHydrologyAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "nepal-bipad-hydrology"
+    image = "nepal-bipad-hydrology-amqp"
+    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {'np.gov.bipad.hydrology.WaterLevelReading', 'np.gov.bipad.hydrology.RiverStation'}
+    expected_count = 2
+
+class TestNoaaNdbcAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "noaa-ndbc"
+    image = "noaa-ndbc-amqp"
+    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {'Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement', 'Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyStation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation'}
+    expected_count = 9
+
+class TestNoaaAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "noaa"
+    image = "noaa-amqp"
+    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {'Microsoft.OpenData.US.NOAA.Visibility', 'Microsoft.OpenData.US.NOAA.Station', 'Microsoft.OpenData.US.NOAA.Humidity', 'Microsoft.OpenData.US.NOAA.Conductivity', 'Microsoft.OpenData.US.NOAA.CurrentPredictions', 'Microsoft.OpenData.US.NOAA.AirPressure', 'Microsoft.OpenData.US.NOAA.Wind', 'Microsoft.OpenData.US.NOAA.Currents', 'Microsoft.OpenData.US.NOAA.Predictions', 'Microsoft.OpenData.US.NOAA.WaterLevel', 'Microsoft.OpenData.US.NOAA.WaterTemperature', 'Microsoft.OpenData.US.NOAA.Salinity', 'Microsoft.OpenData.US.NOAA.AirTemperature'}
+    expected_count = 13
+
+class TestSnotelAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "snotel"
+    image = "snotel-amqp"
+    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {'gov.usda.nrcs.snotel.Station', 'gov.usda.nrcs.snotel.SnowObservation'}
+    expected_count = 2
+
+class TestSykeHydroAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "syke-hydro"
+    image = "syke-hydro-amqp"
+    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {'FI.SYKE.Hydrology.Station', 'FI.SYKE.Hydrology.WaterLevelObservation'}
+    expected_count = 2
+
+class TestUkEaFloodMonitoringAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "uk-ea-flood-monitoring"
+    image = "uk-ea-flood-monitoring-amqp"
+    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {'UK.Gov.Environment.EA.FloodMonitoring.Station', 'UK.Gov.Environment.EA.FloodMonitoring.Reading'}
+    expected_count = 2
+
+class TestUsgsNwisWqAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "usgs-nwis-wq"
+    image = "usgs-nwis-wq-amqp"
+    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {'USGS.WaterQuality.Readings.WaterQualityReading', 'USGS.WaterQuality.Sites.MonitoringSite'}
+    expected_count = 2
+
+class TestWaterinfoVmmAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "waterinfo-vmm"
+    image = "waterinfo-vmm-amqp"
+    env = {"MOCK_MODE": "true", "ONCE_MODE": "true"}
+    expected_types = {'BE.Vlaanderen.Waterinfo.VMM.Station', 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading'}
+    expected_count = 2
+
+
 class TestCanadaAqhiAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = 'canada-aqhi'
     image = 'canada-aqhi-amqp'

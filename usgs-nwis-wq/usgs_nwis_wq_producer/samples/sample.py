@@ -34,6 +34,10 @@ from confluent_kafka import Producer as KafkaProducer
 
 from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualitySitesEventProducer
 from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualityReadingsEventProducer
+from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualitySitesMqttEventProducer
+from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualitySitesAmqpEventProducer
+from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualityReadingsMqttEventProducer
+from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualityReadingsAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -81,6 +85,70 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'USGS.WaterQuality.Readings.WaterQualityReading' event to Kafka topic.
     await usgswater_quality_readings_event_producer.send_usgs_water_quality_readings_water_quality_reading(_source_uri = 'TODO: replace me', _site_number = 'TODO: replace me', _parameter_code = 'TODO: replace me', data = _water_quality_reading)
     print(f"Sent 'USGS.WaterQuality.Readings.WaterQualityReading' event: {_water_quality_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usgswater_quality_sites_mqtt_event_producer = USGSWaterQualitySitesMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usgswater_quality_sites_mqtt_event_producer = USGSWaterQualitySitesMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- USGS.WaterQuality.Sites.mqtt.MonitoringSite ----
+    # TODO: Supply event data for the USGS.WaterQuality.Sites.mqtt.MonitoringSite event
+    _monitoring_site = MonitoringSite()
+
+    # sends the 'USGS.WaterQuality.Sites.mqtt.MonitoringSite' event to Kafka topic.
+    await usgswater_quality_sites_mqtt_event_producer.send_usgs_water_quality_sites_mqtt_monitoring_site(_source_uri = 'TODO: replace me', _site_number = 'TODO: replace me', data = _monitoring_site)
+    print(f"Sent 'USGS.WaterQuality.Sites.mqtt.MonitoringSite' event: {_monitoring_site.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usgswater_quality_sites_amqp_event_producer = USGSWaterQualitySitesAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usgswater_quality_sites_amqp_event_producer = USGSWaterQualitySitesAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- USGS.WaterQuality.Sites.amqp.MonitoringSite ----
+    # TODO: Supply event data for the USGS.WaterQuality.Sites.amqp.MonitoringSite event
+    _monitoring_site = MonitoringSite()
+
+    # sends the 'USGS.WaterQuality.Sites.amqp.MonitoringSite' event to Kafka topic.
+    await usgswater_quality_sites_amqp_event_producer.send_usgs_water_quality_sites_amqp_monitoring_site(_source_uri = 'TODO: replace me', _site_number = 'TODO: replace me', data = _monitoring_site)
+    print(f"Sent 'USGS.WaterQuality.Sites.amqp.MonitoringSite' event: {_monitoring_site.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usgswater_quality_readings_mqtt_event_producer = USGSWaterQualityReadingsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usgswater_quality_readings_mqtt_event_producer = USGSWaterQualityReadingsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- USGS.WaterQuality.Readings.mqtt.WaterQualityReading ----
+    # TODO: Supply event data for the USGS.WaterQuality.Readings.mqtt.WaterQualityReading event
+    _water_quality_reading = WaterQualityReading()
+
+    # sends the 'USGS.WaterQuality.Readings.mqtt.WaterQualityReading' event to Kafka topic.
+    await usgswater_quality_readings_mqtt_event_producer.send_usgs_water_quality_readings_mqtt_water_quality_reading(_source_uri = 'TODO: replace me', _site_number = 'TODO: replace me', _parameter_code = 'TODO: replace me', data = _water_quality_reading)
+    print(f"Sent 'USGS.WaterQuality.Readings.mqtt.WaterQualityReading' event: {_water_quality_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usgswater_quality_readings_amqp_event_producer = USGSWaterQualityReadingsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usgswater_quality_readings_amqp_event_producer = USGSWaterQualityReadingsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- USGS.WaterQuality.Readings.amqp.WaterQualityReading ----
+    # TODO: Supply event data for the USGS.WaterQuality.Readings.amqp.WaterQualityReading event
+    _water_quality_reading = WaterQualityReading()
+
+    # sends the 'USGS.WaterQuality.Readings.amqp.WaterQualityReading' event to Kafka topic.
+    await usgswater_quality_readings_amqp_event_producer.send_usgs_water_quality_readings_amqp_water_quality_reading(_source_uri = 'TODO: replace me', _site_number = 'TODO: replace me', _parameter_code = 'TODO: replace me', data = _water_quality_reading)
+    print(f"Sent 'USGS.WaterQuality.Readings.amqp.WaterQualityReading' event: {_water_quality_reading.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

@@ -21,6 +21,50 @@
         "#/messagegroups/CA.Gov.ECCC.Hydro"
       ],
       "description": "Kafka producer endpoint for ECCC Water Office CloudEvents on the `canada-eccc-wateroffice` topic keyed by `stations/{station_number}`."
+    },
+    "CA.Gov.ECCC.Hydro.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/CA.Gov.ECCC.Hydro.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for canada-eccc-wateroffice CloudEvents using the documented UNS topic hierarchy."
+    },
+    "CA.Gov.ECCC.Hydro.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/canada-eccc-wateroffice"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/CA.Gov.ECCC.Hydro.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for canada-eccc-wateroffice CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -66,6 +110,92 @@
         }
       },
       "description": "Events from ECCC Water Office covering Canadian hydrometric stations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
+    },
+    "CA.Gov.ECCC.Hydro.mqtt": {
+      "description": "MQTT 5 variant of canada-eccc-wateroffice events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "CA.Gov.ECCC.Hydro.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/ca/eccc/canada-eccc-wateroffice/{basin}/{station_number}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "CA.Gov.ECCC.Hydro.mqtt.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Observation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/ca/eccc/canada-eccc-wateroffice/{basin}/{station_number}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "CA.Gov.ECCC.Hydro.amqp": {
+      "description": "AMQP 1.0 variant of canada-eccc-wateroffice events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "CA.Gov.ECCC.Hydro.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "stations/{station_number}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "Routing property for AMQP subscription filters (basin)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "stations/{station_number}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "CA.Gov.ECCC.Hydro.amqp.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Observation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "stations/{station_number}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "Routing property for AMQP subscription filters (basin)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "stations/{station_number}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -192,6 +322,10 @@
                     "description": "Geographic longitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.",
                     "unit": "degree",
                     "symbol": "°"
+                  },
+                  "basin": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice."
                   }
                 }
               }
@@ -295,6 +429,10 @@
                     "description": "Geographic longitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.",
                     "unit": "degree",
                     "symbol": "°"
+                  },
+                  "basin": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice."
                   }
                 }
               }

@@ -179,20 +179,26 @@ def additive_matrix(base_txt: str, head_txt: str) -> list[str] | None:
 
 
 def _class_blocks(text: str) -> dict[str, str]:
-    """Map class_name -> hash(body) for top-level test classes.
+    """Map class_name -> hash(class source) for top-level test classes.
 
-    Blocks are normalized to ignore trailing whitespace between classes so
-    adding a new class at the end (which adds blank lines after the prior
-    one) does not look like a body change to the prior class.
+    Uses AST so adding helper code or new classes between existing classes
+    does not look like a body change to those classes.
     """
-    parts = re.split(r"(?m)^(?=class\s)", text)
+    import ast
+
+    try:
+        tree = ast.parse(text)
+    except SyntaxError:
+        return {}
+    lines = text.splitlines(keepends=True)
     out: dict[str, str] = {}
-    for part in parts:
-        m = re.match(r"class\s+(\w+)", part)
-        if not m:
+    for node in tree.body:
+        if not isinstance(node, ast.ClassDef):
             continue
-        normalized = part.rstrip() + "\n"
-        out[m.group(1)] = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+        start = node.lineno - 1
+        end = getattr(node, "end_lineno", None) or start + 1
+        body = "".join(lines[start:end])
+        out[node.name] = hashlib.sha256(body.encode("utf-8")).hexdigest()
     return out
 
 

@@ -1,35 +1,26 @@
-# Generate the NOAA data producer using xrcg
+$ErrorActionPreference = 'Stop'
 
 . (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$projectRoot = $scriptDir
-$xregFile = Join-Path $projectRoot "xreg\noaa.xreg.json"
-$outputDir = Join-Path $projectRoot "noaa_producer"
+$xregFile = Join-Path $scriptDir "xreg\noaa.xreg.json"
 
-Write-Host "Generating NOAA producer from xRegistry definitions..." -ForegroundColor Cyan
-Write-Host "  xRegistry file: $xregFile" -ForegroundColor Gray
-Write-Host "  Output directory: $outputDir" -ForegroundColor Gray
+Write-Host "Generating noaa producers from xRegistry definitions..." -ForegroundColor Cyan
 
-# Ensure the output directory exists
-if (Test-Path $outputDir) {
-    Write-Host "  Cleaning existing output directory..." -ForegroundColor Yellow
-    Remove-Item -Path $outputDir -Recurse -Force
-}
+$outputDir = Join-Path $scriptDir "noaa_producer"
+if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
+xrcg generate --style kafkaproducer --language py --projectname noaa_producer --definitions $xregFile --output $outputDir
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-# Generate the Kafka producer code
-Write-Host "  Generating Kafka producer code..." -ForegroundColor Cyan
-xrcg generate --style kafkaproducer --language py --projectname noaa-producer --definitions $xregFile --output $outputDir
+$outputDir = Join-Path $scriptDir "noaa_mqtt_producer"
+if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
+xrcg generate --style mqttclient --language py --projectname noaa_mqtt_producer --definitions $xregFile --endpoint Microsoft.OpenData.US.NOAA.Mqtt --output $outputDir
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "Producer generation completed successfully" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "Next steps:" -ForegroundColor Cyan
-    Write-Host "  1. Review the generated code in: $outputDir" -ForegroundColor Gray
-    Write-Host "  2. Install dependencies: poetry install" -ForegroundColor Gray
-    Write-Host "  3. Run the producer: poetry run python -m noaa" -ForegroundColor Gray
-} else {
-    Write-Host "Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
-    exit $LASTEXITCODE
-}
+$outputDir = Join-Path $scriptDir "noaa_amqp_producer"
+if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
+xrcg generate --style amqpproducer --language py --projectname noaa_amqp_producer --definitions $xregFile --endpoint Microsoft.OpenData.US.NOAA.Amqp --template-args azure_cbs_target=servicebus --output $outputDir
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+Write-Host "Producer generation completed successfully" -ForegroundColor Green
