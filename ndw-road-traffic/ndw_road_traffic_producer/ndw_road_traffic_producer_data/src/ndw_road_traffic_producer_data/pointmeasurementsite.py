@@ -17,7 +17,7 @@ import json
 @dataclass
 class PointMeasurementSite:
     """
-    Reference data for a point measurement site from the NDW DATEX II measurement_current feed. A point site uses a fixed sensor (inductive loop or microwave) to measure speed and flow at a single cross-section of road.
+    Reference record for a point measurement site from the Dutch NDW DATEX II measurement_current feed. Contains location, sensor technology type, and lane configuration for a fixed inductive-loop or microwave sensor.
     
     Attributes:
         measurement_site_id (str)
@@ -167,13 +167,13 @@ class PointMeasurementSite:
             An instance of the dataclass.
         """
         return cls(
-            measurement_site_id='iawsurfcubfayfhchgdl',
-            name='hkzmcnpgrbqtfbaphrsr',
-            measurement_site_type='qwtjvhiappatdibvmepo',
-            period=int(6),
-            latitude=float(43.84508939873809),
-            longitude=float(24.227135200210714),
-            road_name='ulxncccqvpnkszofmzas',
-            lane_count=int(82),
-            carriageway_type='btkjaeqsbkkxdducomhb'
+            measurement_site_id='bwqhpciujydkajqrrlrq',
+            name='ndusekfqwidxdxmgtnum',
+            measurement_site_type='hmbncfngficullozbcui',
+            period=int(66),
+            latitude=float(70.83169545270826),
+            longitude=float(38.13278544853805),
+            road_name='opzxeednlrlxfvupiadk',
+            lane_count=int(44),
+            carriageway_type='rhyjdnxyycavlerwnfim'
         )

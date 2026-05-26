@@ -23,6 +23,7 @@ class TestScheduleFileFetching:
         response = Mock()
         response.status_code = 200
         response.content = b'mock zip file content'
+        response.iter_content.return_value = [response.content]
         response.headers = {'ETag': '"new-etag-123"'}
         return response
 
@@ -115,6 +116,7 @@ class TestScheduleFileFetching:
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.content = b'content'
+        mock_response.iter_content.return_value = [mock_response.content]
         mock_response.headers = {'ETag': '"etag"'}
         
         with patch('gtfs_rt_bridge.gtfs_cli.requests.get', return_value=mock_response):

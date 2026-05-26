@@ -1,3 +1,3 @@
-from .nl import TravelTime, TrafficSpeed, TrafficSituation
+from .nl import TravelTime, TrafficSituation, TrafficSpeed
 
-__all__ = ["TravelTime", "TrafficSpeed", "TrafficSituation"]
+__all__ = ["TravelTime", "TrafficSituation", "TrafficSpeed"]

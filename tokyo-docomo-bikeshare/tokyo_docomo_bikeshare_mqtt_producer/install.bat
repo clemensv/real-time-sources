@@ -1,0 +1,2 @@
+pip install .\tokyo_docomo_bikeshare_mqtt_producer_data
+pip install .\tokyo_docomo_bikeshare_mqtt_producer_mqtt_client

@@ -1,31 +1,11 @@
 $ErrorActionPreference = 'Stop'
-
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot '..\tools\require-xrcg.ps1')
 Assert-XrcgVersion
-
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$xregFile = Join-Path (Join-Path $scriptDir "xreg") "madrid_traffic.xreg.json"
-$outputDir = Join-Path $scriptDir "madrid_traffic_producer"
+$xregFile = Join-Path $scriptDir 'xreg\madrid_traffic.xreg.json'
 
-Write-Host "Generating Madrid Traffic producer from $xregFile"
+xrcg generate --style kafkaproducer --language py --definitions $xregFile --endpoint 'es.madrid.informo.Kafka' --projectname madrid_traffic_producer --output (Join-Path $scriptDir 'madrid_traffic_producer')
 
-if (-not (Test-Path $xregFile)) {
-    throw "xRegistry file not found: $xregFile"
-}
+xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint 'es.madrid.Mqtt' --projectname madrid_traffic_mqtt_producer --output (Join-Path $scriptDir 'madrid_traffic_mqtt_producer')
 
-if (Test-Path $outputDir) {
-    Remove-Item -Path $outputDir -Recurse -Force
-}
-
-xrcg generate `
-    --style kafkaproducer `
-    --language py `
-    --projectname madrid-traffic-producer `
-    --definitions $xregFile `
-    --output $outputDir
-
-if ($LASTEXITCODE -ne 0) {
-    throw "Producer generation failed"
-}
-
-Write-Host "Producer generated successfully in $outputDir"
+xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint 'es.madrid.Amqp' --projectname madrid_traffic_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir 'madrid_traffic_amqp_producer')

@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class RoadStatus:
     """
-    Real-time status snapshot for a Transport for London (TfL) managed road corridor. Fetched from the GET /Road/all/Status endpoint on each polling cycle. Each event represents the current aggregate traffic status for one corridor as computed by TfL from active disruptions.
+    Real-time status snapshot for a TfL managed road corridor fetched from GET /Road/all/Status.
     
     Attributes:
         road_id (str)
@@ -169,13 +169,13 @@ class RoadStatus:
             An instance of the dataclass.
         """
         return cls(
-            road_id='xfnatrrhrininyopdokp',
-            display_name='pzagnjdvgtjqldsevvth',
-            status_severity='dwgsyjdcotwekhkrdifz',
-            status_severity_description='dkyzmwqqfefggfmwfkpu',
-            bounds='asarmcdrbtysugzpdjhf',
-            envelope='gypahmqpwkvyavftpfny',
-            url='qjxanlqcmgygbvfeorrr',
+            road_id='xquumlsbwbznpfeprmlw',
+            display_name='quaxogyogernszdbklzb',
+            status_severity='erzpbqfmhxlhtahbqvnw',
+            status_severity_description='enlyiucobetcekhpocxe',
+            bounds='dujwlebncyqwgqtrthnz',
+            envelope='hdfhwkgmgeuyjoxjijnk',
+            url='hhhbpptprboqfpjmnyrq',
             status_aggregation_start_date=datetime.datetime.now(datetime.timezone.utc),
             status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc)
         )

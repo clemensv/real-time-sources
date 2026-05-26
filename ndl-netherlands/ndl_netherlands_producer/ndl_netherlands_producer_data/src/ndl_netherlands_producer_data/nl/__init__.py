@@ -1,3 +1,3 @@
-from .ndw import TravelTime, TrafficSpeed, TrafficSituation
+from .ndw import TravelTime, TrafficSituation, TrafficSpeed
 
-__all__ = ["TravelTime", "TrafficSpeed", "TrafficSituation"]
+__all__ = ["TravelTime", "TrafficSituation", "TrafficSpeed"]

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "french-road-traffic-mqtt"
+version = "0.1.0"
+description = "MQTT companion feeder for French Road Traffic"
+requires-python = ">=3.10"
+dependencies = ["paho-mqtt>=2.1.0"]
+
+[project.scripts]
+french-road-traffic-mqtt = "french_road_traffic_mqtt.app:main"
+
+[tool.setuptools.packages.find]
+include = ["french_road_traffic_mqtt*"]

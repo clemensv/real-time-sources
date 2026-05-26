@@ -17,7 +17,7 @@ import json
 @dataclass
 class DripDisplayState:
     """
-    Current display state of a Dynamic Route Information Panel (DRIP) sign from the NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text, pictogram codes, and operational state.
+    Current display state of a Dynamic Route Information Panel (DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text, pictogram codes, and operational state of the sign.
     
     Attributes:
         vms_controller_id (str)
@@ -163,11 +163,11 @@ class DripDisplayState:
             An instance of the dataclass.
         """
         return cls(
-            vms_controller_id='rlcwndvgtjnngzbqbydo',
-            vms_index='qapoqcjtiixxzrgwcgdt',
-            publication_time='bfxluypvnftrrafsxcia',
-            active=True,
-            vms_text='qsvzeueecjvfzodxphfi',
-            pictogram_code='gsiwxcjtahuuafuifxjd',
-            state='oceqkxipfkywwvoeonjr'
+            vms_controller_id='oahrkmlcffzacgqdjhue',
+            vms_index='jbtvagpojlazpwaipkal',
+            publication_time='jljyugvoovpatdaajjmj',
+            active=False,
+            vms_text='hmxzeibltzxdsjcctonm',
+            pictogram_code='gprgabexqzjsbnlrrbig',
+            state='rbsvtpynoaflyxdebvop'
         )

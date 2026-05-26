@@ -21,6 +21,49 @@
         "#/messagegroups/es.madrid.informo"
       ],
       "description": "Kafka producer endpoint for Madrid Traffic CloudEvents on the `madrid-traffic` topic keyed by `{sensor_id}`."
+    },
+    "es.madrid.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/es.madrid.informo.mqtt"
+      ],
+      "description": "MQTT/5.0 companion producer endpoint."
+    },
+    "es.madrid.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "content_mode": "binary",
+          "address": "madrid-traffic"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/es.madrid.informo.amqp"
+      ],
+      "description": "AMQP/1.0 companion producer endpoint."
     }
   },
   "messagegroups": {
@@ -66,6 +109,78 @@
         }
       },
       "description": "Events from Madrid Traffic covering Madrid traffic sensors. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
+    },
+    "es.madrid.informo.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for madrid-traffic.",
+      "messages": {
+        "es.madrid.informo.MeasurementPoint.mqtt": {
+          "name": "MeasurementPoint",
+          "basemessageurl": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.MeasurementPoint",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/es/madrid/madrid-traffic/{district}/{sensor_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "es.madrid.informo.TrafficReading.mqtt": {
+          "name": "TrafficReading",
+          "basemessageurl": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.TrafficReading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/es/madrid/madrid-traffic/{district}/{sensor_id}/reading",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "es.madrid.informo.amqp": {
+      "description": "AMQP 1.0 bindings for madrid-traffic.",
+      "messages": {
+        "es.madrid.informo.MeasurementPoint.amqp": {
+          "name": "MeasurementPoint",
+          "basemessageurl": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.MeasurementPoint",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{sensor_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{sensor_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "es.madrid.informo.TrafficReading.amqp": {
+          "name": "TrafficReading",
+          "basemessageurl": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.TrafficReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{sensor_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{sensor_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from autobahn_producer_data.warningevent import WarningEvent
-from autobahn_producer_data.displaytypeenum import DisplayTypeenum
 from typing import Any
+from autobahn_producer_data.displaytypeenum import DisplayTypeenum
 import datetime
 
 
@@ -31,33 +31,33 @@ class Test_WarningEvent(unittest.TestCase):
         Create instance of WarningEvent for testing
         """
         instance = WarningEvent(
-            identifier='fpnprhcjpeljoeoeqznb',
-            road='eqnblectarxomtgpyfcs',
-            road_ids=['hxauzoqloshbxmdciugf', 'jntdkdphyavenmpjwiip', 'ghprppxlefyvlysambvq', 'jrvdzynlgwdlmrevhtit', 'ahhccuwrigoitgvqnyfd'],
+            identifier='noyazevuukpymemixmjr',
+            road='ioqxcmbzwjuxlwjxeikl',
+            road_ids=['vsczfqqezihrpwudfitw', 'rzldfzalnvpeozersgdy'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.WEBCAM,
-            title='mwidfflrrtoxkzgqzovr',
-            subtitle='nyavbtsrtygukrqkfmap',
+            display_type=DisplayTypeenum.WARNING,
+            title='occgepatfpuddevgsfyi',
+            subtitle='ywtwqrtvxdxnalijbgxy',
             description_lines=None,
-            future=True,
-            is_blocked=False,
-            icon='vrgjxpqvpwsudrctpgbu',
-            start_lc_position=int(12),
+            future=False,
+            is_blocked=True,
+            icon='zwggcjvejtdhutatxbkt',
+            start_lc_position=int(16),
             start_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            extent='krtglitcspnvnnnurqjq',
-            point='agffwidgltocwwadqkkm',
-            coordinate_lat=float(40.83340839781881),
-            coordinate_lon=float(87.22691047645958),
-            geometry_json='uyldwnckhvdjrlqczgtr',
-            impact_lower='fvwluzwtvodgvwwmcitn',
-            impact_upper='rgxavhzqnexgmhijpnwo',
+            extent='kqlxuilcdnflenlmdbvv',
+            point='njhpddvgczxodyougdxx',
+            coordinate_lat=float(60.85857763043121),
+            coordinate_lon=float(61.24374907289455),
+            geometry_json='ccnaankvcdkfdwrmlstm',
+            impact_lower='khppxkfhwgtvmuhupups',
+            impact_upper='myizstbeumuutkmnzpoc',
             impact_symbols=None,
-            route_recommendation_json='ubsznbbomuvqliubmpet',
+            route_recommendation_json='blfdzybnobwvjovcjweu',
             footer_lines=None,
-            delay_minutes=int(73),
-            average_speed_kmh=int(48),
-            abnormal_traffic_type='kgjiqkhfizdohokbsnkj',
-            source_name='ogtpdiffowyacldyztqi'
+            delay_minutes=int(22),
+            average_speed_kmh=int(70),
+            abnormal_traffic_type='kcjmlmpcqdwnevwsdgob',
+            source_name='rfrbgomucbpldcdnkfjv'
         )
         return instance
 
@@ -66,7 +66,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test identifier property
         """
-        test_value = 'fpnprhcjpeljoeoeqznb'
+        test_value = 'noyazevuukpymemixmjr'
         self.instance.identifier = test_value
         self.assertEqual(self.instance.identifier, test_value)
     
@@ -74,7 +74,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test road property
         """
-        test_value = 'eqnblectarxomtgpyfcs'
+        test_value = 'ioqxcmbzwjuxlwjxeikl'
         self.instance.road = test_value
         self.assertEqual(self.instance.road, test_value)
     
@@ -82,7 +82,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test road_ids property
         """
-        test_value = ['hxauzoqloshbxmdciugf', 'jntdkdphyavenmpjwiip', 'ghprppxlefyvlysambvq', 'jrvdzynlgwdlmrevhtit', 'ahhccuwrigoitgvqnyfd']
+        test_value = ['vsczfqqezihrpwudfitw', 'rzldfzalnvpeozersgdy']
         self.instance.road_ids = test_value
         self.assertEqual(self.instance.road_ids, test_value)
     
@@ -98,7 +98,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test display_type property
         """
-        test_value = DisplayTypeenum.WEBCAM
+        test_value = DisplayTypeenum.WARNING
         self.instance.display_type = test_value
         self.assertEqual(self.instance.display_type, test_value)
     
@@ -106,7 +106,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'mwidfflrrtoxkzgqzovr'
+        test_value = 'occgepatfpuddevgsfyi'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -114,7 +114,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test subtitle property
         """
-        test_value = 'nyavbtsrtygukrqkfmap'
+        test_value = 'ywtwqrtvxdxnalijbgxy'
         self.instance.subtitle = test_value
         self.assertEqual(self.instance.subtitle, test_value)
     
@@ -130,7 +130,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test future property
         """
-        test_value = True
+        test_value = False
         self.instance.future = test_value
         self.assertEqual(self.instance.future, test_value)
     
@@ -138,7 +138,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test is_blocked property
         """
-        test_value = False
+        test_value = True
         self.instance.is_blocked = test_value
         self.assertEqual(self.instance.is_blocked, test_value)
     
@@ -146,7 +146,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test icon property
         """
-        test_value = 'vrgjxpqvpwsudrctpgbu'
+        test_value = 'zwggcjvejtdhutatxbkt'
         self.instance.icon = test_value
         self.assertEqual(self.instance.icon, test_value)
     
@@ -154,7 +154,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test start_lc_position property
         """
-        test_value = int(12)
+        test_value = int(16)
         self.instance.start_lc_position = test_value
         self.assertEqual(self.instance.start_lc_position, test_value)
     
@@ -170,7 +170,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test extent property
         """
-        test_value = 'krtglitcspnvnnnurqjq'
+        test_value = 'kqlxuilcdnflenlmdbvv'
         self.instance.extent = test_value
         self.assertEqual(self.instance.extent, test_value)
     
@@ -178,7 +178,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test point property
         """
-        test_value = 'agffwidgltocwwadqkkm'
+        test_value = 'njhpddvgczxodyougdxx'
         self.instance.point = test_value
         self.assertEqual(self.instance.point, test_value)
     
@@ -186,7 +186,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test coordinate_lat property
         """
-        test_value = float(40.83340839781881)
+        test_value = float(60.85857763043121)
         self.instance.coordinate_lat = test_value
         self.assertEqual(self.instance.coordinate_lat, test_value)
     
@@ -194,7 +194,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test coordinate_lon property
         """
-        test_value = float(87.22691047645958)
+        test_value = float(61.24374907289455)
         self.instance.coordinate_lon = test_value
         self.assertEqual(self.instance.coordinate_lon, test_value)
     
@@ -202,7 +202,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test geometry_json property
         """
-        test_value = 'uyldwnckhvdjrlqczgtr'
+        test_value = 'ccnaankvcdkfdwrmlstm'
         self.instance.geometry_json = test_value
         self.assertEqual(self.instance.geometry_json, test_value)
     
@@ -210,7 +210,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test impact_lower property
         """
-        test_value = 'fvwluzwtvodgvwwmcitn'
+        test_value = 'khppxkfhwgtvmuhupups'
         self.instance.impact_lower = test_value
         self.assertEqual(self.instance.impact_lower, test_value)
     
@@ -218,7 +218,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test impact_upper property
         """
-        test_value = 'rgxavhzqnexgmhijpnwo'
+        test_value = 'myizstbeumuutkmnzpoc'
         self.instance.impact_upper = test_value
         self.assertEqual(self.instance.impact_upper, test_value)
     
@@ -234,7 +234,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test route_recommendation_json property
         """
-        test_value = 'ubsznbbomuvqliubmpet'
+        test_value = 'blfdzybnobwvjovcjweu'
         self.instance.route_recommendation_json = test_value
         self.assertEqual(self.instance.route_recommendation_json, test_value)
     
@@ -250,7 +250,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test delay_minutes property
         """
-        test_value = int(73)
+        test_value = int(22)
         self.instance.delay_minutes = test_value
         self.assertEqual(self.instance.delay_minutes, test_value)
     
@@ -258,7 +258,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test average_speed_kmh property
         """
-        test_value = int(48)
+        test_value = int(70)
         self.instance.average_speed_kmh = test_value
         self.assertEqual(self.instance.average_speed_kmh, test_value)
     
@@ -266,7 +266,7 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test abnormal_traffic_type property
         """
-        test_value = 'kgjiqkhfizdohokbsnkj'
+        test_value = 'kcjmlmpcqdwnevwsdgob'
         self.instance.abnormal_traffic_type = test_value
         self.assertEqual(self.instance.abnormal_traffic_type, test_value)
     
@@ -274,19 +274,10 @@ class Test_WarningEvent(unittest.TestCase):
         """
         Test source_name property
         """
-        test_value = 'ogtpdiffowyacldyztqi'
+        test_value = 'rfrbgomucbpldcdnkfjv'
         self.instance.source_name = test_value
         self.assertEqual(self.instance.source_name, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = WarningEvent.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

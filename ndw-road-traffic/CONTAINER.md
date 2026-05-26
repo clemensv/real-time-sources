@@ -47,3 +47,31 @@ All events are emitted as CloudEvents (structured JSON) to a single Kafka topic.
 - **Situations polling**: All 5 situation feeds are polled every 5 minutes.
 - **Deduplication**: Events are deduplicated by site/sign ID and publication timestamp using a local state file.
 - **Fault isolation**: A failure in one feed does not prevent other feeds from being processed.
+
+
+## MQTT 5.0 / Unified Namespace
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-ndw-road-traffic-mqtt:latest
+docker run --rm -e MQTT_BROKER_URL=mqtt://broker:1883 ghcr.io/clemensv/real-time-sources-ndw-road-traffic-mqtt:latest
+```
+
+| Variable | Required | Default | Description |
+|---|---:|---|---|
+| `MQTT_BROKER_URL` | No | `mqtt://localhost:1883` | MQTT broker URL. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | No | — | Optional username/password auth. |
+| `MQTT_TLS` | No | `false` | Enable TLS for broker connections. |
+
+## AMQP 1.0
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-ndw-road-traffic-amqp:latest
+docker run --rm -e AMQP_HOST=broker -e AMQP_ADDRESS=ndw-road-traffic ghcr.io/clemensv/real-time-sources-ndw-road-traffic-amqp:latest
+```
+
+| Variable | Required | Default | Description |
+|---|---:|---|---|
+| `AMQP_HOST` | No | `localhost` | AMQP 1.0 broker host. |
+| `AMQP_PORT` | No | `5672` | AMQP 1.0 broker port. |
+| `AMQP_ADDRESS` | No | `ndw-road-traffic` | Queue/topic/address to send to. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | No | — | Optional SASL PLAIN credentials. |

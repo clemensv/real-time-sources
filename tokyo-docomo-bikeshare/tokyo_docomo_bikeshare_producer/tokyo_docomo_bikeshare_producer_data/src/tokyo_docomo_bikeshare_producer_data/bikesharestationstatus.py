@@ -17,7 +17,7 @@ import json
 @dataclass
 class BikeshareStationStatus:
     """
-    Real-time availability and operational status of a single Tokyo Docomo Bikeshare docking station, sourced from the GBFS 2.3 station_status.json feed published by the Open Data Platform for Transportation (ODPT). Updates on a 60-second TTL.
+    A reference record from Docomo Bike Share open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
     
     Attributes:
         system_id (str)
@@ -26,9 +26,9 @@ class BikeshareStationStatus:
         num_bikes_disabled (typing.Optional[int])
         num_docks_available (typing.Optional[int])
         num_docks_disabled (typing.Optional[int])
-        is_installed (typing.Any)
-        is_renting (typing.Any)
-        is_returning (typing.Any)
+        is_installed (bool)
+        is_renting (bool)
+        is_returning (bool)
         last_reported (typing.Optional[int])
     """
     
@@ -39,9 +39,9 @@ class BikeshareStationStatus:
     num_bikes_disabled: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="num_bikes_disabled"))
     num_docks_available: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="num_docks_available"))
     num_docks_disabled: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="num_docks_disabled"))
-    is_installed: typing.Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_installed"))
-    is_renting: typing.Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_renting"))
-    is_returning: typing.Any=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_returning"))
+    is_installed: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_installed"))
+    is_renting: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_renting"))
+    is_returning: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_returning"))
     last_reported: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="last_reported"))
 
     @classmethod
@@ -169,14 +169,14 @@ class BikeshareStationStatus:
             An instance of the dataclass.
         """
         return cls(
-            system_id='cobupdsseadcfaoaqjdx',
-            station_id='uhxysfxuuftnhccmmrmv',
-            num_bikes_available=int(42),
-            num_bikes_disabled=int(20),
-            num_docks_available=int(99),
-            num_docks_disabled=int(25),
-            is_installed={"test": "test"},
-            is_renting={"test": "test"},
-            is_returning={"test": "test"},
-            last_reported=int(4)
+            system_id='laqzylwlzzoxqwklpcin',
+            station_id='akmjxhsnfdterppdmhoy',
+            num_bikes_available=int(21),
+            num_bikes_disabled=int(84),
+            num_docks_available=int(92),
+            num_docks_disabled=int(97),
+            is_installed=True,
+            is_renting=True,
+            is_returning=False,
+            last_reported=int(90)
         )

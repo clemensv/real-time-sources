@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class BicycleCount:
     """
-    Hourly bicycle count observation from a permanent counting station in Paris, reporting the number of bicycles detected during a one-hour window.
+    A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value.
     
     Attributes:
         counter_id (str)
@@ -165,11 +165,11 @@ class BicycleCount:
             An instance of the dataclass.
         """
         return cls(
-            counter_id='clmiyfivbfqopvtrwtxs',
-            counter_name='qrzqmsqqhpawxlqpyozw',
-            count=int(13),
+            counter_id='nqqwodbxddmyevibanig',
+            counter_name='nlyxifhfvzduxzbrogew',
+            count=int(34),
             date=datetime.datetime.now(datetime.timezone.utc),
-            longitude=float(95.62318596124648),
-            latitude=float(41.19340357462205),
-            ce_id='nrteytgvuaydqfiqmxup'
+            longitude=float(37.47562025944228),
+            latitude=float(55.463849846277235),
+            ce_id='hnhgrqjlkezloofgybxd'
         )

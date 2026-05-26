@@ -1,0 +1,3707 @@
+
+
+# pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
+
+"""
+Producer module for sending messages via AMQP 1.0 protocol.
+
+Generated with Azure CBS support (target: servicebus).
+Supports Entra ID (Azure AD) authentication via Claims-Based Security (CBS)
+put-token, in addition to SASL PLAIN and SAS connection-string auth.
+"""
+
+import sys
+import typing
+import uuid
+import json
+import threading
+import queue
+import concurrent.futures
+from urllib.parse import quote_plus
+from proton import Message
+from proton.utils import BlockingConnection
+from cloudevents.http import CloudEvent
+from cloudevents.conversion import to_binary, to_structured
+
+# --- Azure CBS support (azure_cbs_target=servicebus) ---
+# Two CBS auth modes are supported:
+#   1. Entra ID (Azure AD) JWT bearer via an azure-identity TokenCredential
+#      (``type=jwt``) -- works against live Azure Service Bus / Event Hubs.
+#   2. SAS token (``type=servicebus.windows.net:sastoken``) -- works against
+#      both live Azure namespaces configured for SAS and the local Service Bus
+#      emulator, which validates the ``type`` field strictly and refuses JWT.
+import base64
+import hashlib
+import hmac
+import logging
+import time as _cbs_time
+from urllib.parse import quote
+from proton import Endpoint, symbol
+from proton.handlers import MessagingHandler
+from proton.reactor import Container, AtLeastOnce
+
+try:  # azure-identity is optional when only SAS auth is used
+    from azure.core.credentials import TokenCredential  # type: ignore
+except Exception:  # pragma: no cover - optional dep
+    TokenCredential = typing.Any  # type: ignore
+
+_cbs_logger = logging.getLogger("amqp.cbs")
+
+
+class _CbsTokenProvider:
+    """Abstract provider that mints a CBS put-token body + metadata."""
+
+    token_type: str = ""
+
+    def acquire(self) -> typing.Tuple[str, int]:
+        """Return (token_body, absolute_expiry_unix_seconds)."""
+        raise NotImplementedError
+
+
+class _JwtTokenProvider(_CbsTokenProvider):
+    """Entra ID JWT acquired from an azure-identity ``TokenCredential``."""
+
+    token_type = "jwt"
+
+    def __init__(self, credential, audience: str):
+        self._credential = credential
+        self._audience = audience
+
+    def acquire(self) -> typing.Tuple[str, int]:
+        token = self._credential.get_token(self._audience)
+        return token.token, int(token.expires_on)
+
+
+class _SasTokenProvider(_CbsTokenProvider):
+    """SAS token minted from a shared-access key + key name.
+
+    Produces a token of the form::
+
+        SharedAccessSignature sr=<url-quoted resource_uri>
+                              &sig=<url-quoted base64 HMAC-SHA256>
+                              &se=<expiry-unix-seconds>
+                              &skn=<key name>
+    """
+
+    token_type = "servicebus.windows.net:sastoken"
+
+    def __init__(self, key_name: str, key: str, resource_uri: str,
+                 ttl_seconds: int = 3600):
+        if not key_name or not key:
+            raise ValueError("SAS auth requires both key_name and key")
+        self._key_name = key_name
+        self._key = key
+        self._resource_uri = resource_uri
+        self._ttl = int(ttl_seconds)
+
+    def acquire(self) -> typing.Tuple[str, int]:
+        expiry = int(_cbs_time.time()) + self._ttl
+        encoded_uri = quote(self._resource_uri, safe="")
+        string_to_sign = (encoded_uri + "\n" + str(expiry)).encode("utf-8")
+        try:
+            signing_key = self._key.encode("utf-8")
+        except AttributeError:
+            signing_key = bytes(self._key)
+        signature = base64.b64encode(
+            hmac.new(signing_key, string_to_sign, hashlib.sha256).digest()
+        )
+        encoded_sig = quote(signature, safe="")
+        token = (
+            "SharedAccessSignature "
+            f"sr={encoded_uri}&sig={encoded_sig}&se={expiry}"
+            f"&skn={quote(self._key_name, safe='')}"
+        )
+        return token, expiry
+
+
+class _CbsAzureHandler(MessagingHandler):
+    """Reactor handler that establishes an Azure CBS-authenticated AMQP connection.
+
+    State machine:
+      1. ``on_start``                -> open SASL ANONYMOUS amqps:// connection.
+      2. ``on_connection_opened``    -> attach ``$cbs`` sender + receiver pair
+                                       (receiver source AND target pinned to ``$cbs``).
+      3. both CBS links opened       -> send put-token request (with correlation id).
+      4. CBS reply (status 200/202)  -> attach main sender to ``self._address``
+                                       (with AtLeastOnce so we get accepted/rejected).
+      5. main sender opened          -> signal ``_init_future`` ready.
+      6. ``on_sendable`` / injected  -> drain outbound queue, track each delivery.
+      7. ``on_accepted/rejected``    -> resolve the per-send ``Future``.
+      8. ``on_disconnected``         -> fail everything (v1: no reconnect).
+    """
+
+    def __init__(self, host, port, address, token_provider, use_tls,
+                 init_future, send_queue, close_event):
+        super().__init__(auto_settle=False, auto_accept=False)
+        self._host = host
+        self._port = port
+        self._address = address
+        self._token_provider = token_provider
+        self._use_tls = use_tls
+        self._init_future = init_future
+        self._send_queue = send_queue
+        self._close_event = close_event
+        self._close_requested = False
+
+        self._container = None
+        self._conn = None
+        self._cbs_sender = None
+        self._cbs_receiver = None
+        self._main_sender = None
+        self._cbs_sender_opened = False
+        self._cbs_receiver_opened = False
+        self._cbs_request_id = None
+        self._pending: typing.Dict[bytes, concurrent.futures.Future] = {}
+        self._failed = False
+
+    # ---- lifecycle ----
+
+    def on_start(self, event):
+        self._container = event.container
+        scheme = "amqps" if self._use_tls else "amqp"
+        url = f"{scheme}://{self._host}:{self._port}"
+        # SASL ANONYMOUS: Azure broker accepts the connection without creds;
+        # authn is established by the subsequent CBS put-token exchange.
+        self._conn = self._container.connect(
+            url,
+            sasl_enabled=True,
+            allowed_mechs="ANONYMOUS",
+            reconnect=False,
+        )
+        # Cross-thread wakeup: poll the send-queue + close-flag periodically.
+        # EventInjector is not portable on Windows (needs a real socketpair),
+        # so a 25ms recurring timer is used instead. Latency overhead is
+        # negligible for non-bulk workloads.
+        self._container.schedule(0.025, self)
+
+    def on_timer_task(self, event):
+        if self._close_requested:
+            self._begin_close()
+            return
+        if self._main_sender is not None and self._main_sender.credit > 0:
+            self._pump()
+        self._container.schedule(0.025, self)
+
+    def on_connection_opened(self, event):
+        _cbs_logger.debug("[cbs] on_connection_opened")
+        # Attach the CBS sender + receiver. Both terminus addresses pinned to "$cbs".
+        self._cbs_sender = self._container.create_sender(self._conn, "$cbs", name="cbs-sender")
+        self._cbs_receiver = self._container.create_receiver(
+            self._conn, "$cbs", name="cbs-receiver"
+        )
+        # Pin the receiver target explicitly (Azure rejects dynamic terminus).
+        self._cbs_receiver.target.address = "$cbs"
+        self._cbs_receiver.target.dynamic = False
+
+    def on_link_opened(self, event):
+        _cbs_logger.debug(f"[cbs] on_link_opened {event.link.name}")
+        try:
+            link_name = event.link.name
+            if link_name == "cbs-sender":
+                self._cbs_sender_opened = True
+            elif link_name == "cbs-receiver":
+                self._cbs_receiver_opened = True
+            elif link_name == "main-sender":
+                if not self._init_future.done():
+                    self._init_future.set_result(True)
+                return
+            if self._cbs_sender_opened and self._cbs_receiver_opened and self._cbs_request_id is None:
+                self._send_put_token()
+        except Exception as exc:
+            self._fail_init(exc)
+
+    def _send_put_token(self):
+        _cbs_logger.debug(
+            "[cbs] _send_put_token: acquiring token (type=%s)",
+            self._token_provider.token_type,
+        )
+        try:
+            token_body, expires_on = self._token_provider.acquire()
+        except Exception as exc:
+            self._fail_init(exc)
+            return
+        _cbs_logger.debug(f"[cbs] _send_put_token: token len={len(token_body)} exp={expires_on}")
+        resource_uri = f"sb://{self._host}/{self._address}"
+        self._cbs_request_id = str(uuid.uuid4())
+        msg = Message(body=token_body)
+        msg.address = "$cbs"
+        msg.reply_to = "$cbs"
+        msg.id = self._cbs_request_id
+        msg.properties = {
+            "operation": "put-token",
+            "type": self._token_provider.token_type,
+            "name": resource_uri,
+            "expiration": int(expires_on),
+        }
+        try:
+            self._cbs_sender.send(msg)
+            _cbs_logger.debug("[cbs] _send_put_token: sent")
+        except Exception as exc:
+            _cbs_logger.debug(f"[cbs] _send_put_token: send raised {exc!r}")
+            self._fail_init(RuntimeError(f"CBS put-token send failed: {exc}"))
+
+    def on_message(self, event):
+        _cbs_logger.debug(f"[cbs] on_message link={event.link.name}")
+        # Only CBS replies are expected on this handler's receiver.
+        if event.link.name != "cbs-receiver":
+            return
+        reply = event.message
+        _cbs_logger.debug(f"[cbs] on_message correlation_id={reply.correlation_id!r} expected={self._cbs_request_id!r} props={dict(reply.properties or {})}")
+        try:
+            event.delivery.update(event.delivery.ACCEPTED)
+            event.delivery.settle()
+        except Exception:
+            pass
+        # Correlate: only accept the reply matching our put-token request id.
+        # Compare as strings to tolerate UUID/bytes/str shapes.
+        if str(reply.correlation_id) != str(self._cbs_request_id):
+            _cbs_logger.debug("[cbs] on_message: correlation mismatch, ignoring")
+            return
+        props = reply.properties or {}
+        status_code = props.get("status-code") or props.get(symbol("status-code")) or 0
+        status_desc = props.get("status-description") or props.get(symbol("status-description")) or ""
+        _cbs_logger.debug(f"[cbs] on_message: status_code={status_code} desc={status_desc!r}")
+        if status_code in (200, 202):
+            try:
+                self._main_sender = self._container.create_sender(
+                    self._conn, self._address, name="main-sender", options=AtLeastOnce()
+                )
+                _cbs_logger.debug("[cbs] on_message: main-sender create requested")
+            except Exception as exc:
+                _cbs_logger.debug(f"[cbs] on_message: create_sender raised {exc!r}")
+                self._fail_init(exc)
+        else:
+            self._fail_init(RuntimeError(
+                f"CBS put-token rejected: status_code={status_code} {status_desc!r}"
+            ))
+
+    # ---- outbound sends ----
+
+    def on_sendable(self, event):
+        if event.link is self._main_sender:
+            self._pump()
+
+    def _pump(self):
+        if self._main_sender is None or self._failed:
+            return
+        while self._main_sender.credit > 0:
+            try:
+                req = self._send_queue.get_nowait()
+            except queue.Empty:
+                return
+            if req is None:  # close sentinel
+                self._begin_close()
+                return
+            msg, fut = req
+            tag = str(uuid.uuid4()).encode()
+            try:
+                delivery = self._main_sender.send(msg, tag=tag)
+            except Exception as exc:
+                if not fut.done():
+                    fut.set_exception(exc)
+                continue
+            self._pending[tag] = fut
+            # delivery.tag is what comes back on disposition events
+            self._pending[delivery.tag] = fut
+
+    def on_accepted(self, event):
+        fut = self._pending.pop(event.delivery.tag, None)
+        event.delivery.settle()
+        if fut is not None and not fut.done():
+            fut.set_result(True)
+
+    def on_rejected(self, event):
+        self._fail_delivery(event, "rejected")
+
+    def on_released(self, event):
+        self._fail_delivery(event, "released")
+
+    def on_modified(self, event):
+        self._fail_delivery(event, "modified")
+
+    def _fail_delivery(self, event, reason):
+        fut = self._pending.pop(event.delivery.tag, None)
+        event.delivery.settle()
+        if fut is not None and not fut.done():
+            fut.set_exception(RuntimeError(f"Send failed: {reason}"))
+
+    # ---- error / close ----
+
+    def on_inject_close(self, event):
+        self._begin_close()
+
+    def request_close(self):
+        """Called from the producer thread; reactor picks it up on next timer tick."""
+        self._close_requested = True
+
+    def _begin_close(self):
+        try:
+            if self._main_sender:
+                self._main_sender.close()
+        except Exception:
+            pass
+        try:
+            if self._cbs_sender:
+                self._cbs_sender.close()
+            if self._cbs_receiver:
+                self._cbs_receiver.close()
+        except Exception:
+            pass
+        try:
+            if self._conn:
+                self._conn.close()
+        except Exception:
+            pass
+
+    def on_transport_error(self, event):
+        self._fail_all(RuntimeError(f"Transport error: {event.transport.condition}"))
+
+    def on_connection_error(self, event):
+        cond = event.connection.remote_condition
+        self._fail_all(RuntimeError(f"Connection error: {cond}"))
+
+    def on_link_error(self, event):
+        cond = event.link.remote_condition
+        self._fail_all(RuntimeError(f"Link error on {event.link.name}: {cond}"))
+
+    def on_disconnected(self, event):
+        _cbs_logger.debug("[cbs] on_disconnected")
+        self._fail_all(RuntimeError("Disconnected"))
+        self._close_event.set()
+
+    def _fail_init(self, exc):
+        _cbs_logger.debug(f"[cbs] _fail_init: {exc!r}")
+        self._failed = True
+        if not self._init_future.done():
+            self._init_future.set_exception(exc)
+
+    def _fail_all(self, exc):
+        self._failed = True
+        if not self._init_future.done():
+            self._init_future.set_exception(exc)
+        # Drain queue
+        while True:
+            try:
+                req = self._send_queue.get_nowait()
+            except queue.Empty:
+                break
+            if req is None:
+                continue
+            _, fut = req
+            if not fut.done():
+                fut.set_exception(exc)
+        for fut in list(self._pending.values()):
+            if not fut.done():
+                fut.set_exception(exc)
+        self._pending.clear()
+from gtfs_amqp_producer_data import VehiclePosition
+from gtfs_amqp_producer_data import TripUpdate
+from gtfs_amqp_producer_data import Alert
+from gtfs_amqp_producer_data import Agency
+from gtfs_amqp_producer_data import Areas
+from gtfs_amqp_producer_data import Attributions
+from gtfs_amqp_producer_data import BookingRules
+from gtfs_amqp_producer_data import FareAttributes
+from gtfs_amqp_producer_data import FareLegRules
+from gtfs_amqp_producer_data import FareMedia
+from gtfs_amqp_producer_data import FareProducts
+from gtfs_amqp_producer_data import FareRules
+from gtfs_amqp_producer_data import FareTransferRules
+from gtfs_amqp_producer_data import FeedInfo
+from gtfs_amqp_producer_data import Frequencies
+from gtfs_amqp_producer_data import Levels
+from gtfs_amqp_producer_data import LocationGeoJson
+from gtfs_amqp_producer_data import LocationGroups
+from gtfs_amqp_producer_data import LocationGroupStores
+from gtfs_amqp_producer_data import Networks
+from gtfs_amqp_producer_data import Pathways
+from gtfs_amqp_producer_data import RouteNetworks
+from gtfs_amqp_producer_data import Routes
+from gtfs_amqp_producer_data import Shapes
+from gtfs_amqp_producer_data import StopAreas
+from gtfs_amqp_producer_data import Stops
+from gtfs_amqp_producer_data import StopTimes
+from gtfs_amqp_producer_data import Timeframes
+from gtfs_amqp_producer_data import Transfers
+from gtfs_amqp_producer_data import Translations
+from gtfs_amqp_producer_data import Trips
+
+class GeneralTransitFeedRealTimeAmqpProducer:
+    """
+    Producer class to send messages in the `GeneralTransitFeedRealTime.amqp` message group via AMQP 1.0 protocol.
+    """
+    
+    def __init__(self, 
+                 host: str,
+                 address: str,
+                 port: int = 5672,
+                 username: typing.Optional[str] = None,
+                 password: typing.Optional[str] = None,
+                 content_mode: typing.Literal['structured', 'binary'] = 'structured',
+                 format_type: str = 'application/json',
+                 credential: typing.Optional["TokenCredential"] = None,
+                 entra_audience: str = "https://servicebus.azure.net/.default",
+                 sas_key_name: typing.Optional[str] = None,
+                 sas_key: typing.Optional[str] = None,
+                 sas_token_ttl_seconds: int = 3600,
+                 use_tls: bool = True,
+                 ):
+        """
+        Initialize the AMQP producer
+        
+        Args:
+            host (str): The AMQP broker hostname
+            address (str): The AMQP address (queue or topic)
+            port (int): The AMQP broker port (default: 5672)
+            username (typing.Optional[str]): Optional username for SASL PLAIN authentication
+            password (typing.Optional[str]): Optional password for SASL PLAIN authentication
+            content_mode (typing.Literal['structured', 'binary']): CloudEvents content mode (default: 'structured')
+            format_type (str): Content type format for structured mode (default: 'application/json')
+            credential (typing.Optional[TokenCredential]): An azure-identity TokenCredential
+                (e.g. DefaultAzureCredential). When provided, SASL ANONYMOUS is used and an
+                Entra ID JWT is presented via AMQP CBS put-token (``type=jwt``). Mutually
+                exclusive with username/password and with sas_key_name/sas_key.
+            entra_audience (str): AAD scope used to acquire the JWT
+                (default: 'https://servicebus.azure.net/.default' -- targets Azure servicebus).
+                Override only when targeting a non-standard cloud or cross-targeting (e.g.
+                an Event Hubs client talking to a Service Bus entity, or vice-versa).
+            sas_key_name (typing.Optional[str]): SAS policy/key name (e.g.
+                ``RootManageSharedAccessKey``). When set with ``sas_key``, SASL ANONYMOUS
+                is used and a SAS token is presented via AMQP CBS put-token
+                (``type=servicebus.windows.net:sastoken``). Required for the Service Bus
+                emulator and for namespaces configured for SAS authentication.
+                Mutually exclusive with credential and with username/password.
+            sas_key (typing.Optional[str]): SAS key value (base64) used to sign the token.
+            sas_token_ttl_seconds (int): Lifetime of each minted SAS token (default: 3600).
+            use_tls (bool): If True (default), connect via amqps:// on port 5671 unless port
+                is explicitly set. Required for Azure servicebus; set to False
+                for the local Service Bus emulator (plain AMQP on 5672).
+        """
+        self.host = host
+        self.port = port
+        self.address = address
+        self.username = username
+        self.password = password
+        self.content_mode = content_mode
+        self.format_type = format_type
+        self._credential = credential
+        self._entra_audience = entra_audience
+        self._sas_key_name = sas_key_name
+        self._sas_key = sas_key
+        self._sas_token_ttl = int(sas_token_ttl_seconds)
+        self._use_tls = use_tls
+
+        _sas_configured = bool(sas_key_name or sas_key)
+        if _sas_configured and not (sas_key_name and sas_key):
+            raise ValueError(
+                "sas_key_name and sas_key must both be provided for SAS CBS auth."
+            )
+        if self._credential is not None and _sas_configured:
+            raise ValueError(
+                "credential is mutually exclusive with sas_key_name/sas_key. "
+                "Choose Entra ID OR SAS for CBS authentication."
+            )
+        if (self._credential is not None or _sas_configured) and (self.username or self.password):
+            raise ValueError(
+                "CBS auth (credential or SAS) is mutually exclusive with "
+                "username/password SASL PLAIN."
+            )
+        self._cbs_enabled = self._credential is not None or _sas_configured
+        if self._credential is not None and port == 5672:
+            # Default to AMQPS for Entra path; caller can override explicitly.
+            self.port = 5671
+        if self._cbs_enabled:
+            self._init_reactor()
+        else:
+            connection_url = self._build_connection_url()
+            self._connection = BlockingConnection(connection_url, timeout=30)
+            self._sender = self._connection.create_sender(self.address)
+
+    def _init_reactor(self):
+        """Start the proton reactor thread and block until CBS handshake completes.
+
+        On failure, the exception is propagated out of ``__init__`` so callers
+        get a clean error rather than discovering the problem on first send.
+        """
+        if self._credential is not None:
+            token_provider: _CbsTokenProvider = _JwtTokenProvider(
+                self._credential, self._entra_audience
+            )
+        else:
+            resource_uri = f"sb://{self.host}/{self.address}"
+            token_provider = _SasTokenProvider(
+                self._sas_key_name, self._sas_key, resource_uri,
+                ttl_seconds=self._sas_token_ttl,
+            )
+
+        self._send_queue: "queue.Queue" = queue.Queue()
+        self._init_future: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._close_event = threading.Event()
+        self._handler = _CbsAzureHandler(
+            host=self.host,
+            port=self.port,
+            address=self.address,
+            token_provider=token_provider,
+            use_tls=self._use_tls,
+            init_future=self._init_future,
+            send_queue=self._send_queue,
+            close_event=self._close_event,
+        )
+
+        def _run():
+            import traceback as _tb
+            try:
+                Container(self._handler).run()
+            except Exception as exc:
+                _cbs_logger.debug(f"[cbs] reactor crashed: {exc!r}\n{_tb.format_exc()}")
+                if not self._init_future.done():
+                    self._init_future.set_exception(exc)
+            finally:
+                self._close_event.set()
+
+        self._reactor_thread = threading.Thread(
+            target=_run, name="amqp-cbs-reactor", daemon=True
+        )
+        self._reactor_thread.start()
+
+        try:
+            self._init_future.result(timeout=60)
+        except Exception:
+            try:
+                self._handler.request_close()
+            except Exception:
+                pass
+            self._close_event.wait(timeout=10)
+            raise
+
+    def _send_via_reactor(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        fut: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._send_queue.put((amqp_msg, fut))
+        fut.result(timeout=timeout)
+    
+    def _build_connection_url(self) -> str:
+        if self.username and self.password:
+            user = quote_plus(self.username)
+            pwd = quote_plus(self.password)
+            return f"amqp://{user}:{pwd}@{self.host}:{self.port}"
+        return f"amqp://{self.host}:{self.port}"
+
+    def _serialize_payload(self, data: typing.Any, content_type: str) -> bytes:
+        if data is None:
+            return b''
+        if hasattr(data, 'to_byte_array'):
+            payload = data.to_byte_array(content_type)
+        elif hasattr(data, 'to_dict'):
+            payload = json.dumps(data.to_dict())
+        elif isinstance(data, (bytes, bytearray)):
+            payload = bytes(data)
+        else:
+            payload = json.dumps(data)
+        # to_byte_array may return str for text content types (e.g. JSON);
+        # we always emit bytes so the AMQP body is a binary section rather
+        # than an AMQP string section containing escaped JSON.
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    @staticmethod
+    def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
+        """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
+        CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
+        (``cloudEvents:foo``). ``content-type`` is carried separately on the
+        AMQP properties section and is therefore dropped here.
+        """
+        out: typing.Dict[str, typing.Any] = {}
+        for k, v in (headers or {}).items():
+            if v is None:
+                continue
+            lk = str(k)
+            low = lk.lower()
+            if low.startswith('ce-'):
+                out['cloudEvents:' + lk[3:]] = v
+            elif low == 'content-type':
+                continue
+            else:
+                out[lk] = v
+        return out
+
+    
+    
+    def send_amqp(self,
+        data: VehiclePosition,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedRealTime.Vehicle.VehiclePosition.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (VehiclePosition): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[VehiclePosition],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedRealTime.Vehicle.VehiclePosition.amqp` messages
+        
+        Args:
+            data_array (typing.List[VehiclePosition]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: TripUpdate,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedRealTime.Trip.TripUpdate.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (TripUpdate): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedRealTime.Trip.TripUpdate",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[TripUpdate],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedRealTime.Trip.TripUpdate.amqp` messages
+        
+        Args:
+            data_array (typing.List[TripUpdate]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Alert,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedRealTime.Alert.Alert.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Alert): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedRealTime.Alert.Alert",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Alert],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedRealTime.Alert.Alert.amqp` messages
+        
+        Args:
+            data_array (typing.List[Alert]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def close(self) -> None:
+        """
+        Close the producer and clean up resources
+        """
+        if getattr(self, "_handler", None) is not None:
+            try:
+                self._handler.request_close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            self._close_event.wait(timeout=10)
+            self._handler = None
+            return
+        if hasattr(self, '_sender') and self._sender:
+            try:
+                self._sender.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._sender = None
+        if hasattr(self, '_connection') and self._connection:
+            try:
+                self._connection.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._connection = None
+
+
+
+class GeneralTransitFeedStaticAmqpProducer:
+    """
+    Producer class to send messages in the `GeneralTransitFeedStatic.amqp` message group via AMQP 1.0 protocol.
+    """
+    
+    def __init__(self, 
+                 host: str,
+                 address: str,
+                 port: int = 5672,
+                 username: typing.Optional[str] = None,
+                 password: typing.Optional[str] = None,
+                 content_mode: typing.Literal['structured', 'binary'] = 'structured',
+                 format_type: str = 'application/json',
+                 credential: typing.Optional["TokenCredential"] = None,
+                 entra_audience: str = "https://servicebus.azure.net/.default",
+                 sas_key_name: typing.Optional[str] = None,
+                 sas_key: typing.Optional[str] = None,
+                 sas_token_ttl_seconds: int = 3600,
+                 use_tls: bool = True,
+                 ):
+        """
+        Initialize the AMQP producer
+        
+        Args:
+            host (str): The AMQP broker hostname
+            address (str): The AMQP address (queue or topic)
+            port (int): The AMQP broker port (default: 5672)
+            username (typing.Optional[str]): Optional username for SASL PLAIN authentication
+            password (typing.Optional[str]): Optional password for SASL PLAIN authentication
+            content_mode (typing.Literal['structured', 'binary']): CloudEvents content mode (default: 'structured')
+            format_type (str): Content type format for structured mode (default: 'application/json')
+            credential (typing.Optional[TokenCredential]): An azure-identity TokenCredential
+                (e.g. DefaultAzureCredential). When provided, SASL ANONYMOUS is used and an
+                Entra ID JWT is presented via AMQP CBS put-token (``type=jwt``). Mutually
+                exclusive with username/password and with sas_key_name/sas_key.
+            entra_audience (str): AAD scope used to acquire the JWT
+                (default: 'https://servicebus.azure.net/.default' -- targets Azure servicebus).
+                Override only when targeting a non-standard cloud or cross-targeting (e.g.
+                an Event Hubs client talking to a Service Bus entity, or vice-versa).
+            sas_key_name (typing.Optional[str]): SAS policy/key name (e.g.
+                ``RootManageSharedAccessKey``). When set with ``sas_key``, SASL ANONYMOUS
+                is used and a SAS token is presented via AMQP CBS put-token
+                (``type=servicebus.windows.net:sastoken``). Required for the Service Bus
+                emulator and for namespaces configured for SAS authentication.
+                Mutually exclusive with credential and with username/password.
+            sas_key (typing.Optional[str]): SAS key value (base64) used to sign the token.
+            sas_token_ttl_seconds (int): Lifetime of each minted SAS token (default: 3600).
+            use_tls (bool): If True (default), connect via amqps:// on port 5671 unless port
+                is explicitly set. Required for Azure servicebus; set to False
+                for the local Service Bus emulator (plain AMQP on 5672).
+        """
+        self.host = host
+        self.port = port
+        self.address = address
+        self.username = username
+        self.password = password
+        self.content_mode = content_mode
+        self.format_type = format_type
+        self._credential = credential
+        self._entra_audience = entra_audience
+        self._sas_key_name = sas_key_name
+        self._sas_key = sas_key
+        self._sas_token_ttl = int(sas_token_ttl_seconds)
+        self._use_tls = use_tls
+
+        _sas_configured = bool(sas_key_name or sas_key)
+        if _sas_configured and not (sas_key_name and sas_key):
+            raise ValueError(
+                "sas_key_name and sas_key must both be provided for SAS CBS auth."
+            )
+        if self._credential is not None and _sas_configured:
+            raise ValueError(
+                "credential is mutually exclusive with sas_key_name/sas_key. "
+                "Choose Entra ID OR SAS for CBS authentication."
+            )
+        if (self._credential is not None or _sas_configured) and (self.username or self.password):
+            raise ValueError(
+                "CBS auth (credential or SAS) is mutually exclusive with "
+                "username/password SASL PLAIN."
+            )
+        self._cbs_enabled = self._credential is not None or _sas_configured
+        if self._credential is not None and port == 5672:
+            # Default to AMQPS for Entra path; caller can override explicitly.
+            self.port = 5671
+        if self._cbs_enabled:
+            self._init_reactor()
+        else:
+            connection_url = self._build_connection_url()
+            self._connection = BlockingConnection(connection_url, timeout=30)
+            self._sender = self._connection.create_sender(self.address)
+
+    def _init_reactor(self):
+        """Start the proton reactor thread and block until CBS handshake completes.
+
+        On failure, the exception is propagated out of ``__init__`` so callers
+        get a clean error rather than discovering the problem on first send.
+        """
+        if self._credential is not None:
+            token_provider: _CbsTokenProvider = _JwtTokenProvider(
+                self._credential, self._entra_audience
+            )
+        else:
+            resource_uri = f"sb://{self.host}/{self.address}"
+            token_provider = _SasTokenProvider(
+                self._sas_key_name, self._sas_key, resource_uri,
+                ttl_seconds=self._sas_token_ttl,
+            )
+
+        self._send_queue: "queue.Queue" = queue.Queue()
+        self._init_future: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._close_event = threading.Event()
+        self._handler = _CbsAzureHandler(
+            host=self.host,
+            port=self.port,
+            address=self.address,
+            token_provider=token_provider,
+            use_tls=self._use_tls,
+            init_future=self._init_future,
+            send_queue=self._send_queue,
+            close_event=self._close_event,
+        )
+
+        def _run():
+            import traceback as _tb
+            try:
+                Container(self._handler).run()
+            except Exception as exc:
+                _cbs_logger.debug(f"[cbs] reactor crashed: {exc!r}\n{_tb.format_exc()}")
+                if not self._init_future.done():
+                    self._init_future.set_exception(exc)
+            finally:
+                self._close_event.set()
+
+        self._reactor_thread = threading.Thread(
+            target=_run, name="amqp-cbs-reactor", daemon=True
+        )
+        self._reactor_thread.start()
+
+        try:
+            self._init_future.result(timeout=60)
+        except Exception:
+            try:
+                self._handler.request_close()
+            except Exception:
+                pass
+            self._close_event.wait(timeout=10)
+            raise
+
+    def _send_via_reactor(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        fut: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._send_queue.put((amqp_msg, fut))
+        fut.result(timeout=timeout)
+    
+    def _build_connection_url(self) -> str:
+        if self.username and self.password:
+            user = quote_plus(self.username)
+            pwd = quote_plus(self.password)
+            return f"amqp://{user}:{pwd}@{self.host}:{self.port}"
+        return f"amqp://{self.host}:{self.port}"
+
+    def _serialize_payload(self, data: typing.Any, content_type: str) -> bytes:
+        if data is None:
+            return b''
+        if hasattr(data, 'to_byte_array'):
+            payload = data.to_byte_array(content_type)
+        elif hasattr(data, 'to_dict'):
+            payload = json.dumps(data.to_dict())
+        elif isinstance(data, (bytes, bytearray)):
+            payload = bytes(data)
+        else:
+            payload = json.dumps(data)
+        # to_byte_array may return str for text content types (e.g. JSON);
+        # we always emit bytes so the AMQP body is a binary section rather
+        # than an AMQP string section containing escaped JSON.
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    @staticmethod
+    def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
+        """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
+        CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
+        (``cloudEvents:foo``). ``content-type`` is carried separately on the
+        AMQP properties section and is therefore dropped here.
+        """
+        out: typing.Dict[str, typing.Any] = {}
+        for k, v in (headers or {}).items():
+            if v is None:
+                continue
+            lk = str(k)
+            low = lk.lower()
+            if low.startswith('ce-'):
+                out['cloudEvents:' + lk[3:]] = v
+            elif low == 'content-type':
+                continue
+            else:
+                out[lk] = v
+        return out
+
+    
+    
+    def send_amqp(self,
+        data: Agency,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Agency.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Agency): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Agency",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Agency],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Agency.amqp` messages
+        
+        Args:
+            data_array (typing.List[Agency]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Areas,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Areas.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Areas): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Areas",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Areas],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Areas.amqp` messages
+        
+        Args:
+            data_array (typing.List[Areas]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Attributions,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Attributions.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Attributions): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Attributions",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Attributions],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Attributions.amqp` messages
+        
+        Args:
+            data_array (typing.List[Attributions]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: BookingRules,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeed.BookingRules.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (BookingRules): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeed.BookingRules",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[BookingRules],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeed.BookingRules.amqp` messages
+        
+        Args:
+            data_array (typing.List[BookingRules]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: FareAttributes,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.FareAttributes.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (FareAttributes): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.FareAttributes",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[FareAttributes],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.FareAttributes.amqp` messages
+        
+        Args:
+            data_array (typing.List[FareAttributes]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: FareLegRules,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.FareLegRules.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (FareLegRules): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.FareLegRules",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[FareLegRules],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.FareLegRules.amqp` messages
+        
+        Args:
+            data_array (typing.List[FareLegRules]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: FareMedia,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.FareMedia.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (FareMedia): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.FareMedia",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[FareMedia],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.FareMedia.amqp` messages
+        
+        Args:
+            data_array (typing.List[FareMedia]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: FareProducts,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.FareProducts.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (FareProducts): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.FareProducts",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[FareProducts],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.FareProducts.amqp` messages
+        
+        Args:
+            data_array (typing.List[FareProducts]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: FareRules,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.FareRules.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (FareRules): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.FareRules",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[FareRules],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.FareRules.amqp` messages
+        
+        Args:
+            data_array (typing.List[FareRules]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: FareTransferRules,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.FareTransferRules.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (FareTransferRules): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.FareTransferRules",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[FareTransferRules],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.FareTransferRules.amqp` messages
+        
+        Args:
+            data_array (typing.List[FareTransferRules]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: FeedInfo,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.FeedInfo.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (FeedInfo): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.FeedInfo",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[FeedInfo],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.FeedInfo.amqp` messages
+        
+        Args:
+            data_array (typing.List[FeedInfo]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Frequencies,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Frequencies.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Frequencies): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Frequencies",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Frequencies],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Frequencies.amqp` messages
+        
+        Args:
+            data_array (typing.List[Frequencies]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Levels,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Levels.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Levels): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Levels",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Levels],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Levels.amqp` messages
+        
+        Args:
+            data_array (typing.List[Levels]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: LocationGeoJson,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.LocationGeoJson.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (LocationGeoJson): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.LocationGeoJson",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[LocationGeoJson],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.LocationGeoJson.amqp` messages
+        
+        Args:
+            data_array (typing.List[LocationGeoJson]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: LocationGroups,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.LocationGroups.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (LocationGroups): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.LocationGroups",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[LocationGroups],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.LocationGroups.amqp` messages
+        
+        Args:
+            data_array (typing.List[LocationGroups]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: LocationGroupStores,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.LocationGroupStores.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (LocationGroupStores): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.LocationGroupStores",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[LocationGroupStores],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.LocationGroupStores.amqp` messages
+        
+        Args:
+            data_array (typing.List[LocationGroupStores]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Networks,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Networks.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Networks): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Networks",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Networks],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Networks.amqp` messages
+        
+        Args:
+            data_array (typing.List[Networks]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Pathways,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Pathways.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Pathways): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Pathways",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Pathways],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Pathways.amqp` messages
+        
+        Args:
+            data_array (typing.List[Pathways]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: RouteNetworks,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.RouteNetworks.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (RouteNetworks): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.RouteNetworks",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[RouteNetworks],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.RouteNetworks.amqp` messages
+        
+        Args:
+            data_array (typing.List[RouteNetworks]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Routes,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Routes.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Routes): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Routes",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Routes],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Routes.amqp` messages
+        
+        Args:
+            data_array (typing.List[Routes]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Shapes,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Shapes.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Shapes): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Shapes",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Shapes],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Shapes.amqp` messages
+        
+        Args:
+            data_array (typing.List[Shapes]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: StopAreas,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.StopAreas.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (StopAreas): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.StopAreas",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[StopAreas],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.StopAreas.amqp` messages
+        
+        Args:
+            data_array (typing.List[StopAreas]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Stops,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Stops.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Stops): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Stops",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Stops],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Stops.amqp` messages
+        
+        Args:
+            data_array (typing.List[Stops]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: StopTimes,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.StopTimes.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (StopTimes): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.StopTimes",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[StopTimes],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.StopTimes.amqp` messages
+        
+        Args:
+            data_array (typing.List[StopTimes]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Timeframes,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Timeframes.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Timeframes): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Timeframes",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Timeframes],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Timeframes.amqp` messages
+        
+        Args:
+            data_array (typing.List[Timeframes]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Transfers,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Transfers.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Transfers): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Transfers",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Transfers],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Transfers.amqp` messages
+        
+        Args:
+            data_array (typing.List[Transfers]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Translations,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Translations.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Translations): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Translations",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Translations],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Translations.amqp` messages
+        
+        Args:
+            data_array (typing.List[Translations]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: Trips,
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `GeneralTransitFeedStatic.Trips.amqp` message
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            data (Trips): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "specversion":
+            "1.0",
+            "type":
+            "GeneralTransitFeedStatic.Trips",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{agencyid}".format(agencyid=_agencyid),
+        }
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{agencyid}".format(agencyid=_agencyid)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[Trips],
+        _feedurl: str,
+        _agencyid: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `GeneralTransitFeedStatic.Trips.amqp` messages
+        
+        Args:
+            data_array (typing.List[Trips]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _agencyid (str): Value for placeholder agencyid in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _agencyid=_agencyid,
+                content_type=content_type)
+    
+    
+    def close(self) -> None:
+        """
+        Close the producer and clean up resources
+        """
+        if getattr(self, "_handler", None) is not None:
+            try:
+                self._handler.request_close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            self._close_event.wait(timeout=10)
+            self._handler = None
+            return
+        if hasattr(self, '_sender') and self._sender:
+            try:
+                self._sender.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._sender = None
+        if hasattr(self, '_connection') and self._connection:
+            try:
+                self._connection.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._connection = None
+

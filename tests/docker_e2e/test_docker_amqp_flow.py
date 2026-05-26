@@ -640,3 +640,75 @@ class TestJmaBosaiVolcanoAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {"JP.JMA.Volcano.Volcano", "JP.JMA.Volcano.VolcanicWarning", "JP.JMA.Volcano.VolcanicEruption"}
     expected_count = 3
 
+
+
+class TestFrenchRoadTrafficAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "french-road-traffic"
+    image = "french-road-traffic-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'fr.gouv.transport.bison_fute.RoadEvent', 'fr.gouv.transport.bison_fute.TrafficFlowMeasurement'}
+    expected_count = 2
+
+class TestGTFSAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "gtfs"
+    image = "gtfs-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'GeneralTransitFeedStatic.Transfers', 'GeneralTransitFeedStatic.FeedInfo', 'GeneralTransitFeedStatic.FareAttributes', 'GeneralTransitFeedStatic.StopAreas', 'GeneralTransitFeedStatic.LocationGroups', 'GeneralTransitFeedStatic.Pathways', 'GeneralTransitFeedStatic.Trips', 'GeneralTransitFeedRealTime.Trip.TripUpdate', 'GeneralTransitFeedStatic.Areas', 'GeneralTransitFeedStatic.LocationGeoJson', 'GeneralTransitFeedStatic.Networks', 'GeneralTransitFeedStatic.Routes', 'GeneralTransitFeedStatic.FareProducts', 'GeneralTransitFeedStatic.StopTimes', 'GeneralTransitFeedStatic.FareTransferRules', 'GeneralTransitFeedStatic.Frequencies', 'GeneralTransitFeedStatic.RouteNetworks', 'GeneralTransitFeedRealTime.Alert.Alert', 'GeneralTransitFeed.BookingRules', 'GeneralTransitFeedStatic.Levels', 'GeneralTransitFeedStatic.Stops', 'GeneralTransitFeedStatic.Timeframes', 'GeneralTransitFeedStatic.Shapes', 'GeneralTransitFeedStatic.LocationGroupStores', 'GeneralTransitFeedStatic.Attributions', 'GeneralTransitFeedStatic.FareRules', 'GeneralTransitFeedStatic.FareMedia', 'GeneralTransitFeedStatic.Agency', 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition', 'GeneralTransitFeedStatic.Translations', 'GeneralTransitFeedStatic.FareLegRules'}
+    expected_count = 31
+
+class TestMadridTrafficAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "madrid-traffic"
+    image = "madrid-traffic-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'es.madrid.informo.TrafficReading', 'es.madrid.informo.MeasurementPoint'}
+    expected_count = 2
+
+class TestNDLNetherlandsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "ndl-netherlands"
+    image = "ndl-netherlands-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'NL.NDW.Traffic.TrafficSpeed', 'NL.NDW.Traffic.TrafficSituation', 'NL.NDW.Traffic.TravelTime'}
+    expected_count = 3
+
+class TestNDWRoadTrafficAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "ndw-road-traffic"
+    image = "ndw-road-traffic-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'NL.NDW.DRIP.DripDisplayState', 'NL.NDW.AVG.TrafficObservation', 'NL.NDW.Situations.TemporarySpeedLimit', 'NL.NDW.MSI.MsiDisplayState', 'NL.NDW.Situations.BridgeOpening', 'NL.NDW.Situations.TemporaryClosure', 'NL.NDW.DRIP.DripSign', 'NL.NDW.Situations.SafetyRelatedMessage', 'NL.NDW.Situations.Roadwork', 'NL.NDW.AVG.RouteMeasurementSite', 'NL.NDW.MSI.MsiSign', 'NL.NDW.AVG.TravelTimeObservation', 'NL.NDW.AVG.PointMeasurementSite'}
+    expected_count = 13
+
+class TestNextbusAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "nextbus"
+    image = "nextbus-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'nextbus.Message', 'nextbus.VehiclePosition', 'nextbus.RouteConfig', 'nextbus.Schedule'}
+    expected_count = 4
+
+class TestSeattleStreetClosuresAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "seattle-street-closures"
+    image = "seattle-street-closures-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'US.WA.Seattle.StreetClosures.StreetClosure'}
+    expected_count = 1
+
+class TestTFLRoadTrafficAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "tfl-road-traffic"
+    image = "tfl-road-traffic-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'uk.gov.tfl.road.RoadStatus', 'uk.gov.tfl.road.RoadCorridor', 'uk.gov.tfl.road.RoadDisruption'}
+    expected_count = 8
+
+class TestTokyoDocomoBikeshareAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "tokyo-docomo-bikeshare"
+    image = "tokyo-docomo-bikeshare-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'JP.ODPT.DocomoBikeshare.BikeshareSystem', 'JP.ODPT.DocomoBikeshare.BikeshareStation', 'JP.ODPT.DocomoBikeshare.BikeshareStationStatus'}
+    expected_count = 3
+
+class TestWSDOTAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "wsdot"
+    image = "wsdot-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'us.wa.wsdot.weather.WeatherStation', 'us.wa.wsdot.traffic.TrafficFlowStation', 'us.wa.wsdot.tolls.TollRate', 'us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction', 'us.wa.wsdot.ferries.VesselLocation', 'us.wa.wsdot.traveltimes.TravelTimeRoute', 'us.wa.wsdot.traffic.TrafficFlowReading', 'us.wa.wsdot.border.BorderCrossing', 'us.wa.wsdot.mountainpass.MountainPassCondition', 'us.wa.wsdot.weather.WeatherReading'}
+    expected_count = 10
+

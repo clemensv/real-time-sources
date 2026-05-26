@@ -43,6 +43,51 @@
         "#/messagegroups/JP.ODPT.DocomoBikeshare.Stations"
       ],
       "description": "Kafka producer endpoint for Tokyo Docomo Bikeshare CloudEvents on the `tokyo-docomo-bikeshare` topic keyed by `{system_id}/{station_id}`."
+    },
+    "JP.ODPT.DocomoBikeshare.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/JP.ODPT.DocomoBikeshare.System.mqtt",
+        "#/messagegroups/JP.ODPT.DocomoBikeshare.Stations.mqtt"
+      ],
+      "description": "MQTT/5.0 companion producer endpoint."
+    },
+    "JP.ODPT.DocomoBikeshare.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "content_mode": "binary",
+          "address": "tokyo-docomo-bikeshare"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/JP.ODPT.DocomoBikeshare.System.amqp",
+        "#/messagegroups/JP.ODPT.DocomoBikeshare.Stations.amqp"
+      ],
+      "description": "AMQP/1.0 companion producer endpoint."
     }
   },
   "messagegroups": {
@@ -112,6 +157,119 @@
         }
       },
       "description": "Events from Tokyo Docomo Bikeshare covering Tokyo bike-share stations. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
+    },
+    "JP.ODPT.DocomoBikeshare.System.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for tokyo-docomo-bikeshare.",
+      "messages": {
+        "JP.ODPT.DocomoBikeshare.BikeshareSystem.mqtt": {
+          "name": "BikeshareSystem",
+          "basemessageurl": "/messagegroups/JP.ODPT.DocomoBikeshare.System/messages/JP.ODPT.DocomoBikeshare.BikeshareSystem",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/jp/docomo/tokyo-docomo-bikeshare/{system_id}/{ward}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "JP.ODPT.DocomoBikeshare.Stations.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for tokyo-docomo-bikeshare.",
+      "messages": {
+        "JP.ODPT.DocomoBikeshare.BikeshareStation.mqtt": {
+          "name": "BikeshareStation",
+          "basemessageurl": "/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/jp/docomo/tokyo-docomo-bikeshare/{system_id}/{ward}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "JP.ODPT.DocomoBikeshare.BikeshareStationStatus.mqtt": {
+          "name": "BikeshareStationStatus",
+          "basemessageurl": "/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStationStatus",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/jp/docomo/tokyo-docomo-bikeshare/{system_id}/{ward}/{station_id}/status",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "JP.ODPT.DocomoBikeshare.System.amqp": {
+      "description": "AMQP 1.0 bindings for tokyo-docomo-bikeshare.",
+      "messages": {
+        "JP.ODPT.DocomoBikeshare.BikeshareSystem.amqp": {
+          "name": "BikeshareSystem",
+          "basemessageurl": "/messagegroups/JP.ODPT.DocomoBikeshare.System/messages/JP.ODPT.DocomoBikeshare.BikeshareSystem",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{system_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{system_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "JP.ODPT.DocomoBikeshare.Stations.amqp": {
+      "description": "AMQP 1.0 bindings for tokyo-docomo-bikeshare.",
+      "messages": {
+        "JP.ODPT.DocomoBikeshare.BikeshareStation.amqp": {
+          "name": "BikeshareStation",
+          "basemessageurl": "/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{system_id}/{station_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{system_id}/{station_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "JP.ODPT.DocomoBikeshare.BikeshareStationStatus.amqp": {
+          "name": "BikeshareStationStatus",
+          "basemessageurl": "/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStationStatus",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{system_id}/{station_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{system_id}/{station_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

@@ -17,7 +17,7 @@ import json
 @dataclass
 class BridgeOpening:
     """
-    Bridge opening event from the NDW DATEX II planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes a temporary road closure on the Dutch road network.
+    Bridge opening event from the Dutch NDW DATEX II planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes temporary road closure.
     
     Attributes:
         situation_record_id (str)
@@ -165,12 +165,12 @@ class BridgeOpening:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='efnmmrpplzxvtllyoltz',
-            version_time='udkhrsvprbtuhafwdnij',
-            validity_status='cushsvnwdskhjwyriscu',
-            start_time='xmdwjzkqbgvnyntbcjfy',
-            end_time='irlmqpysqmowmbrukpes',
-            bridge_name='lqwmdclqmsrvvxexvqgd',
-            road_name='tocgepcqftsjwtzvhemi',
-            description='fcwgvihacmfwqifljvyd'
+            situation_record_id='acyeikgxtdevoxzwcrlm',
+            version_time='qhxfrqozbnxklguwfnxl',
+            validity_status='psszizxmkuxhapvidlaq',
+            start_time='uxtxdlzmngkzemhofcjp',
+            end_time='qgizsbzzorymdaawzjpo',
+            bridge_name='hgtebywpsdtwbdozzrrn',
+            road_name='dghiocqtmjtdxyloelzi',
+            description='uwxevylfyreairdoxrhf'
         )

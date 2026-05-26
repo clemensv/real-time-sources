@@ -82,3 +82,31 @@ See [EVENTS.md](EVENTS.md) for full CloudEvents schema details.
 - **License**: ODPT open data license
 - **Autodiscovery**: `https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json`
 - **Protocol**: GBFS 2.3, no authentication required
+
+
+## MQTT 5.0 / Unified Namespace
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-mqtt:latest
+docker run --rm -e MQTT_BROKER_URL=mqtt://broker:1883 ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-mqtt:latest
+```
+
+| Variable | Required | Default | Description |
+|---|---:|---|---|
+| `MQTT_BROKER_URL` | No | `mqtt://localhost:1883` | MQTT broker URL. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | No | — | Optional username/password auth. |
+| `MQTT_TLS` | No | `false` | Enable TLS for broker connections. |
+
+## AMQP 1.0
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-amqp:latest
+docker run --rm -e AMQP_HOST=broker -e AMQP_ADDRESS=tokyo-docomo-bikeshare ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-amqp:latest
+```
+
+| Variable | Required | Default | Description |
+|---|---:|---|---|
+| `AMQP_HOST` | No | `localhost` | AMQP 1.0 broker host. |
+| `AMQP_PORT` | No | `5672` | AMQP 1.0 broker port. |
+| `AMQP_ADDRESS` | No | `tokyo-docomo-bikeshare` | Queue/topic/address to send to. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | No | — | Optional SASL PLAIN credentials. |

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tokyo-docomo-bikeshare-mqtt"
+version = "0.1.0"
+description = "MQTT companion feeder for Tokyo Docomo Bikeshare"
+requires-python = ">=3.10"
+dependencies = ["paho-mqtt>=2.1.0"]
+
+[project.scripts]
+tokyo-docomo-bikeshare-mqtt = "tokyo_docomo_bikeshare_mqtt.app:main"
+
+[tool.setuptools.packages.find]
+include = ["tokyo_docomo_bikeshare_mqtt*"]

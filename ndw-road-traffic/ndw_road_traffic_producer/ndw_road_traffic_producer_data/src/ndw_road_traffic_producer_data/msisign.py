@@ -17,7 +17,7 @@ import json
 @dataclass
 class MsiSign:
     """
-    Reference data for a Matrix Signal Installation (MSI) sign from the NDW DATEX II Matrixsignaalinformatie feed. Describes the physical location, lane assignment, and type of a matrix signal sign above a motorway lane.
+    Reference record for a Matrix Signal Installation (MSI) sign from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Describes the physical location, lane assignment, and type of a matrix signal sign above a motorway lane.
     
     Attributes:
         sign_id (str)
@@ -163,11 +163,11 @@ class MsiSign:
             An instance of the dataclass.
         """
         return cls(
-            sign_id='ngbperimnftnqenmyfqd',
-            sign_type='svacylrwqliilnoizmzh',
-            latitude=float(70.88323840068108),
-            longitude=float(84.53519141390655),
-            road_name='lkmjgdusgnywdxjqxxzz',
-            lane='myivvaisrmmqelwpynza',
-            description='aovuqkcinaubgmjckfpn'
+            sign_id='zywaixuzimrealzyxzyo',
+            sign_type='nfztpjsfzpluezaqppen',
+            latitude=float(74.6967715924889),
+            longitude=float(92.74530501539456),
+            road_name='dwhduvqxcxvyepefeayc',
+            lane='jfeztrezegbjotiiudeg',
+            description='cskmjamwjlnonwtoujcn'
         )

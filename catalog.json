@@ -724,7 +724,9 @@
     "key": false,
     "desc": "France — national road network, DATEX II",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "gtfs",
@@ -732,7 +734,9 @@
     "cat": "Transport",
     "key": false,
     "desc": "Global — 1,000+ transit agencies, vehicles, trips, alerts",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "madrid-traffic",
@@ -741,7 +745,9 @@
     "key": false,
     "desc": "Madrid, Spain — ~4,000 sensors, Informo",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "ndl-netherlands",
@@ -750,7 +756,9 @@
     "key": false,
     "desc": "Netherlands — national road traffic, DATEX II",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "ndw-road-traffic",
@@ -758,14 +766,18 @@
     "cat": "Transport",
     "key": false,
     "desc": "Netherlands — national road traffic, DATEX II XML",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "nextbus",
     "name": "Nextbus",
     "cat": "Transport",
     "key": true,
-    "desc": "North America — public transit arrivals"
+    "desc": "North America — public transit arrivals",
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "paris-bicycle-counters",
@@ -785,7 +797,9 @@
     "key": false,
     "desc": "Seattle, WA — permit-driven street closure windows",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "tfl-road-traffic",
@@ -801,7 +815,9 @@
     "name": "Tokyo Docomo Bikeshare",
     "cat": "Transport",
     "key": false,
-    "desc": "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT"
+    "desc": "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT",
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "cbp-border-wait",
@@ -821,7 +837,9 @@
     "key": true,
     "desc": "Washington State — ~1,000 traffic flow sensors (requires free key)",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "entur-norway",

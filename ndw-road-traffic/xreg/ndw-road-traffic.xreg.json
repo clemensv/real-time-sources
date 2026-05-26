@@ -87,6 +87,55 @@
         "#/messagegroups/NL.NDW.Situations"
       ],
       "description": "Kafka producer endpoint for NDW Road Traffic CloudEvents on the `ndw-road-traffic` topic keyed by `situations/{situation_record_id}`."
+    },
+    "NL.NDW.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.NDW.AVG.mqtt",
+        "#/messagegroups/NL.NDW.DRIP.mqtt",
+        "#/messagegroups/NL.NDW.MSI.mqtt",
+        "#/messagegroups/NL.NDW.Situations.mqtt"
+      ],
+      "description": "MQTT/5.0 companion producer endpoint."
+    },
+    "NL.NDW.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "content_mode": "binary",
+          "address": "ndw-road-traffic"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NL.NDW.AVG.amqp",
+        "#/messagegroups/NL.NDW.DRIP.amqp",
+        "#/messagegroups/NL.NDW.MSI.amqp",
+        "#/messagegroups/NL.NDW.Situations.amqp"
+      ],
+      "description": "AMQP/1.0 companion producer endpoint."
     }
   },
   "messagegroups": {
@@ -356,6 +405,449 @@
         }
       },
       "description": "Events from NDW Road Traffic covering Dutch road network measurement sites and situations. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
+    },
+    "NL.NDW.AVG.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for ndw-road-traffic.",
+      "messages": {
+        "NL.NDW.AVG.PointMeasurementSite.mqtt": {
+          "name": "PointMeasurementSite",
+          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.PointMeasurementSite",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndw/ndw-road-traffic/{road}/measurement-sites/{measurement_site_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "NL.NDW.AVG.RouteMeasurementSite.mqtt": {
+          "name": "RouteMeasurementSite",
+          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.RouteMeasurementSite",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndw/ndw-road-traffic/{road}/measurement-sites/{measurement_site_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "NL.NDW.AVG.TrafficObservation.mqtt": {
+          "name": "TrafficObservation",
+          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TrafficObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndw/ndw-road-traffic/{road}/measurement-sites/{measurement_site_id}/traffic-observation",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NL.NDW.AVG.TravelTimeObservation.mqtt": {
+          "name": "TravelTimeObservation",
+          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TravelTimeObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndw/ndw-road-traffic/{road}/measurement-sites/{measurement_site_id}/travel-time",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "NL.NDW.DRIP.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for ndw-road-traffic.",
+      "messages": {
+        "NL.NDW.DRIP.DripSign.mqtt": {
+          "name": "DripSign",
+          "basemessageurl": "/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripSign",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndw/ndw-road-traffic/drips/{road}/{vms_controller_id}/{vms_index}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "NL.NDW.DRIP.DripDisplayState.mqtt": {
+          "name": "DripDisplayState",
+          "basemessageurl": "/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripDisplayState",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndw/ndw-road-traffic/drips/{road}/{vms_controller_id}/{vms_index}/display-state",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "NL.NDW.MSI.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for ndw-road-traffic.",
+      "messages": {
+        "NL.NDW.MSI.MsiSign.mqtt": {
+          "name": "MsiSign",
+          "basemessageurl": "/messagegroups/NL.NDW.MSI/messages/NL.NDW.MSI.MsiSign",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndw/ndw-road-traffic/msi-signs/{road}/{sign_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "NL.NDW.MSI.MsiDisplayState.mqtt": {
+          "name": "MsiDisplayState",
+          "basemessageurl": "/messagegroups/NL.NDW.MSI/messages/NL.NDW.MSI.MsiDisplayState",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndw/ndw-road-traffic/msi-signs/{road}/{sign_id}/display-state",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "NL.NDW.Situations.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for ndw-road-traffic.",
+      "messages": {
+        "NL.NDW.Situations.Roadwork.mqtt": {
+          "name": "Roadwork",
+          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndw/ndw-road-traffic/situations/{road}/{situation_record_id}/roadwork",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NL.NDW.Situations.BridgeOpening.mqtt": {
+          "name": "BridgeOpening",
+          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndw/ndw-road-traffic/situations/{road}/{situation_record_id}/bridge-opening",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NL.NDW.Situations.TemporaryClosure.mqtt": {
+          "name": "TemporaryClosure",
+          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporaryClosure",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndw/ndw-road-traffic/situations/{road}/{situation_record_id}/temporary-closure",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NL.NDW.Situations.TemporarySpeedLimit.mqtt": {
+          "name": "TemporarySpeedLimit",
+          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporarySpeedLimit",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndw/ndw-road-traffic/situations/{road}/{situation_record_id}/temporary-speed-limit",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NL.NDW.Situations.SafetyRelatedMessage.mqtt": {
+          "name": "SafetyRelatedMessage",
+          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/nl/ndw/ndw-road-traffic/situations/{road}/{situation_record_id}/safety-related-message",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "NL.NDW.AVG.amqp": {
+      "description": "AMQP 1.0 bindings for ndw-road-traffic.",
+      "messages": {
+        "NL.NDW.AVG.PointMeasurementSite.amqp": {
+          "name": "PointMeasurementSite",
+          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.PointMeasurementSite",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "measurement-sites/{measurement_site_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "measurement-sites/{measurement_site_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "NL.NDW.AVG.RouteMeasurementSite.amqp": {
+          "name": "RouteMeasurementSite",
+          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.RouteMeasurementSite",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "measurement-sites/{measurement_site_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "measurement-sites/{measurement_site_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "NL.NDW.AVG.TrafficObservation.amqp": {
+          "name": "TrafficObservation",
+          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TrafficObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "measurement-sites/{measurement_site_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "measurement-sites/{measurement_site_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "NL.NDW.AVG.TravelTimeObservation.amqp": {
+          "name": "TravelTimeObservation",
+          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TravelTimeObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "measurement-sites/{measurement_site_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "measurement-sites/{measurement_site_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "NL.NDW.DRIP.amqp": {
+      "description": "AMQP 1.0 bindings for ndw-road-traffic.",
+      "messages": {
+        "NL.NDW.DRIP.DripSign.amqp": {
+          "name": "DripSign",
+          "basemessageurl": "/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripSign",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "drips/{vms_controller_id}/{vms_index}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "drips/{vms_controller_id}/{vms_index}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "NL.NDW.DRIP.DripDisplayState.amqp": {
+          "name": "DripDisplayState",
+          "basemessageurl": "/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripDisplayState",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "drips/{vms_controller_id}/{vms_index}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "drips/{vms_controller_id}/{vms_index}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "NL.NDW.MSI.amqp": {
+      "description": "AMQP 1.0 bindings for ndw-road-traffic.",
+      "messages": {
+        "NL.NDW.MSI.MsiSign.amqp": {
+          "name": "MsiSign",
+          "basemessageurl": "/messagegroups/NL.NDW.MSI/messages/NL.NDW.MSI.MsiSign",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "msi-signs/{sign_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "msi-signs/{sign_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "NL.NDW.MSI.MsiDisplayState.amqp": {
+          "name": "MsiDisplayState",
+          "basemessageurl": "/messagegroups/NL.NDW.MSI/messages/NL.NDW.MSI.MsiDisplayState",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "msi-signs/{sign_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "msi-signs/{sign_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "NL.NDW.Situations.amqp": {
+      "description": "AMQP 1.0 bindings for ndw-road-traffic.",
+      "messages": {
+        "NL.NDW.Situations.Roadwork.amqp": {
+          "name": "Roadwork",
+          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "situations/{situation_record_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "situations/{situation_record_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "NL.NDW.Situations.BridgeOpening.amqp": {
+          "name": "BridgeOpening",
+          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "situations/{situation_record_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "situations/{situation_record_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "NL.NDW.Situations.TemporaryClosure.amqp": {
+          "name": "TemporaryClosure",
+          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporaryClosure",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "situations/{situation_record_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "situations/{situation_record_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "NL.NDW.Situations.TemporarySpeedLimit.amqp": {
+          "name": "TemporarySpeedLimit",
+          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporarySpeedLimit",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "situations/{situation_record_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "situations/{situation_record_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "NL.NDW.Situations.SafetyRelatedMessage.amqp": {
+          "name": "SafetyRelatedMessage",
+          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "situations/{situation_record_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "situations/{situation_record_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

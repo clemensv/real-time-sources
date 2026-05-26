@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class TrafficReading:
     """
-    Real-time traffic reading from a measurement point in Madrid's Informo road traffic monitoring system. Updated approximately every 5 minutes. Each reading provides the current traffic intensity, road occupancy, load, and service level for a specific sensor on Madrid's road network, including the M-30 ring motorway and urban streets.
+    A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value.
     
     Attributes:
         sensor_id (str)
@@ -165,11 +165,11 @@ class TrafficReading:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id='dabsdcvessyauypmntxp',
-            intensity=int(13),
-            occupancy=int(33),
-            load=int(39),
-            service_level=int(9),
-            error_flag='evphxwabqbwstnsyilir',
+            sensor_id='unvwjtxljsvlytzzfyki',
+            intensity=int(85),
+            occupancy=int(66),
+            load=int(20),
+            service_level=int(71),
+            error_flag='czodxvmnogbvbkjhmfgm',
             timestamp=datetime.datetime.now(datetime.timezone.utc)
         )

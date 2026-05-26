@@ -1,31 +1,11 @@
 $ErrorActionPreference = 'Stop'
-
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot '..\tools\require-xrcg.ps1')
 Assert-XrcgVersion
-
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$xregFile = Join-Path (Join-Path $scriptDir "xreg") "ndl_netherlands.xreg.json"
-$outputDir = Join-Path $scriptDir "ndl_netherlands_producer"
+$xregFile = Join-Path $scriptDir 'xreg\ndl_netherlands.xreg.json'
 
-Write-Host "Generating NDL Netherlands producer from $xregFile"
+xrcg generate --style kafkaproducer --language py --definitions $xregFile --endpoint 'NL.NDW.Traffic.Measurements.Kafka' --projectname ndl_netherlands_producer --output (Join-Path $scriptDir 'ndl_netherlands_producer')
 
-if (-not (Test-Path $xregFile)) {
-    throw "xRegistry file not found: $xregFile"
-}
+xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint 'NL.NDW.Traffic.Mqtt' --projectname ndl_netherlands_mqtt_producer --output (Join-Path $scriptDir 'ndl_netherlands_mqtt_producer')
 
-if (Test-Path $outputDir) {
-    Remove-Item -Path $outputDir -Recurse -Force
-}
-
-xrcg generate `
-    --style kafkaproducer `
-    --language py `
-    --projectname ndl-netherlands-producer `
-    --definitions $xregFile `
-    --output $outputDir
-
-if ($LASTEXITCODE -ne 0) {
-    throw "Producer generation failed"
-}
-
-Write-Host "Generation complete. Output in $outputDir" -ForegroundColor Green
+xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint 'NL.NDW.Traffic.Amqp' --projectname ndl_netherlands_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir 'ndl_netherlands_amqp_producer')

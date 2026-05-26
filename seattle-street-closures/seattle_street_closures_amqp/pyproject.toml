@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "seattle-street-closures-amqp"
+version = "0.1.0"
+description = "AMQP companion feeder for Seattle Street Closures"
+requires-python = ">=3.10"
+dependencies = ["python-qpid-proton>=0.40.0"]
+
+[project.scripts]
+seattle-street-closures-amqp = "seattle_street_closures_amqp.app:main"
+
+[tool.setuptools.packages.find]
+include = ["seattle_street_closures_amqp*"]

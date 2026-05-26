@@ -33,13 +33,11 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from ndl_netherlands_producer_kafka_producer.producer import NLNDWTrafficMeasurementsEventProducer
-from ndl_netherlands_producer_kafka_producer.producer import NLNDWTrafficSituationsEventProducer
 
 # imports for the data classes for each event
 
 from ndl_netherlands_producer_data.trafficspeed import TrafficSpeed
 from ndl_netherlands_producer_data.traveltime import TravelTime
-from ndl_netherlands_producer_data.trafficsituation import TrafficSituation
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -74,22 +72,6 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'NL.NDW.Traffic.TravelTime' event to Kafka topic.
     await nlndwtraffic_measurements_event_producer.send_nl_ndw_traffic_travel_time(_site_id = 'TODO: replace me', data = _travel_time)
     print(f"Sent 'NL.NDW.Traffic.TravelTime' event: {_travel_time.to_json()}")
-    if connection_string:
-        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
-        # or an Azure Event Hubs connection string
-        nlndwtraffic_situations_event_producer = NLNDWTrafficSituationsEventProducer.from_connection_string(connection_string, topic, 'binary')
-    else:
-        # use a Kafka producer configuration provided as JSON text
-        kafka_producer = KafkaProducer(json.loads(producer_config))
-        nlndwtraffic_situations_event_producer = NLNDWTrafficSituationsEventProducer(kafka_producer, topic, 'binary')
-
-    # ---- NL.NDW.Traffic.TrafficSituation ----
-    # TODO: Supply event data for the NL.NDW.Traffic.TrafficSituation event
-    _traffic_situation = TrafficSituation()
-
-    # sends the 'NL.NDW.Traffic.TrafficSituation' event to Kafka topic.
-    await nlndwtraffic_situations_event_producer.send_nl_ndw_traffic_traffic_situation(_situation_id = 'TODO: replace me', data = _traffic_situation)
-    print(f"Sent 'NL.NDW.Traffic.TrafficSituation' event: {_traffic_situation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

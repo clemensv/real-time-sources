@@ -17,7 +17,7 @@ import json
 @dataclass
 class BikeshareSystem:
     """
-    Metadata describing the Tokyo Docomo Bikeshare system, sourced from the GBFS 2.3 system_information.json feed published by the Open Data Platform for Transportation (ODPT).
+    A transport update from Docomo Bike Share open feeds. It carries station status and availability updates for Tokyo bike-share stations.
     
     Attributes:
         system_id (str)
@@ -175,17 +175,17 @@ class BikeshareSystem:
             An instance of the dataclass.
         """
         return cls(
-            system_id='ldpfhvetsjhvoqbxvjos',
-            language='ixsjtnkezocxlngfijtv',
-            name='amfkioxihhkyrnoxpzjz',
-            short_name='xhmawikednovfbghrxqt',
-            operator='dtnkzokbqoaplrewdyat',
-            url='maywkqhqustzdbobauoq',
-            purchase_url='lrqooextrasmvtsbupdz',
-            start_date='hujrhteiwzlcvwfpkfzq',
-            phone_number='veyukpaklzxoxbszdfiy',
-            email='zwaawlafqopgftupelwd',
-            feed_contact_email='zzcluwxsuyilfyvwcnck',
-            timezone='ixhyceovhwavmuwiqote',
-            license_url='ctlrtyjymbacbaglyydr'
+            system_id='itjrsdstrmyyerrlcfyp',
+            language='zrjxtkdgutfvuwrwqfom',
+            name='vwupfpoejkkhhxdrfhow',
+            short_name='qesakdfospwemhmjzteh',
+            operator='kwmuxiawpapccjashdaa',
+            url='sexftjdnlihlefpgvshh',
+            purchase_url='birtrgvldcsdcpialnwa',
+            start_date='motfayoxzrwgkpaqfhbf',
+            phone_number='ulmwfidxyfylnsxbfjks',
+            email='usjwgbpsbfvhxhznwwzq',
+            feed_contact_email='riutdtipjeqdogpqfuco',
+            timezone='xznfwnbzdhpgfubtocyj',
+            license_url='dyowedxxvvelukazdfzu'
         )

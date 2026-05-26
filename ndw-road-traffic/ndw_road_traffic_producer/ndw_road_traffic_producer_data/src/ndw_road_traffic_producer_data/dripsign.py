@@ -17,7 +17,7 @@ import json
 @dataclass
 class DripSign:
     """
-    Reference data for a Dynamic Route Information Panel (DRIP) sign from the NDW DATEX II dynamische_route_informatie_paneel feed. Describes the physical installation, location, and type of an individual VMS sign within a VMS controller.
+    Reference record for a Dynamic Route Information Panel (DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Describes the physical installation, location, and type of an individual VMS sign unit.
     
     Attributes:
         vms_controller_id (str)
@@ -163,11 +163,11 @@ class DripSign:
             An instance of the dataclass.
         """
         return cls(
-            vms_controller_id='bpwcwemlhaqkpdprbkqc',
-            vms_index='vhxrczbcbqxtidtjaqbw',
-            vms_type='eovgoqdgjrzxltbhyodh',
-            latitude=float(45.51964463592029),
-            longitude=float(89.12610520982433),
-            road_name='dovjsiikxdeygudspkwr',
-            description='ibjlzkwneknozaclijat'
+            vms_controller_id='cexemrslllmahbcrsesh',
+            vms_index='vrmyzllxkcxcpfkjvyou',
+            vms_type='wwnviqfzuswlghmsoqwu',
+            latitude=float(94.7517428961192),
+            longitude=float(87.51304743502389),
+            road_name='gokykguzyrgbkuujyqwp',
+            description='xsncwepvrhqwqrlpzxuj'
         )

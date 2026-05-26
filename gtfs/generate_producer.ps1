@@ -1,10 +1,11 @@
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+$ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot '..\tools\require-xrcg.ps1')
 Assert-XrcgVersion
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$xregFile = Join-Path $scriptDir 'xreg\gtfs.xreg.json'
 
-avrotize p2a xreg\gtfs-rt.proto --out xreg\gtfs-rt-vehicleposition.avsc --message-type VehiclePosition --namespace GeneralTransitFeedRealTime.Vehicle
-avrotize p2a xreg\gtfs-rt.proto --out xreg\gtfs-rt-tripupdate.avsc --message-type TripUpdate --namespace GeneralTransitFeedRealTime.Trip
-avrotize p2a xreg\gtfs-rt.proto --out xreg\gtfs-rt-alert.avsc --message-type Alert --namespace GeneralTransitFeedRealTime.Alert
+xrcg generate --style kafkaproducer --language py --definitions $xregFile --endpoint 'GeneralTransitFeed.Kafka' --projectname gtfs_producer --output (Join-Path $scriptDir 'gtfs_producer')
 
-# The checked-in xreg manifest is authoritative. This script only refreshes
-# the derived Avro files above and regenerates the client package from xreg.
-xrcg generate --style kafkaproducer --language py --definitions xreg\gtfs.xreg.json --projectname gtfs_rt_producer --output gtfs_rt_producer
+xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint 'GeneralTransitFeedRealTime.Mqtt' --projectname gtfs_mqtt_producer --output (Join-Path $scriptDir 'gtfs_mqtt_producer')
+
+xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint 'GeneralTransitFeedRealTime.Amqp' --projectname gtfs_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir 'gtfs_amqp_producer')

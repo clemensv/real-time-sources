@@ -17,7 +17,7 @@ import json
 @dataclass
 class BikeshareStation:
     """
-    Physical location and static attributes of a single Tokyo Docomo Bikeshare docking station, sourced from the GBFS 2.3 station_information.json feed published by the Open Data Platform for Transportation (ODPT).
+    A reference record from Docomo Bike Share open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
     
     Attributes:
         system_id (str)
@@ -31,7 +31,7 @@ class BikeshareStation:
         region_id (typing.Optional[str])
         post_code (typing.Optional[str])
         capacity (typing.Optional[int])
-        is_virtual_station (typing.Optional[typing.Any])
+        is_virtual_station (typing.Optional[bool])
     """
     
     
@@ -46,7 +46,7 @@ class BikeshareStation:
     region_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_id"))
     post_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="post_code"))
     capacity: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="capacity"))
-    is_virtual_station: typing.Optional[typing.Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_virtual_station"))
+    is_virtual_station: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_virtual_station"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'BikeshareStation':
@@ -173,16 +173,16 @@ class BikeshareStation:
             An instance of the dataclass.
         """
         return cls(
-            system_id='hgsdkssmfzmhcpgsewjg',
-            station_id='bdsdizcgmuntsclnokbs',
-            name='jfbtkdslxuhlzqiczefm',
-            short_name='igrymyucmlmliujrgrnj',
-            lat=float(45.2186914753384),
-            lon=float(59.112329264394056),
-            address='thwhoyvzvsgsosgdzyem',
-            cross_street='eubgtxlzgiaysichbxjb',
-            region_id='rsdpmtxdmlctuscruvhy',
-            post_code='gxhldxwzoemitlxbnwmv',
-            capacity=int(7),
-            is_virtual_station={"test": "test"}
+            system_id='zjixbhcmjpqysqwiqadm',
+            station_id='tfjnvupgrhnkfwenludv',
+            name='vgymzfdkjoqxkwlmyvmc',
+            short_name='ngmxjaaiymazqzxvwxgd',
+            lat=float(61.9250920713929),
+            lon=float(11.92186227341785),
+            address='hmvslewuoxgljmeechap',
+            cross_street='gpdnjollaozfdmcgfatw',
+            region_id='dzcfkrrzktxcvykckzjo',
+            post_code='pbyhlspnolwiclbnieyx',
+            capacity=int(74),
+            is_virtual_station=True
         )

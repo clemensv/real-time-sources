@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from typing import Any
 from autobahn_mqtt_producer_data.displaytypeenum import DisplayTypeenum
+from typing import Any
 import datetime
 
 
@@ -21,7 +21,7 @@ import datetime
 @dataclass
 class Webcam:
     """
-    Normalized Autobahn webcam payload with operator and media URLs. Source page: https://verkehr.autobahn.de/o/autobahn/A1/services/webcam.
+    A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.
     
     Attributes:
         identifier (str)
@@ -193,24 +193,24 @@ class Webcam:
             An instance of the dataclass.
         """
         return cls(
-            identifier='mlpiiafxrhqsijsumtmt',
-            road='lrhrcmxilazdkvzljicm',
-            road_ids=['bflucbajwehhwdrieicp', 'jklilvzlfvogrqjhywhq', 'lumjtplhywpfdmonzjys'],
+            identifier='syommgnsnihfbgajloxt',
+            road='onhqqqdkcthuflcieaqw',
+            road_ids=['jqagxrvxsvsmcmgspkfd', 'ydtmuycqtopzgqagoofo', 'iqyziifcwctsjyevsdfd'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ROADWORKS,
-            title='fovqzsonvfqgskkthzca',
-            subtitle='tvksskafiovlgwapurab',
+            display_type=DisplayTypeenum.WARNING,
+            title='gqnxlzcnprhfnuimdgxk',
+            subtitle='ltjsjwrvoovgtaxjfsir',
             description_lines=None,
-            future=True,
+            future=False,
             is_blocked=True,
-            icon='kcnlbmmtlgihbvawrlen',
-            extent='svrwejgitrblyqxmfwqx',
-            point='auywozisqhcysjjsrygc',
-            coordinate_lat=float(13.19012331661279),
-            coordinate_lon=float(63.11091947681196),
-            route_recommendation_json='ndcztezenxfwxpywhzuz',
+            icon='kltnulpmvsmwocbxbcsa',
+            extent='hyjphaoeifjjndrunasg',
+            point='ttsskboyrpsgixetsacf',
+            coordinate_lat=float(47.95695903884054),
+            coordinate_lon=float(60.05251643041834),
+            route_recommendation_json='nfrbobenegpvpegaevaw',
             footer_lines=None,
-            operator_name='zrwroimxggiqilzhptpm',
-            image_url='xfqltzraldcetovuofej',
-            stream_url='swzcuiftnwgcvosqdwfh'
+            operator_name='spzifiuizpkmrdnmoxiu',
+            image_url='jsugrjxwenmymjdjptuq',
+            stream_url='vxwvlwcgsehveqcjgdlk'
         )

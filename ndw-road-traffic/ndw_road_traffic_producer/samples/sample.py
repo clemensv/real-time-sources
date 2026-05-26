@@ -33,9 +33,6 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from ndw_road_traffic_producer_kafka_producer.producer import NLNDWAVGEventProducer
-from ndw_road_traffic_producer_kafka_producer.producer import NLNDWDRIPEventProducer
-from ndw_road_traffic_producer_kafka_producer.producer import NLNDWMSIEventProducer
-from ndw_road_traffic_producer_kafka_producer.producer import NLNDWSituationsEventProducer
 
 # imports for the data classes for each event
 
@@ -43,15 +40,6 @@ from ndw_road_traffic_producer_data.pointmeasurementsite import PointMeasurement
 from ndw_road_traffic_producer_data.routemeasurementsite import RouteMeasurementSite
 from ndw_road_traffic_producer_data.trafficobservation import TrafficObservation
 from ndw_road_traffic_producer_data.traveltimeobservation import TravelTimeObservation
-from ndw_road_traffic_producer_data.dripsign import DripSign
-from ndw_road_traffic_producer_data.dripdisplaystate import DripDisplayState
-from ndw_road_traffic_producer_data.msisign import MsiSign
-from ndw_road_traffic_producer_data.msidisplaystate import MsiDisplayState
-from ndw_road_traffic_producer_data.roadwork import Roadwork
-from ndw_road_traffic_producer_data.bridgeopening import BridgeOpening
-from ndw_road_traffic_producer_data.temporaryclosure import TemporaryClosure
-from ndw_road_traffic_producer_data.temporaryspeedlimit import TemporarySpeedLimit
-from ndw_road_traffic_producer_data.safetyrelatedmessage import SafetyRelatedMessage
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -102,102 +90,6 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'NL.NDW.AVG.TravelTimeObservation' event to Kafka topic.
     await nlndwavgevent_producer.send_nl_ndw_avg_travel_time_observation(_measurement_site_id = 'TODO: replace me', data = _travel_time_observation)
     print(f"Sent 'NL.NDW.AVG.TravelTimeObservation' event: {_travel_time_observation.to_json()}")
-    if connection_string:
-        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
-        # or an Azure Event Hubs connection string
-        nlndwdripevent_producer = NLNDWDRIPEventProducer.from_connection_string(connection_string, topic, 'binary')
-    else:
-        # use a Kafka producer configuration provided as JSON text
-        kafka_producer = KafkaProducer(json.loads(producer_config))
-        nlndwdripevent_producer = NLNDWDRIPEventProducer(kafka_producer, topic, 'binary')
-
-    # ---- NL.NDW.DRIP.DripSign ----
-    # TODO: Supply event data for the NL.NDW.DRIP.DripSign event
-    _drip_sign = DripSign()
-
-    # sends the 'NL.NDW.DRIP.DripSign' event to Kafka topic.
-    await nlndwdripevent_producer.send_nl_ndw_drip_drip_sign(_vms_controller_id = 'TODO: replace me', _vms_index = 'TODO: replace me', data = _drip_sign)
-    print(f"Sent 'NL.NDW.DRIP.DripSign' event: {_drip_sign.to_json()}")
-
-    # ---- NL.NDW.DRIP.DripDisplayState ----
-    # TODO: Supply event data for the NL.NDW.DRIP.DripDisplayState event
-    _drip_display_state = DripDisplayState()
-
-    # sends the 'NL.NDW.DRIP.DripDisplayState' event to Kafka topic.
-    await nlndwdripevent_producer.send_nl_ndw_drip_drip_display_state(_vms_controller_id = 'TODO: replace me', _vms_index = 'TODO: replace me', data = _drip_display_state)
-    print(f"Sent 'NL.NDW.DRIP.DripDisplayState' event: {_drip_display_state.to_json()}")
-    if connection_string:
-        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
-        # or an Azure Event Hubs connection string
-        nlndwmsievent_producer = NLNDWMSIEventProducer.from_connection_string(connection_string, topic, 'binary')
-    else:
-        # use a Kafka producer configuration provided as JSON text
-        kafka_producer = KafkaProducer(json.loads(producer_config))
-        nlndwmsievent_producer = NLNDWMSIEventProducer(kafka_producer, topic, 'binary')
-
-    # ---- NL.NDW.MSI.MsiSign ----
-    # TODO: Supply event data for the NL.NDW.MSI.MsiSign event
-    _msi_sign = MsiSign()
-
-    # sends the 'NL.NDW.MSI.MsiSign' event to Kafka topic.
-    await nlndwmsievent_producer.send_nl_ndw_msi_msi_sign(_sign_id = 'TODO: replace me', data = _msi_sign)
-    print(f"Sent 'NL.NDW.MSI.MsiSign' event: {_msi_sign.to_json()}")
-
-    # ---- NL.NDW.MSI.MsiDisplayState ----
-    # TODO: Supply event data for the NL.NDW.MSI.MsiDisplayState event
-    _msi_display_state = MsiDisplayState()
-
-    # sends the 'NL.NDW.MSI.MsiDisplayState' event to Kafka topic.
-    await nlndwmsievent_producer.send_nl_ndw_msi_msi_display_state(_sign_id = 'TODO: replace me', data = _msi_display_state)
-    print(f"Sent 'NL.NDW.MSI.MsiDisplayState' event: {_msi_display_state.to_json()}")
-    if connection_string:
-        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
-        # or an Azure Event Hubs connection string
-        nlndwsituations_event_producer = NLNDWSituationsEventProducer.from_connection_string(connection_string, topic, 'binary')
-    else:
-        # use a Kafka producer configuration provided as JSON text
-        kafka_producer = KafkaProducer(json.loads(producer_config))
-        nlndwsituations_event_producer = NLNDWSituationsEventProducer(kafka_producer, topic, 'binary')
-
-    # ---- NL.NDW.Situations.Roadwork ----
-    # TODO: Supply event data for the NL.NDW.Situations.Roadwork event
-    _roadwork = Roadwork()
-
-    # sends the 'NL.NDW.Situations.Roadwork' event to Kafka topic.
-    await nlndwsituations_event_producer.send_nl_ndw_situations_roadwork(_situation_record_id = 'TODO: replace me', data = _roadwork)
-    print(f"Sent 'NL.NDW.Situations.Roadwork' event: {_roadwork.to_json()}")
-
-    # ---- NL.NDW.Situations.BridgeOpening ----
-    # TODO: Supply event data for the NL.NDW.Situations.BridgeOpening event
-    _bridge_opening = BridgeOpening()
-
-    # sends the 'NL.NDW.Situations.BridgeOpening' event to Kafka topic.
-    await nlndwsituations_event_producer.send_nl_ndw_situations_bridge_opening(_situation_record_id = 'TODO: replace me', data = _bridge_opening)
-    print(f"Sent 'NL.NDW.Situations.BridgeOpening' event: {_bridge_opening.to_json()}")
-
-    # ---- NL.NDW.Situations.TemporaryClosure ----
-    # TODO: Supply event data for the NL.NDW.Situations.TemporaryClosure event
-    _temporary_closure = TemporaryClosure()
-
-    # sends the 'NL.NDW.Situations.TemporaryClosure' event to Kafka topic.
-    await nlndwsituations_event_producer.send_nl_ndw_situations_temporary_closure(_situation_record_id = 'TODO: replace me', data = _temporary_closure)
-    print(f"Sent 'NL.NDW.Situations.TemporaryClosure' event: {_temporary_closure.to_json()}")
-
-    # ---- NL.NDW.Situations.TemporarySpeedLimit ----
-    # TODO: Supply event data for the NL.NDW.Situations.TemporarySpeedLimit event
-    _temporary_speed_limit = TemporarySpeedLimit()
-
-    # sends the 'NL.NDW.Situations.TemporarySpeedLimit' event to Kafka topic.
-    await nlndwsituations_event_producer.send_nl_ndw_situations_temporary_speed_limit(_situation_record_id = 'TODO: replace me', data = _temporary_speed_limit)
-    print(f"Sent 'NL.NDW.Situations.TemporarySpeedLimit' event: {_temporary_speed_limit.to_json()}")
-
-    # ---- NL.NDW.Situations.SafetyRelatedMessage ----
-    # TODO: Supply event data for the NL.NDW.Situations.SafetyRelatedMessage event
-    _safety_related_message = SafetyRelatedMessage()
-
-    # sends the 'NL.NDW.Situations.SafetyRelatedMessage' event to Kafka topic.
-    await nlndwsituations_event_producer.send_nl_ndw_situations_safety_related_message(_situation_record_id = 'TODO: replace me', data = _safety_related_message)
-    print(f"Sent 'NL.NDW.Situations.SafetyRelatedMessage' event: {_safety_related_message.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

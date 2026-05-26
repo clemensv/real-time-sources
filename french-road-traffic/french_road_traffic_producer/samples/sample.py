@@ -33,12 +33,10 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from french_road_traffic_producer_kafka_producer.producer import FrGouvTransportBisonFuteTrafficFlowEventProducer
-from french_road_traffic_producer_kafka_producer.producer import FrGouvTransportBisonFuteRoadEventEventProducer
 
 # imports for the data classes for each event
 
 from french_road_traffic_producer_data.trafficflowmeasurement import TrafficFlowMeasurement
-from french_road_traffic_producer_data.roadevent import RoadEvent
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -65,22 +63,6 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'fr.gouv.transport.bison_fute.TrafficFlowMeasurement' event to Kafka topic.
     await fr_gouv_transport_bison_fute_traffic_flow_event_producer.send_fr_gouv_transport_bison_fute_traffic_flow_measurement(_feedurl = 'TODO: replace me', _site_id = 'TODO: replace me', data = _traffic_flow_measurement)
     print(f"Sent 'fr.gouv.transport.bison_fute.TrafficFlowMeasurement' event: {_traffic_flow_measurement.to_json()}")
-    if connection_string:
-        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
-        # or an Azure Event Hubs connection string
-        fr_gouv_transport_bison_fute_road_event_event_producer = FrGouvTransportBisonFuteRoadEventEventProducer.from_connection_string(connection_string, topic, 'binary')
-    else:
-        # use a Kafka producer configuration provided as JSON text
-        kafka_producer = KafkaProducer(json.loads(producer_config))
-        fr_gouv_transport_bison_fute_road_event_event_producer = FrGouvTransportBisonFuteRoadEventEventProducer(kafka_producer, topic, 'binary')
-
-    # ---- fr.gouv.transport.bison_fute.RoadEvent ----
-    # TODO: Supply event data for the fr.gouv.transport.bison_fute.RoadEvent event
-    _road_event = RoadEvent()
-
-    # sends the 'fr.gouv.transport.bison_fute.RoadEvent' event to Kafka topic.
-    await fr_gouv_transport_bison_fute_road_event_event_producer.send_fr_gouv_transport_bison_fute_road_event(_feedurl = 'TODO: replace me', _situation_id = 'TODO: replace me', data = _road_event)
-    print(f"Sent 'fr.gouv.transport.bison_fute.RoadEvent' event: {_road_event.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
