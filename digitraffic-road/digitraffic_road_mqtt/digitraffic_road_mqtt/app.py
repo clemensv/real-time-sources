@@ -597,6 +597,39 @@ class DigitrafficRoadMqttBridge:
         await self._client.publish_fi_digitraffic_road_mqtt_tms_sensor_data(station_id="23001", sensor_id="5122", data=tms_data)
         await self._client.publish_fi_digitraffic_road_mqtt_weather_sensor_data(station_id="1012", sensor_id="1", data=weather_data)
         await self._client.publish_fi_digitraffic_road_mqtt_traffic_announcement(situation_id="GUID_12345678", data=traffic_message)
+        road_work_msg = TrafficMessage.from_serializer_dict({
+            "situation_id": "GUID_ROADWORK1", "situation_type": "road work",
+            "traffic_announcement_type": "ROAD_WORK", "version": 1,
+            "release_time": now_iso, "version_time": now_iso, "title": "Mock road work",
+            "language": "fi", "sender": "Digitraffic", "location_description": "Tie 7",
+            "start_time": now_iso, "end_time": None, "features_json": None,
+            "road_work_phases_json": None, "comment": None, "additional_information": None,
+            "contact_phone": None, "contact_email": None, "announcements_json": None,
+            "geometry_type": "Point", "geometry_coordinates_json": json.dumps([25.689529, 60.417002]),
+        })
+        await self._client.publish_fi_digitraffic_road_mqtt_road_work(situation_id="GUID_ROADWORK1", data=road_work_msg)
+        weight_msg = TrafficMessage.from_serializer_dict({
+            "situation_id": "GUID_WEIGHT1", "situation_type": "weight restriction",
+            "traffic_announcement_type": "WEIGHT_RESTRICTION", "version": 1,
+            "release_time": now_iso, "version_time": now_iso, "title": "Mock weight restriction",
+            "language": "fi", "sender": "Digitraffic", "location_description": "Tie 7",
+            "start_time": now_iso, "end_time": None, "features_json": None,
+            "road_work_phases_json": None, "comment": None, "additional_information": None,
+            "contact_phone": None, "contact_email": None, "announcements_json": None,
+            "geometry_type": "Point", "geometry_coordinates_json": json.dumps([25.689529, 60.417002]),
+        })
+        await self._client.publish_fi_digitraffic_road_mqtt_weight_restriction(situation_id="GUID_WEIGHT1", data=weight_msg)
+        exempted_msg = TrafficMessage.from_serializer_dict({
+            "situation_id": "GUID_EXEMPT1", "situation_type": "exempted transport",
+            "traffic_announcement_type": "EXEMPTED_TRANSPORT", "version": 1,
+            "release_time": now_iso, "version_time": now_iso, "title": "Mock exempted transport",
+            "language": "fi", "sender": "Digitraffic", "location_description": "Tie 7",
+            "start_time": now_iso, "end_time": None, "features_json": None,
+            "road_work_phases_json": None, "comment": None, "additional_information": None,
+            "contact_phone": None, "contact_email": None, "announcements_json": None,
+            "geometry_type": "Point", "geometry_coordinates_json": json.dumps([25.689529, 60.417002]),
+        })
+        await self._client.publish_fi_digitraffic_road_mqtt_exempted_transport(situation_id="GUID_EXEMPT1", data=exempted_msg)
         await self._client.publish_fi_digitraffic_road_mqtt_maintenance_tracking(domain="state-roads", data=maintenance)
 
     async def _emit_reference_data(self) -> None:
