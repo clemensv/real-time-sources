@@ -90,7 +90,7 @@
             },
             "time": {
               "value": "{startdate}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
