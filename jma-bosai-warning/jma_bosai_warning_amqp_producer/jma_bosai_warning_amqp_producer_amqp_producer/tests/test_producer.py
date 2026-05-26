@@ -28,6 +28,8 @@ from jma_bosai_warning_amqp_producer_data import Office
 from test_jma_bosai_warning_amqp_producer_data_office import Test_Office
 from jma_bosai_warning_amqp_producer_data import WeatherWarning
 from test_jma_bosai_warning_amqp_producer_data_weatherwarning import Test_WeatherWarning
+from jma_bosai_warning_amqp_producer_data import TsunamiAlert
+from test_jma_bosai_warning_amqp_producer_data_tsunamialert import Test_TsunamiAlert
 
 
 
@@ -110,38 +112,38 @@ ARTEMIS_BROKER_XML = """<?xml version='1.0'?>
 @pytest.fixture(scope="module")
 def amqp_broker():
     """Create and start an AMQP broker container for testing.
-    
+
     Uses ActiveMQ Artemis by default.
     Set AMQP_BROKER=rabbitmq environment variable to test with RabbitMQ.
     Set RABBITMQ_VERSION=3 or RABBITMQ_VERSION=4 to choose RabbitMQ version (default: 4).
     """
     broker_type = os.environ.get("AMQP_BROKER", "artemis").lower()
-    
+
     if broker_type == "rabbitmq":
         rabbitmq_version = os.environ.get("RABBITMQ_VERSION", "4")
         image_tag = "3-management" if rabbitmq_version == "3" else "4-management"
-        
+
         container = DockerContainer(f"rabbitmq:{image_tag}")
         container.with_bind_ports(5672, 5672)
         container.with_bind_ports(15672, 15672)
         container.with_env("RABBITMQ_DEFAULT_USER", "guest")
         container.with_env("RABBITMQ_DEFAULT_PASS", "guest")
         container.with_exposed_ports(5672, 15672)
-        
+
         # RabbitMQ 3.x requires AMQP 1.0 plugin, RabbitMQ 4.0+ has native support
         if rabbitmq_version == "3":
             container.with_command(
-                "bash", "-c", 
+                "bash", "-c",
                 "rabbitmq-plugins enable rabbitmq_amqp1_0 && docker-entrypoint.sh rabbitmq-server"
             )
-        
+
         container.start()
         # Wait for RabbitMQ to be ready
         wait_for_logs(container, "Server startup complete", timeout=120)
         host = container.get_container_host_ip()
         if rabbitmq_version != "3":
             _declare_rabbitmq_queue(host, int(container.get_exposed_port(15672)), "test-queue")
-        
+
         yield {
             "host": host,
             "port": int(container.get_exposed_port(5672)),
@@ -149,7 +151,7 @@ def amqp_broker():
             "password": "guest",
             "address": _rabbitmq_queue_address("test-queue")
         }
-        
+
         container.stop()
     else:
         # Default: ActiveMQ Artemis
@@ -157,7 +159,7 @@ def amqp_broker():
         with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False) as f:
             f.write(ARTEMIS_BROKER_XML)
             config_file = f.name
-        
+
         try:
             container = DockerContainer("apache/activemq-artemis:latest")
             container.with_bind_ports(5672, 5672)
@@ -165,12 +167,12 @@ def amqp_broker():
             container.with_env("ARTEMIS_PASSWORD", "guest")
             container.with_volume_mapping(config_file, "/var/lib/artemis-instance/etc-override/broker.xml")
             container.with_exposed_ports(5672)
-            
+
             # Wait for Artemis to be ready
             container.start()
             # Wait for broker to log that it's ready (AMQ241004 = "Artemis Server is now live")
             wait_for_logs(container, "AMQ241004", timeout=60)
-            
+
             yield {
                 "host": container.get_container_host_ip(),
                 "port": int(container.get_exposed_port(5672)),
@@ -178,7 +180,7 @@ def amqp_broker():
                 "password": "guest",
                 "address": "test-queue"
             }
-            
+
             container.stop()
         finally:
             if os.path.exists(config_file):
@@ -217,7 +219,7 @@ def _receive_single_message(config: dict, timeout: int = 30):
 
 class TestJPJMAWarningAmqpProducer:
     """Test cases for JPJMAWarningAmqpProducer"""
-    
+
     def test_producer_initialization(self, artemis_container):
         """Test that producer initializes correctly"""
         producer = JPJMAWarningAmqpProducer(
@@ -233,7 +235,7 @@ class TestJPJMAWarningAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
-    
+
     def test_send_office(self, artemis_container):
         """Send and receive a Office message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
@@ -247,7 +249,7 @@ class TestJPJMAWarningAmqpProducer:
             password=artemis_container["password"],
             content_mode='structured'
         )
-        
+
         try:
             assert producer.host == artemis_container["host"]
             assert producer.address == artemis_container["address"]
@@ -291,7 +293,7 @@ class TestJPJMAWarningAmqpProducer:
                 assert received.subject == "jp.jma.warning/{office_code}/{area_code}".format(office_code="value", area_code="value")
         finally:
             producer.close()
-    
+
     def test_send_weather_warning(self, artemis_container):
         """Send and receive a WeatherWarning message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
@@ -305,7 +307,7 @@ class TestJPJMAWarningAmqpProducer:
             password=artemis_container["password"],
             content_mode='structured'
         )
-        
+
         try:
             assert producer.host == artemis_container["host"]
             assert producer.address == artemis_container["address"]
@@ -347,6 +349,64 @@ class TestJPJMAWarningAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "jp.jma.warning/{office_code}/{area_code}".format(office_code="value", area_code="value")
+        finally:
+            producer.close()
+
+    def test_send_tsunami_alert(self, artemis_container):
+        """Send and receive a TsunamiAlert message via ActiveMQ Artemis."""
+        # Create valid test data using the test helper
+        payload = Test_TsunamiAlert.create_instance()
+
+        producer = JPJMAWarningAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='structured'
+        )
+
+        try:
+            assert producer.host == artemis_container["host"]
+            assert producer.address == artemis_container["address"]
+            assert producer.port == artemis_container["port"]
+            assert producer.username == artemis_container["username"]
+            assert producer.content_mode == 'structured'
+            # Send 5 messages to test proper message settlement and ordering
+            for i in range(5):
+                producer.send_tsunami_alert(
+                    data=payload,
+                    _feedurl="value",
+                    _event_id="value",
+                    _serial="value",
+                    content_type="application/json"
+                )
+
+            # Receive and verify all 5 messages
+            for i in range(5):
+                received = _receive_single_message(artemis_container)
+                properties = received.properties or {}
+
+                if True:
+                    body = received.body
+                    if isinstance(body, memoryview):
+                        body_text = body.tobytes().decode('utf-8')
+                    elif isinstance(body, bytes):
+                        body_text = body.decode('utf-8')
+                    elif isinstance(body, str):
+                        body_text = body
+                    elif isinstance(body, dict):
+                        body_text = json.dumps(body)
+                    else:
+                        body_text = str(body)
+                    cloud_event_payload = json.loads(body_text)
+                    assert cloud_event_payload.get("type") == "JP.JMA.Warning.amqp.TsunamiAlert"
+                    # Verify data section exists (either as data or data_base64)
+                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
+                else:
+                    # Verify message body is not empty
+                    assert received.body is not None
+                assert received.subject == "jp.jma.tsunami/{event_id}/{serial}".format(event_id="value", serial="value")
         finally:
             producer.close()
 

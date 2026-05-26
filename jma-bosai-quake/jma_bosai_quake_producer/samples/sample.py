@@ -33,7 +33,6 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from jma_bosai_quake_producer_kafka_producer.producer import JPJMAQuakeEventProducer
-from jma_bosai_quake_producer_kafka_producer.producer import JPJMAQuakeMqttEventProducer
 
 # imports for the data classes for each event
 
@@ -64,22 +63,6 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'JP.JMA.Quake.EarthquakeReport' event to Kafka topic.
     await jpjmaquake_event_producer.send_jp_jma_quake_earthquake_report(_feedurl = 'TODO: replace me', _event_id = 'TODO: replace me', _serial = 'TODO: replace me', data = _earthquake_report)
     print(f"Sent 'JP.JMA.Quake.EarthquakeReport' event: {_earthquake_report.to_json()}")
-    if connection_string:
-        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
-        # or an Azure Event Hubs connection string
-        jpjmaquake_mqtt_event_producer = JPJMAQuakeMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
-    else:
-        # use a Kafka producer configuration provided as JSON text
-        kafka_producer = KafkaProducer(json.loads(producer_config))
-        jpjmaquake_mqtt_event_producer = JPJMAQuakeMqttEventProducer(kafka_producer, topic, 'binary')
-
-    # ---- JP.JMA.Quake.mqtt.EarthquakeReport ----
-    # TODO: Supply event data for the JP.JMA.Quake.mqtt.EarthquakeReport event
-    _earthquake_report = EarthquakeReport()
-
-    # sends the 'JP.JMA.Quake.mqtt.EarthquakeReport' event to Kafka topic.
-    await jpjmaquake_mqtt_event_producer.send_jp_jma_quake_mqtt_earthquake_report(_feedurl = 'TODO: replace me', _event_id = 'TODO: replace me', _serial = 'TODO: replace me', data = _earthquake_report)
-    print(f"Sent 'JP.JMA.Quake.mqtt.EarthquakeReport' event: {_earthquake_report.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

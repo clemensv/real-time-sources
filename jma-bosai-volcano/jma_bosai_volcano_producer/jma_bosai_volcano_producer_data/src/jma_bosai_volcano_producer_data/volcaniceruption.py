@@ -13,6 +13,7 @@ from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
 from jma_bosai_volcano_producer_data.eruptiontypeenum import EruptionTypeenum
+from jma_bosai_volcano_producer_data.eventenum import EventEnum
 import datetime
 
 
@@ -20,7 +21,7 @@ import datetime
 @dataclass
 class VolcanicEruption:
     """
-    Discrete JMA Bosai volcanic eruption observation report for a target volcano. The live eruption.json endpoint was empty when reviewed, so structured eruption observation fields are based on JMA documentation for 噴火に関する火山観測報, which states that reports include eruption occurrence time, plume height, plume direction, and volcanic phenomena observed with the eruption; field names also align with observed JMA HTML bulletin examples.
+    JMA Bosai volcanic eruption observation report for a target volcano.
     
     Attributes:
         volcano_code (str)
@@ -41,6 +42,8 @@ class VolcanicEruption:
         description (str)
         info_type_jp (typing.Optional[str])
         area_codes (typing.List[str])
+        prefecture (str)
+        event (EventEnum)
     """
     
     
@@ -62,6 +65,8 @@ class VolcanicEruption:
     description: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description"))
     info_type_jp: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="info_type_jp"))
     area_codes: typing.List[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_codes"))
+    prefecture: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture"))
+    event: EventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'VolcanicEruption':
@@ -188,22 +193,24 @@ class VolcanicEruption:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='sextdjqvlqkbyjhuwoev',
-            event_id='lokiopwahzwnqlhmijfe',
+            volcano_code='yeqgvgklayjphyqcwmrg',
+            event_id='yfhlllmmpwcvhmgavigy',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_type=EruptionTypeenum.ERUPTION,
-            crater_name='wgzgaabbxzkgsnbbusbt',
-            colored_plume_height_m=float(95.40343712953083),
-            white_plume_height_m=float(3.870844857220035),
-            maximum_plume_height_since_start_m=float(20.187355114430783),
-            plume_direction='wmmtijteecmregbrqsge',
-            ash_dispersal_direction='lxreqynzbxqouxjuymiq',
-            pyroclastic_flow_observed=True,
-            plume_amount_jp='eajjfvhljxoyosyytehp',
-            description='uaiskjoqfvqhavnfrowi',
-            info_type_jp='qfsoidkkdjpwciyxrnqc',
-            area_codes=['mtrsiziaasovmnnkspnb', 'arxewxnebksdfebflszc', 'bskirjqsupufqjcarzzh', 'tcjdkaminhdqetfpcuni', 'ogssbdxfrmvtpqmqythm']
+            crater_name='xvfdqydpzgnvkwcilaqz',
+            colored_plume_height_m=float(78.32190445232766),
+            white_plume_height_m=float(27.756087446064637),
+            maximum_plume_height_since_start_m=float(41.937956410113216),
+            plume_direction='qtpmuhrarmkdbkvqcqjg',
+            ash_dispersal_direction='wefnyrjnargsdfwrjhxb',
+            pyroclastic_flow_observed=False,
+            plume_amount_jp='fcgnisofnygbbobrzvrq',
+            description='kfvyrjabagoifzsiccmr',
+            info_type_jp='rgybtzskohljepaumrcl',
+            area_codes=['qhvmoyxrddybgybovfwc'],
+            prefecture='caxkebyrbvhzfgbzpgdt',
+            event=EventEnum.eruption
         )

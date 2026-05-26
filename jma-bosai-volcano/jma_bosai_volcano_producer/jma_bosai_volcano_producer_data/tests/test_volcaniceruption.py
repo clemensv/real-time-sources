@@ -10,6 +10,7 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from jma_bosai_volcano_producer_data.volcaniceruption import VolcanicEruption
 from jma_bosai_volcano_producer_data.eruptiontypeenum import EruptionTypeenum
+from jma_bosai_volcano_producer_data.eventenum import EventEnum
 import datetime
 
 
@@ -30,24 +31,26 @@ class Test_VolcanicEruption(unittest.TestCase):
         Create instance of VolcanicEruption for testing
         """
         instance = VolcanicEruption(
-            volcano_code='sextdjqvlqkbyjhuwoev',
-            event_id='lokiopwahzwnqlhmijfe',
+            volcano_code='yeqgvgklayjphyqcwmrg',
+            event_id='yfhlllmmpwcvhmgavigy',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_type=EruptionTypeenum.ERUPTION,
-            crater_name='wgzgaabbxzkgsnbbusbt',
-            colored_plume_height_m=float(95.40343712953083),
-            white_plume_height_m=float(3.870844857220035),
-            maximum_plume_height_since_start_m=float(20.187355114430783),
-            plume_direction='wmmtijteecmregbrqsge',
-            ash_dispersal_direction='lxreqynzbxqouxjuymiq',
-            pyroclastic_flow_observed=True,
-            plume_amount_jp='eajjfvhljxoyosyytehp',
-            description='uaiskjoqfvqhavnfrowi',
-            info_type_jp='qfsoidkkdjpwciyxrnqc',
-            area_codes=['mtrsiziaasovmnnkspnb', 'arxewxnebksdfebflszc', 'bskirjqsupufqjcarzzh', 'tcjdkaminhdqetfpcuni', 'ogssbdxfrmvtpqmqythm']
+            crater_name='xvfdqydpzgnvkwcilaqz',
+            colored_plume_height_m=float(78.32190445232766),
+            white_plume_height_m=float(27.756087446064637),
+            maximum_plume_height_since_start_m=float(41.937956410113216),
+            plume_direction='qtpmuhrarmkdbkvqcqjg',
+            ash_dispersal_direction='wefnyrjnargsdfwrjhxb',
+            pyroclastic_flow_observed=False,
+            plume_amount_jp='fcgnisofnygbbobrzvrq',
+            description='kfvyrjabagoifzsiccmr',
+            info_type_jp='rgybtzskohljepaumrcl',
+            area_codes=['qhvmoyxrddybgybovfwc'],
+            prefecture='caxkebyrbvhzfgbzpgdt',
+            event=EventEnum.eruption
         )
         return instance
 
@@ -56,7 +59,7 @@ class Test_VolcanicEruption(unittest.TestCase):
         """
         Test volcano_code property
         """
-        test_value = 'sextdjqvlqkbyjhuwoev'
+        test_value = 'yeqgvgklayjphyqcwmrg'
         self.instance.volcano_code = test_value
         self.assertEqual(self.instance.volcano_code, test_value)
     
@@ -64,7 +67,7 @@ class Test_VolcanicEruption(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'lokiopwahzwnqlhmijfe'
+        test_value = 'yfhlllmmpwcvhmgavigy'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -112,7 +115,7 @@ class Test_VolcanicEruption(unittest.TestCase):
         """
         Test crater_name property
         """
-        test_value = 'wgzgaabbxzkgsnbbusbt'
+        test_value = 'xvfdqydpzgnvkwcilaqz'
         self.instance.crater_name = test_value
         self.assertEqual(self.instance.crater_name, test_value)
     
@@ -120,7 +123,7 @@ class Test_VolcanicEruption(unittest.TestCase):
         """
         Test colored_plume_height_m property
         """
-        test_value = float(95.40343712953083)
+        test_value = float(78.32190445232766)
         self.instance.colored_plume_height_m = test_value
         self.assertEqual(self.instance.colored_plume_height_m, test_value)
     
@@ -128,7 +131,7 @@ class Test_VolcanicEruption(unittest.TestCase):
         """
         Test white_plume_height_m property
         """
-        test_value = float(3.870844857220035)
+        test_value = float(27.756087446064637)
         self.instance.white_plume_height_m = test_value
         self.assertEqual(self.instance.white_plume_height_m, test_value)
     
@@ -136,7 +139,7 @@ class Test_VolcanicEruption(unittest.TestCase):
         """
         Test maximum_plume_height_since_start_m property
         """
-        test_value = float(20.187355114430783)
+        test_value = float(41.937956410113216)
         self.instance.maximum_plume_height_since_start_m = test_value
         self.assertEqual(self.instance.maximum_plume_height_since_start_m, test_value)
     
@@ -144,7 +147,7 @@ class Test_VolcanicEruption(unittest.TestCase):
         """
         Test plume_direction property
         """
-        test_value = 'wmmtijteecmregbrqsge'
+        test_value = 'qtpmuhrarmkdbkvqcqjg'
         self.instance.plume_direction = test_value
         self.assertEqual(self.instance.plume_direction, test_value)
     
@@ -152,7 +155,7 @@ class Test_VolcanicEruption(unittest.TestCase):
         """
         Test ash_dispersal_direction property
         """
-        test_value = 'lxreqynzbxqouxjuymiq'
+        test_value = 'wefnyrjnargsdfwrjhxb'
         self.instance.ash_dispersal_direction = test_value
         self.assertEqual(self.instance.ash_dispersal_direction, test_value)
     
@@ -160,7 +163,7 @@ class Test_VolcanicEruption(unittest.TestCase):
         """
         Test pyroclastic_flow_observed property
         """
-        test_value = True
+        test_value = False
         self.instance.pyroclastic_flow_observed = test_value
         self.assertEqual(self.instance.pyroclastic_flow_observed, test_value)
     
@@ -168,7 +171,7 @@ class Test_VolcanicEruption(unittest.TestCase):
         """
         Test plume_amount_jp property
         """
-        test_value = 'eajjfvhljxoyosyytehp'
+        test_value = 'fcgnisofnygbbobrzvrq'
         self.instance.plume_amount_jp = test_value
         self.assertEqual(self.instance.plume_amount_jp, test_value)
     
@@ -176,7 +179,7 @@ class Test_VolcanicEruption(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'uaiskjoqfvqhavnfrowi'
+        test_value = 'kfvyrjabagoifzsiccmr'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -184,7 +187,7 @@ class Test_VolcanicEruption(unittest.TestCase):
         """
         Test info_type_jp property
         """
-        test_value = 'qfsoidkkdjpwciyxrnqc'
+        test_value = 'rgybtzskohljepaumrcl'
         self.instance.info_type_jp = test_value
         self.assertEqual(self.instance.info_type_jp, test_value)
     
@@ -192,9 +195,25 @@ class Test_VolcanicEruption(unittest.TestCase):
         """
         Test area_codes property
         """
-        test_value = ['mtrsiziaasovmnnkspnb', 'arxewxnebksdfebflszc', 'bskirjqsupufqjcarzzh', 'tcjdkaminhdqetfpcuni', 'ogssbdxfrmvtpqmqythm']
+        test_value = ['qhvmoyxrddybgybovfwc']
         self.instance.area_codes = test_value
         self.assertEqual(self.instance.area_codes, test_value)
+    
+    def test_prefecture_property(self):
+        """
+        Test prefecture property
+        """
+        test_value = 'caxkebyrbvhzfgbzpgdt'
+        self.instance.prefecture = test_value
+        self.assertEqual(self.instance.prefecture, test_value)
+    
+    def test_event_property(self):
+        """
+        Test event property
+        """
+        test_value = EventEnum.eruption
+        self.instance.event = test_value
+        self.assertEqual(self.instance.event, test_value)
     
     def test_to_byte_array_json(self):
         """

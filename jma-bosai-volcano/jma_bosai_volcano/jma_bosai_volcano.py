@@ -337,6 +337,8 @@ def parse_volcano_catalog(payload: Any) -> dict[str, Volcano]:
         if latitude is None or longitude is None:
             continue
         catalog[code] = Volcano(
+            prefecture="japan",
+            event="info",
             volcano_code=code,
             name_jp=item.get("nameJp") or item.get("name_jp") or "",
             name_en=item.get("nameEn") or item.get("name_en") or "",
@@ -371,6 +373,8 @@ def parse_warning_record(record: dict[str, Any]) -> list[VolcanicWarning]:
                 if not volcano_code or volcano_code == "000":
                     continue
                 events.append(VolcanicWarning(
+                    prefecture="japan",
+                    event="warning",
                     volcano_code=volcano_code,
                     event_id=str(record.get("eventId", "")),
                     report_datetime=report_utc,
@@ -488,6 +492,8 @@ def parse_eruption_record(record: dict[str, Any]) -> list[VolcanicEruption]:
                 if not volcano_code or volcano_code == "000":
                     continue
                 events.append(VolcanicEruption(
+                    prefecture="japan",
+                    event="eruption",
                     volcano_code=volcano_code,
                     event_id=str(record.get("eventId", "")),
                     report_datetime=report_utc,

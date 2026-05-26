@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from jma_bosai_warning_mqtt_producer_data.officetypeenum import OfficeTypeenum
 from jma_bosai_warning_mqtt_producer_data.eventenum import EventEnum
+from jma_bosai_warning_mqtt_producer_data.officetypeenum import OfficeTypeenum
 from jma_bosai_warning_mqtt_producer_data.severityenum import SeverityEnum
 
 
@@ -20,7 +20,7 @@ from jma_bosai_warning_mqtt_producer_data.severityenum import SeverityEnum
 @dataclass
 class Office:
     """
-    JMA warning office reference record from the Bosai area catalog offices section. These offices are the stable targetArea codes used by warning JSON endpoints and contextualize weather warning area telemetry.
+    JMA Bosai warning office reference data from area.json offices.
     
     Attributes:
         office_code (str)
@@ -170,13 +170,13 @@ class Office:
             An instance of the dataclass.
         """
         return cls(
-            office_code='winzdhtqusptibochtvl',
-            area_code='pnfmhwbrqdkcxzhhbggk',
-            name_jp='trwmokcgklowpinosthv',
-            name_en='vyhzarroyewxshdqncyr',
-            parent_office_code='juegloeejrobwjzmpfgs',
+            office_code='nouisgwmqjvbhkxvwhmt',
+            area_code='xsgwfhpspkrlgjtbtrdc',
+            name_jp='pehkxgfhfbeiutrwlqcg',
+            name_en='itxmbveeqimvnlemmsnm',
+            parent_office_code='xcfkbfeszzgdpjvfxknq',
             office_type=OfficeTypeenum.PREFECTURE,
-            prefecture='cekvxwcrchlbwvnomfwh',
-            severity=SeverityEnum.REFERENCE,
-            event=EventEnum.office
+            prefecture='uvxwanvdczwngvjjmlgd',
+            severity=SeverityEnum.info,
+            event=EventEnum.warning
         )

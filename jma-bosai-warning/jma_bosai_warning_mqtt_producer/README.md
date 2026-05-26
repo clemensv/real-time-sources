@@ -228,6 +228,50 @@ jp_jma_warning_mqtt_dispatcher.jp_jma_warning_mqtt_weather_warning_async = jp_jm
 
 
 
+make build
+
+```##### `jp_jma_warning_mqtt_tsunami_alert_async`
+
+
+
+## Test```python
+
+jp_jma_warning_mqtt_tsunami_alert_async:  Callable[[PartitionContext, EventData, CloudEvent, TsunamiAlert],
+Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `JP.JMA.Warning.mqtt.TsunamiAlert`: JMA Bosai active tsunami alert telemetry from
+list.json enriched with detail bulletin coastal forecasts.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `jma_bosai_warning_mqtt_producer_data.TsunamiAlert`.
+
+Example:
+
+```python
+async def jp_jma_warning_mqtt_tsunami_alert_event(partition_context: PartitionContext, event: EventData, cloud_event:
+CloudEvent, data: TsunamiAlert) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+jp_jma_warning_mqtt_dispatcher.jp_jma_warning_mqtt_tsunami_alert_async = jp_jma_warning_mqtt_tsunami_alert_event
+```
+
+
+
 
 ## Internals
 

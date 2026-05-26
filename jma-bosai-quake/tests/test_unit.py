@@ -116,15 +116,15 @@ def test_info_type_mapping():
 
 def test_prefecture_slug_and_magnitude_bucket_for_topic_axes():
     assert prefecture_slug("Southern Kyoto Prefecture", []) == "kyoto"
-    assert magnitude_bucket(2.4) == "magnitude-2"
-    assert magnitude_bucket(None) == "magnitude-unknown"
+    assert magnitude_bucket(2.4) == "m2"
+    assert magnitude_bucket(None) == "mx"
 
 
 def test_list_entry_normalization_from_fixture():
     api = JmaBosaiQuakeAPI(state_file="")
     report = api.normalize_report(SAMPLE_ENTRY, DETAIL_NO_TSUNAMI)
     assert report.prefecture == "kyoto"
-    assert report.magnitude_bucket == "magnitude-2"
+    assert report.magnitude_bucket == "m2"
     assert report.event_id == "20260521010824"
     assert report.report_id == "20260521010824_1"
     assert report.serial == 1
@@ -159,7 +159,7 @@ def test_nullable_fields_are_explicit_for_intensity_bulletin_without_hypocenter_
     report = JmaBosaiQuakeAPI(state_file="").normalize_report(entry)
 
     assert report.prefecture == "osaka"
-    assert report.magnitude_bucket == "magnitude-unknown"
+    assert report.magnitude_bucket == "mx"
     assert report.title_en is None
     assert report.epicenter_area_code is None
     assert report.epicenter_area_jp is None
@@ -231,3 +231,4 @@ def test_state_file_persists_seen_keys():
 
 def test_default_state_file_matches_repo_contract():
     assert DEFAULT_STATE_FILE == ".\\state\\jma-bosai-quake.json"
+

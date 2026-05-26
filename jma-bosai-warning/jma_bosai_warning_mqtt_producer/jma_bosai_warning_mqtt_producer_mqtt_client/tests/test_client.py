@@ -19,6 +19,8 @@ from jma_bosai_warning_mqtt_producer_data import Office
 from test_jma_bosai_warning_mqtt_producer_data_office import Test_Office
 from jma_bosai_warning_mqtt_producer_data import WeatherWarning
 from test_jma_bosai_warning_mqtt_producer_data_weatherwarning import Test_WeatherWarning
+from jma_bosai_warning_mqtt_producer_data import TsunamiAlert
+from test_jma_bosai_warning_mqtt_producer_data_tsunamialert import Test_TsunamiAlert
 from jma_bosai_warning_mqtt_producer_mqtt_client import JPJMAWarningMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -160,6 +162,73 @@ async def test_jp_jma_warning_mqtt_jp_jma_warning_mqtt_weather_warning_py(mosqui
             feedurl=f"test_feedurl_{i}",
             office_code=f"test_office_code_{i}",
             area_code=f"test_area_code_{i}",
+            data=test_data,
+            content_type="application/json"
+        )
+    
+    # Wait for all 5 messages to be received (with timeout)
+    try:
+        await asyncio.wait_for(received_event.wait(), timeout=10.0)
+    except asyncio.TimeoutError:
+        pytest.fail(f"Did not receive all 5 messages within timeout, got {len(received_data)}")
+    
+    # Verify all 5 messages received
+    assert len(received_data) == 5, f"Expected 5 messages, got {len(received_data)}"
+    
+    # Cleanup
+    await subscriber_client.disconnect()
+    await publisher_client.disconnect()
+
+
+
+@pytest.mark.asyncio
+async def test_jp_jma_warning_mqtt_jp_jma_warning_mqtt_tsunami_alert_py(mosquitto_broker):
+    """Test publishing and receiving JP.JMA.Warning.mqtt.TsunamiAlert message via MQTT."""
+    broker_host, broker_port = mosquitto_broker
+    # Create valid test data using the test helper
+    test_data = Test_TsunamiAlert.create_instance()
+    
+    # Create subscriber client
+    subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
+    loop = asyncio.get_running_loop()
+    subscriber_client = JPJMAWarningMqttMqttClient(subscriber_mqtt, content_mode='structured', loop=loop)
+    
+    # Create publisher client
+    publisher_mqtt = mqtt.Client(client_id="test_publisher")
+    publisher_client = JPJMAWarningMqttMqttClient(publisher_mqtt, content_mode='structured', loop=loop)
+    
+    # Track received messages (expecting 5)
+    received_data = []
+    received_event = asyncio.Event()
+    
+    async def on_jp_jma_warning_mqtt_tsunami_alert(mqtt_msg, cloud_event, data: jma_bosai_warning_mqtt_producer_data.TsunamiAlert, topic_params: dict):
+        """Handler for JP.JMA.Warning.mqtt.TsunamiAlert messages."""
+        received_data.append(data)
+        assert cloud_event['type'] == "JP.JMA.Tsunami.TsunamiAlert"
+        if len(received_data) >= 5:
+            received_event.set()
+    
+    # Register handler
+    subscriber_client.jp_jma_warning_mqtt_tsunami_alert_async = on_jp_jma_warning_mqtt_tsunami_alert
+    
+    # Connect both clients
+    await subscriber_client.connect(broker_host, broker_port)
+    await publisher_client.connect(broker_host, broker_port)
+    
+    # Subscribe to topic
+    test_topic = "test/jp_jma_warning_mqtt/jp_jma_warning_mqtt_tsunami_alert"
+    await subscriber_client.subscribe([test_topic])
+    
+    # Wait for subscription to be active
+    await asyncio.sleep(1)
+    
+    # Publish 5 messages to test message settlement and ordering
+    for i in range(5):
+        await publisher_client.publish_jp_jma_warning_mqtt_tsunami_alert(
+            topic=test_topic,
+            feedurl=f"test_feedurl_{i}",
+            event_id=f"test_event_id_{i}",
+            serial=f"test_serial_{i}",
             data=test_data,
             content_type="application/json"
         )

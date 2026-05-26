@@ -140,6 +140,11 @@ producer.send_weather_warning(
     content_type="application/json"
 )
 
+producer.send_tsunami_alert(
+    data=TsunamiAlert(...),
+    content_type="application/json"
+)
+
 
 # Close producer
 producer.close()
@@ -205,6 +210,29 @@ Send multiple WeatherWarning messages in sequence.
 - `_feedurl` (str): Value for placeholder feedurl in attribute source
 - `_office_code` (str): Value for placeholder office_code in attribute subject
 - `_area_code` (str): Value for placeholder area_code in attribute subject
+- `content_type` (str): Content type of the message data
+
+
+
+##### `send_tsunami_alert()`
+JMA Bosai active tsunami alert telemetry from list.json enriched with detail bulletin coastal forecasts.
+
+**Parameters:**
+- `data` (TsunamiAlert): The message data object
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_event_id` (str): Value for placeholder event_id in attribute subject
+- `_serial` (str): Value for placeholder serial in attribute subject
+- `content_type` (str): Content type of the message data (default: 'application/json')
+
+##### `send_tsunami_alert_batch()`
+
+Send multiple TsunamiAlert messages in sequence.
+
+**Parameters:**
+- `data_array` (List[TsunamiAlert]): Array of message data objects
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_event_id` (str): Value for placeholder event_id in attribute subject
+- `_serial` (str): Value for placeholder serial in attribute subject
 - `content_type` (str): Content type of the message data
 
 

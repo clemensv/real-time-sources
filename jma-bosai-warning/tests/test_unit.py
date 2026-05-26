@@ -84,7 +84,7 @@ def test_prefecture_for_office_uses_ascii_romanized_axis():
 
 @pytest.mark.parametrize(
     ("status", "code", "severity"),
-    [("注意報", "10", "ADVISORY"), ("警報", "03", "WARNING"), ("特別警報", "32", "EMERGENCY_WARNING"), ("継続", "38", "EMERGENCY_WARNING"), ("発表警報・注意報はなし", None, "NONE")],
+    [("注意報", "10", "advisory"), ("警報", "03", "warning"), ("特別警報", "32", "emergency"), ("継続", "38", "emergency"), ("発表警報・注意報はなし", None, "advisory")],
 )
 def test_status_to_severity(status, code, severity):
     assert status_to_severity(status, code) == severity
@@ -111,17 +111,17 @@ def test_warning_fixture_parsing():
     assert len(records) == 1
     record = records[0]
     assert record["prefecture"] == "tokyo"
-    assert record["severity"] == "EMERGENCY_WARNING"
+    assert record["severity"] == "emergency"
     assert record["event"] == "warning"
     assert record["office_code"] == "130000"
     assert record["area_code"] == "1310100"
     assert record["report_datetime"] == "2026-05-20T19:02:00Z"
     assert record["time_defines"] == ["2026-05-20T19:00:00Z"]
     assert record["warnings"][0]["code_description_en"] == "Thunderstorm"
-    assert record["warnings"][1]["severity"] == "EMERGENCY_WARNING"
+    assert record["warnings"][1]["severity"] == "emergency"
     assert record["warnings"][2]["code"] is None
     assert record["warnings"][2]["status"] == "NO_WARNINGS_OR_ADVISORIES"
-    assert record["warnings"][2]["severity"] == "NONE"
+    assert record["warnings"][2]["severity"] == "advisory"
 
 
 def test_warning_live_shape_area_types_parsing():
@@ -204,8 +204,8 @@ def test_reference_refresh_failure_keeps_cached_catalog():
     office = api.office_records()[0]
     assert office["office_code"] == "130000"
     assert office["prefecture"] == "tokyo"
-    assert office["severity"] == "REFERENCE"
-    assert office["event"] == "office"
+    assert office["severity"] == "info"
+    assert office["event"] == "info"
 
 
 def test_one_failed_office_does_not_abort_cycle():
@@ -221,3 +221,5 @@ def test_one_failed_office_does_not_abort_cycle():
     count = api.emit_warning_cycle(FakeProducer(), DictData, FakeKafka(), state, ["011000", "130000"])
     assert count == 1
     assert len(state.seen_weather) == 1
+
+

@@ -4843,7 +4843,7 @@ def mosquitto_jma_bosai_warning():
 
 class TestJmaBosaiWarningMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_jma_bosai_warning, jma_bosai_warning_mqtt_image):
-        _run_mqtt_contract_flow('jma-bosai-warning', jma_bosai_warning_mqtt_image, mosquitto_jma_bosai_warning, timeout=900)
+        _run_mqtt_contract_flow('jma-bosai-warning', jma_bosai_warning_mqtt_image, mosquitto_jma_bosai_warning, extra_env={'JMA_BOSAI_WARNING_MOCK': 'true'}, timeout=900)
 
 
 @pytest.fixture(scope='module')
@@ -5306,4 +5306,46 @@ class TestSingaporeNeaMqttDockerFlow(_B3SimpleMqttFlow):
     topic_filter = '#'
     expected_count = 5
     expected_prefix = ['weather/sg/nea/singapore-nea/central/S109/', 'air-quality/sg/nea/singapore-nea/central/central/']
+
+
+class TestJmaBosaiAmedasMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_jma_bosai_amedas, jma_bosai_amedas_mqtt_image):
+        _run_mqtt_contract_flow('jma-bosai-amedas', jma_bosai_amedas_mqtt_image, mosquitto_jma_bosai_amedas, extra_env={'JMA_BOSAI_AMEDAS_MOCK': 'true'}, timeout=900, min_messages=2)
+
+
+@pytest.fixture(scope='module')
+def jma_bosai_amedas_mqtt_image():
+    return build_image('jma-bosai-amedas', dockerfile='Dockerfile.mqtt', tag='test-jma-bosai-amedas-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_jma_bosai_amedas():
+    container, network, host_port = _generic_mosquitto('jma-bosai-amedas-mqtt-e2e', 'jma-bosai-amedas-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'jma-bosai-amedas-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+@pytest.fixture(scope='module')
+def jma_bosai_volcano_mqtt_image():
+    return build_image('jma-bosai-volcano', dockerfile='Dockerfile.mqtt', tag='test-jma-bosai-volcano-mqtt')
+
+@pytest.fixture()
+def mosquitto_jma_bosai_volcano():
+    container, network, host_port = _generic_mosquitto('jma-bosai-volcano-mqtt-e2e', 'jma-bosai-volcano-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'jma-bosai-volcano-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestJmaBosaiVolcanoMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_jma_bosai_volcano, jma_bosai_volcano_mqtt_image):
+        _run_mqtt_contract_flow('jma-bosai-volcano', jma_bosai_volcano_mqtt_image, mosquitto_jma_bosai_volcano, extra_env={'JMA_BOSAI_VOLCANO_MOCK': 'true'}, timeout=900, min_messages=3)
 

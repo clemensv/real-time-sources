@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "jma-bosai-amedas-mqtt"
+version = "0.1.0"
+description = "MQTT feeder for jma-bosai-amedas"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "jma_bosai_amedas_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+paho-mqtt = ">=2.1.0"
+jma_bosai_amedas = { path = ".." }
+jma_bosai_amedas_mqtt_producer_data = { path = "../jma_bosai_amedas_mqtt_producer/jma_bosai_amedas_mqtt_producer_data" }
+jma_bosai_amedas_mqtt_producer_mqtt_client = { path = "../jma_bosai_amedas_mqtt_producer/jma_bosai_amedas_mqtt_producer_mqtt_client" }
+
+[tool.poetry.scripts]
+jma-bosai-amedas-mqtt = "jma_bosai_amedas_mqtt.app:main"

@@ -49,4 +49,3 @@ class MaxIntensityenum(Enum):
         """
         members = list(cls)
         return members.index(member)
-

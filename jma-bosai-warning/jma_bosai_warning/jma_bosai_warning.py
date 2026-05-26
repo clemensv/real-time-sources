@@ -55,7 +55,7 @@ PREFECTURE_BY_PREFIX = {
     "36": "tokushima", "37": "kagawa", "38": "ehime", "39": "kochi", "40": "fukuoka", "41": "saga", "42": "nagasaki",
     "43": "kumamoto", "44": "oita", "45": "miyazaki", "46": "kagoshima", "47": "okinawa",
 }
-SEVERITY_RANK = {"NONE": 0, "ADVISORY": 1, "WARNING": 2, "EMERGENCY_WARNING": 3}
+SEVERITY_RANK = {"info": 0, "advisory": 1, "warning": 2, "emergency": 3}
 
 
 def make_retrying_session() -> requests.Session:
@@ -102,12 +102,12 @@ def jst_to_utc(value: str | None) -> str | None:
 def status_to_severity(status: str | None, code: str | None = None) -> str:
     status = status or ""
     if status in {"発表警報・注意報はなし", "NO_WARNINGS_OR_ADVISORIES"}:
-        return "NONE"
+        return "advisory"
     if code in SPECIAL_WARNING_CODES or "特別警報" in status:
-        return "EMERGENCY_WARNING"
-    if "注意報" in status:
-        return "ADVISORY"
-    return "WARNING"
+        return "emergency"
+    if "警報" in status:
+        return "warning"
+    return "advisory"
 
 
 def _topic_segment(value: str | None) -> str:
@@ -317,6 +317,14 @@ def parse_tsunami_observations(detail: dict[str, Any] | None, bulletin_type: str
     return list(observations.values())
 
 
+def tsunami_severity(regions: list[dict[str, Any]]) -> str:
+    categories = {str(r.get("category") or "") for r in regions}
+    if "MAJOR_WARNING" in categories:
+        return "emergency"
+    if "WARNING" in categories:
+        return "warning"
+    return "advisory"
+
 def parse_tsunami_alert(entry: dict[str, Any], detail: dict[str, Any] | None = None) -> dict[str, Any]:
     filename = entry.get("json") or ""
     local_report = entry.get("rdt") or entry.get("reportDatetime")
@@ -327,7 +335,7 @@ def parse_tsunami_alert(entry: dict[str, Any], detail: dict[str, Any] | None = N
         "report_datetime": jst_to_utc(local_report) or "1970-01-01T00:00:00Z", "report_datetime_local": local_report or "1970-01-01T00:00:00+09:00",
         "title_jp": entry.get("ttl") or "津波情報", "title_en": entry.get("en_ttl") or TITLE_EN_MAP.get(entry.get("ttl"), "Tsunami alert"),
         "bulletin_type": bulletin_type, "detail_url": TSUNAMI_DETAIL_BASE + filename if filename and not filename.startswith("http") else filename,
-        "affected_coastal_regions": parse_tsunami_detail_regions(detail), "observations": parse_tsunami_observations(detail, bulletin_type),
+        "prefecture": "japan", "severity": tsunami_severity(parse_tsunami_detail_regions(detail)), "affected_coastal_regions": parse_tsunami_detail_regions(detail), "observations": parse_tsunami_observations(detail, bulletin_type),
     }
 
 
@@ -372,8 +380,8 @@ class JmaBosaiWarningAPI:
     def office_records(self) -> list[dict[str, Any]]:
         offices = self.area_catalog.get("offices") if self.area_catalog else None
         if offices:
-            return [{"prefecture": prefecture_for_office(code, item.get("enName")), "severity": "REFERENCE", "event": "office", "office_code": code, "area_code": code, "name_jp": item.get("name", code), "name_en": item.get("enName", code), "parent_office_code": item.get("parent"), "office_type": "PREFECTURE" if code.endswith("0000") and not code.startswith("01") else "SUBREGION"} for code, item in offices.items()]
-        return [{**o, "prefecture": prefecture_for_office(o["code"], o.get("name_en")), "severity": "REFERENCE", "event": "office", "area_code": o["code"]} for o in WARNING_OFFICES]
+            return [{"prefecture": prefecture_for_office(code, item.get("enName")), "severity": "info", "event": "info", "office_code": code, "area_code": code, "name_jp": item.get("name", code), "name_en": item.get("enName", code), "parent_office_code": item.get("parent"), "office_type": "PREFECTURE" if code.endswith("0000") and not code.startswith("01") else "SUBREGION"} for code, item in offices.items()]
+        return [{**o, "prefecture": prefecture_for_office(o["code"], o.get("name_en")), "severity": "info", "event": "info", "area_code": o["code"]} for o in WARNING_OFFICES]
 
     def fetch_warning_payload(self, office_code: str) -> dict[str, Any]:
         response = self.session.get(WARNING_URL_TEMPLATE.format(office_code=office_code), timeout=20)

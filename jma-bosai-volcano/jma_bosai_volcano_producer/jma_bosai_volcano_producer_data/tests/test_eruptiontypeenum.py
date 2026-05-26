@@ -29,8 +29,8 @@ class Test_EruptionTypeenum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(EruptionTypeenum.ERUPTION.value, "ERUPTION")
-        self.assertEqual(EruptionTypeenum.EXPLOSION.value, "EXPLOSION")
-        self.assertEqual(EruptionTypeenum.CONTINUOUS_ERUPTION_CONTINUING.value, "CONTINUOUS_ERUPTION_CONTINUING")
-        self.assertEqual(EruptionTypeenum.CONTINUOUS_ERUPTION_STOPPED.value, "CONTINUOUS_ERUPTION_STOPPED")
-        self.assertEqual(EruptionTypeenum.UNKNOWN.value, "UNKNOWN")
+        self.assertEqual(EruptionTypeenum.ERUPTION.value, 'ERUPTION')
+        self.assertEqual(EruptionTypeenum.EXPLOSION.value, 'EXPLOSION')
+        self.assertEqual(EruptionTypeenum.CONTINUOUS_ERUPTION_CONTINUING.value, 'CONTINUOUS_ERUPTION_CONTINUING')
+        self.assertEqual(EruptionTypeenum.CONTINUOUS_ERUPTION_STOPPED.value, 'CONTINUOUS_ERUPTION_STOPPED')
+        self.assertEqual(EruptionTypeenum.UNKNOWN.value, 'UNKNOWN')

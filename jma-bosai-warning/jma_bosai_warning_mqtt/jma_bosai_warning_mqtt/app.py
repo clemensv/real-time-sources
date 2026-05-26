@@ -18,17 +18,36 @@ from jma_bosai_warning.jma_bosai_warning import (
     AREA_CATALOG_URL,
     WARNING_OFFICE_CODES,
     WARNING_URL_TEMPLATE,
+    TSUNAMI_LIST_URL,
+    TSUNAMI_DETAIL_BASE,
     BridgeState,
     JmaBosaiWarningAPI,
     _cap_list,
     _load_state,
     _save_state,
     parse_weather_warning_payload,
+    parse_tsunami_alert,
 )
-from jma_bosai_warning_mqtt_producer_data import Office, WeatherWarning
+from jma_bosai_warning_mqtt_producer_data import Office, WeatherWarning, TsunamiAlert
 from jma_bosai_warning_mqtt_producer_mqtt_client.client import JPJMAWarningMqttMqttClient
 
 logger = logging.getLogger(__name__)
+
+
+class MockAPI(JmaBosaiWarningAPI):
+    def refresh_area_catalog(self) -> bool:
+        self.area_catalog = {"offices": {"130000": {"name": "東京都", "enName": "Tokyo", "parent": None}}}
+        self.area_names = {"130000": "東京都", "130010": "東京地方"}
+        return True
+
+    def fetch_warning_payload(self, office_code: str):
+        return {"reportDatetime":"2026-01-01T00:00:00+09:00","timeSeries":[{"timeDefines":["2026-01-01T00:00:00+09:00"],"areas":[{"code":"130010","name":"東京地方","warnings":[{"code":"03","status":"警報"}]}]}]}
+
+    def fetch_tsunami_list(self):
+        return [{"eid":"20260101000000","ser":"1","json":"VTSE41.json","ift":"発表","rdt":"2026-01-01T00:01:00+09:00","ttl":"津波警報・注意報・予報"}]
+
+    def fetch_tsunami_detail(self, filename: str):
+        return {"Body":{"Tsunami":{"Forecast":[{"Area":{"Code":"100","Name":"東京湾内湾"},"Category":"津波警報"}]}}}
 
 
 async def _publish_offices(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarningMqttMqttClient) -> int:
@@ -76,6 +95,39 @@ async def _publish_warning_cycle(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarn
     return emitted
 
 
+async def _publish_tsunami_cycle(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarningMqttMqttClient, state: BridgeState) -> int:
+    pending: list[str] = []
+    emitted = 0
+    seen = set(state.seen_tsunami)
+    try:
+        entries = api.fetch_tsunami_list()
+    except Exception as exc:
+        logger.warning("Skipping tsunami cycle after list fetch failure: %s", exc)
+        return 0
+    for entry in entries:
+        try:
+            detail = api.fetch_tsunami_detail(entry.get("json", ""))
+        except Exception as exc:
+            logger.warning("Could not fetch tsunami detail %s: %s", entry.get("json"), exc)
+            detail = None
+        record = parse_tsunami_alert(entry, detail)
+        dedupe_key = f"{record['event_id']}|{record['serial']}"
+        if dedupe_key in seen:
+            continue
+        await mqtt_client.publish_jp_jma_warning_mqtt_tsunami_alert(
+            feedurl=record.get("detail_url") or TSUNAMI_LIST_URL,
+            prefecture=record["prefecture"],
+            severity=record["severity"],
+            event_id=record["event_id"],
+            serial=str(record["serial"]),
+            data=TsunamiAlert(**record),
+        )
+        pending.append(dedupe_key)
+        emitted += 1
+    state.seen_tsunami = _cap_list(state.seen_tsunami + pending)
+    return emitted
+
+
 async def feed(
     api: JmaBosaiWarningAPI,
     broker_host: str,
@@ -118,8 +170,9 @@ async def feed(
                 _save_state(state_file, state.as_dict())
                 logger.info("Published %d retained JMA office reference record(s)", office_count)
             emitted = await _publish_warning_cycle(api, mqtt_client, state, office_codes)
+            tsunami_emitted = await _publish_tsunami_cycle(api, mqtt_client, state)
             _save_state(state_file, state.as_dict())
-            logger.info("Published %d JMA weather warning record(s)", emitted)
+            logger.info("Published %d JMA weather warning and %d tsunami record(s)", emitted, tsunami_emitted)
             if once:
                 break
             await asyncio.sleep(max(0, polling_interval_warning - (time.monotonic() - started)))
@@ -153,6 +206,6 @@ def main() -> None:
         parser.error("only the 'feed' command is supported")
     office_codes = [part.strip() for part in args.office_codes.split(",") if part.strip()]
     host, port, tls = _parse_broker_url(args.broker_url)
-    api = JmaBosaiWarningAPI()
+    api = MockAPI() if os.getenv("JMA_BOSAI_WARNING_MOCK", "").lower() in ("1", "true", "yes") else JmaBosaiWarningAPI()
     logger.info("Polling JMA Bosai warning feeds and publishing to MQTT %s:%d", host, port)
     asyncio.run(feed(api, host, port, state_file=args.state_file, polling_interval_warning=args.polling_interval_warning, office_metadata_refresh_hours=args.office_metadata_refresh_hours, office_codes=office_codes, username=args.username or None, password=args.password or None, tls=tls, client_id=args.client_id or None, content_mode=args.content_mode, once=args.once))

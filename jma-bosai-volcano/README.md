@@ -35,3 +35,17 @@ jma-bosai-volcano feed --kafka-bootstrap-servers localhost:9092 --kafka-topic jm
 Configuration is also available through environment variables: `CONNECTION_STRING`, `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC`, `SASL_USERNAME`, `SASL_PASSWORD`, `POLLING_INTERVAL`, `VOLCANO_METADATA_REFRESH_HOURS`, `STATE_FILE`, `ONCE_MODE`, and `KAFKA_ENABLE_TLS`.
 
 - Fabric notebook hosting: deploy `notebook/jma-bosai-volcano-feed.ipynb` with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+
+
+## MQTT and AMQP companion transports
+
+This source now ships separate Kafka, MQTT, and AMQP containers. MQTT publishes binary-mode CloudEvents to the UNS topic tree below; AMQP publishes the same CloudEvents to the configured AMQP address with subject and routing axes in message/application properties.
+
+Topic templates:
+- `weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/info`
+- `weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/warning`
+- `weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/eruption`
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources-jma-bosai-volcano-mqtt:latest` (`Dockerfile.mqtt`)
+- AMQP image: `ghcr.io/clemensv/real-time-sources-jma-bosai-volcano-amqp:latest` (`Dockerfile.amqp`)
+- Azure templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`.

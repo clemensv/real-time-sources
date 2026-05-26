@@ -1016,6 +1016,7 @@
       "module": "waterinfo_vmm_amqp"
     },
     {
+    {
       "dir": "noaa-goes",
       "image": "noaa-goes-mqtt",
       "file": "Dockerfile.mqtt",
@@ -1050,6 +1051,54 @@
       "image": "singapore-nea-amqp",
       "file": "Dockerfile.amqp",
       "module": "singapore_nea_amqp"
+    },
+    {
+      "dir": "jma-bosai-amedas",
+      "image": "jma-bosai-amedas-kafka",
+      "file": "Dockerfile",
+      "module": "jma_bosai_amedas"
+    },
+    {
+      "dir": "jma-bosai-amedas",
+      "image": "jma-bosai-amedas-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "jma_bosai_amedas_mqtt"
+    },
+    {
+      "dir": "jma-bosai-amedas",
+      "image": "jma-bosai-amedas-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "jma_bosai_amedas_amqp"
+    },
+    {
+      "dir": "jma-bosai-quake",
+      "image": "jma-bosai-quake-kafka",
+      "file": "Dockerfile",
+      "module": "jma_bosai_quake"
+    },
+    {
+      "dir": "jma-bosai-volcano",
+      "image": "jma-bosai-volcano-kafka",
+      "file": "Dockerfile",
+      "module": "jma_bosai_volcano"
+    },
+    {
+      "dir": "jma-bosai-volcano",
+      "image": "jma-bosai-volcano-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "jma_bosai_volcano_mqtt"
+    },
+    {
+      "dir": "jma-bosai-volcano",
+      "image": "jma-bosai-volcano-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "jma_bosai_volcano_amqp"
+    },
+    {
+      "dir": "jma-bosai-warning",
+      "image": "jma-bosai-warning-kafka",
+      "file": "Dockerfile",
+      "module": "jma_bosai_warning"
     }
   ],
   "flow": [
@@ -2267,6 +2316,34 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestSingaporeNeaAmqpDockerFlow"
+    },
+    {
+      "dir": "jma-bosai-amedas",
+      "image": "jma-bosai-amedas-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestJmaBosaiAmedasMqttDockerFlow"
+    },
+    {
+      "dir": "jma-bosai-amedas",
+      "image": "jma-bosai-amedas-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestJmaBosaiAmedasAmqpDockerFlow"
+    },
+    {
+      "dir": "jma-bosai-volcano",
+      "image": "jma-bosai-volcano-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestJmaBosaiVolcanoMqttDockerFlow"
+    },
+    {
+      "dir": "jma-bosai-volcano",
+      "image": "jma-bosai-volcano-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestJmaBosaiVolcanoAmqpDockerFlow"
     }
   ]
 }

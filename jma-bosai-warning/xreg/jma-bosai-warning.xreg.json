@@ -180,11 +180,21 @@
             "qos": 1,
             "retain": false
           }
+        },
+        "JP.JMA.Warning.mqtt.TsunamiAlert": {
+          "name": "TsunamiAlert",
+          "basemessageurl": "/messagegroups/JP.JMA.Tsunami/messages/JP.JMA.Tsunami.TsunamiAlert",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{event_id}/{serial}/tsunami",
+            "qos": 1,
+            "retain": false
+          }
         }
       }
     },
     "JP.JMA.Warning.amqp": {
-      "description": "AMQP 1.0 transport variant for jma-bosai-warning events. It carries the same CloudEvents and payload schemas as the source events on one broker address for queue- and topic-oriented consumers.",
+      "description": "AMQP 1.0 transport variant for jma-bosai-warning weather-warning and tsunami CloudEvents on one broker address.",
       "messages": {
         "JP.JMA.Warning.amqp.Office": {
           "name": "Office",
@@ -210,6 +220,20 @@
                 "type": "uritemplate",
                 "value": "jp.jma.warning/{office_code}/{area_code}",
                 "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for this event family."
+              }
+            }
+          }
+        },
+        "JP.JMA.Warning.amqp.TsunamiAlert": {
+          "name": "TsunamiAlert",
+          "basemessageurl": "/messagegroups/JP.JMA.Tsunami/messages/JP.JMA.Tsunami.TsunamiAlert",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "jp.jma.tsunami/{event_id}/{serial}",
+                "description": "AMQP message subject matching the CloudEvent subject for this tsunami bulletin revision."
               }
             }
           }
@@ -284,30 +308,28 @@
                   },
                   "severity": {
                     "type": "string",
-                    "description": "MQTT topic severity axis. Office REFERENCE records emit REFERENCE; weather warning records emit the highest normalized active warning severity.",
+                    "description": "Japan-native severity axis for JMA warning MQTT topics: info for office reference records, advisory for 注意報-level notices and cancellations, warning for 警報-level warnings, and emergency for 特別警報/special-warning category codes.",
                     "enum": [
-                      "REFERENCE",
-                      "NONE",
-                      "ADVISORY",
-                      "WARNING",
-                      "EMERGENCY_WARNING"
+                      "info",
+                      "advisory",
+                      "warning",
+                      "emergency"
                     ],
                     "descriptions": {
-                      "REFERENCE": "Provider value `REFERENCE` for this coded alert field.",
-                      "NONE": "Provider value `NONE` for this coded alert field.",
-                      "ADVISORY": "Provider value `ADVISORY` for this coded alert field.",
-                      "WARNING": "Provider value `WARNING` for this coded alert field.",
-                      "EMERGENCY_WARNING": "Provider value `EMERGENCY_WARNING` for this coded alert field."
+                      "info": "Reference-information routing value used by retained JMA office records.",
+                      "advisory": "Normalized advisory/cancellation value for 注意報-level or cleared JMA warning items.",
+                      "warning": "Normalized warning value for 警報-level JMA warning items.",
+                      "emergency": "Normalized emergency value for 特別警報 or special-warning category codes 32-38."
                     }
                   },
                   "event": {
                     "type": "string",
                     "description": "Fixed MQTT topic event segment for retained office reference records.",
                     "enum": [
-                      "office"
+                      "info"
                     ],
                     "descriptions": {
-                      "office": "Provider value `office` for this coded alert field."
+                      "info": "Provider value `info` for retained office reference records."
                     }
                   }
                 },
@@ -347,20 +369,18 @@
                   },
                   "severity": {
                     "type": "string",
-                    "description": "MQTT topic severity axis. Weather warning records emit the highest normalized warning severity present in the area bulletin; retained office REFERENCE records use REFERENCE on the same shared axis.",
+                    "description": "Japan-native severity axis for JMA warning MQTT topics: info for office reference records, advisory for 注意報-level notices and cancellations, warning for 警報-level warnings, and emergency for 特別警報/special-warning category codes.",
                     "enum": [
-                      "REFERENCE",
-                      "NONE",
-                      "ADVISORY",
-                      "WARNING",
-                      "EMERGENCY_WARNING"
+                      "info",
+                      "advisory",
+                      "warning",
+                      "emergency"
                     ],
                     "descriptions": {
-                      "REFERENCE": "Provider value `REFERENCE` for this coded alert field.",
-                      "NONE": "Provider value `NONE` for this coded alert field.",
-                      "ADVISORY": "Provider value `ADVISORY` for this coded alert field.",
-                      "WARNING": "Provider value `WARNING` for this coded alert field.",
-                      "EMERGENCY_WARNING": "Provider value `EMERGENCY_WARNING` for this coded alert field."
+                      "info": "Reference-information routing value used by retained JMA office records.",
+                      "advisory": "Normalized advisory/cancellation value for 注意報-level or cleared JMA warning items.",
+                      "warning": "Normalized warning value for 警報-level JMA warning items.",
+                      "emergency": "Normalized emergency value for 特別警報 or special-warning category codes 32-38."
                     }
                   },
                   "office_code": {
@@ -386,7 +406,7 @@
                       "warning"
                     ],
                     "descriptions": {
-                      "warning": "Provider value `warning` for this coded alert field."
+                      "warning": "Provider value `warning` for JMA weather warning state records."
                     }
                   },
                   "area_name": {
@@ -550,18 +570,16 @@
                         },
                         "severity": {
                           "type": "string",
-                          "description": "Normalized severity derived from the JMA status text and special-warning codes. NONE represents 発表警報・注意報はなし, ADVISORY represents 注意報-level notices, WARNING represents 警報/発表/継続 items, and EMERGENCY_WARNING represents 特別警報 or special-warning category codes 32-38.",
+                          "description": "Normalized severity derived from the JMA status text and special-warning codes. advisory covers 注意報-level notices and cancellation/clear statuses, warning covers 警報/発表/継続 items, and emergency covers 特別警報 or special-warning category codes 32-38.",
                           "enum": [
-                            "NONE",
-                            "ADVISORY",
-                            "WARNING",
-                            "EMERGENCY_WARNING"
+                            "advisory",
+                            "warning",
+                            "emergency"
                           ],
                           "descriptions": {
-                            "NONE": "Provider value `NONE` for this coded alert field.",
-                            "ADVISORY": "Provider value `ADVISORY` for this coded alert field.",
-                            "WARNING": "Provider value `WARNING` for this coded alert field.",
-                            "EMERGENCY_WARNING": "Provider value `EMERGENCY_WARNING` for this coded alert field."
+                            "advisory": "Normalized advisory/cancellation value for 注意報-level or cleared JMA warning items.",
+                            "warning": "Normalized warning value for 警報-level JMA warning items.",
+                            "emergency": "Normalized emergency value for 特別警報 or special-warning category codes 32-38."
                           }
                         }
                       },
@@ -850,9 +868,30 @@
                         "arrival_status"
                       ]
                     }
+                  },
+                  "prefecture": {
+                    "type": "string",
+                    "description": "ASCII-safe Japan region routing axis for tsunami MQTT/AMQP topics.",
+                    "pattern": "^[a-z0-9][a-z0-9-]*$"
+                  },
+                  "severity": {
+                    "type": "string",
+                    "enum": [
+                      "advisory",
+                      "warning",
+                      "emergency"
+                    ],
+                    "description": "Japan-native tsunami warning severity axis: advisory, warning, or emergency.",
+                    "descriptions": {
+                      "advisory": "Tsunami advisory or forecast-level routing severity.",
+                      "warning": "Tsunami warning routing severity.",
+                      "emergency": "Major tsunami warning routing severity."
+                    }
                   }
                 },
                 "required": [
+                  "severity",
+                  "prefecture",
                   "event_id",
                   "serial",
                   "info_type",

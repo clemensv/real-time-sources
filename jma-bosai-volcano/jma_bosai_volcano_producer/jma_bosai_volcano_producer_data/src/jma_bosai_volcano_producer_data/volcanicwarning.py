@@ -12,8 +12,9 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_volcano_producer_data.conditionenum import ConditionEnum
+from jma_bosai_volcano_producer_data.eventenum import EventEnum
 from jma_bosai_volcano_producer_data.alertlevelcodeenum import AlertLevelCodeenum
+from jma_bosai_volcano_producer_data.conditionenum import ConditionEnum
 import datetime
 
 
@@ -21,7 +22,7 @@ import datetime
 @dataclass
 class VolcanicWarning:
     """
-    Active JMA Bosai volcanic warning or forecast for the target volcano. JMA eruption alert levels express the volcanic activity state, area needing caution, and expected disaster-prevention actions.
+    JMA Bosai active volcanic warning or forecast for a target volcano.
     
     Attributes:
         volcano_code (str)
@@ -34,6 +35,8 @@ class VolcanicWarning:
         condition (ConditionEnum)
         info_type_jp (str)
         area_codes (typing.List[str])
+        prefecture (str)
+        event (EventEnum)
     """
     
     
@@ -47,6 +50,8 @@ class VolcanicWarning:
     condition: ConditionEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="condition"))
     info_type_jp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="info_type_jp"))
     area_codes: typing.List[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_codes"))
+    prefecture: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="prefecture"))
+    event: EventEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'VolcanicWarning':
@@ -173,14 +178,16 @@ class VolcanicWarning:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='xcgzywdlrxugbgxzbiwt',
-            event_id='crpydpuulhoolpakovht',
+            volcano_code='jpizzhhbwpoetrkdqhuo',
+            event_id='qwmxzgcmkscsvpqqjyra',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             alert_level_code=AlertLevelCodeenum.CODE_02,
-            alert_level_name='ltpcziigktswawhbauby',
-            previous_level_code='gttxhgvanxufqxldsrqk',
+            alert_level_name='rpexvjqilshwpcuksjed',
+            previous_level_code='nxjdukfdjulbihrpwkko',
             condition=ConditionEnum.ISSUED,
-            info_type_jp='davclfwsyqyhugnidevg',
-            area_codes=['slidjbkwnzsjivpcpxdc', 'htmwsxerqozewjrlasyq', 'gztpxtgyvnveofoavzss', 'jlqpmajlfsrxiohgznhe', 'lctaqscwmhwscfvjnqkv']
+            info_type_jp='gelfxmiorqwwsgzdvjsn',
+            area_codes=['oxahronjbzmitcmlsahs', 'cuaqypkoitxljaldoenc', 'kxhpmxktabdvnxyzextw', 'zkeebusxuolsmulxxxjd', 'ctmwgeguvleivyovrewo'],
+            prefecture='rqqdrjzkfiozzimxbnyw',
+            event=EventEnum.eruption
         )

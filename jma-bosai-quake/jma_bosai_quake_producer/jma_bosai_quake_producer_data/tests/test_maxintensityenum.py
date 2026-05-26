@@ -38,3 +38,4 @@ class Test_MaxIntensityenum(unittest.TestCase):
         self.assertEqual(MaxIntensityenum.INTENSITY_6_MINUS.value, '6-')
         self.assertEqual(MaxIntensityenum.INTENSITY_6_PLUS.value, '6+')
         self.assertEqual(MaxIntensityenum.INTENSITY_7.value, '7')
+

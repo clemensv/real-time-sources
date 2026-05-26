@@ -20,6 +20,50 @@
       "messagegroups": [
         "#/messagegroups/JP.JMA.Amedas"
       ]
+    },
+    "JP.JMA.Amedas.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/JP.JMA.Amedas.mqtt"
+      ],
+      "description": "MQTT/5.0 producer endpoint for jma-bosai-amedas CloudEvents."
+    },
+    "JP.JMA.Amedas.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/jma-bosai-amedas"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/JP.JMA.Amedas.amqp"
+      ],
+      "description": "AMQP/1.0 producer endpoint for jma-bosai-amedas CloudEvents."
     }
   },
   "messagegroups": {
@@ -64,6 +108,88 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/JP.JMA.Amedas.jstruct/schemas/JP.JMA.Amedas.Observation"
+        }
+      }
+    },
+    "JP.JMA.Amedas.mqtt": {
+      "description": "MQTT 5 variant of jma-bosai-amedas events with UNS topic routing.",
+      "messages": {
+        "JP.JMA.Amedas.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/jp/jma/jma-bosai-amedas/{prefecture}/{station_code}/{event}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "JP.JMA.Amedas.mqtt.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/jp/jma/jma-bosai-amedas/{prefecture}/{station_code}/{event}",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "JP.JMA.Amedas.amqp": {
+      "description": "AMQP 1.0 variant of jma-bosai-amedas events for queue-oriented consumers.",
+      "messages": {
+        "JP.JMA.Amedas.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "jp.jma.amedas/{station_code}",
+                "description": "AMQP message subject matching the CloudEvent subject."
+              }
+            },
+            "application_properties": {
+              "prefecture": {
+                "type": "uritemplate",
+                "value": "{prefecture}",
+                "description": "prefecture routing axis carried in the event payload."
+              },
+              "event": {
+                "type": "uritemplate",
+                "value": "{event}",
+                "description": "event routing axis carried in the event payload."
+              }
+            }
+          }
+        },
+        "JP.JMA.Amedas.amqp.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "jp.jma.amedas/{station_code}",
+                "description": "AMQP message subject matching the CloudEvent subject."
+              }
+            },
+            "application_properties": {
+              "prefecture": {
+                "type": "uritemplate",
+                "value": "{prefecture}",
+                "description": "prefecture routing axis carried in the event payload."
+              },
+              "event": {
+                "type": "uritemplate",
+                "value": "{event}",
+                "description": "event routing axis carried in the event payload."
+              }
+            }
+          }
         }
       }
     }
@@ -174,9 +300,23 @@
                                 "type": "string"
                               },
                               "description": "Measurement capability names derived by the bridge from the JMA elems_bitmask. The values describe which observation families the station can emit, such as precipitation, wind, temperature, sunshine_duration, snow_depth, humidity, pressure, or visibility."
+                            },
+                            "prefecture": {
+                              "type": "string",
+                              "description": "ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown.",
+                              "pattern": "^[a-z0-9][a-z0-9-]*$"
+                            },
+                            "event": {
+                              "type": "string",
+                              "enum": [
+                                "info"
+                              ],
+                              "description": "Fixed topic event segment for Station messages."
                             }
                           },
                           "required": [
+                            "event",
+                            "prefecture",
                             "station_code",
                             "kj_name",
                             "kana",
@@ -675,9 +815,23 @@
                                 "null"
                               ],
                               "description": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                            },
+                            "prefecture": {
+                              "type": "string",
+                              "description": "ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown.",
+                              "pattern": "^[a-z0-9][a-z0-9-]*$"
+                            },
+                            "event": {
+                              "type": "string",
+                              "enum": [
+                                "observation"
+                              ],
+                              "description": "Fixed topic event segment for Observation messages."
                             }
                           },
                           "required": [
+                            "event",
+                            "prefecture",
                             "station_code",
                             "observed_at",
                             "observed_at_local",

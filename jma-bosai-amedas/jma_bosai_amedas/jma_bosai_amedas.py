@@ -31,6 +31,11 @@ MEASUREMENT_CAPABILITIES = [
     "precipitation", "wind", "temperature", "sunshine_duration",
     "snow_depth", "humidity", "pressure", "visibility",
 ]
+PREFECTURE_BY_PREFIX = {"01":"hokkaido","02":"aomori","03":"iwate","04":"miyagi","05":"akita","06":"yamagata","07":"fukushima","08":"ibaraki","09":"tochigi","10":"gunma","11":"saitama","12":"chiba","13":"tokyo","14":"kanagawa","15":"niigata","16":"toyama","17":"ishikawa","18":"fukui","19":"yamanashi","20":"nagano","21":"gifu","22":"shizuoka","23":"aichi","24":"mie","25":"shiga","26":"kyoto","27":"osaka","28":"hyogo","29":"nara","30":"wakayama","31":"tottori","32":"shimane","33":"okayama","34":"hiroshima","35":"yamaguchi","36":"tokushima","37":"kagawa","38":"ehime","39":"kochi","40":"fukuoka","41":"saga","42":"nagasaki","43":"kumamoto","44":"oita","45":"miyazaki","46":"kagoshima","47":"okinawa"}
+
+def prefecture_for_station(station_code: str) -> str:
+    return PREFECTURE_BY_PREFIX.get(str(station_code)[:2], "unknown")
+
 MEASUREMENT_FIELDS = [
     "temp", "humidity", "pressure", "normal_pressure", "wind_speed", "wind_direction",
     "precipitation10m", "precipitation1h", "precipitation3h", "precipitation24h",
@@ -160,6 +165,8 @@ def _measurement_kwargs() -> dict[str, Any]:
 
 def parse_station(station_code: str, payload: dict[str, Any]) -> Station:
     return Station(
+        prefecture=prefecture_for_station(station_code),
+        event="info",
         station_code=station_code,
         kj_name=payload.get("kjName", ""),
         kana=payload.get("kana") or payload.get("knName", ""),
@@ -218,6 +225,8 @@ def parse_observation(station_code: str, payload: dict[str, Any], observed_at_lo
         return None
     utc = observed_at_local.astimezone(timezone.utc)
     return Observation(
+        prefecture=prefecture_for_station(station_code),
+        event="observation",
         station_code=station_code,
         observed_at=utc.isoformat().replace("+00:00", "Z"),
         observed_at_local=observed_at_local.isoformat(),

@@ -19,6 +19,7 @@ from cloudevents.http import CloudEvent
 import jma_bosai_warning_mqtt_producer_data
 from jma_bosai_warning_mqtt_producer_data import Office
 from jma_bosai_warning_mqtt_producer_data import WeatherWarning
+from jma_bosai_warning_mqtt_producer_data import TsunamiAlert
 
 
 # URI template regex pattern
@@ -189,6 +190,7 @@ def get_default_topic_mappings_jp_jma_warning_mqtt() -> Dict[str, str]:
     return {
         "JP.JMA.Warning.mqtt.Office": "alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}",
         "JP.JMA.Warning.mqtt.WeatherWarning": "alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}",
+        "JP.JMA.Warning.mqtt.TsunamiAlert": "alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{event_id}/{serial}/tsunami",
     }
 
 
@@ -244,6 +246,8 @@ class JPJMAWarningMqttMqttClient(_ClientBase):
         self.jp_jma_warning_mqtt_office_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, jma_bosai_warning_mqtt_producer_data.Office, Dict[str, str]], Awaitable[None]]] = None
         
         self.jp_jma_warning_mqtt_weather_warning_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, jma_bosai_warning_mqtt_producer_data.WeatherWarning, Dict[str, str]], Awaitable[None]]] = None
+        
+        self.jp_jma_warning_mqtt_tsunami_alert_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, jma_bosai_warning_mqtt_producer_data.TsunamiAlert, Dict[str, str]], Awaitable[None]]] = None
         
         
         # Attach message callback
@@ -310,6 +314,18 @@ class JPJMAWarningMqttMqttClient(_ClientBase):
                     await self.jp_jma_warning_mqtt_weather_warning_async(mqtt_message, cloud_event, data, topic_params)
                 except Exception as e:
                     print(f"Error in jp_jma_warning_mqtt_weather_warning handler: {e}")
+            return
+        
+        if event_type == "JP.JMA.Tsunami.TsunamiAlert":
+            if self.jp_jma_warning_mqtt_tsunami_alert_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = jma_bosai_warning_mqtt_producer_data.TsunamiAlert.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "JP.JMA.Warning.mqtt.TsunamiAlert")
+                    await self.jp_jma_warning_mqtt_tsunami_alert_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in jp_jma_warning_mqtt_tsunami_alert handler: {e}")
             return
         
     
@@ -490,6 +506,91 @@ class JPJMAWarningMqttMqttClient(_ClientBase):
              "type":"JP.JMA.Warning.WeatherWarning",
              "source":"{feedurl}".format(feedurl = feedurl),
              "subject":"jp.jma.warning/{office_code}/{area_code}".format(office_code = office_code,area_code = area_code)
+        }
+        attributes["datacontenttype"] = content_type
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = False if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
+    
+    async def publish_jp_jma_warning_mqtt_tsunami_alert(self,
+        feedurl: str,
+        event_id: str,
+        serial: str,
+        prefecture: str,
+        severity: str,
+        data: jma_bosai_warning_mqtt_producer_data.TsunamiAlert,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'JP.JMA.Warning.mqtt.TsunamiAlert' event to an MQTT topic.
+
+        Args:
+        
+            feedurl: URI template variable for 'feedurl'
+            event_id: URI template variable for 'event_id'
+            serial: URI template variable for 'serial'
+            prefecture: URI template variable for 'prefecture'
+            severity: URI template variable for 'severity'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{event_id}/{serial}/tsunami'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{event_id}/{serial}/tsunami"
+        _topic_template_values: Dict[str, str] = {
+            "feedurl": str(feedurl),
+            "event_id": str(event_id),
+            "serial": str(serial),
+            "prefecture": str(prefecture),
+            "severity": str(severity),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"JP.JMA.Tsunami.TsunamiAlert",
+             "source":"{feedurl}".format(feedurl = feedurl),
+             "subject":"jp.jma.tsunami/{event_id}/{serial}".format(event_id = event_id,serial = serial)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''

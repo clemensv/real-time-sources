@@ -626,3 +626,17 @@ class TestSingaporeNeaAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {"SG.Gov.NEA.Weather.Station", "SG.Gov.NEA.Weather.WeatherObservation", "SG.Gov.NEA.AirQuality.PSIReading", "SG.Gov.NEA.AirQuality.PM25Reading"}
     expected_count = 5
 
+class TestJmaBosaiAmedasAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "jma-bosai-amedas"
+    image = "jma-bosai-amedas-amqp"
+    env = {"JMA_BOSAI_AMEDAS_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {"JP.JMA.Amedas.Station", "JP.JMA.Amedas.Observation"}
+    expected_count = 2
+
+class TestJmaBosaiVolcanoAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "jma-bosai-volcano"
+    image = "jma-bosai-volcano-amqp"
+    env = {"JMA_BOSAI_VOLCANO_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {"JP.JMA.Volcano.Volcano", "JP.JMA.Volcano.VolcanicWarning", "JP.JMA.Volcano.VolcanicEruption"}
+    expected_count = 3
+
