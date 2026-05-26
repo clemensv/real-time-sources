@@ -1,182 +1,176 @@
-# German Waters Bridge
+# German Waters hydrometric feeder
 
-Aggregates water level and discharge data from German state open data portals and
-emits CloudEvents to Kafka endpoints (Event Hubs, Fabric Event Streams, etc.).
+This feeder turns hydrometric data from 12 German federal-state water authorities into a CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
-An **MQTT/UNS feeder** (`ghcr.io/clemensv/real-time-sources-german-waters-mqtt:latest`)
-publishes the same data as retained QoS-1 CloudEvents under
-`hydro/de/wsv/german-waters/{water_body}/{station_id}/{info|water-level}`.
+Companion docs:
 
-This bridge pulls data exclusively from **official government open data sources** —
-no commercial aggregators.
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-## Data Sources
+## Why this bridge
 
-| Provider      | State                    | Stations | Data format                 | License        |
-|---------------|--------------------------|----------|-----------------------------|----------------|
-| `bayern_gkd`  | Bayern                   | ~664     | JSON embedded in HTML map   | CC-BY 4.0      |
-| `nrw_hygon`   | Nordrhein-Westfalen      | ~300     | WISKI-Web JSON              | dl-de/zero-2-0 |
-| `sh_lkn`      | Schleswig-Holstein       | ~72      | HTML tooltips               | dl-de/zero-2-0 |
-| `nds_nlwkn`   | Niedersachsen            | ~200     | Azure REST API JSON         | dl-de/by-2-0   |
-| `sa_lhw`      | Sachsen-Anhalt           | ~99      | WISKI-Web JSON              | dl-de/zero-2-0 |
-| `he_hlnug`    | Hessen                   | ~186     | WISKI-Web3 JSON             | dl-de/zero-2-0 |
-| `sn_lfulg`    | Sachsen                  | ~190     | ArcGIS REST GeoJSON         | dl-de/zero-2-0 |
-| `bw_hvz`      | Baden-Württemberg        | ~333     | JS array                    | dl-de/by-2-0   |
-| `bb_lfu`      | Brandenburg              | ~270     | OpenLayers Features in HTML | dl-de/zero-2-0 |
-| `th_tlubn`    | Thüringen                | ~68      | Leaflet markers in HTML     | dl-de/zero-2-0 |
-| `mv_lung`     | Mecklenburg-Vorpommern   | ~227     | HTML table                  | dl-de/zero-2-0 |
-| `be_senumvk`  | Berlin                   | ~115     | OpenLayers Features in HTML | dl-de/zero-2-0 |
+**German Waters** aggregates open hydrometric data from **12 official German state authorities** — GKD Bayern, NRW, Schleswig-Holstein, Niedersachsen, Sachsen-Anhalt, Hessen, Sachsen, Baden-Württemberg, Brandenburg, Thüringen, Mecklenburg-Vorpommern, and Berlin — across roughly **2,724 stations**. The upstream landscape is deliberately heterogeneous: WISKI JSON, ArcGIS GeoJSON, Azure-hosted REST APIs, HTML tables, OpenLayers payloads, Leaflet markup, and JavaScript arrays, under a mix of public licenses including **CC-BY 4.0**, **dl-de/zero-2-0**, and **dl-de/by-2-0**.
 
-**Total: ~2,724 stations** across 12 federal states.
+This feeder turns that fragmented government-open-data landscape into a first-class real-time event stream so consumers can stop integrating 12 provider-specific portals and start subscribing to a topic:
 
-### Bayern GKD (Gewässerkundlicher Dienst)
+- **Flood and river-operations monitoring** — track water levels across state borders from one normalized event stream.
+- **Utilities, hydropower, and navigation support** — combine water-level and discharge readings from multiple authorities without writing custom scrapers per state.
+- **Environmental and regulatory analytics** — land reference data and telemetry in Microsoft Fabric Eventhouse, Azure Data Explorer, or a lakehouse with one contract.
+- **Research and journalism** — work from official state-published hydrometry instead of a commercial aggregator or one-off scraping scripts.
+- **Selective regional ingest** — include or exclude providers to build state-specific or basin-specific pipelines from one deployment artifact.
 
-- Source: https://www.gkd.bayern.de/de/fluesse/wasserstand
-- Water levels (~664 gauges) and discharge
-- Data includes coordinates, river name, current value, and timestamp
-- Extracted from the embedded `LfUMap.init()` JSON on the map page
+The bridge does the boring work — polling 12 different upstream implementations, normalizing station catalogs, carrying forward water-body routing data, deduplicating observations, and publishing consistent CloudEvents — so the consumer just subscribes.
 
-### NRW Hydrologie (LANUV)
+## Overview
 
-- Source: https://hydrologie.nrw.de/
-- WISKI-Web JSON at `/data/internet/layers/10/index.json` with ~300 gauges
-- Real-time water level readings regenerated every ~15 minutes
+**German Waters** is a poll-based bridge that queries 12 state hydrology providers, emits station reference data at startup, and then publishes only new or changed measurements on each poll cycle. The source ships in three transport variants from the same upstream provider stack:
 
-### Schleswig-Holstein HSI
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-german-waters` | Apache Kafka 2.x compatible (incl. Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud) | One topic, JSON CloudEvents (binary mode), key = `{station_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-german-waters-mqtt` | MQTT 5.0 broker (incl. Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic tree under `hydro/de/wsv/german-waters/{water_body}/{station_id}/{info|water-level}`, JSON body, CloudEvent attributes as MQTT 5 user properties, retained at QoS 1 |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-german-waters-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs, Azure Service Bus emulator) | Single AMQP node (`german-waters` by default), binary CloudEvents, SASL PLAIN for generic brokers, Microsoft Entra ID via AMQP CBS for Service Bus / Event Hubs, or SAS-token CBS for the emulator and SAS-only namespaces |
 
-- Source: https://hsi-sh.de/
-- HTML page with embedded station tooltips containing current readings
-- Only local Landespegel (station numbers starting with 11) are emitted
+All three variants share:
 
-### Niedersachsen NLWKN
+* The upstream provider adapters and normalization logic.
+* The xRegistry contract (`xreg/german_waters.xreg.json`).
+* The same two event families: station reference data and water-level/discharge observations.
 
-- Source: https://www.pegelonline.nlwkn.niedersachsen.de/
-- Azure-hosted REST API returning ~200 gauges with 15-min water level readings
+## Key features
 
-### Sachsen-Anhalt LHW
+- **12-provider federation** — roughly 2,724 stations from official state water portals across Germany.
+- **Two event families** — `DE.Waters.Hydrology.Station` reference data plus `DE.Waters.Hydrology.WaterLevelObservation` telemetry.
+- **Official-source only** — no commercial aggregator and no upstream API keys required.
+- **Provider filters** — include or exclude individual state providers with `PROVIDERS` / `EXCLUDE_PROVIDERS`.
+- **Delta-only observation emission** — optional `STATE_FILE` persistence suppresses replay after restart.
+- **Three transport binaries** with the same contract — switch transport without changing consumer schemas.
+- **Azure Event Hubs / Microsoft Fabric Event Streams ready** via standard Kafka connection strings (Kafka variant).
+- **Unified Namespace ready** out of the box with retained QoS 1 topics rooted by water body and station id (MQTT variant).
+- **Azure Service Bus / Event Hubs over AMQP 1.0 with Microsoft Entra ID** (no SAS-key rotation) plus SAS-token CBS for emulator and SAS-only deployments (AMQP variant).
 
-- Source: https://hvz.lsaurl.de/
-- WISKI-Web JSON at `/data/internet/layers/1030/index.json` with ~214 total gauges
-- Filtered to ~99 LHW-owned state stations (excludes WSV federal and neighboring state gauges)
+## Repository layout
 
-### Hessen HLNUG
-
-- Source: https://www.hlnug.de/static/pegel/wiskiweb3/
-- WISKI-Web3 JSON with water level (layer 10) and discharge (layer 20) for ~186 gauges
-
-### Sachsen LfULG
-
-- Source: https://luis.sachsen.de/
-- ArcGIS MapServer REST query returning ~190 gauges as GeoJSON with WGS84 coordinates
-- Includes water level, discharge, timestamps, trend, and alarm stage thresholds
-
-### Baden-Württemberg HVZ
-
-- Source: https://www.hvz.baden-wuerttemberg.de/
-- JavaScript array `HVZ_Site.PEG_DB` at `/js/hvz_peg_stmn.js` with ~333 stations
-- Column layout defined in `/js/hvz_peg_var.js` (72+ fields per station)
-
-### Brandenburg LfU
-
-- Source: https://pegelportal.brandenburg.de/
-- OpenLayers Feature objects embedded in HTML with ~270 local Brandenburg gauges
-- Coordinates in ETRS89/UTM33N, auto-converted to WGS84
-
-### Thüringen TLUBN
-
-- Source: https://hnz.thueringen.de/hw-portal/
-- Leaflet circleMarker objects embedded in HTML with ~68 gauges
-- Station names fetched from per-station detail pages
-
-### Mecklenburg-Vorpommern LUNG
-
-- Source: https://pegelportal-mv.de/pegel_list.html
-- HTML table with ~227 gauges including water level, discharge, and alarm stage
-- Station coordinates not available (only pixel positions on map)
-
-### Berlin SenUMVK
-
-- Source: https://wasserportal.berlin.de/
-- OpenLayers Feature objects embedded in HTML with ~115 surface water gauges
-- Coordinates in UTM 33N, auto-converted to WGS84
-
-## Events
-
-Two CloudEvent types are emitted:
-
-- **`DE.Waters.Hydrology.Station`** — station metadata (emitted once at startup)
-- **`DE.Waters.Hydrology.WaterLevelObservation`** — current water level and discharge readings
-
-## Usage
-
-```bash
-# List available providers
-python -m german_waters list-providers
-
-# List stations from all providers
-python -m german_waters list
-
-# List stations from a specific provider
-python -m german_waters list --providers bayern_gkd
-
-# List stations excluding a provider
-python -m german_waters list --exclude-providers sh_lkn
-
-# Feed to Kafka (Event Hubs / Fabric Event Stream)
-python -m german_waters feed -c "Endpoint=sb://..."
+```text
+german-waters/
+  xreg/german_waters.xreg.json                # shared xRegistry contract
+  german_waters/                              # provider adapters + Kafka feeder application
+  german_waters_mqtt/                         # MQTT/UNS feeder application
+  german_waters_amqp/                         # AMQP 1.0 feeder application
+  german_waters_producer/                     # xRegistry-generated Kafka producer
+  german_waters_mqtt_producer/                # xRegistry-generated MQTT producer
+  german_waters_amqp_producer/                # xRegistry-generated AMQP producer
+  Dockerfile                                  # builds the Kafka feeder image
+  Dockerfile.mqtt                             # builds the MQTT feeder image
+  Dockerfile.amqp                             # builds the AMQP feeder image
+  infra/                                      # legacy deployment helpers / mirrored templates
+  kql/german_waters.kql                       # Eventhouse / KQL schema and update policies
+  tests/                                      # unit + integration tests
 ```
 
-## Environment Variables
+## Prerequisites
 
-| Variable              | Description                                    |
-|-----------------------|------------------------------------------------|
-| `CONNECTION_STRING`   | Event Hubs / Fabric connection string          |
-| `PROVIDERS`           | Comma-separated provider keys to include       |
-| `EXCLUDE_PROVIDERS`   | Comma-separated provider keys to exclude       |
-| `POLLING_INTERVAL`    | Seconds between data fetches (default: 900)    |
-| `STATE_FILE`          | Path to deduplication state file               |
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS (port 443) to the upstream German state-provider portals and APIs.
+- Network access to your target Kafka broker, MQTT broker, or AMQP 1.0 peer.
 
-## Docker
+This feeder can persist de-duplication state through `STATE_FILE`, but the quick-start Docker commands below intentionally run without a mounted state volume. That is fine for evaluation or stateless deployments; if you need replay suppression across restarts, configure `STATE_FILE` as documented in [CONTAINER.md](CONTAINER.md).
+
+## Quick start with Docker
+
+### Kafka
 
 ```bash
-docker build -t german-waters .
-docker run -e CONNECTION_STRING="Endpoint=sb://..." german-waters
+docker run --rm \
+  -e CONNECTION_STRING="<event-hubs-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-german-waters:latest
 ```
+
+Replace `<event-hubs-connection-string>` with a connection string from your Azure Event Hubs namespace, Microsoft Fabric Event Stream custom endpoint, or any Kafka 2.x broker that accepts the same SASL-PLAIN-over-TLS shape.
+
+### MQTT (Unified Namespace)
+
+```bash
+docker run --rm \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-german-waters-mqtt:latest
+```
+
+Topics published (retained, QoS 1):
+
+```text
+hydro/de/wsv/german-waters/{water_body}/{station_id}/info
+hydro/de/wsv/german-waters/{water_body}/{station_id}/water-level
+```
+
+`{water_body}` is normalized to lower-case kebab-case for topic safety; `info` carries the retained station record and `water-level` carries the latest retained reading for that station.
+
+### AMQP 1.0
+
+```bash
+docker run --rm \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/german-waters' \
+  ghcr.io/clemensv/real-time-sources-german-waters-amqp:latest
+```
+
+For Azure Service Bus or Event Hubs with Microsoft Entra ID, the Service Bus emulator, or SAS-only namespaces, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image) for the full environment-variable matrix.
+
+## Configuration reference
+
+The complete list of environment variables for every variant (Kafka, MQTT, AMQP), every authentication mode (SASL PLAIN, Microsoft Entra ID via MQTT or AMQP CBS, SAS-token CBS), and the checked-in Azure deployment shapes lives in [CONTAINER.md](CONTAINER.md). The runtime entry point for every image is `python -m german_waters{,_mqtt,_amqp} feed`; the image's default `CMD` invokes it for you. The source also exposes `python -m german_waters list-providers` and `python -m german_waters list` for provider and station discovery.
+
+## Data model
+
+The feeder emits two event families:
+
+| CloudEvents type | Description |
+|---|---|
+| `DE.Waters.Hydrology.Station` | Station reference data for one state-provider gauge, emitted once at startup. |
+| `DE.Waters.Hydrology.WaterLevelObservation` | Current water-level and discharge reading for one station, emitted when the value changes. |
+
+The CloudEvents `subject` and Kafka key use the stable identity `{station_id}`. MQTT topics and AMQP routing properties add the `water_body` axis so subscribers can wildcard by river or canal without losing the stable station identity.
+
+## Deploying into Microsoft Fabric
+
+German Waters targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), and an attached Eventhouse / KQL database materializes the contract from [`kql/german_waters.kql`](kql/german_waters.kql) with one table per event family and update policies that decode the CloudEvent envelope.
+
+This source is documented for the long-running **Fabric ACI feeder** deployment shape. It does not ship a Fabric notebook artifact; use the always-on container deployment when the destination is a Fabric workspace.
+
+### Fabric ACI feeder
+
+A long-running Azure Container Instance hosts one of the three container images and writes into a Fabric Event Stream custom endpoint. Use this whenever the destination is a Fabric workspace.
+
+Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source german-waters -WorkspaceId <id> -CapacityId <id>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with the [`kql/german_waters.kql`](kql/german_waters.kql) schema and update policies, the Event Stream with a custom endpoint, and the ACI with the connection string wired in.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#german-waters/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+This source checks in Kafka and AMQP ARM templates only. There are no MQTT-specific Azure deployment templates on disk for `german-waters`, so the one-click buttons below cover the available Kafka and Service Bus deployment shapes.
 
-### Option 1: Bring your own Event Hub
+### Kafka — bring your own Event Hub / Kafka
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+Deploy the Kafka container with your own Azure Event Hubs or Fabric Event Stream connection string.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgerman-waters%2Fazure-template.json)
 
-### Option 2: Deploy with a new Event Hub
+### Kafka — provision a new Event Hub
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploy the Kafka container together with a new Event Hubs namespace (Standard SKU, 1 throughput unit) and event hub. The connection string is wired automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgerman-waters%2Fazure-template-with-eventhub.json)
 
-## AMQP 1.0 companion feeder
+### AMQP — provision a new Azure Service Bus namespace
 
-This source now ships the standard Kafka + MQTT + AMQP transport trio. The AMQP companion runs from `german_waters_amqp/`, uses the generated `german_waters_amqp_producer/` package, and publishes the same CloudEvents and schemas documented in `EVENTS.md` to one AMQP 1.0 address (default `german-waters`). It supports generic AMQP 1.0 brokers with SASL PLAIN and Azure Service Bus / Event Hubs with CBS token authentication.
+Deploy the AMQP container together with a new [Azure Service Bus Standard namespace](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview) with a queue named `german-waters`, a user-assigned managed identity, and the **Azure Service Bus Data Sender** role assignment. The feeder authenticates via AMQP CBS put-token with Microsoft Entra ID — no SAS key rotation required.
 
-Build and run locally:
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgerman-waters%2Fazure-template-with-servicebus.json)
 
-```bash
-docker build -f Dockerfile.amqp -t german-waters-amqp .
-docker run --rm \
-  -e AMQP_BROKER_URL=amqp://user:password@broker:5672/german-waters \
-  -e ONCE_MODE=true \
-  german-waters-amqp
-```
+## Next steps
 
-For Azure Service Bus, deploy `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`) or run the container with `AMQP_AUTH_MODE=entra`, `AMQP_HOST=<namespace>.servicebus.windows.net`, `AMQP_TLS=true`, and `AMQP_ADDRESS=german-waters`.
-
+- Pick a hosting model: a [Fabric ACI feeder](#deploying-into-microsoft-fabric) if your destination is a Fabric workspace; a [direct Azure deployment](#deploying-into-azure-container-instances) if you target Event Hubs or Service Bus without Fabric.
+- Review the [event contract and schemas](EVENTS.md) before writing a consumer.
+- Look up provider filters, optional state persistence, and the full environment-variable matrix in [CONTAINER.md](CONTAINER.md).
+- Use the official state-provider portals and licenses documented by this source when you need per-provider provenance alongside the normalized feed.

@@ -1,133 +1,203 @@
-# NOAA Data Poller Usage Guide
+# NOAA Tides and Currents feeder
+
+This feeder turns the public [NOAA Tides and Currents API](https://api.tidesandcurrents.noaa.gov/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+[NOAA Tides and Currents](https://api.tidesandcurrents.noaa.gov/) publishes real-time coastal and tidal observations from thousands of U.S. stations: water level, tides, meteorology, currents, visibility, salinity, and station reference metadata. The upstream API is open, stable, and public-domain, but every consumer otherwise has to poll the station catalog, fan out per product, track watermarks, and normalize a dozen related payload shapes.
+
+This bridge turns that API into a first-class real-time event stream so consumers can stop polling NOAA directly and start subscribing to a topic:
+
+- **Port and pilot operations** — drive berth planning, tidal windows, and harbor approach dashboards from water-level, current, and prediction events.
+- **Coastal flood and resilience analytics** — ingest water-level and meteorological observations into Microsoft Fabric Eventhouse / Azure Data Explorer for flood-threshold monitoring and historical replay.
+- **Environmental monitoring** — combine water temperature, salinity, conductivity, and visibility with local sensors for estuary, fisheries, and habitat analysis.
+- **Digital twins for coastal infrastructure** — feed storm-surge, tide, and currents context into port, bridge, lock, and shoreline digital twins.
+- **Research and journalism** — consume a normalized public-domain NOAA stream without owning the polling, dedupe, and schema-validation glue.
+
+The bridge does the boring work — station discovery, per-product polling, checkpoint state, reference-data emission, JSON-Structure–validated CloudEvents, and identity plumbing — so the consumer just subscribes.
 
 ## Overview
 
-**NOAA Data Poller** is a tool designed to interact with the NOAA (National Oceanic and Atmospheric Administration) API to fetch real-time environmental data from various NOAA stations. The tool can retrieve data such as water levels, air temperature, wind, and predictions, and send this data to a Kafka topic using SASL PLAIN authentication, making it suitable for integration with systems like Microsoft Event Hubs or Microsoft Fabric Event Streams.
+**NOAA Tides and Currents** is a poll-based bridge that walks the NOAA station catalog, emits station reference data, and then polls each supported product family for updates. The source ships in three transport variants from the same upstream poller contract:
 
-## Key Features:
-- **NOAA Data Polling**: Retrieve data for various NOAA products, including water levels, predictions, air temperature, wind, and more.
-- **Station Support**: Poll data for all NOAA stations or specify a single station.
-- **Kafka Integration**: Send NOAA data to a Kafka topic using SASL PLAIN authentication.
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-noaa` | Apache Kafka 2.x compatible (incl. Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud) | One topic, JSON CloudEvents (binary mode), key = `{station_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-noaa-mqtt` | MQTT 5.0 broker (incl. Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic tree under `maritime/us/noaa/noaa/{region}/{station_id}/{product-slug}`, JSON body, CloudEvent attributes as MQTT 5 user properties, retained at QoS 1 |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-noaa-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs, Azure Service Bus emulator) | Single AMQP node (queue/topic), binary CloudEvents, SASL PLAIN for generic brokers, Microsoft Entra ID via AMQP CBS for Service Bus / Event Hubs, or SAS-token CBS for the emulator and SAS-only namespaces |
 
-## Installation
+All three variants share:
 
-The tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/) or from the Microsoft Store if you are on Windows.
+* The NOAA polling logic and station/product normalization.
+* The xRegistry contract (`xreg/noaa.xreg.json`).
+* The same 13 CloudEvents types: 1 station reference event and 12 telemetry / prediction event types.
 
-### Installation Steps
+## Key features
 
-Once Python is installed, you can install the tool from the command line as follows:
+- **13 NOAA event types** covering station reference data plus the core Tides and Currents products used in coastal operations.
+- **Public-domain upstream** with no authentication or API key required.
+- **Reference data first** — station metadata is emitted as a named event type and shares the same `{station_id}` identity as telemetry.
+- **Source-scoped checkpointing** via `NOAA_LAST_POLLED_FILE` so restarts can resume from the last observed timestamps.
+- **Three transport binaries** sharing the same product families and identity model — switch transport without changing the data contract.
+- **Retained MQTT Last Known Value topics** at QoS 1 for station and telemetry branches.
+- **Azure Event Hubs / Microsoft Fabric Event Streams** ready via standard connection strings (Kafka variant).
+- **Azure Service Bus / Event Hubs over AMQP 1.0 with Microsoft Entra ID** (no SAS-key rotation) via CBS put-token, plus SAS-token CBS for emulator / SAS-only namespaces.
+
+## Repository layout
+
+```text
+noaa/
+  xreg/noaa.xreg.json             # shared xRegistry contract
+  noaa/                           # poller + Kafka feeder application
+  noaa_mqtt/                      # MQTT/UNS feeder application
+  noaa_amqp/                      # AMQP 1.0 feeder application
+  noaa_producer/                  # xRegistry-generated Kafka producer
+  noaa_mqtt_producer/             # xRegistry-generated MQTT producer
+  noaa_amqp_producer/             # xRegistry-generated AMQP producer
+  Dockerfile                      # builds the Kafka feeder image
+  Dockerfile.mqtt                 # builds the MQTT feeder image
+  Dockerfile.amqp                 # builds the AMQP feeder image
+  kql/noaa.kql                    # Eventhouse / KQL schema and update policies
+  tests/                          # unit + integration tests
+```
+
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS access to `api.tidesandcurrents.noaa.gov`.
+- Network access to your target Kafka broker, MQTT broker, or AMQP 1.0 peer.
+
+This feeder is a poller, not a streaming socket bridge. It can run stateless for evaluation, but if you want restart continuity you should persist `NOAA_LAST_POLLED_FILE` outside the container in your real deployment.
+
+## Quick start with Docker
+
+### Kafka
 
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=noaa
+docker run --rm \
+  -e CONNECTION_STRING="<event-hubs-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-noaa:latest
 ```
 
-If you clone the repository, you can install the tool as follows:
+Replace `<event-hubs-connection-string>` with a connection string from your Azure Event Hubs namespace, Microsoft Fabric Event Stream custom endpoint, or any Kafka 2.x broker that accepts the same SASL-PLAIN-over-TLS shape.
+
+### MQTT (Unified Namespace)
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/noaa
-pip install .
+docker run --rm \
+  -e MQTT_BROKER_URL=mqtts://<broker-host>:8883 \
+  -e MQTT_USERNAME=<username> \
+  -e MQTT_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-noaa-mqtt:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
+Topics published (retained, QoS 1):
 
-## How to Use
-
-After installation, the tool can be run using the `noaa` command. It supports several arguments for configuring the polling process and sending data to Kafka.
-
-The events sent to Kafka are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
-
-### Command-Line Arguments
-
-- `--last-polled-file`: Path to the file where the last polled times for each station and product are stored. Defaults to `~/.noaa_last_polled.json`.
-- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
-- `--kafka-topic`: The Kafka topic to send messages to.
-- `--sasl-username`: Username for SASL PLAIN authentication.
-- `--sasl-password`: Password for SASL PLAIN authentication.
-- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string (overrides other Kafka parameters).
-- `--station`: (Optional) Station ID to poll data for. If not provided, data for all stations will be polled.
-
-### Example Usage
-
-#### Poll All Stations and Send Data to Kafka
-```bash
-noaa --connection-string "<your_connection_string>"
+```text
+maritime/us/noaa/noaa/{region}/{station_id}/{product-slug}
 ```
 
-#### Poll a Specific Station and Send Data to Kafka
-```bash
-noaa --connection-string "<your_connection_string>" --station "<station_id>"
-```
+`{product-slug}` is one of `info`, `water-level`, `predictions`, `air-pressure`, `air-temperature`, `water-temperature`, `wind`, `humidity`, `conductivity`, `salinity`, `visibility`, `currents`, or `current-predictions`.
 
-#### Using Kafka Parameters Directly
-If you do not want to use a connection string, you can provide the Kafka parameters directly:
+### AMQP 1.0
 
 ```bash
-noaa --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-topic "<topic_name>" --sasl-username "<username>" --sasl-password "<password>"
+docker run --rm \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/noaa' \
+  ghcr.io/clemensv/real-time-sources-noaa-amqp:latest
 ```
 
-### Connection String for Microsoft Event Hubs or Fabric Event Streams
+For Azure Service Bus or Event Hubs with Microsoft Entra ID, the Service Bus emulator, or SAS-only namespaces, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image) for the full environment-variable matrix.
 
-The tool supports providing a **connection string** for Microsoft Event Hubs or Microsoft Fabric Event Streams. This connection string simplifies the configuration by consolidating the Kafka bootstrap server, topic, username, and password.
+## Configuration reference
 
-#### Format:
-```
-Endpoint=sb://<your-event-hubs-namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy-name>;SharedAccessKey=<access-key>;EntityPath=<event-hub-name>
-```
+The complete list of environment variables for every variant (Kafka, MQTT, AMQP), every authentication mode (SASL PLAIN, Microsoft Entra ID via CBS, SAS-token CBS), and every Azure deployment shape lives in [CONTAINER.md](CONTAINER.md). The runtime entry point for the images is `python -m noaa feed`, `python -m noaa_mqtt feed`, or `python -m noaa_amqp feed`; the image default `CMD` invokes it for you.
 
-When provided, the connection string is parsed to extract the following details:
-- **Bootstrap Servers**: Derived from the `Endpoint` value.
-- **Kafka Topic**: Derived from the `EntityPath` value.
-- **SASL Username and Password**: The username is set to `'$ConnectionString'`, and the password is the entire connection string.
+## Data model
 
-### Environment Variables
+The feeder emits one reference-data event type and twelve telemetry / prediction event types, all keyed by the stable NOAA station identifier `{station_id}`.
 
-The tool also supports the following environment variables to avoid passing them via the command line:
-- `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
-- `NOAA_LAST_POLLED_FILE`: File to store the last polled times for each station and product.
+### Reference data
 
-## NOAA Products Supported
+| Event type | Description |
+|---|---|
+| `Microsoft.OpenData.US.NOAA.Station` | Station metadata for a NOAA tide or current station: identifiers, region, name, coordinates, and descriptive attributes consumers need to interpret telemetry. |
 
-The following NOAA products are supported by the tool:
-- **Water Level**: `water_level`
-- **Predictions**: `predictions`
-- **Air Temperature**: `air_temperature`
-- **Wind**: `wind`
-- **Air Pressure**: `air_pressure`
-- **Water Temperature**: `water_temperature`
-- **Conductivity**: `conductivity`
-- **Visibility**: `visibility`
-- **Humidity**: `humidity`
-- **Salinity**: `salinity`
+### Telemetry and prediction families
 
-## Data Management
+| Event type | Description |
+|---|---|
+| `Microsoft.OpenData.US.NOAA.WaterLevel` | Observed water level for a station. |
+| `Microsoft.OpenData.US.NOAA.Predictions` | Tidal prediction values for a station. |
+| `Microsoft.OpenData.US.NOAA.AirPressure` | Observed air pressure. |
+| `Microsoft.OpenData.US.NOAA.AirTemperature` | Observed air temperature. |
+| `Microsoft.OpenData.US.NOAA.WaterTemperature` | Observed water temperature. |
+| `Microsoft.OpenData.US.NOAA.Wind` | Wind speed, gust, and direction measurements. |
+| `Microsoft.OpenData.US.NOAA.Humidity` | Relative humidity observations. |
+| `Microsoft.OpenData.US.NOAA.Conductivity` | Water conductivity observations. |
+| `Microsoft.OpenData.US.NOAA.Salinity` | Water salinity observations. |
+| `Microsoft.OpenData.US.NOAA.Visibility` | Visibility observations reported by the station. |
+| `Microsoft.OpenData.US.NOAA.Currents` | Observed current speed and direction. |
+| `Microsoft.OpenData.US.NOAA.CurrentPredictions` | Predicted current speed and direction. |
 
-The tool polls NOAA data periodically and saves the last polled time in a file. This ensures that the tool only fetches new data in subsequent polling cycles.
+Kafka uses `{station_id}` as the record key. MQTT maps the same identity into `maritime/us/noaa/noaa/{region}/{station_id}/{product-slug}`. AMQP uses the message subject `{station_id}` on the configured address, with `region` available as an application property.
+
+## Deploying into Microsoft Fabric
+
+NOAA targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), and an attached Eventhouse / KQL database materializes the contract from [`kql/noaa.kql`](kql/noaa.kql).
+
+This source's catalog entry is container-only (`notebook: false`), so the supported Fabric hosting model is the always-on **Fabric ACI feeder**. The scheduled Fabric Notebook deployment path used by notebook-enabled pollers is intentionally out of scope for this source.
+
+### Fabric ACI feeder
+
+A long-running Azure Container Instance hosts one of the three container images and writes into a Fabric Event Stream custom endpoint. Use this whenever the destination is a Fabric workspace.
+
+Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source noaa -WorkspaceId <id> -CapacityId <id>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with [`kql/noaa.kql`](kql/noaa.kql), the Event Stream with a custom endpoint, and the ACI with the connection string wired in.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#noaa/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Five one-click deployment templates are available — covering Kafka, MQTT, and AMQP deployment shapes that exist on disk for this source.
 
-### Option 1: Bring your own Event Hub
+### Kafka — bring your own Event Hub / Kafka
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+Deploy the Kafka container with your own Azure Event Hubs or Fabric Event Stream connection string.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa%2Fazure-template.json)
 
-### Option 2: Deploy with a new Event Hub
+### Kafka — provision a new Event Hub
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploy the Kafka container together with a new Event Hubs namespace (Standard SKU, 1 throughput unit) and event hub. The connection string is wired automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa%2Fazure-template-with-eventhub.json)
 
+### MQTT — bring your own broker
 
-## MQTT and AMQP companion feeders
+Deploy the MQTT container with your own MQTT 5 broker and NOAA topic tree.
 
-This source now ships transport-split Kafka, MQTT, and AMQP containers. The MQTT image (`ghcr.io/clemensv/real-time-sources-noaa-mqtt:latest`) publishes retained MQTT 5 binary-mode CloudEvents on `maritime/us/noaa/noaa/...`. The AMQP image (`ghcr.io/clemensv/real-time-sources-noaa-amqp:latest`) publishes the same CloudEvents to a broker address or Azure Service Bus queue.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa%2Fazure-template-mqtt.json)
 
-Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, and `azure-template-with-servicebus.json`.
+### MQTT — provision Azure Event Grid namespace MQTT
+
+Deploy the MQTT container together with a new Azure Event Grid namespace configured for MQTT publishing.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa%2Fazure-template-with-eventgrid-mqtt.json)
+
+### AMQP 1.0 — provision a new Azure Service Bus namespace
+
+Deploy the AMQP container together with a new [Azure Service Bus Standard namespace](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview) with an address named `noaa`, a user-assigned managed identity, and the **Azure Service Bus Data Sender** role assignment. The feeder authenticates via AMQP CBS put-token with Microsoft Entra ID — no SAS key rotation required.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa%2Fazure-template-with-servicebus.json)
+
+## Next steps
+
+- Pick a hosting model: a [Fabric ACI feeder](#deploying-into-microsoft-fabric) if your destination is a Fabric workspace; a [direct Azure deployment](#deploying-into-azure-container-instances) if you target Event Hubs, MQTT, or Service Bus without Fabric.
+- Review the [event contract and schemas](EVENTS.md) before writing a consumer.
+- Look up authentication modes and the full environment-variable matrix in [CONTAINER.md](CONTAINER.md).
+- Browse the upstream NOAA API documentation at [api.tidesandcurrents.noaa.gov](https://api.tidesandcurrents.noaa.gov/) for station-specific product coverage and semantics.
