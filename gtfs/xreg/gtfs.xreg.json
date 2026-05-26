@@ -83,28 +83,24 @@
           "modifiedat": "2024-10-18T13:47:59.337832",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -123,28 +119,24 @@
           "modifiedat": "2024-10-18T13:48:03.055635",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedRealTime.Trip.TripUpdate",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -163,28 +155,24 @@
           "modifiedat": "2024-10-18T13:48:06.866474",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedRealTime.Alert.Alert",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -211,28 +199,24 @@
           "modifiedat": "2024-10-18T13:48:10.562674",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Agency",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -251,28 +235,24 @@
           "modifiedat": "2024-10-18T13:48:14.315902",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Areas",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -291,28 +271,24 @@
           "modifiedat": "2024-10-18T13:48:18.288847",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Attributions",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -331,28 +307,24 @@
           "modifiedat": "2024-10-18T13:48:22.082873",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeed.BookingRules",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -371,28 +343,24 @@
           "modifiedat": "2024-10-18T13:48:25.724208",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FareAttributes",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -411,28 +379,24 @@
           "modifiedat": "2024-10-18T13:48:29.398475",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FareLegRules",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -451,28 +415,24 @@
           "modifiedat": "2024-10-18T13:48:33.091812",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FareMedia",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -491,28 +451,24 @@
           "modifiedat": "2024-10-18T13:48:37.0343",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FareProducts",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -531,28 +487,24 @@
           "modifiedat": "2024-10-18T13:48:40.694694",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FareRules",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -571,28 +523,24 @@
           "modifiedat": "2024-10-18T13:48:44.324811",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FareTransferRules",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -611,28 +559,24 @@
           "modifiedat": "2024-10-18T13:48:47.945429",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FeedInfo",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -651,28 +595,24 @@
           "modifiedat": "2024-10-18T13:48:51.614352",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Frequencies",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -691,28 +631,24 @@
           "modifiedat": "2024-10-18T13:48:55.302761",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Levels",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -731,28 +667,24 @@
           "modifiedat": "2024-10-18T13:48:59.028822",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.LocationGeoJson",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -771,28 +703,24 @@
           "modifiedat": "2024-10-18T13:49:02.667532",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.LocationGroups",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -811,28 +739,24 @@
           "modifiedat": "2024-10-18T13:49:06.377213",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.LocationGroupStores",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -851,28 +775,24 @@
           "modifiedat": "2024-10-18T13:49:10.032314",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Networks",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -891,28 +811,24 @@
           "modifiedat": "2024-10-18T13:49:13.685178",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Pathways",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -931,28 +847,24 @@
           "modifiedat": "2024-10-18T13:49:17.370844",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.RouteNetworks",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -971,28 +883,24 @@
           "modifiedat": "2024-10-18T13:49:21.04418",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Routes",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1011,28 +919,24 @@
           "modifiedat": "2024-10-18T13:49:24.754104",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Shapes",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1051,28 +955,24 @@
           "modifiedat": "2024-10-18T13:49:28.442943",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.StopAreas",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1091,28 +991,24 @@
           "modifiedat": "2024-10-18T13:49:32.095692",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Stops",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1131,28 +1027,24 @@
           "modifiedat": "2024-10-18T13:49:35.782623",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.StopTimes",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1171,28 +1063,24 @@
           "modifiedat": "2024-10-18T13:49:39.508891",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Timeframes",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1211,28 +1099,24 @@
           "modifiedat": "2024-10-18T13:49:43.183866",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Transfers",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1251,28 +1135,24 @@
           "modifiedat": "2024-10-18T13:49:46.884005",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Translations",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1291,28 +1171,24 @@
           "modifiedat": "2024-10-18T13:49:50.614938",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Trips",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
