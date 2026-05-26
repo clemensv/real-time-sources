@@ -1,0 +1,248 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "Deploys the cdec-reservoirs AMQP 1.0 bridge against a new Azure Service Bus namespace (Standard SKU) with a queue named 'cdec-reservoirs'. A user-assigned managed identity holds the 'Azure Service Bus Data Sender' role on the queue. The Azure Container Instance hosts the feeder, which authenticates via Microsoft Entra ID over AMQP CBS (no SAS keys, no key rotation)."
+  },
+  "parameters": {
+    "namePrefix": {
+      "type": "string",
+      "defaultValue": "cdec-reservoirs",
+      "minLength": 3,
+      "maxLength": 24,
+      "metadata": { "description": "Base name for all resources." }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": { "description": "Azure region for all resources." }
+    },
+    "serviceBusSku": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": ["Standard", "Premium"],
+      "metadata": { "description": "Service Bus namespace SKU. Standard is sufficient for cdec-reservoirs-class throughput." }
+    },
+    "queueName": {
+      "type": "string",
+      "defaultValue": "cdec-reservoirs",
+      "minLength": 1,
+      "maxLength": 50,
+      "metadata": { "description": "Service Bus queue name. The bridge writes all CloudEvents (station catalog + current measurements) into this single queue." }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-cdec-reservoirs-amqp:latest",
+      "metadata": { "description": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build." }
+    }
+  },
+  "variables": {
+    "namespaceName": "[concat(parameters('namePrefix'), '-sb')]",
+    "userIdentityName": "[concat(parameters('namePrefix'), '-mi')]",
+    "containerGroupName": "[parameters('namePrefix')]",
+    "storageAccountName": "[take(concat(replace(replace(parameters('namePrefix'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
+    "fileShareName": "bridge-state",
+    "logAnalyticsWorkspaceName": "[concat(parameters('namePrefix'), '-logs')]",
+    "sbDataSenderRoleId": "/providers/Microsoft.Authorization/roleDefinitions/69a216fc-b8fb-44d8-bc22-1f3c2cd27a39",
+    "userIdentityResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userIdentityName'))]",
+    "namespaceResourceId": "[resourceId('Microsoft.ServiceBus/namespaces', variables('namespaceName'))]",
+    "queueResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/queues', variables('namespaceName'), parameters('queueName'))]",
+    "roleAssignmentName": "[guid(variables('queueResourceId'), variables('userIdentityResourceId'), variables('sbDataSenderRoleId'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[variables('userIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": { "name": "PerGB2018" },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": { "name": "Standard_LRS" },
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot",
+        "minimumTlsVersion": "TLS1_2"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2023-05-01",
+      "name": "[concat(variables('storageAccountName'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2023-05-01",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": { "shareQuota": 1 }
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[variables('namespaceName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('serviceBusSku')]",
+        "tier": "[parameters('serviceBusSku')]"
+      },
+      "properties": {
+        "minimumTlsVersion": "1.2",
+        "publicNetworkAccess": "Enabled",
+        "disableLocalAuth": true
+      }
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces/queues",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[concat(variables('namespaceName'), '/', parameters('queueName'))]",
+      "dependsOn": [
+        "[variables('namespaceResourceId')]"
+      ],
+      "properties": {
+        "lockDuration": "PT1M",
+        "maxSizeInMegabytes": 1024,
+        "requiresDuplicateDetection": false,
+        "requiresSession": false,
+        "defaultMessageTimeToLive": "P14D",
+        "deadLetteringOnMessageExpiration": true,
+        "maxDeliveryCount": 10,
+        "enableBatchedOperations": true
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[variables('roleAssignmentName')]",
+      "scope": "[concat('Microsoft.ServiceBus/namespaces/', variables('namespaceName'), '/queues/', parameters('queueName'))]",
+      "dependsOn": [
+        "[variables('queueResourceId')]",
+        "[variables('userIdentityResourceId')]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('sbDataSenderRoleId')]",
+        "principalId": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[variables('userIdentityResourceId')]": {}
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]",
+        "[variables('namespaceResourceId')]",
+        "[variables('queueResourceId')]",
+        "[extensionResourceId(variables('queueResourceId'), 'Microsoft.Authorization/roleAssignments', variables('roleAssignmentName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[variables('containerGroupName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "resources": {
+                "requests": { "cpu": 0.5, "memoryInGB": 1.0 }
+              },
+              "environmentVariables": [
+                {
+                  "name": "AMQP_HOST",
+                  "value": "[concat(variables('namespaceName'), '.servicebus.windows.net')]"
+                },
+                { "name": "AMQP_PORT", "value": "5671" },
+                { "name": "AMQP_TLS", "value": "true" },
+                { "name": "AMQP_ADDRESS", "value": "[parameters('queueName')]" },
+                { "name": "AMQP_AUTH_MODE", "value": "entra" },
+                { "name": "AMQP_ENTRA_AUDIENCE", "value": "https://servicebus.azure.net/.default" },
+                {
+                  "name": "AMQP_ENTRA_CLIENT_ID",
+                  "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
+                },
+                { "name": "AMQP_CONTENT_MODE", "value": "binary" },
+                { "name": "POLLING_INTERVAL", "value": "60" },
+                { "name": "STATE_FILE", "value": "/mnt/bridge-state/state.json" },
+                { "name": "LOG_LEVEL", "value": "INFO" },
+                { "name": "PYTHONUNBUFFERED", "value": "1" }
+              ],
+              "volumeMounts": [
+                { "name": "bridge-state", "mountPath": "/mnt/bridge-state" }
+              ]
+            }
+          }
+        ],
+        "volumes": [
+          {
+            "name": "bridge-state",
+            "azureFile": {
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountName": "[variables('storageAccountName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-05-01').keys[0].value]"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "namespaceName": {
+      "type": "string",
+      "value": "[variables('namespaceName')]"
+    },
+    "serviceBusHostname": {
+      "type": "string",
+      "value": "[concat(variables('namespaceName'), '.servicebus.windows.net')]"
+    },
+    "queueName": {
+      "type": "string",
+      "value": "[parameters('queueName')]"
+    },
+    "managedIdentityClientId": {
+      "type": "string",
+      "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
+    },
+    "managedIdentityPrincipalId": {
+      "type": "string",
+      "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
+    },
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', variables('containerGroupName'))]"
+    }
+  }
+}

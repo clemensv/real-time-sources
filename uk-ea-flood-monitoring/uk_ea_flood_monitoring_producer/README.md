@@ -1,6 +1,6 @@
 
 
-# Uk-ea-flood-monitoring-producer Kafka Producer# Uk-ea-flood-monitoring-producer Event Dispatcher for Apache Kafka
+# Uk_ea_flood_monitoring_producer Kafka Producer# Uk_ea_flood_monitoring_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -15,7 +15,11 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - UKGovEnvironmentEAFloodMonitoringEventDispatcher
+3. [Quick Start](#quick-start)    - UKGovEnvironmentEAFloodMonitoringEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    UKGovEnvironmentEAFloodMonitoringMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    UKGovEnvironmentEAFloodMonitoringAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +43,14 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - UKGovEnvironmentEAFloodMonitoringProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- UKGovEnvironmentEAFloodMonitoringMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- UKGovEnvironmentEAFloodMonitoringAmqpProducersolution for event-driven applications.
 
 
 
@@ -87,7 +99,7 @@ Initializes the dispatcher.
 
 ```python
 
-from uk-ea-flood-monitoring-producer import UKGovEnvironmentEAFloodMonitoringProducer```python
+from uk_ea_flood_monitoring_producer import UKGovEnvironmentEAFloodMonitoringProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -148,7 +160,9 @@ CloudEvent, Station], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `UK.Gov.Environment.EA.FloodMonitoring.Station`:
+Asynchronous handler hook for `UK.Gov.Environment.EA.FloodMonitoring.Station`: A reference record for one monitoring
+stations across England published by the Environment Agency flood-monitoring API. It fires when the bridge publishes or
+refreshes the station catalog so consumers can interpret measurement events.
 
 ## Generated Producer Classes
 
@@ -194,6 +208,86 @@ uk_gov_environment_ea_flood_monitoring_station_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringMqttProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Station`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Station) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_mqtt_dispatcher.uk_gov_environment_ea_flood_monitoring_station_async =
+uk_gov_environment_ea_flood_monitoring_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringAmqpProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Station`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Station) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_amqp_dispatcher.uk_gov_environment_ea_flood_monitoring_station_async =
+uk_gov_environment_ea_flood_monitoring_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -213,7 +307,9 @@ CloudEvent, Reading], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `UK.Gov.Environment.EA.FloodMonitoring.Reading`:
+Asynchronous handler hook for `UK.Gov.Environment.EA.FloodMonitoring.Reading`: A reading event from the Environment
+Agency flood-monitoring API. It represents source data for monitoring stations across England as published by the
+upstream feed.
 
 ## Generated Producer Classes
 
@@ -259,6 +355,86 @@ uk_gov_environment_ea_flood_monitoring_reading_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringMqttProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Reading`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Reading) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_mqtt_dispatcher.uk_gov_environment_ea_flood_monitoring_reading_async =
+uk_gov_environment_ea_flood_monitoring_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringAmqpProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Reading`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Reading) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_amqp_dispatcher.uk_gov_environment_ea_flood_monitoring_reading_async =
+uk_gov_environment_ea_flood_monitoring_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -295,7 +471,9 @@ async def send_uk_gov_environment_ea_flood_monitoring_station(
 
 
 
-Send a single `UK.Gov.Environment.EA.FloodMonitoring.Station` message.Args:
+Send a single `UK.Gov.Environment.EA.FloodMonitoring.Station` message. A reference record for one monitoring stations
+across England published by the Environment Agency flood-monitoring API. It fires when the bridge publishes or refreshes
+the station catalog so consumers can interpret measurement events.Args:
 
 - `record`: The Kafka record.
 
@@ -398,7 +576,9 @@ async def send_uk_gov_environment_ea_flood_monitoring_reading(
 
 
 
-Send a single `UK.Gov.Environment.EA.FloodMonitoring.Reading` message.Args:
+Send a single `UK.Gov.Environment.EA.FloodMonitoring.Reading` message. A reading event from the Environment Agency
+flood-monitoring API. It represents source data for monitoring stations across England as published by the upstream
+feed.Args:
 
 - `record`: The Kafka record.
 
@@ -456,6 +636,1204 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_uk_gov_environment_ea_flood_monitoring_reading_batch(```
+
+    messages=[
+
+        Reading(...),Initializes the runner with a Kafka consumer.
+
+        Reading(...),
+
+        Reading(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### UKGovEnvironmentEAFloodMonitoringMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`UKGovEnvironmentEAFloodMonitoringMqttEventDispatcher` handles events for the UK.Gov.Environment.EA.FloodMonitoring.mqtt
+message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from uk_ea_flood_monitoring_producer import UKGovEnvironmentEAFloodMonitoringProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = UKGovEnvironmentEAFloodMonitoringProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_uk_gov_environment_ea_flood_monitoring_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The UKGovEnvironmentEAFloodMonitoringMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = UKGovEnvironmentEAFloodMonitoringProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_gov_environment_ea_flood_monitoring_mqtt_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_gov_environment_ea_flood_monitoring_mqtt_station_async:  Callable[[ConsumerRecord,
+CloudEvent, Station], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `UK.Gov.Environment.EA.FloodMonitoring.mqtt.Station`: A reference record for one
+monitoring stations across England published by the Environment Agency flood-monitoring API. It fires when the bridge
+publishes or refreshes the station catalog so consumers can interpret measurement events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Station`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: Station) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_dispatcher.uk_gov_environment_ea_flood_monitoring_mqtt_station_async =
+uk_gov_environment_ea_flood_monitoring_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringMqttProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Station`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: Station) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_mqtt_dispatcher.uk_gov_environment_ea_flood_monitoring_mqtt_station_async =
+uk_gov_environment_ea_flood_monitoring_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringAmqpProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Station`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: Station) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_amqp_dispatcher.uk_gov_environment_ea_flood_monitoring_mqtt_station_async =
+uk_gov_environment_ea_flood_monitoring_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_gov_environment_ea_flood_monitoring_mqtt_reading_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_gov_environment_ea_flood_monitoring_mqtt_reading_async:  Callable[[ConsumerRecord,
+CloudEvent, Reading], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading`: A reading event from the Environment
+Agency flood-monitoring API. It represents source data for monitoring stations across England as published by the
+upstream feed.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Reading`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_mqtt_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: Reading) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_dispatcher.uk_gov_environment_ea_flood_monitoring_mqtt_reading_async =
+uk_gov_environment_ea_flood_monitoring_mqtt_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringMqttProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Reading`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_mqtt_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: Reading) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_mqtt_dispatcher.uk_gov_environment_ea_flood_monitoring_mqtt_reading_async =
+uk_gov_environment_ea_flood_monitoring_mqtt_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringAmqpProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Reading`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_mqtt_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: Reading) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_amqp_dispatcher.uk_gov_environment_ea_flood_monitoring_mqtt_reading_async =
+uk_gov_environment_ea_flood_monitoring_mqtt_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_uk_gov_environment_ea_flood_monitoring_mqtt_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_gov_environment_ea_flood_monitoring_mqtt_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `UK.Gov.Environment.EA.FloodMonitoring.mqtt.Station` message. A reference record for one monitoring
+stations across England published by the Environment Agency flood-monitoring API. It fires when the bridge publishes or
+refreshes the station catalog so consumers can interpret measurement events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_gov_environment_ea_flood_monitoring_mqtt_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `UK.Gov.Environment.EA.FloodMonitoring.mqtt.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_gov_environment_ea_flood_monitoring_mqtt_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_uk_gov_environment_ea_flood_monitoring_mqtt_reading`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_gov_environment_ea_flood_monitoring_mqtt_reading(
+
+    self,##### `_process_event`
+
+    data: Reading,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading` message. A reading event from the Environment Agency
+flood-monitoring API. It represents source data for monitoring stations across England as published by the upstream
+feed.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Reading`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_gov_environment_ea_flood_monitoring_mqtt_reading(
+
+    data=Reading(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_gov_environment_ea_flood_monitoring_mqtt_reading_batch(```
+
+    messages=[
+
+        Reading(...),Initializes the runner with a Kafka consumer.
+
+        Reading(...),
+
+        Reading(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### UKGovEnvironmentEAFloodMonitoringAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`UKGovEnvironmentEAFloodMonitoringAmqpEventDispatcher` handles events for the UK.Gov.Environment.EA.FloodMonitoring.amqp
+message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from uk_ea_flood_monitoring_producer import UKGovEnvironmentEAFloodMonitoringProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = UKGovEnvironmentEAFloodMonitoringProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_uk_gov_environment_ea_flood_monitoring_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The UKGovEnvironmentEAFloodMonitoringAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = UKGovEnvironmentEAFloodMonitoringProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_gov_environment_ea_flood_monitoring_amqp_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_gov_environment_ea_flood_monitoring_amqp_station_async:  Callable[[ConsumerRecord,
+CloudEvent, Station], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `UK.Gov.Environment.EA.FloodMonitoring.amqp.Station`: A reference record for one
+monitoring stations across England published by the Environment Agency flood-monitoring API. It fires when the bridge
+publishes or refreshes the station catalog so consumers can interpret measurement events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Station`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: Station) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_dispatcher.uk_gov_environment_ea_flood_monitoring_amqp_station_async =
+uk_gov_environment_ea_flood_monitoring_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringMqttProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Station`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: Station) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_mqtt_dispatcher.uk_gov_environment_ea_flood_monitoring_amqp_station_async =
+uk_gov_environment_ea_flood_monitoring_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringAmqpProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Station`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: Station) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_amqp_dispatcher.uk_gov_environment_ea_flood_monitoring_amqp_station_async =
+uk_gov_environment_ea_flood_monitoring_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `uk_gov_environment_ea_flood_monitoring_amqp_reading_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'uk_gov_environment_ea_flood_monitoring_amqp_reading_async:  Callable[[ConsumerRecord,
+CloudEvent, Reading], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `UK.Gov.Environment.EA.FloodMonitoring.amqp.Reading`: A reading event from the Environment
+Agency flood-monitoring API. It represents source data for monitoring stations across England as published by the
+upstream feed.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Reading`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_amqp_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: Reading) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_dispatcher.uk_gov_environment_ea_flood_monitoring_amqp_reading_async =
+uk_gov_environment_ea_flood_monitoring_amqp_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringMqttProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Reading`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_amqp_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: Reading) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_mqtt_dispatcher.uk_gov_environment_ea_flood_monitoring_amqp_reading_async =
+uk_gov_environment_ea_flood_monitoring_amqp_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### UKGovEnvironmentEAFloodMonitoringAmqpProducer- `data`: The event data of type
+`uk_ea_flood_monitoring_producer_data.Reading`.
+
+
+
+Producer for `UK.Gov.Environment.EA.FloodMonitoring.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def uk_gov_environment_ea_flood_monitoring_amqp_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: Reading) -> None:
+
+```python    # Process the event data
+
+UKGovEnvironmentEAFloodMonitoringAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+uk_gov_environment_ea_flood_monitoring_amqp_dispatcher.uk_gov_environment_ea_flood_monitoring_amqp_reading_async =
+uk_gov_environment_ea_flood_monitoring_amqp_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_uk_gov_environment_ea_flood_monitoring_amqp_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_gov_environment_ea_flood_monitoring_amqp_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `UK.Gov.Environment.EA.FloodMonitoring.amqp.Station` message. A reference record for one monitoring
+stations across England published by the Environment Agency flood-monitoring API. It fires when the bridge publishes or
+refreshes the station catalog so consumers can interpret measurement events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_gov_environment_ea_flood_monitoring_amqp_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `UK.Gov.Environment.EA.FloodMonitoring.amqp.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_gov_environment_ea_flood_monitoring_amqp_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_uk_gov_environment_ea_flood_monitoring_amqp_reading`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_uk_gov_environment_ea_flood_monitoring_amqp_reading(
+
+    self,##### `_process_event`
+
+    data: Reading,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `UK.Gov.Environment.EA.FloodMonitoring.amqp.Reading` message. A reading event from the Environment Agency
+flood-monitoring API. It represents source data for monitoring stations across England as published by the upstream
+feed.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Reading`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_uk_gov_environment_ea_flood_monitoring_amqp_reading(
+
+    data=Reading(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `UK.Gov.Environment.EA.FloodMonitoring.amqp.Reading` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_uk_gov_environment_ea_flood_monitoring_amqp_reading_batch(```
 
     messages=[
 

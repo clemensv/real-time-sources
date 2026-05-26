@@ -28,14 +28,15 @@ class Test_BuoyStation(unittest.TestCase):
         Create instance of BuoyStation for testing
         """
         instance = BuoyStation(
-            station_id='jfoxxrbqvbrlvrnzytdr',
-            owner='izyikghftjynikjxnctv',
-            station_type='xmwpdelwzabzfkeioeve',
-            hull='mzcewlwepzwhtsynsoqj',
-            name='hmnraredsmqzhgsinzcj',
-            latitude=float(74.9277840082615),
-            longitude=float(62.39699730575209),
-            timezone='tseugahuqeuvmczirzcz'
+            station_id='vtoqdlboidckpytonqdz',
+            owner='vhcifvjswzwsuijuybof',
+            station_type='hfvofhsnngqqqzgwqoez',
+            hull='wmuifzrgvgesjphkqxsn',
+            name='jbsjfnezvwqajlflnrob',
+            latitude=float(68.16746831246554),
+            longitude=float(81.86148154001457),
+            timezone='frouxblhtrjlheshsqls',
+            region='dydtljmbrhvcfnxnkdfu'
         )
         return instance
 
@@ -44,7 +45,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'jfoxxrbqvbrlvrnzytdr'
+        test_value = 'vtoqdlboidckpytonqdz'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -52,7 +53,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test owner property
         """
-        test_value = 'izyikghftjynikjxnctv'
+        test_value = 'vhcifvjswzwsuijuybof'
         self.instance.owner = test_value
         self.assertEqual(self.instance.owner, test_value)
     
@@ -60,7 +61,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test station_type property
         """
-        test_value = 'xmwpdelwzabzfkeioeve'
+        test_value = 'hfvofhsnngqqqzgwqoez'
         self.instance.station_type = test_value
         self.assertEqual(self.instance.station_type, test_value)
     
@@ -68,7 +69,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test hull property
         """
-        test_value = 'mzcewlwepzwhtsynsoqj'
+        test_value = 'wmuifzrgvgesjphkqxsn'
         self.instance.hull = test_value
         self.assertEqual(self.instance.hull, test_value)
     
@@ -76,7 +77,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'hmnraredsmqzhgsinzcj'
+        test_value = 'jbsjfnezvwqajlflnrob'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -84,7 +85,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(74.9277840082615)
+        test_value = float(68.16746831246554)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -92,7 +93,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(62.39699730575209)
+        test_value = float(81.86148154001457)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -100,10 +101,27 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test timezone property
         """
-        test_value = 'tseugahuqeuvmczirzcz'
+        test_value = 'frouxblhtrjlheshsqls'
         self.instance.timezone = test_value
         self.assertEqual(self.instance.timezone, test_value)
     
+    def test_region_property(self):
+        """
+        Test region property
+        """
+        test_value = 'dydtljmbrhvcfnxnkdfu'
+        self.instance.region = test_value
+        self.assertEqual(self.instance.region, test_value)
+    
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = BuoyStation.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

@@ -29,15 +29,15 @@ class Test_Observation(unittest.TestCase):
         Create instance of Observation for testing
         """
         instance = Observation(
-            station_number='vzxoycozqnrosqzeqkde',
-            identifier='dquywlcisifnrujwlzkb',
-            station_name='cdiukdmujibcoyahdryp',
-            prov_terr_state_loc='jlpjddwellbupdgngroj',
+            station_number='mbpblxdleqffxlygwcno',
+            identifier='siqorudcbiuruxtrbors',
+            station_name='bicmyrhgnoqpltdxeytq',
+            prov_terr_state_loc='kjyzazncvdvycflpfrrp',
             observation_datetime=datetime.datetime.now(datetime.timezone.utc),
-            level=float(16.668453435561293),
-            discharge=float(71.46406290354213),
-            latitude=float(21.328726282215705),
-            longitude=float(66.0604763452152)
+            level=float(51.57417406481342),
+            discharge=float(36.382437002998955),
+            latitude=float(23.537880043010183),
+            longitude=float(90.1917460324674)
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test station_number property
         """
-        test_value = 'vzxoycozqnrosqzeqkde'
+        test_value = 'mbpblxdleqffxlygwcno'
         self.instance.station_number = test_value
         self.assertEqual(self.instance.station_number, test_value)
     
@@ -54,7 +54,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test identifier property
         """
-        test_value = 'dquywlcisifnrujwlzkb'
+        test_value = 'siqorudcbiuruxtrbors'
         self.instance.identifier = test_value
         self.assertEqual(self.instance.identifier, test_value)
     
@@ -62,7 +62,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'cdiukdmujibcoyahdryp'
+        test_value = 'bicmyrhgnoqpltdxeytq'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -70,7 +70,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test prov_terr_state_loc property
         """
-        test_value = 'jlpjddwellbupdgngroj'
+        test_value = 'kjyzazncvdvycflpfrrp'
         self.instance.prov_terr_state_loc = test_value
         self.assertEqual(self.instance.prov_terr_state_loc, test_value)
     
@@ -86,7 +86,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test level property
         """
-        test_value = float(16.668453435561293)
+        test_value = float(51.57417406481342)
         self.instance.level = test_value
         self.assertEqual(self.instance.level, test_value)
     
@@ -94,7 +94,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test discharge property
         """
-        test_value = float(71.46406290354213)
+        test_value = float(36.382437002998955)
         self.instance.discharge = test_value
         self.assertEqual(self.instance.discharge, test_value)
     
@@ -102,7 +102,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(21.328726282215705)
+        test_value = float(23.537880043010183)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -110,7 +110,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(66.0604763452152)
+        test_value = float(90.1917460324674)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

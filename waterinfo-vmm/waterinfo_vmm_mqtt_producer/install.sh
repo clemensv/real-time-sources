@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./waterinfo_vmm_mqtt_producer_data
+pip install ./waterinfo_vmm_mqtt_producer_mqtt_client

@@ -4,8 +4,8 @@ Waterinfo VMM publishes water level observations from Waterinfo.be and the Flemi
 
 ## At a glance
 
-- **Event types:** 2 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `{station_no}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `hydro/be/vmm/waterinfo-vmm/+/+/info`, `hydro/be/vmm/waterinfo-vmm/+/+/water-level`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('hydro/be/vmm/waterinfo-vmm/+/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `waterinfo-vmm`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/waterinfo-vmm')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,6 +77,8 @@ Each event identifies the real-world resource with `{station_no}`. `{station_no}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `waterinfo-vmm`, key `{station_no}` |
+| `MQTT/5.0` | topic `hydro/be/vmm/waterinfo-vmm/{water_body}/{station_no}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/waterinfo-vmm`, message subject `{station_no}`; application properties water_body `{water_body}` |
 
 #### Payload
 
@@ -63,6 +93,7 @@ Each event identifies the real-world resource with `{station_no}`. `{station_no}
 - **`stationparameter_name`** (string or null, optional): Human-readable name of the stationparameter.
 - **`ts_id`** (string or null, optional): Stable identifier assigned by the upstream provider for the ts.
 - **`ts_unitname`** (string or null, optional): Provider-supplied ts unitname value for this record.
+- **`water_body`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for waterinfo-vmm.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -77,13 +108,14 @@ Synthetic example values are generated deterministically from the schema: consta
   "river_name": "string",
   "stationparameter_name": "string",
   "ts_id": "string",
-  "ts_unitname": "string"
+  "ts_unitname": "string",
+  "water_body": "string"
 }
 ```
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
 
 ### Water Level Reading
 
@@ -102,6 +134,8 @@ Each event identifies the real-world resource with `{station_no}`. `{station_no}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `waterinfo-vmm`, key `{station_no}` |
+| `MQTT/5.0` | topic `hydro/be/vmm/waterinfo-vmm/{water_body}/{station_no}/water-level`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/waterinfo-vmm`, message subject `{station_no}`; application properties water_body `{water_body}` |
 
 #### Payload
 
@@ -114,6 +148,7 @@ Each event identifies the real-world resource with `{station_no}`. `{station_no}
 - **`value`** (double, required): Measured value reported by the upstream provider.
 - **`unit_name`** (string, optional): Human-readable name of the unit.
 - **`parameter_name`** (string, optional): Plain-language name of the measured parameter.
+- **`water_body`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for waterinfo-vmm.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -126,7 +161,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "timestamp": "2024-01-01T00:00:00Z",
   "value": 0,
   "unit_name": "string",
-  "parameter_name": "string"
+  "parameter_name": "string",
+  "water_body": "string"
 }
 ```
 

@@ -21,6 +21,50 @@
         "#/messagegroups/gov.ca.water.cdec"
       ],
       "description": "Kafka producer endpoint for CDEC California Reservoirs CloudEvents on the `cdec-reservoirs` topic keyed by `{station_id}/{sensor_num}`."
+    },
+    "gov.ca.water.cdec.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.ca.water.cdec.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for cdec-reservoirs CloudEvents using the documented UNS topic hierarchy."
+    },
+    "gov.ca.water.cdec.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/cdec-reservoirs"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.ca.water.cdec.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for cdec-reservoirs CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -48,6 +92,59 @@
         }
       },
       "description": "Events from CDEC California Reservoirs covering California reservoirs and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
+    },
+    "gov.ca.water.cdec.mqtt": {
+      "description": "MQTT 5 variant of cdec-reservoirs events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "gov.ca.water.cdec.mqtt.ReservoirReading": {
+          "name": "ReservoirReading",
+          "basemessageurl": "/messagegroups/gov.ca.water.cdec/messages/gov.ca.water.cdec.ReservoirReading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/cdec/cdec-reservoirs/{basin}/{station_id}/{sensor_num}/reservoir-reading",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "gov.ca.water.cdec.amqp": {
+      "description": "AMQP 1.0 variant of cdec-reservoirs events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "gov.ca.water.cdec.amqp.ReservoirReading": {
+          "name": "ReservoirReading",
+          "basemessageurl": "/messagegroups/gov.ca.water.cdec/messages/gov.ca.water.cdec.ReservoirReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}/{sensor_num}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "Routing property for AMQP subscription filters (basin)."
+              },
+              "sensor_num": {
+                "type": "uritemplate",
+                "value": "{sensor_num}",
+                "description": "Routing property for AMQP subscription filters (sensor_num)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}/{sensor_num}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -109,6 +206,10 @@
                               "data_flag": {
                                 "type": "string",
                                 "description": "Quality flag character applied to the observation by CDEC. A single space ' ' means no flag (normal data). Other values indicate provisional, edited, or suspect data."
+                              },
+                              "basin": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for cdec-reservoirs."
                               }
                             },
                             "required": [

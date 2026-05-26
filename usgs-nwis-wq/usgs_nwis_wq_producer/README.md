@@ -1,6 +1,6 @@
 
 
-# Usgs-nwis-wq-producer Kafka Producer# Usgs-nwis-wq-producer Event Dispatcher for Apache Kafka
+# Usgs_nwis_wq_producer Kafka Producer# Usgs_nwis_wq_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -17,7 +17,15 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - USGSWaterQualitySitesEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    USGSWaterQualityReadingsEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    USGSWaterQualityReadingsEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    USGSWaterQualitySitesMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    USGSWaterQualitySitesAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    USGSWaterQualityReadingsMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    USGSWaterQualityReadingsAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +53,22 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - USGSWaterQualityReadingsProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- USGSWaterQualitySitesMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- USGSWaterQualitySitesAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- USGSWaterQualityReadingsMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- USGSWaterQualityReadingsAmqpProducersolution for event-driven applications.
 
 
 
@@ -92,7 +116,7 @@ Initializes the dispatcher.
 
 ```python
 
-from usgs-nwis-wq-producer import USGSWaterQualitySitesProducer```python
+from usgs_nwis_wq_producer import USGSWaterQualitySitesProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -153,8 +177,9 @@ MonitoringSite], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `USGS.WaterQuality.Sites.MonitoringSite`: USGS water quality monitoring site reference
-data. Describes a physical monitoring location equipped with continuous water quality sensors.
+Asynchronous handler hook for `USGS.WaterQuality.Sites.MonitoringSite`: A reference record for one United States water-
+quality monitoring site published by the U.S. Geological Survey (USGS) Water Services API. It fires when the bridge
+publishes or refreshes the station catalog so consumers can interpret measurement events.
 
 ## Generated Producer Classes
 
@@ -238,6 +263,162 @@ usgs_water_quality_sites_monitoring_site_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesMqttProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Sites.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_mqtt_dispatcher.usgs_water_quality_sites_monitoring_site_async =
+usgs_water_quality_sites_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesAmqpProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Sites.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_amqp_dispatcher.usgs_water_quality_sites_monitoring_site_async =
+usgs_water_quality_sites_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsMqttProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Readings.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_mqtt_dispatcher.usgs_water_quality_sites_monitoring_site_async =
+usgs_water_quality_sites_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsAmqpProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Readings.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_amqp_dispatcher.usgs_water_quality_sites_monitoring_site_async =
+usgs_water_quality_sites_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -274,8 +455,9 @@ async def send_usgs_water_quality_sites_monitoring_site(
 
 
 
-Send a single `USGS.WaterQuality.Sites.MonitoringSite` message. USGS water quality monitoring site reference data.
-Describes a physical monitoring location equipped with continuous water quality sensors.Args:
+Send a single `USGS.WaterQuality.Sites.MonitoringSite` message. A reference record for one United States water-quality
+monitoring site published by the U.S. Geological Survey (USGS) Water Services API. It fires when the bridge publishes or
+refreshes the station catalog so consumers can interpret measurement events.Args:
 
 - `record`: The Kafka record.
 
@@ -394,7 +576,7 @@ Initializes the dispatcher.
 
 ```python
 
-from usgs-nwis-wq-producer import USGSWaterQualitySitesProducer```python
+from usgs_nwis_wq_producer import USGSWaterQualitySitesProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -455,9 +637,9 @@ CloudEvent, WaterQualityReading], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `USGS.WaterQuality.Readings.WaterQualityReading`: A single water quality observation from
-a USGS continuous monitoring sensor, including dissolved oxygen, pH, water temperature, specific conductance, turbidity,
-and nitrate readings.
+Asynchronous handler hook for `USGS.WaterQuality.Readings.WaterQualityReading`: A current measurement from the U.S.
+Geological Survey (USGS) Water Services API for one monitoring site. It carries continuous water-quality sensor readings
+when the upstream feed reports a new or refreshed value.
 
 ## Generated Producer Classes
 
@@ -541,6 +723,164 @@ usgs_water_quality_readings_water_quality_reading_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesMqttProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Sites.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_mqtt_dispatcher.usgs_water_quality_readings_water_quality_reading_async =
+usgs_water_quality_readings_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesAmqpProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Sites.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_amqp_dispatcher.usgs_water_quality_readings_water_quality_reading_async =
+usgs_water_quality_readings_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsMqttProducer- `data`: The event data of type
+`usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Readings.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_mqtt_dispatcher.usgs_water_quality_readings_water_quality_reading_async =
+usgs_water_quality_readings_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsAmqpProducer- `data`: The event data of type
+`usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Readings.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_amqp_dispatcher.usgs_water_quality_readings_water_quality_reading_async =
+usgs_water_quality_readings_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -577,9 +917,9 @@ async def send_usgs_water_quality_readings_water_quality_reading(
 
 
 
-Send a single `USGS.WaterQuality.Readings.WaterQualityReading` message. A single water quality observation from a USGS
-continuous monitoring sensor, including dissolved oxygen, pH, water temperature, specific conductance, turbidity, and
-nitrate readings.Args:
+Send a single `USGS.WaterQuality.Readings.WaterQualityReading` message. A current measurement from the U.S. Geological
+Survey (USGS) Water Services API for one monitoring site. It carries continuous water-quality sensor readings when the
+upstream feed reports a new or refreshed value.Args:
 
 - `record`: The Kafka record.
 
@@ -637,6 +977,1850 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_usgs_water_quality_readings_water_quality_reading_batch(```
+
+    messages=[
+
+        WaterQualityReading(...),Initializes the runner with a Kafka consumer.
+
+        WaterQualityReading(...),
+
+        WaterQualityReading(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### USGSWaterQualitySitesMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`USGSWaterQualitySitesMqttEventDispatcher` handles events for the USGS.WaterQuality.Sites.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from usgs_nwis_wq_producer import USGSWaterQualitySitesProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = USGSWaterQualitySitesProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_usgs_water_quality_sites_monitoring_site(```python
+
+    data=MonitoringSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The USGSWaterQualitySitesMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = USGSWaterQualitySitesProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `usgs_water_quality_sites_mqtt_monitoring_site_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'usgs_water_quality_sites_mqtt_monitoring_site_async:  Callable[[ConsumerRecord,
+CloudEvent, MonitoringSite], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `USGS.WaterQuality.Sites.mqtt.MonitoringSite`: A reference record for one United States
+water-quality monitoring site published by the U.S. Geological Survey (USGS) Water Services API. It fires when the
+bridge publishes or refreshes the station catalog so consumers can interpret measurement events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Sites` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_mqtt_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_dispatcher.usgs_water_quality_sites_mqtt_monitoring_site_async =
+usgs_water_quality_sites_mqtt_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Readings` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_mqtt_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_dispatcher.usgs_water_quality_sites_mqtt_monitoring_site_async =
+usgs_water_quality_sites_mqtt_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesMqttProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Sites.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_mqtt_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_mqtt_dispatcher.usgs_water_quality_sites_mqtt_monitoring_site_async =
+usgs_water_quality_sites_mqtt_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesAmqpProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Sites.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_mqtt_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_amqp_dispatcher.usgs_water_quality_sites_mqtt_monitoring_site_async =
+usgs_water_quality_sites_mqtt_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsMqttProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Readings.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_mqtt_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_mqtt_dispatcher.usgs_water_quality_sites_mqtt_monitoring_site_async =
+usgs_water_quality_sites_mqtt_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsAmqpProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Readings.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_mqtt_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_amqp_dispatcher.usgs_water_quality_sites_mqtt_monitoring_site_async =
+usgs_water_quality_sites_mqtt_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_usgs_water_quality_sites_mqtt_monitoring_site`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_usgs_water_quality_sites_mqtt_monitoring_site(
+
+    self,##### `_process_event`
+
+    data: MonitoringSite,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `USGS.WaterQuality.Sites.mqtt.MonitoringSite` message. A reference record for one United States water-
+quality monitoring site published by the U.S. Geological Survey (USGS) Water Services API. It fires when the bridge
+publishes or refreshes the station catalog so consumers can interpret measurement events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `MonitoringSite`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_usgs_water_quality_sites_mqtt_monitoring_site(
+
+    data=MonitoringSite(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `USGS.WaterQuality.Sites.mqtt.MonitoringSite` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_usgs_water_quality_sites_mqtt_monitoring_site_batch(```
+
+    messages=[
+
+        MonitoringSite(...),Initializes the runner with a Kafka consumer.
+
+        MonitoringSite(...),
+
+        MonitoringSite(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### USGSWaterQualitySitesAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`USGSWaterQualitySitesAmqpEventDispatcher` handles events for the USGS.WaterQuality.Sites.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from usgs_nwis_wq_producer import USGSWaterQualitySitesProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = USGSWaterQualitySitesProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_usgs_water_quality_sites_monitoring_site(```python
+
+    data=MonitoringSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The USGSWaterQualitySitesAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = USGSWaterQualitySitesProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `usgs_water_quality_sites_amqp_monitoring_site_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'usgs_water_quality_sites_amqp_monitoring_site_async:  Callable[[ConsumerRecord,
+CloudEvent, MonitoringSite], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `USGS.WaterQuality.Sites.amqp.MonitoringSite`: A reference record for one United States
+water-quality monitoring site published by the U.S. Geological Survey (USGS) Water Services API. It fires when the
+bridge publishes or refreshes the station catalog so consumers can interpret measurement events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Sites` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_amqp_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_dispatcher.usgs_water_quality_sites_amqp_monitoring_site_async =
+usgs_water_quality_sites_amqp_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Readings` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_amqp_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_dispatcher.usgs_water_quality_sites_amqp_monitoring_site_async =
+usgs_water_quality_sites_amqp_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesMqttProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Sites.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_amqp_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_mqtt_dispatcher.usgs_water_quality_sites_amqp_monitoring_site_async =
+usgs_water_quality_sites_amqp_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesAmqpProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Sites.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_amqp_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_amqp_dispatcher.usgs_water_quality_sites_amqp_monitoring_site_async =
+usgs_water_quality_sites_amqp_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsMqttProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Readings.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_amqp_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_mqtt_dispatcher.usgs_water_quality_sites_amqp_monitoring_site_async =
+usgs_water_quality_sites_amqp_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsAmqpProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.MonitoringSite`.
+
+
+
+Producer for `USGS.WaterQuality.Readings.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_sites_amqp_monitoring_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoringSite) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_amqp_dispatcher.usgs_water_quality_sites_amqp_monitoring_site_async =
+usgs_water_quality_sites_amqp_monitoring_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_usgs_water_quality_sites_amqp_monitoring_site`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_usgs_water_quality_sites_amqp_monitoring_site(
+
+    self,##### `_process_event`
+
+    data: MonitoringSite,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `USGS.WaterQuality.Sites.amqp.MonitoringSite` message. A reference record for one United States water-
+quality monitoring site published by the U.S. Geological Survey (USGS) Water Services API. It fires when the bridge
+publishes or refreshes the station catalog so consumers can interpret measurement events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `MonitoringSite`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_usgs_water_quality_sites_amqp_monitoring_site(
+
+    data=MonitoringSite(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `USGS.WaterQuality.Sites.amqp.MonitoringSite` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_usgs_water_quality_sites_amqp_monitoring_site_batch(```
+
+    messages=[
+
+        MonitoringSite(...),Initializes the runner with a Kafka consumer.
+
+        MonitoringSite(...),
+
+        MonitoringSite(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### USGSWaterQualityReadingsMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`USGSWaterQualityReadingsMqttEventDispatcher` handles events for the USGS.WaterQuality.Readings.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from usgs_nwis_wq_producer import USGSWaterQualitySitesProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = USGSWaterQualitySitesProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_usgs_water_quality_sites_monitoring_site(```python
+
+    data=MonitoringSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The USGSWaterQualityReadingsMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = USGSWaterQualitySitesProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `usgs_water_quality_readings_mqtt_water_quality_reading_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'usgs_water_quality_readings_mqtt_water_quality_reading_async:
+Callable[[ConsumerRecord, CloudEvent, WaterQualityReading], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `USGS.WaterQuality.Readings.mqtt.WaterQualityReading`: A current measurement from the U.S.
+Geological Survey (USGS) Water Services API for one monitoring site. It carries continuous water-quality sensor readings
+when the upstream feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Sites` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_mqtt_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_dispatcher.usgs_water_quality_readings_mqtt_water_quality_reading_async =
+usgs_water_quality_readings_mqtt_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Readings` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_mqtt_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_dispatcher.usgs_water_quality_readings_mqtt_water_quality_reading_async =
+usgs_water_quality_readings_mqtt_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesMqttProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Sites.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_mqtt_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_mqtt_dispatcher.usgs_water_quality_readings_mqtt_water_quality_reading_async =
+usgs_water_quality_readings_mqtt_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesAmqpProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Sites.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_mqtt_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_amqp_dispatcher.usgs_water_quality_readings_mqtt_water_quality_reading_async =
+usgs_water_quality_readings_mqtt_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsMqttProducer- `data`: The event data of type
+`usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Readings.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_mqtt_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_mqtt_dispatcher.usgs_water_quality_readings_mqtt_water_quality_reading_async =
+usgs_water_quality_readings_mqtt_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsAmqpProducer- `data`: The event data of type
+`usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Readings.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_mqtt_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_amqp_dispatcher.usgs_water_quality_readings_mqtt_water_quality_reading_async =
+usgs_water_quality_readings_mqtt_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_usgs_water_quality_readings_mqtt_water_quality_reading`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_usgs_water_quality_readings_mqtt_water_quality_reading(
+
+    self,##### `_process_event`
+
+    data: WaterQualityReading,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `USGS.WaterQuality.Readings.mqtt.WaterQualityReading` message. A current measurement from the U.S.
+Geological Survey (USGS) Water Services API for one monitoring site. It carries continuous water-quality sensor readings
+when the upstream feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WaterQualityReading`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_usgs_water_quality_readings_mqtt_water_quality_reading(
+
+    data=WaterQualityReading(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `USGS.WaterQuality.Readings.mqtt.WaterQualityReading` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_usgs_water_quality_readings_mqtt_water_quality_reading_batch(```
+
+    messages=[
+
+        WaterQualityReading(...),Initializes the runner with a Kafka consumer.
+
+        WaterQualityReading(...),
+
+        WaterQualityReading(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### USGSWaterQualityReadingsAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`USGSWaterQualityReadingsAmqpEventDispatcher` handles events for the USGS.WaterQuality.Readings.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from usgs_nwis_wq_producer import USGSWaterQualitySitesProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = USGSWaterQualitySitesProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_usgs_water_quality_sites_monitoring_site(```python
+
+    data=MonitoringSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The USGSWaterQualityReadingsAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = USGSWaterQualitySitesProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `usgs_water_quality_readings_amqp_water_quality_reading_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'usgs_water_quality_readings_amqp_water_quality_reading_async:
+Callable[[ConsumerRecord, CloudEvent, WaterQualityReading], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `USGS.WaterQuality.Readings.amqp.WaterQualityReading`: A current measurement from the U.S.
+Geological Survey (USGS) Water Services API for one monitoring site. It carries continuous water-quality sensor readings
+when the upstream feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Sites` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_amqp_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_dispatcher.usgs_water_quality_readings_amqp_water_quality_reading_async =
+usgs_water_quality_readings_amqp_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Readings` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_amqp_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_dispatcher.usgs_water_quality_readings_amqp_water_quality_reading_async =
+usgs_water_quality_readings_amqp_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesMqttProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Sites.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_amqp_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_mqtt_dispatcher.usgs_water_quality_readings_amqp_water_quality_reading_async =
+usgs_water_quality_readings_amqp_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualitySitesAmqpProducer- `data`: The event data of type `usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Sites.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_amqp_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualitySitesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_sites_amqp_dispatcher.usgs_water_quality_readings_amqp_water_quality_reading_async =
+usgs_water_quality_readings_amqp_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsMqttProducer- `data`: The event data of type
+`usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Readings.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_amqp_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_mqtt_dispatcher.usgs_water_quality_readings_amqp_water_quality_reading_async =
+usgs_water_quality_readings_amqp_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSWaterQualityReadingsAmqpProducer- `data`: The event data of type
+`usgs_nwis_wq_producer_data.WaterQualityReading`.
+
+
+
+Producer for `USGS.WaterQuality.Readings.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_water_quality_readings_amqp_water_quality_reading_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: WaterQualityReading) -> None:
+
+```python    # Process the event data
+
+USGSWaterQualityReadingsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_water_quality_readings_amqp_dispatcher.usgs_water_quality_readings_amqp_water_quality_reading_async =
+usgs_water_quality_readings_amqp_water_quality_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_usgs_water_quality_readings_amqp_water_quality_reading`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_usgs_water_quality_readings_amqp_water_quality_reading(
+
+    self,##### `_process_event`
+
+    data: WaterQualityReading,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `USGS.WaterQuality.Readings.amqp.WaterQualityReading` message. A current measurement from the U.S.
+Geological Survey (USGS) Water Services API for one monitoring site. It carries continuous water-quality sensor readings
+when the upstream feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WaterQualityReading`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_usgs_water_quality_readings_amqp_water_quality_reading(
+
+    data=WaterQualityReading(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `USGS.WaterQuality.Readings.amqp.WaterQualityReading` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_usgs_water_quality_readings_amqp_water_quality_reading_batch(```
 
     messages=[
 

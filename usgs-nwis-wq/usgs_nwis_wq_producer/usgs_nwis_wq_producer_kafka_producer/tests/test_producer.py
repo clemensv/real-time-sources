@@ -24,6 +24,10 @@ from test_usgs_nwis_wq_producer_data_monitoringsite import Test_MonitoringSite
 from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualityReadingsEventProducer
 from usgs_nwis_wq_producer_data import WaterQualityReading
 from test_usgs_nwis_wq_producer_data_waterqualityreading import Test_WaterQualityReading
+from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualitySitesMqttEventProducer
+from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualitySitesAmqpEventProducer
+from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualityReadingsMqttEventProducer
+from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualityReadingsAmqpEventProducer
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -180,4 +184,248 @@ def test_usgs_waterquality_readings_usgswaterqualityreadingswaterqualityreading(
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
         expected_key = "{site_number}/{parameter_code}".format(site_number=f'test_{i}', parameter_code=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_usgs_waterquality_sites_mqtt_usgswaterqualitysitesmqttmonitoringsite(kafka_emulator):
+    """Test the USGSWaterQualitySitesMqttMonitoringSite event from the USGS.WaterQuality.Sites.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_usgs_waterquality_sites_mqtt_usgswaterqualitysitesmqttmonitoringsite',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "USGS.WaterQuality.Sites.mqtt.MonitoringSite":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = USGSWaterQualitySitesMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_MonitoringSite.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_water_quality_sites_mqtt_monitoring_site(_source_uri = f'test_{i}', _site_number = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_usgs_waterquality_sites_amqp_usgswaterqualitysitesamqpmonitoringsite(kafka_emulator):
+    """Test the USGSWaterQualitySitesAmqpMonitoringSite event from the USGS.WaterQuality.Sites.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_usgs_waterquality_sites_amqp_usgswaterqualitysitesamqpmonitoringsite',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "USGS.WaterQuality.Sites.amqp.MonitoringSite":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = USGSWaterQualitySitesAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_MonitoringSite.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_water_quality_sites_amqp_monitoring_site(_source_uri = f'test_{i}', _site_number = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_usgs_waterquality_readings_mqtt_usgswaterqualityreadingsmqttwaterqualityreading(kafka_emulator):
+    """Test the USGSWaterQualityReadingsMqttWaterQualityReading event from the USGS.WaterQuality.Readings.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_usgs_waterquality_readings_mqtt_usgswaterqualityreadingsmqttwaterqualityreading',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "USGS.WaterQuality.Readings.mqtt.WaterQualityReading":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = USGSWaterQualityReadingsMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_WaterQualityReading.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_water_quality_readings_mqtt_water_quality_reading(_source_uri = f'test_{i}', _site_number = f'test_{i}', _parameter_code = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_usgs_waterquality_readings_amqp_usgswaterqualityreadingsamqpwaterqualityreading(kafka_emulator):
+    """Test the USGSWaterQualityReadingsAmqpWaterQualityReading event from the USGS.WaterQuality.Readings.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_usgs_waterquality_readings_amqp_usgswaterqualityreadingsamqpwaterqualityreading',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "USGS.WaterQuality.Readings.amqp.WaterQualityReading":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = USGSWaterQualityReadingsAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_WaterQualityReading.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_usgs_water_quality_readings_amqp_water_quality_reading(_source_uri = f'test_{i}', _site_number = f'test_{i}', _parameter_code = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
     consumer.close()

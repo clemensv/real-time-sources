@@ -1,36 +1,26 @@
-# Generate USGS NWIS WQ producer from xRegistry definitions
+$ErrorActionPreference = 'Stop'
 
 . (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
-Write-Host "Generating USGS NWIS WQ producer from xRegistry definitions..." -ForegroundColor Cyan
-
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$xregFile = Join-Path (Join-Path $scriptDir "xreg") "usgs_nwis_wq.xreg.json"
+$xregFile = Join-Path $scriptDir "xreg\usgs_nwis_wq.xreg.json"
+
+Write-Host "Generating usgs-nwis-wq producers from xRegistry definitions..." -ForegroundColor Cyan
+
 $outputDir = Join-Path $scriptDir "usgs_nwis_wq_producer"
+if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
+xrcg generate --style kafkaproducer --language py --projectname usgs_nwis_wq_producer --definitions $xregFile --output $outputDir
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-Write-Host "xRegistry file: $xregFile" -ForegroundColor Gray
-Write-Host "Output directory: $outputDir" -ForegroundColor Gray
+$outputDir = Join-Path $scriptDir "usgs_nwis_wq_mqtt_producer"
+if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
+xrcg generate --style mqttclient --language py --projectname usgs_nwis_wq_mqtt_producer --definitions $xregFile --endpoint USGS.WaterQuality.Mqtt --output $outputDir
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-# Check if xreg file exists
-if (-not (Test-Path $xregFile)) {
-    Write-Host "Error: xRegistry file not found: $xregFile" -ForegroundColor Red
-    exit 1
-}
+$outputDir = Join-Path $scriptDir "usgs_nwis_wq_amqp_producer"
+if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
+xrcg generate --style amqpproducer --language py --projectname usgs_nwis_wq_amqp_producer --definitions $xregFile --endpoint USGS.WaterQuality.Amqp --template-args azure_cbs_target=servicebus --output $outputDir
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-# Remove old output if it exists
-if (Test-Path $outputDir) {
-    Write-Host "Removing existing output directory..." -ForegroundColor Yellow
-    Remove-Item -Path $outputDir -Recurse -Force
-}
-
-# Generate producer code
-Write-Host "Generating Kafka producer code..." -ForegroundColor Cyan
-xrcg generate --style kafkaproducer --language py --projectname usgs-nwis-wq-producer --definitions $xregFile --output $outputDir
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "`nProducer generation completed successfully" -ForegroundColor Green
-} else {
-    Write-Host "`nProducer generation failed" -ForegroundColor Red
-    exit $LASTEXITCODE
-}
+Write-Host "Producer generation completed successfully" -ForegroundColor Green

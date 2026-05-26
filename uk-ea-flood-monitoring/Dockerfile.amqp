@@ -1,0 +1,19 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/uk-ea-flood-monitoring" \
+      org.opencontainers.image.title="uk-ea-flood-monitoring → AMQP 1.0 bridge" \
+      org.opencontainers.image.description="Publishes uk-ea-flood-monitoring CloudEvents over AMQP 1.0 to generic brokers and Azure Service Bus/Event Hubs." \
+      org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/uk-ea-flood-monitoring/CONTAINER.md" \
+      org.opencontainers.image.license="MIT"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev libsasl2-2 libsasl2-modules && rm -rf /var/lib/apt/lists/*
+COPY . /app
+RUN pip install --no-cache-dir ./uk_ea_flood_monitoring_amqp_producer/uk_ea_flood_monitoring_amqp_producer_data \
+ && pip install --no-cache-dir ./uk_ea_flood_monitoring_amqp_producer/uk_ea_flood_monitoring_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir ./uk_ea_flood_monitoring_amqp \
+ && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \
+ && rm -rf /root/.cache /var/lib/apt/lists/*
+ENV AMQP_BROKER_URL=""
+ENV AMQP_ADDRESS="uk-ea-flood-monitoring"
+CMD ["python", "-m", "uk_ea_flood_monitoring_amqp", "feed"]

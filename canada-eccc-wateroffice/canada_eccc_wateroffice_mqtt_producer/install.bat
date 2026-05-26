@@ -1,0 +1,2 @@
+pip install .\canada_eccc_wateroffice_mqtt_producer_data
+pip install .\canada_eccc_wateroffice_mqtt_producer_mqtt_client

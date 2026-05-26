@@ -3,16 +3,24 @@ $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
-$XREG_ROOT = Join-Path $PSScriptRoot "xreg"
-$SCHEMA_FILE = Join-Path $XREG_ROOT "imgw_hydro.xreg.json"
-$OUTPUT_DIR = Join-Path $PSScriptRoot "imgw_hydro_producer"
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$xregFile = Join-Path $scriptDir "xreg\imgw_hydro.xreg.json"
 
-Write-Host "Generating producer from $SCHEMA_FILE"
-xrcg generate `
-    --style kafkaproducer `
-    --language py `
-    --projectname imgw_hydro_producer `
-    --definitions $SCHEMA_FILE `
-    --output $OUTPUT_DIR
+Write-Host "Generating imgw-hydro producers from xRegistry definitions..." -ForegroundColor Cyan
 
-Write-Host "Generation complete. Output in $OUTPUT_DIR"
+$outputDir = Join-Path $scriptDir "imgw_hydro_producer"
+if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
+xrcg generate --style kafkaproducer --language py --projectname imgw_hydro_producer --definitions $xregFile --output $outputDir
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+$outputDir = Join-Path $scriptDir "imgw_hydro_mqtt_producer"
+if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
+xrcg generate --style mqttclient --language py --projectname imgw_hydro_mqtt_producer --definitions $xregFile --endpoint PL.Gov.IMGW.Hydro.Mqtt --output $outputDir
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+$outputDir = Join-Path $scriptDir "imgw_hydro_amqp_producer"
+if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
+xrcg generate --style amqpproducer --language py --projectname imgw_hydro_amqp_producer --definitions $xregFile --endpoint PL.Gov.IMGW.Hydro.Amqp --template-args azure_cbs_target=servicebus --output $outputDir
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+Write-Host "Producer generation completed successfully" -ForegroundColor Green

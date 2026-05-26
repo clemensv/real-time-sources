@@ -11,13 +11,15 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+import avro.schema
+import avro.io
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Station:
     """
-    Station
+    Reference details for one monitoring station or site in the UK Environment Agency Flood Monitoring source.
     
     Attributes:
         station_reference (str)
@@ -30,7 +32,12 @@ class Station:
         notation (str)
         status (typing.Optional[str])
         date_opened (typing.Optional[str])
+        river (typing.Optional[str])
     """
+    
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
+        "{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Reference details for one monitoring station or site in the UK Environment Agency Flood Monitoring source.\", \"fields\": [{\"name\": \"station_reference\", \"type\": \"string\", \"doc\": \"Provider-supplied station reference value for this record.\"}, {\"name\": \"label\", \"type\": \"string\", \"doc\": \"Provider-supplied label value for this record.\"}, {\"name\": \"river_name\", \"type\": [\"string\", \"null\"], \"doc\": \"Name of the river or watercourse observed at the station.\", \"default\": null}, {\"name\": \"catchment_name\", \"type\": [\"string\", \"null\"], \"doc\": \"Human-readable name of the catchment.\", \"default\": null}, {\"name\": \"town\", \"type\": [\"string\", \"null\"], \"doc\": \"Provider-supplied town value for this record.\", \"default\": null}, {\"name\": \"lat\", \"type\": \"double\", \"doc\": \"Provider-supplied lat value for this record.\"}, {\"name\": \"long\", \"type\": \"double\", \"doc\": \"Provider-supplied long value for this record.\"}, {\"name\": \"notation\", \"type\": \"string\", \"doc\": \"Provider-supplied notation value for this record.\"}, {\"name\": \"status\", \"type\": [\"string\", \"null\"], \"doc\": \"Provider status value for the station, measurement, or alert.\", \"default\": null}, {\"name\": \"date_opened\", \"type\": [\"string\", \"null\"], \"doc\": \"Provider-supplied date opened value for this record.\", \"default\": null}, {\"name\": \"river\", \"type\": [\"null\", \"string\"], \"doc\": \"Stable routing axis used by MQTT and AMQP transport templates for uk-ea-flood-monitoring.\", \"default\": null}]}"
+    )
     
     
     station_reference: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_reference"))
@@ -43,6 +50,7 @@ class Station:
     notation: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="notation"))
     status: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
     date_opened: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_opened"))
+    river: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="river"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':
@@ -56,6 +64,45 @@ class Station:
             The dataclass representation of the dataclass.
         """
         return cls(**data)
+    @classmethod
+    def from_avro_dict(cls, data: dict) -> 'Station':
+        """
+        Converts a dictionary from Avro deserialization to a dataclass instance.
+        Handles conversion of string representations back to Python types for
+        extended logical types.
+        
+        Args:
+            data: The dictionary from Avro deserialization.
+        
+        Returns:
+            The dataclass representation.
+        """
+        # Convert string values back to Python types for Avro string-based logical types
+        converted = data.copy()
+        if 'station_reference' in converted and converted['station_reference'] is not None:
+            value = converted['station_reference']
+        if 'label' in converted and converted['label'] is not None:
+            value = converted['label']
+        if 'river_name' in converted and converted['river_name'] is not None:
+            value = converted['river_name']
+        if 'catchment_name' in converted and converted['catchment_name'] is not None:
+            value = converted['catchment_name']
+        if 'town' in converted and converted['town'] is not None:
+            value = converted['town']
+        if 'lat' in converted and converted['lat'] is not None:
+            value = converted['lat']
+        if 'long' in converted and converted['long'] is not None:
+            value = converted['long']
+        if 'notation' in converted and converted['notation'] is not None:
+            value = converted['notation']
+        if 'status' in converted and converted['status'] is not None:
+            value = converted['status']
+        if 'date_opened' in converted and converted['date_opened'] is not None:
+            value = converted['date_opened']
+        if 'river' in converted and converted['river'] is not None:
+            value = converted['river']
+        
+        return cls(**converted)
 
     def to_serializer_dict(self) -> dict:
         """
@@ -79,6 +126,22 @@ class Station:
             return k[:-1] if k.endswith('_') else k
         return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
 
+    def to_avro_dict(self) -> dict:
+        """
+        Converts the dataclass to a dictionary suitable for Avro serialization.
+        Handles conversion of Python types to Avro-compatible string representations
+        for extended logical types.
+
+        Returns:
+            The dictionary representation suitable for Avro serialization.
+        """
+        result = self.to_serializer_dict()
+        converted = result.copy()
+        
+        # Convert specific fields based on their source types
+        
+        return converted
+
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
@@ -87,6 +150,8 @@ class Station:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
                     'application/json': Encodes the data to JSON format.
+                    'avro/binary': Encodes the data to Avro binary format.
+                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
@@ -98,6 +163,13 @@ class Station:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+            # Convert to Avro binary format using the embedded schema
+            writer = avro.io.DatumWriter(self.AvroType)
+            with io.BytesIO() as stream:
+                encoder = avro.io.BinaryEncoder(stream)
+                writer.write(self.to_avro_dict(), encoder)
+                result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -127,6 +199,8 @@ class Station:
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
+                    'avro/binary': Attempts to decode the data from Avro binary format.
+                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
         Returns:
@@ -151,6 +225,16 @@ class Station:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+            if isinstance(data, bytes):
+                # Decode from Avro binary format using the embedded schema
+                reader = avro.io.DatumReader(cls.AvroType)
+                with io.BytesIO(data) as stream:
+                    decoder = avro.io.BinaryDecoder(stream)
+                    _record = reader.read(decoder)
+                    return Station.from_avro_dict(_record)
+            else:
+                raise NotImplementedError('Data is not of a supported type for Avro deserialization')
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -169,14 +253,15 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_reference='bomajynkjouptoiilmfg',
-            label='ddrcznbvadxpctiodtyk',
-            river_name='xdgfxdudpvwmfcgtkurr',
-            catchment_name='njupsaigbvtoevhcgcgt',
-            town='liuohlbrutgnmnkybrrp',
-            lat=float(66.33429490664604),
-            long=float(76.3818183102153),
-            notation='uruukykebtpgzuknsuzs',
-            status='reuewycdrtbsvropzuvl',
-            date_opened='kiouwbomipnbpziunesh'
+            station_reference='fidmvlxedecnlcllamal',
+            label='mxpymsqbbpymekhrtwgu',
+            river_name='ngsfqazstzlfctjziqrc',
+            catchment_name='ktiohnceaxmtlxmcyryj',
+            town='wmrflihrjzjvsrijznih',
+            lat=float(25.49955348454047),
+            long=float(11.020357692039163),
+            notation='fiyydiqfgmekowhnaaxi',
+            status='hiyujxcmvybxqkkofwmt',
+            date_opened='xelqzagizgcwvjftzokp',
+            river='pmhdraypkbiqllkcrhrk'
         )

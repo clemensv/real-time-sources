@@ -4,8 +4,8 @@ IMGW-PIB Hydrological Data publishes water level and discharge observations from
 
 ## At a glance
 
-- **Event types:** 2 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `{station_id}` identifies the resource each event is about.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
@@ -28,6 +28,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `hydro/pl/imgw/imgw-hydro/+/+/info`, `hydro/pl/imgw/imgw-hydro/+/+/water-level`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('hydro/pl/imgw/imgw-hydro/+/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `imgw-hydro`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/imgw-hydro')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -48,6 +76,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `imgw-hydro`, key `{station_id}` |
+| `MQTT/5.0` | topic `hydro/pl/imgw/imgw-hydro/{basin}/{station_id}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/imgw-hydro`, message subject `{station_id}`; application properties basin `{basin}` |
 
 #### Payload
 
@@ -59,6 +89,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`voivodeship`** (string or null, optional): Provider-supplied voivodeship value for this record.
 - **`longitude`** (double or null, optional): Longitude of the station in WGS 84 coordinates.
 - **`latitude`** (double or null, optional): Latitude of the station in WGS 84 coordinates.
+- **`basin`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -70,13 +101,14 @@ Synthetic example values are generated deterministically from the schema: consta
   "river": "string",
   "voivodeship": "string",
   "longitude": 0,
-  "latitude": 0
+  "latitude": 0,
+  "basin": "string"
 }
 ```
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
 
 ### Water Level Observation
 
@@ -95,6 +127,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `imgw-hydro`, key `{station_id}` |
+| `MQTT/5.0` | topic `hydro/pl/imgw/imgw-hydro/{basin}/{station_id}/water-level`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/imgw-hydro`, message subject `{station_id}`; application properties basin `{basin}` |
 
 #### Payload
 
@@ -112,6 +146,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`discharge_timestamp`** (datetime or null, optional): Time associated with the discharge measurement.
 - **`ice_phenomenon_code`** (string or null, optional): Provider code identifying the ice phenomenon.
 - **`overgrowth_code`** (string or null, optional): Provider code identifying the overgrowth.
+- **`basin`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -129,7 +164,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "discharge": 0,
   "discharge_timestamp": "2024-01-01T00:00:00Z",
   "ice_phenomenon_code": "string",
-  "overgrowth_code": "string"
+  "overgrowth_code": "string",
+  "basin": "string"
 }
 ```
 
