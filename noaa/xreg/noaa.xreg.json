@@ -291,7 +291,7 @@
             },
             "subject": {
               "value": "{station_id}",
-              "type": "timestamp"
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
