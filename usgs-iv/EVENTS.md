@@ -1,4 +1,4 @@
-# USGS Water Services - Instantaneous Value Service Usage Guide Events
+# USGS Instantaneous Values feeder Events
 
 USGS Instantaneous Values publishes instantaneous water observations such as gauge height, discharge, and temperature from the U.S. Geological Survey (USGS) Water Services API for United States streamgages and other monitoring sites. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -1618,12 +1618,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
 ## References
 
 - xRegistry manifest: [`xreg/usgs_iv.xreg.json`](xreg/usgs_iv.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- USGS Water Services: <https://waterservices.usgs.gov/>
-- ![Deploy AMQP to Azure Service Bus: <https://aka.ms/deploytoazurebutton>

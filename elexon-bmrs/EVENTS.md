@@ -1,4 +1,4 @@
-# Elexon BMRS (GB Electricity Market) Poller Events
+# Elexon BMRS feeder Events
 
 MQTT 5.0 binary-mode CloudEvents variant of UK.Co.Elexon.BMRS.
 
@@ -271,3 +271,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/elexon_bmrs.xreg.json`](xreg/elexon_bmrs.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Elexon BMRS API: <https://data.elexon.co.uk/bmrs/api/v1/>

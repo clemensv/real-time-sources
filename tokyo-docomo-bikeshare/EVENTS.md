@@ -1,4 +1,4 @@
-# Tokyo Docomo Bikeshare Events
+# Tokyo Docomo Bikeshare feeder Events
 
 Tokyo Docomo Bikeshare publishes station status and availability updates from Docomo Bike Share open feeds for Tokyo bike-share stations. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -8,7 +8,6 @@ Tokyo Docomo Bikeshare publishes station status and availability updates from Do
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 2 reference/catalog event types and 1 telemetry event type.
 - **Identity:** `{system_id}`, `{system_id}/{station_id}` identifies the resource each event is about.
-- **Operations:** Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -258,11 +257,10 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
 
 ## References
 
 - xRegistry manifest: [`xreg/tokyo-docomo-bikeshare.xreg.json`](xreg/tokyo-docomo-bikeshare.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- Open Data Platform for Transportation (ODPT): <https://developer-dc.odpt.org/>

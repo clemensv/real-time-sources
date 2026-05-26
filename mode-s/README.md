@@ -1,146 +1,138 @@
-# Mode-S Data Poller Usage Guide
+# Mode-S feeder
+
+This feeder turns the upstream Mode-S feed into a real-time CloudEvents stream over KAFKA / MQTT / AMQP.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+Mode-S publishes operational real-time data that is useful across hazard and mobility analytics workflows, but each consumer otherwise has to build and operate its own source connector, transport adapter, and schema normalization.
+
+This bridge provides one reusable feed for common scenarios:
+
+- **Operations dashboards** — power near-real-time fleet, traffic, or incident views.
+- **Streaming analytics** — ingest directly into Eventhouse, ADX, or a lakehouse pipeline.
+- **Cross-source correlation** — join this stream with weather, hydrology, and public-safety feeds in this repository.
+- **Alerting and automation** — trigger rules based on stable CloudEvents payloads and keys.
+- **Research and reporting** — keep a reproducible event archive for retrospective analysis.
 
 ## Overview
 
-**Mode-S Data Poller** retrieves ADS-B data from dump1090 and sends updates to a Kafka topic.
+**Mode-S** in this repository is a streaming bridge and ships in the transport variants below:
 
-### What is dump1090?
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-mode-s` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Fabric Event Streams) | Topic(s): `mode-s`, key = `{stationid}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-mode-s-mqtt` | MQTT 5.0 broker (incl. Azure Event Grid MQTT and Fabric Real-Time Hub MQTT source) | Unified Namespace topic tree `<see EVENTS.md>` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-mode-s-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0, Artemis, Qpid Dispatch, Azure Service Bus/Event Hubs) | AMQP node `mode-s`, CloudEvents binary mode |
 
-[dump1090](https://github.com/antirez/dump1090) is an open-source Mode S decoder specifically designed for RTLSDR devices. It captures ADS-B messages broadcast by aircraft and decodes them to provide real-time information about aircraft positions, velocities, and other parameters. dump1090 is commonly used with RTL-SDR dongles to set up low-cost ADS-B receivers.
+All variants share:
 
-### Recommended Forks and Tools
+- The xRegistry contract (`xreg/mode_s.xreg.json`).
+- A common upstream acquisition path and normalized event payloads.
+- Stable CloudEvents subject/key identity derived from source-native identifiers.
 
-- **dump1090-fa**: The [FlightAware fork of dump1090](https://github.com/flightaware/dump1090) is the best-maintained version and includes additional features and improvements.
-- **PiAware**: [PiAware](https://flightaware.com/adsb/piaware/install) is an easy way to set up dump1090-fa on a Raspberry Pi. It provides a complete package for ADS-B reception and integration with FlightAware.
+## Key features
 
-### How dump1090 Receivers are Operated
+- Real-time source ingestion for **Local â€” ADS-B via dump1090 receivers**.
+- Contract-first CloudEvents output with JsonStructure schemas.
+- Transport variants aligned to the same core event model.
+- Deployment-ready container images for local, Azure, and Fabric-aligned topologies.
 
-dump1090 receivers are typically operated by connecting an RTL-SDR dongle to a computer or a Raspberry Pi. The software listens for ADS-B messages on 1090 MHz, decodes them, and provides the data via various endpoints, including a web interface and network ports.
+## Repository layout
 
-### BEAST Endpoint
+```text
+mode-s/
+  xreg/                           # xRegistry contracts
+  kql/
+  mode_s_amqp/
+  mode_s_amqp_producer/
+  mode_s_kafka_bridge/
+  mode_s_mqtt/
+  mode_s_mqtt_producer/
+  mode_s_producer/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+```
 
-The BEAST endpoint is a binary protocol used by dump1090 to stream raw ADS-B messages over a network. By default, dump1090 provides this endpoint on port 30005. The Mode-S Data Poller connects to this endpoint to retrieve ADS-B data. Other receivers supporting BEAST output may also work with this tool.
+## Prerequisites
 
-## Key Features:
-- **ADS-B Data Fetching**: Retrieve current ADS-B data from dump1090.
-- **Kafka Integration**: Send ADS-B data updates as CloudEvents to a Kafka topic, supporting Microsoft Event Hubs and Microsoft Fabric Event Streams.
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Network access to the upstream data endpoint(s).
+- Network access to your target broker (Kafka, MQTT, or AMQP).
 
-## Installation
+This source is handled as a streaming feeder in this batch; no notebook runtime section is included.
 
-The tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/) or get it from the Microsoft Store if you are on Windows.
+## Quick start with Docker
 
-### Installation Steps
-
-Once Python is installed, you can install the tool from the command line as follows:
+### Kafka
 
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=mode-s
+docker run --rm \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-mode-s:latest
 ```
 
-If you clone the repository, you can install the tool as follows:
+### MQTT (Unified Namespace)
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/mode-s
-pip install .
+docker run --rm \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-mode-s-mqtt:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
+Topics follow the contract templates in [EVENTS.md](EVENTS.md); primary template: `<see EVENTS.md>`.
 
-## How to Use
-
-After installation, run `mode_s.py`. It supports multiple subcommands:
-- **Feed (`feed`)**: Continuously poll ADS-B data from dump1090 and send updates to a Kafka topic.
-
-### **Feed (`feed`)**
-
-Polls Mode-S data from dump1090 and sends them as CloudEvents to a Kafka topic. The events are formatted using CloudEvents in "structured" or "binary" mode.
-
-Parameters:
-- `--host`: Host name or IP address of dump1090 (default: $DUMP1090_HOST).
-- `--port`: TCP port dump1090 listens on (default: $DUMP1090_PORT).
-- `--ref-lat`: Latitude of the receiving antenna (default: $REF_LAT).
-- `--ref-lon`: Longitude of the receiving antenna (default: $REF_LON).
-- `--stationid`: Station ID for event source attribution (default: $STATIONID).
-- `--kafka-bootstrap-servers`: Kafka servers (default: $KAFKA_BOOTSTRAP_SERVERS).
-- `--kafka-topic`: Kafka topic to publish messages (default: $KAFKA_TOPIC).
-- `--sasl-username`: Username for SASL authentication (default: $SASL_USERNAME).
-- `--sasl-password`: Password for SASL authentication (default: $SASL_PASSWORD).
-- `--connection-string`: Connection string for Microsoft Event Hubs or Fabric Event Streams (overrides other Kafka parameters; default: $CONNECTION_STRING).
-- `--content-mode`: CloudEvent content mode (“structured” or “binary”; default: “structured”).
-
-#### Example Usage:
+### AMQP 1.0
 
 ```bash
-mode_s.py feed --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-topic "<topic_name>" --sasl-username "<username>" --sasl-password "<password>" --polling-interval 60
+docker run --rm \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/mode-s' \
+  ghcr.io/clemensv/real-time-sources-mode-s-amqp:latest
 ```
 
-Alternatively, using a connection string for Microsoft Event Hubs or Microsoft Fabric Event Streams:
+## Configuration reference
 
-```bash
-mode_s.py feed --connection-string "<your_connection_string>" --polling-interval 60
-```
+The complete environment-variable contract per image is documented in [CONTAINER.md](CONTAINER.md), including connection-string mode, direct broker parameters, authentication options, and transport-specific knobs.
 
-### Connection String for Microsoft Event Hubs or Fabric Event Streams
+## Data model
 
-The connection string format is as follows:
+This source exposes **6 event type(s)** across **1 base message group(s)**:
 
-```
-Endpoint=sb://<your-event-hubs-namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy-name>;SharedAccessKey=<access-key>;EntityPath=<event-hub-name>
-```
+- `Mode_S.ADSB`
+- `Mode_S.AltitudeReply`
+- `Mode_S.IdentityReply`
+- `Mode_S.AcquisitionReply`
+- `Mode_S.CommBAltitude`
+- `Mode_S.CommBIdentity`
 
-When provided, the connection string is parsed to extract the Kafka configuration parameters:
-- **Bootstrap Servers**: Derived from the `Endpoint` value.
-- **Kafka Topic**: Derived from the `EntityPath` value.
-- **SASL Username and Password**: The username is set to `'$ConnectionString'`, and the password is the entire connection string.
+See [EVENTS.md](EVENTS.md) for the full field-level schema contract and routing metadata.
 
-### Environment Variables
-The tool supports the following environment variables to avoid passing them via the command line:
-- `KAFKA_BOOTSTRAP_SERVERS`: Kafka bootstrap servers (comma-separated list).
-- `KAFKA_TOPIC`: Kafka topic for publishing.
-- `SASL_USERNAME`: SASL username for Kafka authentication.
-- `SASL_PASSWORD`: SASL password for Kafka authentication.
-- `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
-- `POLLING_INTERVAL`: Polling interval in seconds.
-- `DUMP1090_HOST`: Hostname or IP address of dump1090.
-- `DUMP1090_PORT`: TCP port dump1090 listens on.
-- `REF_LAT`: Latitude of your receiving antenna, required for decoding positions.
-- `REF_LON`: Longitude of your receiving antenna, required for decoding positions.
-- `STATIONID`: Station ID for event source attribution.
+## Deploying into Microsoft Fabric
 
-## State Management
+This source is documented as a streaming feeder for this rollout. Use the **Fabric ACI feeder** model to host the container and route into a Fabric Event Stream custom endpoint, then materialize into Eventhouse with the checked-in KQL assets.
 
-The tool handles state internally for efficient API polling and sending updates.
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#mode-s/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+The following ARM templates exist in this source folder:
 
-### Option 1: Bring your own Event Hub
+- **azure-template-with-eventhub.json** (with eventhub)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmode-s%2Fazure-template-with-eventhub.json)
+- **azure-template-with-servicebus.json** (with servicebus)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmode-s%2Fazure-template-with-servicebus.json)
+- **azure-template.json** (default (BYO Event Hubs/Kafka))
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmode-s%2Fazure-template.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+## Next steps
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmode-s%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmode-s%2Fazure-template-with-eventhub.json)
-
-
-## MQTT 5.0 / UNS feeder
-
-A sibling container (`Dockerfile.mqtt`) publishes each decoded Mode-S record into an MQTT 5.0 broker on a Unified-Namespace topic tree: `aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/{msg_type}` with one of 6 DF-family literals (`df17-adsb`, `df4-altitude`, `df5-identity`, `df11-acquisition`, `df20-comm-b`, `df21-comm-b`). Non-retained QoS 0; CloudEvents binary mode. See [CONTAINER.md](CONTAINER.md#mqtt-50--unified-namespace-feeder).
-
-
-## AMQP 1.0 companion feeder
-
-This source now ships an AMQP 1.0 companion container (`ghcr.io/clemensv/real-time-sources-mode-s-amqp:latest`) alongside the Kafka and MQTT feeders. It publishes the same CloudEvents to one AMQP address (`AMQP_ADDRESS=mode-s` by default) for generic AMQP 1.0 brokers and Azure Service Bus/Event Hubs using CBS authentication.
-
-Deploy the Service Bus variant with `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`). Regenerate the AMQP producer with `generate_amqp_producer.ps1` after xRegistry contract changes.
+- Review [EVENTS.md](EVENTS.md) before writing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for the full env-var matrix and auth variants.
+- Choose Fabric ACI or direct Azure deployment based on your runtime target.

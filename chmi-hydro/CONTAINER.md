@@ -1,233 +1,181 @@
-# ČHMÚ Hydrological Data Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# CHMI Hydro container images
 
-This container image provides a bridge between the ČHMÚ hydrological open data
-portal and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge
-reads real-time water level data from the ČHMÚ open data API and writes it to a
-Kafka topic.
+This document covers the published OCI container images for the CHMI Hydro feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
-## ČHMÚ API
+## Why this container
 
-The ČHMÚ (Český hydrometeorologický ústav) open data portal provides real-time
-hydrological data for Czech rivers and waterways. It provides water level,
-discharge, and water temperature data for hundreds of stations across the Czech
-Republic, updated every 10 minutes.
+The CHMI Hydro source is exposed as a polling API upstream. These container images package polling cadence control, stateful dedupe, CloudEvents production, and transport/auth wiring so operators can deploy a ready-to-run feeder instead of building source-specific integration code.
 
-## Functionality
+## What ships in the box
 
-The bridge fetches hydrological data from the ČHMÚ open data API and writes the
-data to a Kafka topic as structured JSON [CloudEvents](https://cloudevents.io/)
-in a JSON format documented in [EVENTS.md](EVENTS.md).
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-chmi-hydro` | Apache Kafka 2.x | JSON CloudEvents on one topic; key template `{station_id}` |
+| `ghcr.io/clemensv/real-time-sources-chmi-hydro-mqtt` | MQTT 5.0 | Unified-Namespace topic template `(see EVENTS.md)` |
+| `ghcr.io/clemensv/real-time-sources-chmi-hydro-amqp` | AMQP 1.0 | Binary CloudEvents to AMQP node `chmi-hydro` |
 
-## Database Schemas and Handling
+Event families in this source:
 
-If you want to build a full data pipeline with all events ingested into a
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
+- **CZ.Gov.CHMI.Hydro** — `Station`, `WaterLevelObservation`.
 
-## Installing the Container Image
+## Image contract
 
-Pull the container image from the GitHub Container Registry:
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.10-slim` (source Dockerfiles) |
+| Default entry point | Kafka `["python", "-m", "chmi_hydro", "feed"]`; MQTT `["python", "-m", "chmi_hydro_mqtt", "feed"]`; AMQP `["python", "-m", "chmi_hydro_amqp", "feed"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | process exits cleanly on `SIGTERM` |
+| Persistent state | `STATE_FILE`; mount a host volume for restart-safe dedupe/checkpoint behavior |
+| Image tags | `:latest` and immutable release/sha tags published from repository CI |
 
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-chmi-hydro:latest
+## Installing the container images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-chmi-hydro:latest
+docker pull ghcr.io/clemensv/real-time-sources-chmi-hydro-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-chmi-hydro-amqp:latest
 ```
 
-To use it as a base image in a Dockerfile:
+## Using the Kafka image
 
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-chmi-hydro:latest
+### With a Kafka broker (SASL/PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/chmi-hydro.json \
+  -e KAFKA_BOOTSTRAP_SERVERS="<host:port>" \
+  -e KAFKA_TOPIC="<topic>" \
+  -e SASL_USERNAME="<username>" \
+  -e SASL_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-chmi-hydro:latest
 ```
 
-## Using the Container Image
+### With Azure Event Hubs / Fabric Event Streams
 
-The container image defines a single command that starts the bridge. It reads
-data from the ČHMÚ open data API and writes it to a Kafka topic, Azure Event
-Hubs, or Fabric Event Streams.
-
-### With a Kafka Broker
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BROKER='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='chmi-hydro' \
-    ghcr.io/clemensv/real-time-sources-chmi-hydro:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/chmi-hydro.json \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-chmi-hydro:latest
 ```
 
-### With Azure Event Hubs or Fabric Event Streams
+## Using the MQTT image
 
-Use the connection string to establish a connection to the service. Obtain the
-connection string from the Azure portal, Azure CLI, or the "custom endpoint" of
-a Fabric Event Stream.
+### With a generic MQTT 5 broker (username/password)
 
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    -e KAFKA_TOPIC='chmi-hydro' \
-    ghcr.io/clemensv/real-time-sources-chmi-hydro:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/chmi-hydro.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-chmi-hydro-mqtt:latest
 ```
 
-### Preserving State Between Restarts
+### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
 
-To preserve the state between restarts and avoid reprocessing observations,
-mount a volume to the container and set the `STATE_FILE` environment variable:
-
-```shell
-$ docker run --rm \
-    -v /path/to/state:/mnt/state \
-    -e STATE_FILE='/mnt/state/chmi_hydro_state.json' \
-    ... other args ... \
-    ghcr.io/clemensv/real-time-sources-chmi-hydro:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/chmi-hydro.json \
+  -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883" \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
+  -e MQTT_CLIENT_ID="<unique-client-id>" \
+  ghcr.io/clemensv/real-time-sources-chmi-hydro-mqtt:latest
 ```
 
-## Environment Variables
+## Using the AMQP image
 
-### `CONNECTION_STRING`
+### With AMQP 1.0 and Microsoft Entra ID (CBS put-token)
 
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs
-or Fabric Event Streams. This replaces the need for `KAFKA_BROKER`.
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/chmi-hydro.json \
+  -e AMQP_HOST="<namespace>.servicebus.windows.net" \
+  -e AMQP_PORT=5671 \
+  -e AMQP_TLS=true \
+  -e AMQP_ADDRESS="chmi-hydro" \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE="https://servicebus.azure.net/.default" \
+  -e AMQP_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
+  ghcr.io/clemensv/real-time-sources-chmi-hydro-amqp:latest
+```
 
-### `KAFKA_BROKER`
+### With AMQP 1.0 and SAS-token CBS
 
-The address of the Kafka broker (e.g., `broker1:9092`). The client communicates
-with TLS-enabled Kafka brokers.
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/chmi-hydro.json \
+  -e AMQP_HOST="servicebus-emulator" \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS="chmi-hydro" \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey" \
+  -e AMQP_SAS_KEY="<sas-key>" \
+  ghcr.io/clemensv/real-time-sources-chmi-hydro-amqp:latest
+```
 
-### `KAFKA_TOPIC`
+## Environment variables
 
-The Kafka topic where messages will be produced.
+### Kafka image
 
-### `POLLING_INTERVAL`
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `CONNECTION_STRING` | Event Hubs/Fabric-style connection string (optional alternative to explicit Kafka variables). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list. |
+| `KAFKA_TOPIC` | Kafka destination topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials for Kafka. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
-The polling interval in seconds. Default: `600` (10 minutes).
+### MQTT image
 
-### `STATE_FILE`
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for `MQTT_AUTH_MODE=password`. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID. |
+| `MQTT_CLIENT_ID` | MQTT client ID (must be unique per broker). |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
-The file path where the bridge stores the state of processed observations. This
-helps in resuming data fetching without duplication after restarts. Default:
-`~/.chmi_hydro_state.json`.
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `AMQP_BROKER_URL` | Full AMQP URL form (`amqp://` or `amqps://`). |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component endpoint settings when URL form is not used. |
+| `AMQP_ADDRESS` | AMQP node/address name. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra-ID CBS settings. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token CBS settings. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### Kafka — provision a new Event Hub
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fchmi-hydro%2Fazure-template-with-eventhub.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### AMQP — provision a new Azure Service Bus namespace
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fchmi-hydro%2Fazure-template-with-servicebus.json)
+
+### Kafka — bring your own Event Hub / Kafka
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fchmi-hydro%2Fazure-template.json)
 
-### Option 2: Deploy with a new Event Hub
+## Related
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fchmi-hydro%2Fazure-template-with-eventhub.json)
-## MQTT/UNS image
-
-A sibling container image, ghcr.io/clemensv/real-time-sources-chmi-hydro-mqtt, is built from
-`Dockerfile.mqtt` and publishes the same station-catalog and water-level
-events as **MQTT 5.0 binary-mode CloudEvents** into a Unified-Namespace
-topic tree:
-
-```
-hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/info          # station reference
-hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/water-level   # latest water level / discharge / temperature
-```
-
-Every leaf is published with QoS 1 and `retain=true` so any subscriber
-sees the most recent value as soon as it subscribes. The full CloudEvents
-binding (`id`, `source`, `type`, `subject`, `time`,
-`specversion`) is carried as MQTT 5 user properties; the payload is the
-`application/json` body of the same JsonStructure schema used by the
-Kafka image.
-
-### Run against a generic MQTT 5 broker
-
-```
-docker run --rm \\
-    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \\
-    -e MQTT_USERNAME='<username>' \\
-    -e MQTT_PASSWORD='<password>' \\
-    ghcr.io/clemensv/real-time-sources-chmi-hydro-mqtt:latest
-```
-
-Set `MQTT_TLS=true` or use the `mqtts://`/`ssl://` URL scheme to
-enable TLS. `MQTT_CLIENT_ID` is optional but recommended on shared
-brokers. `POLLING_INTERVAL` (seconds) controls how often the upstream
-HTTP service is re-polled (default 600 s).
-
-### Subscription patterns
-
-```
-# Everything from this source
-hydro/cz/chmi/chmi-hydro/#
-
-# All telemetry for one stream_name
-hydro/cz/chmi/chmi-hydro/<stream_name>/+/water-level
-
-# Reference data for every station
-hydro/cz/chmi/chmi-hydro/+/+/info
-```
-
-## AMQP 1.0 image
-
-Image: `ghcr.io/clemensv/real-time-sources-chmi-hydro-amqp:latest`
-
-The AMQP image publishes the same reference and telemetry CloudEvents as the Kafka and MQTT variants, but targets queue-oriented AMQP 1.0 consumers such as ActiveMQ Artemis, RabbitMQ AMQP 1.0, Qpid Dispatch, Azure Service Bus, and Azure Event Hubs.
-
-### Generic AMQP broker (SASL PLAIN)
-
-```bash
-docker run --rm \
-  -e AMQP_BROKER_URL=amqp://user:password@broker:5672/chmi-hydro \
-  -e AMQP_AUTH_MODE=password \
-  ghcr.io/clemensv/real-time-sources-chmi-hydro-amqp:latest
-```
-
-### Azure Service Bus / Event Hubs (Entra CBS)
-
-```bash
-docker run --rm \
-  -e AMQP_HOST=<namespace>.servicebus.windows.net \
-  -e AMQP_PORT=5671 \
-  -e AMQP_TLS=true \
-  -e AMQP_ADDRESS=chmi-hydro \
-  -e AMQP_AUTH_MODE=entra \
-  -e AMQP_ENTRA_AUDIENCE=https://servicebus.azure.net/.default \
-  ghcr.io/clemensv/real-time-sources-chmi-hydro-amqp:latest
-```
-
-### Service Bus emulator / SAS CBS
-
-```bash
-docker run --rm \
-  -e AMQP_HOST=servicebus-emulator \
-  -e AMQP_PORT=5672 \
-  -e AMQP_ADDRESS=chmi-hydro \
-  -e AMQP_AUTH_MODE=sas \
-  -e AMQP_SAS_KEY_NAME=RootManageSharedAccessKey \
-  -e AMQP_SAS_KEY=<emulator-key> \
-  ghcr.io/clemensv/real-time-sources-chmi-hydro-amqp:latest
-```
-
-### AMQP environment variables
-
-| Variable | Description | Default |
-|---|---|---|
-| `AMQP_BROKER_URL` | Full AMQP URL; path becomes the address when present. | empty |
-| `AMQP_HOST` / `AMQP_PORT` | Broker host and port when not using `AMQP_BROKER_URL`. | `localhost` / `5672` or `5671` with TLS |
-| `AMQP_ADDRESS` | Queue, topic, or event hub name. | `chmi-hydro` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `AMQP_AUTH_MODE=password`. | empty |
-| `AMQP_TLS` | Enable TLS for AMQP. | `false` (`true` for Entra deployments) |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
-| `AMQP_ENTRA_AUDIENCE` | Token audience for CBS Entra auth. | `https://servicebus.azure.net/.default` |
-| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed identity client id. | empty |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS policy and key for CBS SAS auth / emulator. | empty |
-| `AMQP_CONTENT_MODE` | CloudEvents content mode. | `binary` |
-| `MOCK_MODE` | Emit deterministic reference + telemetry mock events and exit; used by Docker E2E. | `false` |
-
-Deploy to Azure with `azure-template-with-servicebus.json` (mirrored at `infra/azure-template-amqp.json`). The template provisions a Service Bus namespace and queue, user-assigned managed identity, Data Sender role assignment, ACI container group, Log Analytics workspace, and Azure Files state share.
-
+- [README.md](README.md) — project overview and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
+- [`xreg/chmi_hydro.xreg.json`](xreg/chmi_hydro.xreg.json) — source contract used to generate producer bindings.

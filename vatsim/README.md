@@ -1,118 +1,152 @@
-# VATSIM Live Data Feed Bridge
+# VATSIM feeder
+
+This feeder turns VATSIM network snapshots into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+VATSIM network data is useful for aviation simulation analytics, traffic visualization, and research. This feeder normalizes live VATSIM updates into CloudEvents so consumers can build streaming applications without bespoke ingest logic.
 
 ## Overview
 
-The VATSIM bridge polls the VATSIM v3 live data feed and emits pilot positions,
-controller positions, and network status as CloudEvents to Apache Kafka, Azure
-Event Hubs, or Fabric Event Streams.
+**VATSIM** ships three transport variants from one source bridge:
 
-## Data Source
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-vatsim` | Apache Kafka 2.x compatible (Azure Event Hubs, Fabric Event Streams, Confluent Cloud, plain Kafka) | One topic, JSON CloudEvents (binary mode) |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-vatsim-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Fabric MQTT broker) | Unified-Namespace topic tree defined in `xreg/vatsim.xreg.json` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-vatsim-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, Artemis, Qpid Dispatch, Azure Service Bus / Event Hubs) | Single AMQP address, binary CloudEvents |
 
-[VATSIM](https://vatsim.net) is the world's largest virtual aviation network.
-The live data feed at `https://data.vatsim.net/v3/vatsim-data.json` provides a
-JSON snapshot updated every ~15 seconds with all connected pilots and
-controllers. No authentication or API key is required. Typically 1000–2000+
-pilots are connected during peak hours.
+All three variants share the same source contract in `xreg/vatsim.xreg.json`.
 
-## Event Types
+## Key features
 
-| Type | Description | Key |
-|------|-------------|-----|
-| `net.vatsim.PilotPosition` | Position, speed, altitude, and flight plan summary for each pilot | `{callsign}` |
-| `net.vatsim.ControllerPosition` | Frequency, facility, and ATIS for each controller | `{callsign}` |
-| `net.vatsim.NetworkStatus` | Aggregate status counts emitted once per poll cycle | `status` |
+- Poll-based feeder with checkpointed state to avoid duplicate publication across restarts.
+- Kafka, MQTT, and AMQP transport variants that share one xRegistry event contract.
+- CloudEvents output suitable for Event Hubs, Fabric Event Streams, or self-managed brokers.
+- Reference/telemetry publishing behavior and schemas documented in [EVENTS.md](EVENTS.md).
 
-See [EVENTS.md](EVENTS.md) for full schema details.
+## Repository layout
 
-## Installation
-
-```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=vatsim
+```text
+vatsim/
+  xreg/vatsim.xreg.json
+  vatsim/
+  vatsim_mqtt/
+  vatsim_amqp/
+  vatsim_producer/
+  vatsim_mqtt_producer/
+  vatsim_amqp_producer/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+  notebook/
+  tests/
 ```
 
-Or from a local clone:
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS access to the upstream source APIs.
+- Network access to your target Kafka broker, MQTT broker, or AMQP endpoint.
+- A writable host directory mounted to persist the source state file across restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a writable host volume for state persistence. Without it, dedupe/checkpoint state resets on every restart.
+
+### Kafka
 
 ```bash
-cd real-time-sources/vatsim
-pip install .
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/vatsim.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-vatsim:latest
 ```
 
-For containerized deployment, see [CONTAINER.md](CONTAINER.md).
-
-- **Fabric notebook hosting** — schedule the bridge as a Fabric notebook
-  via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
-  (see [`notebook/vatsim-feed.ipynb`](notebook/vatsim-feed.ipynb)).
-
-## Usage
+### MQTT (Unified Namespace)
 
 ```bash
-vatsim feed --connection-string "<connection-string>" --polling-interval 60
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/vatsim.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-vatsim-mqtt:latest
 ```
 
-Or with explicit Kafka parameters:
+### AMQP 1.0
 
 ```bash
-vatsim feed --kafka-bootstrap-servers "<servers>" --kafka-topic "<topic>" \
-    --sasl-username "<user>" --sasl-password "<pass>"
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/vatsim.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/vatsim" \
+  ghcr.io/clemensv/real-time-sources-vatsim-amqp:latest
 ```
 
-### Environment Variables
+## Configuration reference
 
-- `CONNECTION_STRING` — Event Hubs / Fabric connection string
-- `KAFKA_BOOTSTRAP_SERVERS` — Kafka bootstrap servers
-- `KAFKA_TOPIC` — Target topic
-- `SASL_USERNAME` / `SASL_PASSWORD` — SASL credentials
-- `POLLING_INTERVAL` — Poll interval in seconds (default: 60)
+For full transport/auth matrices (Kafka, MQTT, AMQP), source-specific options, and deployment options, see [CONTAINER.md](CONTAINER.md).
+
+## Upstream source
+
+VATSIM data feed API snapshots.
+
+## Data model
+
+This feeder emits the following event families:
+
+- **`PilotPosition`**
+- **`ControllerPosition`**
+- **`NetworkStatus`**
+
+See [EVENTS.md](EVENTS.md) for field-level schemas, subject templates, and key mapping per transport.
+
+## Deploying into Microsoft Fabric
+
+Two hosting options are available for this poll-based source:
+
+### Fabric Notebook feeder
+
+The notebook under [`notebook/`](notebook/) runs the bridge on a Fabric schedule and resolves the Event Stream connection string at runtime via Fabric topology APIs.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#vatsim/fabric-notebook)
+
+### Fabric ACI feeder
+
+A long-running Azure Container Instance hosts one of the three transport images and publishes to a Fabric Event Stream custom endpoint.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#vatsim/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### Kafka — bring your own Event Hub / Kafka
 
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+Deploys the Kafka image and uses a provided connection string.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fvatsim%2Fazure-template.json)
 
-### Option 2: Deploy with a new Event Hub
+### Kafka — provision a new Event Hub
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploys Kafka plus a new Event Hubs namespace and hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fvatsim%2Fazure-template-with-eventhub.json)
 
-## Transports
+### AMQP — provision Azure Service Bus
 
-This source now ships separate Kafka and MQTT containers over the same xRegistry contract. The Kafka image is the best fit when consumers need replay, batch catch-up, or a single ordered stream. The MQTT image (`ghcr.io/clemensv/real-time-sources-vatsim-mqtt:latest`) is the better fit for operational dashboards and Unified Namespace subscribers that want to subscribe directly to the current state or live event slice for this source.
+Deploys AMQP plus a new Service Bus namespace/queue and sender identity wiring.
 
-The MQTT contract is source-specific: MQTT/5.0 transport variant for VATSIM live network data. Non-retained QoS-1 streams split pilots, controllers, and network facility status into distinct UNS topic branches under aviation-network/intl/vatsim/vatsim/...
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fvatsim%2Fazure-template-with-servicebus.json)
 
-MQTT publishes binary-mode CloudEvents with JSON payloads and CloudEvent attributes in MQTT 5 user properties. Topic patterns from `xreg/vatsim.xreg.json`:
+## Next steps
 
-| Topic pattern | Message type | Delivery |
-|---|---|---|
-| `aviation-network/intl/vatsim/vatsim/pilots/{callsign}/pilot-position` | `net.vatsim.PilotPosition` | QoS 1, retain=false |
-| `aviation-network/intl/vatsim/vatsim/controllers/{callsign}/controller-position` | `net.vatsim.ControllerPosition` | QoS 1, retain=false |
-| `aviation-network/intl/vatsim/vatsim/facilities/{facility}/facility-status` | `net.vatsim.NetworkStatus` | QoS 1, retain=false |
-
-Four Azure Container Instance deployment shapes are documented for this source:
-
-| Transport | Template |
-|---|---|
-| Kafka, bring your own Event Hub or compatible broker | `azure-template.json` |
-| Kafka, create an Event Hubs namespace and hub | `azure-template-with-eventhub.json` |
-| MQTT, bring your own MQTT 5 broker | `azure-template-mqtt.json` |
-| MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
-
-See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.
-
-
-## AMQP 1.0 companion feeder
-
-This source now ships an AMQP 1.0 companion container (`ghcr.io/clemensv/real-time-sources-vatsim-amqp:latest`) alongside the Kafka and MQTT feeders. It publishes the same CloudEvents to one AMQP address (`AMQP_ADDRESS=vatsim` by default) for generic AMQP 1.0 brokers and Azure Service Bus/Event Hubs using CBS authentication.
-
-Deploy the Service Bus variant with `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`). Regenerate the AMQP producer with `generate_amqp_producer.ps1` after xRegistry contract changes.
+- Review [EVENTS.md](EVENTS.md) before building consumers.
+- Use [CONTAINER.md](CONTAINER.md) for complete env-var matrices and auth-mode examples.

@@ -1,17 +1,84 @@
 # Digitraffic Maritime feeder
 
-> See also: [CONTAINER.md](CONTAINER.md) · [EVENTS.md](EVENTS.md)
+This feeder turns the upstream Digitraffic Maritime feed into a real-time CloudEvents stream over KAFKA.
 
-Digitraffic Maritime ingests Finland's open marine traffic feeds from Fintraffic and republishes them as CloudEvents.
+Companion docs:
 
-> Source: Fintraffic / digitraffic.fi, license CC 4.0 BY.
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-## Source scope
+## Why this bridge
 
-- **AIS stream** from `wss://meri.digitraffic.fi:443/mqtt` (vessel locations + metadata)
-- **Port call APIs** (`/port-calls`, `/vessel-details`, `/ports`) for visit telemetry plus companion reference data
+Digitraffic Maritime publishes operational real-time data that is useful across hazard and mobility analytics workflows, but each consumer otherwise has to build and operate its own source connector, transport adapter, and schema normalization.
 
-The feeder preserves five event families:
+This bridge provides one reusable feed for common scenarios:
+
+- **Operations dashboards** — power near-real-time fleet, traffic, or incident views.
+- **Streaming analytics** — ingest directly into Eventhouse, ADX, or a lakehouse pipeline.
+- **Cross-source correlation** — join this stream with weather, hydrology, and public-safety feeds in this repository.
+- **Alerting and automation** — trigger rules based on stable CloudEvents payloads and keys.
+- **Research and reporting** — keep a reproducible event archive for retrospective analysis.
+
+## Overview
+
+**Digitraffic Maritime** in this repository is a streaming bridge and ships in the transport variants below:
+
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-digitraffic-maritime` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Fabric Event Streams) | Topic(s): `digitraffic-maritime`, key = `{locode}`, `{mmsi}`, `{port_call_id}`, `{vessel_id}` |
+
+All variants share:
+
+- The xRegistry contract (`xreg/digitraffic_maritime.xreg.json`).
+- A common upstream acquisition path and normalized event payloads.
+- Stable CloudEvents subject/key identity derived from source-native identifiers.
+
+## Key features
+
+- Real-time source ingestion for **Finland / Baltic Sea — AIS via MQTT**.
+- Contract-first CloudEvents output with JsonStructure schemas.
+- Transport variants aligned to the same core event model.
+- Deployment-ready container images for local, Azure, and Fabric-aligned topologies.
+
+## Repository layout
+
+```text
+digitraffic-maritime/
+  xreg/                           # xRegistry contracts
+  digitraffic_maritime/
+  digitraffic_maritime_producer/
+  digitraffic_maritime_producer_data/
+  fabric/
+  kql/
+  tests/
+  Dockerfile
+```
+
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Network access to the upstream data endpoint(s).
+- Network access to your target broker (Kafka, MQTT, or AMQP).
+
+This source is handled as a streaming feeder in this batch; no notebook runtime section is included.
+
+## Quick start with Docker
+
+### Kafka
+
+```bash
+docker run --rm \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-digitraffic-maritime:latest
+```
+
+## Configuration reference
+
+The complete environment-variable contract per image is documented in [CONTAINER.md](CONTAINER.md), including connection-string mode, direct broker parameters, authentication options, and transport-specific knobs.
+
+## Data model
+
+This source exposes **5 event type(s)** across **4 base message group(s)**:
 
 - `fi.digitraffic.marine.ais.VesselLocation`
 - `fi.digitraffic.marine.ais.VesselMetadata`
@@ -19,70 +86,25 @@ The feeder preserves five event families:
 - `fi.digitraffic.marine.portcall.VesselDetails`
 - `fi.digitraffic.marine.portcall.PortLocation`
 
-## Transport variants
+See [EVENTS.md](EVENTS.md) for the full field-level schema contract and routing metadata.
 
-| Variant | Image | Transport | Default target |
-|---|---|---|---|
-| Kafka | `ghcr.io/clemensv/real-time-sources-digitraffic-maritime:latest` | Kafka protocol / Event Hubs compatible | Topic `digitraffic-maritime` |
-| MQTT | `ghcr.io/clemensv/real-time-sources-digitraffic-maritime-mqtt:latest` | MQTT 5.0, CloudEvents binary mode | UNS topics under `maritime/fi/fintraffic/digitraffic-maritime/...` |
-| AMQP | `ghcr.io/clemensv/real-time-sources-digitraffic-maritime-amqp:latest` | AMQP 1.0, CloudEvents binary mode | Address `digitraffic-maritime` |
+## Deploying into Microsoft Fabric
 
-## Repository layout
+This source is documented as a streaming feeder for this rollout. Use the **Fabric ACI feeder** model to host the container and route into a Fabric Event Stream custom endpoint, then materialize into Eventhouse with the checked-in KQL assets.
 
-```text
-digitraffic-maritime/
-  digitraffic_maritime/                  # shared source integration (AIS + port-calls)
-  digitraffic_maritime_producer/         # generated Kafka producer
-  digitraffic_maritime_mqtt_producer/    # generated MQTT producer
-  digitraffic_maritime_amqp_producer/    # generated AMQP producer
-  digitraffic_maritime_mqtt/             # MQTT feeder app
-  digitraffic_maritime_amqp/             # AMQP feeder app
-  Dockerfile
-  Dockerfile.mqtt
-  Dockerfile.amqp
-  xreg/digitraffic_maritime.xreg.json
-```
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#digitraffic-maritime/fabric-aci)
 
-## Quick start
+## Deploying into Azure Container Instances
 
-### Kafka image
+The following ARM templates exist in this source folder:
 
-```bash
-docker run --rm \
-  -e CONNECTION_STRING='BootstrapServer=<host:9092>;EntityPath=digitraffic-maritime' \
-  ghcr.io/clemensv/real-time-sources-digitraffic-maritime:latest
-```
+- **azure-template-with-eventhub.json** (with eventhub)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-maritime%2Fazure-template-with-eventhub.json)
+- **azure-template.json** (default (BYO Event Hubs/Kafka))
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-maritime%2Fazure-template.json)
 
-### MQTT image
+## Next steps
 
-```bash
-docker run --rm \
-  -e MQTT_BROKER_URL='mqtt://broker:1883' \
-  -e DIGITRAFFIC_MODE='port-calls' \
-  -e ONCE_MODE='true' \
-  ghcr.io/clemensv/real-time-sources-digitraffic-maritime-mqtt:latest
-```
-
-### AMQP image
-
-```bash
-docker run --rm \
-  -e AMQP_BROKER_URL='amqp://user:password@broker:5672/digitraffic-maritime' \
-  -e DIGITRAFFIC_MODE='port-calls' \
-  -e ONCE_MODE='true' \
-  ghcr.io/clemensv/real-time-sources-digitraffic-maritime-amqp:latest
-```
-
-## Azure deployment templates
-
-- `azure-template.json` (Kafka, BYO Event Hub/Event Stream)
-- `azure-template-with-eventhub.json` (Kafka + new Event Hub)
-- `azure-template-mqtt.json` (MQTT, BYO broker)
-- `azure-template-with-eventgrid-mqtt.json` (MQTT + Event Grid namespace)
-- `azure-template-with-servicebus.json` (AMQP + Service Bus)
-
-## Related
-
-- [Digitraffic Maritime portal](https://www.digitraffic.fi/en/marine-traffic/)
-- [Fintraffic](https://www.fintraffic.fi)
-- [Kystverket AIS feeder](../kystverket-ais/README.md)
+- Review [EVENTS.md](EVENTS.md) before writing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for the full env-var matrix and auth variants.
+- Choose Fabric ACI or direct Azure deployment based on your runtime target.

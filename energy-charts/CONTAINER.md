@@ -1,131 +1,191 @@
-# Energy-Charts European Electricity Data Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Energy-Charts container images
 
-This container image provides a bridge between the [Energy-Charts API](https://api.energy-charts.info/) (Fraunhofer ISE) and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge polls European electricity generation mix, day-ahead spot prices, and grid carbon signal data, then forwards them as CloudEvents.
+This document covers the published container images for the Energy-Charts feeder. For overview and business context see [README.md](README.md); for event-contract details see [EVENTS.md](EVENTS.md).
 
-## Energy-Charts API
+## Why this container
 
-The Energy-Charts API, operated by Fraunhofer ISE, provides freely available (CC BY 4.0) electricity data for 40+ European countries. Data is sourced from the ENTSO-E transparency platform and national grid operators. Generation data updates every 15 minutes for Germany, hourly for other countries.
+Energy-Charts provides generation, pricing, and grid-signal data used in European power-market operations. This feeder publishes those records as CloudEvents for stream consumers.
 
-## Functionality
+## What ships in the box
 
-The bridge polls three endpoints:
-- `/public_power?country={country}` — Net electricity generation by fuel type (MW), every 15 minutes
-- `/price?bzn={bidding_zone}` — Day-ahead spot prices (EUR/MWh), every hour
-- `/signal?country={country}` — Grid carbon signal (traffic light 0/1/2 + renewable share %), every 15 minutes
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-energy-charts` | Kafka | Polls upstream and publishes CloudEvents to one topic |
+| `ghcr.io/clemensv/real-time-sources-energy-charts-mqtt` | MQTT 5.0 | Publishes CloudEvents to xRegistry-mapped topics |
+| `ghcr.io/clemensv/real-time-sources-energy-charts-amqp` | AMQP 1.0 | Publishes CloudEvents to one AMQP address |
 
-Events are written to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md). Previously seen timestamps are tracked in a state file to prevent duplicates.
+## Image contract
 
-## Database Schemas and Handling
+| Aspect | Value |
+|---|---|
+| Base image | `python:3.10-slim` |
+| Default entrypoint | `python -m energy_charts; python -m energy_charts_mqtt feed; python -m energy_charts_amqp feed` |
+| Exposed ports | none — outbound publisher only |
+| Signals | exits on `SIGTERM`; in-flight poll cycle is completed/flushed before shutdown where supported |
+| State | Kafka: ENERGY_CHARTS_LAST_POLLED_FILE; MQTT: Not used; AMQP: Not used. Mount `/state` when state is used. |
+| Tags | `:latest` (mainline), plus immutable release/SHA tags published in GHCR. |
 
-If you want to build a full data pipeline with all events ingested into a
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
+## Installing the container images
 
-## Installing the Container Image
-
-Pull the container image from the GitHub Container Registry:
-
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-energy-charts:latest
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-energy-charts:latest
+docker pull ghcr.io/clemensv/real-time-sources-energy-charts-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-energy-charts-amqp:latest
 ```
 
-To use it as a base image in a Dockerfile:
+## Using the Kafka image
 
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-energy-charts:latest
+### With a Kafka broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e ENERGY_CHARTS_LAST_POLLED_FILE=/state/energy-charts.json \
+  -e KAFKA_BOOTSTRAP_SERVERS='<broker:9093>' \
+  -e KAFKA_TOPIC='<topic>' \
+  -e SASL_USERNAME='<username>' \
+  -e SASL_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-energy-charts:latest
 ```
 
-## Using the Container Image
+### With Azure Event Hubs / Fabric Event Streams
 
-### With a Kafka Broker
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    -e COUNTRY='de' \
-    -e BIDDING_ZONE='DE-LU' \
-    ghcr.io/clemensv/real-time-sources-energy-charts:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e ENERGY_CHARTS_LAST_POLLED_FILE=/state/energy-charts.json \
+  -e CONNECTION_STRING='<connection-string>' \
+  ghcr.io/clemensv/real-time-sources-energy-charts:latest
 ```
 
-### With Azure Event Hubs or Fabric Event Streams
+## Using the MQTT image
 
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    -e COUNTRY='de' \
-    -e BIDDING_ZONE='DE-LU' \
-    ghcr.io/clemensv/real-time-sources-energy-charts:latest
+### With username/password authentication
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-energy-charts-mqtt:latest
 ```
 
-### Preserving State Between Restarts
+### With Azure Event Grid namespace MQTT broker (Entra)
 
-```shell
-$ docker run --rm \
-    -v /path/to/state:/mnt/fileshare \
-    -e ENERGY_CHARTS_LAST_POLLED_FILE='/mnt/fileshare/energy_charts_last_polled.json' \
-    ... other args ... \
-    ghcr.io/clemensv/real-time-sources-energy-charts:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e MQTT_BROKER_URL='mqtts://<ns>.<region>-1.ts.eventgrid.azure.net:8883' \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID='<managed-identity-client-id>' \
+  -e MQTT_CLIENT_ID='<unique-client-id>' \
+  ghcr.io/clemensv/real-time-sources-energy-charts-mqtt:latest
 ```
 
-## Environment Variables
+## Using the AMQP image
 
-### `CONNECTION_STRING`
+### With Microsoft Entra ID (AMQP CBS)
 
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs or Fabric Event Streams. This replaces the need for `KAFKA_BOOTSTRAP_SERVERS`, `SASL_USERNAME`, and `SASL_PASSWORD`.
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='energy-charts' \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default' \
+  -e AMQP_ENTRA_CLIENT_ID='<managed-identity-client-id>' \
+  ghcr.io/clemensv/real-time-sources-energy-charts-amqp:latest
+```
 
-### `KAFKA_BOOTSTRAP_SERVERS`
+### With SAS token CBS (Service Bus emulator / SAS-only namespaces)
 
-The address of the Kafka broker. Provide a comma-separated list of host and port pairs (e.g., `broker1:9092,broker2:9092`).
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AMQP_HOST='servicebus-emulator' \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS='energy-charts' \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+  -e AMQP_SAS_KEY='<sas-key>' \
+  ghcr.io/clemensv/real-time-sources-energy-charts-amqp:latest
+```
 
-### `KAFKA_TOPIC`
+## Environment variables
 
-The Kafka topic to send messages to.
+### Kafka image
 
-### `SASL_USERNAME`
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs/Fabric-style or Kafka-style connection string. |
+| `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC` | Explicit Kafka destination. |
+| `SASL_USERNAME`, `SASL_PASSWORD` | SASL PLAIN credentials when needed. |
+| `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka. |
+| `ONCE_MODE` | Run one cycle and exit (where supported). |
+| State variable | `ENERGY_CHARTS_LAST_POLLED_FILE` |
 
-The username for SASL PLAIN authentication with the Kafka broker.
+### MQTT image
 
-### `SASL_PASSWORD`
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional broker credentials. |
+| `MQTT_CLIENT_ID` | Optional explicit client ID. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured` where supported. |
+| State variable | Not used by current MQTT companion app |
 
-The password for SASL PLAIN authentication with the Kafka broker.
+### AMQP image
 
-### `COUNTRY`
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Broker URL (`amqp://` or `amqps://`). |
+| `AMQP_HOST`, `AMQP_PORT`, `AMQP_ADDRESS` | Component-level AMQP endpoint settings. |
+| `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials (if used). |
+| `AMQP_AUTH_MODE` | Auth mode where supported (`password`/`entra`/`sas`). |
+| `AMQP_TLS` | Enable TLS where supported. |
+| State variable | Not used by current AMQP companion app |
 
-ISO 3166-1 alpha-2 country code (default: `de`). Controls which country's generation and signal data is polled.
+## Deploying into Microsoft Fabric
 
-### `BIDDING_ZONE`
+Fabric notebook and Fabric ACI hosting are both supported:
 
-ENTSO-E bidding zone identifier for price queries (default: `DE-LU`). Common zones: `DE-LU`, `FR`, `AT`, `NO1`–`NO5`, `SE1`–`SE4`.
+- Notebook: `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source energy-charts ...`
+- ACI: `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source energy-charts ...`
 
-### `ENERGY_CHARTS_LAST_POLLED_FILE`
+Portal links:
 
-File path for storing last seen timestamps for deduplication. Defaults to `/mnt/fileshare/energy_charts_last_polled.json`.
+- [Fabric Notebook](https://clemensv.github.io/real-time-sources/#energy-charts/fabric-notebook)
+- [Fabric ACI](https://clemensv.github.io/real-time-sources/#energy-charts/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### AMQP — bring your own broker
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergy-charts%2Fazure-template-amqp.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — bring your own broker
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergy-charts%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergy-charts%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision a new Event Grid MQTT broker
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergy-charts%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergy-charts%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace
 
-## Transports
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergy-charts%2Fazure-template-with-servicebus.json)
 
-This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergy-charts%2Fazure-template.json)
+
+## Related
+- [README.md](README.md) — source overview, use cases, and quick start.
+- [EVENTS.md](EVENTS.md) — event contract and schema details.
+- [`xreg/energy_charts.xreg.json`](xreg/energy_charts.xreg.json) — authoritative manifest.

@@ -1,4 +1,4 @@
-# GTFS and GTFS-RT API Bridge Usage Guide Events
+# GTFS Realtime feeder Events
 
 MQTT 5 UNS topic bindings for gtfs.
 

@@ -1,174 +1,141 @@
-# Kystverket AIS Bridge Usage Guide
+# Kystverket AIS feeder
+
+This feeder turns the upstream Kystverket AIS feed into a real-time CloudEvents stream over KAFKA / MQTT / AMQP.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+Kystverket AIS publishes operational real-time data that is useful across hazard and mobility analytics workflows, but each consumer otherwise has to build and operate its own source connector, transport adapter, and schema normalization.
+
+This bridge provides one reusable feed for common scenarios:
+
+- **Operations dashboards** — power near-real-time fleet, traffic, or incident views.
+- **Streaming analytics** — ingest directly into Eventhouse, ADX, or a lakehouse pipeline.
+- **Cross-source correlation** — join this stream with weather, hydrology, and public-safety feeds in this repository.
+- **Alerting and automation** — trigger rules based on stable CloudEvents payloads and keys.
+- **Research and reporting** — keep a reproducible event archive for retrospective analysis.
 
 ## Overview
 
-**Kystverket AIS Bridge** connects to the Norwegian Coastal Administration's
-(Kystverket) real-time AIS vessel tracking stream and forwards decoded messages
-to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format.
+**Kystverket AIS** in this repository is a streaming bridge and ships in the transport variants below:
 
-Unlike the other bridges in this repository, this is a **streaming** bridge — it
-connects to a raw TCP socket and continuously forwards AIS messages rather than
-polling an API.
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-kystverket-ais` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Fabric Event Streams) | Topic(s): `ais`, key = `{mmsi}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-kystverket-ais-mqtt` | MQTT 5.0 broker (incl. Azure Event Grid MQTT and Fabric Real-Time Hub MQTT source) | Unified Namespace topic tree `maritime/no/kystverket/kystverket-ais/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-kystverket-ais-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0, Artemis, Qpid Dispatch, Azure Service Bus/Event Hubs) | AMQP node `kystverket-ais`, CloudEvents binary mode |
 
-## Key Features
+All variants share:
 
-- **Real-time AIS streaming**: ~34 msg/sec, ~2.9 million messages/day
-- **5 event types**: Position reports (Class A/B), static & voyage data,
-  aids to navigation
-- **Multi-sentence reassembly**: Handles fragmented AIS type 5 and type 24
-  messages
-- **MMSI filtering**: Optionally restrict to specific vessel MMSIs
-- **Message type filtering**: Select which AIS message types to forward
-- **Auto-reconnect**: Exponential backoff on TCP connection failures
-- **Kafka Integration**: SASL PLAIN authentication for Event Hubs / Fabric
-  Event Streams
+- The xRegistry contract (`xreg/ais.xreg.json`).
+- A common upstream acquisition path and normalized event payloads.
+- Stable CloudEvents subject/key identity derived from source-native identifiers.
 
-## Data Source
+## Key features
 
-The [Kystverket AIS stream](https://kystverket.no/navigasjonstjenester/ais/)
-provides open access to real-time AIS data covering the Norwegian economic zone,
-including Svalbard and Jan Mayen. The data is provided under the
-[NLOD](https://data.norge.no/nlod/en/2.0) license.
+- Real-time source ingestion for **Norway / Svalbard â€” raw TCP AIS, ~34 msg/s**.
+- Contract-first CloudEvents output with JsonStructure schemas.
+- Transport variants aligned to the same core event model.
+- Deployment-ready container images for local, Azure, and Fabric-aligned topologies.
 
-- **TCP endpoint**: `153.44.253.27:5631` (open, no authentication)
-- **Format**: NMEA AIVDM/AIVDO sentences with Kystverket tag blocks
-- **Coverage**: Norwegian economic zone, 50+ terrestrial + offshore stations
+## Repository layout
 
-## Installation
-
-Requires Python 3.10 or later.
-
-```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=kystverket-ais
+```text
+kystverket-ais/
+  xreg/                           # xRegistry contracts
+  fabric/
+  kql/
+  kystverket_ais/
+  kystverket_ais_amqp/
+  kystverket_ais_amqp_producer/
+  kystverket_ais_mqtt/
+  kystverket_ais_mqtt_producer/
+  kystverket_ais_producer/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
 ```
 
-If you clone the repository:
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Network access to the upstream data endpoint(s).
+- Network access to your target broker (Kafka, MQTT, or AMQP).
+
+This source is handled as a streaming feeder in this batch; no notebook runtime section is included.
+
+## Quick start with Docker
+
+### Kafka
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/kystverket-ais
-pip install .
+docker run --rm \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-kystverket-ais:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
-
-## How to Use
-
-After installation, the tool can be run using the `kystverket-ais` command.
-
-The events sent to Kafka are formatted as CloudEvents, documented in
-[EVENTS.md](EVENTS.md).
-
-### Probe the Live Stream
-
-Test connectivity and see decoded messages:
+### MQTT (Unified Namespace)
 
 ```bash
-kystverket-ais probe
+docker run --rm \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-kystverket-ais-mqtt:latest
 ```
 
-### Stream to Kafka
+Topics follow the contract templates in [EVENTS.md](EVENTS.md); primary template: `maritime/no/kystverket/kystverket-ais/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation`.
 
-#### Using a Connection String (Event Hubs / Fabric Event Streams)
+### AMQP 1.0
 
 ```bash
-kystverket-ais stream --connection-string "<your_connection_string>"
+docker run --rm \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/kystverket-ais' \
+  ghcr.io/clemensv/real-time-sources-kystverket-ais-amqp:latest
 ```
 
-#### Using Kafka Parameters Directly
+## Configuration reference
 
-```bash
-kystverket-ais stream \
-    --kafka-bootstrap-servers "<bootstrap_servers>" \
-    --kafka-topic "<topic_name>" \
-    --sasl-username "<username>" \
-    --sasl-password "<password>"
-```
+The complete environment-variable contract per image is documented in [CONTAINER.md](CONTAINER.md), including connection-string mode, direct broker parameters, authentication options, and transport-specific knobs.
 
-### Command-Line Arguments (stream)
+## Data model
 
-| Argument | Env Var | Description |
-|----------|---------|-------------|
-| `-c`, `--connection-string` | `CONNECTION_STRING` | Event Hubs / Fabric Event Stream connection string |
-| `--kafka-bootstrap-servers` | `KAFKA_BOOTSTRAP_SERVERS` | Comma-separated Kafka bootstrap servers |
-| `--kafka-topic` | `KAFKA_TOPIC` | Kafka topic name |
-| `--sasl-username` | `SASL_USERNAME` | SASL PLAIN username |
-| `--sasl-password` | `SASL_PASSWORD` | SASL PLAIN password |
-| `--tcp-host` | `AIS_TCP_HOST` | AIS TCP stream host (default: `153.44.253.27`) |
-| `--tcp-port` | `AIS_TCP_PORT` | AIS TCP stream port (default: `5631`) |
-| `--message-types` | `AIS_MESSAGE_TYPES` | Comma-separated AIS types (default: `1,2,3,5,18,19,24,21`) |
-| `--mmsi-filter` | `AIS_FILTER_MMSI` | Comma-separated MMSIs to include (default: all) |
-| `--flush-interval` | `AIS_FLUSH_INTERVAL` | Flush Kafka every N events (default: `1000`) |
+This source exposes **7 event type(s)** across **1 base message group(s)**:
 
-### Examples
+- `NO.Kystverket.AIS.PositionReportClassA`
+- `NO.Kystverket.AIS.StaticVoyageData`
+- `NO.Kystverket.AIS.PositionReportClassB`
+- `NO.Kystverket.AIS.StaticDataClassB`
+- `NO.Kystverket.AIS.AidToNavigation`
+- `NO.Kystverket.AIS.PositionReport`
+- `NO.Kystverket.AIS.ShipStatic`
 
-#### Stream Only Position Reports
+See [EVENTS.md](EVENTS.md) for the full field-level schema contract and routing metadata.
 
-```bash
-kystverket-ais stream -c "<conn_string>" --message-types 1,2,3,18,19
-```
+## Deploying into Microsoft Fabric
 
-#### Track Specific Vessels
+This source is documented as a streaming feeder for this rollout. Use the **Fabric ACI feeder** model to host the container and route into a Fabric Event Stream custom endpoint, then materialize into Eventhouse with the checked-in KQL assets.
 
-```bash
-kystverket-ais stream -c "<conn_string>" --mmsi-filter 258028380,257093980
-```
-
-## AIS Message Types
-
-| Type | Event | Description |
-|------|-------|-------------|
-| 1, 2, 3 | `PositionReportClassA` | Class A position reports (SOLAS vessels) |
-| 5 | `StaticVoyageData` | Ship name, IMO, callsign, dimensions, destination |
-| 18, 19 | `PositionReportClassB` | Class B position reports (smaller vessels) |
-| 24 | `StaticDataClassB` | Class B static data (name, callsign, dimensions) |
-| 21 | `AidToNavigation` | Buoys, lighthouses, and other navigational aids |
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#kystverket-ais/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+The following ARM templates exist in this source folder:
 
-### Option 1: Bring your own Event Hub
+- **azure-template-with-eventhub.json** (with eventhub)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkystverket-ais%2Fazure-template-with-eventhub.json)
+- **azure-template-with-servicebus.json** (with servicebus)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkystverket-ais%2Fazure-template-with-servicebus.json)
+- **azure-template.json** (default (BYO Event Hubs/Kafka))
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkystverket-ais%2Fazure-template.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+## Next steps
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkystverket-ais%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkystverket-ais%2Fazure-template-with-eventhub.json)
-
-
-## MQTT 5.0 / UNS feeder
-
-In addition to the Kafka producer, a non-retained MQTT 5.0 feeder
-publishes the Kystverket AIS firehose into a Unified-Namespace topic
-tree:
-
-```
-maritime/intl/kystverket/ais/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}
-```
-
-The MQTT contract uses a separate schemagroup
-(`NO.Kystverket.AIS.mqtt.jstruct`) with three families —
-`PositionReport`, `ShipStatic`, `AidToNavigation` — each carrying the
-five routing axes as required fields. The existing Kafka contract is
-untouched. QoS 0, `retain=false`. CloudEvents binary mode; CE attributes
-ride as MQTT 5 user properties; `subject` equals the MMSI.
-
-See `CONTAINER.md` for the container image, environment variables, and
-wildcard subscription patterns.
-
-
-## AMQP 1.0 companion feeder
-
-This source now ships an AMQP 1.0 companion container (`ghcr.io/clemensv/real-time-sources-kystverket-ais-amqp:latest`) alongside the Kafka and MQTT feeders. It publishes the same CloudEvents to one AMQP address (`AMQP_ADDRESS=kystverket-ais` by default) for generic AMQP 1.0 brokers and Azure Service Bus/Event Hubs using CBS authentication.
-
-Deploy the Service Bus variant with `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`). Regenerate the AMQP producer with `generate_amqp_producer.ps1` after xRegistry contract changes.
+- Review [EVENTS.md](EVENTS.md) before writing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for the full env-var matrix and auth variants.
+- Choose Fabric ACI or direct Azure deployment based on your runtime target.

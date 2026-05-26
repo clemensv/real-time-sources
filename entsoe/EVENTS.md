@@ -1,6 +1,6 @@
-# ENTSO-E Transparency Platform Bridge Events
+# ENTSO-E Transparency Platform feeder Events
 
-The **ENTSO-E Transparency Platform Bridge** polls the ENTSO-E REST API for European electricity market, load, generation, hydro storage, and cross-border flow documents and emits the resulting CloudEvents over Kafka, MQTT 5, and AMQP 1.0.
+MQTT/5.0 transport variants for eu.entsoe.transparency.ByDomain ENTSO-E events under energy/eu/entsoe/transparency. Topics preserve the Kafka/CloudEvents identity tuple and use QoS 1 without retained state because the poller emits point events from rolling time windows.
 
 ## At a glance
 
@@ -8,7 +8,6 @@ The **ENTSO-E Transparency Platform Bridge** polls the ENTSO-E REST API for Euro
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 11 telemetry event types.
 - **Identity:** `{inDomain}`, `{inDomain}/{psrType}`, `{inDomain}/{outDomain}` identifies the resource each event is about.
-- **Operations:** The MQTT variant publishes point events at QoS 1 with retain disabled; AMQP uses binary CloudEvents with routing axes mirrored into application properties.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -45,13 +44,13 @@ c.loop_forever()
 Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
 ### AMQP 1.0
 
-Attach a link with `role=receiver` whose **source** is the `entsoe` broker address. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+Attach a link with `role=receiver` whose **source** is `amqps://localhost:5671`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
 
 ```python
 from proton.handlers import MessagingHandler
 from proton.reactor import Container
 class H(MessagingHandler):
-    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/entsoe')
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/amqps://localhost:5671')
     def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
 Container(H()).run()
 ```
@@ -610,16 +609,14 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. ENTSO-E MQTT topics are non-retained point-event streams, so subscribers should maintain their own latest-value state if needed. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
-- The MQTT variant publishes non-retained QoS 1 point events; use a durable MQTT session or downstream store for replay/latest-value needs.
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
 
 ## References
 
 - xRegistry manifest: [`xreg/entsoe.xreg.json`](xreg/entsoe.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- ENTSO-E Transparency Platform REST API: <https://transparency.entsoe.eu/>
-- Transparency Platform RESTful API Guide: <https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html>

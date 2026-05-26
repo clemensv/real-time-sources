@@ -8,6 +8,11 @@ on:
       - app.js
   workflow_dispatch:
 
+# Serialise with the xRegistry build workflow — both push to ghpages.
+concurrency:
+  group: ghpages
+  cancel-in-progress: false
+
 permissions:
   contents: write
 

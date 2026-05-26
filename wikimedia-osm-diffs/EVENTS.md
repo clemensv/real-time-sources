@@ -1,4 +1,4 @@
-# OpenStreetMap Minutely Diffs Bridge Events
+# Wikimedia OSM Diffs feeder Events
 
 MQTT/5.0 UNS variants of the Wikimedia OSM Diffs CloudEvents. The minutely diff stream is split into three non-retained firehose families (node, way, relation) under osm/intl/wikimedia/wikimedia-osm-diffs/<family>/{geohash5}/{element_id}/change with QoS 0 and retain=false, and one retained side-channel snapshot for the OSM replication sequence published to osm/intl/wikimedia/wikimedia-osm-diffs/replication-state/replication-state with retain=true so late subscribers can see the most recent processed sequence number on connect.
 
@@ -8,6 +8,7 @@ MQTT/5.0 UNS variants of the Wikimedia OSM Diffs CloudEvents. The minutely diff 
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{element_type}/{element_id}`, `replication_state` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -184,7 +185,7 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 

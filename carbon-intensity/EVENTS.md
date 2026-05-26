@@ -1,4 +1,4 @@
-# Carbon Intensity UK Events
+# Carbon Intensity UK feeder Events
 
 MQTT/5.0 transport variants for National Grid Carbon Intensity events. Non-retained QoS-1 event topics route by GB national/regional area under energy/gb/national-grid/carbon-intensity/{region}/..., where national records use region=national and DNO region records use stable, version-pinned region slugs keyed by region_id such as north-scotland.
 

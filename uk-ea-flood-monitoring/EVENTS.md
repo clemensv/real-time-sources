@@ -1,4 +1,4 @@
-# UK Environment Agency Flood Monitoring API Bridge Events
+# UK EA Flood Monitoring feeder Events
 
 UK Environment Agency Flood Monitoring publishes water level and flow observations from the Environment Agency flood-monitoring API for monitoring stations across England. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -8,7 +8,7 @@ UK Environment Agency Flood Monitoring publishes water level and flow observatio
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `{station_reference}` identifies the resource each event is about.
-- **Operations:** Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -183,12 +183,10 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/uk_ea_flood_monitoring.xreg.json`](xreg/uk_ea_flood_monitoring.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- UK Environment Agency Flood Monitoring
-API: <https://environment.data.gov.uk/flood-monitoring/doc/reference>

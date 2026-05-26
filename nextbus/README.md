@@ -1,223 +1,138 @@
-# Nextbus CLI tool
+# Nextbus feeder
 
-The Nextbus tool is a command line tool that can be used to retrieve real time data from the [Nextbus](https://www.nextbus.com/) service and feed that data into Azure Event Hubs and Microsoft Fabric Event Streams.
+This feeder turns the upstream Nextbus feed into a real-time CloudEvents stream over KAFKA / MQTT / AMQP.
 
-The tool can also be used to query the Nextbus service interactively.
+Companion docs:
 
-You must accept the [Nextbus Terms of Use](https://www.nextbus.com/xmlFeedDocs/NextBusXMLFeed.pdf) to use this tool. 
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+Nextbus publishes operational real-time data that is useful across hazard and mobility analytics workflows, but each consumer otherwise has to build and operate its own source connector, transport adapter, and schema normalization.
+
+This bridge provides one reusable feed for common scenarios:
+
+- **Operations dashboards** — power near-real-time fleet, traffic, or incident views.
+- **Streaming analytics** — ingest directly into Eventhouse, ADX, or a lakehouse pipeline.
+- **Cross-source correlation** — join this stream with weather, hydrology, and public-safety feeds in this repository.
+- **Alerting and automation** — trigger rules based on stable CloudEvents payloads and keys.
+- **Research and reporting** — keep a reproducible event archive for retrospective analysis.
+
+## Overview
+
+**Nextbus** in this repository is a streaming bridge and ships in the transport variants below:
+
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-nextbus` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Fabric Event Streams) | Topic(s): `nextbus`, key = `{agency_id}/{route_tag}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-nextbus-mqtt` | MQTT 5.0 broker (incl. Azure Event Grid MQTT and Fabric Real-Time Hub MQTT source) | Unified Namespace topic tree `transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-nextbus-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0, Artemis, Qpid Dispatch, Azure Service Bus/Event Hubs) | AMQP node `nextbus`, CloudEvents binary mode |
+
+All variants share:
+
+- The xRegistry contract (`xreg/nextbus.xreg.json`).
+- A common upstream acquisition path and normalized event payloads.
+- Stable CloudEvents subject/key identity derived from source-native identifiers.
+
+## Key features
+
+- Real-time source ingestion for **North America — public transit arrivals**.
+- Contract-first CloudEvents output with JsonStructure schemas.
+- Transport variants aligned to the same core event model.
+- Deployment-ready container images for local, Azure, and Fabric-aligned topologies.
+
+## Repository layout
+
+```text
+nextbus/
+  xreg/                           # xRegistry contracts
+  nextbus/
+  nextbus_amqp/
+  nextbus_amqp_producer/
+  nextbus_mqtt/
+  nextbus_mqtt_producer/
+  nextbus_producer/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+```
 
 ## Prerequisites
 
-The Nextbus tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/). You also need to install the `git` command line tool. You can download `git` from [here](https://git-scm.com/downloads).
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Network access to the upstream data endpoint(s).
+- Network access to your target broker (Kafka, MQTT, or AMQP).
 
-## Installation
+This source is handled as a streaming feeder in this batch; no notebook runtime section is included.
 
-Install the tool from the command line as follows:
+## Quick start with Docker
+
+### Kafka
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/nextbus
-pip install .
+docker run --rm \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-nextbus:latest
 ```
 
-A package install will be available later.
-
-## Usage
+### MQTT (Unified Namespace)
 
 ```bash
-options:
-  -h, --help            show this help message and exit
-
-subcommands:
-  {agencies,routes,feed,vehicle-locations,predictions,route-config}
-    agencies            get the list of transit agencies
-    routes              get the list of routes for an agency
-    feed                poll vehicle locations and submit to an Event Hub
-    vehicle-locations   get the vehicle locations for a route
-    predictions         get the predictions for a stop
-    route-config        get the configuration for a route
+docker run --rm \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-nextbus-mqtt:latest
 ```
 
-### Agencies
+Topics follow the contract templates in [EVENTS.md](EVENTS.md); primary template: `transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}`.
 
-This command returns the list of transit agencies that are supported by the Nextbus service.
+### AMQP 1.0
 
 ```bash
-nextbus-cli agencies
+docker run --rm \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/nextbus' \
+  ghcr.io/clemensv/real-time-sources-nextbus-amqp:latest
 ```
 
-### Routes
+## Configuration reference
 
-This command returns the list of routes for a given agency. Use the agency tag returned as 
-the first value in every line from the `agencies` command to specify the agency, for example
-`ttc` for the Toronto Transit Commission.
+The complete environment-variable contract per image is documented in [CONTAINER.md](CONTAINER.md), including connection-string mode, direct broker parameters, authentication options, and transport-specific knobs.
 
+## Data model
 
-```bash
-nextbus-cli routes --agency <agency>
-```
+This source exposes **4 event type(s)** across **1 base message group(s)**:
 
-### Route Config
+- `nextbus.VehiclePosition`
+- `nextbus.RouteConfig`
+- `nextbus.Schedule`
+- `nextbus.Message`
 
-This command returns the configuration for a given route. You must specify the agency tag
-and the route tag returned by the `agencies` and `routes` commands.
+See [EVENTS.md](EVENTS.md) for the full field-level schema contract and routing metadata.
 
-```bash
-nextbus-cli route-config --agency <agency> --route <route>
-```
+## Deploying into Microsoft Fabric
 
-The output is a list of route stops, one per line. Each line contains the following information:
+This source is documented as a streaming feeder for this rollout. Use the **Fabric ACI feeder** model to host the container and route into a Fabric Event Stream custom endpoint, then materialize into Eventhouse with the checked-in KQL assets.
 
-* the stop tag
-* the stop title
-* the stop location as a latitude/longitude pair
-* a link to a map showing the stop location
-
-### Vehicle Locations
-
-This command returns the vehicle locations for a given route. You must specify the agency tag 
-and the route tag returned by the `agencies` and `routes` commands.
-
-```bash
-nextbus-cli vehicle-locations --agency <agency> --route <route>
-```
-
-The output is a list of vehicle locations, one per line. Each line contains the following information:
-
-* the vehicle id
-* the vehicle location as a latitude/longitude pair
-* the vehicle heading in degrees
-* the vehicle speed in km/h
-* a link to a map showing the vehicle location
-
-### Predictions
-
-This command returns the predictions for a given stop. You must specify the agency tag
-and the stop tag returned by the `agencies` and `route-config` commands.
-
-```bash
-nextbus-cli predictions --agency <agency> --stop <stop>
-``` 
-
-The output is a list of predictions, one per line. Each line contains the following information:
-
-### Feed
-
-This command polls the Nextbus service for vehicle locations and submits them to an Azure Event Hub
-instance or to a Microsoft Fabric Event Stream. The command requires the following parameters:
-
-* `--agency`: the agency tag returned by the `agencies` command (required)
-* `--route`: the route tag returned by the `routes` command. If the value is omitted or set to `*` then
-  the command will poll all routes for the agency. (optional)
-* `--feed-connection-string`: the connection string for the Azure Event Hub instance that receives the
-    vehicle locations. The connection string must include the `Send` policy. (required)
-* `--feed-event-hub-name`: the name of the Event Hub instance that receives the vehicle locations (required)
-* `--reference-connection-string`: If and only if this connection string is set, the command will also periodically 
-    retrieve the routes and stops and schedules and messages for the agency and submit them to a "reference"
-    Event Hub instance. The connection string must include the `Send` policy. The Event Hub may be configured
-    with a "Compaction" retention policy to only keep the latest version of each entity. (optional)
-* `--reference-event-hub-name`: the name of the Event Hub instance that receives the reference data (optional)
-* `--poll-interval`: the interval in seconds between polls of the Nextbus service. The default is 10 seconds. (optional)
-* `--backoff-interval`: the time in seconds to wait before retrying a failed request to the Nextbus service. The default is 0 seconds. (optional)
-
-The connection information for the Event Hub instances can be found in the Azure portal. The connection string
-is available in the "Shared access policies" section of the Event Hub instance. The Event Hub name is the name
-of the Event Hub instance. The connection information for both "feed" and "reference" may be identical and 
-point to the same Event Hub.
-
-The feed command will run until interrupted with `Ctrl-C`. 
-
-Just the position feed:
-
-```bash
-nextbus-cli feed --agency <agency> --route <route> --feed-connection-string <feed-connection-string> --feed-event-hub-name <feed-event-hub-name>
-```
-
-Position feed and reference data:
-
-```bash
-nextbus-cli feed --agency <agency> --route <route> --feed-connection-string <feed-connection-string> --feed-event-hub-name <feed-event-hub-name> --reference-connection-string <reference-connection-string> --reference-event-hub-name <reference-event-hub-name>
-```
-
-### "Feed" Event Hub output
-
-The output into the "feed" Event Hub are CloudEvent messages with the `type` attribute 
-set to `nextbus.vehiclePosition`. The `subject` attribute is set to `{agency_tag}/{vehicle_id}`.
-
-#### nextbus.vehiclePosition
-
-The `data`of the CloudEvent message is a JSON object with the following attributes:
-
-* `agency`: the agency tag 
-* `routeTag`: the route tag 
-* `dirTag`: the direction tag 
-* `id`: the vehicle id
-* `lat`: the vehicle location latitude
-* `lon`: the vehicle location as a longitude
-* `predictable`: whether the vehicle location is predictable
-* `heading`: the vehicle heading in degrees
-* `speedKmHr`: the vehicle speed in km/h
-* `timestamp`: the timestamp of the vehicle location
-
-### "Reference" Event Hub output
-
-The output into the "reference" Event Hub are CloudEvent messages with the `type` attribute
-set to `nextbus.routeConfig`, `nextbus.schedule`, and `nextbus.messages`.
-
-#### nextbus.routeConfig
-
-The `data` of the CloudEvent message is a JSON object with the following attributes:
-
-* `agency`: the agency tag
-* `routeTag`: the route tag
-* `routeConfig`: the route configuration as a JSON object
-
-#### nextbus.schedule
-
-The `data` of the CloudEvent message is a JSON object with the following attributes:
-
-* `agency`: the agency tag
-* `routeTag`: the route tag
-* `schedule`: the route schedule as a JSON object
-
-#### nextbus.messages
-
-The `data` of the CloudEvent message is a JSON object with the following attributes:
-
-* `agency`: the agency tag
-* `routeTag`: the route tag
-* `messages`: the route messages as a JSON object
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#nextbus/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances using the
-container image `ghcr.io/clemensv/real-time-sources-nextbus:latest`. Two
-deployment options are available:
+The following ARM templates exist in this source folder:
 
-### Option 1: Bring your own Event Hub
+- **azure-template-mqtt.json** (mqtt)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template-mqtt.json)
+- **azure-template-with-eventgrid-mqtt.json** (with eventgrid mqtt)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template-with-eventgrid-mqtt.json)
+- **azure-template-with-eventhub.json** (with eventhub)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template-with-eventhub.json)
+- **azure-template.json** (default (BYO Event Hubs/Kafka))
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string.
+## Next steps
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template-with-eventhub.json)
-
-For full container deployment documentation, see [CONTAINER.md](CONTAINER.md).
-
-
-
-## MQTT and AMQP companion feeders
-
-This source now ships separate MQTT and AMQP companion containers in addition to the Kafka/Event Hubs feeder. The MQTT container publishes binary-mode CloudEvents to the UNS topic templates declared in `xreg/`; the AMQP container publishes the same CloudEvents to an AMQP 1.0 address named `nextbus` by default.
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources-nextbus-mqtt:latest`
-- AMQP image: `ghcr.io/clemensv/real-time-sources-nextbus-amqp:latest`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `infra/azure-template-amqp.json`, `infra/azure-template-with-servicebus.json`
+- Review [EVENTS.md](EVENTS.md) before writing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for the full env-var matrix and auth variants.
+- Choose Fabric ACI or direct Azure deployment based on your runtime target.

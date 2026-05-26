@@ -1,11 +1,11 @@
-# DWD Pollenflug (German Pollen Forecast) Bridge Events
+# DWD Pollenflug feeder Events
 
 DWD Pollenflug publishes pollen exposure forecasts by region and plant type from Germany's Deutscher Wetterdienst (DWD) for German pollen forecast regions. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 2 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{region_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `air-quality/de/dwd/dwd-pollenflug/+/info`, `air-quality/de/dwd/dwd-pollenflug/+/+/pollen-forecast`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('air-quality/de/dwd/dwd-pollenflug/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `dwd-pollenflug`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/dwd-pollenflug')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,12 +77,14 @@ Each event identifies the real-world resource with `{region_id}`. `{region_id}` 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd-pollenflug`, key `{region_id}` |
+| `MQTT/5.0` | topic `air-quality/de/dwd/dwd-pollenflug/{region_id}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd-pollenflug`, message subject `{region_id}` |
 
 #### Payload
 
 `Region` payloads are JSON object. Required fields: `region_id`, `region_name`.
 
-- **`region_id`** (int32, required): Unique numeric identifier for the forecast area. For regions without sub-regions this is the main region_id (e.g. 20 for Mecklenburg-Vorpommern). For sub-regions it is the partregion_id (e.g. 11 for 'Inseln und Marschen' within Schleswig-Holstein). Derived from the DWD JSON fields region_id and partregion_id.
+- **`region_id`** (string, required): Unique numeric identifier for the forecast area. For regions without sub-regions this is the main region_id (e.g. 20 for Mecklenburg-Vorpommern). For sub-regions it is the partregion_id (e.g. 11 for 'Inseln und Marschen' within Schleswig-Holstein). Derived from the DWD JSON fields region_id and partregion_id.
 - **`region_name`** (string, required): Name of the main geographic region as published by DWD (e.g. 'Schleswig-Holstein und Hamburg', 'Bayern'). Sourced from the 'region_name' field in the DWD API response.
 - **`partregion_id`** (int32 or null, optional): Numeric identifier of the sub-region within the parent region. Set to -1 by DWD when the region has no sub-divisions; the bridge emits null in that case. Sourced from the 'partregion_id' field in the DWD API response.
 - **`partregion_name`** (string or null, optional): Name of the sub-region (e.g. 'Inseln und Marschen', 'Geest,Schleswig-Holstein und Hamburg'). Empty string in the DWD response when the region has no sub-divisions; the bridge emits null in that case. Sourced from the 'partregion_name' field in the DWD API response.
@@ -64,7 +94,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 ```json
 {
-  "region_id": 0,
+  "region_id": "string",
   "region_name": "string",
   "partregion_id": 0,
   "partregion_name": "string"
@@ -92,12 +122,14 @@ Each event identifies the real-world resource with `{region_id}`. `{region_id}` 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd-pollenflug`, key `{region_id}` |
+| `MQTT/5.0` | topic `air-quality/de/dwd/dwd-pollenflug/{region_id}/{pollen_type}/pollen-forecast`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd-pollenflug`, message subject `{region_id}/{pollen_type}` |
 
 #### Payload
 
 `Pollen Forecast` payloads are JSON object. Required fields: `region_id`, `region_name`, `last_update`, `next_update`.
 
-- **`region_id`** (int32, required): Unique numeric identifier for the forecast area. Same identity model as Region: uses partregion_id when the area is a sub-region, otherwise uses the main region_id.
+- **`region_id`** (string, required): Unique numeric identifier for the forecast area. Same identity model as Region: uses partregion_id when the area is a sub-region, otherwise uses the main region_id.
 - **`region_name`** (string, required): Display name of the forecast area. Uses partregion_name when available, otherwise region_name.
 - **`last_update`** (string, required): Timestamp of the last forecast update as published by DWD, e.g. '2025-04-08 11:00 Uhr'. Retained as a string because the upstream format includes the German suffix 'Uhr'.
 - **`next_update`** (string, required): Timestamp of the next expected forecast update as published by DWD, e.g. '2025-04-09 11:00 Uhr'.
@@ -126,13 +158,14 @@ Each event identifies the real-world resource with `{region_id}`. `{region_id}` 
 - **`ragweed_today`** (string or null, optional): Pollen intensity for Ambrosia (ragweed) today.
 - **`ragweed_tomorrow`** (string or null, optional): Pollen intensity for Ambrosia (ragweed) tomorrow.
 - **`ragweed_dayafter_to`** (string or null, optional): Pollen intensity for Ambrosia (ragweed) the day after tomorrow.
+- **`pollen_type`** (string, optional): Normalized routing field 'pollen_type' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
 {
-  "region_id": 0,
+  "region_id": "string",
   "region_name": "string",
   "last_update": "string",
   "next_update": "string",
@@ -160,7 +193,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "mugwort_dayafter_to": "string",
   "ragweed_today": "string",
   "ragweed_tomorrow": "string",
-  "ragweed_dayafter_to": "string"
+  "ragweed_dayafter_to": "string",
+  "pollen_type": "string"
 }
 ```
 
@@ -186,19 +220,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/dwd_pollenflug.xreg.json`](xreg/dwd_pollenflug.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-
-## MQTT and AMQP companion transports
-
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`dwd-pollenflug`). Docker E2E mock mode is available through `DWD_POLLENFLUG_MOCK=true`.
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources/dwd-pollenflug-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/dwd-pollenflug-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

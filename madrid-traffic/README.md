@@ -1,56 +1,170 @@
-# Madrid Real-Time Traffic (Informo)
+# Madrid Traffic feeder
 
-This bridge polls the Madrid Informo traffic sensor API and sends traffic data to Apache Kafka as CloudEvents.
+This feeder turns Madrid Informo traffic sensor feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-## Source
+Companion docs:
 
-The bridge fetches data from [Madrid Informo](https://informo.madrid.es/informo/tmadrid/pm.xml), which provides real-time traffic sensor readings across Madrid's road network including the M-30 ring motorway and urban streets. Data is updated approximately every 5 minutes and is available under a CC BY 4.0 license.
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-## Event Types
+## Why this bridge
 
-- **MeasurementPoint** — Reference data describing each traffic sensor: location, road segment description, subarea, and saturation capacity.
-- **TrafficReading** — Telemetry: current intensity (vehicles/hour), occupancy (%), load (%), service level (0–3), and error status.
+City traffic-control teams, route-planning systems, mobility dashboards, and researchers use Madrid sensor data for congestion monitoring and trend analysis. This bridge standardizes polling, normalization, dedupe, CloudEvents shaping, and transport delivery so consumers subscribe once and reuse the same contract across platforms.
 
-See [EVENTS.md](EVENTS.md) for full schema details.
+- **Traffic and mobility operations** — live dashboards and operational control-room views.
+- **Route and dispatch optimization** — dynamic rerouting and ETA management under disruptions.
+- **Analytics and planning** — long-running ingestion into Fabric Eventhouse / ADX / lakes.
+- **Compliance and reporting** — auditable event history for public-sector and regulated workflows.
+- **Cross-domain correlation** — fuse mobility events with weather, safety, and infrastructure feeds.
 
-## How It Works
+## Overview
 
-1. At startup, the bridge polls the XML feed and emits a `MeasurementPoint` reference event for every sensor.
-2. Each poll cycle (every 5 minutes), the bridge emits a `TrafficReading` for each sensor without error flags.
-3. Reference data is refreshed hourly.
-4. Deduplication: readings with the same 5-minute timestamp boundary are not re-emitted.
+**Madrid Traffic** is a poll-based bridge that ingests upstream data from [Madrid Informo traffic sensor feed](https://informo.madrid.es/informo/tmadrid/pm.xml) and re-emits normalized CloudEvents.
 
-## Fabric notebook hosting
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-madrid-traffic` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents (binary mode), key templates `{sensor_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-madrid-traffic-mqtt` | MQTT 5.0 broker (incl. Azure Event Grid MQTT) | Unified-Namespace topic tree rooted under `traffic/es/madrid/informo/...` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-madrid-traffic-amqp` | AMQP 1.0 brokers incl. Azure Service Bus / Event Hubs | Binary CloudEvents to AMQP address `madrid-traffic` |
 
-This source can also be hosted as a scheduled Fabric notebook (single-cycle execution against an attached Fabric Environment + Lakehouse + Event Stream). Deploy with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1); the notebook lives at [`notebook/madrid-traffic-feed.ipynb`](notebook/madrid-traffic-feed.ipynb).
+All variants share:
+
+- The same xRegistry contract (`xreg/madrid_traffic.xreg.json`).
+- The same event-family model and schema set.
+- Poll-based acquisition logic with periodic refresh cycles.
+
+## Key features
+
+- Poll-based bridge with CloudEvents-first contract design.
+- Shared event contract across Kafka, MQTT, and AMQP transports.
+- Fabric-ready deployment path (Notebook and ACI hosting options).
+- ARM templates for direct Azure Container Instance deployment targets.
+- Source-specific event families and stable domain key templates.
+
+## Repository layout
+
+```text
+madrid-traffic/
+  xreg/madrid_traffic.xreg.json
+  madrid_traffic/
+  madrid_traffic_mqtt/
+  madrid_traffic_amqp/
+  madrid_traffic_producer/
+  madrid_traffic_mqtt_producer/
+  madrid_traffic_amqp_producer/
+  kql/
+  notebook/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+```
+
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS connectivity to the upstream API at `https://informo.madrid.es/informo/tmadrid/pm.xml`.
+- Network access to your target Kafka broker, MQTT broker, or AMQP 1.0 peer.
+- A writable host directory mounted at `/state` for persistent polling/dedupe state.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> This source is poll-based. Mount a host volume and set `STATE_FILE` so state survives container restarts.
+
+### Kafka
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/madrid-traffic.json \
+  -e CONNECTION_STRING="<event-hubs-or-kafka-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-madrid-traffic:latest
+```
+
+### MQTT (Unified Namespace)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/madrid-traffic.json \
+  -e MQTT_BROKER_URL=mqtts://<broker-host>:8883 \
+  -e MQTT_USERNAME=<username> \
+  -e MQTT_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-madrid-traffic-mqtt:latest
+```
+
+### AMQP 1.0
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/madrid-traffic.json \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/madrid-traffic' \
+  ghcr.io/clemensv/real-time-sources-madrid-traffic-amqp:latest
+```
+
+## Configuration reference
+
+The complete environment-variable matrix for Kafka, MQTT, and AMQP images (including authentication-mode differences and Azure deployment assumptions) is documented in [CONTAINER.md](CONTAINER.md).
+
+## Data model
+
+This source emits the following event families (see [EVENTS.md](EVENTS.md) for full schema-level detail):
+
+- **es.madrid.informo** — 2 event type(s): es.madrid.informo.MeasurementPoint, es.madrid.informo.TrafficReading.
+
+## Deploying into Microsoft Fabric
+
+Madrid Traffic supports both Fabric hosting models via the source card on the [project portal](https://clemensv.github.io/real-time-sources/#madrid-traffic).
+
+### Fabric Notebook feeder
+
+Because this source is poll-based and ships a notebook asset (`notebook/`), you can run scheduled ingestion in-Fabric with:
+
+`tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source madrid-traffic -WorkspaceId <id> -CapacityId <id>`
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#madrid-traffic/fabric-notebook)
+
+### Fabric ACI feeder
+
+For always-on execution, deploy a long-running Azure Container Instance feeder with:
+
+`tools/deploy-fabric/deploy-fabric-aci.ps1 -Source madrid-traffic -WorkspaceId <id> -CapacityId <id>`
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#madrid-traffic/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+The following ARM templates exist in this source directory and have matching deploy buttons:
 
-### Option 1: Bring your own Event Hub
+### MQTT — bring your own broker
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+Deploy MQTT against an existing MQTT 5.0 broker endpoint.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmadrid-traffic%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmadrid-traffic%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision a new Event Grid MQTT broker
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploy MQTT plus an Event Grid namespace broker and managed-identity role assignment.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmadrid-traffic%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
+
+Deploy Kafka plus a new Event Hubs namespace and event hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmadrid-traffic%2Fazure-template-with-eventhub.json)
 
+### Kafka — bring your own Event Hub / Kafka
 
-## MQTT and AMQP companion feeders
+Deploy the Kafka container with your own Event Hubs/Fabric/Event Stream connection string.
 
-This source now ships separate MQTT and AMQP companion containers in addition to the Kafka/Event Hubs feeder. The MQTT container publishes binary-mode CloudEvents to the UNS topic templates declared in `xreg/`; the AMQP container publishes the same CloudEvents to an AMQP 1.0 address named `madrid-traffic` by default.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fmadrid-traffic%2Fazure-template.json)
 
-- MQTT image: `ghcr.io/clemensv/real-time-sources-madrid-traffic-mqtt:latest`
-- AMQP image: `ghcr.io/clemensv/real-time-sources-madrid-traffic-amqp:latest`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `infra/azure-template-amqp.json`, `infra/azure-template-with-servicebus.json`
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full auth-mode and environment-variable details.
+- Validate transport-specific routing and key templates against your downstream topology.
+- Review upstream usage guidance at [Madrid Informo traffic sensor feed](https://informo.madrid.es/informo/tmadrid/pm.xml).

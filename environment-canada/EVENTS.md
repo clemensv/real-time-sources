@@ -1,11 +1,11 @@
-# Environment Canada Weather Observation Bridge Events
+# Environment Canada feeder Events
 
 Environment Canada Weather publishes current weather observations from Environment and Climate Change Canada (ECCC) for Canadian weather stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 2 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{msc_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `weather/ca/eccc/environment-canada/+/+/info`, `weather/ca/eccc/environment-canada/+/+/observation`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('weather/ca/eccc/environment-canada/+/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `environment-canada`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/environment-canada')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,6 +77,8 @@ Each event identifies the real-world resource with `{msc_id}`. `{msc_id}` is MSC
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `environment-canada`, key `{msc_id}` |
+| `MQTT/5.0` | topic `weather/ca/eccc/environment-canada/{province}/{msc_id}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/environment-canada`, message subject `{msc_id}`; application properties province `{province}` |
 
 #### Payload
 
@@ -65,6 +95,7 @@ Each event identifies the real-world resource with `{msc_id}`. `{msc_id}` is MSC
 - **`latitude`** (double or null, optional, degree (°)): WGS84 latitude of the station in decimal degrees.
 - **`longitude`** (double or null, optional, degree (°)): WGS84 longitude of the station in decimal degrees.
 - **`elevation`** (double or null, optional, m): Station elevation above sea level in meters.
+- **`province`** (string, optional): Normalized routing field 'province' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -81,7 +112,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "auto_man": "string",
   "latitude": 0,
   "longitude": 0,
-  "elevation": 0
+  "elevation": 0,
+  "province": "string"
 }
 ```
 
@@ -106,6 +138,8 @@ Each event identifies the real-world resource with `{msc_id}`. `{msc_id}` is MSC
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `environment-canada`, key `{msc_id}` |
+| `MQTT/5.0` | topic `weather/ca/eccc/environment-canada/{province}/{msc_id}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/environment-canada`, message subject `{msc_id}`; application properties province `{province}` |
 
 #### Payload
 
@@ -133,6 +167,7 @@ Each event identifies the real-world resource with `{msc_id}`. `{msc_id}` is MSC
 - **`wind_gust_1hr`** (double or null, optional, km/h): Maximum wind speed at 10m in the past hour from max_wnd_spd_10m_pst1hr.
 - **`precipitation_24hr`** (double or null, optional, mm): Total precipitation in the past 24 hours from pcpn_amt_pst24hrs.
 - **`altimeter_setting`** (double or null, optional, [in_i'Hg] (inHg)): Altimeter setting from the altmetr_setng field. Used in aviation.
+- **`province`** (string, optional): Normalized routing field 'province' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -160,7 +195,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "wind_speed_1hr": 0,
   "wind_gust_1hr": 0,
   "precipitation_24hr": 0,
-  "altimeter_setting": 0
+  "altimeter_setting": 0,
+  "province": "string"
 }
 ```
 
@@ -186,20 +222,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/environment_canada.xreg.json`](xreg/environment_canada.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- Environment and Climate Change Canada (ECCC) GeoMet API: <https://api.weather.gc.ca/>
-
-## MQTT and AMQP companion transports
-
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`environment-canada`). Docker E2E mock mode is available through `ENVIRONMENT_CANADA_MOCK=true`.
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources/environment-canada-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/environment-canada-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

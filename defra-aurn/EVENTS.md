@@ -1,4 +1,4 @@
-# Defra AURN Bridge Usage Guide Events
+# Defra AURN feeder Events
 
 DEFRA AURN publishes pollutant concentration measurements from the UK Department for Environment, Food and Rural Affairs Automatic Urban and Rural Network for UK air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
@@ -8,7 +8,7 @@ DEFRA AURN publishes pollutant concentration measurements from the UK Department
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 2 telemetry event types.
 - **Identity:** `{station_id}`, `{timeseries_id}` identifies the resource each event is about.
-- **Operations:** Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -226,11 +226,10 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/defra_aurn.xreg.json`](xreg/defra_aurn.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- ![Deploy AMQP Service Bus: <https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white>

@@ -1,4 +1,4 @@
-# Paris Bicycle Counters Poller Events
+# Paris Bicycle Counters feeder Events
 
 Paris Bicycle Counters publishes bicycle count observations from Paris open-data bicycle counter feeds for Paris bicycle-counting stations. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -180,7 +180,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
 ## References
 

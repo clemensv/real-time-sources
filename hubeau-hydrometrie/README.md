@@ -1,104 +1,171 @@
-# Hub'Eau Hydrométrie API Bridge
+# Hub'Eau Hydrometrie feeder
 
-This project bridges the [Hub'Eau Hydrométrie
-API](https://hubeau.eaufrance.fr/page/api-hydrometrie) to Apache Kafka, Azure
-Event Hubs, or Microsoft Fabric Event Streams. It provides real-time water level
-(height) and flow (discharge) data from approximately 6,300 monitoring stations
-across France.
+This feeder turns the upstream Hub'Eau Hydrometrie hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-## Fabric notebook hosting
+Companion docs:
 
-This source can also be hosted as a scheduled Microsoft Fabric notebook via
-`tools/deploy-fabric/deploy-feeder-notebook.ps1`, which deploys
-[`notebook/hubeau-hydrometrie-feed.ipynb`](notebook/hubeau-hydrometrie-feed.ipynb)
-as an alternative to the Azure Container Instance bridge.
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-## Hub'Eau Hydrométrie API
+## Why this bridge
 
-Hub'Eau is a service provided by the French Ministry for an Ecological
-Transition. The Hydrométrie API provides access to real-time water level and flow
-data from hydrometric stations across metropolitan France and overseas
-territories.
+This bridge publishes the Hub'Eau Hydrometrie source as a transport-agnostic event stream so downstream systems subscribe once and avoid re-implementing poll scheduling, retry handling, dedupe state, CloudEvents mapping, and schema lifecycle management.
 
-- **Stations**: ~6,300 monitoring stations
-- **Parameters**: Water height (H, mm), Discharge (Q, L/s)
-- **Update Frequency**: 5-60 minutes depending on station
-- **Data Format**: JSON, GeoJSON
+- **Flood and water-risk operations** — power near-real-time threshold monitoring and alert pipelines.
+- **Infrastructure operations** — feed lock/port/river-management dashboards and operations centers.
+- **Environmental analytics** — ingest standardized events into Fabric Eventhouse, ADX, or lakehouse systems.
+- **Insurance and resilience workflows** — drive trigger-based monitoring and post-event replay analysis.
+- **Research and public-data products** — maintain reproducible timelines without source-specific ETL glue.
 
-## Installation
+## Overview
 
-```bash
-pip install .
+**Hub'Eau Hydrometrie** is a poll-based bridge that emits CloudEvents across available transport variants:
+
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-hubeau-hydrometrie` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents on one topic, key = `{code_station}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-hubeau-hydrometrie-mqtt` | MQTT 5.0 broker (incl. Event Grid MQTT and Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic template `(see EVENTS.md)` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-hubeau-hydrometrie-amqp` | AMQP 1.0 (incl. Service Bus and Event Hubs via CBS auth) | Binary CloudEvents to AMQP node `hubeau-hydrometrie` |
+
+All variants share:
+
+- The same upstream polling logic and dedupe state model.
+- The same xRegistry contract (`xreg/hubeau_hydrometrie.xreg.json`).
+- The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
+
+## Key features
+
+- Poll-based ingestion with restart-safe dedupe/checkpoint persistence via `STATE_FILE`.
+- Consistent CloudEvents identities and schemas across transport variants.
+- Contract-first event modeling from the checked-in xRegistry manifest.
+- Deployment options for local Docker, Microsoft Fabric, and Azure Container Instances.
+- Reference and telemetry event families aligned for downstream joins and enrichment.
+
+## Repository layout
+
+```text
+hubeau-hydrometrie/
+  xreg/hubeau_hydrometrie.xreg.json                 # shared xRegistry contract
+  hubeau_hydrometrie/
+  hubeau_hydrometrie_amqp/
+  hubeau_hydrometrie_amqp_producer/
+  hubeau_hydrometrie_mqtt/
+  hubeau_hydrometrie_mqtt_producer/
+  hubeau_hydrometrie_producer/
+  Dockerfile                         # Kafka feeder image
+  Dockerfile.mqtt                    # MQTT feeder image
+  Dockerfile.amqp                    # AMQP feeder image
+  kql/                               # KQL/Eventhouse schema
+  notebook/                          # Fabric notebook feeder
+  tests/                             # unit + integration tests
 ```
 
-## Usage
+## Prerequisites
 
-### List Stations
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound HTTPS access to the upstream source API.
+- Network access to your Kafka broker / MQTT broker / AMQP 1.0 endpoint.
+- A writable host directory mounted to persist `STATE_FILE` across container restarts.
 
-```bash
-python -m hubeau_hydrometrie list
-```
+## Quick start with Docker
 
-### Get Latest Observations for a Station
+> [!IMPORTANT]
+> Mount a host volume for `STATE_FILE` so dedupe/checkpoint state survives restarts.
 
-```bash
-python -m hubeau_hydrometrie level <code_station>
-```
-
-### Feed to Kafka
+### Kafka
 
 ```bash
-python -m hubeau_hydrometrie feed \
-  -c "Endpoint=sb://...;EntityPath=...;SharedAccessKeyName=...;SharedAccessKey=..."
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/hubeau-hydrometrie.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-hubeau-hydrometrie:latest
 ```
 
-## Environment Variables
+### MQTT (Unified Namespace)
 
-| Variable | Description |
-|----------|-------------|
-| `CONNECTION_STRING` | Microsoft Event Hubs or Fabric Event Stream connection string |
-| `KAFKA_BOOTSTRAP_SERVERS` | Comma-separated list of Kafka bootstrap servers |
-| `KAFKA_TOPIC` | Kafka topic name |
-| `SASL_USERNAME` | SASL PLAIN username |
-| `SASL_PASSWORD` | SASL PLAIN password |
-| `POLLING_INTERVAL` | Polling interval in seconds (default: 300) |
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/hubeau-hydrometrie.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-hubeau-hydrometrie-mqtt:latest
+```
 
-## Events
+Topic template:
 
-See [EVENTS.md](EVENTS.md) for detailed event schemas.
+```text
+(see EVENTS.md)
+```
 
-## Container
+### AMQP 1.0
 
-See [CONTAINER.md](CONTAINER.md) for container deployment instructions.
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/hubeau-hydrometrie.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/hubeau-hydrometrie" \
+  ghcr.io/clemensv/real-time-sources-hubeau-hydrometrie-amqp:latest
+```
 
-## Database Schemas
+For Entra-ID and SAS-CBS AMQP authentication variants, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image).
 
-See [DATABASE.md](../DATABASE.md) for database integration.
+## Configuration reference
+
+The complete environment-variable matrix for each image is documented in [CONTAINER.md](CONTAINER.md). Runtime entry points come from image `CMD`: Kafka ["python", "-m", "hubeau_hydrometrie", "feed"] MQTT ["python", "-m", "hubeau_hydrometrie_mqtt", "feed"] AMQP ["python", "-m", "hubeau_hydrometrie_amqp", "feed"].
+
+## Data model
+
+This feeder emits the following event families:
+
+- **FR.Gov.Eaufrance.HubEau.Hydrometrie** — `Station`, `Observation`.
+
+Event field descriptions, schema references, and routing details are documented in [EVENTS.md](EVENTS.md).
+
+## Deploying into Microsoft Fabric
+
+Hub'Eau Hydrometrie supports both Fabric hosting patterns used in this repository.
+
+### Fabric Notebook feeder
+
+This source includes a notebook feeder under [`notebook/`](notebook/) and `catalog.json` marks `notebook: true`.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#hubeau-hydrometrie/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use the ACI deployment flow for always-on container execution into a Fabric Event Stream custom endpoint.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#hubeau-hydrometrie/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Azure templates shipped with this source:
 
-### Option 1: Bring your own Event Hub
+### MQTT — bring your own broker
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fhubeau-hydrometrie%2Fazure-template-mqtt.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fhubeau-hydrometrie%2Fazure-template.json)
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-### Option 2: Deploy with a new Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fhubeau-hydrometrie%2Fazure-template-with-eventgrid-mqtt.json)
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fhubeau-hydrometrie%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace
 
-## MQTT and AMQP companion feeders
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fhubeau-hydrometrie%2Fazure-template-with-servicebus.json)
 
-This source now ships transport-split Kafka, MQTT, and AMQP containers. The MQTT image (`ghcr.io/clemensv/real-time-sources-hubeau-hydrometrie-mqtt:latest`) publishes retained MQTT 5 binary-mode CloudEvents on `hydro/fr/hubeau/hubeau-hydrometrie/...`. The AMQP image (`ghcr.io/clemensv/real-time-sources-hubeau-hydrometrie-amqp:latest`) publishes the same CloudEvents to a broker address or Azure Service Bus queue.
+### Kafka — bring your own Event Hub / Kafka
 
-Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, and `azure-template-with-servicebus.json`.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fhubeau-hydrometrie%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before onboarding consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full per-image auth and environment settings.
+- Select Fabric Notebook/Fabric ACI/Azure ACI based on your runtime and operational requirements.

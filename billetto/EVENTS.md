@@ -1,4 +1,4 @@
-# Billetto Public Events Bridge Events
+# Billetto Public Events feeder Events
 
 MQTT 5.0 binary-mode CloudEvents variant of Billetto.Events.
 
@@ -8,7 +8,6 @@ MQTT 5.0 binary-mode CloudEvents variant of Billetto.Events.
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
 - **Identity:** `{event_id}` identifies the resource each event is about.
-- **Operations:** Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -154,11 +153,10 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
 
 ## References
 
 - xRegistry manifest: [`xreg/billetto.xreg.json`](xreg/billetto.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- Obtaining an API key: <https://api.billetto.com/docs/obtaining-an-api-key>

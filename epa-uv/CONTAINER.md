@@ -1,183 +1,151 @@
-# EPA UV Bridge to Kafka, MQTT, and AMQP 1.0
+# EPA UV Index container images
 
-This container polls the official US EPA Envirofacts UV Index web services and emits hourly and daily UV forecast events to Kafka-compatible endpoints, MQTT 5.0, or AMQP 1.0 as CloudEvents.
+This document describes the published OCI images for the EPA UV Index feeder. For solution overview and usage scenarios, see [README.md](README.md). For the CloudEvents contract and schemas, see [EVENTS.md](EVENTS.md).
 
-## Upstream
+## Why this container
 
-- **Publisher:** United States Environmental Protection Agency
-- **Docs:** https://www.epa.gov/enviro/web-services
-- **Products:** Hourly UV forecast and daily UV forecast/alert
-- **Auth:** None
-- **License:** US Government public data
+These images package the poller, normalization logic, and transport producers so teams can subscribe to standardized air-quality CloudEvents without writing their own ingestion pipeline.
 
-## Behavior
+## What ships in the box
 
-The bridge polls the hourly and daily city/state UV forecast endpoints for one or more configured locations and deduplicates by `location_id + forecast time/date`. There is no separate upstream reference-data feed for locations, so the bridge emits forecast events only.
-
-## Running the Container
-
-### Kafka
-
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=epa-uv" \
-  -e EPA_UV_LOCATIONS="Seattle,WA" \
-  -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources-epa-uv:latest
-```
-
-### Azure Event Hubs
-
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=epa-uv" \
-  -e EPA_UV_LOCATIONS="Seattle,WA" \
-  ghcr.io/clemensv/real-time-sources-epa-uv:latest
-```
-
-## Environment Variables
-
-| Variable | Required | Description |
+| Image | Transport | Default behavior |
 |---|---|---|
-| `CONNECTION_STRING` | Yes | Kafka/Event Hubs/Fabric connection string |
-| `EPA_UV_LOCATIONS` | No | Semicolon-separated `CITY,STATE` pairs; default `Seattle,WA` |
-| `KAFKA_ENABLE_TLS` | No | Set `false` for plain Kafka in local and Docker E2E runs |
-| `EPA_UV_STATE_FILE` | No | Path to dedupe state; default `/mnt/fileshare/epa_uv_state.json` |
+| `ghcr.io/clemensv/real-time-sources-epa-uv` | Kafka | Poll upstream and publish CloudEvents to one Kafka topic with xRegistry keying |
+| `ghcr.io/clemensv/real-time-sources-epa-uv-mqtt` | MQTT 5.0 | Poll upstream and publish CloudEvents to MQTT topic hierarchy |
+| `ghcr.io/clemensv/real-time-sources-epa-uv-amqp` | AMQP 1.0 | Poll upstream and publish CloudEvents to a configured AMQP address |
 
-## Deploying into Azure Container Instances
+Event families in this source:
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+- **`US.EPA.UVIndex`**: HourlyForecast, DailyForecast
+- **`US.EPA.UVIndex.mqtt`**: HourlyForecast, DailyForecast
+- **`US.EPA.UVIndex.amqp`**: HourlyForecast, DailyForecast
 
-### Option 1: Bring your own Event Hub
+## Image contract
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+| Aspect | Value |
+|---|---|
+| Base image | `python:3.10-slim` |
+| Kafka entrypoint | `python -m epa_uv` |
+| MQTT entrypoint | `python -m epa_uv_mqtt` |
+| AMQP entrypoint | `python -m epa_uv_amqp` |
+| Exposed ports | none (outbound publisher only) |
+| Signals | terminates on `SIGTERM` with producer flush on shutdown |
+| Persistent state | `EPA_UV_STATE_FILE` (mount host storage at `/state`) |
+| Tags | `latest`, version tags, and immutable SHA tags in GHCR |
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fepa-uv%2Fazure-template.json)
+## Installing the images
 
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fepa-uv%2Fazure-template-with-eventhub.json)
-
-## MQTT/Unified Namespace image
-
-A sibling MQTT container image, `ghcr.io/clemensv/real-time-sources-epa-uv-mqtt:latest`, publishes the same source events as MQTT 5.0 binary-mode CloudEvents. It uses the xRegistry MQTT messagegroup `US.EPA.UVIndex.mqtt` and the source-specific Unified Namespace topic tree described in [EVENTS.md](EVENTS.md).
-
-### Run against a generic MQTT 5 broker
-
-```shell
-docker run --rm \
-    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \
-    -e MQTT_USERNAME='<username>' \
-    -e MQTT_PASSWORD='<password>' \
-    ghcr.io/clemensv/real-time-sources-epa-uv-mqtt:latest
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-epa-uv:latest
+docker pull ghcr.io/clemensv/real-time-sources-epa-uv-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-epa-uv-amqp:latest
 ```
 
-### MQTT environment variables
+## Using the Kafka image
+
+### Kafka with SASL/PLAIN
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e EPA_UV_STATE_FILE=/state/epa-uv.json   -e KAFKA_BOOTSTRAP_SERVERS="<host:port>"   -e KAFKA_TOPIC="epa-uv"   -e SASL_USERNAME="<username>"   -e SASL_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-epa-uv:latest
+```
+
+### Kafka with Azure Event Hubs / Fabric Event Streams
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e EPA_UV_STATE_FILE=/state/epa-uv.json   -e CONNECTION_STRING="<connection-string>"   ghcr.io/clemensv/real-time-sources-epa-uv:latest
+```
+
+## Using the MQTT image
+
+### MQTT with username/password
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e EPA_UV_STATE_FILE=/state/epa-uv.json   -e MQTT_BROKER_URL="mqtts://<broker-host>:8883"   -e MQTT_USERNAME="<username>"   -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-epa-uv-mqtt:latest
+```
+
+### MQTT with Azure Event Grid + Microsoft Entra ID
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e EPA_UV_STATE_FILE=/state/epa-uv.json   -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883"   -e MQTT_AUTH_MODE=entra   -e MQTT_ENTRA_CLIENT_ID="<managed-identity-client-id>"   -e MQTT_CLIENT_ID="<unique-client-id>"   ghcr.io/clemensv/real-time-sources-epa-uv-mqtt:latest
+```
+
+## Using the AMQP image
+
+### AMQP generic broker (SASL PLAIN)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e EPA_UV_STATE_FILE=/state/epa-uv.json   -e AMQP_BROKER_URL="amqp://<user>:<password>@<host>:5672/epa-uv"   ghcr.io/clemensv/real-time-sources-epa-uv-amqp:latest
+```
+
+### AMQP with Azure Service Bus / Event Hubs (Entra-CBS)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e EPA_UV_STATE_FILE=/state/epa-uv.json   -e AMQP_HOST="<namespace>.servicebus.windows.net"   -e AMQP_PORT=5671 -e AMQP_TLS=true   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_CLIENT_ID="<managed-identity-client-id>"   ghcr.io/clemensv/real-time-sources-epa-uv-amqp:latest
+```
+
+### AMQP with Service Bus emulator / SAS-CBS
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e EPA_UV_STATE_FILE=/state/epa-uv.json   -e AMQP_HOST="servicebus-emulator"   -e AMQP_PORT=5672   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey"   -e AMQP_SAS_KEY="<sas-key>"   ghcr.io/clemensv/real-time-sources-epa-uv-amqp:latest
+```
+
+## Environment variable matrix
+
+### Common (all images)
 
 | Variable | Description |
 |---|---|
-| `MQTT_BROKER_URL` | Broker URL including host, port, and TLS scheme, for example `mqtt://host:1883` or `mqtts://host:8883`. |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional username/password credentials for brokers that require user authentication. Leave unset for anonymous brokers. |
-| `MQTT_CLIENT_ID` | Optional MQTT client identifier. Set it explicitly on shared brokers and Event Grid namespaces. |
-| `MQTT_CONTENT_MODE` | CloudEvents content mode, `binary` by default. Keep `binary` for MQTT 5 user-property metadata. |
-| `POLLING_INTERVAL` | Source polling interval in seconds, when supported by the feeder. |
-| `STATE_FILE` | Optional path for source dedupe/checkpoint state, when the feeder maintains local state. |
-| topic prefix | Fixed by the xRegistry contract, not an environment variable. Root: `uv/us/epa/epa-uv`. |
-| retain default | Per message in xRegistry; see the topic table below. |
-| QoS default | Per message in xRegistry; MQTT messages in this source use QoS 1 unless noted otherwise. |
+| `EPA_UV_STATE_FILE` | Path to persistent poller resume/dedupe state file. |
+| `POLLING_INTERVAL` | Polling interval in seconds (source default applies when not set). |
 
-### MQTT topic patterns
+### Kafka image
 
-| Topic pattern | Message type | Retained | QoS | Expiry seconds |
-|---|---|---|---|---|
-| `uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/hourly/{forecast_hour}` | `US.EPA.UVIndex.HourlyForecast` | `true` | `1` | `172800` |
-| `uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/daily/{forecast_date}` | `US.EPA.UVIndex.DailyForecast` | `true` | `1` | `1209600` |
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric custom endpoint connection string shortcut. |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers when not using `CONNECTION_STRING`. |
+| `KAFKA_TOPIC` | Output topic name. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` to disable TLS for local brokers. |
 
-### Subscription patterns
+### MQTT image
 
-```text
-# Everything from this source
-uv/us/epa/epa-uv/#
-```
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Username/password credentials for `password` mode. |
+| `MQTT_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
+| `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
 
-### MQTT Azure deployment
+### AMQP image
 
-Deploy the MQTT container against an existing MQTT 5 broker:
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Full AMQP connection URL shortcut. |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Host/port/TLS settings when not using URL shortcut. |
+| `AMQP_ADDRESS` | Destination queue/topic/address. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | Credentials for `password` mode. |
+| `AMQP_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | Required when `AMQP_AUTH_MODE=sas`. |
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fepa-uv%2Fazure-template-mqtt.json)
+## Deploying into Azure Container Instances
 
-Deploy the MQTT container with a new Azure Event Grid namespace MQTT broker:
+### Kafka — provision a new Azure Event Hubs namespace + event hub and wire the feeder automatically.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fepa-uv%2Fazure-template-with-eventgrid-mqtt.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fepa-uv%2Fazure-template-with-eventhub.json)
 
-## AMQP 1.0 container variant
+### AMQP — provision a new Azure Service Bus namespace with managed identity + sender role assignment.
 
-Image: `ghcr.io/clemensv/real-time-sources-epa-uv-amqp:latest`
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fepa-uv%2Fazure-template-with-servicebus.json)
 
-The AMQP companion publishes EPA UV Index CloudEvents to generic AMQP 1.0 brokers with SASL PLAIN, Azure Service Bus with Entra ID CBS, or Service Bus-compatible SAS CBS. It uses the same event schemas as the Kafka and MQTT variants.
+### Kafka — bring your own Event Hubs / Fabric Event Stream connection string.
 
-### Generic AMQP broker
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fepa-uv%2Fazure-template.json)
 
-```bash
-docker run --rm \
-  -e AMQP_HOST=broker \
-  -e AMQP_PORT=5672 \
-  -e AMQP_ADDRESS=epa-uv \
-  -e AMQP_USERNAME=admin \
-  -e AMQP_PASSWORD=admin \
-  -e AMQP_AUTH_MODE=password \
-  ghcr.io/clemensv/real-time-sources-epa-uv-amqp:latest
-```
+## Related
 
-### Azure Service Bus with Entra ID
-
-```bash
-docker run --rm \
-  -e AMQP_HOST=<namespace>.servicebus.windows.net \
-  -e AMQP_PORT=5671 \
-  -e AMQP_TLS=true \
-  -e AMQP_ADDRESS=epa-uv \
-  -e AMQP_AUTH_MODE=entra \
-  -e AMQP_ENTRA_AUDIENCE=https://servicebus.azure.net/.default \
-  -e AMQP_ENTRA_CLIENT_ID=<managed-identity-client-id> \
-  ghcr.io/clemensv/real-time-sources-epa-uv-amqp:latest
-```
-
-### Service Bus emulator / SAS CBS
-
-```bash
-docker run --rm \
-  -e AMQP_HOST=servicebus-emulator \
-  -e AMQP_PORT=5672 \
-  -e AMQP_ADDRESS=epa-uv \
-  -e AMQP_AUTH_MODE=sas \
-  -e AMQP_SAS_KEY_NAME=RootManageSharedAccessKey \
-  -e AMQP_SAS_KEY=<key> \
-  ghcr.io/clemensv/real-time-sources-epa-uv-amqp:latest
-```
-
-| Variable | Description | Default |
-| --- | --- | --- |
-| `AMQP_BROKER_URL` | Optional `amqp://` or `amqps://` URL; path overrides `AMQP_ADDRESS`. | empty |
-| `AMQP_HOST` / `AMQP_PORT` | AMQP broker host and port when no broker URL is supplied. | `localhost` / `5672` (`5671` with TLS) |
-| `AMQP_ADDRESS` | Queue, topic, or link target address. | `epa-uv` |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for generic brokers. | empty |
-| `AMQP_TLS` | Enable TLS; automatically true for Entra auth. | `false` |
-| `AMQP_ENTRA_AUDIENCE` | Token scope for CBS put-token. | `https://servicebus.azure.net/.default` |
-| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed identity client id. | empty |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS CBS credentials for Service Bus-compatible brokers. | empty |
-| `AMQP_CONTENT_MODE` | CloudEvents AMQP content mode. | `binary` |
-| `POLLING_INTERVAL` | Poll interval in seconds. | source-specific |
-| `EPA_UV_STATE_FILE` | Persistent dedupe state file path. | source-specific |
-| `EPA_UV_MOCK` | Emit built-in sample events for Docker E2E and offline validation. | `false` |
-
-Use `azure-template-with-servicebus.json` or `infra/azure-template-amqp.json` for one-click Azure Service Bus deployment. The templates create a queue, Azure Files state share, ACI, user-assigned managed identity, and `Azure Service Bus Data Sender` role assignment scoped to the queue.
-
+- [README.md](README.md) — source overview, deployment options, and quick starts.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
+- [`xreg/epa_uv.xreg.json`](xreg/epa_uv.xreg.json) — authoritative event contract manifest.

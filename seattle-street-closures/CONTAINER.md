@@ -1,93 +1,209 @@
-# Seattle Street Closures Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Seattle Street Closures container images
 
-This container polls the City of Seattle's official **Street Closures** dataset and emits closure events to Kafka-compatible endpoints as CloudEvents JSON.
+This document covers the published OCI container images for the Seattle Street Closures feeder, their environment-variable contract, authentication modes, and one-click Azure deployments.
 
-## Upstream
+Companion docs:
 
-- **Publisher:** Seattle Department of Transportation
-- **Dataset:** Street Closures
-- **Dataset page:** https://data.seattle.gov/Built-Environment/Street-Closures/ium9-iqtc
-- **API endpoint:** `https://data.seattle.gov/resource/ium9-iqtc.json`
-- **Cadence:** Daily
-- **Auth:** None
-- **License:** Public Domain
+- [README.md](README.md) — source overview, value framing, and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing details.
 
-## Behavior
+## Why this container
 
-The bridge fetches the full current snapshot of closure rows, derives a stable `closure_id` from permit and segment fields, and re-emits rows when their content changes. The upstream does not expose row-level update timestamps, so the bridge uses snapshot comparison instead of a cursor.
+City operations, construction logistics, emergency routing, and traveler-information systems need near-real-time closure updates for routing and planning decisions. These containers package polling, event normalization, dedupe, and transport-specific publishing so teams can run production ingestion without custom bridge code.
 
-## Running the Container
+## What ships in the box
 
-### Kafka
-
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=seattle-street-closures" \
-  -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources-seattle-street-closures:latest
-```
-
-### Azure Event Hubs
-
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=seattle-street-closures" \
-  ghcr.io/clemensv/real-time-sources-seattle-street-closures:latest
-```
-
-## Environment Variables
-
-| Variable | Required | Description |
+| Image | Transport | Runtime entrypoint |
 |---|---|---|
-| `CONNECTION_STRING` | Yes | Kafka/Event Hubs/Fabric connection string |
-| `KAFKA_ENABLE_TLS` | No | Set `false` for plain Kafka in local and Docker E2E runs |
-| `SEATTLE_STREET_CLOSURES_STATE_FILE` | No | Path to persisted snapshot state; default `/mnt/fileshare/seattle_street_closures_state.json` |
+| `ghcr.io/clemensv/real-time-sources-seattle-street-closures` | Kafka | `python -m seattle_street_closures feed` |
+| `ghcr.io/clemensv/real-time-sources-seattle-street-closures-mqtt` | MQTT | `python -m seattle_street_closures_mqtt feed` |
+| `ghcr.io/clemensv/real-time-sources-seattle-street-closures-amqp` | AMQP | `python -m seattle_street_closures_amqp feed` |
+
+The image set shares a single xRegistry contract and publishes the same event families listed in [EVENTS.md](EVENTS.md).
+
+## Image contract
+
+| Aspect | Value |
+|---|---|
+| Base image | Source Dockerfiles (`Dockerfile*`) currently use Python slim bases (Kafka may differ from MQTT/AMQP in some sources). |
+| Entry point | `python -m <source>{,_mqtt,_amqp} feed` per image. |
+| Exposed ports | None (outbound publisher only). |
+| Signals | Graceful process termination on `SIGTERM`. |
+| Persistent state | `SEATTLE_STREET_CLOSURES_STATE_FILE` (mount `/state` volume for restart-safe dedupe). |
+| Tags | `latest`, plus immutable release/sha tags from GHCR publishing workflows. |
+
+## Installing the container images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-seattle-street-closures:latest
+docker pull ghcr.io/clemensv/real-time-sources-seattle-street-closures-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-seattle-street-closures-amqp:latest
+```
+
+## Using the Kafka image
+
+### With a Kafka broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e SEATTLE_STREET_CLOSURES_STATE_FILE=/state/seattle-street-closures.json \
+  -e KAFKA_BOOTSTRAP_SERVERS=<host:port> \
+  -e KAFKA_TOPIC=seattle-street-closures \
+  -e SASL_USERNAME=<username> \
+  -e SASL_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-seattle-street-closures:latest
+```
+
+### With Azure Event Hubs / Fabric Event Stream connection string
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e SEATTLE_STREET_CLOSURES_STATE_FILE=/state/seattle-street-closures.json \
+  -e CONNECTION_STRING='<connection-string>' \
+  ghcr.io/clemensv/real-time-sources-seattle-street-closures:latest
+```
+
+## Using the MQTT image
+
+### Generic MQTT 5 broker (username/password)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e SEATTLE_STREET_CLOSURES_STATE_FILE=/state/seattle-street-closures.json \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-seattle-street-closures-mqtt:latest
+```
+
+### Azure Event Grid namespace MQTT broker (Entra OAUTH2-JWT)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e SEATTLE_STREET_CLOSURES_STATE_FILE=/state/seattle-street-closures.json \
+  -e MQTT_BROKER_URL='mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883' \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+  -e MQTT_CLIENT_ID='<unique-client-id>' \
+  ghcr.io/clemensv/real-time-sources-seattle-street-closures-mqtt:latest
+```
+
+## Using the AMQP image
+
+### Generic AMQP 1.0 broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e SEATTLE_STREET_CLOSURES_STATE_FILE=/state/seattle-street-closures.json \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/seattle-street-closures' \
+  ghcr.io/clemensv/real-time-sources-seattle-street-closures-amqp:latest
+```
+
+### Azure Service Bus / Event Hubs (Entra CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e SEATTLE_STREET_CLOSURES_STATE_FILE=/state/seattle-street-closures.json \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='seattle-street-closures' \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default' \
+  -e AMQP_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+  ghcr.io/clemensv/real-time-sources-seattle-street-closures-amqp:latest
+```
+
+### Azure Service Bus emulator / SAS namespaces (SAS CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e SEATTLE_STREET_CLOSURES_STATE_FILE=/state/seattle-street-closures.json \
+  -e AMQP_HOST='servicebus-emulator' \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS='seattle-street-closures' \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+  -e AMQP_SAS_KEY='<sas-key>' \
+  ghcr.io/clemensv/real-time-sources-seattle-street-closures-amqp:latest
+```
+
+## Environment variables
+
+### Common
+
+| Variable | Description |
+|---|---|
+| `SEATTLE_STREET_CLOSURES_STATE_FILE` | Path to persisted poll/dedupe state file. |
+| `POLLING_INTERVAL` | Polling interval in seconds (where supported by the runtime variant). |
+| `ONCE_MODE` | Run one poll cycle and exit (used by notebook scheduling). |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric style connection string (overrides bootstrap/SASL fields). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka broker list. |
+| `KAFKA_TOPIC` | Kafka topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka links. |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` or `MQTT_HOST`/`MQTT_PORT` | MQTT broker endpoint. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Password auth for generic brokers. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` / `MQTT_ENTRA_AUDIENCE` | Entra token configuration for Event Grid MQTT. |
+| `MQTT_CLIENT_ID` | MQTT client identifier. |
+| `MQTT_CONTENT_MODE` | `binary` or `structured` CloudEvents payload mode. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` or `AMQP_HOST`/`AMQP_PORT`/`AMQP_TLS` | AMQP broker endpoint. |
+| `AMQP_ADDRESS` | Queue/topic/address target. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials (`password` mode). |
+| `AMQP_ENTRA_CLIENT_ID` / `AMQP_ENTRA_AUDIENCE` | Entra CBS token configuration. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS token material for emulator/SAS namespaces. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### MQTT — bring your own broker
 
-### Option 1: Bring your own Event Hub
+Deploy MQTT against an existing MQTT 5.0 broker endpoint.
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fseattle-street-closures%2Fazure-template-mqtt.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fseattle-street-closures%2Fazure-template.json)
+### MQTT — provision a new Event Grid MQTT broker
 
-### Option 2: Deploy with a new Event Hub
+Deploy MQTT plus an Event Grid namespace broker and managed-identity role assignment.
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fseattle-street-closures%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
+
+Deploy Kafka plus a new Event Hubs namespace and event hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fseattle-street-closures%2Fazure-template-with-eventhub.json)
 
+### Kafka — bring your own Event Hub / Kafka
 
-## MQTT 5.0 / Unified Namespace
+Deploy the Kafka container with your own Event Hubs/Fabric/Event Stream connection string.
 
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-seattle-street-closures-mqtt:latest
-docker run --rm -e MQTT_BROKER_URL=mqtt://broker:1883 ghcr.io/clemensv/real-time-sources-seattle-street-closures-mqtt:latest
-```
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fseattle-street-closures%2Fazure-template.json)
 
-| Variable | Required | Default | Description |
-|---|---:|---|---|
-| `MQTT_BROKER_URL` | No | `mqtt://localhost:1883` | MQTT broker URL. |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | No | — | Optional username/password auth. |
-| `MQTT_TLS` | No | `false` | Enable TLS for broker connections. |
+## Related
 
-## AMQP 1.0
-
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-seattle-street-closures-amqp:latest
-docker run --rm -e AMQP_HOST=broker -e AMQP_ADDRESS=seattle-street-closures ghcr.io/clemensv/real-time-sources-seattle-street-closures-amqp:latest
-```
-
-| Variable | Required | Default | Description |
-|---|---:|---|---|
-| `AMQP_HOST` | No | `localhost` | AMQP 1.0 broker host. |
-| `AMQP_PORT` | No | `5672` | AMQP 1.0 broker port. |
-| `AMQP_ADDRESS` | No | `seattle-street-closures` | Queue/topic/address to send to. |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | No | — | Optional SASL PLAIN credentials. |
+- [README.md](README.md) — project overview and hosting options.
+- [EVENTS.md](EVENTS.md) — event contract and schema details.
+- [`xreg/seattle_street_closures.xreg.json`](xreg/seattle_street_closures.xreg.json) — authoritative contract source.

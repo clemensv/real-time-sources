@@ -1,232 +1,96 @@
-# RSS/Atom Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# RSS/Atom container images
 
-This container image provides a bridge between RSS and Atom feeds and Apache
-Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge fetches entries
-from specified feeds and forwards them to the configured Kafka endpoints.
+Related docs:
 
-The bridge can be configured with a list of RSS feed URLs or OPML file URLs.
+- [README.md](README.md) — source context, quick-start flow, and deployment guidance.
+- [EVENTS.md](EVENTS.md) — event families, CloudEvents types, and payload schemas.
 
-The most convenient way to manage a list of RSS feeds is to use an
-[OPML](https://en.wikipedia.org/wiki/OPML) file that contains a list of feeds
-and is available via HTTP. The bridge can fetch the OPML file and extract the
-feed URLs from it. If the OPML file shall not be public, you can host it on a
-cloud storage service like Azure Blob Storage or AWS S3 and provide the URL
-including an access token.
+## Why this container
 
-An example OPML file is part of the repository and can be found at
-[world_news.opml](opml/world_news.opml). If you want to reference it directly from the container, you need
-to use the ["raw" URL](https://raw.githubusercontent.com/clemensv/real-time-sources/main/rss/opml/world_news.opml)
+These images package the RSS/Atom bridge runtime so teams can run a production feeder with consistent event contracts across Kafka, MQTT, and AMQP transports.
 
-## Functionality
+## What ships in the box
 
-The bridge retrieves data from RSS and Atom feeds and writes the entries to a
-Kafka topic as [CloudEvents](https://cloudevents.io/) in a JSON format, which is
-documented in [EVENTS.md](EVENTS.md). You can specify multiple feed URLs by
-providing them in the configuration.
+| Image | Dockerfile | Purpose |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-rss:latest` | `Dockerfile` | Kafka-compatible publishing path |
+| `ghcr.io/clemensv/real-time-sources-rss-mqtt:latest` | `Dockerfile.mqtt` | MQTT 5.0 publishing path |
+| `ghcr.io/clemensv/real-time-sources-rss-amqp:latest` | `Dockerfile.amqp` | AMQP 1.0 publishing path |
 
-## Database Schemas and Handling
+## Image contract
 
-If you want to build a full data pipeline with all events ingested into a
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
+| Aspect | Kafka | MQTT | AMQP |
+|---|---|---|---|
+| Base image | `python:3.10-slim` | `python:3.10-slim` | `python:3.10-slim` |
+| Default command | `CMD ["python", "-m", "rssbridge", "process"]` | `CMD ["python", "-m", "rssbridge_mqtt", "process"]` | `CMD ["python", "-m", "rssbridge_amqp", "feed"]` |
+| Delivery format | CloudEvents to Kafka topic | CloudEvents to MQTT topic tree | CloudEvents to AMQP address |
+| Shared contract | \- | Uses same xRegistry event model | Uses same xRegistry event model |
 
-## Installing the Container Image
-
-Pull the container image from the GitHub Container Registry:
-
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-rss:latest
-```
-
-To use it as a base image in a Dockerfile:
-
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-rss:latest
-```
-
-## Using the Container Image
-
-The container defines a command that starts the bridge, reading data from the
-specified RSS and Atom feeds and writing it to Kafka, Azure Event Hubs, or
-Fabric Event Streams.
-
-### With a Kafka Broker
-
-Ensure you have a Kafka broker configured with TLS and SASL PLAIN
-authentication. Run the container with the following command:
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    -e FEED_URLS='<feed-urls>' \
-    ghcr.io/clemensv/real-time-sources-rss:latest
-```
-
-### With Azure Event Hubs or Fabric Event Streams
-
-Use the connection string to establish a connection to the service. Obtain the
-connection string from the Azure portal, Azure CLI, or the "custom endpoint" of
-a Fabric Event Stream.
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    -e FEED_URLS='<feed-urls>' \
-    ghcr.io/clemensv/real-time-sources-rss:latest
-```
-
-### Preserving State Between Restarts
-
-To preserve the state between restarts and avoid reprocessing feed entries,
-mount a volume to the container and set the `STATE_FILE` environment variable:
-
-```shell
-$ docker run --rm \
-    -v /path/to/state:/mnt/state \
-    -e STATE_FILE='/mnt/state/rssbridge_state.json' \
-    ... other args ... \
-    ghcr.io/clemensv/real-time-sources-rss:latest
-```
-
-## Environment Variables
-
-### `CONNECTION_STRING`
-
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs
-or Fabric Event Streams. This replaces the need for `KAFKA_BOOTSTRAP_SERVERS`,
-`SASL_USERNAME`, and `SASL_PASSWORD`.
-
-### `KAFKA_BOOTSTRAP_SERVERS`
-
-The address of the Kafka broker. Provide a comma-separated list of host and port
-pairs (e.g., `broker1:9092,broker2:9092`). The client communicates with
-TLS-enabled Kafka brokers.
-
-### `KAFKA_TOPIC`
-
-The Kafka topic where messages will be produced.
-
-### `SASL_USERNAME`
-
-Username for SASL PLAIN authentication. Ensure your Kafka brokers support SASL PLAIN authentication.
-
-### `SASL_PASSWORD`
-
-Password for SASL PLAIN authentication.
-
-### `FEED_URLS`
-
-A comma-separated list of RSS or Atom feed URLs to fetch entries from.
-
-### `STATE_FILE`
-
-The file path where the bridge stores the state of processed entries. This helps
-in resuming data fetching without duplication after restarts. Default is
-`/mnt/state/rssbridge_state.json`.
-
-## Deploying into Azure Container Instances
-
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frss%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frss%2Fazure-template-with-eventhub.json)
-
-## MQTT/Unified Namespace image
-
-A sibling MQTT container image, `ghcr.io/clemensv/real-time-sources-rss-mqtt:latest`, publishes the same source events as MQTT 5.0 binary-mode CloudEvents. It uses the xRegistry MQTT messagegroup `Microsoft.OpenData.RssFeeds.mqtt` and the source-specific Unified Namespace topic tree described in [EVENTS.md](EVENTS.md).
-
-### Run against a generic MQTT 5 broker
-
-```shell
-docker run --rm \
-    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \
-    -e MQTT_USERNAME='<username>' \
-    -e MQTT_PASSWORD='<password>' \
-    ghcr.io/clemensv/real-time-sources-rss-mqtt:latest
-```
-
-### MQTT environment variables
-
-| Variable | Description |
-|---|---|
-| `MQTT_BROKER_URL` | Broker URL including host, port, and TLS scheme, for example `mqtt://host:1883` or `mqtts://host:8883`. |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional username/password credentials for brokers that require user authentication. Leave unset for anonymous brokers. |
-| `MQTT_CLIENT_ID` | Optional MQTT client identifier. Set it explicitly on shared brokers and Event Grid namespaces. |
-| `MQTT_CONTENT_MODE` | CloudEvents content mode, `binary` by default. Keep `binary` for MQTT 5 user-property metadata. |
-| `POLLING_INTERVAL` | Source polling interval in seconds, when supported by the feeder. |
-| `STATE_FILE` | Optional path for source dedupe/checkpoint state, when the feeder maintains local state. |
-| topic prefix | Fixed by the xRegistry contract, not an environment variable. Root: `news/intl/rss/rss`. |
-| retain default | Per message in xRegistry; see the topic table below. |
-| QoS default | Per message in xRegistry; MQTT messages in this source use QoS 1 unless noted otherwise. |
-
-### MQTT topic patterns
-
-| Topic pattern | Message type | Retained | QoS | Expiry seconds |
-|---|---|---|---|---|
-| `news/intl/rss/rss/{feed_slug}/{item}` | `Microsoft.OpenData.RssFeeds.FeedItem` | `false` | `1` | `` |
-
-### Subscription patterns
-
-```text
-# Everything from this source
-news/intl/rss/rss/#
-```
-
-### MQTT Azure deployment
-
-Deploy the MQTT container against an existing MQTT 5 broker:
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frss%2Fazure-template-mqtt.json)
-
-Deploy the MQTT container with a new Azure Event Grid namespace MQTT broker:
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frss%2Fazure-template-with-eventgrid-mqtt.json)
-
-
-## AMQP 1.0 container
-
-The AMQP companion image publishes RSS/Atom feeds CloudEvents to a single broker address. It supports SASL PLAIN for generic AMQP 1.0 brokers and CBS token authentication for Azure Service Bus (`AMQP_AUTH_MODE=entra` for managed identity, `AMQP_AUTH_MODE=sas` for emulator/SAS-key scenarios).
+## Kafka image quick start
 
 ```bash
-docker pull ghcr.io/clemensv/real-time-sources-rss-amqp:latest
-
-docker run --rm   -e AMQP_BROKER_URL=amqp://user:password@broker:5672/rss   -e RSS_SAMPLE_MODE=true   ghcr.io/clemensv/real-time-sources-rss-amqp:latest
+docker run --rm   -e CONNECTION_STRING="<connection-string>" -e FEED_URLS="https://example.com/feed.xml"   ghcr.io/clemensv/real-time-sources-rss:latest
 ```
 
-### AMQP environment variables
+## MQTT image quick start
 
-| Variable | Description | Default |
-|---|---|---|
-| `AMQP_BROKER_URL` | Full `amqp://` or `amqps://` URL. Path overrides `AMQP_ADDRESS`. | empty |
-| `AMQP_HOST` / `AMQP_PORT` | Broker host and port when no URL is supplied. | `localhost` / 5672 or 5671 |
-| `AMQP_ADDRESS` | Queue, topic, or link target address. | `rss` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for generic brokers. | empty |
-| `AMQP_TLS` | Force TLS for generic brokers. | `false` |
-| `AMQP_CONTENT_MODE` | CloudEvents AMQP binding mode: `binary` or `structured`. | `binary` |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
-| `AMQP_ENTRA_AUDIENCE` | Token scope for CBS/Entra authentication. | `https://servicebus.azure.net/.default` |
-| `AMQP_ENTRA_CLIENT_ID` | User-assigned managed identity client id. | empty |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS key credentials for Service Bus emulator/SAS CBS. | empty |
+```bash
+docker run --rm   -e MQTT_BROKER_URL="mqtts://<broker>:8883" -e MQTT_USERNAME="<user>" -e MQTT_PASSWORD="<password>" -e FEED_URLS="https://example.com/feed.xml"   ghcr.io/clemensv/real-time-sources-rss-mqtt:latest
+```
 
-### Deploy to Azure Service Bus
+## AMQP image quick start
 
-This template creates a Service Bus namespace and queue, user-assigned managed identity, role assignment for Azure Service Bus Data Sender, Log Analytics workspace, storage file share for state, and an Azure Container Instance running the AMQP image.
+```bash
+docker run --rm   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/rss" -e FEED_URLS="https://example.com/feed.xml"   ghcr.io/clemensv/real-time-sources-rss-amqp:latest
+```
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frss%2Finfra%2Fazure-template-amqp.json)
+## Environment variable matrix
+
+### Kafka image (`ghcr.io/clemensv/real-time-sources-rss:latest`)
+
+| Variable | Purpose |
+|---|---|
+| `CONNECTION_STRING or KAFKA_BOOTSTRAP_SERVERS` | Core configuration for this image variant. |
+| `KAFKA_TOPIC` | Core configuration for this image variant. |
+| `SASL_USERNAME / SASL_PASSWORD` | Core configuration for this image variant. |
+| `KAFKA_ENABLE_TLS` | Core configuration for this image variant. |
+| `FEED_URLS` | Core configuration for this image variant. |
+| `STATE_DIR` | Core configuration for this image variant. |
+
+### MQTT image (`ghcr.io/clemensv/real-time-sources-rss-mqtt:latest`)
+
+| Variable | Purpose |
+|---|---|
+| `MQTT_BROKER_URL` | Core configuration for this image variant. |
+| `MQTT_USERNAME` | Core configuration for this image variant. |
+| `MQTT_PASSWORD` | Core configuration for this image variant. |
+| `MQTT_CLIENT_ID` | Core configuration for this image variant. |
+| `MQTT_CONTENT_MODE` | Core configuration for this image variant. |
+| `FEED_URLS` | Core configuration for this image variant. |
+| `STATE_DIR` | Core configuration for this image variant. |
+
+### AMQP image (`ghcr.io/clemensv/real-time-sources-rss-amqp:latest`)
+
+| Variable | Purpose |
+|---|---|
+| `AMQP_BROKER_URL` | Core configuration for this image variant. |
+| `AMQP_ADDRESS` | Core configuration for this image variant. |
+| `AMQP_AUTH_MODE` | Core configuration for this image variant. |
+| `AMQP_CONTENT_MODE` | Core configuration for this image variant. |
+| `FEED_URLS` | Core configuration for this image variant. |
+| `STATE_DIR` | Core configuration for this image variant. |
+
+## Azure ARM deployments
+
+Only templates that exist in this source folder are listed below.
+
+- `azure-template-with-eventhub.json` — Kafka deployment plus Azure Event Hubs provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frss%2Fazure-template-with-eventhub.json)
+- `azure-template.json` — Kafka deployment targeting an existing Kafka/Event Hubs endpoint
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frss%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md)
+- [EVENTS.md](EVENTS.md)
+- `xreg/`

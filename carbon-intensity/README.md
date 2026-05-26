@@ -1,108 +1,147 @@
-# Carbon Intensity UK
+# Carbon Intensity UK feeder
 
-This project provides a real-time data bridge between the [National Grid ESO Carbon Intensity API](https://api.carbonintensity.org.uk/) and Apache Kafka-compatible endpoints such as Azure Event Hubs and Microsoft Fabric Event Streams.
+This feeder turns the [National Grid ESO Carbon Intensity API](https://api.carbonintensity.org.uk/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-The bridge polls the API every 30 minutes and forwards three types of events:
+Companion docs:
 
-| Event Type | Description |
-|---|---|
-| `uk.org.carbonintensity.Intensity` | National carbon intensity (forecast & actual gCO2/kWh) |
-| `uk.org.carbonintensity.GenerationMix` | National fuel-mix percentages for 10 fuel types |
-| `uk.org.carbonintensity.RegionalIntensity` | Carbon intensity and fuel-mix for 17 DNO regions |
+- [CONTAINER.md](CONTAINER.md) — published images, environment variables, and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing details.
 
-Kafka/Event Hubs events are encoded as [CloudEvents](https://cloudevents.io/) in structured-content JSON mode. The MQTT/UNS variant publishes binary-mode CloudEvents under `energy/gb/national-grid/carbon-intensity/{region}/{event}` with QoS 1 and `retain=false`. Full schema and topic documentation is in [EVENTS.md](EVENTS.md).
+## Why this bridge
 
-## Installing and Running
+UK carbon-intensity signals are used for dispatch, low-carbon scheduling, and sustainability reporting. This feeder emits the same records as CloudEvents for event-driven processing and warehousing.
 
-### As a Docker Container
+Concrete consumer scenarios:
 
-See [CONTAINER.md](CONTAINER.md) for container image instructions.
+- **Operations dashboards** ingest the stream for near-real-time visibility without polling logic in every app.
+- **Data engineering pipelines** land events in Eventhouse/Data Lake/Kafka topics with stable keys and schemas.
+- **Alerting and automation** subscribe to the relevant event families and trigger downstream workflows.
+- **Research and analytics teams** replay the same contract across historical and live windows.
+- **Cross-domain correlation** joins these events with weather, traffic, or incident streams from sibling feeders.
 
-```shell
-docker pull ghcr.io/clemensv/real-time-sources-carbon-intensity:latest
+## Overview
+
+Polls national intensity, generation mix, and regional intensity datasets and emits deduplicated events.
+
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-carbon-intensity` | Apache Kafka compatible (incl. Azure Event Hubs/Fabric Event Streams) | CloudEvents on one topic |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-carbon-intensity-mqtt` | MQTT 5.0 broker | CloudEvents with xRegistry topic mapping |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-carbon-intensity-amqp` | AMQP 1.0 broker / Service Bus | CloudEvents on one AMQP address |
+
+All variants share:
+
+- The same upstream acquisition logic and poll cadence.
+- The same xRegistry contract and schema set.
+- The same event identities and key/subject model across transports.
+
+## Key features
+
+- Shared contract and event schemas across Kafka, MQTT, and AMQP images.
+- Container-first deployment model for Azure ACI and Fabric hosting.
+- Dedupe/resume behavior for long-running ingestion.
+- Source-specific event families are documented in [EVENTS.md](EVENTS.md).
+
+## Repository layout
+
+```text
+carbon-intensity/
+  xreg/carbon_intensity.xreg.json     # shared xRegistry contract
+  carbon_intensity/ # feeder runtime
+  carbon_intensity_amqp/ # AMQP feeder application
+  carbon_intensity_mqtt/ # MQTT feeder application
+  carbon_intensity_amqp_producer/ # generated producer package
+  carbon_intensity_mqtt_producer/ # generated producer package
+  carbon_intensity_producer/ # generated producer package
+  kql/ # KQL schema scripts
+  notebook/ # Fabric notebook feeder
+  tests/ # unit + integration tests
+  infra/ # feeder runtime
+  Dockerfile                # builds the Kafka feeder image
+  Dockerfile.mqtt                # builds the MQTT feeder image
+  Dockerfile.amqp                # builds the AMQP feeder image
+```
+
+## Prerequisites
+
+- Docker 20.10+.
+- Outbound HTTPS access to the upstream source.
+- Network access to your Kafka, MQTT, or AMQP destination.
+- A writable `/state` mount for stateful polling deployments.
+
+## Quick start with Docker
+
+### Kafka
+
+```bash
 docker run --rm \
-  -e CONNECTION_STRING='<your-connection-string>' \
+  -v "$PWD/state:/state" \
+  -e CARBON_INTENSITY_LAST_POLLED_FILE=/state/carbon-intensity.json \
+  -e CONNECTION_STRING="<event-hubs-or-kafka-connection-string>" \
   ghcr.io/clemensv/real-time-sources-carbon-intensity:latest
 ```
 
-### Running Locally
+### MQTT
 
-```shell
-pip install .
-python -m carbon_intensity
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e CARBON_INTENSITY_MQTT_STATE_FILE=/state/carbon-intensity-mqtt.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-carbon-intensity-mqtt:latest
 ```
 
-Set one of these environment variables before starting:
+### AMQP
 
-- `CONNECTION_STRING` — Azure Event Hubs / Fabric Event Streams connection string
-- `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC`, `SASL_USERNAME`, `SASL_PASSWORD` — plain Kafka with TLS + SASL PLAIN
-
-## Data Source
-
-The Carbon Intensity API is a free, unauthenticated REST API publishing half-hourly GB electricity system data. It is developed by National Grid ESO in partnership with the Environmental Defense Fund Europe, the University of Oxford, and WWF. Data is licensed under CC-BY 4.0.
-
-## Event Properties
-
-See [EVENTS.md](EVENTS.md) for complete CloudEvents attribute tables and field-level schema documentation for all three event types.
-
-## Running Tests
-
-```shell
-pip install -e .
-python -m pytest tests/ -v
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e CARBON_INTENSITY_AMQP_STATE_FILE=/state/carbon-intensity-amqp.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/carbon-intensity" \
+  ghcr.io/clemensv/real-time-sources-carbon-intensity-amqp:latest
 ```
 
-## Fabric notebook hosting
+## Configuration reference
 
-- This source ships a Fabric notebook (`notebook/carbon-intensity-feed.ipynb`) that runs the bridge with `--once` on the Fabric scheduler. Deploy it with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+Full per-transport environment-variable matrices live in [CONTAINER.md](CONTAINER.md).
 
-## Project Structure
+State-file behavior: Kafka uses `CARBON_INTENSITY_LAST_POLLED_FILE`; MQTT uses `CARBON_INTENSITY_MQTT_STATE_FILE`; AMQP uses `CARBON_INTENSITY_AMQP_STATE_FILE`.
 
-| Path | Description |
-|---|---|
-| `xreg/` | xRegistry manifest defining endpoints, schemas, and events |
-| `carbon_intensity/` | Bridge runtime (polling, parsing, emission) |
-| `carbon_intensity_producer/` | Kafka producer code generated by xrcg from the xreg manifest |
-| `carbon_intensity_mqtt_producer/` | MQTT client code generated by xrcg from the xreg manifest |
-| `carbon_intensity_mqtt/` | MQTT/UNS bridge runtime |
-| `tests/` | Unit tests |
-| `generate_producer.ps1` | Script to regenerate Kafka producer code |
-| `generate_mqtt_producer.ps1` | Script to regenerate MQTT producer code |
-| `Dockerfile` | Kafka container build definition |
-| `Dockerfile.mqtt` | MQTT container build definition |
-| `CONTAINER.md` | Container usage documentation |
-| `EVENTS.md` | Event type and schema documentation |
+## Data model
+
+- `uk.org.carbonintensity.Intensity` — national forecast/actual intensity
+- `uk.org.carbonintensity.GenerationMix` — national generation mix
+- `uk.org.carbonintensity.RegionalIntensity` — regional intensity + mix
+
+## Deploying into Microsoft Fabric
+
+This source supports both Fabric-hosted deployment models.
+
+### Fabric Notebook feeder
+
+Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source carbon-intensity ...` to schedule the poller in a Fabric notebook using the source notebook under [`notebook/`](notebook/).
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#carbon-intensity/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source carbon-intensity ...` to run the container continuously in Azure Container Instances with Fabric Event Stream / Eventhouse wiring.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#carbon-intensity/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcarbon-intensity%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcarbon-intensity%2Fazure-template-with-eventhub.json)
 
+### Kafka — bring your own Event Hub / Kafka
 
-## AMQP 1.0 feeder
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcarbon-intensity%2Fazure-template.json)
 
-This source also ships an AMQP 1.0 companion container (`Dockerfile.amqp`, image `ghcr.io/clemensv/real-time-sources-carbon-intensity-amqp:latest`). It publishes the same CloudEvents contract documented in [EVENTS.md](EVENTS.md) to a single AMQP address named `carbon-intensity` by default. Use it for enterprise queue/topic consumers on ActiveMQ Artemis, RabbitMQ AMQP 1.0, Qpid Dispatch, or Azure Service Bus.
-
-```bash
-docker run --rm   -e AMQP_BROKER_URL=amqp://user:password@broker:5672/carbon-intensity   -e ONCE_MODE=true   ghcr.io/clemensv/real-time-sources-carbon-intensity-amqp:latest
-```
-
-Azure Service Bus deployment (new namespace, queue, managed identity, and ACI):
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcarbon-intensity%2Finfra%2Fazure-template-amqp.json)
+## Next steps
+- Review [EVENTS.md](EVENTS.md) before writing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for complete environment-variable and auth-mode details.
+- Mount persistent state storage in production.

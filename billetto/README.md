@@ -1,369 +1,129 @@
-# Billetto Public Events Bridge
+# Billetto Public Events feeder
 
-This bridge polls the [Billetto](https://billetto.dk) public events REST API
-and forwards event data to Apache Kafka, Azure Event Hubs, or Fabric Event
-Streams as [CloudEvents](https://cloudevents.io/).
+Companion docs:
 
-Billetto is a pan-European ticketing and event-discovery platform operating
-in Denmark, the United Kingdom, Germany, Sweden, Norway, Finland, Belgium,
-Austria, and Ireland.
+- [CONTAINER.md](CONTAINER.md) — container images, runtime configuration, and ARM deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contracts, schemas, and routing metadata.
+
+## Why this bridge
+
+This bridge ingests **Billetto public events API** and republishes normalized CloudEvents so downstream systems subscribe instead of implementing and maintaining custom source clients.
+
+- Track public event listings and changes from Billetto in one stream.
+- Power event-discovery and city-guide applications with normalized updates.
+- Filter event flows by geography, category, organizer, or event type.
+- Ingest event metadata into Fabric/Eventhouse for demand insights.
+- Reduce custom API client code in each downstream consumer.
 
 ## Overview
 
-The bridge periodically calls the Billetto public events endpoint
-(`/api/v3/public/events`), detects new and updated events by content hash,
-and emits `Billetto.Events.Event` CloudEvents to the configured Kafka topic.
-The stable Billetto event ID is used as both the CloudEvents `subject` and
-the Kafka partition key.
+| Variant | Dockerfile | Image | Default delivery shape |
+|---|---|---|---|
+| Kafka | `Dockerfile` | `ghcr.io/clemensv/real-time-sources-billetto:latest` | CloudEvents to Kafka-compatible endpoints |
+| MQTT | `Dockerfile.mqtt` | `ghcr.io/clemensv/real-time-sources-billetto-mqtt:latest` | CloudEvents over MQTT 5.0 topic hierarchy |
+| AMQP | `Dockerfile.amqp` | `ghcr.io/clemensv/real-time-sources-billetto-amqp:latest` | CloudEvents over AMQP 1.0 address |
 
-## Event Families
+All variants share:
 
-| Type | Description |
-|------|-------------|
-| `Billetto.Events.Event` | A public Billetto event with schedule, venue, organizer, price, and availability |
+- The same upstream acquisition logic and normalization model.
+- The same xRegistry contract in `xreg/`.
+- The same event-family semantics documented in [EVENTS.md](EVENTS.md).
 
-## Data Model
+## Key features
 
-Each event record carries:
+- Single public-event event family with stable identity keys.
+- Supports Billetto filter surface via environment variables.
+- Shared contract across Kafka, MQTT, and AMQP variants.
+- CloudEvents schema and routing documented in EVENTS.md.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `event_id` | `int` | Unique Billetto event ID (Kafka key) |
-| `title` | `string` | Event title |
-| `description` | `string?` | HTML event description |
-| `startdate` | `string` | Start date/time (ISO 8601) |
-| `enddate` | `string?` | End date/time (ISO 8601) |
-| `url` | `string?` | Billetto event page URL |
-| `image_link` | `string?` | Cover image URL |
-| `status` | `string?` | Lifecycle status (e.g. `published`, `cancelled`) |
-| `location_city` | `string?` | City |
-| `location_name` | `string?` | Venue name |
-| `location_address` | `string?` | Street address |
-| `location_zip_code` | `string?` | Postal code |
-| `location_country_code` | `string?` | ISO 3166-1 alpha-2 country code |
-| `location_latitude` | `double?` | Venue latitude (WGS 84) |
-| `location_longitude` | `double?` | Venue longitude (WGS 84) |
-| `organiser_id` | `int?` | Organizer ID |
-| `organiser_name` | `string?` | Organizer display name |
-| `minimum_price_amount_in_cents` | `int?` | Minimum ticket price in smallest currency unit |
-| `minimum_price_currency` | `string?` | ISO 4217 currency code |
-| `availability` | `string?` | Ticket availability: `available`, `sold_out`, or `unavailable` |
+## Repository layout
 
-## Source Files
+```text
+billetto/
+  xreg/billetto.xreg.json
+  billetto/
+  billetto_amqp/
+  billetto_mqtt/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+  README.md
+  CONTAINER.md
+  EVENTS.md
+```
 
-| File | Description |
-|------|-------------|
-| [xreg/billetto.xreg.json](xreg/billetto.xreg.json) | xRegistry manifest (authoritative contract) |
-| [billetto/billetto.py](billetto/billetto.py) | Runtime bridge |
-| [billetto_producer/](billetto_producer/) | Generated producer (xrcg 0.10.1) |
-| [tests/](tests/) | Unit tests |
-| [Dockerfile](Dockerfile) | Container image |
-| [azure-template.json](azure-template.json) | Azure Container Instance deployment template |
-| [CONTAINER.md](CONTAINER.md) | Deployment contract |
-| [EVENTS.md](EVENTS.md) | Event catalog |
+## Prerequisites
 
-## API Access
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound connectivity to the upstream source endpoint(s).
+- Network access to your target messaging broker (Kafka, MQTT, or AMQP).
 
-A Billetto account is required to obtain an API keypair. Per Billetto's
-[Obtaining an API key](https://api.billetto.com/docs/obtaining-an-api-key)
-guide, the flow is:
+## Quick start with Docker
 
-1. Create or sign in to your Billetto account.
-2. Switch the account into the organiser experience using **Switch to Organiser**.
-3. Open **Menu** -> **Integrate**.
-4. Open the **Developers** section.
-5. Generate an API keypair and copy both the key ID and the secret.
+### Kafka
+```bash
+docker run --rm \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-billetto:latest
+```
 
-Billetto only shows the secret on first read. If you do not store it when the
-keypair is created, you must generate a new one.
+### MQTT
+```bash
+docker run --rm \
+  -e MQTT_BROKER_URL="mqtts://<broker>:8883" -e MQTT_USERNAME="<user>" -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-billetto-mqtt:latest
+```
 
-The API accepts requests to `https://billetto.dk/api/v3/public/events` with
-an `Api-Keypair: <key_id>:<secret>` header.
+### AMQP
+```bash
+docker run --rm \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/billetto" \
+  ghcr.io/clemensv/real-time-sources-billetto-amqp:latest
+```
 
-For this bridge, set:
+## Configuration reference
+
+Use [CONTAINER.md](CONTAINER.md) for the full per-image variable matrix. Commonly used knobs:
+
+- **Kafka image:** `CONNECTION_STRING`, `KAFKA_ENABLE_TLS`, `KAFKA_TOPIC`, `POLLING_INTERVAL`, `BILLETTO_API_KEYPAIR`, `BILLETTO_BASE_URL`, `BILLETTO_CATEGORY`, `BILLETTO_EVENT_TYPE`
+- **MQTT image:** `MQTT_BROKER_URL`, `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_CLIENT_ID`
+- **AMQP image:** `AMQP_BROKER_URL`, `AMQP_ADDRESS`, `AMQP_AUTH_MODE`, `AMQP_ENTRA_CLIENT_ID`, `AMQP_SAS_KEY_NAME / AMQP_SAS_KEY`
+
+## Data model
+
+- `Billetto.Events.Event` — public event metadata from Billetto listings.
+
+
+Primary message groups in xRegistry: `Billetto.Events`.
+
+## Deploying into Microsoft Fabric
+
+For this streaming-style bridge, deploy the container via the **Fabric ACI** path:
 
 ```powershell
-$env:BILLETTO_API_KEYPAIR = "<key_id>:<secret>"
+tools/deploy-fabric/deploy-fabric-aci.ps1 -Source billetto -WorkspaceId <id> -CapacityId <id>
 ```
 
-## Supported API Filters
+## Deploying into Azure Container Instances
 
-The bridge now exposes the Billetto public-events filters supported by
-`GET /api/v3/public/events`. You can provide them as CLI arguments or
-environment variables.
+ARM templates currently present in this source folder:
 
-| API query param | CLI argument | Environment variable |
-|---|---|---|
-| `postal_code` | `--postal-code` | `BILLETTO_POSTAL_CODE` |
-| `macroregion` | `--macroregion` | `BILLETTO_MACROREGION` |
-| `region` | `--region` | `BILLETTO_REGION` |
-| `subregion` | `--subregion` | `BILLETTO_SUBREGION` |
-| `organizer_id` | `--organizer-id` | `BILLETTO_ORGANIZER_ID` |
-| `type` | `--event-type` | `BILLETTO_EVENT_TYPE` |
-| `category` | `--category` | `BILLETTO_CATEGORY` |
-| `subcategory` | `--subcategory` | `BILLETTO_SUBCATEGORY` |
+- `azure-template-amqp.json` — AMQP deployment targeting an existing AMQP 1.0 broker
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbilletto%2Fazure-template-amqp.json)
+- `azure-template-mqtt.json` — MQTT deployment targeting an existing MQTT broker
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbilletto%2Fazure-template-mqtt.json)
+- `azure-template-with-eventgrid-mqtt.json` — MQTT deployment plus Azure Event Grid namespace broker provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbilletto%2Fazure-template-with-eventgrid-mqtt.json)
+- `azure-template-with-eventhub.json` — Kafka deployment plus Azure Event Hubs provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbilletto%2Fazure-template-with-eventhub.json)
+- `azure-template-with-servicebus.json` — AMQP deployment plus Azure Service Bus provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbilletto%2Fazure-template-with-servicebus.json)
+- `azure-template.json` — Kafka deployment targeting an existing Kafka/Event Hubs endpoint
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbilletto%2Fazure-template.json)
 
-Example:
+## Next steps
 
-```powershell
-$env:BILLETTO_REGION = "Midtjylland"
-$env:BILLETTO_CATEGORY = "music"
-python -m billetto feed --connection-string "BootstrapServer=localhost:9092;EntityPath=billetto-events"
-```
-
-### Observed Filter Values
-
-Billetto does not publish separate discovery endpoints for these vocabularies in
-the public docs. The lists below were therefore inferred from a broad
-`billetto.dk` feed crawl on **2026-04-15** covering **1,126** public events.
-They are **observed values**, not a contractual enum, and they can change as
-Billetto listings change or when you target a different Billetto domain.
-
-**Observed macroregions**
-
-```text
-Danmark
-RUP FR — Régions Ultrapériphériques Françaises
-Södra Sverige
-Ortadoğu Anadolu
-Ile-de-France
-London
-Ísland
-Makroregion województwo mazowieckie
-Continente
-Kuzeydoğu Anadolu
-Κύπρος
-Ireland
-```
-
-**Observed regions**
-
-```text
-Hovedstaden
-Syddanmark
-Midtjylland
-Sjælland
-Nordjylland
-Guadeloupe
-Västsverige
-Van, Muş, Bitlis, Hakkari
-Ile-de-France
-Inner London — West
-Ísland
-Guyane
-Warszawski stołeczny
-Área Metropolitana de Lisboa
-Ağrı, Kars, Iğdır, Ardahan
-Κύπρος
-Eastern and Midland
-```
-
-**Observed subregions**
-
-```text
-Byen København
-Østjylland
-Vest- og Sydsjælland
-Fyn
-Nordsjælland
-Sydjylland
-Østsjælland
-Københavns omegn
-Vestjylland
-Nordjylland
-Guadeloupe
-Bornholm
-Hakkari
-Paris
-Hallands län
-Westminster
-Landsbyggð
-Guyane
-Miasto Warszawa
-Västra Götalands län
-Área Metropolitana de Lisboa
-Iğdır
-Κύπρος
-Dublin
-```
-
-**Observed categories**
-
-```text
-music
-performing_arts
-community
-food_drink
-health_wellness
-lifestyle
-other
-travel
-sports
-religion
-family
-hobbies
-auto_boat
-business
-fashion
-science
-film_media
-seasonal
-government
-charity
-school
-```
-
-**Observed event types**
-
-```text
-concert
-class_training
-party
-seminar
-tour
-other
-dinner
-festival
-appearance
-attraction
-conference
-camp_trip
-game
-meeting
-screening
-tradeshow
-race
-rally
-tournament
-```
-
-**Observed subcategories**
-
-```text
-other
-comedy
-pop
-classical
-dating
-wine
-historic
-show
-blues_jazz
-theatre
-rock
-mental_health
-food
-auto
-diy
-city_town
-alternative
-baby
-beer
-new_age
-circus
-live
-personal_health
-hiking
-dance
-science
-folk
-mindfulness
-fashion_beauty
-yoga
-latin
-meditation
-metal
-zoo
-education
-beauty
-kayaking
-sales_marketing
-basketball
-spirits
-drawing_painting
-career
-medieval
-fine_art
-photography
-film
-disco
-indie
-hiphop_rap
-home_garden
-parenting
-edm_electronic
-literary_arts
-mysticism_occult
-medical
-alumni
-football
-cultural
-heritage
-exercise
-chanukkah
-cycling
-trance
-running
-travel
-national_government
-fall_events
-walking
-religious_spiritual
-adult
-children_youth
-blues
-electro
-christmas
-americanfootball
-opera
-diet
-poverty
-anime
-boat
-painting
-animal_welfare
-randb
-musical
-design
-wrestling
-startups
-easter
-fighting_martial
-reggae
-house
-nonprofit
-hunting_fishing
-christianity
-skiing
-international_aid
-leadership
-international_affairs
-books
-spa
-biotech
-after_school_care
-gaming
-dinner
-golf
-hockey
-pets_animals
-futsal
-language
-```
-
-`postal_code` and `organizer_id` are intentionally not listed here because they
-are high-cardinality, data-driven filters. The same crawl observed **241**
-distinct postal codes, and organizer IDs vary with the active publisher set.
-
-## Upstream Links
-
-- [Billetto Developer Hub](https://go.billetto.com/en-gb/resources/developers)
-- [Obtaining an API key](https://api.billetto.com/docs/obtaining-an-api-key)
-- [List all public events](https://api.billetto.com/reference/list-public-events)
-- [Billetto API documentation](https://api.billetto.com/docs)
-- [Billetto main site](https://billetto.dk)
-
-
-## Transports
-
-This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Select the transport image that matches your broker and auth model.
+- Use [CONTAINER.md](CONTAINER.md) for complete runtime and deployment options.

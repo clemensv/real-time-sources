@@ -1,131 +1,133 @@
-# Ticketmaster Discovery API Bridge
+# Ticketmaster Discovery API feeder
 
-This bridge polls the [Ticketmaster Discovery API v2](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/)
-for upcoming public events and emits them as CloudEvents to an Apache Kafka topic.
+Companion docs:
 
-## Data Model
+- [CONTAINER.md](CONTAINER.md) — container images, runtime configuration, and ARM deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contracts, schemas, and routing metadata.
 
-The bridge emits four event families:
+> [!WARNING]
+> You are responsible for complying with Ticketmaster Terms, branding rules, and rate limits when using or redistributing this data.
 
-| Family | Type | Description |
-|---|---|---|
-| Event telemetry | `Ticketmaster.Events.Event` | Live event data: concerts, sports, theater, arts, and other public events |
-| Venue reference | `Ticketmaster.Reference.Venue` | Venue location, address, timezone, and coordinates |
-| Attraction reference | `Ticketmaster.Reference.Attraction` | Performer, artist, sports team, or production metadata |
-| Classification reference | `Ticketmaster.Reference.Classification` | Classification segment hierarchy (Music, Sports, Arts & Theatre, etc.) |
+## Why this bridge
 
-Reference data (venues, attractions, classifications) is emitted at bridge startup
-and refreshed every hour so downstream consumers can maintain temporally consistent
-views of the entities that event telemetry references.
+This bridge ingests **Ticketmaster Discovery API v2** and republishes normalized CloudEvents so downstream systems subscribe instead of implementing and maintaining custom source clients.
 
-## Upstream Source
+- Stream event listings and reference entities from Ticketmaster into one contract.
+- Power event-search and recommendation features with frequent refreshes.
+- Track venue, attraction, and classification reference changes alongside events.
+- Push Ticketmaster data into Fabric/Eventhouse for operational analytics.
+- Apply market filters centrally instead of in every consumer service.
 
-- **API:** [Ticketmaster Discovery API v2](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/)
-- **Coverage:** North America, Europe, Australia, and other Ticketmaster markets
-- **Auth:** Free API key required — register at [developer.ticketmaster.com](https://developer.ticketmaster.com)
-- **Rate limits:** 5 000 API calls per day, 5 requests per second on the free tier
+## Overview
 
-## Compliance Responsibility
+| Variant | Dockerfile | Image | Default delivery shape |
+|---|---|---|---|
+| Kafka | `Dockerfile` | `ghcr.io/clemensv/real-time-sources-ticketmaster:latest` | CloudEvents to Kafka-compatible endpoints |
+| MQTT | `Dockerfile.mqtt` | `ghcr.io/clemensv/real-time-sources-ticketmaster-mqtt:latest` | CloudEvents over MQTT 5.0 topic hierarchy |
+| AMQP | `Dockerfile.amqp` | `ghcr.io/clemensv/real-time-sources-ticketmaster-amqp:latest` | CloudEvents over AMQP 1.0 address |
 
-The bridge does not transfer Ticketmaster compliance obligations away from the
-operator. The user of this bridge is responsible for complying with
-Ticketmaster's Terms of Service, branding requirements, rate limits, and any
-rules governing how Ticketmaster data is represented or redistributed in their
-application and downstream systems.
+All variants share:
 
-## Kafka Topic
+- The same upstream acquisition logic and normalization model.
+- The same xRegistry contract in `xreg/`.
+- The same event-family semantics documented in [EVENTS.md](EVENTS.md).
 
-All event types (telemetry and reference) are written to a single configurable Kafka topic.
+## Key features
 
-| Message group | Kafka key |
-|---|---|
-| `Ticketmaster.Events` | `{event_id}` |
-| `Ticketmaster.Reference` | `{entity_id}` |
+- Emits event telemetry plus reference entities (venue, attraction, classification, info).
+- Supports rich Discovery API filter surface via env vars.
+- Shared event model across Kafka, MQTT, and AMQP container variants.
+- Configurable poll and reference refresh intervals.
 
-See [EVENTS.md](EVENTS.md) for full CloudEvents and schema documentation.
+## Repository layout
 
-## Quick Start
-
-```bash
-export TICKETMASTER_API_KEY=<your-api-key>
-export CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=ticketmaster"
-export KAFKA_ENABLE_TLS=false
-python -m ticketmaster feed
+```text
+ticketmaster/
+  xreg/ticketmaster.xreg.json
+  ticketmaster/
+  ticketmaster_amqp/
+  ticketmaster_mqtt/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+  README.md
+  CONTAINER.md
+  EVENTS.md
 ```
 
-See [CONTAINER.md](CONTAINER.md) for Docker and deployment instructions.
+## Prerequisites
 
-## Configuration
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound connectivity to the upstream source endpoint(s).
+- Network access to your target messaging broker (Kafka, MQTT, or AMQP).
 
-| Environment variable | Description | Default |
-|---|---|---|
-| `TICKETMASTER_API_KEY` | **Required.** Ticketmaster Discovery API key | — |
-| `CONNECTION_STRING` | Kafka / Event Hubs / Fabric connection string | — |
-| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers (alternative to connection string) | — |
-| `KAFKA_TOPIC` | Kafka topic name | — |
-| `COUNTRY_CODES` | Comma-separated ISO 3166-1 alpha-2 country codes to poll | `AU,AT,BE,CA,CZ,DK,FI,FR,DE,GR,HU,IE,IT,MX,NL,NZ,NO,PL,PT,ES,SE,CH,GB,US` |
-| `TICKETMASTER_CITY` | Optional Ticketmaster `city` filter | — |
-| `TICKETMASTER_VENUE_ID` | Optional Ticketmaster `venueId` filter | — |
-| `TICKETMASTER_ATTRACTION_ID` | Optional Ticketmaster `attractionId` filter | — |
-| `TICKETMASTER_SEGMENT_ID` | Optional Ticketmaster `segmentId` filter | — |
-| `TICKETMASTER_GENRE_ID` | Optional Ticketmaster `genreId` filter | — |
-| `TICKETMASTER_SUB_GENRE_ID` | Optional Ticketmaster `subGenreId` filter | — |
-| `TICKETMASTER_MARKET_ID` | Optional Ticketmaster `marketId` filter | — |
-| `TICKETMASTER_POSTAL_CODE` | Optional Ticketmaster `postalCode` filter | — |
-| `TICKETMASTER_LOCALE` | Discovery API locale for event and reference requests | `*` |
-| `TICKETMASTER_SORT` | Discovery API event sort order | `date,asc` |
-| `TICKETMASTER_PAGE_SIZE` | Discovery API page size per request, up to 200 | `200` |
-| `TICKETMASTER_START_DATETIME` | Optional absolute UTC lower bound for event search | — |
-| `TICKETMASTER_END_DATETIME` | Optional absolute UTC upper bound for event search | — |
-| `TICKETMASTER_LOOKAHEAD_DAYS` | Relative search window when explicit datetimes are not set | `90` |
-| `POLL_INTERVAL` | Seconds between event polls | `300` |
-| `REFERENCE_REFRESH` | Seconds between reference-data refreshes | `3600` |
-| `KAFKA_ENABLE_TLS` | Enable TLS for Kafka connections | `true` |
-| `LOG_LEVEL` | Python logging level | `INFO` |
+## Quick start with Docker
 
-## Supported Event Filters
-
-The bridge now exposes the upstream Discovery API event filters below through
-both CLI arguments and environment variables:
-
-| API query param | CLI argument | Environment variable |
-|---|---|---|
-| `countryCode` | `--country-codes` | `COUNTRY_CODES` |
-| `city` | `--city` | `TICKETMASTER_CITY` |
-| `venueId` | `--venue-id` | `TICKETMASTER_VENUE_ID` |
-| `attractionId` | `--attraction-id` | `TICKETMASTER_ATTRACTION_ID` |
-| `segmentId` | `--segment-id` | `TICKETMASTER_SEGMENT_ID` |
-| `genreId` | `--genre-id` | `TICKETMASTER_GENRE_ID` |
-| `subGenreId` | `--sub-genre-id` | `TICKETMASTER_SUB_GENRE_ID` |
-| `marketId` | `--market-id` | `TICKETMASTER_MARKET_ID` |
-| `postalCode` | `--postal-code` | `TICKETMASTER_POSTAL_CODE` |
-| `locale` | `--locale` | `TICKETMASTER_LOCALE` |
-| `sort` | `--sort` | `TICKETMASTER_SORT` |
-| `size` | `--page-size` | `TICKETMASTER_PAGE_SIZE` |
-| `startDateTime` | `--start-datetime` | `TICKETMASTER_START_DATETIME` |
-| `endDateTime` | `--end-datetime` | `TICKETMASTER_END_DATETIME` |
-
-If you do not set `--start-datetime` and `--end-datetime`, the bridge uses a
-rolling window from now through `TICKETMASTER_LOOKAHEAD_DAYS`.
-
-Example:
-
+### Kafka
 ```bash
-export TICKETMASTER_CITY=Berlin
-export TICKETMASTER_SEGMENT_ID=KZFzniwnSyZfZ7v7nJ
-export TICKETMASTER_LOOKAHEAD_DAYS=30
-python -m ticketmaster feed
+docker run --rm \
+  -e TICKETMASTER_API_KEY="<api-key>" -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-ticketmaster:latest
 ```
 
-## Links
+### MQTT
+```bash
+docker run --rm \
+  -e TICKETMASTER_API_KEY="<api-key>" -e MQTT_BROKER_URL="mqtts://<broker>:8883" -e MQTT_USERNAME="<user>" -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-ticketmaster-mqtt:latest
+```
 
-- [Ticketmaster Developer Portal](https://developer.ticketmaster.com)
-- [Discovery API v2 Documentation](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/)
-- [EVENTS.md](EVENTS.md) — CloudEvents and schema documentation
-- [CONTAINER.md](CONTAINER.md) — Docker deployment documentation
-- [azure-template.json](azure-template.json) — Azure Container Instance deployment template
+### AMQP
+```bash
+docker run --rm \
+  -e TICKETMASTER_API_KEY="<api-key>" -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/ticketmaster" \
+  ghcr.io/clemensv/real-time-sources-ticketmaster-amqp:latest
+```
+
+## Configuration reference
+
+Use [CONTAINER.md](CONTAINER.md) for the full per-image variable matrix. Commonly used knobs:
+
+- **Kafka image:** `TICKETMASTER_API_KEY`, `CONNECTION_STRING or KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC`, `COUNTRY_CODES`, `POLL_INTERVAL`, `REFERENCE_REFRESH`, `STATE_FILE`, `KAFKA_ENABLE_TLS`
+- **MQTT image:** `TICKETMASTER_API_KEY`, `MQTT_BROKER_URL`, `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_CLIENT_ID`, `COUNTRY_CODES`
+- **AMQP image:** `TICKETMASTER_API_KEY`, `AMQP_BROKER_URL`, `AMQP_ADDRESS`, `AMQP_AUTH_MODE`, `COUNTRY_CODES`
+
+## Data model
+
+- `Ticketmaster.Events.Event` — event telemetry listings.
+- `Ticketmaster.Reference.Venue` / `Attraction` / `Classification` / `Info` — reference entities.
 
 
-## Transports
+Primary message groups in xRegistry: `Ticketmaster.Events`, `Ticketmaster.Reference`.
 
-This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.
+## Deploying into Microsoft Fabric
+
+For this streaming-style bridge, deploy the container via the **Fabric ACI** path:
+
+```powershell
+tools/deploy-fabric/deploy-fabric-aci.ps1 -Source ticketmaster -WorkspaceId <id> -CapacityId <id>
+```
+
+## Deploying into Azure Container Instances
+
+ARM templates currently present in this source folder:
+
+- `azure-template-amqp.json` — AMQP deployment targeting an existing AMQP 1.0 broker
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fticketmaster%2Fazure-template-amqp.json)
+- `azure-template-mqtt.json` — MQTT deployment targeting an existing MQTT broker
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fticketmaster%2Fazure-template-mqtt.json)
+- `azure-template-with-eventgrid-mqtt.json` — MQTT deployment plus Azure Event Grid namespace broker provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fticketmaster%2Fazure-template-with-eventgrid-mqtt.json)
+- `azure-template-with-eventhub.json` — Kafka deployment plus Azure Event Hubs provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fticketmaster%2Fazure-template-with-eventhub.json)
+- `azure-template-with-servicebus.json` — AMQP deployment plus Azure Service Bus provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fticketmaster%2Fazure-template-with-servicebus.json)
+- `azure-template.json` — Kafka deployment targeting an existing Kafka/Event Hubs endpoint
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fticketmaster%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Select the transport image that matches your broker and auth model.
+- Use [CONTAINER.md](CONTAINER.md) for complete runtime and deployment options.

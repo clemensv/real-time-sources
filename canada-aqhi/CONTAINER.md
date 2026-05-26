@@ -1,132 +1,163 @@
-# Canada AQHI Bridge Container
+# Canada AQHI container images
 
-This container bridges Canada’s Air Quality Health Index (AQHI) open data into
-Apache Kafka, Azure Event Hubs, and Microsoft Fabric Event Streams as
-structured JSON [CloudEvents](https://cloudevents.io/). The event contract is
-documented in [EVENTS.md](EVENTS.md).
+This document describes the published OCI images for the Canada AQHI feeder. For solution overview and usage scenarios, see [README.md](README.md). For the CloudEvents contract and schemas, see [EVENTS.md](EVENTS.md).
 
-## Upstream source
+## Why this container
 
-The bridge reads:
+These images package the poller, normalization logic, and transport producers so teams can subscribe to standardized air-quality CloudEvents without writing their own ingestion pipeline.
 
-- AQHI community metadata from ECCC GeoJSON catalogs
-- Current AQHI observations from per-community XML feeds
-- Public AQHI forecasts from per-community XML feeds
+## What ships in the box
 
-Reference data is emitted before telemetry, and refreshed periodically so
-downstream consumers can keep a temporally consistent view of communities and
-their AQHI readings.
-
-## Pull the image
-
-```powershell
-docker pull ghcr.io/clemensv/real-time-sources-canada-aqhi:latest
-```
-
-## Run with plain Kafka
-
-```powershell
-docker run --rm `
-  -e KAFKA_BOOTSTRAP_SERVERS='localhost:9092' `
-  -e KAFKA_TOPIC='canada-aqhi' `
-  -e KAFKA_ENABLE_TLS='false' `
-  -e PROVINCES='NL,NS,ON' `
-  ghcr.io/clemensv/real-time-sources-canada-aqhi:latest
-```
-
-## Run with Azure Event Hubs or Fabric Event Streams
-
-```powershell
-docker run --rm `
-  -e CONNECTION_STRING='Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=canada-aqhi' `
-  -e PROVINCES='AB,BC,MB,NB,NL,NS,NT,NU,ON,PE,QC,SK,YT' `
-  ghcr.io/clemensv/real-time-sources-canada-aqhi:latest
-```
-
-## Environment variables
-
-| Name | Required | Description |
+| Image | Transport | Default behavior |
 |---|---|---|
-| `CONNECTION_STRING` | No | Event Hubs-style connection string. When set, it overrides direct Kafka settings. |
-| `KAFKA_BOOTSTRAP_SERVERS` | Yes, if `CONNECTION_STRING` is not set | Kafka bootstrap server list. |
-| `KAFKA_TOPIC` | No | Kafka topic name. Defaults to `canada-aqhi`. |
-| `SASL_USERNAME` | No | SASL PLAIN username for Kafka brokers. |
-| `SASL_PASSWORD` | No | SASL PLAIN password for Kafka brokers. |
-| `KAFKA_ENABLE_TLS` | No | Set to `false` for plain Kafka. Default is `true`. |
-| `POLLING_INTERVAL` | No | Polling interval in seconds. Default is `3600`. |
-| `REFERENCE_REFRESH_INTERVAL` | No | Reference refresh interval in seconds. Default is `86400`. |
-| `STATE_FILE` | No | Path to the JSON dedupe and province-cache state file. |
-| `PROVINCES` | No | Comma-separated province or territory codes to emit. Default is all 13 codes. |
+| `ghcr.io/clemensv/real-time-sources-canada-aqhi` | Kafka | Poll upstream and publish CloudEvents to one Kafka topic with xRegistry keying |
+| `ghcr.io/clemensv/real-time-sources-canada-aqhi-mqtt` | MQTT 5.0 | Poll upstream and publish CloudEvents to MQTT topic hierarchy |
+| `ghcr.io/clemensv/real-time-sources-canada-aqhi-amqp` | AMQP 1.0 | Poll upstream and publish CloudEvents to a configured AMQP address |
 
-## Azure Container Instances
+Event families in this source:
 
-If you want to run the bridge in Azure Container Instances, pass the same
-environment variables you would use with `docker run`. The bridge is fully
-configured through environment variables; there is no interactive setup and no
-mounted configuration file requirement.
+- **`ca.gc.weather.aqhi`**: Community, Observation, Forecast
+- **`ca.gc.weather.aqhi.mqtt`**: Community, Observation, Forecast
+- **`ca.gc.weather.aqhi.amqp`**: Community, Observation, Forecast
 
-When `PROVINCES` narrows the run to a subset like `ON`, the bridge uses the AQHI
-feed partition names to skip irrelevant province-resolution lookups and get to
-first emission faster. Ambiguous multi-province regions are still resolved and
-cached through the NRCan geolocation service.
+## Image contract
 
-The AQHI GeoJSON catalog still advertises legacy `http://dd.weather.gc.ca/air_quality/...`
-XML links. The bridge rewrites those paths onto the live
-`https://dd.weather.gc.ca/today/air_quality/aqhi/...` base before polling so
-current observations and forecasts keep flowing.
+| Aspect | Value |
+|---|---|
+| Base image | `python:3.10-slim` |
+| Kafka entrypoint | `python -m canada_aqhi` |
+| MQTT entrypoint | `python -m canada_aqhi_mqtt` |
+| AMQP entrypoint | `python -m canada_aqhi_amqp` |
+| Exposed ports | none (outbound publisher only) |
+| Signals | terminates on `SIGTERM` with producer flush on shutdown |
+| Persistent state | `STATE_FILE` (mount host storage at `/state`) |
+| Tags | `latest`, version tags, and immutable SHA tags in GHCR |
+
+## Installing the images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-canada-aqhi:latest
+docker pull ghcr.io/clemensv/real-time-sources-canada-aqhi-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-canada-aqhi-amqp:latest
+```
+
+## Using the Kafka image
+
+### Kafka with SASL/PLAIN
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/canada-aqhi.json   -e KAFKA_BOOTSTRAP_SERVERS="<host:port>"   -e KAFKA_TOPIC="canada-aqhi"   -e SASL_USERNAME="<username>"   -e SASL_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-canada-aqhi:latest
+```
+
+### Kafka with Azure Event Hubs / Fabric Event Streams
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/canada-aqhi.json   -e CONNECTION_STRING="<connection-string>"   ghcr.io/clemensv/real-time-sources-canada-aqhi:latest
+```
+
+## Using the MQTT image
+
+### MQTT with username/password
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/canada-aqhi.json   -e MQTT_BROKER_URL="mqtts://<broker-host>:8883"   -e MQTT_USERNAME="<username>"   -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-canada-aqhi-mqtt:latest
+```
+
+### MQTT with Azure Event Grid + Microsoft Entra ID
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/canada-aqhi.json   -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883"   -e MQTT_AUTH_MODE=entra   -e MQTT_ENTRA_CLIENT_ID="<managed-identity-client-id>"   -e MQTT_CLIENT_ID="<unique-client-id>"   ghcr.io/clemensv/real-time-sources-canada-aqhi-mqtt:latest
+```
+
+## Using the AMQP image
+
+### AMQP generic broker (SASL PLAIN)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/canada-aqhi.json   -e AMQP_BROKER_URL="amqp://<user>:<password>@<host>:5672/canada-aqhi"   ghcr.io/clemensv/real-time-sources-canada-aqhi-amqp:latest
+```
+
+### AMQP with Azure Service Bus / Event Hubs (Entra-CBS)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/canada-aqhi.json   -e AMQP_HOST="<namespace>.servicebus.windows.net"   -e AMQP_PORT=5671 -e AMQP_TLS=true   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_CLIENT_ID="<managed-identity-client-id>"   ghcr.io/clemensv/real-time-sources-canada-aqhi-amqp:latest
+```
+
+### AMQP with Service Bus emulator / SAS-CBS
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/canada-aqhi.json   -e AMQP_HOST="servicebus-emulator"   -e AMQP_PORT=5672   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey"   -e AMQP_SAS_KEY="<sas-key>"   ghcr.io/clemensv/real-time-sources-canada-aqhi-amqp:latest
+```
+
+## Environment variable matrix
+
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to persistent poller resume/dedupe state file. |
+| `POLLING_INTERVAL` | Polling interval in seconds (source default applies when not set). |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric custom endpoint connection string shortcut. |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers when not using `CONNECTION_STRING`. |
+| `KAFKA_TOPIC` | Output topic name. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` to disable TLS for local brokers. |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Username/password credentials for `password` mode. |
+| `MQTT_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
+| `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Full AMQP connection URL shortcut. |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Host/port/TLS settings when not using URL shortcut. |
+| `AMQP_ADDRESS` | Destination queue/topic/address. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | Credentials for `password` mode. |
+| `AMQP_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | Required when `AMQP_AUTH_MODE=sas`. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### AMQP — deploy the AMQP image against an existing AMQP 1.0 endpoint you configure.
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-amqp.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — bring your own MQTT 5.0 broker and deploy the MQTT image.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision an Azure Event Grid namespace MQTT broker plus required identity wiring.
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Azure Event Hubs namespace + event hub and wire the feeder automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace with managed identity + sender role assignment.
 
-## MQTT 5.0 / Unified Namespace feeder
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-with-servicebus.json)
 
-Image: `real-time-sources-canada-aqhi-mqtt`. Publishes binary-mode CloudEvents to `air-quality/ca/eccc/canada-aqhi/...`.
+### Kafka — bring your own Event Hubs / Fabric Event Stream connection string.
 
-| Variable | Purpose |
-|---|---|
-| `MQTT_BROKER_URL` | Broker URL, for example `mqtt://host:1883`. |
-| `MQTT_HOST`, `MQTT_PORT`, `MQTT_TLS` | Host/port/TLS alternatives to `MQTT_BROKER_URL`. |
-| `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional username/password authentication. |
-| `MQTT_CONTENT_MODE` | CloudEvents content mode; default `binary`. |
-| `ONCE_MODE` | Exit after one publish cycle for jobs/tests. |
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template.json)
 
-[![Deploy MQTT BYO](https://img.shields.io/badge/Azure-Container%20(BYO%20MQTT)-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-mqtt.json)
-[![Deploy MQTT Event Grid](https://img.shields.io/badge/Azure-Container%20%2B%20Event%20Grid%20MQTT-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-with-eventgrid-mqtt.json)
+## Related
 
-## AMQP 1.0 feeder
-
-Image: `real-time-sources-canada-aqhi-amqp`. Publishes binary-mode CloudEvents to a configurable AMQP 1.0 address.
-
-| Variable | Purpose |
-|---|---|
-| `AMQP_BROKER_URL` | Broker URL, for example `amqp://user:pass@host:5672/canada-aqhi`. |
-| `AMQP_HOST`, `AMQP_PORT`, `AMQP_TLS` | Host/port/TLS alternatives to `AMQP_BROKER_URL`. |
-| `AMQP_ADDRESS` | Queue/topic/address; default `canada-aqhi`. |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
-| `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials. |
-| `AMQP_ENTRA_CLIENT_ID`, `AMQP_ENTRA_AUDIENCE` | Entra CBS authentication settings. |
-| `AMQP_SAS_KEY_NAME`, `AMQP_SAS_KEY` | SAS CBS authentication settings. |
-| `AMQP_CONTENT_MODE` | CloudEvents content mode; default `binary`. |
-| `ONCE_MODE` | Exit after one publish cycle for jobs/tests. |
-
-[![Deploy AMQP BYO](https://img.shields.io/badge/Azure-Container%20(BYO%20AMQP)-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-amqp.json)
-[![Deploy AMQP Service Bus](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-with-servicebus.json)
+- [README.md](README.md) — source overview, deployment options, and quick starts.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
+- [`xreg/canada-aqhi.xreg.json`](xreg/canada-aqhi.xreg.json) — authoritative event contract manifest.

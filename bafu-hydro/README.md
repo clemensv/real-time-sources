@@ -1,236 +1,163 @@
-# BAFU Hydrology Bridge Usage Guide
+# BAFU Hydro feeder
+
+This feeder turns the upstream BAFU Hydro hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+This bridge publishes the BAFU Hydro source as a transport-agnostic event stream so downstream systems subscribe once and avoid re-implementing poll scheduling, retry handling, dedupe state, CloudEvents mapping, and schema lifecycle management.
+
+- **Flood and water-risk operations** — power near-real-time threshold monitoring and alert pipelines.
+- **Infrastructure operations** — feed lock/port/river-management dashboards and operations centers.
+- **Environmental analytics** — ingest standardized events into Fabric Eventhouse, ADX, or lakehouse systems.
+- **Insurance and resilience workflows** — drive trigger-based monitoring and post-event replay analysis.
+- **Research and public-data products** — maintain reproducible timelines without source-specific ETL glue.
 
 ## Overview
 
-**BAFU Hydrology Bridge** connects to the Swiss Federal Office for the
-Environment's (BAFU/FOEN) hydrological monitoring network — via the
-[existenz.ch](https://api.existenz.ch) community API — and forwards water level,
-discharge, and temperature observations to a Kafka topic as
-[CloudEvents](https://cloudevents.io/) in JSON format.
+**BAFU Hydro** is a poll-based bridge that emits CloudEvents across available transport variants:
 
-This is a **polling** bridge. The upstream API aggregates readings from BAFU's
-network of river and lake gauging stations across Switzerland. The bridge polls
-for the latest measurements, de-duplicates them against local state, and emits
-only new or changed readings.
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-bafu-hydro` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents on one topic, key = `{station_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-bafu-hydro-mqtt` | MQTT 5.0 broker (incl. Event Grid MQTT and Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic template `(see EVENTS.md)` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-bafu-hydro-amqp` | AMQP 1.0 (incl. Service Bus and Event Hubs via CBS auth) | Binary CloudEvents to AMQP node `bafu-hydro` |
 
-## Key Features
+All variants share:
 
-- **Swiss national coverage**: ~300 hydrological monitoring stations on rivers
-  and lakes throughout Switzerland
-- **Three measurement parameters**: Water level (m), discharge (m³/s), and water
-  temperature (°C)
-- **Two event types**: Station reference data and water level observations
-- **Delta-only emission**: De-duplicates against a local state file — only new
-  readings are forwarded
-- **Configurable polling interval**: Default 600 seconds (10 minutes), matching
-  the upstream update cadence
-- **Kafka integration**: SASL PLAIN authentication for Event Hubs / Fabric Event
-  Streams
-- **Fabric notebook hosting**: deploy as a scheduled Fabric notebook via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) (see `notebook/bafu-hydro-feed.ipynb`).
+- The same upstream polling logic and dedupe state model.
+- The same xRegistry contract (`xreg/bafu_hydro.xreg.json`).
+- The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
 
-## Data Source
+## Key features
 
-The bridge reads from the [existenz.ch Hydro API](https://api.existenz.ch),
-which wraps the official BAFU/FOEN data published at
-[hydrodaten.admin.ch](https://www.hydrodaten.admin.ch). The data is provided by
-the Swiss Confederation's Federal Office for the Environment.
+- Poll-based ingestion with restart-safe dedupe/checkpoint persistence via `STATE_FILE`.
+- Consistent CloudEvents identities and schemas across transport variants.
+- Contract-first event modeling from the checked-in xRegistry manifest.
+- Deployment options for local Docker, Microsoft Fabric, and Azure Container Instances.
+- Reference and telemetry event families aligned for downstream joins and enrichment.
 
-- **API base URL**: `https://api.existenz.ch/apiv1/hydro`
-- **Endpoints used**: `/locations` (station metadata) and `/latest` (current
-  readings)
-- **Authentication**: None required
-- **Update frequency**: ~10 minutes
-- **License**: Swiss Open Government Data
+## Repository layout
 
-## Installation
+```text
+bafu-hydro/
+  xreg/bafu_hydro.xreg.json                 # shared xRegistry contract
+  bafu_hydro/
+  bafu_hydro_amqp/
+  bafu_hydro_amqp_producer/
+  bafu_hydro_mqtt/
+  bafu_hydro_mqtt_producer/
+  bafu_hydro_producer/
+  Dockerfile                         # Kafka feeder image
+  Dockerfile.mqtt                    # MQTT feeder image
+  Dockerfile.amqp                    # AMQP feeder image
+  kql/                               # KQL/Eventhouse schema
+  notebook/                          # Fabric notebook feeder
+  tests/                             # unit + integration tests
+```
 
-Requires Python 3.10 or later.
+## Prerequisites
+
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound HTTPS access to the upstream source API.
+- Network access to your Kafka broker / MQTT broker / AMQP 1.0 endpoint.
+- A writable host directory mounted to persist `STATE_FILE` across container restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `STATE_FILE` so dedupe/checkpoint state survives restarts.
+
+### Kafka
 
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=bafu-hydro
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/bafu-hydro.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-bafu-hydro:latest
 ```
 
-If you clone the repository:
+### MQTT (Unified Namespace)
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/bafu-hydro
-pip install .
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/bafu-hydro.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-bafu-hydro-mqtt:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md)
-instructions.
+Topic template:
 
-## How to Use
+```text
+(see EVENTS.md)
+```
 
-After installation, the tool can be run using `python -m bafu_hydro`. It
-supports two subcommands:
-
-- **List Stations (`list`)**: Fetch and display all available monitoring
-  stations.
-- **Feed to Kafka (`feed`)**: Continuously poll the API and send water level
-  updates to a Kafka topic.
-
-The events sent to Kafka are formatted as CloudEvents, documented in
-[EVENTS.md](EVENTS.md).
-
-### List Stations
-
-Fetches and displays all available monitoring stations:
+### AMQP 1.0
 
 ```bash
-python -m bafu_hydro list
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/bafu-hydro.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/bafu-hydro" \
+  ghcr.io/clemensv/real-time-sources-bafu-hydro-amqp:latest
 ```
 
-Output shows station ID, name, water body, and coordinates.
+For Entra-ID and SAS-CBS AMQP authentication variants, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image).
 
-### Feed to Kafka
+## Configuration reference
 
-#### Using a Connection String (Event Hubs / Fabric Event Streams)
+The complete environment-variable matrix for each image is documented in [CONTAINER.md](CONTAINER.md). Runtime entry points come from image `CMD`: Kafka ["python", "-m", "bafu_hydro", "feed"] MQTT ["python", "-m", "bafu_hydro_mqtt", "feed"] AMQP ["python", "-m", "bafu_hydro_amqp", "feed"].
 
-```bash
-python -m bafu_hydro feed --connection-string "<your_connection_string>"
-```
+## Data model
 
-#### Using Kafka Parameters Directly
+This feeder emits the following event families:
 
-```bash
-python -m bafu_hydro feed \
-    --connection-string "BootstrapServer=<bootstrap_servers>;EntityPath=<topic>"
-```
+- **CH.BAFU.Hydrology** — `Station`, `WaterLevelObservation`.
 
-Or via environment variables:
+Event field descriptions, schema references, and routing details are documented in [EVENTS.md](EVENTS.md).
 
-```bash
-export KAFKA_BROKER="<bootstrap_servers>"
-export KAFKA_TOPIC="<topic_name>"
-python -m bafu_hydro feed
-```
+## Deploying into Microsoft Fabric
 
-### Command-Line Arguments (feed)
+BAFU Hydro supports both Fabric hosting patterns used in this repository.
 
-| Argument | Env Var | Description |
-|----------|---------|-------------|
-| `--connection-string` | `CONNECTION_STRING` or `KAFKA_CONNECTION_STRING` | Event Hubs / Fabric Event Stream connection string |
-| `--topic` | `KAFKA_TOPIC` | Kafka topic name (default: `bafu-hydro`) |
-| `--polling-interval` | `POLLING_INTERVAL` | Polling interval in seconds (default: `600`) |
-| `--state-file` | `STATE_FILE` | Path to the de-duplication state file (default: `~/.bafu_hydro_state.json`) |
+### Fabric Notebook feeder
 
-## Event Types
+This source includes a notebook feeder under [`notebook/`](notebook/) and `catalog.json` marks `notebook: true`.
 
-| CloudEvents `type` | Description |
-|---------------------|-------------|
-| `CH.BAFU.Hydrology.Station` | Station reference data: ID, name, water body, coordinates |
-| `CH.BAFU.Hydrology.WaterLevelObservation` | Observation: water level, discharge, water temperature with timestamps |
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#bafu-hydro/fabric-notebook)
 
-All events use `{station_id}` as the Kafka key and CloudEvents `subject`.
+### Fabric ACI feeder
 
-### Station
+Use the ACI deployment flow for always-on container execution into a Fabric Event Stream custom endpoint.
 
-Emitted once at startup for each monitoring station.
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `station_id` | string | BAFU station identifier |
-| `name` | string | Station name |
-| `water_body_name` | string | Name of the river or lake |
-| `water_body_type` | string | Water body classification |
-| `latitude` | double | WGS84 latitude |
-| `longitude` | double | WGS84 longitude |
-
-### WaterLevelObservation
-
-Emitted on each polling cycle for stations with new readings.
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `station_id` | string | BAFU station identifier |
-| `water_level` | double | Water level reading |
-| `water_level_unit` | string | Unit of measurement (`m`) |
-| `water_level_timestamp` | datetime | Timestamp of the water level reading |
-| `discharge` | double | Water discharge reading |
-| `discharge_unit` | string | Unit of measurement (`m3/s`) |
-| `discharge_timestamp` | datetime | Timestamp of the discharge reading |
-| `water_temperature` | double | Water temperature reading |
-| `water_temperature_unit` | string | Unit of measurement (`C`) |
-| `water_temperature_timestamp` | datetime | Timestamp of the temperature reading |
-
-## State Management
-
-The bridge maintains a JSON state file (default: `~/.bafu_hydro_state.json`)
-that tracks which readings have already been forwarded. This ensures that only
-new observations are emitted after restarts. The state file is automatically
-pruned to the most recent 50,000 entries to prevent unbounded growth.
-
-## Connection String Format
-
-The connection string format for Azure Event Hubs or Fabric Event Streams:
-
-```
-Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=<hub>
-```
-
-When provided, the connection string is parsed to extract:
-- **Bootstrap Servers**: Derived from the `Endpoint` value
-- **Kafka Topic**: Derived from the `EntityPath` value
-- **SASL credentials**: Configured automatically for SASL_SSL/PLAIN
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#bafu-hydro/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Azure templates shipped with this source:
 
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbafu-hydro%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbafu-hydro%2Fazure-template-with-eventhub.json)
 
-## MQTT / Unified Namespace transport
+### AMQP — provision a new Azure Service Bus namespace
 
-In addition to the Kafka image documented in `CONTAINER.md`, this source
-also ships an MQTT 5.0 feeder built from `Dockerfile.mqtt`. It publishes
-the same Station reference and WaterLevelObservation telemetry into a
-Unified-Namespace topic tree:
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbafu-hydro%2Fazure-template-with-servicebus.json)
 
-```
-hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/info
-hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/water-level
-```
+### Kafka — bring your own Event Hub / Kafka
 
-All messages are sent in CloudEvents *binary* mode with QoS 1 and
-`retain=true` so any new subscriber immediately sees the latest known
-state per station. The `{water_body_name}` segment is normalized to lowercase
-kebab-case (umlauts and accented characters folded to ASCII, all other
-non-alphanumeric characters replaced with `-`) so the topic is safe for
-every MQTT 5 broker.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbafu-hydro%2Fazure-template.json)
 
-See `CONTAINER.md` for the full deployment contract (environment
-variables, broker examples, subscription patterns).
+## Next steps
 
-## AMQP 1.0 companion feeder
-
-This source now ships the standard Kafka + MQTT + AMQP transport trio. The AMQP companion runs from `bafu_hydro_amqp/`, uses the generated `bafu_hydro_amqp_producer/` package, and publishes the same CloudEvents and schemas documented in `EVENTS.md` to one AMQP 1.0 address (default `bafu-hydro`). It supports generic AMQP 1.0 brokers with SASL PLAIN and Azure Service Bus / Event Hubs with CBS token authentication.
-
-Build and run locally:
-
-```bash
-docker build -f Dockerfile.amqp -t bafu-hydro-amqp .
-docker run --rm \
-  -e AMQP_BROKER_URL=amqp://user:password@broker:5672/bafu-hydro \
-  -e ONCE_MODE=true \
-  bafu-hydro-amqp
-```
-
-For Azure Service Bus, deploy `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`) or run the container with `AMQP_AUTH_MODE=entra`, `AMQP_HOST=<namespace>.servicebus.windows.net`, `AMQP_TLS=true`, and `AMQP_ADDRESS=bafu-hydro`.
-
+- Review [EVENTS.md](EVENTS.md) before onboarding consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full per-image auth and environment settings.
+- Select Fabric Notebook/Fabric ACI/Azure ACI based on your runtime and operational requirements.

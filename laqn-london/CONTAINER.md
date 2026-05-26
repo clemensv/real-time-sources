@@ -1,159 +1,166 @@
-# LAQN London Air Quality Network Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# LAQN London container images
 
-This container bridges the public LAQN London Air Quality Network API operated
-by King's College London into Kafka-compatible endpoints. It emits structured
-JSON CloudEvents for monitoring sites, pollutant species, hourly measurements,
-and Daily Air Quality Index bulletin records.
+This document describes the published OCI images for the LAQN London feeder. For solution overview and usage scenarios, see [README.md](README.md). For the CloudEvents contract and schemas, see [EVENTS.md](EVENTS.md).
 
-The upstream is HTTP-only at `http://api.erg.ic.ac.uk/AirQuality/`. That is the
-published upstream interface and therefore what this bridge uses.
+## Why this container
 
-## Functionality
+These images package the poller, normalization logic, and transport producers so teams can subscribe to standardized air-quality CloudEvents without writing their own ingestion pipeline.
 
-At startup, the container fetches all site metadata and all pollutant species
-definitions and emits them as reference events. It then polls:
+## What ships in the box
 
-- hourly site measurement data for all active sites, covering yesterday plus
-  today
-- the latest London-wide Daily AQI bulletin
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-laqn-london` | Kafka | Poll upstream and publish CloudEvents to one Kafka topic with xRegistry keying |
+| `ghcr.io/clemensv/real-time-sources-laqn-london-mqtt` | MQTT 5.0 | Poll upstream and publish CloudEvents to MQTT topic hierarchy |
+| `ghcr.io/clemensv/real-time-sources-laqn-london-amqp` | AMQP 1.0 | Poll upstream and publish CloudEvents to a configured AMQP address |
 
-Reference data is re-emitted every 24 polls so downstream consumers can keep a
-temporally consistent local copy of the site and species catalogs.
+Event families in this source:
 
-If LAQN leaves a site's decimal latitude or longitude blank, the bridge emits
-that coordinate as `null` in the site reference event and continues with the
-rest of the feed.
+- **`uk.kcl.laqn`**: Site, Measurement, DailyIndex
+- **`uk.kcl.laqn.species`**: Species
+- **`uk.kcl.laqn.mqtt`**: Site, Measurement, DailyIndex
+- **`uk.kcl.laqn.amqp`**: Site, Measurement, DailyIndex
+- **`uk.kcl.laqn.species.mqtt`**: Species
+- **`uk.kcl.laqn.species.amqp`**: Species
 
-## Installing the Container Image
+## Image contract
 
-```shell
+| Aspect | Value |
+|---|---|
+| Base image | `python:3.10-slim` |
+| Kafka entrypoint | `python -m laqn_london` |
+| MQTT entrypoint | `python -m laqn_london_mqtt` |
+| AMQP entrypoint | `python -m laqn_london_amqp` |
+| Exposed ports | none (outbound publisher only) |
+| Signals | terminates on `SIGTERM` with producer flush on shutdown |
+| Persistent state | `STATE_FILE` (mount host storage at `/state`) |
+| Tags | `latest`, version tags, and immutable SHA tags in GHCR |
+
+## Installing the images
+
+```bash
 docker pull ghcr.io/clemensv/real-time-sources-laqn-london:latest
+docker pull ghcr.io/clemensv/real-time-sources-laqn-london-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-laqn-london-amqp:latest
 ```
 
-## Using the Container Image
+## Using the Kafka image
 
-### With a Kafka Broker
+### Kafka with SASL/PLAIN
 
-```shell
-docker run --rm \
-  -e KAFKA_BOOTSTRAP_SERVERS='<broker:9092>' \
-  -e KAFKA_TOPIC='laqn-london' \
-  -e SASL_USERNAME='<username>' \
-  -e SASL_PASSWORD='<password>' \
-  ghcr.io/clemensv/real-time-sources-laqn-london:latest
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/laqn-london.json   -e KAFKA_BOOTSTRAP_SERVERS="<host:port>"   -e KAFKA_TOPIC="laqn-london"   -e SASL_USERNAME="<username>"   -e SASL_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-laqn-london:latest
 ```
 
-For local Kafka without TLS:
+### Kafka with Azure Event Hubs / Fabric Event Streams
 
-```shell
-docker run --rm \
-  -e CONNECTION_STRING='BootstrapServer=host.docker.internal:9092;EntityPath=laqn-london' \
-  -e KAFKA_ENABLE_TLS='false' \
-  ghcr.io/clemensv/real-time-sources-laqn-london:latest
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/laqn-london.json   -e CONNECTION_STRING="<connection-string>"   ghcr.io/clemensv/real-time-sources-laqn-london:latest
 ```
 
-### With Azure Event Hubs or Fabric Event Streams
+## Using the MQTT image
 
-```shell
-docker run --rm \
-  -e CONNECTION_STRING='Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=laqn-london' \
-  ghcr.io/clemensv/real-time-sources-laqn-london:latest
+### MQTT with username/password
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/laqn-london.json   -e MQTT_BROKER_URL="mqtts://<broker-host>:8883"   -e MQTT_USERNAME="<username>"   -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-laqn-london-mqtt:latest
 ```
 
-## Environment Variables
+### MQTT with Azure Event Grid + Microsoft Entra ID
 
-### `CONNECTION_STRING`
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/laqn-london.json   -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883"   -e MQTT_AUTH_MODE=entra   -e MQTT_ENTRA_CLIENT_ID="<managed-identity-client-id>"   -e MQTT_CLIENT_ID="<unique-client-id>"   ghcr.io/clemensv/real-time-sources-laqn-london-mqtt:latest
+```
 
-Azure Event Hubs or Fabric Event Streams connection string. When set, it
-overrides the explicit Kafka bootstrap server and SASL settings.
+## Using the AMQP image
 
-### `KAFKA_BOOTSTRAP_SERVERS`
+### AMQP generic broker (SASL PLAIN)
 
-Kafka bootstrap servers as a comma-separated `host:port` list.
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/laqn-london.json   -e AMQP_BROKER_URL="amqp://<user>:<password>@<host>:5672/laqn-london"   ghcr.io/clemensv/real-time-sources-laqn-london-amqp:latest
+```
 
-### `KAFKA_TOPIC`
+### AMQP with Azure Service Bus / Event Hubs (Entra-CBS)
 
-Kafka topic name for the emitted CloudEvents.
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/laqn-london.json   -e AMQP_HOST="<namespace>.servicebus.windows.net"   -e AMQP_PORT=5671 -e AMQP_TLS=true   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_CLIENT_ID="<managed-identity-client-id>"   ghcr.io/clemensv/real-time-sources-laqn-london-amqp:latest
+```
 
-### `SASL_USERNAME`
+### AMQP with Service Bus emulator / SAS-CBS
 
-Username for SASL/PLAIN authentication.
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/laqn-london.json   -e AMQP_HOST="servicebus-emulator"   -e AMQP_PORT=5672   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey"   -e AMQP_SAS_KEY="<sas-key>"   ghcr.io/clemensv/real-time-sources-laqn-london-amqp:latest
+```
 
-### `SASL_PASSWORD`
+## Environment variable matrix
 
-Password for SASL/PLAIN authentication.
+### Common (all images)
 
-### `KAFKA_ENABLE_TLS`
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to persistent poller resume/dedupe state file. |
+| `POLLING_INTERVAL` | Polling interval in seconds (source default applies when not set). |
 
-Set to `false` when targeting a plain local Kafka broker. The default is `true`.
+### Kafka image
 
-### `POLLING_INTERVAL`
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric custom endpoint connection string shortcut. |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers when not using `CONNECTION_STRING`. |
+| `KAFKA_TOPIC` | Output topic name. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` to disable TLS for local brokers. |
 
-Polling interval in seconds. The default is `3600`.
+### MQTT image
 
-### `STATE_FILE`
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Username/password credentials for `password` mode. |
+| `MQTT_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
+| `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
 
-Optional path for the persisted dedupe state file. The default is
-`~/.laqn_london_state.json`.
+### AMQP image
 
-## Output Contract
-
-The emitted CloudEvents are documented in [EVENTS.md](EVENTS.md). Site,
-measurement, and Daily AQI events are keyed by `site_code`. Species reference
-events are keyed by `species_code`. All event types share the same Kafka topic.
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Full AMQP connection URL shortcut. |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Host/port/TLS settings when not using URL shortcut. |
+| `AMQP_ADDRESS` | Destination queue/topic/address. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | Credentials for `password` mode. |
+| `AMQP_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | Required when `AMQP_AUTH_MODE=sas`. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### AMQP — deploy the AMQP image against an existing AMQP 1.0 endpoint you configure.
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Flaqn-london%2Fazure-template-amqp.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — bring your own MQTT 5.0 broker and deploy the MQTT image.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Flaqn-london%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Flaqn-london%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision an Azure Event Grid namespace MQTT broker plus required identity wiring.
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Flaqn-london%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Azure Event Hubs namespace + event hub and wire the feeder automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Flaqn-london%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace with managed identity + sender role assignment.
 
-## MQTT 5.0 / Unified Namespace feeder
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Flaqn-london%2Fazure-template-with-servicebus.json)
 
-Image: `real-time-sources-laqn-london-mqtt`. Publishes binary-mode CloudEvents to `air-quality/gb/london/laqn-london/...`.
+### Kafka — bring your own Event Hubs / Fabric Event Stream connection string.
 
-| Variable | Purpose |
-|---|---|
-| `MQTT_BROKER_URL` | Broker URL, for example `mqtt://host:1883`. |
-| `MQTT_HOST`, `MQTT_PORT`, `MQTT_TLS` | Host/port/TLS alternatives to `MQTT_BROKER_URL`. |
-| `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional username/password authentication. |
-| `MQTT_CONTENT_MODE` | CloudEvents content mode; default `binary`. |
-| `ONCE_MODE` | Exit after one publish cycle for jobs/tests. |
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Flaqn-london%2Fazure-template.json)
 
-[![Deploy MQTT BYO](https://img.shields.io/badge/Azure-Container%20(BYO%20MQTT)-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Flaqn-london%2Fazure-template-mqtt.json)
-[![Deploy MQTT Event Grid](https://img.shields.io/badge/Azure-Container%20%2B%20Event%20Grid%20MQTT-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Flaqn-london%2Fazure-template-with-eventgrid-mqtt.json)
+## Related
 
-## AMQP 1.0 feeder
-
-Image: `real-time-sources-laqn-london-amqp`. Publishes binary-mode CloudEvents to a configurable AMQP 1.0 address.
-
-| Variable | Purpose |
-|---|---|
-| `AMQP_BROKER_URL` | Broker URL, for example `amqp://user:pass@host:5672/laqn-london`. |
-| `AMQP_HOST`, `AMQP_PORT`, `AMQP_TLS` | Host/port/TLS alternatives to `AMQP_BROKER_URL`. |
-| `AMQP_ADDRESS` | Queue/topic/address; default `laqn-london`. |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
-| `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials. |
-| `AMQP_ENTRA_CLIENT_ID`, `AMQP_ENTRA_AUDIENCE` | Entra CBS authentication settings. |
-| `AMQP_SAS_KEY_NAME`, `AMQP_SAS_KEY` | SAS CBS authentication settings. |
-| `AMQP_CONTENT_MODE` | CloudEvents content mode; default `binary`. |
-| `ONCE_MODE` | Exit after one publish cycle for jobs/tests. |
-
-[![Deploy AMQP BYO](https://img.shields.io/badge/Azure-Container%20(BYO%20AMQP)-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Flaqn-london%2Fazure-template-amqp.json)
-[![Deploy AMQP Service Bus](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Flaqn-london%2Fazure-template-with-servicebus.json)
+- [README.md](README.md) — source overview, deployment options, and quick starts.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
+- [`xreg/laqn_london.xreg.json`](xreg/laqn_london.xreg.json) — authoritative event contract manifest.

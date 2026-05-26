@@ -1,147 +1,166 @@
-# Defra AURN Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Defra AURN container images
 
-This container image bridges the UK Defra AURN SOS Timeseries API to Kafka
-compatible endpoints. It emits CloudEvents in structured JSON mode for station
-metadata, timeseries metadata, and hourly observations.
+This document describes the published OCI images for the Defra AURN feeder. For solution overview and usage scenarios, see [README.md](README.md). For the CloudEvents contract and schemas, see [EVENTS.md](EVENTS.md).
 
-> The upstream API is public and does not require authentication.
+## Why this container
 
-## Functionality
+These images package the poller, normalization logic, and transport producers so teams can subscribe to standardized air-quality CloudEvents without writing their own ingestion pipeline.
 
-At startup the container emits:
+## What ships in the box
 
-- `uk.gov.defra.aurn.Station` reference events for all monitoring stations
-- `uk.gov.defra.aurn.Timeseries` reference events for all station × pollutant
-  combinations
-
-It then enters a polling loop and emits `uk.gov.defra.aurn.Observation` for new
-values returned by the `getData` endpoint on each timeseries. Fresh containers
-use a six-hour bootstrap lookback so the first run can still emit telemetry when
-the public feed is a few hours behind, and later cycles return to the normal
-two-hour polling window.
-
-## Pulling the image
-
-```powershell
-docker pull ghcr.io/clemensv/real-time-sources-defra-aurn:latest
-```
-
-## Running with Azure Event Hubs or Fabric Event Streams
-
-```powershell
-docker run --rm `
-  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=defra-aurn" `
-  ghcr.io/clemensv/real-time-sources-defra-aurn:latest
-```
-
-## Running with Kafka
-
-```powershell
-docker run --rm `
-  -e CONNECTION_STRING="BootstrapServer=host.docker.internal:9092;EntityPath=defra-aurn" `
-  -e KAFKA_ENABLE_TLS=false `
-  ghcr.io/clemensv/real-time-sources-defra-aurn:latest
-```
-
-## Preserving de-duplication state
-
-Mount a volume and point `STATE_FILE` at it:
-
-```powershell
-docker run --rm `
-  -v ${PWD}\state:C:\state `
-  -e CONNECTION_STRING="BootstrapServer=host.docker.internal:9092;EntityPath=defra-aurn" `
-  -e KAFKA_ENABLE_TLS=false `
-  -e STATE_FILE="C:\state\defra_aurn_state.json" `
-  ghcr.io/clemensv/real-time-sources-defra-aurn:latest
-```
-
-## Polling interval
-
-The default polling interval is 3600 seconds, matching the upstream hourly
-update pattern. You can reduce or increase it:
-
-```powershell
-docker run --rm `
-  -e CONNECTION_STRING="BootstrapServer=host.docker.internal:9092;EntityPath=defra-aurn" `
-  -e KAFKA_ENABLE_TLS=false `
-  -e POLLING_INTERVAL=1800 `
-  ghcr.io/clemensv/real-time-sources-defra-aurn:latest
-```
-
-## Environment variables
-
-| Variable | Required | Description |
+| Image | Transport | Default behavior |
 |---|---|---|
-| `CONNECTION_STRING` | No | Event Hubs connection string or `BootstrapServer=...;EntityPath=...` |
-| `KAFKA_BOOTSTRAP_SERVERS` | No | Kafka bootstrap servers if not using `CONNECTION_STRING` |
-| `KAFKA_TOPIC` | No | Kafka topic, default `defra-aurn` |
-| `SASL_USERNAME` | No | SASL username |
-| `SASL_PASSWORD` | No | SASL password |
-| `POLLING_INTERVAL` | No | Polling interval in seconds, default `3600` |
-| `STATE_FILE` | No | Path to the state file, default `~/.defra_aurn_state.json` |
-| `KAFKA_ENABLE_TLS` | No | Use TLS for Kafka connectivity, default `true` |
+| `ghcr.io/clemensv/real-time-sources-defra-aurn` | Kafka | Poll upstream and publish CloudEvents to one Kafka topic with xRegistry keying |
+| `ghcr.io/clemensv/real-time-sources-defra-aurn-mqtt` | MQTT 5.0 | Poll upstream and publish CloudEvents to MQTT topic hierarchy |
+| `ghcr.io/clemensv/real-time-sources-defra-aurn-amqp` | AMQP 1.0 | Poll upstream and publish CloudEvents to a configured AMQP address |
 
-## Data contract
+Event families in this source:
 
-The event contract is defined in [EVENTS.md](EVENTS.md). Keys and CloudEvents
-subjects are stable identifiers:
+- **`uk.gov.defra.aurn.Stations`**: Station
+- **`uk.gov.defra.aurn.Timeseries`**: Timeseries, Observation
+- **`uk.gov.defra.aurn.Stations.mqtt`**: Station
+- **`uk.gov.defra.aurn.Stations.amqp`**: Station
+- **`uk.gov.defra.aurn.Timeseries.mqtt`**: Timeseries, Observation
+- **`uk.gov.defra.aurn.Timeseries.amqp`**: Timeseries, Observation
 
-- Station events use `{station_id}`
-- Timeseries and observation events use `{timeseries_id}`
+## Image contract
+
+| Aspect | Value |
+|---|---|
+| Base image | `python:3.10-slim` |
+| Kafka entrypoint | `python -m defra_aurn` |
+| MQTT entrypoint | `python -m defra_aurn_mqtt` |
+| AMQP entrypoint | `python -m defra_aurn_amqp` |
+| Exposed ports | none (outbound publisher only) |
+| Signals | terminates on `SIGTERM` with producer flush on shutdown |
+| Persistent state | `STATE_FILE` (mount host storage at `/state`) |
+| Tags | `latest`, version tags, and immutable SHA tags in GHCR |
+
+## Installing the images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-defra-aurn:latest
+docker pull ghcr.io/clemensv/real-time-sources-defra-aurn-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-defra-aurn-amqp:latest
+```
+
+## Using the Kafka image
+
+### Kafka with SASL/PLAIN
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/defra-aurn.json   -e KAFKA_BOOTSTRAP_SERVERS="<host:port>"   -e KAFKA_TOPIC="defra-aurn"   -e SASL_USERNAME="<username>"   -e SASL_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-defra-aurn:latest
+```
+
+### Kafka with Azure Event Hubs / Fabric Event Streams
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/defra-aurn.json   -e CONNECTION_STRING="<connection-string>"   ghcr.io/clemensv/real-time-sources-defra-aurn:latest
+```
+
+## Using the MQTT image
+
+### MQTT with username/password
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/defra-aurn.json   -e MQTT_BROKER_URL="mqtts://<broker-host>:8883"   -e MQTT_USERNAME="<username>"   -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-defra-aurn-mqtt:latest
+```
+
+### MQTT with Azure Event Grid + Microsoft Entra ID
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/defra-aurn.json   -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883"   -e MQTT_AUTH_MODE=entra   -e MQTT_ENTRA_CLIENT_ID="<managed-identity-client-id>"   -e MQTT_CLIENT_ID="<unique-client-id>"   ghcr.io/clemensv/real-time-sources-defra-aurn-mqtt:latest
+```
+
+## Using the AMQP image
+
+### AMQP generic broker (SASL PLAIN)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/defra-aurn.json   -e AMQP_BROKER_URL="amqp://<user>:<password>@<host>:5672/defra-aurn"   ghcr.io/clemensv/real-time-sources-defra-aurn-amqp:latest
+```
+
+### AMQP with Azure Service Bus / Event Hubs (Entra-CBS)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/defra-aurn.json   -e AMQP_HOST="<namespace>.servicebus.windows.net"   -e AMQP_PORT=5671 -e AMQP_TLS=true   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_CLIENT_ID="<managed-identity-client-id>"   ghcr.io/clemensv/real-time-sources-defra-aurn-amqp:latest
+```
+
+### AMQP with Service Bus emulator / SAS-CBS
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/defra-aurn.json   -e AMQP_HOST="servicebus-emulator"   -e AMQP_PORT=5672   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey"   -e AMQP_SAS_KEY="<sas-key>"   ghcr.io/clemensv/real-time-sources-defra-aurn-amqp:latest
+```
+
+## Environment variable matrix
+
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to persistent poller resume/dedupe state file. |
+| `POLLING_INTERVAL` | Polling interval in seconds (source default applies when not set). |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric custom endpoint connection string shortcut. |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers when not using `CONNECTION_STRING`. |
+| `KAFKA_TOPIC` | Output topic name. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` to disable TLS for local brokers. |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Username/password credentials for `password` mode. |
+| `MQTT_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
+| `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Full AMQP connection URL shortcut. |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Host/port/TLS settings when not using URL shortcut. |
+| `AMQP_ADDRESS` | Destination queue/topic/address. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | Credentials for `password` mode. |
+| `AMQP_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | Required when `AMQP_AUTH_MODE=sas`. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### AMQP — deploy the AMQP image against an existing AMQP 1.0 endpoint you configure.
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-amqp.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — bring your own MQTT 5.0 broker and deploy the MQTT image.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision an Azure Event Grid namespace MQTT broker plus required identity wiring.
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Azure Event Hubs namespace + event hub and wire the feeder automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace with managed identity + sender role assignment.
 
-## MQTT 5.0 / Unified Namespace feeder
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-with-servicebus.json)
 
-Image: `real-time-sources-defra-aurn-mqtt`. Publishes binary-mode CloudEvents to `air-quality/gb/defra/defra-aurn/...`.
+### Kafka — bring your own Event Hubs / Fabric Event Stream connection string.
 
-| Variable | Purpose |
-|---|---|
-| `MQTT_BROKER_URL` | Broker URL, for example `mqtt://host:1883`. |
-| `MQTT_HOST`, `MQTT_PORT`, `MQTT_TLS` | Host/port/TLS alternatives to `MQTT_BROKER_URL`. |
-| `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional username/password authentication. |
-| `MQTT_CONTENT_MODE` | CloudEvents content mode; default `binary`. |
-| `ONCE_MODE` | Exit after one publish cycle for jobs/tests. |
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template.json)
 
-[![Deploy MQTT BYO](https://img.shields.io/badge/Azure-Container%20(BYO%20MQTT)-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-mqtt.json)
-[![Deploy MQTT Event Grid](https://img.shields.io/badge/Azure-Container%20%2B%20Event%20Grid%20MQTT-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-with-eventgrid-mqtt.json)
+## Related
 
-## AMQP 1.0 feeder
-
-Image: `real-time-sources-defra-aurn-amqp`. Publishes binary-mode CloudEvents to a configurable AMQP 1.0 address.
-
-| Variable | Purpose |
-|---|---|
-| `AMQP_BROKER_URL` | Broker URL, for example `amqp://user:pass@host:5672/defra-aurn`. |
-| `AMQP_HOST`, `AMQP_PORT`, `AMQP_TLS` | Host/port/TLS alternatives to `AMQP_BROKER_URL`. |
-| `AMQP_ADDRESS` | Queue/topic/address; default `defra-aurn`. |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
-| `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials. |
-| `AMQP_ENTRA_CLIENT_ID`, `AMQP_ENTRA_AUDIENCE` | Entra CBS authentication settings. |
-| `AMQP_SAS_KEY_NAME`, `AMQP_SAS_KEY` | SAS CBS authentication settings. |
-| `AMQP_CONTENT_MODE` | CloudEvents content mode; default `binary`. |
-| `ONCE_MODE` | Exit after one publish cycle for jobs/tests. |
-
-[![Deploy AMQP BYO](https://img.shields.io/badge/Azure-Container%20(BYO%20AMQP)-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-amqp.json)
-[![Deploy AMQP Service Bus](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-with-servicebus.json)
+- [README.md](README.md) — source overview, deployment options, and quick starts.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
+- [`xreg/defra_aurn.xreg.json`](xreg/defra_aurn.xreg.json) — authoritative event contract manifest.

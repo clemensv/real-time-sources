@@ -1,137 +1,215 @@
-# Paris Bicycle Counters Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Paris Bicycle Counters container images
 
-This container image provides a bridge between the Paris Open Data bicycle counting stations and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge fetches hourly bicycle counts from 141 permanent stations across Paris and forwards them to the configured Kafka endpoints.
+This document covers the published OCI container images for the Paris Bicycle Counters feeder, their environment-variable contract, authentication modes, and one-click Azure deployments.
 
-## Paris Open Data API
+Companion docs:
 
-The City of Paris provides publicly available bicycle counting data through the Opendatasoft API v2.1. Approximately 141 permanent counting stations report hourly bicycle traffic counts. Data is published daily (J-1, previous day's data) under the Licence Ouverte 2.0.
+- [README.md](README.md) — source overview, value framing, and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing details.
 
-## Functionality
+## Why this container
 
-The bridge polls the Paris Open Data bicycle counter API and writes new observations to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md). Previously seen counter_id + date pairs are tracked in a state file to prevent duplicates.
+Urban mobility teams, bike-infrastructure planners, shared-mobility operators, and sustainability analysts use counter data to track cycling demand and network utilization. These containers package polling, event normalization, dedupe, and transport-specific publishing so teams can run production ingestion without custom bridge code.
 
-An MQTT/UNS variant is available via `Dockerfile.mqtt`. It publishes MQTT 5.0 binary-mode CloudEvents under `traffic/fr/paris/paris-bicycle-counters/{counter_id}/{event}`: retained QoS 1 counter `info` records and non-retained QoS 1 hourly `count` events.
+## What ships in the box
 
-## Database Schemas and Handling
+| Image | Transport | Runtime entrypoint |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-paris-bicycle-counters` | Kafka | `python -m paris_bicycle_counters feed` |
+| `ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-mqtt` | MQTT | `python -m paris_bicycle_counters_mqtt feed` |
+| `ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-amqp` | AMQP | `python -m paris_bicycle_counters_amqp feed` |
 
-If you want to build a full data pipeline with all events ingested into a
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
+The image set shares a single xRegistry contract and publishes the same event families listed in [EVENTS.md](EVENTS.md).
 
-## Installing the Container Image
+## Image contract
 
-Pull the container image from the GitHub Container Registry:
+| Aspect | Value |
+|---|---|
+| Base image | Source Dockerfiles (`Dockerfile*`) currently use Python slim bases (Kafka may differ from MQTT/AMQP in some sources). |
+| Entry point | `python -m <source>{,_mqtt,_amqp} feed` per image. |
+| Exposed ports | None (outbound publisher only). |
+| Signals | Graceful process termination on `SIGTERM`. |
+| Persistent state | `PARIS_VELO_LAST_POLLED_FILE` (mount `/state` volume for restart-safe dedupe). |
+| Tags | `latest`, plus immutable release/sha tags from GHCR publishing workflows. |
 
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-paris-bicycle-counters:latest
+## Installing the container images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-paris-bicycle-counters:latest
+docker pull ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-amqp:latest
 ```
 
-To use it as a base image in a Dockerfile:
+## Using the Kafka image
 
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-paris-bicycle-counters:latest
+### With a Kafka broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e PARIS_VELO_LAST_POLLED_FILE=/state/paris-bicycle-counters.json \
+  -e KAFKA_BOOTSTRAP_SERVERS=<host:port> \
+  -e KAFKA_TOPIC=paris-bicycle-counters \
+  -e SASL_USERNAME=<username> \
+  -e SASL_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-paris-bicycle-counters:latest
 ```
 
-## Using the Container Image
+### With Azure Event Hubs / Fabric Event Stream connection string
 
-The container starts the bridge, polling the Paris Open Data API and writing bicycle counts to Kafka, Azure Event Hubs, or Fabric Event Streams.
-
-### With a Kafka Broker
-
-Ensure you have a Kafka broker configured with TLS and SASL PLAIN authentication. Run the container:
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-paris-bicycle-counters:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e PARIS_VELO_LAST_POLLED_FILE=/state/paris-bicycle-counters.json \
+  -e CONNECTION_STRING='<connection-string>' \
+  ghcr.io/clemensv/real-time-sources-paris-bicycle-counters:latest
 ```
 
-### With Azure Event Hubs or Fabric Event Streams
+## Using the MQTT image
 
-Use the connection string to establish a connection to the service. Obtain the connection string from the Azure portal, Azure CLI, or the "custom endpoint" of a Fabric Event Stream.
+### Generic MQTT 5 broker (username/password)
 
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-paris-bicycle-counters:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e PARIS_VELO_LAST_POLLED_FILE=/state/paris-bicycle-counters.json \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-mqtt:latest
 ```
 
-### With an MQTT Broker
+### Azure Event Grid namespace MQTT broker (Entra OAUTH2-JWT)
 
-Build or pull the MQTT image and provide an MQTT broker URL:
-
-```shell
-$ docker build -f Dockerfile.mqtt -t paris-bicycle-counters-mqtt .
-$ docker run --rm \
-    -e MQTT_BROKER_URL='mqtt://broker:1883' \
-    -e ONCE_MODE='true' \
-    paris-bicycle-counters-mqtt
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e PARIS_VELO_LAST_POLLED_FILE=/state/paris-bicycle-counters.json \
+  -e MQTT_BROKER_URL='mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883' \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+  -e MQTT_CLIENT_ID='<unique-client-id>' \
+  ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-mqtt:latest
 ```
 
-Optional MQTT environment variables are `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_CLIENT_ID`, `MQTT_CONTENT_MODE` (`binary` or `structured`), and `PARIS_BICYCLE_COUNTERS_MQTT_STATE_FILE`.
+## Using the AMQP image
 
-### Preserving State Between Restarts
+### Generic AMQP 1.0 broker (SASL PLAIN)
 
-To preserve the last seen state between restarts and avoid reprocessing observations, mount a volume and set the `PARIS_VELO_LAST_POLLED_FILE` environment variable:
-
-```shell
-$ docker run --rm \
-    -v /path/to/state:/mnt/fileshare \
-    -e PARIS_VELO_LAST_POLLED_FILE='/mnt/fileshare/paris_velo_last_polled.json' \
-    ... other args ... \
-    ghcr.io/clemensv/real-time-sources-paris-bicycle-counters:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e PARIS_VELO_LAST_POLLED_FILE=/state/paris-bicycle-counters.json \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/paris-bicycle-counters' \
+  ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-amqp:latest
 ```
 
-## Environment Variables
+### Azure Service Bus / Event Hubs (Entra CBS)
 
-### `CONNECTION_STRING`
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e PARIS_VELO_LAST_POLLED_FILE=/state/paris-bicycle-counters.json \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='paris-bicycle-counters' \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default' \
+  -e AMQP_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+  ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-amqp:latest
+```
 
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs or Fabric Event Streams. This replaces the need for `KAFKA_BOOTSTRAP_SERVERS`, `SASL_USERNAME`, and `SASL_PASSWORD`.
+### Azure Service Bus emulator / SAS namespaces (SAS CBS)
 
-### `KAFKA_BOOTSTRAP_SERVERS`
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e PARIS_VELO_LAST_POLLED_FILE=/state/paris-bicycle-counters.json \
+  -e AMQP_HOST='servicebus-emulator' \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS='paris-bicycle-counters' \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+  -e AMQP_SAS_KEY='<sas-key>' \
+  ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-amqp:latest
+```
 
-The address of the Kafka broker. Provide a comma-separated list of host and port pairs (e.g., `broker1:9092,broker2:9092`). The client communicates with TLS-enabled Kafka brokers.
+## Environment variables
 
-### `KAFKA_TOPIC`
+### Common
 
-The Kafka topic to send messages to.
+| Variable | Description |
+|---|---|
+| `PARIS_VELO_LAST_POLLED_FILE` | Path to persisted poll/dedupe state file. |
+| `POLLING_INTERVAL` | Polling interval in seconds (where supported by the runtime variant). |
+| `ONCE_MODE` | Run one poll cycle and exit (used by notebook scheduling). |
 
-### `SASL_USERNAME`
+### Kafka image
 
-The username for SASL PLAIN authentication with the Kafka broker.
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric style connection string (overrides bootstrap/SASL fields). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka broker list. |
+| `KAFKA_TOPIC` | Kafka topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka links. |
 
-### `SASL_PASSWORD`
+### MQTT image
 
-The password for SASL PLAIN authentication with the Kafka broker.
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` or `MQTT_HOST`/`MQTT_PORT` | MQTT broker endpoint. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Password auth for generic brokers. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` / `MQTT_ENTRA_AUDIENCE` | Entra token configuration for Event Grid MQTT. |
+| `MQTT_CLIENT_ID` | MQTT client identifier. |
+| `MQTT_CONTENT_MODE` | `binary` or `structured` CloudEvents payload mode. |
 
-### `PARIS_VELO_LAST_POLLED_FILE`
+### AMQP image
 
-The file path for storing last seen state for deduplication. Defaults to `/mnt/fileshare/paris_velo_last_polled.json` inside the container.
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` or `AMQP_HOST`/`AMQP_PORT`/`AMQP_TLS` | AMQP broker endpoint. |
+| `AMQP_ADDRESS` | Queue/topic/address target. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials (`password` mode). |
+| `AMQP_ENTRA_CLIENT_ID` / `AMQP_ENTRA_AUDIENCE` | Entra CBS token configuration. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS token material for emulator/SAS namespaces. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### MQTT — bring your own broker
 
-### Option 1: Bring your own Event Hub
+Deploy MQTT against an existing MQTT 5.0 broker endpoint.
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fparis-bicycle-counters%2Fazure-template-mqtt.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fparis-bicycle-counters%2Fazure-template.json)
+### MQTT — provision a new Event Grid MQTT broker
 
-### Option 2: Deploy with a new Event Hub
+Deploy MQTT plus an Event Grid namespace broker and managed-identity role assignment.
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fparis-bicycle-counters%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
+
+Deploy Kafka plus a new Event Hubs namespace and event hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fparis-bicycle-counters%2Fazure-template-with-eventhub.json)
 
-## AMQP 1.0 companion
+### AMQP — provision a new Azure Service Bus namespace
 
-This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.
+Deploy AMQP plus Service Bus and managed-identity sender permissions.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fparis-bicycle-counters%2Fazure-template-with-servicebus.json)
+
+### Kafka — bring your own Event Hub / Kafka
+
+Deploy the Kafka container with your own Event Hubs/Fabric/Event Stream connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fparis-bicycle-counters%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md) — project overview and hosting options.
+- [EVENTS.md](EVENTS.md) — event contract and schema details.
+- [`xreg/paris_bicycle_counters.xreg.json`](xreg/paris_bicycle_counters.xreg.json) — authoritative contract source.

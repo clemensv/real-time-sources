@@ -1,126 +1,189 @@
-# Ireland OPW waterlevel.ie Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Ireland OPW Water Level container images
 
-This container image provides a bridge between the Ireland OPW waterlevel.ie
-GeoJSON API and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The
-bridge reads real-time water level, temperature, and voltage data from Irish
-hydrometric stations and writes it to a Kafka topic.
+This document covers the published OCI container images for the Ireland OPW Water Level feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
-## Ireland OPW waterlevel.ie API
+## Why this container
 
-The Office of Public Works (OPW) in Ireland operates a network of hydrometric
-stations across rivers, lakes, and canals. The waterlevel.ie service provides
-real-time GeoJSON data at `https://waterlevel.ie/geojson/latest/` updated every
-15 minutes. Data is published under CC BY 4.0.
+The Ireland OPW Water Level source is exposed as a polling API upstream. These container images package polling cadence control, stateful dedupe, CloudEvents production, and transport/auth wiring so operators can deploy a ready-to-run feeder instead of building source-specific integration code.
 
-## Functionality
+## What ships in the box
 
-The bridge polls the waterlevel.ie GeoJSON endpoint and writes data to a Kafka
-topic as structured JSON [CloudEvents](https://cloudevents.io/) documented in
-[EVENTS.md](EVENTS.md). Station reference data is emitted at startup and
-refreshed every 6 hours. Sensor readings are deduplicated by station, sensor,
-and timestamp.
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel` | Apache Kafka 2.x | JSON CloudEvents on one topic; key template `{station_ref}` |
+| `ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel-mqtt` | MQTT 5.0 | Unified-Namespace topic template `(see EVENTS.md)` |
+| `ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel-amqp` | AMQP 1.0 | Binary CloudEvents to AMQP node `ireland-opw-waterlevel` |
 
-## Database Schemas and Handling
+Event families in this source:
 
-If you want to build a full data pipeline with all events ingested into a
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
+- **ie.gov.opw.waterlevel** — `Station`, `WaterLevelReading`.
 
-## Installing the Container Image
+## Image contract
 
-Pull the container image from the GitHub Container Registry:
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.10-slim` (source Dockerfiles) |
+| Default entry point | Kafka `["python", "-m", "ireland_opw_waterlevel", "feed"]`; MQTT `["python", "-m", "ireland_opw_waterlevel_mqtt", "feed"]`; AMQP `["python", "-m", "ireland_opw_waterlevel_amqp", "feed"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | process exits cleanly on `SIGTERM` |
+| Persistent state | `STATE_FILE`; mount a host volume for restart-safe dedupe/checkpoint behavior |
+| Image tags | `:latest` and immutable release/sha tags published from repository CI |
 
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel:latest
+## Installing the container images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel:latest
+docker pull ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel-amqp:latest
 ```
 
-To use it as a base image in a Dockerfile:
+## Using the Kafka image
 
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel:latest
+### With a Kafka broker (SASL/PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ireland-opw-waterlevel.json \
+  -e KAFKA_BOOTSTRAP_SERVERS="<host:port>" \
+  -e KAFKA_TOPIC="<topic>" \
+  -e SASL_USERNAME="<username>" \
+  -e SASL_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel:latest
 ```
 
-## Using the Container Image
+### With Azure Event Hubs / Fabric Event Streams
 
-The container starts the bridge, reading data from the OPW waterlevel.ie API and
-writing it to a Kafka topic, Azure Event Hubs, or Fabric Event Streams.
-
-### With a Kafka Broker
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ireland-opw-waterlevel.json \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel:latest
 ```
 
-### With Azure Event Hubs or Fabric Event Streams
+## Using the MQTT image
 
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel:latest
+### With a generic MQTT 5 broker (username/password)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ireland-opw-waterlevel.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel-mqtt:latest
 ```
 
-## Environment Variables
+### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
 
-### `CONNECTION_STRING`
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ireland-opw-waterlevel.json \
+  -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883" \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
+  -e MQTT_CLIENT_ID="<unique-client-id>" \
+  ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel-mqtt:latest
+```
 
-An Azure Event Hubs-style connection string used to establish a connection to
-Azure Event Hubs or Fabric Event Streams. This replaces the need for
-`KAFKA_BOOTSTRAP_SERVERS`, `SASL_USERNAME`, and `SASL_PASSWORD`.
+## Using the AMQP image
 
-### `KAFKA_BOOTSTRAP_SERVERS`
+### With AMQP 1.0 and Microsoft Entra ID (CBS put-token)
 
-The address of the Kafka broker. Provide a comma-separated list of host and port
-pairs (e.g., `broker1:9092,broker2:9092`).
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ireland-opw-waterlevel.json \
+  -e AMQP_HOST="<namespace>.servicebus.windows.net" \
+  -e AMQP_PORT=5671 \
+  -e AMQP_TLS=true \
+  -e AMQP_ADDRESS="ireland-opw-waterlevel" \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE="https://servicebus.azure.net/.default" \
+  -e AMQP_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
+  ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel-amqp:latest
+```
 
-### `KAFKA_TOPIC`
+### With AMQP 1.0 and SAS-token CBS
 
-The Kafka topic where messages will be produced.
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ireland-opw-waterlevel.json \
+  -e AMQP_HOST="servicebus-emulator" \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS="ireland-opw-waterlevel" \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey" \
+  -e AMQP_SAS_KEY="<sas-key>" \
+  ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel-amqp:latest
+```
 
-### `SASL_USERNAME`
+## Environment variables
 
-Username for SASL PLAIN authentication.
+### Kafka image
 
-### `SASL_PASSWORD`
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `CONNECTION_STRING` | Event Hubs/Fabric-style connection string (optional alternative to explicit Kafka variables). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list. |
+| `KAFKA_TOPIC` | Kafka destination topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials for Kafka. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
-Password for SASL PLAIN authentication.
+### MQTT image
 
-### `POLLING_INTERVAL`
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for `MQTT_AUTH_MODE=password`. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID. |
+| `MQTT_CLIENT_ID` | MQTT client ID (must be unique per broker). |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
-Polling interval in seconds (default: 300).
+### AMQP image
 
-### `STATE_FILE`
-
-Path to the JSON state file for deduplication (default: `~/.ireland_opw_waterlevel_state.json`).
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `AMQP_BROKER_URL` | Full AMQP URL form (`amqp://` or `amqps://`). |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component endpoint settings when URL form is not used. |
+| `AMQP_ADDRESS` | AMQP node/address name. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra-ID CBS settings. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token CBS settings. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### MQTT — bring your own broker
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fireland-opw-waterlevel%2Fazure-template-mqtt.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fireland-opw-waterlevel%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fireland-opw-waterlevel%2Fazure-template-with-eventgrid-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fireland-opw-waterlevel%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace
 
-## MQTT / AMQP transport variants
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fireland-opw-waterlevel%2Fazure-template-with-servicebus.json)
 
-* MQTT image: `docker pull ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel-mqtt:latest`; configure `MQTT_BROKER_URL`, optional `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_TLS`, `MQTT_CLIENT_ID`, and `ONCE_MODE`.
-* AMQP image: `docker pull ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel-amqp:latest`; configure `AMQP_HOST`/`AMQP_BROKER_URL`, `AMQP_ADDRESS`, `AMQP_AUTH_MODE` (`password`, `entra`, or `sas`), credentials, `AMQP_TLS`, and `ONCE_MODE`.
-* Azure templates: MQTT BYO broker (`azure-template-mqtt.json`), MQTT with Event Grid (`azure-template-with-eventgrid-mqtt.json`), and AMQP with Service Bus (`azure-template-with-servicebus.json`).
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fireland-opw-waterlevel%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md) — project overview and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
+- [`xreg/ireland_opw_waterlevel.xreg.json`](xreg/ireland_opw_waterlevel.xreg.json) — source contract used to generate producer bindings.

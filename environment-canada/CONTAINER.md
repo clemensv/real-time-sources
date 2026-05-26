@@ -1,93 +1,161 @@
-# Environment Canada Weather Bridge — Container Deployment
+# Environment Canada container images
 
-## Upstream Source
+This document covers the published OCI container images for the Environment Canada feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
+## Why this container
 
-The [Environment and Climate Change Canada (ECCC) GeoMet API](https://api.weather.gc.ca/)
-provides free access to SWOB (Surface Weather Observation) data from ~963
-stations across Canada via OGC API - Features. Data is published under the
-Open Government Licence - Canada and refreshed hourly. The bridge fetches
-station metadata from `swob-stations` and observations from `swob-realtime`,
-extracts core weather parameters, and emits CloudEvents into Kafka.
+These images package the poller, contract-generated producers, and transport adapters so you can run Environment Canada ingestion as a containerized workload without writing custom bridge code.
 
-## Docker Pull
+## What ships in the box
 
-```bash
-docker pull ghcr.io/clemensv/real-time-sources/environment-canada:latest
-```
-
-## Environment Variables
-
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `CONNECTION_STRING` | Yes | — | Kafka or Event Hubs connection string |
-| `KAFKA_TOPIC` | No | `environment-canada` | Target Kafka topic |
-| `POLLING_INTERVAL` | No | `900` | Seconds between polling cycles |
-| `STATE_FILE` | No | `~/.environment_canada_state.json` | Deduplication state file path |
-| `STATION_LIMIT` | No | `500` | Page size for station queries |
-| `OBS_LIMIT` | No | `500` | Page size for observation queries |
-| `KAFKA_ENABLE_TLS` | No | `true` | Set to `false` to disable TLS |
-
-## Docker Run (Plain Kafka)
-
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=environment-canada" \
-  -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources/environment-canada:latest
-```
-
-## Docker Run (Azure Event Hubs)
-
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<name>;SharedAccessKey=<key>;EntityPath=environment-canada" \
-  ghcr.io/clemensv/real-time-sources/environment-canada:latest
-```
-
-## Kafka Topics and Keys
-
-| Topic | Key | Event Types |
+| Image | Transport | Default behavior |
 |---|---|---|
-| `environment-canada` | `{msc_id}` | `CA.Gov.ECCC.Weather.Station`, `CA.Gov.ECCC.Weather.WeatherObservation` |
+| `ghcr.io/clemensv/real-time-sources-environment-canada` | Apache Kafka 2.x | JSON CloudEvents (binary mode), key = `{msc_id}` |
+| `ghcr.io/clemensv/real-time-sources-environment-canada-mqtt` | MQTT 5.0 | Topic template `(see xreg endpoint options)`, QoS 1, CloudEvent attrs as MQTT properties |
+| `ghcr.io/clemensv/real-time-sources-environment-canada-amqp` | AMQP 1.0 | AMQP node `environment-canada`, binary CloudEvents, password/Entra/SAS auth |
 
-## Azure Container Instance
+Event families emitted by these images:
+
+- **`Station`**
+- **`WeatherObservation`**
+
+## Image contract
+
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.12-slim` (multi-arch `linux/amd64`, `linux/arm64`) |
+| Default entry point | Kafka `["python", "-m", "environment_canada", "feed"]`; MQTT `["python", "-m", "environment_canada_mqtt", "feed"]`; AMQP `["python", "-m", "environment_canada_amqp", "feed"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | graceful shutdown on `SIGTERM` |
+| Persistent state | `STATE_FILE` (mount `/state` to persist dedupe/resume) |
+| Image tags | `:latest`, `:v<semver>`, and `:sha-<git-sha>` |
+
+## Installing the container images
 
 ```bash
-az container create \
-  --resource-group <rg> \
-  --name environment-canada \
-  --image ghcr.io/clemensv/real-time-sources/environment-canada:latest \
-  --environment-variables \
-    CONNECTION_STRING="<connection-string>" \
-  --restart-policy Always
+docker pull ghcr.io/clemensv/real-time-sources-environment-canada:latest
+docker pull ghcr.io/clemensv/real-time-sources-environment-canada-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-environment-canada-amqp:latest
 ```
+
+## Using the Kafka image
+
+### With a Kafka broker
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/environment-canada.json   -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>'   -e KAFKA_TOPIC='<kafka-topic>'   -e SASL_USERNAME='<sasl-username>'   -e SASL_PASSWORD='<sasl-password>'   ghcr.io/clemensv/real-time-sources-environment-canada:latest
+```
+
+### With Azure Event Hubs or Fabric Event Streams
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/environment-canada.json   -e CONNECTION_STRING='<connection-string>'   ghcr.io/clemensv/real-time-sources-environment-canada:latest
+```
+
+## Using the MQTT image
+
+### With a generic MQTT 5 broker (username/password)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/environment-canada.json   -e MQTT_BROKER_URL='mqtts://<broker-host>:8883'   -e MQTT_USERNAME='<username>'   -e MQTT_PASSWORD='<password>'   ghcr.io/clemensv/real-time-sources-environment-canada-mqtt:latest
+```
+
+### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/environment-canada.json   -e MQTT_BROKER_URL='mqtts://<ns>.<region>-1.ts.eventgrid.azure.net:8883'   -e MQTT_AUTH_MODE=entra   -e MQTT_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>'   -e MQTT_CLIENT_ID='<unique-client-id>'   ghcr.io/clemensv/real-time-sources-environment-canada-mqtt:latest
+```
+
+## Using the AMQP image
+
+### Generic AMQP 1.0 brokers (SASL PLAIN)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/environment-canada.json   -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/environment-canada'   ghcr.io/clemensv/real-time-sources-environment-canada-amqp:latest
+```
+
+### Azure Service Bus / Event Hubs (Microsoft Entra ID via CBS)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/environment-canada.json   -e AMQP_HOST='<namespace>.servicebus.windows.net'   -e AMQP_PORT=5671 -e AMQP_TLS=true   -e AMQP_ADDRESS='environment-canada'   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default'   -e AMQP_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>'   ghcr.io/clemensv/real-time-sources-environment-canada-amqp:latest
+```
+
+### Azure Service Bus emulator / SAS-only namespaces (SAS-token CBS)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/environment-canada.json   -e AMQP_HOST='servicebus-emulator'   -e AMQP_PORT=5672   -e AMQP_ADDRESS='environment-canada'   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey'   -e AMQP_SAS_KEY='<sas-key>'   ghcr.io/clemensv/real-time-sources-environment-canada-amqp:latest
+```
+
+## Environment variables
+
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to the dedupe/resume state file. Mount `/state` so it survives restarts. |
+| `POLLING_INTERVAL` | Seconds between polling cycles. |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric Event Stream connection string (overrides bootstrap settings). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka broker list when not using `CONNECTION_STRING`. |
+| `KAFKA_TOPIC` | Target topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | `false` disables TLS (default `true`). |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (e.g. `mqtts://host:8883`). |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for password mode. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed identity client id. |
+| `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured`. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Full broker URL (`amqp://` / `amqps://`). |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Host-style configuration when not using URL. |
+| `AMQP_ADDRESS` | Target AMQP node (queue/topic/address). |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `password` mode. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra ID token settings for `entra` mode. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token inputs for `sas` mode. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured`. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### AMQP — bring your own AMQP broker
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenvironment-canada%2Fazure-template-amqp.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — bring your own broker
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenvironment-canada%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenvironment-canada%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenvironment-canada%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenvironment-canada%2Fazure-template-with-eventhub.json)
 
-## MQTT and AMQP companion transports
+### AMQP — provision a new Azure Service Bus namespace
 
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`environment-canada`). Docker E2E mock mode is available through `ENVIRONMENT_CANADA_MOCK=true`.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenvironment-canada%2Fazure-template-with-servicebus.json)
 
-- MQTT image: `ghcr.io/clemensv/real-time-sources/environment-canada-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/environment-canada-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenvironment-canada%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md) — project overview, use cases, and quick-start paths.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing metadata.
+- [`xreg/environment_canada.xreg.json`](xreg/environment_canada.xreg.json) — source contract used for generated producers and EVENTS.md.

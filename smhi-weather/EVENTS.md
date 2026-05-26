@@ -1,11 +1,11 @@
-# SMHI Weather Observation Bridge Events
+# SMHI Weather feeder Events
 
 SMHI Weather publishes weather observations from the Swedish Meteorological and Hydrological Institute (SMHI) for Swedish weather stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 2 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{station_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `weather/se/smhi/smhi-weather/+/+/info`, `weather/se/smhi/smhi-weather/+/+/observation`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('weather/se/smhi/smhi-weather/+/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `smhi-weather`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/smhi-weather')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,6 +77,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `smhi-weather`, key `{station_id}` |
+| `MQTT/5.0` | topic `weather/se/smhi/smhi-weather/{lan}/{station_id}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/smhi-weather`, message subject `{station_id}`; application properties lan `{lan}` |
 
 #### Payload
 
@@ -62,6 +92,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`height`** (double, optional, m): Sensor height above ground in meters.
 - **`latitude`** (double, required, degree (°)): Geographic latitude of the station in decimal degrees.
 - **`longitude`** (double, required, degree (°)): Geographic longitude of the station in decimal degrees.
+- **`lan`** (string, optional): Normalized routing field 'lan' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -75,7 +106,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "measuring_stations": "string",
   "height": 0,
   "latitude": 0,
-  "longitude": 0
+  "longitude": 0,
+  "lan": "string"
 }
 ```
 
@@ -100,6 +132,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `smhi-weather`, key `{station_id}` |
+| `MQTT/5.0` | topic `weather/se/smhi/smhi-weather/{lan}/{station_id}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/smhi-weather`, message subject `{station_id}`; application properties lan `{lan}` |
 
 #### Payload
 
@@ -124,6 +158,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`global_irradiance`** (double or null, optional, W/m2 (W/m²)): Global solar irradiance (direct + diffuse), average over the hour, measured by pyranometer (SMHI parameter 11).
 - **`precipitation_intensity`** (double or null, optional, mm/h): Instantaneous precipitation intensity measured by optical or weighing gauge (SMHI parameter 38).
 - **`quality`** (string, optional): Quality flag for the observation as assigned by SMHI: 'G' for approved, 'Y' for suspect.
+- **`lan`** (string, optional): Normalized routing field 'lan' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -148,7 +183,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "sunshine_duration": 0,
   "global_irradiance": 0,
   "precipitation_intensity": 0,
-  "quality": "string"
+  "quality": "string",
+  "lan": "string"
 }
 ```
 
@@ -174,20 +210,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/smhi_weather.xreg.json`](xreg/smhi_weather.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- SMHI Open Data Meteorological Observations API: <https://opendata.smhi.se/apidocs/metobs/>
-
-## MQTT and AMQP companion transports
-
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`smhi-weather`). Docker E2E mock mode is available through `SMHI_WEATHER_MOCK=true`.
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources/smhi-weather-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/smhi-weather-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

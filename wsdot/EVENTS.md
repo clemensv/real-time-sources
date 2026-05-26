@@ -1,4 +1,4 @@
-# WSDOT Traveler Information Events
+# WSDOT Traveler Information feeder Events
 
 WSDOT publishes traffic, travel, bridge, toll, pass, ferry, and border-wait updates from Washington State Department of Transportation for Washington road, bridge, pass, ferry, and border resources. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -8,7 +8,7 @@ WSDOT publishes traffic, travel, bridge, toll, pass, ferry, and border-wait upda
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 2 reference/catalog event types and 8 telemetry event types.
 - **Identity:** `{flow_data_id}`, `{travel_time_id}`, `{mountain_pass_id}`, `{station_id}`, `{trip_name}`, `{state_route_id}/{bridge_number}`, `{crossing_name}`, `{vessel_id}` identifies the resource each event is about.
-- **Operations:** Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -729,10 +729,11 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/wsdot.xreg.json`](xreg/wsdot.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Washington State DOT traveler and ferry APIs: <https://www.wsdot.wa.gov/traffic/api/>

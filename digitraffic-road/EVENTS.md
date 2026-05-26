@@ -1,4 +1,4 @@
-# Digitraffic Road — Finnish Road Traffic Data Events
+# Digitraffic Road feeder Events
 
 Digitraffic Road publishes road traffic measurements and status updates from Fintraffic Digitraffic for Finnish road network sensors and traffic messages. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -8,7 +8,6 @@ Digitraffic Road publishes road traffic measurements and status updates from Fin
 - **Transports:** KAFKA
 - **Reference vs telemetry:** 2 reference/catalog event types and 8 telemetry event types.
 - **Identity:** `{station_id}/{sensor_id}`, `{situation_id}`, `{domain}`, `{station_id}`, `{task_id}` identifies the resource each event is about.
-- **Operations:** Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -729,7 +728,7 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
 
 ## References
 

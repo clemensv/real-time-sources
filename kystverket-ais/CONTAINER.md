@@ -1,228 +1,173 @@
-# Kystverket AIS Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Kystverket AIS container images
 
-This container image provides a bridge between the Norwegian Coastal Administration's (Kystverket) real-time AIS vessel tracking stream and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge connects to a raw TCP socket broadcasting AIS NMEA sentences and forwards decoded vessel position reports, static data, and navigational aid information to the configured Kafka endpoint.
+This document covers the published OCI images for the Kystverket AIS feeder and their runtime contract. See [README.md](README.md) for source overview and [EVENTS.md](EVENTS.md) for the CloudEvents schema/routing contract.
 
-## Kystverket AIS Data
+## Why this container
 
-Kystverket provides open, real-time AIS data from 50+ terrestrial and offshore stations covering the Norwegian economic zone, Svalbard, and Jan Mayen. The stream delivers ~34 messages/second (~2.9 million/day) of decoded vessel tracking data.
+These images package the upstream connector, CloudEvents normalization, and transport-specific publisher wiring into ready-to-run artifacts for Kafka, MQTT/UNS, AMQP deployments.
 
-## Functionality
+## What ships in the box
 
-The bridge connects to the Kystverket AIS TCP stream, decodes NMEA AIS sentences (including multi-sentence reassembly), and writes them to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md).
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-kystverket-ais` | Kafka | Topic(s): `ais`, key = `{mmsi}` |
+| `ghcr.io/clemensv/real-time-sources-kystverket-ais-mqtt` | MQTT 5.0 | Topic template `maritime/no/kystverket/kystverket-ais/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation` |
+| `ghcr.io/clemensv/real-time-sources-kystverket-ais-amqp` | AMQP 1.0 | Address `kystverket-ais` |
 
-## Database Schemas and Handling
+Event families (base groups):
 
-If you want to build a full data pipeline with all events ingested into a database, the integration with Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md).
+- `NO.Kystverket.AIS`
 
-## Installing the Container Image
+## Image contract
 
-Pull the container image from the GitHub Container Registry:
+| Aspect | Value |
+|---|---|
+| Base image | `python:3.12-slim` |
+| Default entry point | Kafka: `["python", "-m", "kystverket_ais", "stream"]`; MQTT: `["python", "-m", "kystverket_ais_mqtt", "feed"]`; AMQP: `["python", "-m", "kystverket_ais_amqp", "feed"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | graceful shutdown on `SIGTERM` |
+| State | none required (streaming bridge) |
+| Image tags | `:latest`, `:sha-<git-sha>`, release tags |
 
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-kystverket-ais:latest
-```
-
-## Using the Container Image
-
-### With Azure Event Hubs or Fabric Event Streams
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-kystverket-ais:latest
-```
-
-### With a Kafka Broker
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-kystverket-ais:latest
-```
-
-### Filtering Message Types
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    -e AIS_MESSAGE_TYPES='1,2,3,18,19' \
-    ghcr.io/clemensv/real-time-sources-kystverket-ais:latest
-```
-
-## Environment Variables
-
-### `CONNECTION_STRING`
-
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs or Fabric Event Streams.
-
-### `KAFKA_BOOTSTRAP_SERVERS`
-
-The address of the Kafka broker. Provide a comma-separated list of host and port pairs.
-
-### `KAFKA_TOPIC`
-
-The Kafka topic where messages will be produced.
-
-### `SASL_USERNAME`
-
-Username for SASL PLAIN authentication.
-
-### `SASL_PASSWORD`
-
-Password for SASL PLAIN authentication.
-
-### `AIS_TCP_HOST`
-
-Kystverket AIS TCP stream host. Default: `153.44.253.27`.
-
-### `AIS_TCP_PORT`
-
-Kystverket AIS TCP stream port. Default: `5631`.
-
-### `AIS_MESSAGE_TYPES`
-
-Comma-separated list of AIS message type numbers to forward. Default: `1,2,3,5,18,19,24,21`.
-
-### `AIS_FILTER_MMSI`
-
-Comma-separated list of MMSI numbers to include. Default: all vessels.
-
-### `AIS_FLUSH_INTERVAL`
-
-Number of events to buffer before flushing the Kafka producer. Default: `1000`.
-
-## Deploying into Azure Container Instances
-
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkystverket-ais%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkystverket-ais%2Fazure-template-with-eventhub.json)
-
-
----
-
-## MQTT 5.0 / Unified-Namespace feeder
-
-A second container image, built from `Dockerfile.mqtt`, publishes the
-same Kystverket AIS firehose into an MQTT 5.0 broker using a
-Unified-Namespace topic tree. The Kafka image and the existing Kafka
-contract are **unchanged**; the MQTT sibling is built on a new
-`NO.Kystverket.AIS.mqtt.jstruct` schemagroup (`PositionReport`,
-`ShipStatic`, `AidToNavigation`) specifically enriched with the routing
-axes below. No existing Kafka schemas were modified.
-
-### Topic template
-
-```
-maritime/intl/kystverket/ais/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}
-```
-
-| Axis | Meaning |
-|------|---------|
-| `{flag}` | ISO-3166-1 alpha-2 (lower-case) derived from the MMSI MID; `xx` for special MMSIs or unknown MIDs |
-| `{ship_type}` | Kebab bucket: `cargo`, `tanker`, `passenger`, `fishing`, `tug`, `pleasure-craft`, `high-speed`, `pilot`, `sar`, `aton`, `other`, `unknown` |
-| `{geohash5}` | 5-character geohash of the last known position (`00000` if unknown for a static report) |
-| `{mmsi}` | 9-digit MMSI |
-| `{msg_type}` | Literal tail per family: `position-report`, `static`, `aid-to-navigation` |
-
-The firehose is non-retained: every publish is **QoS 0** with
-`retain=false`. CloudEvents binary binding (attributes as MQTT 5 user
-properties); `ContentType` is `application/json`; `subject` equals the
-MMSI.
-
-### Ship-type & position caches
-
-`ShipStatic` messages populate an in-memory MMSI → ship-type cache;
-subsequent `PositionReport` messages from the same MMSI inherit that
-bucket. Likewise the most recent position is cached so that later static
-reports get a real `geohash5` instead of `00000`. Caches are
-process-local and rebuild from the live TCP stream after every restart.
-
-### MID → ISO mapping
-
-Same curated subset of the public ITU-R M.585 MID registry as the
-`aisstream` MQTT sibling (vintage `2024-01`). Refresh the CSV when ITU
-publishes a new revision and bump `MID_ISO_VERSION` in `enrichment.py`.
-
-### Pull & run
+## Installing the container images
 
 ```bash
-docker pull ghcr.io/clemensv/real-time-sources/kystverket-ais-mqtt:latest
-
-docker run --rm \
-  -e MQTT_BROKER_URL=mqtt://broker:1883 \
-  ghcr.io/clemensv/real-time-sources/kystverket-ais-mqtt:latest
-```
-
-### Environment variables
-
-| Variable | Purpose |
-|----------|---------|
-| `MQTT_BROKER_URL` | `mqtt://host:port` or `mqtts://host:port` |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional broker credentials |
-| `MQTT_ENABLE_TLS` | `true` to force TLS (auto if scheme is `mqtts://`) |
-| `MQTT_CLIENT_ID` | Optional MQTT client id |
-| `KYSTVERKET_AIS_TCP_HOST` / `KYSTVERKET_AIS_TCP_PORT` | Upstream Kystverket TCP NMEA endpoint (defaults match the Kafka bridge) |
-| `KYSTVERKET_AIS_MOCK` | `true` to emit one canned message per family (used by Docker E2E) |
-
-### Wildcard subscription examples
-
-| Goal | Subscribe |
-|------|-----------|
-| Everything from Kystverket | `maritime/intl/kystverket/ais/#` |
-| All Norwegian-flagged vessels | `maritime/intl/kystverket/ais/no/+/+/+/+` |
-| All cargo movements anywhere | `maritime/intl/kystverket/ais/+/cargo/+/+/+` |
-| All position reports in a 5-char cell `u4pru` | `maritime/intl/kystverket/ais/+/+/u4pru/+/position-report` |
-| Aids-to-Navigation only | `maritime/intl/kystverket/ais/+/+/+/+/aid-to-navigation` |
-
-
-## AMQP 1.0 companion feeder
-
-Pull and run the AMQP image:
-
-```bash
+docker pull ghcr.io/clemensv/real-time-sources-kystverket-ais:latest
+docker pull ghcr.io/clemensv/real-time-sources-kystverket-ais-mqtt:latest
 docker pull ghcr.io/clemensv/real-time-sources-kystverket-ais-amqp:latest
+```
+
+## Using the Kafka image
+
+### With Azure Event Hubs / Fabric Event Streams (connection string)
+
+```bash
 docker run --rm \
-  -e AMQP_HOST=broker \
-  -e AMQP_PORT=5672 \
-  -e AMQP_ADDRESS=kystverket-ais \
-  -e AMQP_USERNAME=user \
-  -e AMQP_PASSWORD=secret \
-  -e AMQP_AUTH_MODE=password \
-  -e KYSTVERKET_AIS_MOCK=true \
+  -e CONNECTION_STRING='<connection-string>' \
+  ghcr.io/clemensv/real-time-sources-kystverket-ais:latest
+```
+
+### With Kafka broker parameters (SASL/PLAIN)
+
+```bash
+docker run --rm \
+  -e KAFKA_BOOTSTRAP_SERVERS='<host:port>' \
+  -e KAFKA_TOPIC='ais' \
+  -e SASL_USERNAME='<username>' \
+  -e SASL_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-kystverket-ais:latest
+```
+
+## Using the MQTT image
+
+### With generic MQTT broker (username/password)
+
+```bash
+docker run --rm \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-kystverket-ais-mqtt:latest
+```
+
+### With Azure Event Grid MQTT broker (Microsoft Entra)
+
+```bash
+docker run --rm \
+  -e MQTT_BROKER_URL='mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883' \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_CLIENT_ID='<unique-client-id>' \
+  ghcr.io/clemensv/real-time-sources-kystverket-ais-mqtt:latest
+```
+
+## Using the AMQP image
+
+### With generic AMQP 1.0 broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/kystverket-ais' \
   ghcr.io/clemensv/real-time-sources-kystverket-ais-amqp:latest
 ```
 
-For Azure Service Bus, set `AMQP_AUTH_MODE=entra`, `AMQP_HOST=<namespace>.servicebus.windows.net`, `AMQP_PORT=5671`, `AMQP_TLS=true`, and optionally `AMQP_ENTRA_CLIENT_ID` for a user-assigned managed identity. For the Service Bus emulator or SAS-only namespaces, use `AMQP_AUTH_MODE=sas` with `AMQP_SAS_KEY_NAME` and `AMQP_SAS_KEY`.
+### With Azure Service Bus / Event Hubs (Entra CBS)
 
-| Variable | Description | Default |
-|---|---|---|
-| `AMQP_BROKER_URL` | Optional full AMQP URL; path overrides `AMQP_ADDRESS`. | empty |
-| `AMQP_HOST` / `AMQP_PORT` | Broker host and port. | localhost / 5672 |
-| `AMQP_ADDRESS` | Queue/topic/event-hub name. | `kystverket-ais` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for generic brokers. | empty |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
-| `AMQP_TLS` | Enable TLS for AMQP. | false (`entra` implies TLS) |
-| `AMQP_CONTENT_MODE` | CloudEvents content mode. | `binary` |
-| `AMQP_ENTRA_AUDIENCE` | Token audience for CBS. | `https://servicebus.azure.net/.default` |
-| `AMQP_ENTRA_CLIENT_ID` | User-assigned managed identity client id. | empty |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS CBS credentials. | empty |
+```bash
+docker run --rm \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='kystverket-ais' \
+  -e AMQP_AUTH_MODE=entra \
+  ghcr.io/clemensv/real-time-sources-kystverket-ais-amqp:latest
+```
 
-Deploy a new Service Bus queue plus managed identity with [`azure-template-with-servicebus.json`](azure-template-with-servicebus.json) or [`infra/azure-template-amqp.json`](infra/azure-template-amqp.json).
+### With SAS-token CBS (Service Bus emulator / SAS-only)
+
+```bash
+docker run --rm \
+  -e AMQP_HOST='servicebus-emulator' \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS='kystverket-ais' \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+  -e AMQP_SAS_KEY='<sas-key>' \
+  ghcr.io/clemensv/real-time-sources-kystverket-ais-amqp:latest
+```
+
+## Environment variables
+
+### Common
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs/Fabric-style connection string for Kafka-mode publishing. |
+| `KAFKA_ENABLE_TLS` | Set `false` for local/plain Kafka; default `true`. |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list (`host:port,...`). |
+| `KAFKA_TOPIC` | Destination topic (default from contract). |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials for Kafka-compatible brokers. |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URI (`mqtt://` or `mqtts://`). |
+| `MQTT_HOST` / `MQTT_PORT` / `MQTT_TLS` | Component-level alternative to `MQTT_BROKER_URL`. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for password mode. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for Microsoft Entra JWT. |
+| `MQTT_CLIENT_ID` | Client identifier; must be unique per broker namespace. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Full AMQP URI (`amqp://` or `amqps://`). |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component-level alternative to `AMQP_BROKER_URL`. |
+| `AMQP_ADDRESS` | Target queue/topic/address. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `AMQP_AUTH_MODE=password`. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra ID token settings for CBS auth mode. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token settings for SAS CBS auth mode. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+
+## Deploying into Azure Container Instances
+
+One deploy button is provided per ARM template file present in this folder:
+
+- **azure-template-with-eventhub.json** (with eventhub)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkystverket-ais%2Fazure-template-with-eventhub.json)
+- **azure-template-with-servicebus.json** (with servicebus)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkystverket-ais%2Fazure-template-with-servicebus.json)
+- **azure-template.json** (default (BYO Event Hubs/Kafka))
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkystverket-ais%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md) — source overview and quick-start guidance.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schemas.
+- [`xreg/ais.xreg.json`](xreg/ais.xreg.json) — authoritative xRegistry manifest.

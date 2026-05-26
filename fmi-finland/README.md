@@ -1,119 +1,154 @@
-# FMI Finland Air Quality Bridge
+# FMI Finland feeder
 
-This bridge polls the Finnish Meteorological Institute (FMI) open OGC WFS
-service for hourly air quality observations and republishes them as structured
-CloudEvents to Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams.
+This feeder turns the upstream FMI Finland air-quality feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
-It emits two event families:
+Companion docs:
 
-- `fi.fmi.opendata.airquality.Station` — station reference data
-- `fi.fmi.opendata.airquality.Observation` — hourly aggregated measurements per
-  station and timestamp
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-## Upstream Source
+## Why this bridge
 
-- **Provider**: Finnish Meteorological Institute (FMI)
-- **API**: `https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0`
-- **Transport**: OGC WFS 2.0 over HTTP GET
-- **Authentication**: none
-- **License**: CC BY 4.0
+The upstream source is open and operationally useful, but every downstream team otherwise has to rebuild polling, dedupe, schema normalization, retry handling, and transport-specific publishing. This bridge centralizes that work and republishes a stable CloudEvents contract for subscribers.
 
-## Upstream Channel Review
+- **Public-health operations** — power near-real-time air-quality dashboards and incident triage for municipal, regional, or national teams.
+- **Compliance and reporting** — persist normalized observations into Eventhouse / ADX / data lakes for regulatory and policy reporting.
+- **Industrial and facility response** — trigger ventilation, activity restrictions, or maintenance workflows from threshold-based alerts.
+- **Research and forecasting** — join air-quality observations with weather, mobility, and health indicators for modelling.
+- **Citizen-information products** — feed apps, kiosks, and map tiles with a stable event contract instead of custom API pollers.
 
-The FMI air quality WFS surface reviewed for this bridge is:
+## Overview
 
-| Family | Transport | Identity | Cadence | Decision |
-|---|---|---|---|---|
-| `urban::observations::airquality::hourly::simple` | WFS stored query | station `fmisid` + observation hour | hourly | Keep. Simplest record-per-parameter representation, easy to aggregate into observation events. |
-| `urban::observations::airquality::hourly::multipointcoverage` | WFS stored query | station `fmisid` + observation hour | hourly | Drop. Same underlying measurements, denser XML representation. |
-| `urban::observations::airquality::hourly::timevaluepair` | WFS stored query | station `fmisid` + observation hour | hourly | Drop. Same underlying measurements, alternate presentation only. |
-| `fmi::ef::stations` | WFS stored query | station `fmisid` | slow-changing reference data | Keep. Required station metadata feed for reference events. |
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-fmi-finland` | Apache Kafka 2.x compatible (including Azure Event Hubs and Microsoft Fabric Event Streams) | One topic with CloudEvents JSON and xRegistry-defined keying |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-fmi-finland-mqtt` | MQTT 5.0 broker (including Azure Event Grid MQTT namespace) | Unified-Namespace-style topic publishing with CloudEvents metadata as MQTT user properties |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-fmi-finland-amqp` | AMQP 1.0 brokers (generic + Azure Service Bus / Event Hubs) | Single AMQP node/address with binary CloudEvents |
 
-The bridge models the requested pollutant and index parameters:
-`AQINDEX_PT1H_avg`, `PM10_PT1H_avg`, `PM25_PT1H_avg`, `NO2_PT1H_avg`,
-`O3_PT1H_avg`, `SO2_PT1H_avg`, and `CO_PT1H_avg`.
+All variants share:
 
-## Practical Note About Station Resolution
+- The same upstream poller semantics and dedupe model.
+- The same xRegistry contract in `xreg/fmi-finland.xreg.json`.
+- The same event families in [EVENTS.md](EVENTS.md).
 
-The simple observation feed does not reliably expose the station `fmisid` in
-the `gml:id` field. In live responses, values such as `BsWfsElement.1.1.1`
-appear instead. Therefore, the bridge resolves stations primarily through the
-station registry and coordinate matching, and only uses numeric `gml:id`
-segments as a fallback.
+## Key features
 
-## Events
+- Poll-based ingestion with stateful resume across restarts.
+- One contract, three transport options (Kafka, MQTT, AMQP).
+- CloudEvents-compatible envelope and schema metadata.
+- Azure-ready deployment options (Fabric, Event Hubs, Service Bus, Event Grid MQTT).
 
-See [EVENTS.md](EVENTS.md) for the CloudEvents contract.
+## Repository layout
 
-## Fabric notebook hosting
-
-This source can also run as a scheduled Fabric notebook via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1); the notebook lives at [`notebook/fmi-finland-feed.ipynb`](notebook/fmi-finland-feed.ipynb) and invokes `fmi-finland feed --once` per scheduled run.
-
-## Usage
-
-List known stations:
-
-```powershell
-python -m fmi_finland list
+```text
+fmi-finland/
+  xreg/fmi-finland.xreg.json                # shared xRegistry contract
+  fmi_finland/                        # Kafka feeder application
+  fmi_finland_mqtt/                        # MQTT/UNS feeder application
+  fmi_finland_amqp/                        # AMQP 1.0 feeder application
+  fmi_finland_producer/               # xRegistry-generated Kafka producer
+  fmi_finland_mqtt_producer/               # xRegistry-generated MQTT producer
+  fmi_finland_amqp_producer/               # xRegistry-generated AMQP producer
+  Dockerfile                      # builds the Kafka feeder image
+  Dockerfile.mqtt                 # builds the MQTT feeder image
+  Dockerfile.amqp                 # builds the AMQP feeder image
+  kql/                            # Eventhouse / KQL schema and update policies
+  notebook/                       # Fabric notebook feeder
+  tests/                          # unit + integration tests
 ```
 
-Run the feed with a plain Kafka broker:
+## Prerequisites
 
-```powershell
-$env:KAFKA_BOOTSTRAP_SERVERS="localhost:9092"
-$env:KAFKA_TOPIC="fmi-finland-airquality"
-python -m fmi_finland feed
+- Docker 20.10+ (or another OCI-compatible runtime).
+- Outbound network access to the upstream FMI Finland endpoints.
+- Network access to your target Kafka/MQTT/AMQP broker.
+- A writable host folder mounted to `/state` for persistent `STATE_FILE`.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `STATE_FILE` so poller resume/dedupe state survives container restarts.
+
+### Kafka
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/fmi-finland.json   -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>"   ghcr.io/clemensv/real-time-sources-fmi-finland:latest
 ```
 
-Run the feed with an Event Hubs or Fabric connection string:
+### MQTT (Unified Namespace)
 
-```powershell
-$env:CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<name>;SharedAccessKey=<key>;EntityPath=fmi-finland-airquality"
-python -m fmi_finland feed
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/fmi-finland.json   -e MQTT_BROKER_URL="mqtts://<broker-host>:8883"   -e MQTT_USERNAME="<username>"   -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-fmi-finland-mqtt:latest
 ```
 
-## Configuration
+### AMQP 1.0
 
-| Variable | Description | Default |
-|---|---|---|
-| `CONNECTION_STRING` | Event Hubs or plain Kafka connection string | unset |
-| `KAFKA_BOOTSTRAP_SERVERS` | Explicit Kafka bootstrap server list | unset |
-| `KAFKA_TOPIC` | Kafka topic name | `fmi-finland-airquality` |
-| `SASL_USERNAME` | Optional SASL username for Kafka | unset |
-| `SASL_PASSWORD` | Optional SASL password for Kafka | unset |
-| `POLLING_INTERVAL` | Polling interval in seconds | `3600` |
-| `STATION_REFRESH_INTERVAL` | Reference data re-emission interval in seconds | `86400` |
-| `STATE_FILE` | Deduplication state file | `~/.fmi_finland_state.json` |
-
-## Testing
-
-```powershell
-python -m pytest tests\test_fmi_finland_unit.py -v --no-cov
-python -m pytest tests\test_fmi_finland_integration.py -v --no-cov
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/fmi-finland.json   -e AMQP_BROKER_URL="amqp://<user>:<password>@<host>:5672/fmi-finland"   ghcr.io/clemensv/real-time-sources-fmi-finland-amqp:latest
 ```
+
+## Configuration reference
+
+See [CONTAINER.md](CONTAINER.md) for the full per-image environment-variable matrix and all supported auth modes (Kafka SASL/Event Hubs, MQTT password/Entra, AMQP password/Entra-CBS/SAS-CBS).
+
+## Data model
+
+This source emits the following event types:
+
+- **`Station`**
+- **`Observation`**
+
+Kafka key template `{fmisid}`
+
+## Deploying into Microsoft Fabric
+
+Two Fabric hosting models are supported for this poll-based source:
+
+- **Fabric Notebook feeder** — scheduled runs inside Fabric, best for periodic polling workloads.
+- **Fabric ACI feeder** — continuously running container feeder for always-on delivery.
+
+### Fabric Notebook feeder
+
+This source ships a notebook feeder in [`notebook/`](notebook/) for scheduled in-workspace execution. It runs the same poller logic, resolves the Event Stream custom-endpoint connection string at runtime, and stores run diagnostics in OneLake.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#fmi-finland/fabric-notebook)
+
+### Fabric ACI feeder
+
+Deploy the container feeder directly into Azure Container Instances with Fabric Event Stream and Eventhouse wiring.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#fmi-finland/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Use the ARM templates that ship with this source:
 
-### Option 1: Bring your own Event Hub
+### AMQP — deploy the AMQP image against an existing AMQP 1.0 endpoint you configure.
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-amqp.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template.json)
+### MQTT — bring your own MQTT 5.0 broker and deploy the MQTT image.
 
-### Option 2: Deploy with a new Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-mqtt.json)
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### MQTT — provision an Azure Event Grid namespace MQTT broker plus required identity wiring.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Azure Event Hubs namespace + event hub and wire the feeder automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace with managed identity + sender role assignment.
 
-## MQTT + AMQP companion feeders
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-with-servicebus.json)
 
-This source now ships Kafka plus transport-split MQTT and AMQP companion feeders. MQTT publishes retained binary-mode CloudEvents under `weather/fi/fmi/fmi-finland/...`; AMQP publishes the same CloudEvents to a configurable AMQP 1.0 address (default `fmi-finland`). Deployment templates: `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`.
+### Kafka — bring your own Event Hubs / Fabric Event Stream connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template.json)
+
+## Next steps
+
+- Choose a hosting model (Fabric Notebook, Fabric ACI, or direct Azure template deployment).
+- Review [EVENTS.md](EVENTS.md) before building consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full auth-mode and environment-variable details.

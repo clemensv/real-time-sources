@@ -1,4 +1,4 @@
-# Kystverket AIS Bridge Usage Guide Events
+# Kystverket AIS feeder Events
 
 Kystverket AIS publishes vessel position and voyage updates from the Norwegian Coastal Administration for AIS-equipped vessels in Norwegian waters. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 

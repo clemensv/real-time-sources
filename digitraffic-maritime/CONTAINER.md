@@ -1,111 +1,91 @@
-# Digitraffic Maritime container deployment guide
+# Digitraffic Maritime container images
 
-> See also: [README.md](README.md) · [EVENTS.md](EVENTS.md)
+This document covers the published OCI images for the Digitraffic Maritime feeder and their runtime contract. See [README.md](README.md) for source overview and [EVENTS.md](EVENTS.md) for the CloudEvents schema/routing contract.
 
-This source ships three container variants.
+## Why this container
 
-## Images
+These images package the upstream connector, CloudEvents normalization, and transport-specific publisher wiring into ready-to-run artifacts for Kafka deployments.
 
-| Variant | Image | Dockerfile | Runtime command |
-|---|---|---|---|
-| Kafka | `ghcr.io/clemensv/real-time-sources-digitraffic-maritime:latest` | `Dockerfile` | `python -m digitraffic_maritime stream` |
-| MQTT | `ghcr.io/clemensv/real-time-sources-digitraffic-maritime-mqtt:latest` | `Dockerfile.mqtt` | `python -m digitraffic_maritime_mqtt feed` |
-| AMQP | `ghcr.io/clemensv/real-time-sources-digitraffic-maritime-amqp:latest` | `Dockerfile.amqp` | `python -m digitraffic_maritime_amqp feed` |
+## What ships in the box
 
-## Kafka variant
-
-### Environment variables
-
-| Variable | Required | Description |
+| Image | Transport | Default behavior |
 |---|---|---|
-| `CONNECTION_STRING` | yes* | Event Hubs / Fabric style connection string (`BootstrapServer=...;EntityPath=...` also supported) |
-| `KAFKA_BOOTSTRAP_SERVERS` | yes* | Kafka bootstrap servers when `CONNECTION_STRING` is not used |
-| `KAFKA_TOPIC` | yes* | Kafka topic |
-| `SASL_USERNAME` / `SASL_PASSWORD` | optional | SASL PLAIN credentials |
-| `DIGITRAFFIC_SUBSCRIBE` | no | `location,metadata` or subset |
-| `DIGITRAFFIC_FILTER_MMSI` | no | Comma-separated MMSI filter |
-| `DIGITRAFFIC_FLUSH_INTERVAL` | no | Flush cadence |
-| `DIGITRAFFIC_PORTCALL_POLL_INTERVAL` | no | Poll interval for `port-calls` mode |
-| `DIGITRAFFIC_PORTCALL_STATE_FILE` | no | State file path |
+| `ghcr.io/clemensv/real-time-sources-digitraffic-maritime` | Kafka | Topic(s): `digitraffic-maritime`, key = `{locode}`, `{mmsi}`, `{port_call_id}`, `{vessel_id}` |
 
-\* provide either `CONNECTION_STRING`, or the Kafka trio.
+Event families (base groups):
 
-### Run
+- `fi.digitraffic.marine.ais`
+- `fi.digitraffic.marine.portcall`
+- `fi.digitraffic.marine.portcall.vesseldetails`
+- `fi.digitraffic.marine.portcall.portlocation`
+
+## Image contract
+
+| Aspect | Value |
+|---|---|
+| Base image | `python:3.12-slim` |
+| Default entry point | Kafka: `["python", "-m", "digitraffic_maritime", "stream"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | graceful shutdown on `SIGTERM` |
+| State | `DIGITRAFFIC_PORTCALL_STATE_FILE` |
+| Image tags | `:latest`, `:sha-<git-sha>`, release tags |
+
+## Installing the container images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-digitraffic-maritime:latest
+```
+
+## Using the Kafka image
+
+### With Azure Event Hubs / Fabric Event Streams (connection string)
 
 ```bash
 docker run --rm \
-  -e CONNECTION_STRING='BootstrapServer=<host:9092>;EntityPath=digitraffic-maritime' \
+  -e CONNECTION_STRING='<connection-string>' \
   ghcr.io/clemensv/real-time-sources-digitraffic-maritime:latest
 ```
 
-## MQTT variant
-
-### Environment variables
-
-| Variable | Required | Description |
-|---|---|---|
-| `MQTT_BROKER_URL` | yes | Broker URL (`mqtt://host:1883` or `mqtts://host:8883`) |
-| `MQTT_ENABLE_TLS` | no | Force TLS (`true`/`false`) |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | no | Username/password auth |
-| `MQTT_CA_FILE` | no | Custom CA bundle |
-| `MQTT_CLIENT_ID` | no | MQTT client id override |
-| `MQTT_CONTENT_MODE` | no | `binary` (default) or `structured` |
-| `DIGITRAFFIC_MODE` | no | `stream` (default) or `port-calls` |
-| `ONCE_MODE` | no | Exit after first emitted cycle/message |
-
-### Run
+### With Kafka broker parameters (SASL/PLAIN)
 
 ```bash
 docker run --rm \
-  -e MQTT_BROKER_URL='mqtt://broker:1883' \
-  ghcr.io/clemensv/real-time-sources-digitraffic-maritime-mqtt:latest
+  -e KAFKA_BOOTSTRAP_SERVERS='<host:port>' \
+  -e KAFKA_TOPIC='digitraffic-maritime' \
+  -e SASL_USERNAME='<username>' \
+  -e SASL_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-digitraffic-maritime:latest
 ```
 
-## AMQP variant
+## Environment variables
 
-### Environment variables
+### Common
 
-| Variable | Required | Description |
-|---|---|---|
-| `AMQP_BROKER_URL` | yes* | AMQP URL (`amqp://user:pass@host:5672/address`) |
-| `AMQP_HOST` / `AMQP_PORT` / `AMQP_ADDRESS` | yes* | Host tuple alternative to URL |
-| `AMQP_AUTH_MODE` | no | `password` (default) or `entra` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | conditional | SASL PLAIN credentials |
-| `AMQP_ENTRA_AUDIENCE` | conditional | AAD scope for `entra` mode |
-| `AMQP_ENTRA_CLIENT_ID` | no | User-assigned managed identity client id |
-| `AMQP_TLS` | no | TLS toggle |
-| `AMQP_CONTENT_MODE` | no | `binary` (default) or `structured` |
-| `DIGITRAFFIC_MODE` | no | `stream` (default) or `port-calls` |
-| `ONCE_MODE` | no | Exit after first emitted cycle/message |
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs/Fabric-style connection string for Kafka-mode publishing. |
+| `KAFKA_ENABLE_TLS` | Set `false` for local/plain Kafka; default `true`. |
+| `DIGITRAFFIC_PORTCALL_STATE_FILE` | Source-specific state/resume setting. |
 
-\* provide `AMQP_BROKER_URL`, or host/port/address.
+### Kafka image
 
-### Run
+| Variable | Description |
+|---|---|
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list (`host:port,...`). |
+| `KAFKA_TOPIC` | Destination topic (default from contract). |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials for Kafka-compatible brokers. |
 
-```bash
-docker run --rm \
-  -e AMQP_BROKER_URL='amqp://user:password@broker:5672/digitraffic-maritime' \
-  ghcr.io/clemensv/real-time-sources-digitraffic-maritime-amqp:latest
-```
+## Deploying into Azure Container Instances
 
-## Azure deploy buttons
+One deploy button is provided per ARM template file present in this folder:
 
-### Kafka
+- **azure-template-with-eventhub.json** (with eventhub)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-maritime%2Fazure-template-with-eventhub.json)
+- **azure-template.json** (default (BYO Event Hubs/Kafka))
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-maritime%2Fazure-template.json)
 
-[![Deploy to Azure + EH](https://img.shields.io/badge/Azure-Container%20%2B%20Event%20Hub-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-maritime%2Fazure-template-with-eventhub.json)
-[![Deploy to Azure (BYO EH)](https://img.shields.io/badge/Azure-Container%20(BYO%20Event%20Hub)-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-maritime%2Fazure-template.json)
+## Related
 
-### MQTT
-
-[![Deploy MQTT (BYO broker)](https://img.shields.io/badge/Azure-MQTT%20BYO%20Broker-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-maritime%2Fazure-template-mqtt.json)
-[![Deploy MQTT + Event Grid](https://img.shields.io/badge/Azure-MQTT%20%2B%20Event%20Grid-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-maritime%2Fazure-template-with-eventgrid-mqtt.json)
-
-### AMQP
-
-[![Deploy AMQP + Service Bus](https://img.shields.io/badge/Azure-AMQP%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-maritime%2Fazure-template-with-servicebus.json)
-
-## Notes
-
-- Digitraffic data terms require attribution to Fintraffic/digitraffic.fi.
-- Streaming reliability depends on upstream MQTT and Portnet API availability.
-- Event Grid MQTT guidance: <https://learn.microsoft.com/azure/event-grid/mqtt-overview>
+- [README.md](README.md) — source overview and quick-start guidance.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schemas.
+- [`xreg/digitraffic_maritime.xreg.json`](xreg/digitraffic_maritime.xreg.json) — authoritative xRegistry manifest.

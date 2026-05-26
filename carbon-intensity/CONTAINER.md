@@ -1,169 +1,179 @@
-# Carbon Intensity UK Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Carbon Intensity UK container images
 
-This container image provides a bridge between the National Grid ESO Carbon Intensity API and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge fetches GB electricity carbon intensity data, generation fuel mix, and 17 DNO regional breakdowns, and forwards them to the configured Kafka endpoints.
+This document covers the published container images for the Carbon Intensity UK feeder. For overview and business context see [README.md](README.md); for event-contract details see [EVENTS.md](EVENTS.md).
 
-## Carbon Intensity API
+## Why this container
 
-The [Carbon Intensity API](https://api.carbonintensity.org.uk/) is developed by National Grid ESO in partnership with the Environmental Defense Fund Europe, the University of Oxford, and WWF. It provides half-hourly (every 30 minutes) data including:
+UK carbon-intensity signals are used for dispatch, low-carbon scheduling, and sustainability reporting. This feeder emits the same records as CloudEvents for event-driven processing and warehousing.
 
-- **National carbon intensity** — forecast and actual gCO2/kWh with a qualitative index (very low / low / moderate / high / very high)
-- **Generation fuel mix** — percentage breakdown by fuel type (biomass, coal, gas, hydro, imports, nuclear, oil, other, solar, wind)
-- **Regional intensity** — carbon intensity and generation mix for all 17 GB Distribution Network Operator (DNO) regions
+## What ships in the box
 
-Data is published under a CC-BY 4.0 licence and requires no authentication.
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-carbon-intensity` | Kafka | Polls upstream and publishes CloudEvents to one topic |
+| `ghcr.io/clemensv/real-time-sources-carbon-intensity-mqtt` | MQTT 5.0 | Publishes CloudEvents to xRegistry-mapped topics |
+| `ghcr.io/clemensv/real-time-sources-carbon-intensity-amqp` | AMQP 1.0 | Publishes CloudEvents to one AMQP address |
 
-## Functionality
+## Image contract
 
-The bridge polls the Carbon Intensity API every 30 minutes and writes new data to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md). The bridge tracks the last polled settlement period in a state file to avoid sending duplicates.
+| Aspect | Value |
+|---|---|
+| Base image | `python:3.10-slim` |
+| Default entrypoint | `python -m carbon_intensity; python -m carbon_intensity_mqtt feed; python -m carbon_intensity_amqp feed` |
+| Exposed ports | none — outbound publisher only |
+| Signals | exits on `SIGTERM`; in-flight poll cycle is completed/flushed before shutdown where supported |
+| State | Kafka: CARBON_INTENSITY_LAST_POLLED_FILE; MQTT: CARBON_INTENSITY_MQTT_STATE_FILE; AMQP: CARBON_INTENSITY_AMQP_STATE_FILE. Mount `/state` when state is used. |
+| Tags | `:latest` (mainline), plus immutable release/SHA tags published in GHCR. |
 
-An MQTT/UNS variant is also available via `Dockerfile.mqtt`. It publishes MQTT 5.0 binary-mode CloudEvents with QoS 1 and `retain=false` under `energy/gb/national-grid/carbon-intensity/{region}/{event}` topics. National records use `{region}` = `national`; regional records use DNO short-name slugs such as `north-scotland`.
+## Installing the container images
 
-## Database Schemas and Handling
-
-If you want to build a full data pipeline with all events ingested into a database, the integration with Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md).
-
-## Installing the Container Image
-
-Pull the container image from the GitHub Container Registry:
-
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-carbon-intensity:latest
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-carbon-intensity:latest
+docker pull ghcr.io/clemensv/real-time-sources-carbon-intensity-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-carbon-intensity-amqp:latest
 ```
 
-To use it as a base image in a Dockerfile:
+## Using the Kafka image
 
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-carbon-intensity:latest
+### With a Kafka broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e CARBON_INTENSITY_LAST_POLLED_FILE=/state/carbon-intensity.json \
+  -e KAFKA_BOOTSTRAP_SERVERS='<broker:9093>' \
+  -e KAFKA_TOPIC='<topic>' \
+  -e SASL_USERNAME='<username>' \
+  -e SASL_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-carbon-intensity:latest
 ```
 
-## Using the Container Image
+### With Azure Event Hubs / Fabric Event Streams
 
-The container starts the bridge, polling the Carbon Intensity API and writing events to Kafka, Azure Event Hubs, or Fabric Event Streams.
-
-### With a Kafka Broker
-
-Ensure you have a Kafka broker configured with TLS and SASL PLAIN authentication. Run the container:
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-carbon-intensity:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e CARBON_INTENSITY_LAST_POLLED_FILE=/state/carbon-intensity.json \
+  -e CONNECTION_STRING='<connection-string>' \
+  ghcr.io/clemensv/real-time-sources-carbon-intensity:latest
 ```
 
-### With Azure Event Hubs or Fabric Event Streams
+## Using the MQTT image
 
-Use the connection string to establish a connection to the service. Obtain the connection string from the Azure portal, Azure CLI, or the "custom endpoint" of a Fabric Event Stream.
+### With username/password authentication
 
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-carbon-intensity:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e CARBON_INTENSITY_MQTT_STATE_FILE=/state/carbon-intensity-mqtt.json \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-carbon-intensity-mqtt:latest
 ```
 
-### With an MQTT Broker
+### With Azure Event Grid namespace MQTT broker (Entra)
 
-Build or pull the MQTT image and provide an MQTT broker URL:
-
-```shell
-$ docker build -f Dockerfile.mqtt -t carbon-intensity-mqtt .
-$ docker run --rm \
-    -e MQTT_BROKER_URL='mqtt://broker:1883' \
-    -e ONCE_MODE='true' \
-    carbon-intensity-mqtt
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e CARBON_INTENSITY_MQTT_STATE_FILE=/state/carbon-intensity-mqtt.json \
+  -e MQTT_BROKER_URL='mqtts://<ns>.<region>-1.ts.eventgrid.azure.net:8883' \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID='<managed-identity-client-id>' \
+  -e MQTT_CLIENT_ID='<unique-client-id>' \
+  ghcr.io/clemensv/real-time-sources-carbon-intensity-mqtt:latest
 ```
 
-Optional MQTT environment variables are `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_CLIENT_ID`, `MQTT_CONTENT_MODE` (`binary` or `structured`), and `CARBON_INTENSITY_MQTT_STATE_FILE`.
+## Using the AMQP image
 
-### Preserving State Between Restarts
+### With Microsoft Entra ID (AMQP CBS)
 
-To preserve the last seen settlement period between restarts and avoid reprocessing, mount a volume and set the `CARBON_INTENSITY_LAST_POLLED_FILE` environment variable:
-
-```shell
-$ docker run --rm \
-    -v /path/to/state:/mnt/fileshare \
-    -e CARBON_INTENSITY_LAST_POLLED_FILE='/mnt/fileshare/carbon_intensity_last_polled.json' \
-    ... other args ... \
-    ghcr.io/clemensv/real-time-sources-carbon-intensity:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e CARBON_INTENSITY_AMQP_STATE_FILE=/state/carbon-intensity-amqp.json \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='carbon-intensity' \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default' \
+  -e AMQP_ENTRA_CLIENT_ID='<managed-identity-client-id>' \
+  ghcr.io/clemensv/real-time-sources-carbon-intensity-amqp:latest
 ```
 
-## Environment Variables
+### With SAS token CBS (Service Bus emulator / SAS-only namespaces)
 
-### `CONNECTION_STRING`
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e CARBON_INTENSITY_AMQP_STATE_FILE=/state/carbon-intensity-amqp.json \
+  -e AMQP_HOST='servicebus-emulator' \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS='carbon-intensity' \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+  -e AMQP_SAS_KEY='<sas-key>' \
+  ghcr.io/clemensv/real-time-sources-carbon-intensity-amqp:latest
+```
 
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs or Fabric Event Streams. This replaces the need for `KAFKA_BOOTSTRAP_SERVERS`, `SASL_USERNAME`, and `SASL_PASSWORD`.
+## Environment variables
 
-### `KAFKA_BOOTSTRAP_SERVERS`
+### Kafka image
 
-The address of the Kafka broker. Provide a comma-separated list of host and port pairs (e.g., `broker1:9092,broker2:9092`). The client communicates with TLS-enabled Kafka brokers.
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs/Fabric-style or Kafka-style connection string. |
+| `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC` | Explicit Kafka destination. |
+| `SASL_USERNAME`, `SASL_PASSWORD` | SASL PLAIN credentials when needed. |
+| `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka. |
+| `ONCE_MODE` | Run one cycle and exit (where supported). |
+| State variable | `CARBON_INTENSITY_LAST_POLLED_FILE` |
 
-### `KAFKA_TOPIC`
+### MQTT image
 
-The Kafka topic to send messages to.
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional broker credentials. |
+| `MQTT_CLIENT_ID` | Optional explicit client ID. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured` where supported. |
+| State variable | `CARBON_INTENSITY_MQTT_STATE_FILE` |
 
-### `SASL_USERNAME`
+### AMQP image
 
-The username for SASL PLAIN authentication with the Kafka broker.
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Broker URL (`amqp://` or `amqps://`). |
+| `AMQP_HOST`, `AMQP_PORT`, `AMQP_ADDRESS` | Component-level AMQP endpoint settings. |
+| `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials (if used). |
+| `AMQP_AUTH_MODE` | Auth mode where supported (`password`/`entra`/`sas`). |
+| `AMQP_TLS` | Enable TLS where supported. |
+| State variable | `CARBON_INTENSITY_AMQP_STATE_FILE` |
 
-### `SASL_PASSWORD`
+## Deploying into Microsoft Fabric
 
-The password for SASL PLAIN authentication with the Kafka broker.
+Fabric notebook and Fabric ACI hosting are both supported:
 
-### `CARBON_INTENSITY_LAST_POLLED_FILE`
+- Notebook: `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source carbon-intensity ...`
+- ACI: `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source carbon-intensity ...`
 
-The file path for storing the last polled settlement period for deduplication. Defaults to `/mnt/fileshare/carbon_intensity_last_polled.json` inside the container.
+Portal links:
+
+- [Fabric Notebook](https://clemensv.github.io/real-time-sources/#carbon-intensity/fabric-notebook)
+- [Fabric ACI](https://clemensv.github.io/real-time-sources/#carbon-intensity/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcarbon-intensity%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcarbon-intensity%2Fazure-template-with-eventhub.json)
 
+### Kafka — bring your own Event Hub / Kafka
 
-## AMQP 1.0 container
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcarbon-intensity%2Fazure-template.json)
 
-The AMQP companion image publishes Carbon Intensity UK CloudEvents to a single broker address. It supports SASL PLAIN for generic AMQP 1.0 brokers and CBS token authentication for Azure Service Bus (`AMQP_AUTH_MODE=entra` for managed identity, `AMQP_AUTH_MODE=sas` for emulator/SAS-key scenarios).
-
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-carbon-intensity-amqp:latest
-
-docker run --rm   -e AMQP_BROKER_URL=amqp://user:password@broker:5672/carbon-intensity   -e ONCE_MODE=true   ghcr.io/clemensv/real-time-sources-carbon-intensity-amqp:latest
-```
-
-### AMQP environment variables
-
-| Variable | Description | Default |
-|---|---|---|
-| `AMQP_BROKER_URL` | Full `amqp://` or `amqps://` URL. Path overrides `AMQP_ADDRESS`. | empty |
-| `AMQP_HOST` / `AMQP_PORT` | Broker host and port when no URL is supplied. | `localhost` / 5672 or 5671 |
-| `AMQP_ADDRESS` | Queue, topic, or link target address. | `carbon-intensity` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for generic brokers. | empty |
-| `AMQP_TLS` | Force TLS for generic brokers. | `false` |
-| `AMQP_CONTENT_MODE` | CloudEvents AMQP binding mode: `binary` or `structured`. | `binary` |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
-| `AMQP_ENTRA_AUDIENCE` | Token scope for CBS/Entra authentication. | `https://servicebus.azure.net/.default` |
-| `AMQP_ENTRA_CLIENT_ID` | User-assigned managed identity client id. | empty |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS key credentials for Service Bus emulator/SAS CBS. | empty |
-
-### Deploy to Azure Service Bus
-
-This template creates a Service Bus namespace and queue, user-assigned managed identity, role assignment for Azure Service Bus Data Sender, Log Analytics workspace, storage file share for state, and an Azure Container Instance running the AMQP image.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcarbon-intensity%2Finfra%2Fazure-template-amqp.json)
+## Related
+- [README.md](README.md) — source overview, use cases, and quick start.
+- [EVENTS.md](EVENTS.md) — event contract and schema details.
+- [`xreg/carbon_intensity.xreg.json`](xreg/carbon_intensity.xreg.json) — authoritative manifest.

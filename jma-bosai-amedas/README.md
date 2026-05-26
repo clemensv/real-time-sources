@@ -1,55 +1,151 @@
-# JMA Bosai AMeDAS Bridge
+# JMA Bosai AMeDAS feeder
 
-This source bridges the Japan Meteorological Agency (JMA / 気象庁) Bosai AMeDAS public data feed into Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams as CloudEvents.
+This feeder turns JMA Bosai AMeDAS observations into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-AMeDAS (Automated Meteorological Data Acquisition System) automatically observes regional weather conditions across Japan. JMA documents the network as monitoring precipitation, wind direction and speed, temperature, humidity, sunshine duration, and snow depth for disaster prevention and mitigation.
+Companion docs:
 
-## Upstream data channels reviewed
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-| Family | Transport | Endpoint | Identity | Cadence | Decision |
-|---|---|---|---|---|---|
-| Latest snapshot time | HTTPS text | `https://www.jma.go.jp/bosai/amedas/data/latest_time.txt` | snapshot timestamp | 10 minutes | Keep as poll cursor/dedupe state. |
-| Observation map | HTTPS JSON | `https://www.jma.go.jp/bosai/amedas/data/map/{YYYYMMDDHHMM}00.json` | five-digit station code | 10 minutes | Keep as `JP.JMA.Amedas.Observation`. |
-| Per-station observation detail | HTTPS JSON | `https://www.jma.go.jp/bosai/amedas/data/point/{station_code}/{YYYYMMDD_HH}.json` | five-digit station code | 10 minutes | Keep as opt-in enrichment for configured station codes because fetching all ~1300 station files every cycle would be high request volume. |
-| Station metadata | HTTPS JSON | `https://www.jma.go.jp/bosai/amedas/const/amedastable.json` | five-digit station code | slow-changing | Keep as `JP.JMA.Amedas.Station`, emitted at startup and weekly. |
+## Why this bridge
 
-## Event model
+AMeDAS station observations are used by weather operations, transport planning, and climate analytics. This feeder publishes a normalized event stream from the JMA Bosai source for consistent downstream consumption.
 
-Single message group and Kafka endpoint: `JP.JMA.Amedas` / `JP.JMA.Amedas.Kafka`.
+## Overview
 
-Both event types use the identical CloudEvents subject and Kafka key template:
+**JMA Bosai AMeDAS** ships three transport variants from one source bridge:
+
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-jma-bosai-amedas` | Apache Kafka 2.x compatible (Azure Event Hubs, Fabric Event Streams, Confluent Cloud, plain Kafka) | One topic, JSON CloudEvents (binary mode) |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-jma-bosai-amedas-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Fabric MQTT broker) | Unified-Namespace topic tree defined in `xreg/jma-bosai-amedas.xreg.json` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-jma-bosai-amedas-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, Artemis, Qpid Dispatch, Azure Service Bus / Event Hubs) | Single AMQP address, binary CloudEvents |
+
+All three variants share the same source contract in `xreg/jma-bosai-amedas.xreg.json`.
+
+## Key features
+
+- Poll-based feeder with checkpointed state to avoid duplicate publication across restarts.
+- Kafka, MQTT, and AMQP transport variants that share one xRegistry event contract.
+- CloudEvents output suitable for Event Hubs, Fabric Event Streams, or self-managed brokers.
+- Reference/telemetry publishing behavior and schemas documented in [EVENTS.md](EVENTS.md).
+
+## Repository layout
 
 ```text
-jp.jma.amedas/{station_code}
+jma-bosai-amedas/
+  xreg/jma-bosai-amedas.xreg.json
+  jma_bosai_amedas/
+  jma_bosai_amedas_mqtt/
+  jma_bosai_amedas_amqp/
+  jma_bosai_amedas_producer/
+  jma_bosai_amedas_mqtt_producer/
+  jma_bosai_amedas_amqp_producer/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+  notebook/
+  tests/
 ```
 
-- `Station`: reference data from `amedastable.json`; latitude and longitude are converted from `[degrees, minutes]` to decimal degrees.
-- `Observation`: ten-minute station telemetry from the map snapshot, including optional measurement values and companion QC flags. When `POINT_STATION_CODES` is set, selected stations are enriched from the per-station point endpoint with gust, gust direction/time, maximum temperature/time, and minimum temperature/time fields.
+## Prerequisites
 
-See [EVENTS.md](EVENTS.md) for the CloudEvents and schema contract.
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS access to the upstream source APIs.
+- Network access to your target Kafka broker, MQTT broker, or AMQP endpoint.
+- A writable host directory mounted to persist the source state file across restarts.
 
-## Running
+## Quick start with Docker
 
-```powershell
-pip install -e ./jma_bosai_amedas_producer/jma_bosai_amedas_producer_data
-pip install -e ./jma_bosai_amedas_producer/jma_bosai_amedas_producer_kafka_producer
-pip install -e .
-python -m jma_bosai_amedas feed --connection-string "BootstrapServer=localhost:9092;EntityPath=jma-bosai-amedas" --no-kafka-enable-tls
+> [!IMPORTANT]
+> Mount a writable host volume for state persistence. Without it, dedupe/checkpoint state resets on every restart.
+
+### Kafka
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/jma-bosai-amedas.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-jma-bosai-amedas:latest
 ```
 
-Configuration is available through CLI flags and environment variables. `CONNECTION_STRING` is required for container use unless explicit Kafka settings are supplied. `KAFKA_TOPIC` defaults to `jma-bosai-amedas`, `POLLING_INTERVAL` defaults to `600`, `STATION_METADATA_REFRESH_HOURS` defaults to `168`, and `STATE_FILE` defaults to `./state/jma-bosai-amedas.json`. `POINT_STATION_CODES` is empty by default; set it to comma-separated station codes or `all` to fetch per-station detail files, with `POINT_REQUEST_DELAY` defaulting to `0.25` seconds between detail requests.
+### MQTT (Unified Namespace)
 
-- Fabric notebook hosting is available through [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) for scheduled single-cycle polling in Microsoft Fabric.
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/jma-bosai-amedas.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-jma-bosai-amedas-mqtt:latest
+```
 
+### AMQP 1.0
 
-## MQTT and AMQP companion transports
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/jma-bosai-amedas.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/jma-bosai-amedas" \
+  ghcr.io/clemensv/real-time-sources-jma-bosai-amedas-amqp:latest
+```
 
-This source now ships separate Kafka, MQTT, and AMQP containers. MQTT publishes binary-mode CloudEvents to the UNS topic tree below; AMQP publishes the same CloudEvents to the configured AMQP address with subject and routing axes in message/application properties.
+## Configuration reference
 
-Topic templates:
-- `weather/jp/jma/jma-bosai-amedas/{prefecture}/{station_code}/info`
-- `weather/jp/jma/jma-bosai-amedas/{prefecture}/{station_code}/observation`
+For full transport/auth matrices (Kafka, MQTT, AMQP), source-specific options, and deployment options, see [CONTAINER.md](CONTAINER.md).
 
-- MQTT image: `ghcr.io/clemensv/real-time-sources-jma-bosai-amedas-mqtt:latest` (`Dockerfile.mqtt`)
-- AMQP image: `ghcr.io/clemensv/real-time-sources-jma-bosai-amedas-amqp:latest` (`Dockerfile.amqp`)
-- Azure templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`.
+## Upstream source
+
+Japan Meteorological Agency Bosai AMeDAS endpoints.
+
+## Data model
+
+This feeder emits the following event families:
+
+- **`Station`**
+- **`Observation`**
+
+See [EVENTS.md](EVENTS.md) for field-level schemas, subject templates, and key mapping per transport.
+
+## Deploying into Microsoft Fabric
+
+Two hosting options are available for this poll-based source:
+
+### Fabric Notebook feeder
+
+The notebook under [`notebook/`](notebook/) runs the bridge on a Fabric schedule and resolves the Event Stream connection string at runtime via Fabric topology APIs.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#jma-bosai-amedas/fabric-notebook)
+
+### Fabric ACI feeder
+
+A long-running Azure Container Instance hosts one of the three transport images and publishes to a Fabric Event Stream custom endpoint.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#jma-bosai-amedas/fabric-aci)
+
+## Deploying into Azure Container Instances
+
+### MQTT — bring your own broker
+
+Deploys the MQTT image against an existing MQTT 5 broker.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-amedas%2Fazure-template-mqtt.json)
+
+### MQTT — provision Event Grid MQTT broker
+
+Deploys MQTT plus a new Event Grid namespace broker and identity wiring.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-amedas%2Fazure-template-with-eventgrid-mqtt.json)
+
+### AMQP — provision Azure Service Bus
+
+Deploys AMQP plus a new Service Bus namespace/queue and sender identity wiring.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-amedas%2Fazure-template-with-servicebus.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before building consumers.
+- Use [CONTAINER.md](CONTAINER.md) for complete env-var matrices and auth-mode examples.

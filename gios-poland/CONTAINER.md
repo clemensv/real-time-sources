@@ -1,152 +1,163 @@
-# GIOŚ Poland Air Quality Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# GIOŚ Poland container images
 
-This container image provides a bridge between the Polish Chief Inspectorate of Environmental Protection (GIOŚ) air quality monitoring network and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge fetches station metadata, sensor reference data, hourly measurements (PM10, PM2.5, SO₂, NO₂, O₃, CO, benzene), and the Polish Air Quality Index from ~250 stations nationwide.
+This document describes the published OCI images for the GIOŚ Poland feeder. For solution overview and usage scenarios, see [README.md](README.md). For the CloudEvents contract and schemas, see [EVENTS.md](EVENTS.md).
 
-## GIOŚ API
+## Why this container
 
-The GIOŚ air quality API provides publicly available air quality data from Poland's national monitoring network. Approximately 250 stations report hourly measurements of key pollutants. Data is updated hourly.
+These images package the poller, normalization logic, and transport producers so teams can subscribe to standardized air-quality CloudEvents without writing their own ingestion pipeline.
 
-## Functionality
+## What ships in the box
 
-The bridge polls the GIOŚ REST API at `https://api.gios.gov.pl/pjp-api/v1/rest/` and writes events to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md). Previously seen measurement timestamps per sensor are tracked in a state file to prevent duplicates.
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-gios-poland` | Kafka | Poll upstream and publish CloudEvents to one Kafka topic with xRegistry keying |
+| `ghcr.io/clemensv/real-time-sources-gios-poland-mqtt` | MQTT 5.0 | Poll upstream and publish CloudEvents to MQTT topic hierarchy |
+| `ghcr.io/clemensv/real-time-sources-gios-poland-amqp` | AMQP 1.0 | Poll upstream and publish CloudEvents to a configured AMQP address |
 
-## Database Schemas and Handling
+Event families in this source:
 
-If you want to build a full data pipeline with all events ingested into a
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
+- **`pl.gov.gios.airquality`**: Station, Sensor, Measurement, AirQualityIndex
+- **`pl.gov.gios.airquality.mqtt`**: Station, Sensor, Measurement, AirQualityIndex
+- **`pl.gov.gios.airquality.amqp`**: Station, Sensor, Measurement, AirQualityIndex
 
-## Installing the Container Image
+## Image contract
 
-Pull the container image from the GitHub Container Registry:
+| Aspect | Value |
+|---|---|
+| Base image | `python:3.10-slim` |
+| Kafka entrypoint | `python -m gios_poland` |
+| MQTT entrypoint | `python -m gios_poland_mqtt` |
+| AMQP entrypoint | `python -m gios_poland_amqp` |
+| Exposed ports | none (outbound publisher only) |
+| Signals | terminates on `SIGTERM` with producer flush on shutdown |
+| Persistent state | `GIOS_LAST_POLLED_FILE` (mount host storage at `/state`) |
+| Tags | `latest`, version tags, and immutable SHA tags in GHCR |
 
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-gios-poland:latest
+## Installing the images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-gios-poland:latest
+docker pull ghcr.io/clemensv/real-time-sources-gios-poland-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-gios-poland-amqp:latest
 ```
 
-To use it as a base image in a Dockerfile:
+## Using the Kafka image
 
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-gios-poland:latest
+### Kafka with SASL/PLAIN
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e GIOS_LAST_POLLED_FILE=/state/gios-poland.json   -e KAFKA_BOOTSTRAP_SERVERS="<host:port>"   -e KAFKA_TOPIC="gios-poland"   -e SASL_USERNAME="<username>"   -e SASL_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-gios-poland:latest
 ```
 
-## Using the Container Image
+### Kafka with Azure Event Hubs / Fabric Event Streams
 
-The container starts the bridge, polling the GIOŚ API and writing events to Kafka, Azure Event Hubs, or Fabric Event Streams.
-
-### With a Kafka Broker
-
-Ensure you have a Kafka broker configured with TLS and SASL PLAIN authentication. Run the container:
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-gios-poland:latest
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e GIOS_LAST_POLLED_FILE=/state/gios-poland.json   -e CONNECTION_STRING="<connection-string>"   ghcr.io/clemensv/real-time-sources-gios-poland:latest
 ```
 
-### With Azure Event Hubs or Fabric Event Streams
+## Using the MQTT image
 
-Use the connection string to establish a connection to the service. Obtain the connection string from the Azure portal, Azure CLI, or the "custom endpoint" of a Fabric Event Stream.
+### MQTT with username/password
 
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-gios-poland:latest
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e GIOS_LAST_POLLED_FILE=/state/gios-poland.json   -e MQTT_BROKER_URL="mqtts://<broker-host>:8883"   -e MQTT_USERNAME="<username>"   -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-gios-poland-mqtt:latest
 ```
 
-### Preserving State Between Restarts
+### MQTT with Azure Event Grid + Microsoft Entra ID
 
-To preserve the last seen timestamps between restarts and avoid reprocessing measurements, mount a volume and set the `GIOS_LAST_POLLED_FILE` environment variable:
-
-```shell
-$ docker run --rm \
-    -v /path/to/state:/mnt/fileshare \
-    -e GIOS_LAST_POLLED_FILE='/mnt/fileshare/gios_last_polled.json' \
-    ... other args ... \
-    ghcr.io/clemensv/real-time-sources-gios-poland:latest
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e GIOS_LAST_POLLED_FILE=/state/gios-poland.json   -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883"   -e MQTT_AUTH_MODE=entra   -e MQTT_ENTRA_CLIENT_ID="<managed-identity-client-id>"   -e MQTT_CLIENT_ID="<unique-client-id>"   ghcr.io/clemensv/real-time-sources-gios-poland-mqtt:latest
 ```
 
-## Environment Variables
+## Using the AMQP image
 
-### `CONNECTION_STRING`
+### AMQP generic broker (SASL PLAIN)
 
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs or Fabric Event Streams. This replaces the need for `KAFKA_BOOTSTRAP_SERVERS`, `SASL_USERNAME`, and `SASL_PASSWORD`.
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e GIOS_LAST_POLLED_FILE=/state/gios-poland.json   -e AMQP_BROKER_URL="amqp://<user>:<password>@<host>:5672/gios-poland"   ghcr.io/clemensv/real-time-sources-gios-poland-amqp:latest
+```
 
-### `KAFKA_BOOTSTRAP_SERVERS`
+### AMQP with Azure Service Bus / Event Hubs (Entra-CBS)
 
-The address of the Kafka broker. Provide a comma-separated list of host and port pairs (e.g., `broker1:9092,broker2:9092`). The client communicates with TLS-enabled Kafka brokers.
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e GIOS_LAST_POLLED_FILE=/state/gios-poland.json   -e AMQP_HOST="<namespace>.servicebus.windows.net"   -e AMQP_PORT=5671 -e AMQP_TLS=true   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_CLIENT_ID="<managed-identity-client-id>"   ghcr.io/clemensv/real-time-sources-gios-poland-amqp:latest
+```
 
-### `KAFKA_TOPIC`
+### AMQP with Service Bus emulator / SAS-CBS
 
-The Kafka topic to send messages to.
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e GIOS_LAST_POLLED_FILE=/state/gios-poland.json   -e AMQP_HOST="servicebus-emulator"   -e AMQP_PORT=5672   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey"   -e AMQP_SAS_KEY="<sas-key>"   ghcr.io/clemensv/real-time-sources-gios-poland-amqp:latest
+```
 
-### `SASL_USERNAME`
+## Environment variable matrix
 
-The username for SASL PLAIN authentication with the Kafka broker.
+### Common (all images)
 
-### `SASL_PASSWORD`
+| Variable | Description |
+|---|---|
+| `GIOS_LAST_POLLED_FILE` | Path to persistent poller resume/dedupe state file. |
+| `POLLING_INTERVAL` | Polling interval in seconds (source default applies when not set). |
 
-The password for SASL PLAIN authentication with the Kafka broker.
+### Kafka image
 
-### `GIOS_LAST_POLLED_FILE`
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric custom endpoint connection string shortcut. |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers when not using `CONNECTION_STRING`. |
+| `KAFKA_TOPIC` | Output topic name. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` to disable TLS for local brokers. |
 
-The file path for storing last seen timestamps per sensor for deduplication. Defaults to `/mnt/fileshare/gios_last_polled.json` inside the container.
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Username/password credentials for `password` mode. |
+| `MQTT_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
+| `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Full AMQP connection URL shortcut. |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Host/port/TLS settings when not using URL shortcut. |
+| `AMQP_ADDRESS` | Destination queue/topic/address. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | Credentials for `password` mode. |
+| `AMQP_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | Required when `AMQP_AUTH_MODE=sas`. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### AMQP — deploy the AMQP image against an existing AMQP 1.0 endpoint you configure.
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgios-poland%2Fazure-template-amqp.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — bring your own MQTT 5.0 broker and deploy the MQTT image.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgios-poland%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgios-poland%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision an Azure Event Grid namespace MQTT broker plus required identity wiring.
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgios-poland%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Azure Event Hubs namespace + event hub and wire the feeder automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgios-poland%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace with managed identity + sender role assignment.
 
-## MQTT 5.0 / Unified Namespace feeder
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgios-poland%2Fazure-template-with-servicebus.json)
 
-Image: `real-time-sources-gios-poland-mqtt`. Publishes binary-mode CloudEvents to `air-quality/pl/gios/gios-poland/...`.
+### Kafka — bring your own Event Hubs / Fabric Event Stream connection string.
 
-| Variable | Purpose |
-|---|---|
-| `MQTT_BROKER_URL` | Broker URL, for example `mqtt://host:1883`. |
-| `MQTT_HOST`, `MQTT_PORT`, `MQTT_TLS` | Host/port/TLS alternatives to `MQTT_BROKER_URL`. |
-| `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional username/password authentication. |
-| `MQTT_CONTENT_MODE` | CloudEvents content mode; default `binary`. |
-| `ONCE_MODE` | Exit after one publish cycle for jobs/tests. |
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgios-poland%2Fazure-template.json)
 
-[![Deploy MQTT BYO](https://img.shields.io/badge/Azure-Container%20(BYO%20MQTT)-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgios-poland%2Fazure-template-mqtt.json)
-[![Deploy MQTT Event Grid](https://img.shields.io/badge/Azure-Container%20%2B%20Event%20Grid%20MQTT-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgios-poland%2Fazure-template-with-eventgrid-mqtt.json)
+## Related
 
-## AMQP 1.0 feeder
-
-Image: `real-time-sources-gios-poland-amqp`. Publishes binary-mode CloudEvents to a configurable AMQP 1.0 address.
-
-| Variable | Purpose |
-|---|---|
-| `AMQP_BROKER_URL` | Broker URL, for example `amqp://user:pass@host:5672/gios-poland`. |
-| `AMQP_HOST`, `AMQP_PORT`, `AMQP_TLS` | Host/port/TLS alternatives to `AMQP_BROKER_URL`. |
-| `AMQP_ADDRESS` | Queue/topic/address; default `gios-poland`. |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
-| `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials. |
-| `AMQP_ENTRA_CLIENT_ID`, `AMQP_ENTRA_AUDIENCE` | Entra CBS authentication settings. |
-| `AMQP_SAS_KEY_NAME`, `AMQP_SAS_KEY` | SAS CBS authentication settings. |
-| `AMQP_CONTENT_MODE` | CloudEvents content mode; default `binary`. |
-| `ONCE_MODE` | Exit after one publish cycle for jobs/tests. |
-
-[![Deploy AMQP BYO](https://img.shields.io/badge/Azure-Container%20(BYO%20AMQP)-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgios-poland%2Fazure-template-amqp.json)
-[![Deploy AMQP Service Bus](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgios-poland%2Fazure-template-with-servicebus.json)
+- [README.md](README.md) — source overview, deployment options, and quick starts.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
+- [`xreg/gios_poland.xreg.json`](xreg/gios_poland.xreg.json) — authoritative event contract manifest.

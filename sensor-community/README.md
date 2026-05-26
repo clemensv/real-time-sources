@@ -1,93 +1,154 @@
-# Sensor.Community
+# Sensor.Community feeder
 
-Sensor.Community, formerly Luftdaten.info, is a large citizen-science sensor network that publishes near-real-time environmental measurements from thousands of community-operated stations. This source polls the public Airrohr API and republishes selected sensor metadata and readings as CloudEvents into Kafka.
+This feeder turns the upstream Sensor.Community air-quality feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
-## Upstream coverage
+Companion docs:
 
-I audited the public real-time API surface used by this bridge:
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-| Family | Transport | Identity | Cadence | Keep/Drop | Reason |
-| --- | --- | --- | --- | --- | --- |
-| Type-filter feed | `GET /filter/type={sensor_type}` | `sensor.id` | Near-real-time rolling latest value per sensor type | Keep | This is the main public bulk feed for real-time telemetry and sensor metadata. |
-| Country-filter feed | `GET /filter/country={country}` | `sensor.id` | Near-real-time rolling latest value per country | Drop | It is a scoped projection of the same latest-reading data already covered by the type-filter feeds. The bridge applies country filtering locally instead. |
-| Sensor detail feed | `GET /sensor/{sensor_id}/` | `sensor.id` | Near-real-time recent history for one sensor | Drop as a polled family | It is useful as a canonical source URI and ad hoc inspection endpoint, but it is a per-sensor detail projection of the same telemetry families already modeled. |
+## Why this bridge
 
-The bridge polls configured sensor types and keeps the full reading shape for the documented value types it encounters: particulate matter (`P0`, `P1`, `P2`, `P4`), temperature, humidity, pressure, pressure at sea level, and supported noise values.
+The upstream source is open and operationally useful, but every downstream team otherwise has to rebuild polling, dedupe, schema normalization, retry handling, and transport-specific publishing. This bridge centralizes that work and republishes a stable CloudEvents contract for subscribers.
 
-## Event model
+- **Public-health operations** — power near-real-time air-quality dashboards and incident triage for municipal, regional, or national teams.
+- **Compliance and reporting** — persist normalized observations into Eventhouse / ADX / data lakes for regulatory and policy reporting.
+- **Industrial and facility response** — trigger ventilation, activity restrictions, or maintenance workflows from threshold-based alerts.
+- **Research and forecasting** — join air-quality observations with weather, mobility, and health indicators for modelling.
+- **Citizen-information products** — feed apps, kiosks, and map tiles with a stable event contract instead of custom API pollers.
 
-- `io.sensor.community.SensorInfo` — reference data for a sensor node, emitted when first seen and whenever metadata changes.
-- `io.sensor.community.SensorReading` — the latest telemetry reading for a sensor at a specific timestamp.
+## Overview
 
-Both event types use `sensor_id` as the CloudEvents `subject` and Kafka key.
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-sensor-community` | Apache Kafka 2.x compatible (including Azure Event Hubs and Microsoft Fabric Event Streams) | One topic with CloudEvents JSON and xRegistry-defined keying |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-sensor-community-mqtt` | MQTT 5.0 broker (including Azure Event Grid MQTT namespace) | Unified-Namespace-style topic publishing with CloudEvents metadata as MQTT user properties |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-sensor-community-amqp` | AMQP 1.0 brokers (generic + Azure Service Bus / Event Hubs) | Single AMQP node/address with binary CloudEvents |
 
-## Running locally
+All variants share:
 
-Install the generated producer packages first, then install the source package:
+- The same upstream poller semantics and dedupe model.
+- The same xRegistry contract in `xreg/sensor-community.xreg.json`.
+- The same event families in [EVENTS.md](EVENTS.md).
 
-```powershell
-pip install .\sensor_community_producer\sensor_community_producer_data
-pip install .\sensor_community_producer\sensor_community_producer_kafka_producer
-pip install -e .
+## Key features
+
+- Poll-based ingestion with stateful resume across restarts.
+- One contract, three transport options (Kafka, MQTT, AMQP).
+- CloudEvents-compatible envelope and schema metadata.
+- Azure-ready deployment options (Fabric, Event Hubs, Service Bus, Event Grid MQTT).
+
+## Repository layout
+
+```text
+sensor-community/
+  xreg/sensor-community.xreg.json                # shared xRegistry contract
+  sensor_community/                        # Kafka feeder application
+  sensor_community_mqtt/                        # MQTT/UNS feeder application
+  sensor_community_amqp/                        # AMQP 1.0 feeder application
+  sensor_community_producer/               # xRegistry-generated Kafka producer
+  sensor_community_mqtt_producer/               # xRegistry-generated MQTT producer
+  sensor_community_amqp_producer/               # xRegistry-generated AMQP producer
+  Dockerfile                      # builds the Kafka feeder image
+  Dockerfile.mqtt                 # builds the MQTT feeder image
+  Dockerfile.amqp                 # builds the AMQP feeder image
+  kql/                            # Eventhouse / KQL schema and update policies
+  notebook/                       # Fabric notebook feeder
+  tests/                          # unit + integration tests
 ```
 
-Run the feed:
+## Prerequisites
 
-```powershell
-python -m sensor_community feed --connection-string "BootstrapServer=localhost:9092;EntityPath=sensor-community"
+- Docker 20.10+ (or another OCI-compatible runtime).
+- Outbound network access to the upstream Sensor.Community endpoints.
+- Network access to your target Kafka/MQTT/AMQP broker.
+- A writable host folder mounted to `/state` for persistent `STATE_FILE`.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `STATE_FILE` so poller resume/dedupe state survives container restarts.
+
+### Kafka
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/sensor-community.json   -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>"   ghcr.io/clemensv/real-time-sources-sensor-community:latest
 ```
 
-Limit scope:
+### MQTT (Unified Namespace)
 
-```powershell
-$env:SENSOR_TYPES = "SDS011,BME280"
-$env:COUNTRIES = "DE,NL"
-python -m sensor_community feed --connection-string "BootstrapServer=localhost:9092;EntityPath=sensor-community"
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/sensor-community.json   -e MQTT_BROKER_URL="mqtts://<broker-host>:8883"   -e MQTT_USERNAME="<username>"   -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-sensor-community-mqtt:latest
 ```
 
-## Configuration
+### AMQP 1.0
 
-- `CONNECTION_STRING` — Event Hubs/Fabric or `BootstrapServer=host:port;EntityPath=topic`
-- `KAFKA_BOOTSTRAP_SERVERS` — plain Kafka bootstrap servers
-- `KAFKA_TOPIC` — Kafka topic if not supplied by connection string
-- `SASL_USERNAME` / `SASL_PASSWORD` — optional SASL PLAIN credentials
-- `POLLING_INTERVAL` — polling interval in seconds, default `300`
-- `SENSOR_TYPES` — comma-separated sensor types, default `SDS011,BME280,SPS30,DHT22,PMS5003,SHT31,BMP280`
-- `COUNTRIES` — optional comma-separated ISO country filter
-- `STATE_FILE` — persisted dedup and metadata state file
-- `KAFKA_ENABLE_TLS` — set to `false` for plain Kafka when you want an explicit `PLAINTEXT` security protocol
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/sensor-community.json   -e AMQP_BROKER_URL="amqp://<user>:<password>@<host>:5672/sensor-community"   ghcr.io/clemensv/real-time-sources-sensor-community-amqp:latest
+```
 
-## Fabric notebook hosting
+## Configuration reference
 
-- This source ships a Fabric notebook feeder at `notebook/sensor-community-feed.ipynb` that runs a single polling cycle on a Fabric schedule. Deploy it with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+See [CONTAINER.md](CONTAINER.md) for the full per-image environment-variable matrix and all supported auth modes (Kafka SASL/Event Hubs, MQTT password/Entra, AMQP password/Entra-CBS/SAS-CBS).
 
-## Upstream links
+## Data model
 
-- Sensor.Community project: https://sensor.community/
-- Airrohr API base: https://data.sensor.community/airrohr/v1/
+This source emits the following event types:
+
+- **`SensorInfo`**
+- **`SensorReading`**
+
+Kafka key template `{sensor_id}`
+
+## Deploying into Microsoft Fabric
+
+Two Fabric hosting models are supported for this poll-based source:
+
+- **Fabric Notebook feeder** — scheduled runs inside Fabric, best for periodic polling workloads.
+- **Fabric ACI feeder** — continuously running container feeder for always-on delivery.
+
+### Fabric Notebook feeder
+
+This source ships a notebook feeder in [`notebook/`](notebook/) for scheduled in-workspace execution. It runs the same poller logic, resolves the Event Stream custom-endpoint connection string at runtime, and stores run diagnostics in OneLake.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#sensor-community/fabric-notebook)
+
+### Fabric ACI feeder
+
+Deploy the container feeder directly into Azure Container Instances with Fabric Event Stream and Eventhouse wiring.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#sensor-community/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Use the ARM templates that ship with this source:
 
-### Option 1: Bring your own Event Hub
+### AMQP — deploy the AMQP image against an existing AMQP 1.0 endpoint you configure.
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsensor-community%2Fazure-template-amqp.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsensor-community%2Fazure-template.json)
+### MQTT — bring your own MQTT 5.0 broker and deploy the MQTT image.
 
-### Option 2: Deploy with a new Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsensor-community%2Fazure-template-mqtt.json)
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### MQTT — provision an Azure Event Grid namespace MQTT broker plus required identity wiring.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsensor-community%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Azure Event Hubs namespace + event hub and wire the feeder automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsensor-community%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace with managed identity + sender role assignment.
 
-## MQTT + AMQP companion feeders
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsensor-community%2Fazure-template-with-servicebus.json)
 
-This source now ships Kafka plus transport-split MQTT and AMQP companion feeders. MQTT publishes retained binary-mode CloudEvents under `air-quality/intl/sensor-community/sensor-community/...`; AMQP publishes the same CloudEvents to a configurable AMQP 1.0 address (default `sensor-community`). Deployment templates: `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`.
+### Kafka — bring your own Event Hubs / Fabric Event Stream connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsensor-community%2Fazure-template.json)
+
+## Next steps
+
+- Choose a hosting model (Fabric Notebook, Fabric ACI, or direct Azure template deployment).
+- Review [EVENTS.md](EVENTS.md) before building consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full auth-mode and environment-variable details.

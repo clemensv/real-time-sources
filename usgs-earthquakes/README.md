@@ -1,207 +1,150 @@
-# USGS Earthquake Hazards Program - Real-time Earthquake Feed
+# USGS Earthquakes feeder
+
+This feeder turns USGS Earthquake Hazards Program feeds into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+USGS earthquake feeds are a core public signal for seismic monitoring, civil-protection dashboards, and risk models. This feeder provides a transport-agnostic CloudEvents contract so downstream systems can subscribe once and fan out to analytics, alerting, and archival pipelines.
 
 ## Overview
 
-**USGS-Earthquakes** is a tool designed to interact with the [USGS Earthquake
-Hazards Program](https://earthquake.usgs.gov/) real-time GeoJSON feeds to fetch
-earthquake event data. The tool can list recent earthquakes, display available
-feeds, or continuously poll the API to send earthquake events to a Kafka topic.
+**USGS Earthquakes** ships three transport variants from one source bridge:
 
-The USGS provides real-time earthquake data updated every minute for various
-magnitude thresholds and time windows. This bridge converts those events into
-[CloudEvents](https://cloudevents.io/) structured JSON format and publishes them
-to Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams.
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-usgs-earthquakes` | Apache Kafka 2.x compatible (Azure Event Hubs, Fabric Event Streams, Confluent Cloud, plain Kafka) | One topic, JSON CloudEvents (binary mode) |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-usgs-earthquakes-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Fabric MQTT broker) | Unified-Namespace topic tree defined in `xreg/usgs_earthquakes.xreg.json` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-usgs-earthquakes-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, Artemis, Qpid Dispatch, Azure Service Bus / Event Hubs) | Single AMQP address, binary CloudEvents |
 
-## Key Features:
-- **Earthquake Event Fetching**: Retrieve real-time earthquake data from 20+ USGS GeoJSON feeds.
-- **Magnitude Filtering**: Filter events client-side by minimum magnitude.
-- **Deduplication**: Tracks seen events by ID and update timestamp — only new or updated events are forwarded.
-- **Kafka Integration**: Send earthquake events as CloudEvents to a Kafka topic, supporting Microsoft Event Hubs and Microsoft Fabric Event Streams.
-- **Fabric notebook hosting**: Deploy as a scheduled Fabric notebook feeder via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) — runs `usgs-earthquakes feed --once` per cycle and resolves the Event Stream connection string at runtime.
+All three variants share the same source contract in `xreg/usgs_earthquakes.xreg.json`.
 
-## Installation
+## Key features
 
-The tool is written in Python and requires Python 3.10 or later. You can
-download Python from [here](https://www.python.org/downloads/) or get it from
-the Microsoft Store if you are on Windows.
+- Poll-based feeder with checkpointed state to avoid duplicate publication across restarts.
+- Kafka, MQTT, and AMQP transport variants that share one xRegistry event contract.
+- CloudEvents output suitable for Event Hubs, Fabric Event Streams, or self-managed brokers.
+- Reference/telemetry publishing behavior and schemas documented in [EVENTS.md](EVENTS.md).
 
-### Installation Steps
+## Repository layout
 
-Once Python is installed, you can install the tool from the command line as follows:
+```text
+usgs-earthquakes/
+  xreg/usgs_earthquakes.xreg.json
+  usgs_earthquakes/
+  usgs_earthquakes_mqtt/
+  usgs_earthquakes_amqp/
+  usgs_earthquakes_producer/
+  usgs_earthquakes_mqtt_producer/
+  usgs_earthquakes_amqp_producer/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+  notebook/
+  tests/
+```
+
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS access to the upstream source APIs.
+- Network access to your target Kafka broker, MQTT broker, or AMQP endpoint.
+- A writable host directory mounted to persist the source state file across restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a writable host volume for state persistence. Without it, dedupe/checkpoint state resets on every restart.
+
+### Kafka
 
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=usgs-earthquakes
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_EQ_LAST_POLLED_FILE=/state/usgs-earthquakes.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-usgs-earthquakes:latest
 ```
 
-If you clone the repository, you can install the tool as follows:
+### MQTT (Unified Namespace)
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/usgs-earthquakes
-pip install .
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_EARTHQUAKES_LAST_POLLED_FILE=/state/usgs-earthquakes.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-usgs-earthquakes-mqtt:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
-
-## How to Use
-
-After installation, the tool can be run using the `usgs-earthquakes` command. It
-supports multiple subcommands:
-- **List Events (`events`)**: Fetch and display recent earthquake events.
-- **List Feeds (`feeds`)**: Show all available USGS GeoJSON feeds.
-- **Feed Events (`feed`)**: Continuously poll USGS earthquake feeds and send updates to a Kafka topic.
-
-### **List Events (`events`)**
-
-Fetches and displays recent earthquake events from a specified USGS feed.
-
-#### Example Usage:
+### AMQP 1.0
 
 ```bash
-usgs-earthquakes events
-usgs-earthquakes events --feed m4.5_day
-usgs-earthquakes events --feed all_hour --min-magnitude 3.0
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_EARTHQUAKES_LAST_POLLED_FILE=/state/usgs-earthquakes.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/usgs-earthquakes" \
+  ghcr.io/clemensv/real-time-sources-usgs-earthquakes-amqp:latest
 ```
 
-### **List Feeds (`feeds`)**
+## Configuration reference
 
-Lists all available USGS earthquake GeoJSON feeds and their URLs.
+For full transport/auth matrices (Kafka, MQTT, AMQP), source-specific options, and deployment options, see [CONTAINER.md](CONTAINER.md).
 
-```bash
-usgs-earthquakes feeds
-```
+## Upstream source
 
-### **Feed Events (`feed`)**
+USGS Earthquake Hazards Program GeoJSON summary feeds.
 
-Polls a USGS earthquake feed and sends earthquake events as CloudEvents to a
-Kafka topic. The events are formatted using CloudEvents structured JSON format
-and described in [EVENTS.md](EVENTS.md).
+## Data model
 
-- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
-- `--kafka-topic`: Kafka topic to send messages to.
-- `--sasl-username`: Username for SASL PLAIN authentication.
-- `--sasl-password`: Password for SASL PLAIN authentication.
-- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream [connection string](#connection-string-for-microsoft-event-hubs-or-fabric-event-streams) (overrides other Kafka parameters).
-- `--feed`: Feed to poll (default: `all_hour`). See `usgs-earthquakes feeds` for options.
-- `--min-magnitude`: Optional client-side minimum magnitude filter.
+This feeder emits the following event families:
 
-#### Example Usage:
+- **`Event`**
 
-```bash
-usgs-earthquakes feed --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-topic "<topic_name>" --sasl-username "<username>" --sasl-password "<password>"
-```
+See [EVENTS.md](EVENTS.md) for field-level schemas, subject templates, and key mapping per transport.
 
-Alternatively, using a connection string for Microsoft Event Hubs or Microsoft
-Fabric Event Streams:
+## Deploying into Microsoft Fabric
 
-```bash
-usgs-earthquakes feed --connection-string "<your_connection_string>"
-```
+Two hosting options are available for this poll-based source:
 
-To poll only significant earthquakes (M4.5+) from the past day:
+### Fabric Notebook feeder
 
-```bash
-usgs-earthquakes feed --connection-string "<your_connection_string>" --feed m4.5_day
-```
+The notebook under [`notebook/`](notebook/) runs the bridge on a Fabric schedule and resolves the Event Stream connection string at runtime via Fabric topology APIs.
 
-### Connection String for Microsoft Event Hubs or Fabric Event Streams
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#usgs-earthquakes/fabric-notebook)
 
-The connection string format is as follows:
+### Fabric ACI feeder
 
-```
-Endpoint=sb://<your-event-hubs-namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy-name>;SharedAccessKey=<access-key>;EntityPath=<event-hub-name>
-```
+A long-running Azure Container Instance hosts one of the three transport images and publishes to a Fabric Event Stream custom endpoint.
 
-When provided, the connection string is parsed to extract the Kafka configuration parameters:
-- **Bootstrap Servers**: Derived from the `Endpoint` value.
-- **Kafka Topic**: Derived from the `EntityPath` value.
-- **SASL Username and Password**: The username is set to `'$ConnectionString'`, and the password is the entire connection string.
-
-### Environment Variables
-
-The tool supports the following environment variables to avoid passing them via the command line:
-- `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
-- `USGS_EQ_LAST_POLLED_FILE`: Path to file storing the last polled event IDs (default: `~/.usgs_earthquakes_last_polled.json`).
-- `LOG_LEVEL`: Logging level (default: INFO).
-
-## Available Feeds
-
-The following USGS GeoJSON feeds are available:
-
-| Feed | Description |
-|------|-------------|
-| `all_hour` | All earthquakes, past hour (default) |
-| `all_day` | All earthquakes, past day |
-| `all_week` | All earthquakes, past week |
-| `all_month` | All earthquakes, past month |
-| `m1.0_hour` | M1.0+ earthquakes, past hour |
-| `m1.0_day` | M1.0+ earthquakes, past day |
-| `m2.5_hour` | M2.5+ earthquakes, past hour |
-| `m2.5_day` | M2.5+ earthquakes, past day |
-| `m4.5_hour` | M4.5+ earthquakes, past hour |
-| `m4.5_day` | M4.5+ earthquakes, past day |
-| `significant_hour` | Significant earthquakes, past hour |
-| `significant_day` | Significant earthquakes, past day |
-
-... and more variations for week and month time periods.
-
-## State Management
-
-The tool tracks event IDs and their last update timestamps in a local JSON file.
-Only new events or events that have been updated since last seen are forwarded to
-Kafka. Old entries are pruned after 30 days.
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#usgs-earthquakes/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### Kafka — bring your own Event Hub / Kafka
 
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+Deploys the Kafka image and uses a provided connection string.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-earthquakes%2Fazure-template.json)
 
-### Option 2: Deploy with a new Event Hub
+### Kafka — provision a new Event Hub
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploys Kafka plus a new Event Hubs namespace and hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-earthquakes%2Fazure-template-with-eventhub.json)
 
-## Transports
+### AMQP — bring your own AMQP broker
 
-This source now ships separate Kafka, MQTT, and AMQP containers over the same xRegistry contract. The Kafka image is the best fit when consumers need replay, batch catch-up, or a single ordered stream. The MQTT image (`ghcr.io/clemensv/real-time-sources-usgs-earthquakes-mqtt:latest`) is the better fit for operational dashboards and Unified Namespace subscribers that want to subscribe directly to the current state or live event slice for this source.
+Deploys the AMQP image against a provided AMQP broker endpoint.
 
-The MQTT contract is source-specific: MQTT/5.0 transport variant for USGS earthquake events. Non-retained QoS-1 event stream routed by contributor network, magnitude bucket, and event code under seismic/intl/usgs/usgs-earthquakes/... Buckets are m0 for <1 or unknown, m1..m6 for [1,7), and m7plus for >=7.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-earthquakes%2Fazure-template-amqp.json)
 
-MQTT publishes binary-mode CloudEvents with JSON payloads and CloudEvent attributes in MQTT 5 user properties. Topic patterns from `xreg/usgs_earthquakes.xreg.json`:
+## Next steps
 
-| Topic pattern | Message type | Delivery |
-|---|---|---|
-| `seismic/intl/usgs/usgs-earthquakes/{net}/{magnitude_bucket}/{code}/quake` | `USGS.Earthquakes.Event` | QoS 1, retain=false |
-
-Four Azure Container Instance deployment shapes are documented for this source:
-
-| Transport | Template |
-|---|---|
-| Kafka, bring your own Event Hub or compatible broker | `azure-template.json` |
-| Kafka, create an Event Hubs namespace and hub | `azure-template-with-eventhub.json` |
-| MQTT, bring your own MQTT 5 broker | `azure-template-mqtt.json` |
-| MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
-
-See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.
-
-## AMQP 1.0 companion feeder
-
-This source also ships an AMQP 1.0 companion container, `ghcr.io/clemensv/real-time-sources-usgs-earthquakes-amqp:latest`, for queue-oriented consumers using generic AMQP brokers or Azure Service Bus. It emits the same CloudEvents and payload schemas as the Kafka and MQTT variants on a single broker address (default `usgs-earthquakes`).
-
-```bash
-docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=usgs-earthquakes   ghcr.io/clemensv/real-time-sources-usgs-earthquakes-amqp:latest
-```
-
-[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-earthquakes%2Fazure-template-amqp.json)
-
+- Review [EVENTS.md](EVENTS.md) before building consumers.
+- Use [CONTAINER.md](CONTAINER.md) for complete env-var matrices and auth-mode examples.

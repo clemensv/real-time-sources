@@ -1,13 +1,14 @@
-# BOM Australia Weather Observations Events
+# BOM Australia feeder Events
 
-Real-time weather observations from the [Australian Bureau of Meteorology](http://www.bom.gov.au/) (BOM).
+MQTT 5 companion message group for AU.Gov.BOM.Weather.
 
 ## At a glance
 
-- **Event types:** 3 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 3 documented event types (9 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 2 telemetry event types.
 - **Identity:** `{station_wmo}`, `{warning_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -28,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `weather/au/bom/bom-australia/+/+/info`, `weather/au/bom/bom-australia/+/+/observation`, `alerts/au/bom/bom-australia/+/+/+/warning`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('weather/au/bom/bom-australia/+/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `bom-australia`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/bom-australia')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -48,12 +77,14 @@ Each event identifies the real-world resource with `{station_wmo}`. `{station_wm
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `bom-australia`, key `{station_wmo}` |
+| `MQTT/5.0` | topic `weather/au/bom/bom-australia/{state}/{station_wmo}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/bom-australia`, message subject `{station_wmo}`; application properties state `{state}` |
 
 #### Payload
 
 `Station` payloads are JSON object. Required fields: `station_wmo`, `name`, `latitude`, `longitude`.
 
-- **`station_wmo`** (int32, required): WMO station number assigned by the World Meteorological Organization, used as the stable identity for this station across all BOM products.
+- **`station_wmo`** (string, required): WMO station number assigned by the World Meteorological Organization, used as the stable identity for this station across all BOM products.
 - **`name`** (string, required): Human-readable station name as assigned by the Bureau of Meteorology, e.g. 'Sydney Airport' or 'Melbourne Airport'.
 - **`product_id`** (string, optional): BOM product code identifying the observation product this station belongs to, e.g. 'IDN60901' for NSW capital city observations.
 - **`state`** (string, optional): Australian state or territory the station is located in, as reported by BOM, e.g. 'New South Wales', 'Victoria'.
@@ -66,7 +97,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 ```json
 {
-  "station_wmo": 0,
+  "station_wmo": "string",
   "name": "string",
   "product_id": "string",
   "state": "string",
@@ -78,7 +109,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
 
 ### Weather Observation
 
@@ -97,12 +128,14 @@ Each event identifies the real-world resource with `{station_wmo}`. `{station_wm
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `bom-australia`, key `{station_wmo}` |
+| `MQTT/5.0` | topic `weather/au/bom/bom-australia/{state}/{station_wmo}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/bom-australia`, message subject `{station_wmo}`; application properties state `{state}` |
 
 #### Payload
 
 `Weather Observation` payloads are JSON object. Required fields: `station_wmo`, `station_name`, `observation_time_utc`.
 
-- **`station_wmo`** (int32, required): WMO station number identifying the reporting station.
+- **`station_wmo`** (string, required): WMO station number identifying the reporting station.
 - **`station_name`** (string, required): Human-readable name of the reporting station.
 - **`observation_time_utc`** (datetime, required): Timestamp of the observation in UTC, derived from the BOM 'aifstime_utc' field in YYYYMMDDHHmmss format.
 - **`local_time`** (string, optional): Local date and time string as provided by BOM in 'local_date_time_full' format (YYYYMMDDHHmmss).
@@ -133,13 +166,14 @@ Each event identifies the real-world resource with `{station_wmo}`. `{station_wm
 - **`swell_period`** (double or null, optional, s): Dominant swell period for coastal stations.
 - **`latitude`** (double, optional, degree (°)): Latitude of the station at observation time.
 - **`longitude`** (double, optional, degree (°)): Longitude of the station at observation time.
+- **`state`** (string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
 {
-  "station_wmo": 0,
+  "station_wmo": "string",
   "station_name": "string",
   "observation_time_utc": "2024-01-01T00:00:00Z",
   "local_time": "string",
@@ -169,7 +203,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "swell_height": 0,
   "swell_period": 0,
   "latitude": 0,
-  "longitude": 0
+  "longitude": 0,
+  "state": "string"
 }
 ```
 
@@ -194,6 +229,8 @@ Each event identifies the real-world resource with `{warning_id}`. `{warning_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `bom-australia`, key `{warning_id}` |
+| `MQTT/5.0` | topic `alerts/au/bom/bom-australia/{state}/{severity}/{warning_id}/warning`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/bom-australia`, message subject `{state}/{severity}/{warning_id}` |
 
 #### Payload
 
@@ -208,6 +245,8 @@ Each event identifies the real-world resource with `{warning_id}`. `{warning_id}
 - **`issued_local_time_text`** (string or null, optional): Local issuance time prefix embedded in the RSS headline, for example '08/16:29 EST', when present.
 - **`warning_type`** (string or null, optional): Warning headline extracted from the RSS title before the trailing affected-area clause, for example 'Severe Weather Warning'.
 - **`affected_area_text`** (string or null, optional): Affected area clause extracted from the RSS title after the word 'for', for example 'parts of Snowy Mountains Forecast District.'.
+- **`severity`** (string, optional): Normalized routing field 'severity' added for MQTT/AMQP subscriber filtering.
+- **`state`** (string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -222,7 +261,9 @@ Synthetic example values are generated deterministically from the schema: consta
   "published_at": "2024-01-01T00:00:00Z",
   "issued_local_time_text": "string",
   "warning_type": "string",
-  "affected_area_text": "string"
+  "affected_area_text": "string",
+  "severity": "string",
+  "state": "string"
 }
 ```
 
@@ -247,19 +288,10 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/bom_australia.xreg.json`](xreg/bom_australia.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-
-## MQTT and AMQP companion transports
-
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`bom-australia`). Docker E2E mock mode is available through `BOM_AUSTRALIA_MOCK=true`.
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources/bom-australia-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/bom-australia-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

@@ -1,78 +1,226 @@
-# JMA Bosai Warning Container
+# JMA Bosai Warning container images
 
-The Kafka container polls Japan Meteorological Agency public Bosai weather warning and tsunami alert JSON feeds and publishes structured CloudEvents to Kafka-compatible endpoints. `Dockerfile.mqtt` builds the MQTT/UNS weather-warning feeder.
+This document covers the published OCI images for the JMA Bosai Warning source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
-## Environment
+## Why this container
 
-Required: one of `CONNECTION_STRING` or `KAFKA_BOOTSTRAP_SERVERS`.
+JMA warning products are operationally relevant for public-sector monitoring and enterprise resilience analytics. This feeder standardizes those products into CloudEvents across Kafka, MQTT, and AMQP transports.
 
-Optional:
+## What ships in the box
 
-- `KAFKA_TOPIC_WARNING` (default `jma-bosai-warning`)
-- `KAFKA_TOPIC_TSUNAMI` (default `jma-bosai-tsunami`)
-- `POLLING_INTERVAL_WARNING` (default `60` seconds)
-- `POLLING_INTERVAL_TSUNAMI` (default `30` seconds)
-- `OFFICE_METADATA_REFRESH_HOURS` (default `720`)
-- `STATE_FILE` (default `.\state\jma-bosai-warning.json`)
-- `KAFKA_ENABLE_TLS` (set `false` for plain Kafka)
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-jma-bosai-warning` | Kafka | JSON CloudEvents to one Kafka topic |
+| `ghcr.io/clemensv/real-time-sources-jma-bosai-warning-mqtt` | MQTT 5.0 | Binary CloudEvents into UNS topic tree from xRegistry |
+| `ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp` | AMQP 1.0 | Binary CloudEvents to one AMQP address |
 
-## Run
+## Image contract
 
-Kafka:
+| Aspect | Value |
+| --- | --- |
+| Base image | Kafka: `python:3.10-slim`; MQTT: `python:3.10-slim`; AMQP: `python:3.10-slim` |
+| Default entry point | Kafka: `python -m jma_bosai_warning`; MQTT: `python -m jma_bosai_warning_mqtt feed`; AMQP: `python -m jma_bosai_warning_amqp feed` |
+| Exposed ports | none — outbound publisher only |
+| Persistent state vars | Kafka: `STATE_FILE`; MQTT: `JMA_BOSAI_WARNING_MQTT_STATE_FILE`; AMQP: `JMA_BOSAI_WARNING_AMQP_STATE_FILE` |
+| Image tags | `:latest`, `:sha-<git-sha>`, release tags |
 
-```powershell
-docker build -t jma-bosai-warning ./jma-bosai-warning
-docker run --rm -e CONNECTION_STRING="BootstrapServer=host.docker.internal:9092;EntityPath=jma-bosai-warning" -e KAFKA_ENABLE_TLS=false jma-bosai-warning
-```
-
-MQTT/UNS:
-
-```powershell
-docker build -f ./jma-bosai-warning/Dockerfile.mqtt -t jma-bosai-warning-mqtt ./jma-bosai-warning
-docker run --rm -e MQTT_BROKER_URL="mqtt://host.docker.internal:1883" jma-bosai-warning-mqtt
-```
-
-The MQTT feeder publishes retained office references to `alerts/jp/jma/jma-bosai-warning/{prefecture}/REFERENCE/{office_code}/{area_code}/office` and non-retained warning records to `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/warning`.
-
-For Azure Event Hubs or Fabric Event Streams, pass the full connection string in `CONNECTION_STRING`. Events are CloudEvents; see `EVENTS.md` for schemas and keys.
-
-## AMQP 1.0 container
-
-The AMQP companion image publishes the same `Jma Bosai Warning` CloudEvents to a generic AMQP 1.0 broker, Azure Service Bus with Entra ID CBS, or a SAS-token Service Bus-compatible endpoint.
+## Installing the container images
 
 ```bash
+docker pull ghcr.io/clemensv/real-time-sources-jma-bosai-warning:latest
+docker pull ghcr.io/clemensv/real-time-sources-jma-bosai-warning-mqtt:latest
 docker pull ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest
 ```
 
-### Generic AMQP broker (SASL PLAIN)
+## Using the Kafka image
+
+### With Azure Event Hubs / Fabric Event Streams
 
 ```bash
-docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=jma-bosai-warning   ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/jma-bosai-warning.json \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-jma-bosai-warning:latest
 ```
 
-### Azure Service Bus (Entra ID)
+### With a Kafka broker (SASL/PLAIN)
 
 ```bash
-docker run --rm   -e AMQP_HOST=<namespace>.servicebus.windows.net   -e AMQP_PORT=5671   -e AMQP_TLS=true   -e AMQP_ADDRESS=jma-bosai-warning   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_AUDIENCE=https://servicebus.azure.net/.default   ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/jma-bosai-warning.json \
+  -e KAFKA_BOOTSTRAP_SERVERS="<host:9093>" \
+  -e KAFKA_TOPIC="<topic>" \
+  -e SASL_USERNAME="<username>" \
+  -e SASL_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-jma-bosai-warning:latest
 ```
 
-### Service Bus emulator / SAS CBS
+## Using the MQTT image
+
+### Generic MQTT 5 broker (username/password)
 
 ```bash
-docker run --rm   -e AMQP_HOST=servicebus-emulator   -e AMQP_PORT=5672   -e AMQP_ADDRESS=jma-bosai-warning   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME=RootManageSharedAccessKey   -e AMQP_SAS_KEY=<base64-key>   ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e JMA_BOSAI_WARNING_MQTT_STATE_FILE=/state/jma-bosai-warning.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-jma-bosai-warning-mqtt:latest
 ```
 
-| Variable | Description | Default |
-|---|---|---|
-| `AMQP_BROKER_URL` | Optional AMQP URI for generic brokers. | unset |
-| `AMQP_HOST` / `AMQP_PORT` | Broker host and port when no URI is supplied. | `localhost` / `5672` |
-| `AMQP_ADDRESS` | Queue/topic/address to publish to. | `jma-bosai-warning` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `AMQP_AUTH_MODE=password`. | unset |
-| `AMQP_TLS` | Use TLS (`true`, `1`, or `yes`). | `false` |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
-| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra token scope and optional managed identity client ID. | Service Bus scope / unset |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS CBS credentials. | unset |
-| `AMQP_CONTENT_MODE` | CloudEvents content mode: `binary` or `structured`. | `binary` |
+### Azure Event Grid MQTT broker (Entra JWT)
 
-[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-warning%2Fazure-template-amqp.json)
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e JMA_BOSAI_WARNING_MQTT_STATE_FILE=/state/jma-bosai-warning.json \
+  -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883" \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID="<managed-identity-client-id>" \
+  -e MQTT_CLIENT_ID="<unique-client-id>" \
+  ghcr.io/clemensv/real-time-sources-jma-bosai-warning-mqtt:latest
+```
 
+## Using the AMQP image
+
+### Generic AMQP 1.0 broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e JMA_BOSAI_WARNING_AMQP_STATE_FILE=/state/jma-bosai-warning.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/jma-bosai-warning" \
+  ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest
+```
+
+### Azure Service Bus / Event Hubs (Entra ID via CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e JMA_BOSAI_WARNING_AMQP_STATE_FILE=/state/jma-bosai-warning.json \
+  -e AMQP_HOST="<namespace>.servicebus.windows.net" \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS="jma-bosai-warning" \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_CLIENT_ID="<managed-identity-client-id>" \
+  ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest
+```
+
+### Service Bus emulator / SAS namespaces (SAS-token CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e JMA_BOSAI_WARNING_AMQP_STATE_FILE=/state/jma-bosai-warning.json \
+  -e AMQP_HOST="servicebus-emulator" \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS="jma-bosai-warning" \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey" \
+  -e AMQP_SAS_KEY="<sas-key>" \
+  ghcr.io/clemensv/real-time-sources-jma-bosai-warning-amqp:latest
+```
+
+## Environment variables
+
+### Common source runtime variables
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to persisted checkpoint/dedupe state for the KAFKA bridge runtime. |
+| `JMA_BOSAI_WARNING_MQTT_STATE_FILE` | Path to persisted checkpoint/dedupe state for the MQTT bridge runtime. |
+| `JMA_BOSAI_WARNING_AMQP_STATE_FILE` | Path to persisted checkpoint/dedupe state for the AMQP bridge runtime. |
+| `POLLING_INTERVAL_WARNING` | Polling interval (seconds) for warning feed polling. |
+| `POLLING_INTERVAL_TSUNAMI` | Polling interval (seconds) for tsunami feed polling. |
+| `JMA_WARNING_OFFICE_CODES` | Optional office-code filter for warning issuance areas. |
+
+### Kafka image variables
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric custom endpoint style connection string. |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list (`host:port`). |
+| `KAFKA_TOPIC` | Destination Kafka topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` to disable TLS (default `true`). |
+
+### MQTT image variables
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL, e.g. `mqtt://host:1883` or `mqtts://host:8883`. |
+| `MQTT_HOST` / `MQTT_PORT` / `MQTT_TLS` | Component-level alternative to `MQTT_BROKER_URL`. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for Event Grid JWT auth. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for `MQTT_AUTH_MODE=password`. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | User-assigned managed identity client id (optional). |
+| `MQTT_CLIENT_ID` | MQTT client identifier (must be unique per broker). |
+| `MQTT_CONTENT_MODE` | CloudEvents mode: `binary` (default) or `structured`. |
+
+### AMQP image variables
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | URL form endpoint, e.g. `amqp://user:pw@host:5672/address`. |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component-level endpoint settings. |
+| `AMQP_ADDRESS` | Target AMQP address (queue/topic). |
+| `AMQP_AUTH_MODE` | `password` (default), `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | Credentials for `AMQP_AUTH_MODE=password`. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra auth settings for `AMQP_AUTH_MODE=entra`. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS policy/key pair for `AMQP_AUTH_MODE=sas`. |
+| `AMQP_CONTENT_MODE` | CloudEvents mode: `binary` (default) or `structured`. |
+
+## Deploying into Microsoft Fabric
+
+### Fabric Notebook feeder
+
+Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source jma-bosai-warning -WorkspaceId <id> -CapacityId <id>` to deploy the notebook in `notebook/`, bind Event Stream/Lakehouse/KQL assets, and schedule poll runs.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#jma-bosai-warning/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source jma-bosai-warning -WorkspaceId <id> -CapacityId <id>` for always-on container hosting that publishes to Fabric Event Streams.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#jma-bosai-warning/fabric-aci)
+
+## Deploying into Azure Container Instances
+
+### MQTT — bring your own broker
+
+Deploys the MQTT image against an existing MQTT 5 broker.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-warning%2Fazure-template-mqtt.json)
+
+### MQTT — provision Event Grid MQTT broker
+
+Deploys MQTT plus a new Event Grid namespace broker and identity wiring.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-warning%2Fazure-template-with-eventgrid-mqtt.json)
+
+### AMQP — bring your own AMQP broker
+
+Deploys the AMQP image against a provided AMQP broker endpoint.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-warning%2Fazure-template-amqp.json)
+
+### AMQP — provision Azure Service Bus
+
+Deploys AMQP plus a new Service Bus namespace/queue and sender identity wiring.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-warning%2Fazure-template-with-servicebus.json)
+
+## Related
+
+- [README.md](README.md) — source overview, use cases, and quick-start guidance.
+- [EVENTS.md](EVENTS.md) — CloudEvents schemas and routing contract.
+- [`xreg/`](xreg/) — authoritative xRegistry manifest used to generate producers and event docs.
+
+## Next steps
+
+- Validate topics/subjects/schemas in [EVENTS.md](EVENTS.md).
+- Use the deployment buttons above for the transport and hosting shape you need.

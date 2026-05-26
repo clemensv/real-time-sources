@@ -1,4 +1,4 @@
-# ČHMÚ Hydrological Data Bridge Events
+# CHMI Hydro feeder Events
 
 ČHMÚ Hydrological Data publishes water level and discharge observations from the Czech Hydrometeorological Institute (ČHMÚ) for Czech hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -8,7 +8,7 @@
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `{station_id}` identifies the resource each event is about.
-- **Operations:** The checked-in guide documents a default polling interval of 600 seconds.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -191,7 +191,7 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- The checked-in guide documents a default polling interval of 600 seconds.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 

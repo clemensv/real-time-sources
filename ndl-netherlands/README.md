@@ -1,80 +1,171 @@
-# NDW Netherlands Road Traffic Bridge
+# NDL Netherlands feeder
 
-This bridge downloads DATEX II XML data published by the Dutch NDW (Nationaal
-Dataportaal Wegverkeer) at `https://opendata.ndw.nu` and forwards traffic
-speed, travel time, and situation data to Apache Kafka, Azure Event Hubs,
-or Microsoft Fabric Event Streams as CloudEvents.
+This feeder turns Dutch NDW DATEX II road feeds into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-## Data Sources
+Companion docs:
 
-| Feed | URL | Update | Content |
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+Dutch roadway operators, traveler-information systems, logistics optimizers, and analytics teams depend on NDW measurements and situations for real-time mobility operations. This bridge standardizes polling, normalization, dedupe, CloudEvents shaping, and transport delivery so consumers subscribe once and reuse the same contract across platforms.
+
+- **Traffic and mobility operations** — live dashboards and operational control-room views.
+- **Route and dispatch optimization** — dynamic rerouting and ETA management under disruptions.
+- **Analytics and planning** — long-running ingestion into Fabric Eventhouse / ADX / lakes.
+- **Compliance and reporting** — auditable event history for public-sector and regulated workflows.
+- **Cross-domain correlation** — fuse mobility events with weather, safety, and infrastructure feeds.
+
+## Overview
+
+**NDL Netherlands** is a poll-based bridge that ingests upstream data from [Dutch NDW DATEX II road feeds](https://opendata.ndw.nu) and re-emits normalized CloudEvents.
+
+| Variant | Container image | Transport | Default delivery shape |
 |---|---|---|---|
-| Traffic Speed | `trafficspeed.xml.gz` | ~1 min | Per-segment speed and flow |
-| Travel Time | `traveltime.xml.gz` | ~1 min | Segment travel times |
-| Situations | `actueel_beeld.xml.gz` | ~15 min | Road works, closures, incidents |
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-ndl-netherlands` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents (binary mode), key templates `{site_id}, {situation_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-ndl-netherlands-mqtt` | MQTT 5.0 broker (incl. Azure Event Grid MQTT) | Unified-Namespace topic tree rooted under `traffic/nl/ndw/...` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-ndl-netherlands-amqp` | AMQP 1.0 brokers incl. Azure Service Bus / Event Hubs | Binary CloudEvents to AMQP address `ndl-netherlands` |
 
-All files are gzip-compressed DATEX II XML (v2 for speed/travel time, v3 for
-situations). No authentication is required.
+All variants share:
 
-## Event Types
+- The same xRegistry contract (`xreg/ndl_netherlands.xreg.json`).
+- The same event-family model and schema set.
+- Poll-based acquisition logic with periodic refresh cycles.
 
-- **TrafficSpeed** — aggregated speed/flow per measurement site
-- **TravelTime** — actual and reference travel time per segment
-- **TrafficSituation** — road works, lane closures, diversions
+## Key features
 
-See [EVENTS.md](EVENTS.md) for the full schema documentation and
-[CONTAINER.md](CONTAINER.md) for deployment instructions.
+- Poll-based bridge with CloudEvents-first contract design.
+- Shared event contract across Kafka, MQTT, and AMQP transports.
+- Fabric-ready deployment path (Notebook and ACI hosting options).
+- ARM templates for direct Azure Container Instance deployment targets.
+- Source-specific event families and stable domain key templates.
 
-## Fabric notebook hosting
+## Repository layout
 
-This source can also be hosted as a Microsoft Fabric notebook (scheduled
-single-cycle execution) via
-[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1);
-the notebook template lives at [`notebook/ndl-netherlands-feed.ipynb`](notebook/ndl-netherlands-feed.ipynb).
-
-## Quick Start
-
-```bash
-pip install -e .
-CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=ndl-traffic" \
-  KAFKA_ENABLE_TLS=false \
-  python -m ndl_netherlands
+```text
+ndl-netherlands/
+  xreg/ndl_netherlands.xreg.json
+  ndl_netherlands/
+  ndl_netherlands_mqtt/
+  ndl_netherlands_amqp/
+  ndl_netherlands_producer/
+  ndl_netherlands_mqtt_producer/
+  ndl_netherlands_amqp_producer/
+  kql/
+  notebook/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
 ```
 
-## Running Tests
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS connectivity to the upstream API at `https://opendata.ndw.nu`.
+- Network access to your target Kafka broker, MQTT broker, or AMQP 1.0 peer.
+- A writable host directory mounted at `/state` for persistent polling/dedupe state.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> This source is poll-based. Mount a host volume and set `STATE_FILE` so state survives container restarts.
+
+### Kafka
 
 ```bash
-pip install pytest
-python -m pytest tests/ -v
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ndl-netherlands.json \
+  -e CONNECTION_STRING="<event-hubs-or-kafka-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-ndl-netherlands:latest
 ```
+
+### MQTT (Unified Namespace)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ndl-netherlands.json \
+  -e MQTT_BROKER_URL=mqtts://<broker-host>:8883 \
+  -e MQTT_USERNAME=<username> \
+  -e MQTT_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-ndl-netherlands-mqtt:latest
+```
+
+### AMQP 1.0
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ndl-netherlands.json \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/ndl-netherlands' \
+  ghcr.io/clemensv/real-time-sources-ndl-netherlands-amqp:latest
+```
+
+## Configuration reference
+
+The complete environment-variable matrix for Kafka, MQTT, and AMQP images (including authentication-mode differences and Azure deployment assumptions) is documented in [CONTAINER.md](CONTAINER.md).
+
+## Data model
+
+This source emits the following event families (see [EVENTS.md](EVENTS.md) for full schema-level detail):
+
+- **NL.NDW.Traffic.Measurements** — 2 event type(s): NL.NDW.Traffic.TrafficSpeed, NL.NDW.Traffic.TravelTime.
+- **NL.NDW.Traffic.Situations** — 1 event type(s): NL.NDW.Traffic.TrafficSituation.
+
+## Deploying into Microsoft Fabric
+
+NDL Netherlands supports both Fabric hosting models via the source card on the [project portal](https://clemensv.github.io/real-time-sources/#ndl-netherlands).
+
+### Fabric Notebook feeder
+
+Because this source is poll-based and ships a notebook asset (`notebook/`), you can run scheduled ingestion in-Fabric with:
+
+`tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source ndl-netherlands -WorkspaceId <id> -CapacityId <id>`
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#ndl-netherlands/fabric-notebook)
+
+### Fabric ACI feeder
+
+For always-on execution, deploy a long-running Azure Container Instance feeder with:
+
+`tools/deploy-fabric/deploy-fabric-aci.ps1 -Source ndl-netherlands -WorkspaceId <id> -CapacityId <id>`
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#ndl-netherlands/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+The following ARM templates exist in this source directory and have matching deploy buttons:
 
-### Option 1: Bring your own Event Hub
+### MQTT — bring your own broker
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+Deploy MQTT against an existing MQTT 5.0 broker endpoint.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndl-netherlands%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndl-netherlands%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision a new Event Grid MQTT broker
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploy MQTT plus an Event Grid namespace broker and managed-identity role assignment.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndl-netherlands%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
+
+Deploy Kafka plus a new Event Hubs namespace and event hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndl-netherlands%2Fazure-template-with-eventhub.json)
 
+### Kafka — bring your own Event Hub / Kafka
 
-## MQTT and AMQP companion feeders
+Deploy the Kafka container with your own Event Hubs/Fabric/Event Stream connection string.
 
-This source now ships separate MQTT and AMQP companion containers in addition to the Kafka/Event Hubs feeder. The MQTT container publishes binary-mode CloudEvents to the UNS topic templates declared in `xreg/`; the AMQP container publishes the same CloudEvents to an AMQP 1.0 address named `ndl-netherlands` by default.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndl-netherlands%2Fazure-template.json)
 
-- MQTT image: `ghcr.io/clemensv/real-time-sources-ndl-netherlands-mqtt:latest`
-- AMQP image: `ghcr.io/clemensv/real-time-sources-ndl-netherlands-amqp:latest`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `infra/azure-template-amqp.json`, `infra/azure-template-with-servicebus.json`
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full auth-mode and environment-variable details.
+- Validate transport-specific routing and key templates against your downstream topology.
+- Review upstream usage guidance at [Dutch NDW DATEX II road feeds](https://opendata.ndw.nu).

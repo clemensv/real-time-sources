@@ -1,253 +1,181 @@
-# BAFU Hydrology Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# BAFU Hydro container images
 
-This container image provides a bridge between the Swiss Federal Office for the
-Environment's (BAFU/FOEN) hydrological monitoring network and Apache Kafka, Azure
-Event Hubs, and Fabric Event Streams. The bridge polls the
-[existenz.ch](https://api.existenz.ch) Hydro API for water level, discharge, and
-temperature readings from ~300 Swiss gauging stations and forwards new
-observations as [CloudEvents](https://cloudevents.io/) in JSON format.
+This document covers the published OCI container images for the BAFU Hydro feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
-> **Note:** The upstream data source requires no authentication or API key. The
-> bridge can start fetching data immediately with no additional registration.
+## Why this container
 
-## Functionality
+The BAFU Hydro source is exposed as a polling API upstream. These container images package polling cadence control, stateful dedupe, CloudEvents production, and transport/auth wiring so operators can deploy a ready-to-run feeder instead of building source-specific integration code.
 
-The bridge retrieves hydrological data from the existenz.ch API — which wraps
-the official BAFU/FOEN measurements published at
-[hydrodaten.admin.ch](https://www.hydrodaten.admin.ch) — and writes entries to a
-Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented
-in [EVENTS.md](EVENTS.md).
+## What ships in the box
 
-On startup, the bridge emits `CH.BAFU.Hydrology.Station` events for all
-monitoring stations (reference data). It then enters a polling loop, emitting
-`CH.BAFU.Hydrology.WaterLevelObservation` events only for new or changed
-readings (delta emission).
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-bafu-hydro` | Apache Kafka 2.x | JSON CloudEvents on one topic; key template `{station_id}` |
+| `ghcr.io/clemensv/real-time-sources-bafu-hydro-mqtt` | MQTT 5.0 | Unified-Namespace topic template `(see EVENTS.md)` |
+| `ghcr.io/clemensv/real-time-sources-bafu-hydro-amqp` | AMQP 1.0 | Binary CloudEvents to AMQP node `bafu-hydro` |
 
-## Database Schemas and Handling
+Event families in this source:
 
-If you want to build a full data pipeline with all events ingested into a
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
+- **CH.BAFU.Hydrology** — `Station`, `WaterLevelObservation`.
 
-## Installing the Container Image
+## Image contract
 
-Pull the container image from the GitHub Container Registry:
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.10-slim` (source Dockerfiles) |
+| Default entry point | Kafka `["python", "-m", "bafu_hydro", "feed"]`; MQTT `["python", "-m", "bafu_hydro_mqtt", "feed"]`; AMQP `["python", "-m", "bafu_hydro_amqp", "feed"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | process exits cleanly on `SIGTERM` |
+| Persistent state | `STATE_FILE`; mount a host volume for restart-safe dedupe/checkpoint behavior |
+| Image tags | `:latest` and immutable release/sha tags published from repository CI |
 
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-bafu-hydro:latest
+## Installing the container images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-bafu-hydro:latest
+docker pull ghcr.io/clemensv/real-time-sources-bafu-hydro-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-bafu-hydro-amqp:latest
 ```
 
-To use it as a base image in a Dockerfile:
+## Using the Kafka image
 
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-bafu-hydro:latest
+### With a Kafka broker (SASL/PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/bafu-hydro.json \
+  -e KAFKA_BOOTSTRAP_SERVERS="<host:port>" \
+  -e KAFKA_TOPIC="<topic>" \
+  -e SASL_USERNAME="<username>" \
+  -e SASL_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-bafu-hydro:latest
 ```
 
-## Using the Container Image
+### With Azure Event Hubs / Fabric Event Streams
 
-The container starts the bridge in feed mode, reading data from the existenz.ch
-Hydro API and writing it to Kafka, Azure Event Hubs, or Fabric Event Streams.
-
-### With Azure Event Hubs or Fabric Event Streams
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-bafu-hydro:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/bafu-hydro.json \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-bafu-hydro:latest
 ```
 
-### With a Kafka Broker
+## Using the MQTT image
 
-```shell
-$ docker run --rm \
-    -e KAFKA_BROKER='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    ghcr.io/clemensv/real-time-sources-bafu-hydro:latest
+### With a generic MQTT 5 broker (username/password)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/bafu-hydro.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-bafu-hydro-mqtt:latest
 ```
 
-### Preserving State Between Restarts
+### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
 
-To preserve the de-duplication state between container restarts and avoid
-re-sending observations, mount a volume and set the `STATE_FILE` environment
-variable:
-
-```shell
-$ docker run --rm \
-    -v /path/to/state:/mnt/state \
-    -e STATE_FILE='/mnt/state/bafu_hydro_state.json' \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-bafu-hydro:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/bafu-hydro.json \
+  -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883" \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
+  -e MQTT_CLIENT_ID="<unique-client-id>" \
+  ghcr.io/clemensv/real-time-sources-bafu-hydro-mqtt:latest
 ```
 
-### Adjusting the Polling Interval
+## Using the AMQP image
 
-The default polling interval is 600 seconds (10 minutes), matching the upstream
-data update cadence. You can adjust it:
+### With AMQP 1.0 and Microsoft Entra ID (CBS put-token)
 
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    -e POLLING_INTERVAL='300' \
-    ghcr.io/clemensv/real-time-sources-bafu-hydro:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/bafu-hydro.json \
+  -e AMQP_HOST="<namespace>.servicebus.windows.net" \
+  -e AMQP_PORT=5671 \
+  -e AMQP_TLS=true \
+  -e AMQP_ADDRESS="bafu-hydro" \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE="https://servicebus.azure.net/.default" \
+  -e AMQP_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
+  ghcr.io/clemensv/real-time-sources-bafu-hydro-amqp:latest
 ```
 
-## Environment Variables
+### With AMQP 1.0 and SAS-token CBS
 
-### `CONNECTION_STRING`
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/bafu-hydro.json \
+  -e AMQP_HOST="servicebus-emulator" \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS="bafu-hydro" \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey" \
+  -e AMQP_SAS_KEY="<sas-key>" \
+  ghcr.io/clemensv/real-time-sources-bafu-hydro-amqp:latest
+```
 
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs
-or Fabric Event Streams. This replaces the need for separate `KAFKA_BROKER` and
-topic configuration, since the bootstrap server and topic are extracted from the
-connection string.
+## Environment variables
 
-### `KAFKA_BROKER`
+### Kafka image
 
-The address of the Kafka broker. Provide a comma-separated list of host and port
-pairs (e.g., `broker1:9092,broker2:9092`).
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `CONNECTION_STRING` | Event Hubs/Fabric-style connection string (optional alternative to explicit Kafka variables). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list. |
+| `KAFKA_TOPIC` | Kafka destination topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials for Kafka. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
-### `KAFKA_TOPIC`
+### MQTT image
 
-The Kafka topic where messages will be produced. Default: `bafu-hydro`.
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for `MQTT_AUTH_MODE=password`. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID. |
+| `MQTT_CLIENT_ID` | MQTT client ID (must be unique per broker). |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
-### `POLLING_INTERVAL`
+### AMQP image
 
-The interval in seconds between polling cycles. Default: `600` (10 minutes).
-
-### `STATE_FILE`
-
-The file path where the bridge stores the de-duplication state. This tracks
-which readings have already been forwarded, allowing the bridge to resume without
-duplicating events after restarts. Default: `~/.bafu_hydro_state.json`.
-
-### `KAFKA_ENABLE_TLS`
-
-Whether to use TLS for the Kafka connection. Default: `true`. Set to `false` for
-plaintext connections to local brokers.
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `AMQP_BROKER_URL` | Full AMQP URL form (`amqp://` or `amqps://`). |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component endpoint settings when URL form is not used. |
+| `AMQP_ADDRESS` | AMQP node/address name. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra-ID CBS settings. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token CBS settings. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbafu-hydro%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbafu-hydro%2Fazure-template-with-eventhub.json)
 
-## MQTT/UNS image
+### AMQP — provision a new Azure Service Bus namespace
 
-A sibling container image, ghcr.io/clemensv/real-time-sources-bafu-hydro-mqtt, is built from
-`Dockerfile.mqtt` and publishes the same station-catalog and water-level
-events as **MQTT 5.0 binary-mode CloudEvents** into a Unified-Namespace
-topic tree:
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbafu-hydro%2Fazure-template-with-servicebus.json)
 
-```
-hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/info          # station reference
-hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/water-level   # latest water level / discharge / temperature
-```
+### Kafka — bring your own Event Hub / Kafka
 
-Every leaf is published with QoS 1 and `retain=true` so any subscriber
-sees the most recent value as soon as it subscribes. The full CloudEvents
-binding (`id`, `source`, `type`, `subject`, `time`,
-`specversion`) is carried as MQTT 5 user properties; the payload is the
-`application/json` body of the same JsonStructure schema used by the
-Kafka image.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbafu-hydro%2Fazure-template.json)
 
-### Run against a generic MQTT 5 broker
+## Related
 
-```
-docker run --rm \\
-    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \\
-    -e MQTT_USERNAME='<username>' \\
-    -e MQTT_PASSWORD='<password>' \\
-    ghcr.io/clemensv/real-time-sources-bafu-hydro-mqtt:latest
-```
-
-Set `MQTT_TLS=true` or use the `mqtts://`/`ssl://` URL scheme to
-enable TLS. `MQTT_CLIENT_ID` is optional but recommended on shared
-brokers. `POLLING_INTERVAL` (seconds) controls how often the upstream
-HTTP service is re-polled (default 600 s).
-
-### Subscription patterns
-
-```
-# Everything from this source
-hydro/ch/bafu/bafu-hydro/#
-
-# All telemetry for one water_body_name
-hydro/ch/bafu/bafu-hydro/<water_body_name>/+/water-level
-
-# Reference data for every station
-hydro/ch/bafu/bafu-hydro/+/+/info
-```
-
-## AMQP 1.0 image
-
-Image: `ghcr.io/clemensv/real-time-sources-bafu-hydro-amqp:latest`
-
-The AMQP image publishes the same reference and telemetry CloudEvents as the Kafka and MQTT variants, but targets queue-oriented AMQP 1.0 consumers such as ActiveMQ Artemis, RabbitMQ AMQP 1.0, Qpid Dispatch, Azure Service Bus, and Azure Event Hubs.
-
-### Generic AMQP broker (SASL PLAIN)
-
-```bash
-docker run --rm \
-  -e AMQP_BROKER_URL=amqp://user:password@broker:5672/bafu-hydro \
-  -e AMQP_AUTH_MODE=password \
-  ghcr.io/clemensv/real-time-sources-bafu-hydro-amqp:latest
-```
-
-### Azure Service Bus / Event Hubs (Entra CBS)
-
-```bash
-docker run --rm \
-  -e AMQP_HOST=<namespace>.servicebus.windows.net \
-  -e AMQP_PORT=5671 \
-  -e AMQP_TLS=true \
-  -e AMQP_ADDRESS=bafu-hydro \
-  -e AMQP_AUTH_MODE=entra \
-  -e AMQP_ENTRA_AUDIENCE=https://servicebus.azure.net/.default \
-  ghcr.io/clemensv/real-time-sources-bafu-hydro-amqp:latest
-```
-
-### Service Bus emulator / SAS CBS
-
-```bash
-docker run --rm \
-  -e AMQP_HOST=servicebus-emulator \
-  -e AMQP_PORT=5672 \
-  -e AMQP_ADDRESS=bafu-hydro \
-  -e AMQP_AUTH_MODE=sas \
-  -e AMQP_SAS_KEY_NAME=RootManageSharedAccessKey \
-  -e AMQP_SAS_KEY=<emulator-key> \
-  ghcr.io/clemensv/real-time-sources-bafu-hydro-amqp:latest
-```
-
-### AMQP environment variables
-
-| Variable | Description | Default |
-|---|---|---|
-| `AMQP_BROKER_URL` | Full AMQP URL; path becomes the address when present. | empty |
-| `AMQP_HOST` / `AMQP_PORT` | Broker host and port when not using `AMQP_BROKER_URL`. | `localhost` / `5672` or `5671` with TLS |
-| `AMQP_ADDRESS` | Queue, topic, or event hub name. | `bafu-hydro` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `AMQP_AUTH_MODE=password`. | empty |
-| `AMQP_TLS` | Enable TLS for AMQP. | `false` (`true` for Entra deployments) |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
-| `AMQP_ENTRA_AUDIENCE` | Token audience for CBS Entra auth. | `https://servicebus.azure.net/.default` |
-| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed identity client id. | empty |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS policy and key for CBS SAS auth / emulator. | empty |
-| `AMQP_CONTENT_MODE` | CloudEvents content mode. | `binary` |
-| `MOCK_MODE` | Emit deterministic reference + telemetry mock events and exit; used by Docker E2E. | `false` |
-
-Deploy to Azure with `azure-template-with-servicebus.json` (mirrored at `infra/azure-template-amqp.json`). The template provisions a Service Bus namespace and queue, user-assigned managed identity, Data Sender role assignment, ACI container group, Log Analytics workspace, and Azure Files state share.
-
+- [README.md](README.md) — project overview and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
+- [`xreg/bafu_hydro.xreg.json`](xreg/bafu_hydro.xreg.json) — source contract used to generate producer bindings.

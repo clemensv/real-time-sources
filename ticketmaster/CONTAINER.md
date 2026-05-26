@@ -1,136 +1,121 @@
-# Ticketmaster Discovery API bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Ticketmaster Discovery API container images
 
-## Upstream source
+Related docs:
 
-This bridge targets the public [Ticketmaster Discovery API v2](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/).
-It polls for upcoming public events and emits CloudEvents for:
+- [README.md](README.md) — source context, quick-start flow, and deployment guidance.
+- [EVENTS.md](EVENTS.md) — event families, CloudEvents types, and payload schemas.
 
-- **Event telemetry** — concerts, sports events, theater, arts, and other live events (`Ticketmaster.Events.Event`)
-- **Venue reference data** — location, address, timezone, and coordinates (`Ticketmaster.Reference.Venue`)
-- **Attraction reference data** — performer, artist, team, or production metadata (`Ticketmaster.Reference.Attraction`)
-- **Classification reference data** — the Ticketmaster segment taxonomy (Music, Sports, etc.) (`Ticketmaster.Reference.Classification`)
+> [!WARNING]
+> You are responsible for complying with Ticketmaster Terms, branding rules, and rate limits when using or redistributing this data.
 
-Reference data is emitted at bridge startup and refreshed every hour.  All events
-are emitted as structured CloudEvents documented in [EVENTS.md](EVENTS.md).
+## Why this container
 
-## Prerequisites
+These images package the Ticketmaster Discovery API bridge runtime so teams can run a production feeder with consistent event contracts across Kafka, MQTT, and AMQP transports.
 
-Register for a free API key at [developer.ticketmaster.com](https://developer.ticketmaster.com).
-The free tier allows 5 000 API calls per day and 5 requests per second.
+## What ships in the box
 
-## Compliance responsibility
+| Image | Dockerfile | Purpose |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-ticketmaster:latest` | `Dockerfile` | Kafka-compatible publishing path |
+| `ghcr.io/clemensv/real-time-sources-ticketmaster-mqtt:latest` | `Dockerfile.mqtt` | MQTT 5.0 publishing path |
+| `ghcr.io/clemensv/real-time-sources-ticketmaster-amqp:latest` | `Dockerfile.amqp` | AMQP 1.0 publishing path |
 
-Using this container does not make Ticketmaster compliance automatic. The user
-of the bridge is responsible for complying with Ticketmaster's Terms of
-Service, branding guide, rate limits, and any requirements on how Ticketmaster
-data is presented, attributed, or redistributed.
+## Image contract
 
-## Environment variables
-
-| Variable | Required | Description | Default |
+| Aspect | Kafka | MQTT | AMQP |
 |---|---|---|---|
-| `TICKETMASTER_API_KEY` | **Yes** | Ticketmaster Discovery API key | — |
-| `CONNECTION_STRING` | **Yes** | Kafka / Event Hubs / Fabric connection string | — |
-| `COUNTRY_CODES` | No | Comma-separated ISO 3166-1 alpha-2 country codes | `AU,AT,BE,CA,CZ,DK,FI,FR,DE,GR,HU,IE,IT,MX,NL,NZ,NO,PL,PT,ES,SE,CH,GB,US` |
-| `TICKETMASTER_CITY` | No | Optional Ticketmaster `city` filter | — |
-| `TICKETMASTER_VENUE_ID` | No | Optional Ticketmaster `venueId` filter | — |
-| `TICKETMASTER_ATTRACTION_ID` | No | Optional Ticketmaster `attractionId` filter | — |
-| `TICKETMASTER_SEGMENT_ID` | No | Optional Ticketmaster `segmentId` filter | — |
-| `TICKETMASTER_GENRE_ID` | No | Optional Ticketmaster `genreId` filter | — |
-| `TICKETMASTER_SUB_GENRE_ID` | No | Optional Ticketmaster `subGenreId` filter | — |
-| `TICKETMASTER_MARKET_ID` | No | Optional Ticketmaster `marketId` filter | — |
-| `TICKETMASTER_POSTAL_CODE` | No | Optional Ticketmaster `postalCode` filter | — |
-| `TICKETMASTER_LOCALE` | No | Discovery API locale for event and reference requests | `*` |
-| `TICKETMASTER_SORT` | No | Discovery API event sort order | `date,asc` |
-| `TICKETMASTER_PAGE_SIZE` | No | Discovery API page size per request, up to 200 | `200` |
-| `TICKETMASTER_START_DATETIME` | No | Optional absolute UTC startDateTime filter | — |
-| `TICKETMASTER_END_DATETIME` | No | Optional absolute UTC endDateTime filter | — |
-| `TICKETMASTER_LOOKAHEAD_DAYS` | No | Relative search window when explicit datetimes are not set | `90` |
-| `POLL_INTERVAL` | No | Seconds between event polls | `300` |
-| `REFERENCE_REFRESH` | No | Seconds between reference-data refreshes | `3600` |
-| `STATE_FILE` | No | Path to JSON file for persisting dedupe state across restarts | `~/.ticketmaster_state.json` |
-| `KAFKA_ENABLE_TLS` | No | Set to `false` for plain-text Kafka (non-Event Hubs) | `true` |
-| `LOG_LEVEL` | No | Python logging level | `INFO` |
+| Base image | `python:3.10-slim` | `python:3.10-slim` | `python:3.10-slim` |
+| Default command | `CMD ["python", "-m", "ticketmaster", "feed"]` | `CMD ["python", "-m", "ticketmaster_mqtt", "feed"]` | `CMD ["python", "-m", "ticketmaster_amqp", "feed"]` |
+| Delivery format | CloudEvents to Kafka topic | CloudEvents to MQTT topic tree | CloudEvents to AMQP address |
+| Shared contract | \- | Uses same xRegistry event model | Uses same xRegistry event model |
 
-## Running with Docker (plain Kafka)
+## Kafka image quick start
 
 ```bash
-docker pull ghcr.io/clemensv/real-time-sources-ticketmaster:latest
-
-docker run --rm \
-  -e TICKETMASTER_API_KEY=<your-api-key> \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=ticketmaster" \
-  -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources-ticketmaster:latest
+docker run --rm   -e TICKETMASTER_API_KEY="<api-key>" -e CONNECTION_STRING="<connection-string>"   ghcr.io/clemensv/real-time-sources-ticketmaster:latest
 ```
 
-## Running with Azure Event Hubs
-
-Create an Event Hubs namespace and a hub named `ticketmaster`, then run:
+## MQTT image quick start
 
 ```bash
-docker run --rm \
-  -e TICKETMASTER_API_KEY=<your-api-key> \
-  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=<key>;EntityPath=ticketmaster" \
-  ghcr.io/clemensv/real-time-sources-ticketmaster:latest
+docker run --rm   -e TICKETMASTER_API_KEY="<api-key>" -e MQTT_BROKER_URL="mqtts://<broker>:8883" -e MQTT_USERNAME="<user>" -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-ticketmaster-mqtt:latest
 ```
 
-## Running with Microsoft Fabric Event Streams
+## AMQP image quick start
 
 ```bash
-docker run --rm \
-  -e TICKETMASTER_API_KEY=<your-api-key> \
-  -e CONNECTION_STRING="<Fabric-Event-Stream-connection-string>" \
-  ghcr.io/clemensv/real-time-sources-ticketmaster:latest
+docker run --rm   -e TICKETMASTER_API_KEY="<api-key>" -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/ticketmaster"   ghcr.io/clemensv/real-time-sources-ticketmaster-amqp:latest
 ```
 
-## Reducing scope to specific markets
+## Environment variable matrix
 
-To focus on one city and segment instead of the full multi-country default:
+### Kafka image (`ghcr.io/clemensv/real-time-sources-ticketmaster:latest`)
 
-```bash
-docker run --rm \
-  -e TICKETMASTER_API_KEY=<your-api-key> \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=ticketmaster" \
-  -e COUNTRY_CODES=DE \
-  -e TICKETMASTER_CITY=Berlin \
-  -e TICKETMASTER_SEGMENT_ID=KZFzniwnSyZfZ7v7nJ \
-  -e TICKETMASTER_LOOKAHEAD_DAYS=30 \
-  -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources-ticketmaster:latest
-```
+| Variable | Purpose |
+|---|---|
+| `TICKETMASTER_API_KEY` | Core configuration for this image variant. |
+| `CONNECTION_STRING or KAFKA_BOOTSTRAP_SERVERS` | Core configuration for this image variant. |
+| `KAFKA_TOPIC` | Core configuration for this image variant. |
+| `COUNTRY_CODES` | Core configuration for this image variant. |
+| `POLL_INTERVAL` | Core configuration for this image variant. |
+| `REFERENCE_REFRESH` | Core configuration for this image variant. |
+| `STATE_FILE` | Core configuration for this image variant. |
+| `KAFKA_ENABLE_TLS` | Core configuration for this image variant. |
+| `TICKETMASTER_CITY` | Core configuration for this image variant. |
+| `TICKETMASTER_VENUE_ID` | Core configuration for this image variant. |
+| `TICKETMASTER_ATTRACTION_ID` | Core configuration for this image variant. |
+| `TICKETMASTER_SEGMENT_ID` | Core configuration for this image variant. |
+| `TICKETMASTER_GENRE_ID` | Core configuration for this image variant. |
+| `TICKETMASTER_SUB_GENRE_ID` | Core configuration for this image variant. |
+| `TICKETMASTER_MARKET_ID` | Core configuration for this image variant. |
+| `TICKETMASTER_POSTAL_CODE` | Core configuration for this image variant. |
+| `TICKETMASTER_LOCALE` | Core configuration for this image variant. |
+| `TICKETMASTER_SORT` | Core configuration for this image variant. |
+| `TICKETMASTER_PAGE_SIZE` | Core configuration for this image variant. |
+| `TICKETMASTER_START_DATETIME` | Core configuration for this image variant. |
+| `TICKETMASTER_END_DATETIME` | Core configuration for this image variant. |
+| `TICKETMASTER_LOOKAHEAD_DAYS` | Core configuration for this image variant. |
 
-## Rate limits
+### MQTT image (`ghcr.io/clemensv/real-time-sources-ticketmaster-mqtt:latest`)
 
-The free tier allows 5 000 calls per day and 5 requests per second.  The bridge
-sleeps between API calls to stay within the rate limit.  Fetching venues and
-attractions across many country codes can consume a large fraction of the daily
-quota.  Set `COUNTRY_CODES` to only the markets you need, or set
-`REFERENCE_REFRESH` to a longer interval (e.g. `86400` for once per day) to
-reduce API call volume.
+| Variable | Purpose |
+|---|---|
+| `TICKETMASTER_API_KEY` | Core configuration for this image variant. |
+| `MQTT_BROKER_URL` | Core configuration for this image variant. |
+| `MQTT_USERNAME` | Core configuration for this image variant. |
+| `MQTT_PASSWORD` | Core configuration for this image variant. |
+| `MQTT_CLIENT_ID` | Core configuration for this image variant. |
+| `COUNTRY_CODES` | Core configuration for this image variant. |
 
-## Azure Container Instance (ACI) deployment
+### AMQP image (`ghcr.io/clemensv/real-time-sources-ticketmaster-amqp:latest`)
 
-An ARM template is included as [azure-template.json](azure-template.json). It
-exposes the runtime filters as optional template parameters, with descriptions
-that tell the operator what each filter does and when to leave it blank.
+| Variable | Purpose |
+|---|---|
+| `TICKETMASTER_API_KEY` | Core configuration for this image variant. |
+| `AMQP_BROKER_URL` | Core configuration for this image variant. |
+| `AMQP_ADDRESS` | Core configuration for this image variant. |
+| `AMQP_AUTH_MODE` | Core configuration for this image variant. |
+| `COUNTRY_CODES` | Core configuration for this image variant. |
 
-Example deployment:
+## Azure ARM deployments
 
-```bash
-az deployment group create \
-  --resource-group <resource-group> \
-  --template-file azure-template.json \
-  --parameters \
-      connectionString="<event-hubs-or-kafka-connection-string>" \
-      ticketmasterApiKey="<ticketmaster-api-key>" \
-      countryCodes="DE" \
-      city="Berlin" \
-      segmentId="KZFzniwnSyZfZ7v7nJ" \
-      lookaheadDays="30"
-```
+Only templates that exist in this source folder are listed below.
 
+- `azure-template-amqp.json` — AMQP deployment targeting an existing AMQP 1.0 broker
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fticketmaster%2Fazure-template-amqp.json)
+- `azure-template-mqtt.json` — MQTT deployment targeting an existing MQTT broker
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fticketmaster%2Fazure-template-mqtt.json)
+- `azure-template-with-eventgrid-mqtt.json` — MQTT deployment plus Azure Event Grid namespace broker provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fticketmaster%2Fazure-template-with-eventgrid-mqtt.json)
+- `azure-template-with-eventhub.json` — Kafka deployment plus Azure Event Hubs provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fticketmaster%2Fazure-template-with-eventhub.json)
+- `azure-template-with-servicebus.json` — AMQP deployment plus Azure Service Bus provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fticketmaster%2Fazure-template-with-servicebus.json)
+- `azure-template.json` — Kafka deployment targeting an existing Kafka/Event Hubs endpoint
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fticketmaster%2Fazure-template.json)
 
-## Transports
+## Related
 
-This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.
+- [README.md](README.md)
+- [EVENTS.md](EVENTS.md)
+- `xreg/`

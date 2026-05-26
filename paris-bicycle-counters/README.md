@@ -1,134 +1,176 @@
-# Paris Bicycle Counters Poller
+# Paris Bicycle Counters feeder
+
+This feeder turns Paris Open Data bicycle counter feeds into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+Urban mobility teams, bike-infrastructure planners, shared-mobility operators, and sustainability analysts use counter data to track cycling demand and network utilization. This bridge standardizes polling, normalization, dedupe, CloudEvents shaping, and transport delivery so consumers subscribe once and reuse the same contract across platforms.
+
+- **Traffic and mobility operations** — live dashboards and operational control-room views.
+- **Route and dispatch optimization** — dynamic rerouting and ETA management under disruptions.
+- **Analytics and planning** — long-running ingestion into Fabric Eventhouse / ADX / lakes.
+- **Compliance and reporting** — auditable event history for public-sector and regulated workflows.
+- **Cross-domain correlation** — fuse mobility events with weather, safety, and infrastructure feeds.
 
 ## Overview
 
-**Paris Bicycle Counters Poller** polls the Paris Open Data platform for hourly bicycle counts from 141 permanent counting stations across Paris and sends them to a Kafka topic as CloudEvents. The tool tracks previously seen observations to avoid sending duplicates.
+**Paris Bicycle Counters** is a poll-based bridge that ingests upstream data from [Paris Open Data bicycle counter feeds](https://opendata.paris.fr/) and re-emits normalized CloudEvents.
 
-## Key Features
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-paris-bicycle-counters` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents (binary mode), key templates `{counter_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-mqtt` | MQTT 5.0 broker (incl. Azure Event Grid MQTT) | Unified-Namespace topic tree rooted under `mobility/fr/paris/bicycle-counters/...` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-amqp` | AMQP 1.0 brokers incl. Azure Service Bus / Event Hubs | Binary CloudEvents to AMQP address `paris-bicycle-counters` |
 
-- **Bicycle Count Polling**: Fetch hourly bicycle counts from `https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/comptage-velo-donnees-compteurs/records`.
-- **Counter Reference Data**: Fetch counter location metadata from `https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/comptage-velo-compteurs/records`.
-- **Deduplication**: Tracks seen counter_id + date pairs in a state file to avoid reprocessing.
-- **Kafka Integration**: Send bicycle counts to a Kafka topic using SASL PLAIN authentication.
-- **MQTT/UNS Integration**: The MQTT variant publishes to `traffic/fr/paris/paris-bicycle-counters/{counter_id}/{info|count}` with retained counter info and non-retained count events.
-- **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
-- **Fabric notebook hosting**: deploy as a scheduled Fabric notebook via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) using [`notebook/paris-bicycle-counters-feed.ipynb`](notebook/paris-bicycle-counters-feed.ipynb).
+All variants share:
 
-## Installation
+- The same xRegistry contract (`xreg/paris_bicycle_counters.xreg.json`).
+- The same event-family model and schema set.
+- Poll-based acquisition logic with periodic refresh cycles.
 
-The tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/) or from the Microsoft Store if you are on Windows.
+## Key features
 
-### Installation Steps
+- Poll-based bridge with CloudEvents-first contract design.
+- Shared event contract across Kafka, MQTT, and AMQP transports.
+- Fabric-ready deployment path (Notebook and ACI hosting options).
+- ARM templates for direct Azure Container Instance deployment targets.
+- Source-specific event families and stable domain key templates.
+
+## Repository layout
+
+```text
+paris-bicycle-counters/
+  xreg/paris_bicycle_counters.xreg.json
+  paris_bicycle_counters/
+  paris_bicycle_counters_mqtt/
+  paris_bicycle_counters_amqp/
+  paris_bicycle_counters_producer/
+  paris_bicycle_counters_mqtt_producer/
+  paris_bicycle_counters_amqp_producer/
+  kql/
+  notebook/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+```
+
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS connectivity to the upstream API at `https://opendata.paris.fr/`.
+- Network access to your target Kafka broker, MQTT broker, or AMQP 1.0 peer.
+- A writable host directory mounted at `/state` for persistent polling/dedupe state.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> This source is poll-based. Mount a host volume and set `PARIS_VELO_LAST_POLLED_FILE` so state survives container restarts.
+
+### Kafka
 
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=paris-bicycle-counters
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e PARIS_VELO_LAST_POLLED_FILE=/state/paris-bicycle-counters.json \
+  -e CONNECTION_STRING="<event-hubs-or-kafka-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-paris-bicycle-counters:latest
 ```
 
-If you clone the repository:
+### MQTT (Unified Namespace)
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/paris-bicycle-counters
-pip install .
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e PARIS_VELO_LAST_POLLED_FILE=/state/paris-bicycle-counters.json \
+  -e MQTT_BROKER_URL=mqtts://<broker-host>:8883 \
+  -e MQTT_USERNAME=<username> \
+  -e MQTT_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-mqtt:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
-
-## How to Use
-
-After installation, the tool can be run using `python -m paris_bicycle_counters`. It supports several arguments for configuring the polling process and sending data to Kafka.
-
-### Command-Line Arguments
-
-- `--last-polled-file`: Path to the file where last seen state is stored. Defaults to `~/.paris_velo_last_polled.json`.
-- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
-- `--kafka-topic`: The Kafka topic to send messages to.
-- `--sasl-username`: Username for SASL PLAIN authentication.
-- `--sasl-password`: Password for SASL PLAIN authentication.
-- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string (overrides other Kafka parameters).
-
-### Example Usage
-
-#### Using a Connection String
+### AMQP 1.0
 
 ```bash
-python -m paris_bicycle_counters --connection-string "<your_connection_string>"
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e PARIS_VELO_LAST_POLLED_FILE=/state/paris-bicycle-counters.json \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/paris-bicycle-counters' \
+  ghcr.io/clemensv/real-time-sources-paris-bicycle-counters-amqp:latest
 ```
 
-#### Using Kafka Parameters Directly
+## Configuration reference
 
-```bash
-python -m paris_bicycle_counters --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-topic "<topic_name>" --sasl-username "<username>" --sasl-password "<password>"
-```
+The complete environment-variable matrix for Kafka, MQTT, and AMQP images (including authentication-mode differences and Azure deployment assumptions) is documented in [CONTAINER.md](CONTAINER.md).
 
-### Connection String Format
+## Data model
 
-```
-Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=<hub>
-```
+This source emits the following event families (see [EVENTS.md](EVENTS.md) for full schema-level detail):
 
-### Environment Variables
+- **FR.Paris.OpenData.Velo** — 2 event type(s): FR.Paris.OpenData.Velo.Counter, FR.Paris.OpenData.Velo.BicycleCount.
 
-- `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
-- `PARIS_VELO_LAST_POLLED_FILE`: File to store last seen state for deduplication.
+## Deploying into Microsoft Fabric
 
-## Bicycle Count Properties
+Paris Bicycle Counters supports both Fabric hosting models via the source card on the [project portal](https://clemensv.github.io/real-time-sources/#paris-bicycle-counters).
 
-Each bicycle count observation includes these properties:
+### Fabric Notebook feeder
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `counter_id` | string | Unique counter channel identifier |
-| `counter_name` | string | Human-readable counter name with street and direction |
-| `count` | integer | Number of bicycles counted in the one-hour window |
-| `date` | datetime | Start of the one-hour counting window (ISO 8601) |
-| `longitude` | double | Counter longitude (WGS 84) |
-| `latitude` | double | Counter latitude (WGS 84) |
+Because this source is poll-based and ships a notebook asset (`notebook/`), you can run scheduled ingestion in-Fabric with:
 
-## Counter Reference Properties
+`tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source paris-bicycle-counters -WorkspaceId <id> -CapacityId <id>`
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `counter_id` | string | Unique counter channel identifier |
-| `counter_name` | string | Human-readable counter name |
-| `channel_name` | string | Directional channel label (e.g., "SE-NO") |
-| `installation_date` | string | Installation date (YYYY-MM-DD) |
-| `longitude` | double | Counter longitude (WGS 84) |
-| `latitude` | double | Counter latitude (WGS 84) |
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#paris-bicycle-counters/fabric-notebook)
 
-## Data Source
+### Fabric ACI feeder
 
-The City of Paris maintains a network of 141 permanent bicycle counting stations that measure bicycle traffic with hourly resolution. Data is published daily (J-1) under the Licence Ouverte 2.0.
+For always-on execution, deploy a long-running Azure Container Instance feeder with:
 
-- **Counter data**: `https://opendata.paris.fr/explore/dataset/comptage-velo-donnees-compteurs`
-- **Counter locations**: `https://opendata.paris.fr/explore/dataset/comptage-velo-compteurs`
-- **Paris Open Data**: `https://opendata.paris.fr/`
+`tools/deploy-fabric/deploy-fabric-aci.ps1 -Source paris-bicycle-counters -WorkspaceId <id> -CapacityId <id>`
 
-## License
-
-[MIT](../LICENSE.md)
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#paris-bicycle-counters/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+The following ARM templates exist in this source directory and have matching deploy buttons:
 
-### Option 1: Bring your own Event Hub
+### MQTT — bring your own broker
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+Deploy MQTT against an existing MQTT 5.0 broker endpoint.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fparis-bicycle-counters%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fparis-bicycle-counters%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision a new Event Grid MQTT broker
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploy MQTT plus an Event Grid namespace broker and managed-identity role assignment.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fparis-bicycle-counters%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
+
+Deploy Kafka plus a new Event Hubs namespace and event hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fparis-bicycle-counters%2Fazure-template-with-eventhub.json)
 
-## AMQP 1.0 companion
+### AMQP — provision a new Azure Service Bus namespace
 
-This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.
+Deploy AMQP plus Service Bus and managed-identity sender permissions.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fparis-bicycle-counters%2Fazure-template-with-servicebus.json)
+
+### Kafka — bring your own Event Hub / Kafka
+
+Deploy the Kafka container with your own Event Hubs/Fabric/Event Stream connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fparis-bicycle-counters%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full auth-mode and environment-variable details.
+- Validate transport-specific routing and key templates against your downstream topology.
+- Review upstream usage guidance at [Paris Open Data bicycle counter feeds](https://opendata.paris.fr/).

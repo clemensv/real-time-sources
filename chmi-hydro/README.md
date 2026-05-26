@@ -1,145 +1,163 @@
-# ČHMÚ Hydrological Data Bridge
+# CHMI Hydro feeder
 
-This bridge fetches real-time hydrological data from the Czech
-Hydrometeorological Institute (ČHMÚ) open data portal and forwards it to
-Apache Kafka or Microsoft Azure Event Hubs as CloudEvents.
+This feeder turns the upstream CHMI Hydro hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-The ČHMÚ provides real-time water level, discharge, and water temperature data
-for hundreds of hydrological stations across the Czech Republic, updated every
-10 minutes.
+Companion docs:
 
-## Data Source
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-- **API Endpoint**: https://opendata.chmi.cz/hydrology/now/
-- **Data Format**: JSON (individual files per station)
-- **Update Frequency**: Every 10 minutes
-- **Authentication**: None required (open data)
-- **License**: Open data from ČHMÚ (Český hydrometeorologický ústav)
+## Why this bridge
 
-## Data Attribution
+This bridge publishes the CHMI Hydro source as a transport-agnostic event stream so downstream systems subscribe once and avoid re-implementing poll scheduling, retry handling, dedupe state, CloudEvents mapping, and schema lifecycle management.
 
-Zdrojem dat je Český hydrometeorologický ústav (ČHMÚ). The data source is the
-Czech Hydrometeorological Institute.
+- **Flood and water-risk operations** — power near-real-time threshold monitoring and alert pipelines.
+- **Infrastructure operations** — feed lock/port/river-management dashboards and operations centers.
+- **Environmental analytics** — ingest standardized events into Fabric Eventhouse, ADX, or lakehouse systems.
+- **Insurance and resilience workflows** — drive trigger-based monitoring and post-event replay analysis.
+- **Research and public-data products** — maintain reproducible timelines without source-specific ETL glue.
 
-## Events
+## Overview
 
-See [EVENTS.md](EVENTS.md) for details on the CloudEvents produced by this
-bridge.
+**CHMI Hydro** is a poll-based bridge that emits CloudEvents across available transport variants:
 
-## Deployment
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-chmi-hydro` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents on one topic, key = `{station_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-chmi-hydro-mqtt` | MQTT 5.0 broker (incl. Event Grid MQTT and Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic template `(see EVENTS.md)` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-chmi-hydro-amqp` | AMQP 1.0 (incl. Service Bus and Event Hubs via CBS auth) | Binary CloudEvents to AMQP node `chmi-hydro` |
 
-- **Fabric notebook hosting (recommended for Fabric users):** Deploy this bridge as a scheduled Fabric notebook with `tools/deploy-fabric/deploy-feeder-notebook.ps1`. It auto-builds the per-source Environment, looks up the Event Stream connection string at runtime, and schedules `chmi-hydro feed --once`.
+All variants share:
 
-See [CONTAINER.md](CONTAINER.md) for container deployment instructions.
+- The same upstream polling logic and dedupe state model.
+- The same xRegistry contract (`xreg/chmi_hydro.xreg.json`).
+- The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
 
-## Usage
+## Key features
 
-### List all stations
+- Poll-based ingestion with restart-safe dedupe/checkpoint persistence via `STATE_FILE`.
+- Consistent CloudEvents identities and schemas across transport variants.
+- Contract-first event modeling from the checked-in xRegistry manifest.
+- Deployment options for local Docker, Microsoft Fabric, and Azure Container Instances.
+- Reference and telemetry event families aligned for downstream joins and enrichment.
 
-```bash
-python -m chmi_hydro list
+## Repository layout
+
+```text
+chmi-hydro/
+  xreg/chmi_hydro.xreg.json                 # shared xRegistry contract
+  chmi_hydro/
+  chmi_hydro_amqp/
+  chmi_hydro_amqp_producer/
+  chmi_hydro_mqtt/
+  chmi_hydro_mqtt_producer/
+  chmi_hydro_producer/
+  Dockerfile                         # Kafka feeder image
+  Dockerfile.mqtt                    # MQTT feeder image
+  Dockerfile.amqp                    # AMQP feeder image
+  kql/                               # KQL/Eventhouse schema
+  notebook/                          # Fabric notebook feeder
+  tests/                             # unit + integration tests
 ```
 
-### Get water level for a specific station
+## Prerequisites
+
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound HTTPS access to the upstream source API.
+- Network access to your Kafka broker / MQTT broker / AMQP 1.0 endpoint.
+- A writable host directory mounted to persist `STATE_FILE` across container restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `STATE_FILE` so dedupe/checkpoint state survives restarts.
+
+### Kafka
 
 ```bash
-python -m chmi_hydro level 0-203-1-001000
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/chmi-hydro.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-chmi-hydro:latest
 ```
 
-### Feed data to Kafka
+### MQTT (Unified Namespace)
 
 ```bash
-python -m chmi_hydro feed --connection-string "<connection_string>" --topic chmi-hydro
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/chmi-hydro.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-chmi-hydro-mqtt:latest
 ```
 
-Or using environment variables:
+Topic template:
+
+```text
+(see EVENTS.md)
+```
+
+### AMQP 1.0
 
 ```bash
-export KAFKA_BROKER=localhost:9092
-export KAFKA_TOPIC=chmi-hydro
-python -m chmi_hydro feed
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/chmi-hydro.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/chmi-hydro" \
+  ghcr.io/clemensv/real-time-sources-chmi-hydro-amqp:latest
 ```
 
-## Configuration
+For Entra-ID and SAS-CBS AMQP authentication variants, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image).
 
-| Environment Variable | Description | Default |
-|---|---|---|
-| `KAFKA_CONNECTION_STRING` or `CONNECTION_STRING` | Kafka/Event Hubs connection string | None |
-| `KAFKA_BROKER` | Kafka bootstrap server | None |
-| `KAFKA_TOPIC` | Kafka topic name | `chmi-hydro` |
-| `POLLING_INTERVAL` | Polling interval in seconds | `600` |
+## Configuration reference
 
-## Setup
+The complete environment-variable matrix for each image is documented in [CONTAINER.md](CONTAINER.md). Runtime entry points come from image `CMD`: Kafka ["python", "-m", "chmi_hydro", "feed"] MQTT ["python", "-m", "chmi_hydro_mqtt", "feed"] AMQP ["python", "-m", "chmi_hydro_amqp", "feed"].
 
-```bash
-pip install -r requirements.txt
-pip install -e .
-```
+## Data model
 
-## Testing
+This feeder emits the following event families:
 
-```bash
-pytest tests/test_chmi_hydro_unit.py      # Unit tests (no network)
-pytest tests/test_chmi_hydro_e2e.py        # End-to-end tests (hits real API)
-pytest tests/test_chmi_hydro_container.py  # Container tests (requires Docker)
-```
+- **CZ.Gov.CHMI.Hydro** — `Station`, `WaterLevelObservation`.
+
+Event field descriptions, schema references, and routing details are documented in [EVENTS.md](EVENTS.md).
+
+## Deploying into Microsoft Fabric
+
+CHMI Hydro supports both Fabric hosting patterns used in this repository.
+
+### Fabric Notebook feeder
+
+This source includes a notebook feeder under [`notebook/`](notebook/) and `catalog.json` marks `notebook: true`.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#chmi-hydro/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use the ACI deployment flow for always-on container execution into a Fabric Event Stream custom endpoint.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#chmi-hydro/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Azure templates shipped with this source:
 
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fchmi-hydro%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fchmi-hydro%2Fazure-template-with-eventhub.json)
 
-## MQTT / Unified Namespace transport
+### AMQP — provision a new Azure Service Bus namespace
 
-In addition to the Kafka image documented in `CONTAINER.md`, this source
-also ships an MQTT 5.0 feeder built from `Dockerfile.mqtt`. It publishes
-the same Station reference and WaterLevelObservation telemetry into a
-Unified-Namespace topic tree:
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fchmi-hydro%2Fazure-template-with-servicebus.json)
 
-```
-hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/info
-hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/water-level
-```
+### Kafka — bring your own Event Hub / Kafka
 
-All messages are sent in CloudEvents *binary* mode with QoS 1 and
-`retain=true` so any new subscriber immediately sees the latest known
-state per station. The `{stream_name}` segment is normalized to lowercase
-kebab-case (umlauts and accented characters folded to ASCII, all other
-non-alphanumeric characters replaced with `-`) so the topic is safe for
-every MQTT 5 broker.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fchmi-hydro%2Fazure-template.json)
 
-See `CONTAINER.md` for the full deployment contract (environment
-variables, broker examples, subscription patterns).
+## Next steps
 
-## AMQP 1.0 companion feeder
-
-This source now ships the standard Kafka + MQTT + AMQP transport trio. The AMQP companion runs from `chmi_hydro_amqp/`, uses the generated `chmi_hydro_amqp_producer/` package, and publishes the same CloudEvents and schemas documented in `EVENTS.md` to one AMQP 1.0 address (default `chmi-hydro`). It supports generic AMQP 1.0 brokers with SASL PLAIN and Azure Service Bus / Event Hubs with CBS token authentication.
-
-Build and run locally:
-
-```bash
-docker build -f Dockerfile.amqp -t chmi-hydro-amqp .
-docker run --rm \
-  -e AMQP_BROKER_URL=amqp://user:password@broker:5672/chmi-hydro \
-  -e ONCE_MODE=true \
-  chmi-hydro-amqp
-```
-
-For Azure Service Bus, deploy `azure-template-with-servicebus.json` (also mirrored at `infra/azure-template-amqp.json`) or run the container with `AMQP_AUTH_MODE=entra`, `AMQP_HOST=<namespace>.servicebus.windows.net`, `AMQP_TLS=true`, and `AMQP_ADDRESS=chmi-hydro`.
-
+- Review [EVENTS.md](EVENTS.md) before onboarding consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full per-image auth and environment settings.
+- Select Fabric Notebook/Fabric ACI/Azure ACI based on your runtime and operational requirements.

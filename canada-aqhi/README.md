@@ -1,125 +1,155 @@
-# Canada AQHI Bridge
+# Canada AQHI feeder
 
-This source bridges the Canadian Air Quality Health Index (AQHI) program from
-Environment and Climate Change Canada into Kafka as structured JSON
-[CloudEvents](https://cloudevents.io/).
+This feeder turns the upstream Canada AQHI air-quality feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
-## What it emits
+Companion docs:
 
-The bridge emits three event types on one Kafka topic:
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-- `ca.gc.weather.aqhi.Community` reference events for AQHI reporting communities
-- `ca.gc.weather.aqhi.Observation` events for current AQHI observations
-- `ca.gc.weather.aqhi.Forecast` events for the four standard public forecast periods
+## Why this bridge
 
-The event contract is documented in [EVENTS.md](EVENTS.md).
+The upstream source is open and operationally useful, but every downstream team otherwise has to rebuild polling, dedupe, schema normalization, retry handling, and transport-specific publishing. This bridge centralizes that work and republishes a stable CloudEvents contract for subscribers.
 
-## Upstream review and source choice
+- **Public-health operations** — power near-real-time air-quality dashboards and incident triage for municipal, regional, or national teams.
+- **Compliance and reporting** — persist normalized observations into Eventhouse / ADX / data lakes for regulatory and policy reporting.
+- **Industrial and facility response** — trigger ventilation, activity restrictions, or maintenance workflows from threshold-based alerts.
+- **Research and forecasting** — join air-quality observations with weather, mobility, and health indicators for modelling.
+- **Citizen-information products** — feed apps, kiosks, and map tiles with a stable event contract instead of custom API pollers.
 
-The AQHI program exposes several real-time and near-real-time channels:
+## Overview
 
-| Family | Transport | Identity | Decision |
+| Variant | Container image | Transport | Default delivery shape |
 |---|---|---|---|
-| Current observations by community | XML `.../observation/realtime/xml/AQ_OBS_<CGNDB>_CURRENT.xml` | CGNDB community code | Keep |
-| Public forecasts by community | XML `.../forecast/realtime/xml/AQ_FCST_<CGNDB>_CURRENT.xml` | CGNDB community code | Keep |
-| Community reference catalog | `aqhi_community.geojson` | CGNDB community code | Keep |
-| Station/feed catalog | `aqhi_station.geojson` | CGNDB community code | Keep |
-| Region-wide observation CSV matrices | Datamart CSV | Region + CGNDB columns | Drop as duplicate presentation |
-| Region-wide model forecast CSV matrices | Datamart CSV | Region + CGNDB rows | Drop as duplicate presentation for this contract |
-| GeoJSON observation items | OGC API / HPFX GeoJSON | Community code | Drop as duplicate presentation |
-| GeoJSON forecast items | OGC API / HPFX GeoJSON | Community code | Drop as duplicate presentation |
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-canada-aqhi` | Apache Kafka 2.x compatible (including Azure Event Hubs and Microsoft Fabric Event Streams) | One topic with CloudEvents JSON and xRegistry-defined keying |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-canada-aqhi-mqtt` | MQTT 5.0 broker (including Azure Event Grid MQTT namespace) | Unified-Namespace-style topic publishing with CloudEvents metadata as MQTT user properties |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-canada-aqhi-amqp` | AMQP 1.0 brokers (generic + Azure Service Bus / Event Hubs) | Single AMQP node/address with binary CloudEvents |
 
-I picked the XML current feeds plus the official GeoJSON reference catalogs
-because they are community-keyed already, which keeps the bridge and the event
-contract simple. The richer CSV and OGC variants are useful, but they are
-alternate presentations of the same AQHI communities and forecast content for
-this source.
+All variants share:
 
-## Stable identity model
+- The same upstream poller semantics and dedupe model.
+- The same xRegistry contract in `xreg/canada-aqhi.xreg.json`.
+- The same event families in [EVENTS.md](EVENTS.md).
 
-The upstream stable identifier is the five-character CGNDB community code. The
-current repo contract still keys the stream by `{province}/{community_name}`, so
-the payload carries both that public community identity and the upstream
-`cgndb_code` used to join back to the official AQHI metadata.
+## Key features
 
-## Runtime behavior
+- Poll-based ingestion with stateful resume across restarts.
+- One contract, three transport options (Kafka, MQTT, AMQP).
+- CloudEvents-compatible envelope and schema metadata.
+- Azure-ready deployment options (Fabric, Event Hubs, Service Bus, Event Grid MQTT).
 
-- Fetches reference data from the official AQHI community and station GeoJSON feeds
-- Uses AQHI feed-region partitions to avoid irrelevant province lookups when the
-  run is scoped to a subset such as `PROVINCES=ON`
-- Rewrites catalog XML feed links onto the live `https://dd.weather.gc.ca/today/air_quality/aqhi/...`
-  base before polling, because the GeoJSON catalog still publishes legacy `http://.../air_quality/...`
-  paths that return 404
-- Resolves ambiguous multi-province regions through Natural Resources Canada’s
-  geolocation service and caches the result in the state file
-- Emits community reference data first
-- Polls current AQHI observations and public forecasts every hour by default
-- Deduplicates observations by community and observation timestamp
-- Deduplicates forecasts by community, publication time, and forecast period
-- Refreshes reference data every 24 hours by default
+## Repository layout
 
-## Fabric notebook hosting
-
-- A scheduled Fabric notebook variant is available at [`notebook/canada-aqhi-feed.ipynb`](notebook/canada-aqhi-feed.ipynb) and can be deployed via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
-
-## Installation
-
-```powershell
-cd C:\git\real-time-sources\canada-aqhi
-pip install .\canada_aqhi_producer\canada_aqhi_producer_data
-pip install .\canada_aqhi_producer\canada_aqhi_producer_kafka_producer
-pip install -e .
+```text
+canada-aqhi/
+  xreg/canada-aqhi.xreg.json                # shared xRegistry contract
+  canada_aqhi/                        # Kafka feeder application
+  canada_aqhi_mqtt/                        # MQTT/UNS feeder application
+  canada_aqhi_amqp/                        # AMQP 1.0 feeder application
+  canada_aqhi_producer/               # xRegistry-generated Kafka producer
+  canada_aqhi_mqtt_producer/               # xRegistry-generated MQTT producer
+  canada_aqhi_amqp_producer/               # xRegistry-generated AMQP producer
+  Dockerfile                      # builds the Kafka feeder image
+  Dockerfile.mqtt                 # builds the MQTT feeder image
+  Dockerfile.amqp                 # builds the AMQP feeder image
+  kql/                            # Eventhouse / KQL schema and update policies
+  notebook/                       # Fabric notebook feeder
+  tests/                          # unit + integration tests
 ```
 
-## Usage
+## Prerequisites
 
-List communities:
+- Docker 20.10+ (or another OCI-compatible runtime).
+- Outbound network access to the upstream Canada AQHI endpoints.
+- Network access to your target Kafka/MQTT/AMQP broker.
+- A writable host folder mounted to `/state` for persistent `STATE_FILE`.
 
-```powershell
-python -m canada_aqhi list --provinces NL,NS,ON
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `STATE_FILE` so poller resume/dedupe state survives container restarts.
+
+### Kafka
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/canada-aqhi.json   -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>"   ghcr.io/clemensv/real-time-sources-canada-aqhi:latest
 ```
 
-Start the bridge:
+### MQTT (Unified Namespace)
 
-```powershell
-python -m canada_aqhi feed --connection-string "BootstrapServer=localhost:9092;EntityPath=canada-aqhi" --polling-interval 3600
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/canada-aqhi.json   -e MQTT_BROKER_URL="mqtts://<broker-host>:8883"   -e MQTT_USERNAME="<username>"   -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-canada-aqhi-mqtt:latest
 ```
 
-## Environment variables
+### AMQP 1.0
 
-- `CONNECTION_STRING`
-- `KAFKA_BOOTSTRAP_SERVERS`
-- `KAFKA_TOPIC`
-- `SASL_USERNAME`
-- `SASL_PASSWORD`
-- `KAFKA_ENABLE_TLS`
-- `POLLING_INTERVAL`
-- `REFERENCE_REFRESH_INTERVAL`
-- `STATE_FILE`
-- `PROVINCES`
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/canada-aqhi.json   -e AMQP_BROKER_URL="amqp://<user>:<password>@<host>:5672/canada-aqhi"   ghcr.io/clemensv/real-time-sources-canada-aqhi-amqp:latest
+```
+
+## Configuration reference
+
+See [CONTAINER.md](CONTAINER.md) for the full per-image environment-variable matrix and all supported auth modes (Kafka SASL/Event Hubs, MQTT password/Entra, AMQP password/Entra-CBS/SAS-CBS).
+
+## Data model
+
+This source emits the following event types:
+
+- **`Community`**
+- **`Observation`**
+- **`Forecast`**
+
+Kafka key template `{province}/{community_name}`
+
+## Deploying into Microsoft Fabric
+
+Two Fabric hosting models are supported for this poll-based source:
+
+- **Fabric Notebook feeder** — scheduled runs inside Fabric, best for periodic polling workloads.
+- **Fabric ACI feeder** — continuously running container feeder for always-on delivery.
+
+### Fabric Notebook feeder
+
+This source ships a notebook feeder in [`notebook/`](notebook/) for scheduled in-workspace execution. It runs the same poller logic, resolves the Event Stream custom-endpoint connection string at runtime, and stores run diagnostics in OneLake.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#canada-aqhi/fabric-notebook)
+
+### Fabric ACI feeder
+
+Deploy the container feeder directly into Azure Container Instances with Fabric Event Stream and Eventhouse wiring.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#canada-aqhi/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Use the ARM templates that ship with this source:
 
-### Option 1: Bring your own Event Hub
+### AMQP — deploy the AMQP image against an existing AMQP 1.0 endpoint you configure.
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-amqp.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template.json)
+### MQTT — bring your own MQTT 5.0 broker and deploy the MQTT image.
 
-### Option 2: Deploy with a new Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-mqtt.json)
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### MQTT — provision an Azure Event Grid namespace MQTT broker plus required identity wiring.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Azure Event Hubs namespace + event hub and wire the feeder automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace with managed identity + sender role assignment.
 
-## MQTT + AMQP companion feeders
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template-with-servicebus.json)
 
-This source now ships Kafka plus transport-split MQTT and AMQP companion feeders. MQTT publishes retained binary-mode CloudEvents under `air-quality/ca/eccc/canada-aqhi/...`; AMQP publishes the same CloudEvents to a configurable AMQP 1.0 address (default `canada-aqhi`). Deployment templates: `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`.
+### Kafka — bring your own Event Hubs / Fabric Event Stream connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcanada-aqhi%2Fazure-template.json)
+
+## Next steps
+
+- Choose a hosting model (Fabric Notebook, Fabric ACI, or direct Azure template deployment).
+- Review [EVENTS.md](EVENTS.md) before building consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full auth-mode and environment-variable details.

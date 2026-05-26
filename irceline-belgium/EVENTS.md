@@ -1,4 +1,4 @@
-# IRCELINE Belgium Events
+# IRCELINE Belgium feeder Events
 
 IRCELINE Belgium Air Quality publishes pollutant concentration and air-quality measurements from Belgium's IRCELINE interregional environment agency for Belgian air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
@@ -236,11 +236,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/irceline_belgium.xreg.json`](xreg/irceline_belgium.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- ![Deploy AMQP Service Bus: <https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white>

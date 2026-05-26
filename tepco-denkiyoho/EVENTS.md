@@ -1,4 +1,4 @@
-# TEPCO Electricity Supply & Demand (Denki Yoho) Bridge Events
+# TEPCO Denkiyoho feeder Events
 
 MQTT 5.0 binary-mode CloudEvents variant of JP.TEPCO.Denkiyoho.
 

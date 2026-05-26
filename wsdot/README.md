@@ -1,85 +1,177 @@
-# WSDOT Traveler Information
+# WSDOT Traveler Information feeder
 
-This source bridges the Washington State Department of Transportation (WSDOT)
-Traveler Information API and Washington State Ferries API to Apache Kafka,
-producing real-time data across eight event families: traffic flow, travel
-times, mountain pass conditions, road weather, toll rates, commercial vehicle
-restrictions, US-Canada border crossing wait times, and ferry vessel
-locations.
+This feeder turns Washington State DOT traveler and ferry APIs into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-## Upstream Sources
+Companion docs:
 
-### Traveler Information API
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-The WSDOT Traveler Information API provides data for Washington State
-highways organized into four geographic regions:
+## Why this bridge
 
-- **Northwest** — I-5, I-90, SR 520, I-405, and surrounding highways in the Puget Sound area
-- **Olympic** — I-5, SR 16, SR 167 in the Olympic Peninsula and south Puget Sound
-- **Southwest** — I-5 and I-205 near the Oregon border and southwest Washington
-- **Eastern** — I-90 and US 395 in eastern Washington
+State traffic centers, ferry operations, logistics planners, and public traveler-information systems use WSDOT feeds for live network status and incident-aware routing. This bridge standardizes polling, normalization, dedupe, CloudEvents shaping, and transport delivery so consumers subscribe once and reuse the same contract across platforms.
 
-### Washington State Ferries API
+- **Traffic and mobility operations** — live dashboards and operational control-room views.
+- **Route and dispatch optimization** — dynamic rerouting and ETA management under disruptions.
+- **Analytics and planning** — long-running ingestion into Fabric Eventhouse / ADX / lakes.
+- **Compliance and reporting** — auditable event history for public-sector and regulated workflows.
+- **Cross-domain correlation** — fuse mobility events with weather, safety, and infrastructure feeds.
 
-The WSF Vessel Locations API reports real-time GPS positions for
-approximately 21 ferry vessels operating across Puget Sound.
+## Overview
 
-## API Access
+**WSDOT Traveler Information** is a poll-based bridge that ingests upstream data from [Washington State DOT traveler and ferry APIs](https://www.wsdot.wa.gov/traffic/api/) and re-emits normalized CloudEvents.
 
-Both APIs require a free access code. Register at:
-https://www.wsdot.wa.gov/traffic/api/
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-wsdot` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents (binary mode), key templates `{crossing_name}, {flow_data_id}, {mountain_pass_id}, {state_route_id}/{bridge_number}, {station_id}, {travel_time_id}, {trip_name}, {vessel_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-wsdot-mqtt` | MQTT 5.0 broker (incl. Azure Event Grid MQTT) | Unified-Namespace topic tree rooted under `mobility/us/wa/wsdot/...` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-wsdot-amqp` | AMQP 1.0 brokers incl. Azure Service Bus / Event Hubs | Binary CloudEvents to AMQP address `wsdot` |
 
-## Data Model
+All variants share:
 
-| Message Group | Event Types | Key | Description |
-|---------------|-------------|-----|-------------|
-| `us.wa.wsdot.traffic` | TrafficFlowStation (ref), TrafficFlowReading (tel) | `{flow_data_id}` | ~1,400 inductive loop sensors reporting Level of Service |
-| `us.wa.wsdot.traveltimes` | TravelTimeRoute | `{travel_time_id}` | ~163 monitored route segments with average and current travel times |
-| `us.wa.wsdot.mountainpass` | MountainPassCondition | `{mountain_pass_id}` | 16 mountain passes with temperature, weather, road conditions, restrictions |
-| `us.wa.wsdot.weather` | WeatherStation (ref), WeatherReading (tel) | `{station_id}` | ~134 RWIS stations with temperature, wind, pressure, humidity, visibility |
-| `us.wa.wsdot.tolls` | TollRate | `{trip_name}` | ~84 dynamic toll segments on SR 99, I-405, SR 167 |
-| `us.wa.wsdot.cvrestrictions` | CommercialVehicleRestriction | `{state_route_id}/{bridge_number}` | ~354 bridge/road weight, height, length, width restrictions |
-| `us.wa.wsdot.border` | BorderCrossing | `{crossing_name}` | 11 US-Canada border crossing lanes with wait times |
-| `us.wa.wsdot.ferries` | VesselLocation | `{vessel_id}` | ~21 WSF vessels with GPS, speed, heading, route, terminal, ETA |
+- The same xRegistry contract (`xreg/wsdot.xreg.json`).
+- The same event-family model and schema set.
+- Poll-based acquisition logic with periodic refresh cycles.
 
-Reference data is emitted at startup and refreshed every 6 hours. Telemetry
-is polled every 120 seconds (configurable).
+## Key features
 
-## Links
+- Poll-based bridge with CloudEvents-first contract design.
+- Shared event contract across Kafka, MQTT, and AMQP transports.
+- Fabric-ready deployment path (Notebook and ACI hosting options).
+- ARM templates for direct Azure Container Instance deployment targets.
+- Source-specific event families and stable domain key templates.
 
-- API Documentation: https://www.wsdot.wa.gov/traffic/api/
-- Ferries API: https://www.wsdot.wa.gov/ferries/api/vessels/rest/
-- Event catalog: [EVENTS.md](EVENTS.md)
-- Container deployment: [CONTAINER.md](CONTAINER.md)
-- Fabric notebook hosting: deploy this feeder as a scheduled Fabric notebook with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) (uses [`wsdot/notebook/wsdot-feed.ipynb`](notebook/wsdot-feed.ipynb)).
+## Repository layout
+
+```text
+wsdot/
+  xreg/wsdot.xreg.json
+  wsdot/
+  wsdot_mqtt/
+  wsdot_amqp/
+  wsdot_producer/
+  wsdot_mqtt_producer/
+  wsdot_amqp_producer/
+  kql/
+  notebook/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+```
+
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS connectivity to the upstream API at `https://www.wsdot.wa.gov/traffic/api/`.
+- Network access to your target Kafka broker, MQTT broker, or AMQP 1.0 peer.
+- A writable host directory mounted at `/state` for persistent polling/dedupe state.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> This source is poll-based. Mount a host volume and set `STATE_FILE` so state survives container restarts.
+
+### Kafka
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/wsdot.json \
+  -e CONNECTION_STRING="<event-hubs-or-kafka-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-wsdot:latest
+```
+
+### MQTT (Unified Namespace)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/wsdot.json \
+  -e MQTT_BROKER_URL=mqtts://<broker-host>:8883 \
+  -e MQTT_USERNAME=<username> \
+  -e MQTT_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-wsdot-mqtt:latest
+```
+
+### AMQP 1.0
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/wsdot.json \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/wsdot' \
+  ghcr.io/clemensv/real-time-sources-wsdot-amqp:latest
+```
+
+## Configuration reference
+
+The complete environment-variable matrix for Kafka, MQTT, and AMQP images (including authentication-mode differences and Azure deployment assumptions) is documented in [CONTAINER.md](CONTAINER.md).
+
+## Data model
+
+This source emits the following event families (see [EVENTS.md](EVENTS.md) for full schema-level detail):
+
+- **us.wa.wsdot.traffic** — 2 event type(s): us.wa.wsdot.traffic.TrafficFlowStation, us.wa.wsdot.traffic.TrafficFlowReading.
+- **us.wa.wsdot.traveltimes** — 1 event type(s): us.wa.wsdot.traveltimes.TravelTimeRoute.
+- **us.wa.wsdot.mountainpass** — 1 event type(s): us.wa.wsdot.mountainpass.MountainPassCondition.
+- **us.wa.wsdot.weather** — 2 event type(s): us.wa.wsdot.weather.WeatherStation, us.wa.wsdot.weather.WeatherReading.
+- **us.wa.wsdot.tolls** — 1 event type(s): us.wa.wsdot.tolls.TollRate.
+- **us.wa.wsdot.cvrestrictions** — 1 event type(s): us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.
+- **us.wa.wsdot.border** — 1 event type(s): us.wa.wsdot.border.BorderCrossing.
+- **us.wa.wsdot.ferries** — 1 event type(s): us.wa.wsdot.ferries.VesselLocation.
+
+## Deploying into Microsoft Fabric
+
+WSDOT Traveler Information supports both Fabric hosting models via the source card on the [project portal](https://clemensv.github.io/real-time-sources/#wsdot).
+
+### Fabric Notebook feeder
+
+Because this source is poll-based and ships a notebook asset (`notebook/`), you can run scheduled ingestion in-Fabric with:
+
+`tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source wsdot -WorkspaceId <id> -CapacityId <id>`
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#wsdot/fabric-notebook)
+
+### Fabric ACI feeder
+
+For always-on execution, deploy a long-running Azure Container Instance feeder with:
+
+`tools/deploy-fabric/deploy-fabric-aci.ps1 -Source wsdot -WorkspaceId <id> -CapacityId <id>`
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#wsdot/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+The following ARM templates exist in this source directory and have matching deploy buttons:
 
-### Option 1: Bring your own Event Hub
+### MQTT — bring your own broker
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+Deploy MQTT against an existing MQTT 5.0 broker endpoint.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwsdot%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwsdot%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision a new Event Grid MQTT broker
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploy MQTT plus an Event Grid namespace broker and managed-identity role assignment.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwsdot%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
+
+Deploy Kafka plus a new Event Hubs namespace and event hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwsdot%2Fazure-template-with-eventhub.json)
 
+### Kafka — bring your own Event Hub / Kafka
 
-## MQTT and AMQP companion feeders
+Deploy the Kafka container with your own Event Hubs/Fabric/Event Stream connection string.
 
-This source now ships separate MQTT and AMQP companion containers in addition to the Kafka/Event Hubs feeder. The MQTT container publishes binary-mode CloudEvents to the UNS topic templates declared in `xreg/`; the AMQP container publishes the same CloudEvents to an AMQP 1.0 address named `wsdot` by default.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwsdot%2Fazure-template.json)
 
-- MQTT image: `ghcr.io/clemensv/real-time-sources-wsdot-mqtt:latest`
-- AMQP image: `ghcr.io/clemensv/real-time-sources-wsdot-amqp:latest`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `infra/azure-template-amqp.json`, `infra/azure-template-with-servicebus.json`
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full auth-mode and environment-variable details.
+- Validate transport-specific routing and key templates against your downstream topology.
+- Review upstream usage guidance at [Washington State DOT traveler and ferry APIs](https://www.wsdot.wa.gov/traffic/api/).

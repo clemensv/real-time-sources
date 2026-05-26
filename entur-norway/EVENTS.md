@@ -1,4 +1,4 @@
-# Entur Norway SIRI Bridge Events
+# Entur Norway SIRI feeder Events
 
 Entur Norway publishes transit realtime updates from Entur public transport feeds for Norwegian public-transport stops, lines, and journeys. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -8,7 +8,6 @@ Entur Norway publishes transit realtime updates from Entur public transport feed
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 4 telemetry event types.
 - **Identity:** `journeys/{operating_day}/{service_journey_id}`, `situations/{situation_number}` identifies the resource each event is about.
-- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -369,9 +368,7 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
 
 ## References
 

@@ -1,134 +1,100 @@
-# Xceed Nightlife Events — Container Deployment
+# Xceed Nightlife Events container images
 
-## Overview
+Related docs:
 
-This container polls the [Xceed public APIs](https://docs.xceed.me/) and forwards
-European nightlife and live-entertainment event data as CloudEvents to Apache Kafka or
-Azure Event Hubs.
+- [README.md](README.md) — source context, quick-start flow, and deployment guidance.
+- [EVENTS.md](EVENTS.md) — event families, CloudEvents types, and payload schemas.
 
-Two event types are emitted:
+## Why this container
 
-- **`xceed.Event`** — Event reference data including schedule, venue, and metadata. Emitted
-  at startup and refreshed periodically (default: every hour).
-- **`xceed.EventAdmission`** — Public-offer telemetry per admission record, including
-  `admission_type`, `is_sold_out`, `is_sales_closed`, `price`, and `remaining`. Polled on
-  every cycle.
+These images package the Xceed Nightlife Events bridge runtime so teams can run a production feeder with consistent event contracts across Kafka, MQTT, and AMQP transports.
 
-All events conform to the CloudEvents 1.0 specification in structured JSON mode and are
-described in [EVENTS.md](EVENTS.md).
+## What ships in the box
 
-## Environment Variables
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `CONNECTION_STRING` | **Yes** | — | Kafka or Event Hubs connection string. See formats below. |
-| `KAFKA_TOPIC` | No | EntityPath from connection string | Kafka topic name override. |
-| `KAFKA_ENABLE_TLS` | No | `true` | Set to `false` for plaintext local Kafka. |
-| `POLLING_INTERVAL` | No | `300` | Admission polling interval in seconds. |
-| `EVENT_REFRESH_INTERVAL` | No | `3600` | Event list refresh interval in seconds. |
-| `EVENT_WINDOW_SIZE` | No | `250` | Number of newest public events to scan for offers on each refresh. |
-| `EVENT_PAGE_SIZE` | No | `100` | Upstream `/events` page size passed through to the Xceed `limit` query parameter. |
-
-## Connection String Formats
-
-**Plain Kafka (local / development):**
-
-```
-BootstrapServer=localhost:9092;EntityPath=xceed
-```
-
-**Azure Event Hubs:**
-
-```
-Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=xceed
-```
-
-**Microsoft Fabric Event Streams:**
-
-Use the Kafka-compatible endpoint provided by your Fabric workspace.
-
-## Docker Pull
-
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-xceed:latest
-```
-
-## Running with Plain Kafka
-
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=xceed" \
-  -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources-xceed:latest
-```
-
-## Running with Azure Event Hubs
-
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=<key>;EntityPath=xceed" \
-  ghcr.io/clemensv/real-time-sources-xceed:latest
-```
-
-## Customising Poll Intervals
-
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=xceed" \
-  -e KAFKA_ENABLE_TLS=false \
-  -e POLLING_INTERVAL=120 \
-  -e EVENT_REFRESH_INTERVAL=1800 \
-  ghcr.io/clemensv/real-time-sources-xceed:latest
-```
-
-## Public Filter Surface
-
-The public Xceed `/events` endpoint does not appear to expose meaningful
-semantic event filters. Live probes against `city`, `country`, and `slug`
-returned the same unfiltered catalog page. The useful upstream controls are the
-pagination parameters below:
-
-| Upstream query param | Bridge surface | Notes |
+| Image | Dockerfile | Purpose |
 |---|---|---|
-| `limit` | `EVENT_PAGE_SIZE` / `--event-page-size` | Number of events requested per `/events` page |
-| `offset` | internal only | Advanced automatically as the bridge walks the newest catalog slice |
+| `ghcr.io/clemensv/real-time-sources-xceed:latest` | `Dockerfile` | Kafka-compatible publishing path |
+| `ghcr.io/clemensv/real-time-sources-xceed-mqtt:latest` | `Dockerfile.mqtt` | MQTT 5.0 publishing path |
+| `ghcr.io/clemensv/real-time-sources-xceed-amqp:latest` | `Dockerfile.amqp` | AMQP 1.0 publishing path |
 
-The bridge therefore exposes pagination and newest-window controls, not city-,
-country-, or genre-style filters.
+## Image contract
 
-## Kafka Topics
+| Aspect | Kafka | MQTT | AMQP |
+|---|---|---|---|
+| Base image | `python:3.10-slim` | `python:3.10-slim` | `python:3.10-slim` |
+| Default command | `CMD ["python", "-m", "xceed", "feed"]` | `CMD ["python", "-m", "xceed_mqtt", "feed"]` | `CMD ["python", "-m", "xceed_amqp", "feed"]` |
+| Delivery format | CloudEvents to Kafka topic | CloudEvents to MQTT topic tree | CloudEvents to AMQP address |
+| Shared contract | \- | Uses same xRegistry event model | Uses same xRegistry event model |
 
-| Topic | Key template | Event types |
-|-------|-------------|-------------|
-| `xceed` | `{event_id}` | `xceed.Event` |
-| `xceed` | `{event_id}/{admission_id}` | `xceed.EventAdmission` |
-
-Both event types are forwarded to the same Kafka topic (default: `xceed`). Consumers
-can filter by CloudEvents `type` attribute to separate reference data from telemetry.
-
-## Azure Container Instances
-
-Deploy with the Azure CLI using the environment variables described above:
+## Kafka image quick start
 
 ```bash
-az container create \
-  --resource-group <rg> \
-  --name xceed-bridge \
-  --image ghcr.io/clemensv/real-time-sources-xceed:latest \
-  --environment-variables \
-    CONNECTION_STRING="<event-hubs-connection-string>" \
-  --restart-policy Always
+docker run --rm   -e CONNECTION_STRING="<connection-string>"   ghcr.io/clemensv/real-time-sources-xceed:latest
 ```
 
-## Upstream API
+## MQTT image quick start
 
-- Event catalog base URL: `https://events.xceed.me/v1`
-- Offer catalog base URL: `https://offer.xceed.me/v1`
-- No authentication required for the Open Event API
-- Rate limits: use responsibly; no published limit
-- Staging / sandbox: `https://events.staging.xceed.me/v1`
+```bash
+docker run --rm   -e MQTT_BROKER_URL="mqtts://<broker>:8883" -e MQTT_USERNAME="<user>" -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-xceed-mqtt:latest
+```
 
+## AMQP image quick start
 
-## Transports
+```bash
+docker run --rm   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/xceed"   ghcr.io/clemensv/real-time-sources-xceed-amqp:latest
+```
 
-This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.
+## Environment variable matrix
+
+### Kafka image (`ghcr.io/clemensv/real-time-sources-xceed:latest`)
+
+| Variable | Purpose |
+|---|---|
+| `CONNECTION_STRING` | Core configuration for this image variant. |
+| `KAFKA_ENABLE_TLS` | Core configuration for this image variant. |
+| `POLLING_INTERVAL` | Core configuration for this image variant. |
+| `EVENT_REFRESH_INTERVAL` | Core configuration for this image variant. |
+| `EVENT_WINDOW_SIZE` | Core configuration for this image variant. |
+| `EVENT_PAGE_SIZE` | Core configuration for this image variant. |
+
+### MQTT image (`ghcr.io/clemensv/real-time-sources-xceed-mqtt:latest`)
+
+| Variable | Purpose |
+|---|---|
+| `MQTT_BROKER_URL` | Core configuration for this image variant. |
+| `MQTT_USERNAME` | Core configuration for this image variant. |
+| `MQTT_PASSWORD` | Core configuration for this image variant. |
+| `MQTT_CLIENT_ID` | Core configuration for this image variant. |
+
+### AMQP image (`ghcr.io/clemensv/real-time-sources-xceed-amqp:latest`)
+
+| Variable | Purpose |
+|---|---|
+| `AMQP_BROKER_URL` | Core configuration for this image variant. |
+| `AMQP_ADDRESS` | Core configuration for this image variant. |
+| `AMQP_AUTH_MODE` | Core configuration for this image variant. |
+| `AMQP_ENTRA_CLIENT_ID` | Core configuration for this image variant. |
+| `AMQP_SAS_KEY_NAME / AMQP_SAS_KEY` | Core configuration for this image variant. |
+
+## Azure ARM deployments
+
+Only templates that exist in this source folder are listed below.
+
+- `azure-template-amqp.json` — AMQP deployment targeting an existing AMQP 1.0 broker
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fxceed%2Fazure-template-amqp.json)
+- `azure-template-mqtt.json` — MQTT deployment targeting an existing MQTT broker
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fxceed%2Fazure-template-mqtt.json)
+- `azure-template-with-eventgrid-mqtt.json` — MQTT deployment plus Azure Event Grid namespace broker provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fxceed%2Fazure-template-with-eventgrid-mqtt.json)
+- `azure-template-with-eventhub.json` — Kafka deployment plus Azure Event Hubs provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fxceed%2Fazure-template-with-eventhub.json)
+- `azure-template-with-servicebus.json` — AMQP deployment plus Azure Service Bus provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fxceed%2Fazure-template-with-servicebus.json)
+- `azure-template.json` — Kafka deployment targeting an existing Kafka/Event Hubs endpoint
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fxceed%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md)
+- [EVENTS.md](EVENTS.md)
+- `xreg/`

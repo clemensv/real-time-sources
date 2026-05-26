@@ -1,4 +1,4 @@
-# Wikimedia EventStreams RecentChange Bridge Events
+# Wikimedia EventStreams RecentChange feeder Events
 
 MQTT/5.0 non-retained Wikimedia EventStreams recentchange firehose. Single family (recent-change) baked as the trailing topic segment so subscribers can wildcard per wiki/namespace/event. QoS 0, retain=false.
 
