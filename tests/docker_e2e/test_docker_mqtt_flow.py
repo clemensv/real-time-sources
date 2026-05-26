@@ -5202,6 +5202,23 @@ class TestAviationweatherMqttDockerFlow:
 
 
 @pytest.fixture(scope='module')
+def aviationweather_mqtt_image():
+    return build_image('aviationweather', dockerfile='Dockerfile.mqtt', tag='test-aviationweather-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_aviationweather():
+    container, network, host_port = _generic_mosquitto('aviationweather-mqtt-e2e', 'aviationweather-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'aviationweather-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+@pytest.fixture(scope='module')
 def bom_australia_mqtt_image():
     return build_image('bom-australia', dockerfile='Dockerfile.mqtt', tag='test-bom-australia-mqtt')
 
