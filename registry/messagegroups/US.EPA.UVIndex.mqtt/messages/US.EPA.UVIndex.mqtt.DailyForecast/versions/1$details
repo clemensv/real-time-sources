@@ -1,12 +1,12 @@
 {
   "ancestor": "1",
   "basemessageuri": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.DailyForecast",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "description": "A daily UV Index forecast from the US EPA Envirofacts UV service for one configured city/state location. It carries the forecast date, normalized location identity, UV index value, and EPA UV alert indicator for public-health planning.",
   "epoch": 1,
   "isdefault": true,
   "messageid": "US.EPA.UVIndex.mqtt.DailyForecast",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "DailyForecast",
   "protocol": "MQTT/5.0",
   "protocoloptions": {

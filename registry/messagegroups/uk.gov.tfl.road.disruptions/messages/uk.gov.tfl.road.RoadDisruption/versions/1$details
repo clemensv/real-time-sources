@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/uk.gov.tfl.road.jstruct/schemas/uk.gov.tfl.road.RoadDisruption",
   "description": "Real-time road disruption event on the TfL road network fetched from GET /Road/all/Disruption.",
@@ -25,7 +25,7 @@
   "epoch": 1,
   "isdefault": true,
   "messageid": "uk.gov.tfl.road.RoadDisruption",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "RoadDisruption",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption/versions/1",
   "versionid": "1",

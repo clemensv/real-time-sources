@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/us.wa.wsdot.border.jstruct/schemas/us.wa.wsdot.border.BorderCrossing",
   "description": "Current wait time at a US-Canada border crossing lane in Washington State. Wait times are in minutes, updated approximately every 5 minutes.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "us.wa.wsdot.border.BorderCrossing",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.border/messages/us.wa.wsdot.border.BorderCrossing/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "BorderCrossing",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.border/messages/us.wa.wsdot.border.BorderCrossing",
   "versionid": "1",

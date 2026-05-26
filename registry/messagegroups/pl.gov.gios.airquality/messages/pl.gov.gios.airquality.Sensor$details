@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/pl.gov.gios.airquality.jstruct/schemas/pl.gov.gios.airquality.Sensor",
   "description": "Reference data for a sensor (measurement point) installed at a GIOŚ station, identifying the pollutant it measures.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "pl.gov.gios.airquality.Sensor",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "Sensor",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor",
   "versionid": "1",

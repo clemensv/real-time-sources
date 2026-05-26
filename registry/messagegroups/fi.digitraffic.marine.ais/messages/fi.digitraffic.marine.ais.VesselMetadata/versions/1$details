@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/fi.digitraffic.marine.ais.jstruct/schemas/fi.digitraffic.marine.ais.VesselMetadata",
   "description": "A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage information available from the upstream feed.",
@@ -25,7 +25,7 @@
   "epoch": 1,
   "isdefault": true,
   "messageid": "fi.digitraffic.marine.ais.VesselMetadata",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "VesselMetadata",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselMetadata/versions/1",
   "versionid": "1",

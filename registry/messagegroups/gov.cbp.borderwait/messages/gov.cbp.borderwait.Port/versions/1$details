@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/gov.cbp.borderwait.jstruct/schemas/gov.cbp.borderwait.Port",
   "description": "Reference data for a US Customs and Border Protection land border port of entry. The CBP Border Wait Time system covers approximately 81 ports along the US-Canada and US-Mexico borders. Each port record identifies the crossing name, operating hours, border (Canadian or Mexican), and current operational status. Emitted at bridge startup and periodically refreshed.",
@@ -25,7 +25,7 @@
   "epoch": 1,
   "isdefault": true,
   "messageid": "gov.cbp.borderwait.Port",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "Port",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.Port/versions/1",
   "versionid": "1",

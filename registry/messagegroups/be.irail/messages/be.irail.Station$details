@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/be.irail.jstruct/schemas/be.irail.Station",
   "description": "Metadata for a Belgian railway station in the NMBS/SNCB network as provided by the iRail API. The Belgian rail network comprises approximately 600 passenger stations. Each station has a unique UIC-derived numeric identifier assigned by the NMBS, geographic coordinates, and multilingual names.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "be.irail.Station",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/be.irail/messages/be.irail.Station/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "Station",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/be.irail/messages/be.irail.Station",
   "versionid": "1",

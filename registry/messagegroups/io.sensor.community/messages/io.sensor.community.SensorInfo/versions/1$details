@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/io.sensor.community.jstruct/schemas/io.sensor.community.SensorInfo",
   "description": "Reference data for a Sensor.Community sensor node including its hardware type and last known location metadata.",
@@ -25,7 +25,7 @@
   "epoch": 1,
   "isdefault": true,
   "messageid": "io.sensor.community.SensorInfo",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "SensorInfo",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/io.sensor.community/messages/io.sensor.community.SensorInfo/versions/1",
   "versionid": "1",

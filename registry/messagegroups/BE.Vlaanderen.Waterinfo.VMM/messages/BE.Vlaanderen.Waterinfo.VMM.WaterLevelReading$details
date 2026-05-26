@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/BE.Vlaanderen.Waterinfo.VMM.jstruct/schemas/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
   "description": "A current measurement from Waterinfo.be and the Flemish Environment Agency (VMM) for one monitoring site. It carries water level observations when the upstream feed reports a new or refreshed value.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "WaterLevelReading",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
   "versionid": "1",

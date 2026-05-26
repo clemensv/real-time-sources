@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.AidToNavigation",
   "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "NO.Kystverket.AIS.AidToNavigation",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.AidToNavigation/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "AidToNavigation",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.AidToNavigation",
   "versionid": "1",

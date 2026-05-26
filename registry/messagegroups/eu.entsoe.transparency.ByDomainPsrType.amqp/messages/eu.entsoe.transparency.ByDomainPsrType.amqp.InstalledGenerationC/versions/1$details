@@ -1,7 +1,7 @@
 {
   "ancestor": "1",
   "basemessageuri": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.InstalledGenerationCapacityPerType",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.InstalledGenerationCapacityPerType",
   "description": "AMQP 1.0 binary CloudEvents variant for InstalledGenerationCapacityPerType, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}/{psrType}.",
@@ -31,7 +31,7 @@
   "epoch": 1,
   "isdefault": true,
   "messageid": "eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationC",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "InstalledGenerationCapacityPerType",
   "protocol": "AMQP/1.0",
   "protocoloptions": {

@@ -1,10 +1,10 @@
 {
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "defaultversionid": "1",
   "defaultversionsticky": false,
   "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/DE.Waters.Hydrology.jstruct/schemas/DE.Waters.Hydrology.WaterLevelObservation/versions/1",
   "epoch": 1,
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "readonly": false,
   "schemaid": "DE.Waters.Hydrology.WaterLevelObservation",
   "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/DE.Waters.Hydrology.jstruct/schemas/DE.Waters.Hydrology.WaterLevelObservation/meta",

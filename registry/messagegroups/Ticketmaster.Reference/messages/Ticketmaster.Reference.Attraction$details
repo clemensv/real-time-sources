@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Reference.Attraction",
   "description": "Reference data for a Ticketmaster attraction (performer, artist, sports team, or production). Emitted at bridge startup and refreshed periodically. Carries stable attraction identifier, name, and classification.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "Ticketmaster.Reference.Attraction",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Attraction/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "Attraction",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Attraction",
   "versionid": "1",

@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.oceanObs.TidewaterPrediction",
   "description": "A deterministic tidewater (sea-level) prediction for one station and one forecast horizon. predictionType is typically '10minutes'; predictions are issued forward ~30 days.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "dk.dmi.oceanObs.TidewaterPrediction",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "TidewaterPrediction",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction",
   "versionid": "1",

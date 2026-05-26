@@ -1,11 +1,11 @@
 {
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "defaultversionid": "1",
   "defaultversionsticky": false,
   "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt/versions/1",
   "epoch": 1,
   "messageid": "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "readonly": false,
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt/meta",
   "xid": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt/meta"

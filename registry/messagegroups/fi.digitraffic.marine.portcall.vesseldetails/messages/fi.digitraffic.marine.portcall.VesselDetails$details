@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/fi.digitraffic.marine.portcall.reference.jstruct/schemas/fi.digitraffic.marine.portcall.VesselDetails",
   "description": "A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage information available from the upstream feed.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "fi.digitraffic.marine.portcall.VesselDetails",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.marine.portcall.vesseldetails/messages/fi.digitraffic.marine.portcall.VesselDetails/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "VesselDetails",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.marine.portcall.vesseldetails/messages/fi.digitraffic.marine.portcall.VesselDetails",
   "versionid": "1",

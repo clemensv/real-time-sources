@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.Solar10Min",
   "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "DE.DWD.CDC.Solar10Min",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Solar10Min/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "Solar10Min",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Solar10Min",
   "versionid": "1",

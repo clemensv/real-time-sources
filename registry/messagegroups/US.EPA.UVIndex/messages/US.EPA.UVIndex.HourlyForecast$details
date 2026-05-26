@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.HourlyForecast",
   "description": "An hourly UV Index forecast from the US EPA Envirofacts UV service for one configured city/state location. It carries the forecast valid hour, normalized location identity, and UV index value for operational exposure planning.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "US.EPA.UVIndex.HourlyForecast",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.HourlyForecast/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "HourlyForecast",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.HourlyForecast",
   "versionid": "1",

@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Events.Event",
   "description": "A Ticketmaster event representing a concert, sports match, theater performance, or other live public event. Emitted when a new event is discovered or when an existing event's status or schedule changes.",
@@ -30,7 +30,7 @@
   "epoch": 1,
   "isdefault": true,
   "messageid": "Ticketmaster.Events.Event",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "Event",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Events/messages/Ticketmaster.Events.Event/versions/1",
   "versionid": "1",

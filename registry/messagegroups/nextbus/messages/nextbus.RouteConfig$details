@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/nextbus.jstruct/schemas/nextbus.RouteConfig",
   "description": "Nextbus RouteConfig event.",
@@ -31,7 +31,7 @@
   "isdefault": true,
   "messageid": "nextbus.RouteConfig",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nextbus/messages/nextbus.RouteConfig/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "RouteConfig",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nextbus/messages/nextbus.RouteConfig",
   "versionid": "1",

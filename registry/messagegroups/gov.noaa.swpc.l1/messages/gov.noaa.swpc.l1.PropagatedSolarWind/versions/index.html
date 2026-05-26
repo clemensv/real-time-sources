@@ -1,7 +1,7 @@
 {
   "1": {
     "ancestor": "1",
-    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "createdat": "2026-05-26T18:07:20.46225114Z",
     "dataschemaformat": "JsonStructure/draft-02",
     "dataschemauri": "/schemagroups/gov.noaa.swpc.l1.jstruct/schemas/gov.noaa.swpc.l1.PropagatedSolarWind",
     "description": "One minute-resolution solar-wind observation at L1 with forward-propagated Earth-arrival timestamp. Fuses plasma (speed/density/temperature), magnetic field (Bx/By/Bz/Bt in GSM), and bulk velocity vector (Vx/Vy/Vz in GSM) into a single row per `time_tag`. The `propagated_time_tag` field is the upstream's predicted Earth arrival time for the solar-wind parcel observed at L1 at `time_tag`. The CloudEvent `time` attribute mirrors `time_tag` (the L1 observation time) — consumers that need the Earth-arrival time must read `data.propagated_time_tag` instead. Many sub-fields are nullable — instrument gaps on DSCOVR/ACE are routine, especially for the velocity components which DSCOVR does not measure reliably. Sourced from `GET https://services.swpc.noaa.gov/products/geospace/propagated-solar-wind.json` — the document is a 7-day rolling window (~10080 rows) of array-of-arrays form with the column header at index 0.",
@@ -31,7 +31,7 @@
     "epoch": 1,
     "isdefault": true,
     "messageid": "gov.noaa.swpc.l1.PropagatedSolarWind",
-    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "modifiedat": "2026-05-26T18:07:20.46225114Z",
     "name": "PropagatedSolarWind",
     "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind/versions/1",
     "versionid": "1",

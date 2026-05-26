@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/DE.DWD.Forecast.jstruct/schemas/DE.DWD.Forecast.ForecastModelCatalog",
   "description": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "DE.DWD.Forecast.ForecastModelCatalog",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.ForecastModelCatalog/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "ForecastModelCatalog",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.ForecastModelCatalog",
   "versionid": "1",

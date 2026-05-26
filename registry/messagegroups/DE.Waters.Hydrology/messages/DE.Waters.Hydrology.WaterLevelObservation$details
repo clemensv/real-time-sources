@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/DE.Waters.Hydrology.jstruct/schemas/DE.Waters.Hydrology.WaterLevelObservation",
   "description": "A current measurement from German state open data portals for one monitoring site. It carries water level and discharge observations when the upstream feed reports a new or refreshed value.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "DE.Waters.Hydrology.WaterLevelObservation",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Waters.Hydrology/messages/DE.Waters.Hydrology.WaterLevelObservation/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "WaterLevelObservation",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Waters.Hydrology/messages/DE.Waters.Hydrology.WaterLevelObservation",
   "versionid": "1",

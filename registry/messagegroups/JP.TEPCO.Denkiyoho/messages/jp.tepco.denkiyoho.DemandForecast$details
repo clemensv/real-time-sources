@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/jp.tepco.denkiyoho.jstruct/schemas/jp.tepco.denkiyoho.DemandForecast",
   "description": "Hourly electricity demand forecast record from TEPCO Electricity Forecast for the Tokyo service area.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "jp.tepco.denkiyoho.DemandForecast",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandForecast/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "DemandForecast",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandForecast",
   "versionid": "1",

@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/info.energy_charts.jstruct/schemas/info.energy_charts.SpotPrice",
   "envelope": "CloudEvents/1.0",
@@ -25,7 +25,7 @@
   "isdefault": true,
   "messageid": "info.energy_charts.SpotPrice",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/info.energy_charts/messages/info.energy_charts.SpotPrice/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "SpotPrice",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/info.energy_charts/messages/info.energy_charts.SpotPrice",
   "versionid": "1",

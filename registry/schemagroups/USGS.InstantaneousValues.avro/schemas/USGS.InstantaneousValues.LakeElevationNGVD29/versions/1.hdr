@@ -3,11 +3,11 @@ content-length:1403
 content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNGVD29/versions/1
 content-type:application/json
 xregistry-ancestor:1
-xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-createdat:2026-05-26T18:07:20.46225114Z
 xregistry-epoch:1
 xregistry-format:Avro/1.11.3
 xregistry-isdefault:true
-xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-modifiedat:2026-05-26T18:07:20.46225114Z
 xregistry-schemaid:USGS.InstantaneousValues.LakeElevationNGVD29
 xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.LakeElevationNGVD29/versions/1
 xregistry-versionid:1

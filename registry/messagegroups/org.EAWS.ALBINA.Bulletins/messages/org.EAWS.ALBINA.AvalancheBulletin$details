@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/org.EAWS.ALBINA.jstruct/schemas/org.EAWS.ALBINA.AvalancheBulletin",
   "description": "An official alert or bulletin from the European Avalanche Warning Services ALBINA feed. It carries avalanche bulletins and danger ratings for the affected area and validity period published by the upstream source.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "org.EAWS.ALBINA.AvalancheBulletin",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheBulletin/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "AvalancheBulletin",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheBulletin",
   "versionid": "1",

@@ -1,12 +1,12 @@
 {
   "ancestor": "1",
   "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindDirection",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "epoch": 1,
   "isdefault": true,
   "messageid": "USGS.InstantaneousValues.mqtt.WindDirection",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.WindDirection/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "WindDirection",
   "protocol": "MQTT/5.0",
   "protocoloptions": {

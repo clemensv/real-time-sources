@@ -1,11 +1,11 @@
 {
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "defaultversionid": "1",
   "defaultversionsticky": false,
   "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.Station/versions/1",
   "epoch": 1,
   "messageid": "BE.Gov.KMI.Weather.Station",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "readonly": false,
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.Station/meta",
   "xid": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.Station/meta"

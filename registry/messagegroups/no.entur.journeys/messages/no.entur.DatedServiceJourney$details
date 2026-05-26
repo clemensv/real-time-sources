@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/no.entur.jstruct/schemas/no.entur.DatedServiceJourney",
   "description": "Reference data for a dated service journey in the Norwegian public transport network. A DatedServiceJourney is a specific vehicle journey operating on a particular operating day, identified by its NeTEx ServiceJourney reference and operating day. This reference event is emitted at bridge startup from the SIRI-ET feed and refreshed periodically to provide downstream consumers with the timetable context for subsequent telemetry events.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "no.entur.DatedServiceJourney",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.journeys/messages/no.entur.DatedServiceJourney/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "DatedServiceJourney",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.journeys/messages/no.entur.DatedServiceJourney",
   "versionid": "1",

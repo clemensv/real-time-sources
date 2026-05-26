@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/jp.tepco.denkiyoho.jstruct/schemas/jp.tepco.denkiyoho.PeakDemandForecast",
   "description": "Daily TEPCO Electricity Forecast maximum-demand forecast record for the Tokyo service area.",
@@ -25,7 +25,7 @@
   "epoch": 1,
   "isdefault": true,
   "messageid": "jp.tepco.denkiyoho.PeakDemandForecast",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "PeakDemandForecast",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.PeakDemandForecast/versions/1",
   "versionid": "1",

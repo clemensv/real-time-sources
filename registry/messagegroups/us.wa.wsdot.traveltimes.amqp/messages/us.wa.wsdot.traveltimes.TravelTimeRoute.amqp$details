@@ -1,12 +1,12 @@
 {
   "ancestor": "1",
   "basemessageuri": "/messagegroups/us.wa.wsdot.traveltimes/messages/us.wa.wsdot.traveltimes.TravelTimeRoute",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "epoch": 1,
   "isdefault": true,
   "messageid": "us.wa.wsdot.traveltimes.TravelTimeRoute.amqp",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.traveltimes.amqp/messages/us.wa.wsdot.traveltimes.TravelTimeRoute.amqp/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "TravelTimeRoute",
   "protocol": "AMQP/1.0",
   "protocoloptions": {

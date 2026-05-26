@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/de.uba.airdata.jstruct/schemas/de.uba.airdata.Measure",
   "description": "Hourly one-hour-average air quality measurement for a UBA monitoring station and pollutant component as returned by the air_data/v3 measures endpoint.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "de.uba.airdata.Measure",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/de.uba.airdata/messages/de.uba.airdata.Measure/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "Measure",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/de.uba.airdata/messages/de.uba.airdata.Measure",
   "versionid": "1",

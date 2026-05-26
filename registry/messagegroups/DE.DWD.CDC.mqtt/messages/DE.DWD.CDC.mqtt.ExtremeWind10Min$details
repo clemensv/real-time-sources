@@ -1,7 +1,7 @@
 {
   "ancestor": "1",
   "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeWind10Min",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "envelope": "CloudEvents/1.0",
   "envelopemetadata": {
     "source": {
@@ -24,7 +24,7 @@
   "isdefault": true,
   "messageid": "DE.DWD.CDC.mqtt.ExtremeWind10Min",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.DWD.CDC.mqtt/messages/DE.DWD.CDC.mqtt.ExtremeWind10Min/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "ExtremeWind10Min",
   "protocol": "MQTT/5.0",
   "protocoloptions": {

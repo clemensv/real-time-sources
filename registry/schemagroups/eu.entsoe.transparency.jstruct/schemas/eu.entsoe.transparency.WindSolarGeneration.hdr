@@ -3,12 +3,12 @@ content-length:1765
 content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.WindSolarGeneration/versions/1
 content-type:application/json
 xregistry-ancestor:1
-xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-createdat:2026-05-26T18:07:20.46225114Z
 xregistry-epoch:1
 xregistry-format:JsonStructure/draft-02
 xregistry-isdefault:true
 xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.WindSolarGeneration/meta
-xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-modifiedat:2026-05-26T18:07:20.46225114Z
 xregistry-schemaid:eu.entsoe.transparency.WindSolarGeneration
 xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.WindSolarGeneration
 xregistry-versionid:1

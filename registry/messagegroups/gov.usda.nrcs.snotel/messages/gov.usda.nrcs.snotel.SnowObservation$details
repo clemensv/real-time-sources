@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/gov.usda.nrcs.snotel.jstruct/schemas/gov.usda.nrcs.snotel.SnowObservation",
   "envelope": "CloudEvents/1.0",
@@ -25,7 +25,7 @@
   "isdefault": true,
   "messageid": "gov.usda.nrcs.snotel.SnowObservation",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.SnowObservation/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "SnowObservation",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.SnowObservation",
   "versionid": "1",

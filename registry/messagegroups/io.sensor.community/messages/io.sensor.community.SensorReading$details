@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/io.sensor.community.jstruct/schemas/io.sensor.community.SensorReading",
   "description": "Latest Sensor.Community telemetry reading for one sensor at a specific timestamp, normalized across particulate, climate, pressure, and noise measurements.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "io.sensor.community.SensorReading",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/io.sensor.community/messages/io.sensor.community.SensorReading/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "SensorReading",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/io.sensor.community/messages/io.sensor.community.SensorReading",
   "versionid": "1",

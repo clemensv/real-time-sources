@@ -1,11 +1,11 @@
 {
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "description": "MQTT/5.0 transport variants for USGS geomagnetic observatory reference data and one-minute readings. Topics are retained QoS-1 leaves under space-weather/us/usgs/usgs-geomag/{iaga_code}/..., where {iaga_code} in the topic is the lowercased IAGA observatory code; the payload field may carry the canonical upstream code. Producers MUST lowercase {iaga_code} for the topic and consumers MUST treat topic filters as case-sensitive. The info leaf is retained reference metadata with no expiry. The reading leaf is a latched current 1-minute observation with Message Expiry Interval 7200 seconds; if the retained value expires, interpret the empty topic as observatory or bridge silence for at least two hours, not a zero magnetic-field reading. The iaga_code is the join key between retained info and readings.",
   "epoch": 1,
   "messagegroupid": "gov.usgs.geomag.mqtt",
   "messagescount": 2,
   "messagesurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/gov.usgs.geomag.mqtt/messages",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/gov.usgs.geomag.mqtt",
   "xid": "/messagegroups/gov.usgs.geomag.mqtt"
 }

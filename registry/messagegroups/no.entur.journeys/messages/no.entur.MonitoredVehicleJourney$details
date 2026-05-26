@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/no.entur.jstruct/schemas/no.entur.MonitoredVehicleJourney",
   "description": "Real-time vehicle monitoring update from the Entur SIRI-VM feed (GET /realtime/v1/rest/vm). Contains the current geographic position of a vehicle, its bearing, delay, occupancy status, and the next monitored call. Uses incremental requestorId polling for efficient change delivery.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "no.entur.MonitoredVehicleJourney",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "MonitoredVehicleJourney",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney",
   "versionid": "1",

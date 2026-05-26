@@ -1,6 +1,6 @@
 {
   "ancestor": "1",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "dataschemaformat": "JsonStructure/draft-02",
   "dataschemauri": "/schemagroups/jp.go.jma.jstruct/schemas/jp.go.jma.WeatherBulletin",
   "description": "An official alert or bulletin from the Japan Meteorological Agency. It carries official bulletin messages for the affected area and validity period published by the upstream source.",
@@ -26,7 +26,7 @@
   "isdefault": true,
   "messageid": "jp.go.jma.WeatherBulletin",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/jp.go.jma.WeatherBulletins/messages/jp.go.jma.WeatherBulletin/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "WeatherBulletin",
   "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/jp.go.jma.WeatherBulletins/messages/jp.go.jma.WeatherBulletin",
   "versionid": "1",

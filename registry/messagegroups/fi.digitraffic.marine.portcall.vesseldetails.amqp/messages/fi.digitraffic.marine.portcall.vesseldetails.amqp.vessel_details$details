@@ -1,13 +1,13 @@
 {
   "ancestor": "1",
   "basemessageuri": "/messagegroups/fi.digitraffic.marine.portcall.vesseldetails/messages/fi.digitraffic.marine.portcall.VesselDetails",
-  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "createdat": "2026-05-26T18:07:20.46225114Z",
   "description": "AMQP transport projection of vessel_details using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.",
   "epoch": 1,
   "isdefault": true,
   "messageid": "fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details",
   "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.marine.portcall.vesseldetails.amqp/messages/fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details/meta",
-  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "modifiedat": "2026-05-26T18:07:20.46225114Z",
   "name": "vessel_details",
   "protocol": "AMQP/1.0",
   "protocoloptions": {

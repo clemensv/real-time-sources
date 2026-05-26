@@ -2,12 +2,12 @@ content-disposition:io.sensor.community.SensorReading
 content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/io.sensor.community.jstruct/schemas/io.sensor.community.SensorReading/versions/1
 content-type:application/json
 xregistry-ancestor:1
-xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-createdat:2026-05-26T18:07:20.46225114Z
 xregistry-epoch:1
 xregistry-format:JsonStructure/draft-02
 xregistry-isdefault:true
 xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/io.sensor.community.jstruct/schemas/io.sensor.community.SensorReading/meta
-xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-modifiedat:2026-05-26T18:07:20.46225114Z
 xregistry-schemaid:io.sensor.community.SensorReading
 xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/io.sensor.community.jstruct/schemas/io.sensor.community.SensorReading
 xregistry-versionid:1
