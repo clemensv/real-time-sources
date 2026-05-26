@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "digitraffic-road-amqp"
+version = "0.1.0"
+description = "Digitraffic Road -> AMQP 1.0 bridge for Finnish road traffic data"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "digitraffic_road_amqp" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+python-qpid-proton = ">=0.40.0"
+requests = ">=2.31.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses-json = ">=0.6.7"
+azure-identity = ">=1.17.0"
+azure-core = ">=1.30.0"
+digitraffic_road_amqp_producer_data = { path = "../digitraffic_road_amqp_producer/digitraffic_road_amqp_producer_data" }
+digitraffic_road_amqp_producer_amqp_producer = { path = "../digitraffic_road_amqp_producer/digitraffic_road_amqp_producer_amqp_producer" }
+
+[tool.poetry.scripts]
+digitraffic-road-amqp = "digitraffic_road_amqp.app:main"

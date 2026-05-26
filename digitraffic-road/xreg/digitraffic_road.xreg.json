@@ -109,6 +109,45 @@
         "#/messagegroups/fi.digitraffic.road.maintenance.tasks"
       ],
       "description": "Kafka producer endpoint for Digitraffic Road CloudEvents on the `digitraffic-road-maintenance` topic keyed by `{task_id}`."
+    },
+    "fi.digitraffic.road.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.digitraffic.road.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for Digitraffic Road CloudEvents using the UNS topic hierarchy and retain settings declared in this manifest."
+    },
+    "fi.digitraffic.road.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/digitraffic-road"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/fi.digitraffic.road.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for Digitraffic Road CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -326,6 +365,378 @@
         }
       },
       "description": "Events from Digitraffic Road covering Finnish road network sensors and traffic messages. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
+    },
+    "fi.digitraffic.road.mqtt": {
+      "description": "MQTT 5.0 UNS variant of the Digitraffic Road CloudEvents. High-frequency sensor telemetry is non-retained QoS 0; reference station and task-type records are retained QoS 1 so subscribers joining mid-stream see the latest state immediately. Traffic situational messages use QoS 1 non-retained.",
+      "messages": {
+        "fi.digitraffic.road.mqtt.TmsSensorData": {
+          "name": "TmsSensorData",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.TmsSensorData",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/fi/fintraffic/digitraffic-road/{station_id}/{sensor_id}/tms-sensor-data",
+            "qos": 0,
+            "retain": false
+          }
+        },
+        "fi.digitraffic.road.mqtt.WeatherSensorData": {
+          "name": "WeatherSensorData",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.WeatherSensorData",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/fi/fintraffic/digitraffic-road/{station_id}/{sensor_id}/weather-sensor-data",
+            "qos": 0,
+            "retain": false
+          }
+        },
+        "fi.digitraffic.road.mqtt.TrafficAnnouncement": {
+          "name": "TrafficAnnouncement",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.TrafficAnnouncement",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/traffic-announcement",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "fi.digitraffic.road.mqtt.RoadWork": {
+          "name": "RoadWork",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.RoadWork",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/road-work",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "fi.digitraffic.road.mqtt.WeightRestriction": {
+          "name": "WeightRestriction",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.WeightRestriction",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/weight-restriction",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "fi.digitraffic.road.mqtt.ExemptedTransport": {
+          "name": "ExemptedTransport",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.ExemptedTransport",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/exempted-transport",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "fi.digitraffic.road.mqtt.MaintenanceTracking": {
+          "name": "MaintenanceTracking",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.maintenance/messages/fi.digitraffic.road.maintenance.MaintenanceTracking",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/fi/fintraffic/digitraffic-road/maintenance/{domain}/tracking",
+            "qos": 0,
+            "retain": false
+          }
+        },
+        "fi.digitraffic.road.mqtt.TmsStation": {
+          "name": "TmsStation",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.TmsStation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/fi/fintraffic/digitraffic-road/stations/{station_id}/tms-station",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "fi.digitraffic.road.mqtt.WeatherStation": {
+          "name": "WeatherStation",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.WeatherStation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/fi/fintraffic/digitraffic-road/stations/{station_id}/weather-station",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "fi.digitraffic.road.mqtt.MaintenanceTaskType": {
+          "name": "MaintenanceTaskType",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.maintenance.tasks/messages/fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/fi/fintraffic/digitraffic-road/maintenance-tasks/{task_id}/task-type",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "fi.digitraffic.road.amqp": {
+      "description": "AMQP 1.0 transport variant of the Digitraffic Road CloudEvents. Carries the same CloudEvents payload schemas as the Kafka and MQTT variants for queue- and topic-oriented consumers such as Azure Service Bus.",
+      "messages": {
+        "fi.digitraffic.road.amqp.TmsSensorData": {
+          "name": "TmsSensorData",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.TmsSensorData",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}/{sensor_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key for TMS sensor telemetry. Stable per-sensor identity."
+              }
+            },
+            "application_properties": {
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "TMS station identifier. Allows Service Bus subscription SQL filters to route by station without decoding the payload."
+              },
+              "sensor_id": {
+                "type": "uritemplate",
+                "value": "{sensor_id}",
+                "description": "Sensor identifier within the TMS station. Allows Service Bus subscription SQL filters to route by sensor family."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}/{sensor_id}",
+                "description": "Service Bus / Event Hubs partition key. Mirrors the CloudEvent subject and Kafka key so all events for the same sensor hash to the same partition."
+              }
+            }
+          }
+        },
+        "fi.digitraffic.road.amqp.WeatherSensorData": {
+          "name": "WeatherSensorData",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.WeatherSensorData",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}/{sensor_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key for weather sensor telemetry."
+              }
+            },
+            "application_properties": {
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Road weather station identifier. Allows Service Bus subscription SQL filters to route by station."
+              },
+              "sensor_id": {
+                "type": "uritemplate",
+                "value": "{sensor_id}",
+                "description": "Sensor identifier within the weather station. Allows filtering by sensor family."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}/{sensor_id}",
+                "description": "Service Bus / Event Hubs partition key. Mirrors the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        },
+        "fi.digitraffic.road.amqp.TrafficAnnouncement": {
+          "name": "TrafficAnnouncement",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.TrafficAnnouncement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{situation_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key for traffic announcement situations."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{situation_id}",
+                "description": "Service Bus / Event Hubs partition key. All updates for the same traffic situation hash to the same partition."
+              }
+            }
+          }
+        },
+        "fi.digitraffic.road.amqp.RoadWork": {
+          "name": "RoadWork",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.RoadWork",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{situation_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key for road work situations."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{situation_id}",
+                "description": "Service Bus / Event Hubs partition key for road work situations."
+              }
+            }
+          }
+        },
+        "fi.digitraffic.road.amqp.WeightRestriction": {
+          "name": "WeightRestriction",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.WeightRestriction",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{situation_id}",
+                "description": "AMQP message subject for weight restriction situations."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{situation_id}",
+                "description": "Service Bus / Event Hubs partition key for weight restriction situations."
+              }
+            }
+          }
+        },
+        "fi.digitraffic.road.amqp.ExemptedTransport": {
+          "name": "ExemptedTransport",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.ExemptedTransport",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{situation_id}",
+                "description": "AMQP message subject for exempted transport situations."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{situation_id}",
+                "description": "Service Bus / Event Hubs partition key for exempted transport situations."
+              }
+            }
+          }
+        },
+        "fi.digitraffic.road.amqp.MaintenanceTracking": {
+          "name": "MaintenanceTracking",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.maintenance/messages/fi.digitraffic.road.maintenance.MaintenanceTracking",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{domain}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key for maintenance tracking events. Identifies the data domain (e.g. 'state-roads')."
+              }
+            },
+            "application_properties": {
+              "domain": {
+                "type": "uritemplate",
+                "value": "{domain}",
+                "description": "Maintenance data domain. Allows Service Bus subscription SQL filters to route by domain without decoding the payload."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{domain}",
+                "description": "Service Bus / Event Hubs partition key. All maintenance tracking events for the same domain hash to the same partition."
+              }
+            }
+          }
+        },
+        "fi.digitraffic.road.amqp.TmsStation": {
+          "name": "TmsStation",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.TmsStation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key for TMS station reference records."
+              }
+            },
+            "application_properties": {
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "TMS station identifier. Allows Service Bus subscription SQL filters to route by station."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus / Event Hubs partition key for TMS station reference records."
+              }
+            }
+          }
+        },
+        "fi.digitraffic.road.amqp.WeatherStation": {
+          "name": "WeatherStation",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.WeatherStation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject for road weather station reference records."
+              }
+            },
+            "application_properties": {
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Road weather station identifier."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus / Event Hubs partition key for weather station reference records."
+              }
+            }
+          }
+        },
+        "fi.digitraffic.road.amqp.MaintenanceTaskType": {
+          "name": "MaintenanceTaskType",
+          "basemessageurl": "/messagegroups/fi.digitraffic.road.maintenance.tasks/messages/fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{task_id}",
+                "description": "AMQP message subject for maintenance task type reference records."
+              }
+            },
+            "application_properties": {
+              "task_id": {
+                "type": "uritemplate",
+                "value": "{task_id}",
+                "description": "Maintenance task type identifier (e.g. 'PLOUGHING_AND_SLUSH_REMOVAL'). Allows Service Bus filters to route by task type."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{task_id}",
+                "description": "Service Bus / Event Hubs partition key for maintenance task type reference records."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

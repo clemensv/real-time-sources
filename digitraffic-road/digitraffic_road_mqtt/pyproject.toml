@@ -1,0 +1,23 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "digitraffic-road-mqtt"
+version = "0.1.0"
+description = "Digitraffic Road -> MQTT/UNS bridge for Finnish road traffic data"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "digitraffic_road_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+requests = ">=2.31.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses-json = ">=0.6.7"
+azure-identity = ">=1.17.0"
+digitraffic_road_mqtt_producer_data = { path = "../digitraffic_road_mqtt_producer/digitraffic_road_mqtt_producer_data" }
+digitraffic_road_mqtt_producer_mqtt_client = { path = "../digitraffic_road_mqtt_producer/digitraffic_road_mqtt_producer_mqtt_client" }
+
+[tool.poetry.scripts]
+digitraffic-road-mqtt = "digitraffic_road_mqtt.app:main"
