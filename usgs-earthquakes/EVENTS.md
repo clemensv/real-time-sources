@@ -1,4 +1,4 @@
-# USGS Earthquake Hazards Program - Real-time Earthquake Feed Events
+# USGS Earthquakes feeder Events
 
 MQTT/5.0 transport variant for USGS earthquake events. Non-retained QoS-1 event stream routed by contributor network, magnitude bucket, and event code under seismic/intl/usgs/usgs-earthquakes/... Buckets are m0 for <1 or unknown, m1..m6 for [1,7), and m7plus for >=7.
 
@@ -169,11 +169,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
 ## References
 
 - xRegistry manifest: [`xreg/usgs_earthquakes.xreg.json`](xreg/usgs_earthquakes.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- ![Deploy AMQP to Azure Service Bus: <https://aka.ms/deploytoazurebutton>

@@ -1,4 +1,4 @@
-# EURDEP Radiation Events
+# EURDEP Radiation feeder Events
 
 MQTT 5 variant of EURDEP radiation events with retained QoS-1 topics by country, station, and event type.
 
@@ -188,8 +188,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 

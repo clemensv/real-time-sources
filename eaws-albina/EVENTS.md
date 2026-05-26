@@ -1,4 +1,4 @@
-# EAWS ALBINA Avalanche Bulletin Bridge Events
+# EAWS ALBINA feeder Events
 
 EAWS ALBINA publishes avalanche bulletins and danger ratings from the European Avalanche Warning Services ALBINA feed for Alpine avalanche forecast regions. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
@@ -199,7 +199,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
 ## References
 

@@ -1,70 +1,156 @@
-# JMA Bosai Earthquake & Seismic Intensity Information
+# JMA Bosai Quake feeder
 
-This source polls the Japan Meteorological Agency (JMA / 気象庁) Bosai earthquake feed and emits new earthquake and seismic intensity reports as CloudEvents to Kafka, Azure Event Hubs, Microsoft Fabric Event Streams, or MQTT/UNS.
+This feeder turns JMA Bosai earthquake and seismic-intensity feeds into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+JMA earthquake and intensity publications are critical for situational awareness and downstream analytics. This feeder exposes them as CloudEvents across three transports so subscribers can integrate without managing JMA feed polling and state logic directly.
+
+## Overview
+
+**JMA Bosai Quake** ships three transport variants from one source bridge:
+
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-jma-bosai-quake` | Apache Kafka 2.x compatible (Azure Event Hubs, Fabric Event Streams, Confluent Cloud, plain Kafka) | One topic, JSON CloudEvents (binary mode) |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-jma-bosai-quake-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Fabric MQTT broker) | Unified-Namespace topic tree defined in `xreg/jma-bosai-quake.xreg.json` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-jma-bosai-quake-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, Artemis, Qpid Dispatch, Azure Service Bus / Event Hubs) | Single AMQP address, binary CloudEvents |
+
+All three variants share the same source contract in `xreg/jma-bosai-quake.xreg.json`.
+
+## Key features
+
+- Poll-based feeder with checkpointed state to avoid duplicate publication across restarts.
+- Kafka, MQTT, and AMQP transport variants that share one xRegistry event contract.
+- CloudEvents output suitable for Event Hubs, Fabric Event Streams, or self-managed brokers.
+- Reference/telemetry publishing behavior and schemas documented in [EVENTS.md](EVENTS.md).
+
+## Repository layout
+
+```text
+jma-bosai-quake/
+  xreg/jma-bosai-quake.xreg.json
+  jma_bosai_quake/
+  jma_bosai_quake_mqtt/
+  jma_bosai_quake_amqp/
+  jma_bosai_quake_producer/
+  jma_bosai_quake_mqtt_producer/
+  jma_bosai_quake_amqp_producer/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+  notebook/
+  tests/
+```
+
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS access to the upstream source APIs.
+- Network access to your target Kafka broker, MQTT broker, or AMQP endpoint.
+- A writable host directory mounted to persist the source state file across restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a writable host volume for state persistence. Without it, dedupe/checkpoint state resets on every restart.
+
+### Kafka
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/jma-bosai-quake.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-jma-bosai-quake:latest
+```
+
+### MQTT (Unified Namespace)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e JMA_BOSAI_QUAKE_MQTT_STATE_FILE=/state/jma-bosai-quake.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-jma-bosai-quake-mqtt:latest
+```
+
+### AMQP 1.0
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e JMA_BOSAI_QUAKE_AMQP_STATE_FILE=/state/jma-bosai-quake.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/jma-bosai-quake" \
+  ghcr.io/clemensv/real-time-sources-jma-bosai-quake-amqp:latest
+```
+
+## Configuration reference
+
+For full transport/auth matrices (Kafka, MQTT, AMQP), source-specific options, and deployment options, see [CONTAINER.md](CONTAINER.md).
 
 ## Upstream source
 
-- Publisher: Japan Meteorological Agency (JMA)
-- Authentication: none
-- License: Japanese government open data
-- Cadence: reports appear as earthquakes occur, with updates and corrections; the bridge polls every 60 seconds by default.
-- Fabric notebook hosting: deploy the scheduled notebook feeder with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+Japan Meteorological Agency Bosai earthquake and seismic-intensity feeds.
 
-## Reviewed data channels
+## Data model
 
-| Family | Transport | Identity | Cadence | Decision |
-| --- | --- | --- | --- | --- |
-| Recent earthquake list | REST `https://www.jma.go.jp/bosai/quake/data/list.json` | `eid` plus `ser` | Near real time | Keep. This is the current/recent earthquake report index and carries the stable event id, serial, report metadata, hypocenter summary, and prefecture/city intensity summaries. |
-| Earthquake detail JSON | REST `https://www.jma.go.jp/bosai/quake/data/{json}` | `eid` plus `ser` | Near real time with each list entry | Keep as enrichment. The bridge fetches the referenced detail file to derive tsunami-related comments when available. |
-| Tsunami VTSE detail products | REST detail files whose product code starts `VTSE` | Tsunami bulletin ids | Near real time | Drop. Tsunami products are covered by the separate `jma-bosai-warning` source and are not emitted here. |
+This feeder emits the following event families:
 
-No separate station or catalog metadata endpoint is required for this event model; JMA supplies the affected prefecture and city codes inline with each report.
+- **`EarthquakeReport`**
 
-## Event model
+See [EVENTS.md](EVENTS.md) for field-level schemas, subject templates, and key mapping per transport.
 
-The source emits one event type, `JP.JMA.Quake.EarthquakeReport`, documented in [EVENTS.md](EVENTS.md). The CloudEvents subject and Kafka key are both:
+## Deploying into Microsoft Fabric
 
-```text
-jp.jma.quake/{event_id}/{serial}
-```
+Two hosting options are available for this poll-based source:
 
-The composite key preserves multiple serial reports for the same earthquake, including corrections and cancellations.
+### Fabric Notebook feeder
 
-## Running locally
+The notebook under [`notebook/`](notebook/) runs the bridge on a Fabric schedule and resolves the Event Stream connection string at runtime via Fabric topology APIs.
 
-```powershell
-cd jma-bosai-quake
-pip install .\jma_bosai_quake_producer\jma_bosai_quake_producer_data
-pip install .\jma_bosai_quake_producer\jma_bosai_quake_producer_kafka_producer
-pip install -e .
-jma-bosai-quake feed --kafka-bootstrap-servers "localhost:9092" --kafka-topic "jma-bosai-quake" --once
-```
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#jma-bosai-quake/fabric-notebook)
 
-MQTT/UNS:
+### Fabric ACI feeder
 
-```powershell
-python -m jma_bosai_quake_mqtt feed --broker-url mqtt://localhost:1883 --once
-```
+A long-running Azure Container Instance hosts one of the three transport images and publishes to a Fabric Event Stream custom endpoint.
 
-MQTT topic tree:
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#jma-bosai-quake/fabric-aci)
 
-```text
-seismic/jp/jma/jma-bosai-quake/{prefecture}/{magnitude_bucket}/{event_id}/{serial}/report
-```
+## Deploying into Azure Container Instances
 
-Configuration can also be supplied via environment variables: `CONNECTION_STRING`, `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC`, `SASL_USERNAME`, `SASL_PASSWORD`, `KAFKA_ENABLE_TLS`, `POLLING_INTERVAL`, `STATE_FILE`, and `ONCE_MODE`. MQTT additionally uses `MQTT_BROKER_URL`, `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_CLIENT_ID`, and `MQTT_CONTENT_MODE`.
+### MQTT — bring your own broker
 
-## State
+Deploys the MQTT image against an existing MQTT 5 broker.
 
-The bridge persists a FIFO set of the latest 1000 `(eid, ser)` tuples in `./state/jma-bosai-quake.json` by default. State advances only after Kafka flush succeeds, so failed deliveries are retried on the next poll.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-quake%2Fazure-template-mqtt.json)
 
-## AMQP 1.0 companion feeder
+### MQTT — provision Event Grid MQTT broker
 
-This source also ships an AMQP 1.0 companion container, `ghcr.io/clemensv/real-time-sources-jma-bosai-quake-amqp:latest`, for queue-oriented consumers using generic AMQP brokers or Azure Service Bus. It emits the same CloudEvents and payload schemas as the Kafka and MQTT variants on a single broker address (default `jma-bosai-quake`).
+Deploys MQTT plus a new Event Grid namespace broker and identity wiring.
 
-```bash
-docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=jma-bosai-quake   ghcr.io/clemensv/real-time-sources-jma-bosai-quake-amqp:latest
-```
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-quake%2Fazure-template-with-eventgrid-mqtt.json)
 
-[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-quake%2Fazure-template-amqp.json)
+### AMQP — bring your own AMQP broker
 
+Deploys the AMQP image against a provided AMQP broker endpoint.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-quake%2Fazure-template-amqp.json)
+
+### AMQP — provision Azure Service Bus
+
+Deploys AMQP plus a new Service Bus namespace/queue and sender identity wiring.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-bosai-quake%2Fazure-template-with-servicebus.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before building consumers.
+- Use [CONTAINER.md](CONTAINER.md) for complete env-var matrices and auth-mode examples.

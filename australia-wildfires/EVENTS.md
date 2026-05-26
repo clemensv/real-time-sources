@@ -1,4 +1,4 @@
-# Australian State Wildfires Bridge Events
+# Australian Wildfires feeder Events
 
 Australia Wildfires publishes bushfire incident status updates from Australian emergency-services incident feeds for Australian wildfire incidents. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
@@ -141,7 +141,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
 ## References
 

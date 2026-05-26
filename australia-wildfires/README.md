@@ -1,88 +1,144 @@
-# Australian State Wildfires Bridge
+# Australian Wildfires feeder
 
-This bridge aggregates live bushfire incident data from three Australian state
-emergency services and emits normalized `FireIncident` CloudEvents to a Kafka
-topic.
+This feeder turns public Australian state bushfire incident feeds into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-## Sources
+Companion docs:
 
-| State | Agency | Endpoint |
-|-------|--------|----------|
-| NSW | Rural Fire Service | `https://www.rfs.nsw.gov.au/feeds/majorIncidents.json` |
-| VIC | VicEmergency | `https://www.emergency.vic.gov.au/public/osom-geojson.json` |
-| QLD | Queensland Fire Department | `https://publiccontent-gis-psba-qld-gov-au.s3.amazonaws.com/content/Feeds/BushfireCurrentIncidents/bushfireAlert.json` |
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-All three endpoints are public GeoJSON feeds requiring no authentication.
+## Why this bridge
 
-## How It Works
+Australian fire agencies publish incident updates independently across state services. This feeder normalizes those live feeds into one event contract so emergency analytics teams, insurers, infrastructure operators, and researchers can subscribe to a single stream instead of polling multiple APIs and reconciling shapes themselves.
 
-1. The bridge polls all three GeoJSON endpoints every 5 minutes (configurable).
-2. NSW features are parsed directly; VIC features are filtered for
-   `category2 == "Fire"` or CAP category containing "Fire"; QLD features are
-   included as-is (the feed is bushfire-only).
-3. Each feature is normalized into a unified `FireIncident` schema with
-   coordinates extracted from the GeoJSON geometry.
-4. Deduplication is performed by `{state}/{incident_id}` + `updated` timestamp.
-5. New or updated incidents are emitted as structured CloudEvents to Kafka.
+## Overview
 
-## Event Types
+**Australian Wildfires** ships three transport variants from one source bridge:
 
-See [EVENTS.md](EVENTS.md) for the full event catalog.
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-australia-wildfires` | Apache Kafka 2.x compatible (Azure Event Hubs, Fabric Event Streams, Confluent Cloud, plain Kafka) | One topic, JSON CloudEvents (binary mode) |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-australia-wildfires-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Fabric MQTT broker) | Unified-Namespace topic tree defined in `xreg/australia_wildfires.xreg.json` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-australia-wildfires-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, Artemis, Qpid Dispatch, Azure Service Bus / Event Hubs) | Single AMQP address, binary CloudEvents |
 
-## Fabric notebook hosting
+All three variants share the same source contract in `xreg/australia_wildfires.xreg.json`.
 
-This source ships a Fabric notebook (`notebook/australia-wildfires-feed.ipynb`) deployable via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) for serverless polling inside a Fabric workspace.
+## Key features
 
-## Running
+- Poll-based feeder with checkpointed state to avoid duplicate publication across restarts.
+- Kafka, MQTT, and AMQP transport variants that share one xRegistry event contract.
+- CloudEvents output suitable for Event Hubs, Fabric Event Streams, or self-managed brokers.
+- Reference/telemetry publishing behavior and schemas documented in [EVENTS.md](EVENTS.md).
 
-```bash
-# Install
-pip install -e .
+## Repository layout
 
-# List current incidents
-python -m australia_wildfires list
-
-# Feed to Kafka
-python -m australia_wildfires --connection-string "BootstrapServer=localhost:9092;EntityPath=australia-wildfires" feed
-
-# Feed to MQTT/UNS
-MQTT_BROKER_URL=mqtt://localhost:1883 python -m australia_wildfires_mqtt feed
+```text
+australia-wildfires/
+  xreg/australia_wildfires.xreg.json
+  australia_wildfires/
+  australia_wildfires_mqtt/
+  australia_wildfires_amqp/
+  australia_wildfires_producer/
+  australia_wildfires_mqtt_producer/
+  australia_wildfires_amqp_producer/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+  notebook/
+  tests/
 ```
 
-## Container
+## Prerequisites
 
-See [CONTAINER.md](CONTAINER.md) for Docker deployment instructions.
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS access to the upstream source APIs.
+- Network access to your target Kafka broker, MQTT broker, or AMQP endpoint.
+- A writable host directory mounted to persist the source state file across restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a writable host volume for state persistence. Without it, dedupe/checkpoint state resets on every restart.
+
+### Kafka
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/australia-wildfires.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-australia-wildfires:latest
+```
+
+### MQTT (Unified Namespace)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/australia-wildfires.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-australia-wildfires-mqtt:latest
+```
+
+### AMQP 1.0
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/australia-wildfires.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/australia-wildfires" \
+  ghcr.io/clemensv/real-time-sources-australia-wildfires-amqp:latest
+```
+
+## Configuration reference
+
+For full transport/auth matrices (Kafka, MQTT, AMQP), source-specific options, and deployment options, see [CONTAINER.md](CONTAINER.md).
+
+## Upstream source
+
+State emergency incident feeds from NSW RFS, VicEmergency, and Queensland Fire Department.
+
+## Data model
+
+This feeder emits the following event families:
+
+- **`FireIncident`**
+
+See [EVENTS.md](EVENTS.md) for field-level schemas, subject templates, and key mapping per transport.
+
+## Deploying into Microsoft Fabric
+
+Two hosting options are available for this poll-based source:
+
+### Fabric Notebook feeder
+
+The notebook under [`notebook/`](notebook/) runs the bridge on a Fabric schedule and resolves the Event Stream connection string at runtime via Fabric topology APIs.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#australia-wildfires/fabric-notebook)
+
+### Fabric ACI feeder
+
+A long-running Azure Container Instance hosts one of the three transport images and publishes to a Fabric Event Stream custom endpoint.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#australia-wildfires/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### Kafka — bring your own Event Hub / Kafka
 
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+Deploys the Kafka image and uses a provided connection string.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Faustralia-wildfires%2Fazure-template.json)
 
-### Option 2: Deploy with a new Event Hub
+### Kafka — provision a new Event Hub
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploys Kafka plus a new Event Hubs namespace and hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Faustralia-wildfires%2Fazure-template-with-eventhub.json)
 
+## Next steps
 
-## AMQP 1.0 feeder
-
-This source also ships an AMQP 1.0 companion container (`Dockerfile.amqp`, image `ghcr.io/clemensv/real-time-sources-australia-wildfires-amqp:latest`). It publishes the same CloudEvents contract documented in [EVENTS.md](EVENTS.md) to a single AMQP address named `australia-wildfires` by default. Use it for enterprise queue/topic consumers on ActiveMQ Artemis, RabbitMQ AMQP 1.0, Qpid Dispatch, or Azure Service Bus.
-
-```bash
-docker run --rm   -e AMQP_BROKER_URL=amqp://user:password@broker:5672/australia-wildfires   -e AUSTRALIA_WILDFIRES_SAMPLE_MODE=true ONCE_MODE=true   ghcr.io/clemensv/real-time-sources-australia-wildfires-amqp:latest
-```
-
-Azure Service Bus deployment (new namespace, queue, managed identity, and ACI):
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Faustralia-wildfires%2Finfra%2Fazure-template-amqp.json)
+- Review [EVENTS.md](EVENTS.md) before building consumers.
+- Use [CONTAINER.md](CONTAINER.md) for complete env-var matrices and auth-mode examples.

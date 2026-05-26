@@ -1,178 +1,220 @@
-# EAWS ALBINA Avalanche Bulletin Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# EAWS ALBINA container images
 
-This container image provides a bridge between the EAWS ALBINA avalanche bulletin system ([avalanche.report](https://avalanche.report)) and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge fetches daily CAAMLv6 avalanche bulletins for European Alps regions and forwards them to the configured Kafka endpoints.
+This document covers the published OCI images for the EAWS ALBINA source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
-## EAWS ALBINA Avalanche Bulletin API
+## Why this container
 
-The European Avalanche Warning Services (EAWS) ALBINA system publishes daily avalanche danger bulletins in the CAAMLv6 standard format for the European Alps. Coverage includes Tirol (AT-07), South Tyrol (IT-32-BZ), Trentino (IT-32-TN), and Salzburg (AT-02). Bulletins are published twice daily during winter season (evening forecast + morning update) and include danger ratings on the 5-level EAWS scale, avalanche problem types, tendency forecasts, and snowpack analysis.
+EAWS ALBINA bulletin data drives avalanche risk decisions across Alpine regions. This feeder publishes the bulletins as event streams for hazard dashboards, ski-area operations, transport planners, and risk analytics pipelines without bespoke CAAML polling code.
 
-Data is freely available under Creative Commons Attribution (CC BY) license.
+## What ships in the box
 
-## Functionality
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-eaws-albina` | Kafka | JSON CloudEvents to one Kafka topic |
+| `ghcr.io/clemensv/real-time-sources-eaws-albina-mqtt` | MQTT 5.0 | Binary CloudEvents into UNS topic tree from xRegistry |
+| `ghcr.io/clemensv/real-time-sources-eaws-albina-amqp` | AMQP 1.0 | Binary CloudEvents to one AMQP address |
 
-The bridge polls the ALBINA CAAMLv6 API at `https://avalanche.report/albina_files/` for today's and yesterday's bulletins and writes them to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md). Each bulletin is flattened into per-region events. Previously seen bulletin+region combinations are tracked in a state file to prevent duplicates.
+## Image contract
 
-## Database Schemas and Handling
+| Aspect | Value |
+| --- | --- |
+| Base image | Kafka: `python:3.10-slim`; MQTT: `python:3.10-slim`; AMQP: `python:3.10-slim` |
+| Default entry point | Kafka: `python -m eaws_albina`; MQTT: `python -m eaws_albina_mqtt feed`; AMQP: `python -m eaws_albina_amqp feed` |
+| Exposed ports | none — outbound publisher only |
+| Persistent state vars | Kafka: `ALBINA_LAST_POLLED_FILE`; MQTT: `EAWS_ALBINA_MQTT_LAST_POLLED_FILE`; AMQP: `STATE_FILE` |
+| Image tags | `:latest`, `:sha-<git-sha>`, release tags |
 
-If you want to build a full data pipeline with all events ingested into a database, the integration with Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md).
+## Installing the container images
 
-## Installing the Container Image
-
-Pull the container image from the GitHub Container Registry:
-
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-eaws-albina:latest
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-eaws-albina:latest
+docker pull ghcr.io/clemensv/real-time-sources-eaws-albina-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-eaws-albina-amqp:latest
 ```
 
-To use it as a base image in a Dockerfile:
+## Using the Kafka image
 
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-eaws-albina:latest
-```
+### With Azure Event Hubs / Fabric Event Streams
 
-## Using the Container Image
-
-The container starts the bridge, polling the ALBINA API and writing avalanche bulletins to Kafka, Azure Event Hubs, or Fabric Event Streams.
-
-### With a Kafka Broker
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-eaws-albina:latest
-```
-
-### With Azure Event Hubs or Fabric Event Streams
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-eaws-albina:latest
-```
-
-### Preserving State Between Restarts
-
-```shell
-$ docker run --rm \
-    -v /path/to/state:/mnt/fileshare \
-    -e ALBINA_LAST_POLLED_FILE='/mnt/fileshare/albina_last_polled.json' \
-    ... other args ... \
-    ghcr.io/clemensv/real-time-sources-eaws-albina:latest
-```
-
-## Environment Variables
-
-### `CONNECTION_STRING`
-
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs or Fabric Event Streams.
-
-### `KAFKA_BOOTSTRAP_SERVERS`
-
-Comma-separated list of Kafka bootstrap servers.
-
-### `KAFKA_TOPIC`
-
-The Kafka topic where messages will be produced.
-
-### `SASL_USERNAME`
-
-Username for SASL PLAIN authentication.
-
-### `SASL_PASSWORD`
-
-Password for SASL PLAIN authentication.
-
-### `KAFKA_ENABLE_TLS`
-
-Enable TLS for Kafka connections (default: `true`). Set to `false` for plain connections.
-
-### `ALBINA_LAST_POLLED_FILE`
-
-File path for deduplication state. Default is `/mnt/fileshare/albina_last_polled.json`.
-
-### `ALBINA_REGIONS`
-
-Comma-separated region codes to monitor. Default: `AT-07,IT-32-BZ,IT-32-TN,AT-02`.
-
-### `ALBINA_LANG`
-
-Language for bulletin text. One of `en`, `de`, `it`. Default: `en`.
-
-## Deploying into Azure Container Instances
-
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Feaws-albina%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Feaws-albina%2Fazure-template-with-eventhub.json)
-
-## MQTT/Unified Namespace image
-
-A sibling MQTT container image, `ghcr.io/clemensv/real-time-sources-eaws-albina-mqtt:latest`, publishes the same source events as MQTT 5.0 binary-mode CloudEvents. It uses the xRegistry MQTT messagegroup `org.EAWS.ALBINA.mqtt` and the source-specific Unified Namespace topic tree described in [EVENTS.md](EVENTS.md).
-
-### Run against a generic MQTT 5 broker
-
-```shell
+```bash
 docker run --rm \
-    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \
-    -e MQTT_USERNAME='<username>' \
-    -e MQTT_PASSWORD='<password>' \
-    ghcr.io/clemensv/real-time-sources-eaws-albina-mqtt:latest
+  -v "$PWD/state:/state" \
+  -e ALBINA_LAST_POLLED_FILE=/state/eaws-albina.json \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-eaws-albina:latest
 ```
 
-### MQTT environment variables
+### With a Kafka broker (SASL/PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e ALBINA_LAST_POLLED_FILE=/state/eaws-albina.json \
+  -e KAFKA_BOOTSTRAP_SERVERS="<host:9093>" \
+  -e KAFKA_TOPIC="<topic>" \
+  -e SASL_USERNAME="<username>" \
+  -e SASL_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-eaws-albina:latest
+```
+
+## Using the MQTT image
+
+### Generic MQTT 5 broker (username/password)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e EAWS_ALBINA_MQTT_LAST_POLLED_FILE=/state/eaws-albina.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-eaws-albina-mqtt:latest
+```
+
+### Azure Event Grid MQTT broker (Entra JWT)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e EAWS_ALBINA_MQTT_LAST_POLLED_FILE=/state/eaws-albina.json \
+  -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883" \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID="<managed-identity-client-id>" \
+  -e MQTT_CLIENT_ID="<unique-client-id>" \
+  ghcr.io/clemensv/real-time-sources-eaws-albina-mqtt:latest
+```
+
+## Using the AMQP image
+
+### Generic AMQP 1.0 broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/eaws-albina.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/eaws-albina" \
+  ghcr.io/clemensv/real-time-sources-eaws-albina-amqp:latest
+```
+
+### Azure Service Bus / Event Hubs (Entra ID via CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/eaws-albina.json \
+  -e AMQP_HOST="<namespace>.servicebus.windows.net" \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS="eaws-albina" \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_CLIENT_ID="<managed-identity-client-id>" \
+  ghcr.io/clemensv/real-time-sources-eaws-albina-amqp:latest
+```
+
+### Service Bus emulator / SAS namespaces (SAS-token CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/eaws-albina.json \
+  -e AMQP_HOST="servicebus-emulator" \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS="eaws-albina" \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey" \
+  -e AMQP_SAS_KEY="<sas-key>" \
+  ghcr.io/clemensv/real-time-sources-eaws-albina-amqp:latest
+```
+
+## Environment variables
+
+### Common source runtime variables
 
 | Variable | Description |
 |---|---|
-| `MQTT_BROKER_URL` | Broker URL including host, port, and TLS scheme, for example `mqtt://host:1883` or `mqtts://host:8883`. |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional username/password credentials for brokers that require user authentication. Leave unset for anonymous brokers. |
-| `MQTT_CLIENT_ID` | Optional MQTT client identifier. Set it explicitly on shared brokers and Event Grid namespaces. |
-| `MQTT_CONTENT_MODE` | CloudEvents content mode, `binary` by default. Keep `binary` for MQTT 5 user-property metadata. |
-| `POLLING_INTERVAL` | Source polling interval in seconds, when supported by the feeder. |
-| `STATE_FILE` | Optional path for source dedupe/checkpoint state, when the feeder maintains local state. |
-| topic prefix | Fixed by the xRegistry contract, not an environment variable. Root: `alerts/at/eaws/eaws-albina`. |
-| retain default | Per message in xRegistry; see the topic table below. |
-| QoS default | Per message in xRegistry; MQTT messages in this source use QoS 1 unless noted otherwise. |
+| `ALBINA_LAST_POLLED_FILE` | Path to persisted checkpoint/dedupe state for the KAFKA bridge runtime. |
+| `EAWS_ALBINA_MQTT_LAST_POLLED_FILE` | Path to persisted checkpoint/dedupe state for the MQTT bridge runtime. |
+| `STATE_FILE` | Path to persisted checkpoint/dedupe state for the AMQP bridge runtime. |
+| `ALBINA_REGIONS` | Comma-separated ALBINA region codes to ingest. |
+| `ALBINA_LANG` | Bulletin language (`en`, `de`, `it`). |
+| `POLLING_INTERVAL` | Polling interval in seconds. |
 
-### MQTT topic patterns
+### Kafka image variables
 
-| Topic pattern | Message type | Retained | QoS | Expiry seconds |
-|---|---|---|---|---|
-| `alerts/at/eaws/eaws-albina/{country}/{region_id}/{danger_level}/bulletin` | `org.EAWS.ALBINA.AvalancheBulletin` | `false` | `1` | `` |
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric custom endpoint style connection string. |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list (`host:port`). |
+| `KAFKA_TOPIC` | Destination Kafka topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` to disable TLS (default `true`). |
 
-### Subscription patterns
+### MQTT image variables
 
-```text
-# Everything from this source
-alerts/at/eaws/eaws-albina/#
-```
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL, e.g. `mqtt://host:1883` or `mqtts://host:8883`. |
+| `MQTT_HOST` / `MQTT_PORT` / `MQTT_TLS` | Component-level alternative to `MQTT_BROKER_URL`. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for Event Grid JWT auth. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for `MQTT_AUTH_MODE=password`. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | User-assigned managed identity client id (optional). |
+| `MQTT_CLIENT_ID` | MQTT client identifier (must be unique per broker). |
+| `MQTT_CONTENT_MODE` | CloudEvents mode: `binary` (default) or `structured`. |
 
-### MQTT Azure deployment
+### AMQP image variables
 
-Deploy the MQTT container against an existing MQTT 5 broker:
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | URL form endpoint, e.g. `amqp://user:pw@host:5672/address`. |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component-level endpoint settings. |
+| `AMQP_ADDRESS` | Target AMQP address (queue/topic). |
+| `AMQP_AUTH_MODE` | `password` (default), `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | Credentials for `AMQP_AUTH_MODE=password`. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra auth settings for `AMQP_AUTH_MODE=entra`. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS policy/key pair for `AMQP_AUTH_MODE=sas`. |
+| `AMQP_CONTENT_MODE` | CloudEvents mode: `binary` (default) or `structured`. |
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Feaws-albina%2Fazure-template-mqtt.json)
+## Deploying into Microsoft Fabric
 
-Deploy the MQTT container with a new Azure Event Grid namespace MQTT broker:
+### Fabric Notebook feeder
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Feaws-albina%2Fazure-template-with-eventgrid-mqtt.json)
+Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source eaws-albina -WorkspaceId <id> -CapacityId <id>` to deploy the notebook in `notebook/`, bind Event Stream/Lakehouse/KQL assets, and schedule poll runs.
 
-## AMQP 1.0 companion
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#eaws-albina/fabric-notebook)
 
-This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.
+### Fabric ACI feeder
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source eaws-albina -WorkspaceId <id> -CapacityId <id>` for always-on container hosting that publishes to Fabric Event Streams.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#eaws-albina/fabric-aci)
+
+## Deploying into Azure Container Instances
+
+### Kafka — bring your own Event Hub / Kafka
+
+Deploys the Kafka image and uses a provided connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Feaws-albina%2Fazure-template.json)
+
+### Kafka — provision a new Event Hub
+
+Deploys Kafka plus a new Event Hubs namespace and hub.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Feaws-albina%2Fazure-template-with-eventhub.json)
+
+### AMQP — provision Azure Service Bus
+
+Deploys AMQP plus a new Service Bus namespace/queue and sender identity wiring.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Feaws-albina%2Fazure-template-with-servicebus.json)
+
+## Related
+
+- [README.md](README.md) — source overview, use cases, and quick-start guidance.
+- [EVENTS.md](EVENTS.md) — CloudEvents schemas and routing contract.
+- [`xreg/`](xreg/) — authoritative xRegistry manifest used to generate producers and event docs.
+
+## Next steps
+
+- Validate topics/subjects/schemas in [EVENTS.md](EVENTS.md).
+- Use the deployment buttons above for the transport and hosting shape you need.

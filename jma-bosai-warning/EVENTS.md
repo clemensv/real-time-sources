@@ -1,4 +1,4 @@
-# JMA Bosai Weather Warnings + Tsunami Alerts Events
+# JMA Bosai Warning feeder Events
 
 JMA Bosai Warnings publishes weather warnings and advisories from the Japan Meteorological Agency for Japanese weather-warning areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
@@ -8,7 +8,7 @@ JMA Bosai Warnings publishes weather warnings and advisories from the Japan Mete
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 3 telemetry event types.
 - **Identity:** `jp.jma.warning/{office_code}/{area_code}`, `jp.jma.tsunami/{event_id}/{serial}` identifies the resource each event is about.
-- **Operations:** The checked-in guide documents a default polling interval of 60 seconds.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -316,11 +316,10 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- The checked-in guide documents a default polling interval of 60 seconds.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/jma-bosai-warning.xreg.json`](xreg/jma-bosai-warning.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- ![Deploy AMQP to Azure Service Bus: <https://aka.ms/deploytoazurebutton>
