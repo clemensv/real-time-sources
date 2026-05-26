@@ -151,14 +151,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "water_body": {
                 "type": "uritemplate",
                 "value": "{water_body}",
                 "description": "Routing property for AMQP subscription filters (water_body)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_no}",
@@ -179,14 +179,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "water_body": {
                 "type": "uritemplate",
                 "value": "{water_body}",
                 "description": "Routing property for AMQP subscription filters (water_body)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_no}",

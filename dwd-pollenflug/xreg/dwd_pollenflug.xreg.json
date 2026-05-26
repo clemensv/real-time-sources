@@ -187,7 +187,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         },
         "DE.DWD.Pollenflug.amqp.PollenForecast": {
@@ -214,7 +214,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         }
       }

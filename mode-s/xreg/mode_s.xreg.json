@@ -290,7 +290,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "msg_type": {
                 "type": "uritemplate",
                 "value": "{msg_type}",
@@ -311,7 +311,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "msg_type": {
                 "type": "uritemplate",
                 "value": "{msg_type}",
@@ -332,7 +332,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "msg_type": {
                 "type": "uritemplate",
                 "value": "{msg_type}",
@@ -353,7 +353,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "msg_type": {
                 "type": "uritemplate",
                 "value": "{msg_type}",
@@ -374,7 +374,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "msg_type": {
                 "type": "uritemplate",
                 "value": "{msg_type}",
@@ -395,7 +395,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "msg_type": {
                 "type": "uritemplate",
                 "value": "{msg_type}",

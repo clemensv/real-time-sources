@@ -182,7 +182,7 @@
                 "description": "AMQP message subject — stable station identifier matching the CloudEvent subject so SB/EH consumers can correlate."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "water_shortname": {
                 "type": "uritemplate",
                 "value": "{water_shortname}",
@@ -203,7 +203,7 @@
                 "description": "AMQP message subject — stable station identifier matching the CloudEvent subject so SB/EH consumers can correlate."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "water_shortname": {
                 "type": "uritemplate",
                 "value": "{water_shortname}",

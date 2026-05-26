@@ -235,7 +235,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "operating_day": {
                 "type": "uritemplate",
                 "value": "{operating_day}",
@@ -257,7 +257,7 @@
                 "description": "AMQP application property mirroring the line_ref routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "journeys/{operating_day}/{service_journey_id}",
@@ -279,7 +279,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "operating_day": {
                 "type": "uritemplate",
                 "value": "{operating_day}",
@@ -301,7 +301,7 @@
                 "description": "AMQP application property mirroring the line_ref routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "journeys/{operating_day}/{service_journey_id}",
@@ -323,7 +323,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "situation_number": {
                 "type": "uritemplate",
                 "value": "{situation_number}",
@@ -335,7 +335,7 @@
                 "description": "AMQP application property mirroring the severity routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "situations/{situation_number}",

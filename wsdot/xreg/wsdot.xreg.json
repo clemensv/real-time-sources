@@ -630,7 +630,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{flow_data_id}",
@@ -651,7 +651,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{flow_data_id}",
@@ -677,7 +677,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{travel_time_id}",
@@ -703,7 +703,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{mountain_pass_id}",
@@ -729,7 +729,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -750,7 +750,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -776,7 +776,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{trip_name}",
@@ -802,7 +802,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{state_route_id}/{bridge_number}",
@@ -828,7 +828,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{crossing_name}",
@@ -854,7 +854,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{vessel_id}",

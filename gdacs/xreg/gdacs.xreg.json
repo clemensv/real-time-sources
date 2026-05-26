@@ -123,7 +123,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "event_type": {
                 "type": "uritemplate",
                 "value": "{event_type}",
@@ -145,7 +145,7 @@
                 "description": "AMQP application property mirroring the country routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{event_type}/{event_id}",

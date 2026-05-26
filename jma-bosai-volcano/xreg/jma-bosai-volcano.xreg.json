@@ -183,7 +183,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "prefecture": {
                 "type": "uritemplate",
                 "value": "{prefecture}",
@@ -209,7 +209,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "prefecture": {
                 "type": "uritemplate",
                 "value": "{prefecture}",
@@ -235,7 +235,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "prefecture": {
                 "type": "uritemplate",
                 "value": "{prefecture}",

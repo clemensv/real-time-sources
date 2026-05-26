@@ -251,7 +251,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "flag": {
                 "type": "uritemplate",
                 "value": "{flag}",
@@ -282,7 +282,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "flag": {
                 "type": "uritemplate",
                 "value": "{flag}",
@@ -313,7 +313,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "flag": {
                 "type": "uritemplate",
                 "value": "{flag}",

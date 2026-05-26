@@ -708,19 +708,19 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "DayAheadPrices",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
@@ -760,19 +760,19 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "ActualTotalLoad",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
@@ -812,19 +812,19 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "LoadForecastMargin",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
@@ -864,19 +864,19 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "GenerationForecast",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
@@ -916,19 +916,19 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "ReservoirFillingInformation",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
@@ -968,19 +968,19 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "ActualGeneration",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
@@ -1025,24 +1025,24 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "psrType": {
+              "psr-type": {
                 "type": "uritemplate",
                 "value": "{psrType}",
                 "description": "ENTSO-E routing axis `psrType` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "ActualGenerationPerType",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}/{psrType}",
@@ -1082,24 +1082,24 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "psrType": {
+              "psr-type": {
                 "type": "uritemplate",
                 "value": "{psrType}",
                 "description": "ENTSO-E routing axis `psrType` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "WindSolarForecast",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}/{psrType}",
@@ -1139,24 +1139,24 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "psrType": {
+              "psr-type": {
                 "type": "uritemplate",
                 "value": "{psrType}",
                 "description": "ENTSO-E routing axis `psrType` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "WindSolarGeneration",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}/{psrType}",
@@ -1196,24 +1196,24 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "psrType": {
+              "psr-type": {
                 "type": "uritemplate",
                 "value": "{psrType}",
                 "description": "ENTSO-E routing axis `psrType` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "InstalledGenerationCapacityPerType",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}/{psrType}",
@@ -1258,24 +1258,24 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "outDomain": {
+              "out-domain": {
                 "type": "uritemplate",
                 "value": "{outDomain}",
                 "description": "ENTSO-E routing axis `outDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "CrossBorderPhysicalFlows",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}/{outDomain}",

@@ -343,14 +343,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
                 "description": "Routing property for AMQP subscription filters (region)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -371,14 +371,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
                 "description": "Routing property for AMQP subscription filters (region)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -399,14 +399,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
                 "description": "Routing property for AMQP subscription filters (region)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -427,14 +427,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
                 "description": "Routing property for AMQP subscription filters (region)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -455,14 +455,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
                 "description": "Routing property for AMQP subscription filters (region)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -483,14 +483,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
                 "description": "Routing property for AMQP subscription filters (region)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -511,14 +511,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
                 "description": "Routing property for AMQP subscription filters (region)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -539,14 +539,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
                 "description": "Routing property for AMQP subscription filters (region)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -567,14 +567,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
                 "description": "Routing property for AMQP subscription filters (region)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",
