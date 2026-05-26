@@ -21,6 +21,50 @@
         "#/messagegroups/jp.go.jma.WeatherBulletins"
       ],
       "description": "Kafka producer endpoint for JMA Japan Bulletins CloudEvents on the `jma-japan` topic keyed by `{bulletin_id}`."
+    },
+    "jp.go.jma.WeatherBulletins.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/jp.go.jma.WeatherBulletins.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for jma-japan."
+    },
+    "jp.go.jma.WeatherBulletins.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/jma-japan"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/jp.go.jma.WeatherBulletins.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for jma-japan."
     }
   },
   "messagegroups": {
@@ -47,6 +91,65 @@
         }
       },
       "description": "Events from JMA Japan Bulletins covering Japanese bulletin feeds. Alert and incident records describe the current upstream hazard state and update when the provider changes that state."
+    },
+    "jp.go.jma.WeatherBulletins.mqtt": {
+      "description": "MQTT 5 companion message group for jp.go.jma.WeatherBulletins.",
+      "messages": {
+        "jp.go.jma.WeatherBulletins.mqtt.WeatherBulletin": {
+          "name": "WeatherBulletin",
+          "basemessageurl": "/messagegroups/jp.go.jma.WeatherBulletins/messages/jp.go.jma.WeatherBulletin",
+          "envelopemetadata": {
+            "type": {
+              "value": "jp.go.jma.WeatherBulletin"
+            },
+            "source": {
+              "value": "https://www.data.jma.go.jp"
+            },
+            "subject": {
+              "value": "{office}/{bulletin_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/jp/jma/jma-japan/{office}/{bulletin_id}/bulletin",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "jp.go.jma.WeatherBulletins.amqp": {
+      "description": "AMQP 1.0 companion message group for jp.go.jma.WeatherBulletins.",
+      "messages": {
+        "jp.go.jma.WeatherBulletins.amqp.WeatherBulletin": {
+          "name": "WeatherBulletin",
+          "basemessageurl": "/messagegroups/jp.go.jma.WeatherBulletins/messages/jp.go.jma.WeatherBulletin",
+          "envelopemetadata": {
+            "type": {
+              "value": "jp.go.jma.WeatherBulletin"
+            },
+            "source": {
+              "value": "https://www.data.jma.go.jp"
+            },
+            "subject": {
+              "value": "{office}/{bulletin_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{office}/{bulletin_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -113,6 +216,10 @@
                       "regular": "Provider value `regular` for this coded alert field.",
                       "extra": "Provider value `extra` for this coded alert field."
                     }
+                  },
+                  "office": {
+                    "type": "string",
+                    "description": "Normalized routing field 'office' added for MQTT/AMQP subscriber filtering."
                   }
                 },
                 "$id": "https://www.data.jma.go.jp/schemas/jp/go/jma/WeatherBulletin",

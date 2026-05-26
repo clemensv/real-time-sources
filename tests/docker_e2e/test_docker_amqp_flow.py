@@ -777,3 +777,82 @@ class TestUbaAirdataAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {'de.uba.airdata.Station', 'de.uba.airdata.Measure', 'de.uba.airdata.components.Component'}
     expected_count = 3
 
+
+
+class TestAviationweatherAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "aviationweather"
+    image = "aviationweather-amqp"
+    env = {"AVIATIONWEATHER_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'gov.noaa.aviationweather.Station', 'gov.noaa.aviationweather.Sigmet', 'gov.noaa.aviationweather.Metar'}
+    expected_count = 3
+
+class TestBomAustraliaAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "bom-australia"
+    image = "bom-australia-amqp"
+    env = {"BOM_AUSTRALIA_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'AU.Gov.BOM.Weather.Station', 'AU.Gov.BOM.Warning.WarningBulletin', 'AU.Gov.BOM.Weather.WeatherObservation'}
+    expected_count = 3
+
+class TestDwdAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "dwd"
+    image = "dwd-amqp"
+    env = {"DWD_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'DE.DWD.CDC.ExtremeTemperature10Min', 'DE.DWD.CDC.ExtremeWind10Min', 'DE.DWD.Forecast.IconD2ForecastFile', 'DE.DWD.Weather.Alert', 'DE.DWD.CDC.Wind10Min', 'DE.DWD.Radar.RadarProductCatalog', 'DE.DWD.Forecast.ForecastModelCatalog', 'DE.DWD.CDC.StationMetadata', 'DE.DWD.CDC.AirTemperature10Min', 'DE.DWD.CDC.Precipitation10Min', 'DE.DWD.CDC.Solar10Min', 'DE.DWD.Radar.RadarFileProduct', 'DE.DWD.CDC.HourlyObservation'}
+    expected_count = 13
+
+class TestDwdPollenflugAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "dwd-pollenflug"
+    image = "dwd-pollenflug-amqp"
+    env = {"DWD_POLLENFLUG_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'DE.DWD.Pollenflug.PollenForecast', 'DE.DWD.Pollenflug.Region'}
+    expected_count = 2
+
+class TestEnvironmentCanadaAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "environment-canada"
+    image = "environment-canada-amqp"
+    env = {"ENVIRONMENT_CANADA_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'CA.Gov.ECCC.Weather.WeatherObservation', 'CA.Gov.ECCC.Weather.Station'}
+    expected_count = 2
+
+class TestGeosphereAustriaAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "geosphere-austria"
+    image = "geosphere-austria-amqp"
+    env = {"GEOSPHERE_AUSTRIA_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'at.geosphere.tawes.WeatherStation', 'at.geosphere.tawes.WeatherObservation'}
+    expected_count = 2
+
+class TestHkoHongKongAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "hko-hong-kong"
+    image = "hko-hong-kong-amqp"
+    env = {"HKO_HONG_KONG_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'HK.Gov.HKO.Weather.WeatherObservation', 'HK.Gov.HKO.Weather.Station'}
+    expected_count = 2
+
+class TestJmaJapanAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "jma-japan"
+    image = "jma-japan-amqp"
+    env = {"JMA_JAPAN_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'jp.go.jma.WeatherBulletin'}
+    expected_count = 1
+
+class TestKmiBelgiumAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "kmi-belgium"
+    image = "kmi-belgium-amqp"
+    env = {"KMI_BELGIUM_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'BE.Gov.KMI.Weather.Station', 'BE.Gov.KMI.Weather.WeatherObservation'}
+    expected_count = 2
+
+class TestNoaaNwsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "noaa-nws"
+    image = "noaa-nws-amqp"
+    env = {"NOAA_NWS_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'Microsoft.OpenData.US.NOAA.NWS.ObservationStation', 'Microsoft.OpenData.US.NOAA.NWS.WeatherObservation', 'Microsoft.OpenData.US.NOAA.NWS.WeatherAlert'}
+    expected_count = 3
+
+class TestSmhiWeatherAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "smhi-weather"
+    image = "smhi-weather-amqp"
+    env = {"SMHI_WEATHER_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'SE.Gov.SMHI.Weather.WeatherObservation', 'SE.Gov.SMHI.Weather.Station'}
+    expected_count = 2
+

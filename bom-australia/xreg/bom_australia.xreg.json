@@ -41,6 +41,52 @@
       "messagegroups": [
         "#/messagegroups/AU.Gov.BOM.Warning"
       ]
+    },
+    "AU.Gov.BOM.Weather.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/AU.Gov.BOM.Weather.mqtt",
+        "#/messagegroups/AU.Gov.BOM.Warning.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for bom-australia."
+    },
+    "AU.Gov.BOM.Weather.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/bom-australia"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/AU.Gov.BOM.Weather.amqp",
+        "#/messagegroups/AU.Gov.BOM.Warning.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for bom-australia."
     }
   },
   "messagegroups": {
@@ -105,6 +151,185 @@
           "dataschemauri": "#/schemagroups/AU.Gov.BOM.Warning.jstruct/schemas/AU.Gov.BOM.Warning.WarningBulletin"
         }
       }
+    },
+    "AU.Gov.BOM.Weather.mqtt": {
+      "description": "MQTT 5 companion message group for AU.Gov.BOM.Weather.",
+      "messages": {
+        "AU.Gov.BOM.Weather.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.Station",
+          "envelopemetadata": {
+            "type": {
+              "value": "AU.Gov.BOM.Weather.Station"
+            },
+            "source": {
+              "value": "http://reg.bom.gov.au/fwo"
+            },
+            "subject": {
+              "value": "{station_wmo}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/au/bom/bom-australia/{state}/{station_wmo}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "AU.Gov.BOM.Weather.mqtt.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "AU.Gov.BOM.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "http://reg.bom.gov.au/fwo"
+            },
+            "subject": {
+              "value": "{station_wmo}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/au/bom/bom-australia/{state}/{station_wmo}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "AU.Gov.BOM.Weather.amqp": {
+      "description": "AMQP 1.0 companion message group for AU.Gov.BOM.Weather.",
+      "messages": {
+        "AU.Gov.BOM.Weather.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.Station",
+          "envelopemetadata": {
+            "type": {
+              "value": "AU.Gov.BOM.Weather.Station"
+            },
+            "source": {
+              "value": "http://reg.bom.gov.au/fwo"
+            },
+            "subject": {
+              "value": "{station_wmo}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_wmo}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing value for state."
+              }
+            }
+          }
+        },
+        "AU.Gov.BOM.Weather.amqp.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "AU.Gov.BOM.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "http://reg.bom.gov.au/fwo"
+            },
+            "subject": {
+              "value": "{station_wmo}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_wmo}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing value for state."
+              }
+            }
+          }
+        }
+      }
+    },
+    "AU.Gov.BOM.Warning.mqtt": {
+      "description": "MQTT 5 companion message group for AU.Gov.BOM.Warning.",
+      "messages": {
+        "AU.Gov.BOM.Warning.mqtt.WarningBulletin": {
+          "name": "WarningBulletin",
+          "basemessageurl": "/messagegroups/AU.Gov.BOM.Warning/messages/AU.Gov.BOM.Warning.WarningBulletin",
+          "envelopemetadata": {
+            "type": {
+              "value": "AU.Gov.BOM.Warning.WarningBulletin"
+            },
+            "source": {
+              "value": "https://www.bom.gov.au/rss/"
+            },
+            "subject": {
+              "value": "{state}/{severity}/{warning_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "alerts/au/bom/bom-australia/{state}/{severity}/{warning_id}/warning",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "AU.Gov.BOM.Warning.amqp": {
+      "description": "AMQP 1.0 companion message group for AU.Gov.BOM.Warning.",
+      "messages": {
+        "AU.Gov.BOM.Warning.amqp.WarningBulletin": {
+          "name": "WarningBulletin",
+          "basemessageurl": "/messagegroups/AU.Gov.BOM.Warning/messages/AU.Gov.BOM.Warning.WarningBulletin",
+          "envelopemetadata": {
+            "type": {
+              "value": "AU.Gov.BOM.Warning.WarningBulletin"
+            },
+            "source": {
+              "value": "https://www.bom.gov.au/rss/"
+            },
+            "subject": {
+              "value": "{state}/{severity}/{warning_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{state}/{severity}/{warning_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -131,7 +356,7 @@
                 ],
                 "properties": {
                   "station_wmo": {
-                    "type": "int32",
+                    "type": "string",
                     "description": "WMO station number assigned by the World Meteorological Organization, used as the stable identity for this station across all BOM products."
                   },
                   "name": {
@@ -187,7 +412,7 @@
                 ],
                 "properties": {
                   "station_wmo": {
-                    "type": "int32",
+                    "type": "string",
                     "description": "WMO station number identifying the reporting station."
                   },
                   "station_name": {
@@ -418,6 +643,10 @@
                     "description": "Longitude of the station at observation time.",
                     "unit": "degree",
                     "symbol": "°"
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 }
               }
@@ -494,6 +723,14 @@
                       "null"
                     ],
                     "description": "Affected area clause extracted from the RSS title after the word 'for', for example 'parts of Snowy Mountains Forecast District.'."
+                  },
+                  "severity": {
+                    "type": "string",
+                    "description": "Normalized routing field 'severity' added for MQTT/AMQP subscriber filtering."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 }
               }

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./jma_japan_mqtt_producer_data
+pip install ./jma_japan_mqtt_producer_mqtt_client

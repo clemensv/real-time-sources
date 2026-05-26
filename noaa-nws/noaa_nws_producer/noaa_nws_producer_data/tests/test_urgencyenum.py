@@ -29,8 +29,8 @@ class Test_UrgencyEnum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(UrgencyEnum.Immediate.value, "Immediate")
-        self.assertEqual(UrgencyEnum.Expected.value, "Expected")
-        self.assertEqual(UrgencyEnum.Future.value, "Future")
-        self.assertEqual(UrgencyEnum.Past.value, "Past")
-        self.assertEqual(UrgencyEnum.Unknown.value, "Unknown")
+        self.assertEqual(UrgencyEnum.Immediate.value, 'Immediate')
+        self.assertEqual(UrgencyEnum.Expected.value, 'Expected')
+        self.assertEqual(UrgencyEnum.Future.value, 'Future')
+        self.assertEqual(UrgencyEnum.Past.value, 'Past')
+        self.assertEqual(UrgencyEnum.Unknown.value, 'Unknown')

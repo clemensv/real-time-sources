@@ -21,6 +21,50 @@
         "#/messagegroups/HK.Gov.HKO.Weather"
       ],
       "description": "Kafka producer endpoint for Hong Kong Observatory Weather CloudEvents on the `hko-hong-kong` topic keyed by `{place_id}`."
+    },
+    "HK.Gov.HKO.Weather.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/HK.Gov.HKO.Weather.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for hko-hong-kong."
+    },
+    "HK.Gov.HKO.Weather.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/hko-hong-kong"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/HK.Gov.HKO.Weather.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for hko-hong-kong."
     }
   },
   "messagegroups": {
@@ -66,6 +110,126 @@
         }
       },
       "description": "Events from Hong Kong Observatory Weather covering Hong Kong weather observation locations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "HK.Gov.HKO.Weather.mqtt": {
+      "description": "MQTT 5 companion message group for HK.Gov.HKO.Weather.",
+      "messages": {
+        "HK.Gov.HKO.Weather.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.Station",
+          "envelopemetadata": {
+            "type": {
+              "value": "HK.Gov.HKO.Weather.Station"
+            },
+            "source": {
+              "value": "https://data.weather.gov.hk"
+            },
+            "subject": {
+              "value": "{place_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/hk/hko/hko-hong-kong/{district}/{place_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "HK.Gov.HKO.Weather.mqtt.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "HK.Gov.HKO.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "https://data.weather.gov.hk"
+            },
+            "subject": {
+              "value": "{place_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/hk/hko/hko-hong-kong/{district}/{place_id}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "HK.Gov.HKO.Weather.amqp": {
+      "description": "AMQP 1.0 companion message group for HK.Gov.HKO.Weather.",
+      "messages": {
+        "HK.Gov.HKO.Weather.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.Station",
+          "envelopemetadata": {
+            "type": {
+              "value": "HK.Gov.HKO.Weather.Station"
+            },
+            "source": {
+              "value": "https://data.weather.gov.hk"
+            },
+            "subject": {
+              "value": "{place_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{place_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "district": {
+                "type": "uritemplate",
+                "value": "{district}",
+                "description": "Routing value for district."
+              }
+            }
+          }
+        },
+        "HK.Gov.HKO.Weather.amqp.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "HK.Gov.HKO.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "https://data.weather.gov.hk"
+            },
+            "subject": {
+              "value": "{place_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{place_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "district": {
+                "type": "uritemplate",
+                "value": "{district}",
+                "description": "Routing value for district."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -101,6 +265,10 @@
                   "data_types": {
                     "type": "string",
                     "description": "Comma-separated list of data types reported by this place. Values: 'temperature', 'rainfall', 'humidity', 'uvindex'."
+                  },
+                  "district": {
+                    "type": "string",
+                    "description": "Normalized routing field 'district' added for MQTT/AMQP subscriber filtering."
                   }
                 }
               }
@@ -179,6 +347,10 @@
                       "null"
                     ],
                     "description": "HKO descriptive UV level: 'low', 'moderate', 'high', 'very high', 'extreme'."
+                  },
+                  "district": {
+                    "type": "string",
+                    "description": "Normalized routing field 'district' added for MQTT/AMQP subscriber filtering."
                   }
                 }
               }

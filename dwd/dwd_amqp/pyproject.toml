@@ -1,0 +1,16 @@
+[project]
+      name = "dwd_amqp"
+      version = "0.1.0"
+      description = "dwd AMQP companion feeder"
+      requires-python = ">=3.10"
+      dependencies = [
+        "python-qpid-proton>=0.39.0",
+"azure-identity>=1.16.0",
+      ]
+
+      [build-system]
+      requires = ["setuptools>=68"]
+      build-backend = "setuptools.build_meta"
+
+      [tool.setuptools]
+      packages = ["dwd_amqp"]

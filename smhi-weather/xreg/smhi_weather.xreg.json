@@ -21,6 +21,50 @@
         "#/messagegroups/SE.Gov.SMHI.Weather"
       ],
       "description": "Kafka producer endpoint for SMHI Weather CloudEvents on the `smhi-weather` topic keyed by `{station_id}`."
+    },
+    "SE.Gov.SMHI.Weather.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/SE.Gov.SMHI.Weather.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for smhi-weather."
+    },
+    "SE.Gov.SMHI.Weather.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/smhi-weather"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/SE.Gov.SMHI.Weather.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for smhi-weather."
     }
   },
   "messagegroups": {
@@ -66,6 +110,126 @@
         }
       },
       "description": "Events from SMHI Weather covering Swedish weather stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "SE.Gov.SMHI.Weather.mqtt": {
+      "description": "MQTT 5 companion message group for SE.Gov.SMHI.Weather.",
+      "messages": {
+        "SE.Gov.SMHI.Weather.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/SE.Gov.SMHI.Weather/messages/SE.Gov.SMHI.Weather.Station",
+          "envelopemetadata": {
+            "type": {
+              "value": "SE.Gov.SMHI.Weather.Station"
+            },
+            "source": {
+              "value": "https://opendata-download-metobs.smhi.se"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/se/smhi/smhi-weather/{lan}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "SE.Gov.SMHI.Weather.mqtt.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/SE.Gov.SMHI.Weather/messages/SE.Gov.SMHI.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "SE.Gov.SMHI.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "https://opendata-download-metobs.smhi.se"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/se/smhi/smhi-weather/{lan}/{station_id}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "SE.Gov.SMHI.Weather.amqp": {
+      "description": "AMQP 1.0 companion message group for SE.Gov.SMHI.Weather.",
+      "messages": {
+        "SE.Gov.SMHI.Weather.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/SE.Gov.SMHI.Weather/messages/SE.Gov.SMHI.Weather.Station",
+          "envelopemetadata": {
+            "type": {
+              "value": "SE.Gov.SMHI.Weather.Station"
+            },
+            "source": {
+              "value": "https://opendata-download-metobs.smhi.se"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "lan": {
+                "type": "uritemplate",
+                "value": "{lan}",
+                "description": "Routing value for lan."
+              }
+            }
+          }
+        },
+        "SE.Gov.SMHI.Weather.amqp.WeatherObservation": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/SE.Gov.SMHI.Weather/messages/SE.Gov.SMHI.Weather.WeatherObservation",
+          "envelopemetadata": {
+            "type": {
+              "value": "SE.Gov.SMHI.Weather.WeatherObservation"
+            },
+            "source": {
+              "value": "https://opendata-download-metobs.smhi.se"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {
+              "lan": {
+                "type": "uritemplate",
+                "value": "{lan}",
+                "description": "Routing value for lan."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -128,6 +292,10 @@
                     "description": "Geographic longitude of the station in decimal degrees.",
                     "unit": "degree",
                     "symbol": "°"
+                  },
+                  "lan": {
+                    "type": "string",
+                    "description": "Normalized routing field 'lan' added for MQTT/AMQP subscriber filtering."
                   }
                 }
               }
@@ -301,6 +469,10 @@
                   "quality": {
                     "type": "string",
                     "description": "Quality flag for the observation as assigned by SMHI: 'G' for approved, 'Y' for suspect."
+                  },
+                  "lan": {
+                    "type": "string",
+                    "description": "Normalized routing field 'lan' added for MQTT/AMQP subscriber filtering."
                   }
                 }
               }

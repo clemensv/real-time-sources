@@ -29,8 +29,8 @@ class Test_CertaintyEnum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(CertaintyEnum.Observed.value, "Observed")
-        self.assertEqual(CertaintyEnum.Likely.value, "Likely")
-        self.assertEqual(CertaintyEnum.Possible.value, "Possible")
-        self.assertEqual(CertaintyEnum.Unlikely.value, "Unlikely")
-        self.assertEqual(CertaintyEnum.Unknown.value, "Unknown")
+        self.assertEqual(CertaintyEnum.Observed.value, 'Observed')
+        self.assertEqual(CertaintyEnum.Likely.value, 'Likely')
+        self.assertEqual(CertaintyEnum.Possible.value, 'Possible')
+        self.assertEqual(CertaintyEnum.Unlikely.value, 'Unlikely')
+        self.assertEqual(CertaintyEnum.Unknown.value, 'Unknown')

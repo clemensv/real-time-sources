@@ -29,6 +29,6 @@ class Test_MessageTypeenum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(MessageTypeenum.Alert.value, "Alert")
-        self.assertEqual(MessageTypeenum.Update.value, "Update")
-        self.assertEqual(MessageTypeenum.Cancel.value, "Cancel")
+        self.assertEqual(MessageTypeenum.Alert.value, 'Alert')
+        self.assertEqual(MessageTypeenum.Update.value, 'Update')
+        self.assertEqual(MessageTypeenum.Cancel.value, 'Cancel')

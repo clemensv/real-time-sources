@@ -193,3 +193,12 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/dwd_pollenflug.xreg.json`](xreg/dwd_pollenflug.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+
+## MQTT and AMQP companion transports
+
+This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`dwd-pollenflug`). Docker E2E mock mode is available through `DWD_POLLENFLUG_MOCK=true`.
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources/dwd-pollenflug-mqtt`
+- AMQP image: `ghcr.io/clemensv/real-time-sources/dwd-pollenflug-amqp`
+- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
+- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

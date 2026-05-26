@@ -21,6 +21,50 @@
         "#/messagegroups/DE.DWD.Pollenflug"
       ],
       "description": "Kafka producer endpoint for DWD Pollenflug CloudEvents on the `dwd-pollenflug` topic keyed by `{region_id}`."
+    },
+    "DE.DWD.Pollenflug.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.DWD.Pollenflug.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for dwd-pollenflug."
+    },
+    "DE.DWD.Pollenflug.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/dwd-pollenflug"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/DE.DWD.Pollenflug.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for dwd-pollenflug."
     }
   },
   "messagegroups": {
@@ -66,6 +110,114 @@
         }
       },
       "description": "Events from DWD Pollenflug covering German pollen forecast regions. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "DE.DWD.Pollenflug.mqtt": {
+      "description": "MQTT 5 companion message group for DE.DWD.Pollenflug.",
+      "messages": {
+        "DE.DWD.Pollenflug.mqtt.Region": {
+          "name": "Region",
+          "basemessageurl": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.Region",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Pollenflug.Region"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/climate_environment/health/alerts/"
+            },
+            "subject": {
+              "value": "{region_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/de/dwd/dwd-pollenflug/{region_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "DE.DWD.Pollenflug.mqtt.PollenForecast": {
+          "name": "PollenForecast",
+          "basemessageurl": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Pollenflug.PollenForecast"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/climate_environment/health/alerts/"
+            },
+            "subject": {
+              "value": "{region_id}/{pollen_type}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/de/dwd/dwd-pollenflug/{region_id}/{pollen_type}/pollen-forecast",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "DE.DWD.Pollenflug.amqp": {
+      "description": "AMQP 1.0 companion message group for DE.DWD.Pollenflug.",
+      "messages": {
+        "DE.DWD.Pollenflug.amqp.Region": {
+          "name": "Region",
+          "basemessageurl": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.Region",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Pollenflug.Region"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/climate_environment/health/alerts/"
+            },
+            "subject": {
+              "value": "{region_id}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{region_id}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
+          }
+        },
+        "DE.DWD.Pollenflug.amqp.PollenForecast": {
+          "name": "PollenForecast",
+          "basemessageurl": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast",
+          "envelopemetadata": {
+            "type": {
+              "value": "DE.DWD.Pollenflug.PollenForecast"
+            },
+            "source": {
+              "value": "https://opendata.dwd.de/climate_environment/health/alerts/"
+            },
+            "subject": {
+              "value": "{region_id}/{pollen_type}",
+              "type": "uritemplate"
+            }
+          },
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{region_id}/{pollen_type}",
+                "description": "AMQP subject matching the CloudEvents subject for this transport variant."
+              }
+            },
+            "application_properties": {}
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -90,7 +242,7 @@
                 ],
                 "properties": {
                   "region_id": {
-                    "type": "int32",
+                    "type": "string",
                     "description": "Unique numeric identifier for the forecast area. For regions without sub-regions this is the main region_id (e.g. 20 for Mecklenburg-Vorpommern). For sub-regions it is the partregion_id (e.g. 11 for 'Inseln und Marschen' within Schleswig-Holstein). Derived from the DWD JSON fields region_id and partregion_id."
                   },
                   "region_name": {
@@ -137,7 +289,7 @@
                 ],
                 "properties": {
                   "region_id": {
-                    "type": "int32",
+                    "type": "string",
                     "description": "Unique numeric identifier for the forecast area. Same identity model as Region: uses partregion_id when the area is a sub-region, otherwise uses the main region_id."
                   },
                   "region_name": {
@@ -398,6 +550,10 @@
                     "altnames": {
                       "lang:de": "Ambrosia übermorgen"
                     }
+                  },
+                  "pollen_type": {
+                    "type": "string",
+                    "description": "Normalized routing field 'pollen_type' added for MQTT/AMQP subscriber filtering."
                   }
                 }
               }

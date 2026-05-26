@@ -64,3 +64,12 @@ Deploy it with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deplo
 which builds a per-source Fabric Environment, binds Lakehouse + KQL + Environment
 to the notebook, resolves the Event Stream connection string at runtime, and
 schedules single-cycle (`--once`) executions.
+
+## MQTT and AMQP companion transports
+
+This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`smhi-weather`). Docker E2E mock mode is available through `SMHI_WEATHER_MOCK=true`.
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources/smhi-weather-mqtt`
+- AMQP image: `ghcr.io/clemensv/real-time-sources/smhi-weather-amqp`
+- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
+- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

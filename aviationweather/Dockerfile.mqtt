@@ -1,0 +1,14 @@
+        # syntax=docker/dockerfile:1.6
+        FROM python:3.10-slim
+        LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/aviationweather"
+        LABEL org.opencontainers.image.title="aviationweather → MQTT companion bridge"
+        LABEL org.opencontainers.image.description="Publishes aviationweather CloudEvents over MQTT using the companion transport contract."
+        LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/aviationweather/CONTAINER.md"
+        LABEL org.opencontainers.image.license="MIT"
+        LABEL source.transport="mqtt"
+        ENV PYTHONUNBUFFERED=1
+        WORKDIR /app
+        COPY . /app
+        RUN pip install --no-cache-dir ./aviationweather_mqtt
+        ENV MQTT_BROKER_URL=""
+CMD ["python", "-m", "aviationweather_mqtt", "feed"]

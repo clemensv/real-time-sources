@@ -254,3 +254,12 @@ No source-specific polling cadence, rate limit, or stream characteristic is docu
 - xRegistry manifest: [`xreg/bom_australia.xreg.json`](xreg/bom_australia.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+
+## MQTT and AMQP companion transports
+
+This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`bom-australia`). Docker E2E mock mode is available through `BOM_AUSTRALIA_MOCK=true`.
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources/bom-australia-mqtt`
+- AMQP image: `ghcr.io/clemensv/real-time-sources/bom-australia-amqp`
+- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
+- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

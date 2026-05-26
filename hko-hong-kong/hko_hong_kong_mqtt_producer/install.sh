@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./hko_hong_kong_mqtt_producer_data
+pip install ./hko_hong_kong_mqtt_producer_mqtt_client

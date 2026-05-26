@@ -1254,6 +1254,126 @@
       "image": "uba-airdata-amqp",
       "file": "Dockerfile.amqp",
       "module": "uba_airdata_amqp"
+    },
+    {
+      "dir": "aviationweather",
+      "image": "aviationweather-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "aviationweather_mqtt"
+    },
+    {
+      "dir": "aviationweather",
+      "image": "aviationweather-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "aviationweather_amqp"
+    },
+    {
+      "dir": "bom-australia",
+      "image": "bom-australia-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "bom_australia_mqtt"
+    },
+    {
+      "dir": "bom-australia",
+      "image": "bom-australia-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "bom_australia_amqp"
+    },
+    {
+      "dir": "dwd",
+      "image": "dwd-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "dwd_mqtt"
+    },
+    {
+      "dir": "dwd",
+      "image": "dwd-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "dwd_amqp"
+    },
+    {
+      "dir": "environment-canada",
+      "image": "environment-canada-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "environment_canada_mqtt"
+    },
+    {
+      "dir": "environment-canada",
+      "image": "environment-canada-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "environment_canada_amqp"
+    },
+    {
+      "dir": "geosphere-austria",
+      "image": "geosphere-austria-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "geosphere_austria_mqtt"
+    },
+    {
+      "dir": "geosphere-austria",
+      "image": "geosphere-austria-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "geosphere_austria_amqp"
+    },
+    {
+      "dir": "hko-hong-kong",
+      "image": "hko-hong-kong-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "hko_hong_kong_mqtt"
+    },
+    {
+      "dir": "hko-hong-kong",
+      "image": "hko-hong-kong-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "hko_hong_kong_amqp"
+    },
+    {
+      "dir": "jma-japan",
+      "image": "jma-japan-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "jma_japan_mqtt"
+    },
+    {
+      "dir": "jma-japan",
+      "image": "jma-japan-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "jma_japan_amqp"
+    },
+    {
+      "dir": "kmi-belgium",
+      "image": "kmi-belgium-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "kmi_belgium_mqtt"
+    },
+    {
+      "dir": "kmi-belgium",
+      "image": "kmi-belgium-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "kmi_belgium_amqp"
+    },
+    {
+      "dir": "noaa-nws",
+      "image": "noaa-nws-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "noaa_nws_mqtt"
+    },
+    {
+      "dir": "noaa-nws",
+      "image": "noaa-nws-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "noaa_nws_amqp"
+    },
+    {
+      "dir": "smhi-weather",
+      "image": "smhi-weather-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "smhi_weather_mqtt"
+    },
+    {
+      "dir": "smhi-weather",
+      "image": "smhi-weather-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "smhi_weather_amqp"
     }
   ],
   "flow": [
@@ -2672,6 +2792,126 @@
       "dir": "uba-airdata",
       "test_class": "TestUbaAirdataAmqpDockerFlow",
       "test_file": "test_docker_amqp_flow.py"
+    },
+    {
+      "dir": "aviationweather",
+      "image": "aviationweather-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestAviationweatherMqttDockerFlow"
+    },
+    {
+      "dir": "aviationweather",
+      "image": "aviationweather-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestAviationweatherAmqpDockerFlow"
+    },
+    {
+      "dir": "bom-australia",
+      "image": "bom-australia-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestBomAustraliaMqttDockerFlow"
+    },
+    {
+      "dir": "bom-australia",
+      "image": "bom-australia-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestBomAustraliaAmqpDockerFlow"
+    },
+    {
+      "dir": "dwd",
+      "image": "dwd-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestDwdMqttDockerFlow"
+    },
+    {
+      "dir": "dwd",
+      "image": "dwd-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestDwdAmqpDockerFlow"
+    },
+    {
+      "dir": "environment-canada",
+      "image": "environment-canada-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestEnvironmentCanadaMqttDockerFlow"
+    },
+    {
+      "dir": "environment-canada",
+      "image": "environment-canada-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestEnvironmentCanadaAmqpDockerFlow"
+    },
+    {
+      "dir": "geosphere-austria",
+      "image": "geosphere-austria-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestGeosphereAustriaMqttDockerFlow"
+    },
+    {
+      "dir": "geosphere-austria",
+      "image": "geosphere-austria-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestGeosphereAustriaAmqpDockerFlow"
+    },
+    {
+      "dir": "hko-hong-kong",
+      "image": "hko-hong-kong-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestHkoHongKongMqttDockerFlow"
+    },
+    {
+      "dir": "hko-hong-kong",
+      "image": "hko-hong-kong-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestHkoHongKongAmqpDockerFlow"
+    },
+    {
+      "dir": "jma-japan",
+      "image": "jma-japan-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestJmaJapanMqttDockerFlow"
+    },
+    {
+      "dir": "jma-japan",
+      "image": "jma-japan-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestJmaJapanAmqpDockerFlow"
+    },
+    {
+      "dir": "kmi-belgium",
+      "image": "kmi-belgium-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestKmiBelgiumMqttDockerFlow"
+    },
+    {
+      "dir": "kmi-belgium",
+      "image": "kmi-belgium-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestKmiBelgiumAmqpDockerFlow"
+    },
+    {
+      "dir": "noaa-nws",
+      "image": "noaa-nws-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNoaaNwsMqttDockerFlow"
+    },
+    {
+      "dir": "noaa-nws",
+      "image": "noaa-nws-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNoaaNwsAmqpDockerFlow"
+    },
+    {
+      "dir": "smhi-weather",
+      "image": "smhi-weather-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestSmhiWeatherMqttDockerFlow"
+    },
+    {
+      "dir": "smhi-weather",
+      "image": "smhi-weather-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestSmhiWeatherAmqpDockerFlow"
     }
   ]
 }

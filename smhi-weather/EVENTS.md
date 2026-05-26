@@ -182,3 +182,12 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
 - SMHI Open Data Meteorological Observations API: <https://opendata.smhi.se/apidocs/metobs/>
+
+## MQTT and AMQP companion transports
+
+This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`smhi-weather`). Docker E2E mock mode is available through `SMHI_WEATHER_MOCK=true`.
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources/smhi-weather-mqtt`
+- AMQP image: `ghcr.io/clemensv/real-time-sources/smhi-weather-amqp`
+- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
+- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

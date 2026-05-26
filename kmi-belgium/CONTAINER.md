@@ -56,3 +56,12 @@ az container create \
     CONNECTION_STRING="<connection-string>" \
   --restart-policy Always
 ```
+
+## MQTT and AMQP companion transports
+
+This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`kmi-belgium`). Docker E2E mock mode is available through `KMI_BELGIUM_MOCK=true`.
+
+- MQTT image: `ghcr.io/clemensv/real-time-sources/kmi-belgium-mqtt`
+- AMQP image: `ghcr.io/clemensv/real-time-sources/kmi-belgium-amqp`
+- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
+- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

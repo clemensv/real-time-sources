@@ -1,19 +1,15 @@
-[build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry]
-name = "blitzortung-mqtt"
+[project]
+name = "blitzortung_mqtt"
 version = "0.1.0"
-description = "Blitzortung lightning firehose -> MQTT/UNS non-retained bridge"
-authors = ["clemensv"]
-packages = [{include = "blitzortung_mqtt"}]
+description = "blitzortung MQTT companion feeder"
+requires-python = ">=3.10"
+dependencies = [
+  "paho-mqtt>=2.1.0",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-websockets = ">=12.0"
-paho-mqtt = ">=2.1.0"
-cloudevents = ">=1.11.0,<2.0.0"
-dataclasses_json = ">=0.6.7"
-blitzortung_mqtt_producer_data = {path = "../blitzortung_mqtt_producer/blitzortung_mqtt_producer_data"}
-blitzortung_mqtt_producer_mqtt_client = {path = "../blitzortung_mqtt_producer/blitzortung_mqtt_producer_mqtt_client"}
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["blitzortung_mqtt"]

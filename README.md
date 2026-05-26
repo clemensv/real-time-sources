@@ -718,4 +718,17 @@ AMQP 1.0 companion images and Service Bus deployment templates are available for
 
 
 
+<!-- B2-weather MQTT+AMQP companions -->
+- `aviationweather`: MQTT + AMQP companion feeders (`aviationweather-mqtt`, `aviationweather-amqp`).
+- `blitzortung`: MQTT + AMQP companion feeders (`blitzortung-mqtt`, `blitzortung-amqp`).
+- `bom-australia`: MQTT + AMQP companion feeders (`bom-australia-mqtt`, `bom-australia-amqp`).
+- `dwd`: MQTT + AMQP companion feeders (`dwd-mqtt`, `dwd-amqp`).
+- `dwd-pollenflug`: MQTT + AMQP companion feeders (`dwd-pollenflug-mqtt`, `dwd-pollenflug-amqp`).
+- `environment-canada`: MQTT + AMQP companion feeders (`environment-canada-mqtt`, `environment-canada-amqp`).
+- `geosphere-austria`: MQTT + AMQP companion feeders (`geosphere-austria-mqtt`, `geosphere-austria-amqp`).
+- `hko-hong-kong`: MQTT + AMQP companion feeders (`hko-hong-kong-mqtt`, `hko-hong-kong-amqp`).
+- `jma-japan`: MQTT + AMQP companion feeders (`jma-japan-mqtt`, `jma-japan-amqp`).
+- `kmi-belgium`: MQTT + AMQP companion feeders (`kmi-belgium-mqtt`, `kmi-belgium-amqp`).
+- `noaa-nws`: MQTT + AMQP companion feeders (`noaa-nws-mqtt`, `noaa-nws-amqp`).
+- `smhi-weather`: MQTT + AMQP companion feeders (`smhi-weather-mqtt`, `smhi-weather-amqp`).
 

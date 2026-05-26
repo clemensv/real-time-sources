@@ -34,6 +34,10 @@ from confluent_kafka import Producer as KafkaProducer
 
 from bom_australia_producer_kafka_producer.producer import AUGovBOMWeatherEventProducer
 from bom_australia_producer_kafka_producer.producer import AUGovBOMWarningEventProducer
+from bom_australia_producer_kafka_producer.producer import AUGovBOMWeatherMqttEventProducer
+from bom_australia_producer_kafka_producer.producer import AUGovBOMWeatherAmqpEventProducer
+from bom_australia_producer_kafka_producer.producer import AUGovBOMWarningMqttEventProducer
+from bom_australia_producer_kafka_producer.producer import AUGovBOMWarningAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -90,6 +94,86 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'AU.Gov.BOM.Warning.WarningBulletin' event to Kafka topic.
     await augov_bomwarning_event_producer.send_au_gov_bom_warning_warning_bulletin(_warning_id = 'TODO: replace me', data = _warning_bulletin)
     print(f"Sent 'AU.Gov.BOM.Warning.WarningBulletin' event: {_warning_bulletin.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        augov_bomweather_mqtt_event_producer = AUGovBOMWeatherMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        augov_bomweather_mqtt_event_producer = AUGovBOMWeatherMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- AU.Gov.BOM.Weather.mqtt.Station ----
+    # TODO: Supply event data for the AU.Gov.BOM.Weather.mqtt.Station event
+    _station = Station()
+
+    # sends the 'AU.Gov.BOM.Weather.mqtt.Station' event to Kafka topic.
+    await augov_bomweather_mqtt_event_producer.send_au_gov_bom_weather_mqtt_station(_station_wmo = 'TODO: replace me', data = _station)
+    print(f"Sent 'AU.Gov.BOM.Weather.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- AU.Gov.BOM.Weather.mqtt.WeatherObservation ----
+    # TODO: Supply event data for the AU.Gov.BOM.Weather.mqtt.WeatherObservation event
+    _weather_observation = WeatherObservation()
+
+    # sends the 'AU.Gov.BOM.Weather.mqtt.WeatherObservation' event to Kafka topic.
+    await augov_bomweather_mqtt_event_producer.send_au_gov_bom_weather_mqtt_weather_observation(_station_wmo = 'TODO: replace me', data = _weather_observation)
+    print(f"Sent 'AU.Gov.BOM.Weather.mqtt.WeatherObservation' event: {_weather_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        augov_bomweather_amqp_event_producer = AUGovBOMWeatherAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        augov_bomweather_amqp_event_producer = AUGovBOMWeatherAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- AU.Gov.BOM.Weather.amqp.Station ----
+    # TODO: Supply event data for the AU.Gov.BOM.Weather.amqp.Station event
+    _station = Station()
+
+    # sends the 'AU.Gov.BOM.Weather.amqp.Station' event to Kafka topic.
+    await augov_bomweather_amqp_event_producer.send_au_gov_bom_weather_amqp_station(_station_wmo = 'TODO: replace me', data = _station)
+    print(f"Sent 'AU.Gov.BOM.Weather.amqp.Station' event: {_station.to_json()}")
+
+    # ---- AU.Gov.BOM.Weather.amqp.WeatherObservation ----
+    # TODO: Supply event data for the AU.Gov.BOM.Weather.amqp.WeatherObservation event
+    _weather_observation = WeatherObservation()
+
+    # sends the 'AU.Gov.BOM.Weather.amqp.WeatherObservation' event to Kafka topic.
+    await augov_bomweather_amqp_event_producer.send_au_gov_bom_weather_amqp_weather_observation(_station_wmo = 'TODO: replace me', data = _weather_observation)
+    print(f"Sent 'AU.Gov.BOM.Weather.amqp.WeatherObservation' event: {_weather_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        augov_bomwarning_mqtt_event_producer = AUGovBOMWarningMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        augov_bomwarning_mqtt_event_producer = AUGovBOMWarningMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- AU.Gov.BOM.Warning.mqtt.WarningBulletin ----
+    # TODO: Supply event data for the AU.Gov.BOM.Warning.mqtt.WarningBulletin event
+    _warning_bulletin = WarningBulletin()
+
+    # sends the 'AU.Gov.BOM.Warning.mqtt.WarningBulletin' event to Kafka topic.
+    await augov_bomwarning_mqtt_event_producer.send_au_gov_bom_warning_mqtt_warning_bulletin(_state = 'TODO: replace me', _severity = 'TODO: replace me', _warning_id = 'TODO: replace me', data = _warning_bulletin)
+    print(f"Sent 'AU.Gov.BOM.Warning.mqtt.WarningBulletin' event: {_warning_bulletin.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        augov_bomwarning_amqp_event_producer = AUGovBOMWarningAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        augov_bomwarning_amqp_event_producer = AUGovBOMWarningAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- AU.Gov.BOM.Warning.amqp.WarningBulletin ----
+    # TODO: Supply event data for the AU.Gov.BOM.Warning.amqp.WarningBulletin event
+    _warning_bulletin = WarningBulletin()
+
+    # sends the 'AU.Gov.BOM.Warning.amqp.WarningBulletin' event to Kafka topic.
+    await augov_bomwarning_amqp_event_producer.send_au_gov_bom_warning_amqp_warning_bulletin(_state = 'TODO: replace me', _severity = 'TODO: replace me', _warning_id = 'TODO: replace me', data = _warning_bulletin)
+    print(f"Sent 'AU.Gov.BOM.Warning.amqp.WarningBulletin' event: {_warning_bulletin.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

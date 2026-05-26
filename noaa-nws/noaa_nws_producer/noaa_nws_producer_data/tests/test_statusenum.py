@@ -29,8 +29,8 @@ class Test_StatusEnum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(StatusEnum.Actual.value, "Actual")
-        self.assertEqual(StatusEnum.Exercise.value, "Exercise")
-        self.assertEqual(StatusEnum.System.value, "System")
-        self.assertEqual(StatusEnum.Test.value, "Test")
-        self.assertEqual(StatusEnum.Draft.value, "Draft")
+        self.assertEqual(StatusEnum.Actual.value, 'Actual')
+        self.assertEqual(StatusEnum.Exercise.value, 'Exercise')
+        self.assertEqual(StatusEnum.System.value, 'System')
+        self.assertEqual(StatusEnum.Test.value, 'Test')
+        self.assertEqual(StatusEnum.Draft.value, 'Draft')

@@ -5614,3 +5614,226 @@ class TestUbaAirdataMqttDockerFlow:
     def test_emits_retained_uns_topics(self):
         _run_b4_aq_mqtt_flow('uba-airdata', 'uba-airdata-mqtt', {'UBA_AIRDATA_MOCK': 'true'}, 'air-quality/at/uba/uba-airdata/#', {'de.uba.airdata.Station', 'de.uba.airdata.Measure', 'de.uba.airdata.components.Component'})
 
+
+
+class TestAviationweatherMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_aviationweather, aviationweather_mqtt_image):
+        _run_mqtt_contract_flow('aviationweather', aviationweather_mqtt_image, mosquitto_aviationweather, extra_env={'AVIATIONWEATHER_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def aviationweather_mqtt_image():
+    return build_image('aviationweather', dockerfile='Dockerfile.mqtt', tag='test-aviationweather-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_aviationweather():
+    container, network, host_port = _generic_mosquitto('aviationweather-mqtt-e2e', 'aviationweather-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'aviationweather-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+@pytest.fixture(scope='module')
+def bom_australia_mqtt_image():
+    return build_image('bom-australia', dockerfile='Dockerfile.mqtt', tag='test-bom-australia-mqtt')
+
+@pytest.fixture()
+def mosquitto_bom_australia():
+    container, network, host_port = _generic_mosquitto('bom-australia-mqtt-e2e', 'bom-australia-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'bom-australia-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestBomAustraliaMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_bom_australia, bom_australia_mqtt_image):
+        _run_mqtt_contract_flow('bom-australia', bom_australia_mqtt_image, mosquitto_bom_australia, extra_env={'BOM_AUSTRALIA_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def dwd_mqtt_image():
+    return build_image('dwd', dockerfile='Dockerfile.mqtt', tag='test-dwd-mqtt')
+
+@pytest.fixture()
+def mosquitto_dwd():
+    container, network, host_port = _generic_mosquitto('dwd-mqtt-e2e', 'dwd-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'dwd-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestDwdMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_dwd, dwd_mqtt_image):
+        _run_mqtt_contract_flow('dwd', dwd_mqtt_image, mosquitto_dwd, extra_env={'DWD_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def dwd_pollenflug_mqtt_image():
+    return build_image('dwd-pollenflug', dockerfile='Dockerfile.mqtt', tag='test-dwd-pollenflug-mqtt')
+
+@pytest.fixture()
+def mosquitto_dwd_pollenflug():
+    container, network, host_port = _generic_mosquitto('dwd-pollenflug-mqtt-e2e', 'dwd-pollenflug-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'dwd-pollenflug-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestDwdPollenflugMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_dwd_pollenflug, dwd_pollenflug_mqtt_image):
+        _run_mqtt_contract_flow('dwd-pollenflug', dwd_pollenflug_mqtt_image, mosquitto_dwd_pollenflug, extra_env={'DWD_POLLENFLUG_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def environment_canada_mqtt_image():
+    return build_image('environment-canada', dockerfile='Dockerfile.mqtt', tag='test-environment-canada-mqtt')
+
+@pytest.fixture()
+def mosquitto_environment_canada():
+    container, network, host_port = _generic_mosquitto('environment-canada-mqtt-e2e', 'environment-canada-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'environment-canada-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestEnvironmentCanadaMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_environment_canada, environment_canada_mqtt_image):
+        _run_mqtt_contract_flow('environment-canada', environment_canada_mqtt_image, mosquitto_environment_canada, extra_env={'ENVIRONMENT_CANADA_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def geosphere_austria_mqtt_image():
+    return build_image('geosphere-austria', dockerfile='Dockerfile.mqtt', tag='test-geosphere-austria-mqtt')
+
+@pytest.fixture()
+def mosquitto_geosphere_austria():
+    container, network, host_port = _generic_mosquitto('geosphere-austria-mqtt-e2e', 'geosphere-austria-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'geosphere-austria-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestGeosphereAustriaMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_geosphere_austria, geosphere_austria_mqtt_image):
+        _run_mqtt_contract_flow('geosphere-austria', geosphere_austria_mqtt_image, mosquitto_geosphere_austria, extra_env={'GEOSPHERE_AUSTRIA_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def hko_hong_kong_mqtt_image():
+    return build_image('hko-hong-kong', dockerfile='Dockerfile.mqtt', tag='test-hko-hong-kong-mqtt')
+
+@pytest.fixture()
+def mosquitto_hko_hong_kong():
+    container, network, host_port = _generic_mosquitto('hko-hong-kong-mqtt-e2e', 'hko-hong-kong-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'hko-hong-kong-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestHkoHongKongMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_hko_hong_kong, hko_hong_kong_mqtt_image):
+        _run_mqtt_contract_flow('hko-hong-kong', hko_hong_kong_mqtt_image, mosquitto_hko_hong_kong, extra_env={'HKO_HONG_KONG_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def jma_japan_mqtt_image():
+    return build_image('jma-japan', dockerfile='Dockerfile.mqtt', tag='test-jma-japan-mqtt')
+
+@pytest.fixture()
+def mosquitto_jma_japan():
+    container, network, host_port = _generic_mosquitto('jma-japan-mqtt-e2e', 'jma-japan-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'jma-japan-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestJmaJapanMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_jma_japan, jma_japan_mqtt_image):
+        _run_mqtt_contract_flow('jma-japan', jma_japan_mqtt_image, mosquitto_jma_japan, extra_env={'JMA_JAPAN_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def kmi_belgium_mqtt_image():
+    return build_image('kmi-belgium', dockerfile='Dockerfile.mqtt', tag='test-kmi-belgium-mqtt')
+
+@pytest.fixture()
+def mosquitto_kmi_belgium():
+    container, network, host_port = _generic_mosquitto('kmi-belgium-mqtt-e2e', 'kmi-belgium-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'kmi-belgium-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestKmiBelgiumMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_kmi_belgium, kmi_belgium_mqtt_image):
+        _run_mqtt_contract_flow('kmi-belgium', kmi_belgium_mqtt_image, mosquitto_kmi_belgium, extra_env={'KMI_BELGIUM_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def noaa_nws_mqtt_image():
+    return build_image('noaa-nws', dockerfile='Dockerfile.mqtt', tag='test-noaa-nws-mqtt')
+
+@pytest.fixture()
+def mosquitto_noaa_nws():
+    container, network, host_port = _generic_mosquitto('noaa-nws-mqtt-e2e', 'noaa-nws-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'noaa-nws-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestNoaaNwsMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_noaa_nws, noaa_nws_mqtt_image):
+        _run_mqtt_contract_flow('noaa-nws', noaa_nws_mqtt_image, mosquitto_noaa_nws, extra_env={'NOAA_NWS_MOCK': 'true'}, timeout=300)
+
+
+@pytest.fixture(scope='module')
+def smhi_weather_mqtt_image():
+    return build_image('smhi-weather', dockerfile='Dockerfile.mqtt', tag='test-smhi-weather-mqtt')
+
+@pytest.fixture()
+def mosquitto_smhi_weather():
+    container, network, host_port = _generic_mosquitto('smhi-weather-mqtt-e2e', 'smhi-weather-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'smhi-weather-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestSmhiWeatherMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_smhi_weather, smhi_weather_mqtt_image):
+        _run_mqtt_contract_flow('smhi-weather', smhi_weather_mqtt_image, mosquitto_smhi_weather, extra_env={'SMHI_WEATHER_MOCK': 'true'}, timeout=300)
+

@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "hko-hong-kong-mqtt-producer-mqtt-client"
+description = "hko_hong_kong_mqtt_producer_mqtt_client MQTT client library"
+authors = ["Your Name <your.email@example.com>"]
+version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
+packages = [{include = "hko_hong_kong_mqtt_producer_mqtt_client", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "<4.0,>=3.10"
+hko-hong-kong-mqtt-producer-data = {path = "../hko_hong_kong_mqtt_producer_data", develop = true}
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.10.1,<2.0.0"
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.2.2"
+flake8 = ">=7.1.0"
+pylint = ">=3.2.3"
+mypy = ">=1.10.0"
+testcontainers = ">=4.5.1"
+pytest-asyncio = ">=0.23.7"
+
+[tool.pytest.ini_options]
+asyncio_mode = "strict"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

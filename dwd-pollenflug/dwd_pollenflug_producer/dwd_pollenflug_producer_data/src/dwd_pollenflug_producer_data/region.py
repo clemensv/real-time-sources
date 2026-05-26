@@ -17,17 +17,17 @@ import json
 @dataclass
 class Region:
     """
-    Reference data for a DWD pollen forecast region or sub-region. Germany is divided into 11 main regions, some of which are subdivided into 2–4 sub-regions for a total of 27 forecast areas. Emitted at bridge startup so downstream consumers can correlate forecast events with region metadata.
+    A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events.
     
     Attributes:
-        region_id (int)
+        region_id (str)
         region_name (str)
         partregion_id (typing.Optional[int])
         partregion_name (typing.Optional[str])
     """
     
     
-    region_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_id"))
+    region_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_id"))
     region_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_name"))
     partregion_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="partregion_id"))
     partregion_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="partregion_name"))
@@ -157,8 +157,8 @@ class Region:
             An instance of the dataclass.
         """
         return cls(
-            region_id=int(77),
-            region_name='bscgnesbldglbpeahjfb',
-            partregion_id=int(7),
-            partregion_name='bgofujtqsiyveongrnlk'
+            region_id='rkgcaignzhmyvrduvwih',
+            region_name='hapbrpgjzazvdvhhbqyt',
+            partregion_id=int(50),
+            partregion_name='ynntquwjwtshemmklxxy'
         )

@@ -1,0 +1,65 @@
+
+"""
+Sample usage of geosphere_austria_amqp_producer_amqp_producer
+
+This example demonstrates how to send messages using the AMQP 1.0 producer.
+"""
+import sys
+from geosphere_austria_amqp_producer_amqp_producer import *
+
+def main():
+    """Main function"""
+    
+    
+    # Create producer
+    print("Creating AMQP producer...")
+    producer = AtGeosphereTawesAmqpProducer(
+        host="localhost",  # Change to your AMQP broker hostname
+        address="my-queue",  # Change to your queue/topic name
+        port=5672,  # Use 5671 for TLS
+        username="guest",  # Change to your username
+        password="guest",  # Change to your password
+        content_mode='structured',  # or 'binary' for CloudEvents
+        format_type='application/json'
+    )
+    
+    try:
+        
+        
+        # Send WeatherStation message
+        print("Sending WeatherStation message...")
+        # TODO: Create a WeatherStation instance with actual data
+        # data = WeatherStation(...)
+        # producer.send_weather_station(
+        #     data=data,
+        #     content_type="application/json"
+        # )
+        # print("WeatherStation message sent successfully!")
+        
+        
+        
+        # Send WeatherObservation message
+        print("Sending WeatherObservation message...")
+        # TODO: Create a WeatherObservation instance with actual data
+        # data = WeatherObservation(...)
+        # producer.send_weather_observation(
+        #     data=data,
+        #     content_type="application/json"
+        # )
+        # print("WeatherObservation message sent successfully!")
+        
+        
+        print("\nAll messages sent successfully!")
+        
+    except Exception as e:
+        print(f"Error sending messages: {e}", file=sys.stderr)
+        return 1
+    finally:
+        producer.close()
+        print("Producer closed")
+    
+    return 0
+    
+
+if __name__ == "__main__":
+    sys.exit(main())
