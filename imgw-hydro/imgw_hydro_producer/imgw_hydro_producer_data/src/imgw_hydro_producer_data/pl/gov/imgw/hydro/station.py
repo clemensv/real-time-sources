@@ -19,7 +19,7 @@ import avro.io
 @dataclass
 class Station:
     """
-    Station
+    Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source.
     Attributes:
         station_id (str): 
         station_name (str): 
@@ -36,7 +36,7 @@ class Station:
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"river\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"voivodeship\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"longitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"latitude\", \"type\": [\"null\", \"double\"], \"default\": null}], \"namespace\": \"PL.Gov.IMGW.Hydro\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"river\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"voivodeship\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"longitude\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"latitude\", \"type\": [\"null\", \"double\"], \"default\": null}], \"namespace\": \"PL.Gov.IMGW.Hydro\", \"description\": \"Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source.\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

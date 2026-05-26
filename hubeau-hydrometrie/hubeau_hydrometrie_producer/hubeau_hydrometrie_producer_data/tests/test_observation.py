@@ -29,12 +29,13 @@ class Test_Observation(unittest.TestCase):
         Create instance of Observation for testing
         """
         instance = Observation(
-            code_station='ipqkzgdccnxusazbewqo',
+            code_station='ndtwlwpksfnvhrtvtlca',
             date_obs=datetime.datetime.now(datetime.timezone.utc),
-            resultat_obs=float(97.50450241146117),
-            grandeur_hydro='tshmjctncxcgqyiqrnlt',
-            libelle_methode_obs='hpwtwdyaekmjmsfzmonc',
-            libelle_qualification_obs='awcuzkpwsmdcmawxvoxj'
+            resultat_obs=float(72.79030439576368),
+            grandeur_hydro='jcedzcwcswndbqvxchqi',
+            libelle_methode_obs='jquvqomtjrigduhnuebk',
+            libelle_qualification_obs='pzkgiualetajvcifsppi',
+            basin='hurazvczaejqewotalfu'
         )
         return instance
 
@@ -43,7 +44,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test code_station property
         """
-        test_value = 'ipqkzgdccnxusazbewqo'
+        test_value = 'ndtwlwpksfnvhrtvtlca'
         self.instance.code_station = test_value
         self.assertEqual(self.instance.code_station, test_value)
     
@@ -59,7 +60,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test resultat_obs property
         """
-        test_value = float(97.50450241146117)
+        test_value = float(72.79030439576368)
         self.instance.resultat_obs = test_value
         self.assertEqual(self.instance.resultat_obs, test_value)
     
@@ -67,7 +68,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test grandeur_hydro property
         """
-        test_value = 'tshmjctncxcgqyiqrnlt'
+        test_value = 'jcedzcwcswndbqvxchqi'
         self.instance.grandeur_hydro = test_value
         self.assertEqual(self.instance.grandeur_hydro, test_value)
     
@@ -75,7 +76,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test libelle_methode_obs property
         """
-        test_value = 'hpwtwdyaekmjmsfzmonc'
+        test_value = 'jquvqomtjrigduhnuebk'
         self.instance.libelle_methode_obs = test_value
         self.assertEqual(self.instance.libelle_methode_obs, test_value)
     
@@ -83,10 +84,27 @@ class Test_Observation(unittest.TestCase):
         """
         Test libelle_qualification_obs property
         """
-        test_value = 'awcuzkpwsmdcmawxvoxj'
+        test_value = 'pzkgiualetajvcifsppi'
         self.instance.libelle_qualification_obs = test_value
         self.assertEqual(self.instance.libelle_qualification_obs, test_value)
     
+    def test_basin_property(self):
+        """
+        Test basin property
+        """
+        test_value = 'hurazvczaejqewotalfu'
+        self.instance.basin = test_value
+        self.assertEqual(self.instance.basin, test_value)
+    
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Observation.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

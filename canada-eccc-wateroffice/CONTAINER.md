@@ -43,3 +43,10 @@ docker run --rm \
 
 | `CA.Gov.ECCC.Hydro.Station` | Station reference metadata |
 | `CA.Gov.ECCC.Hydro.Observation` | Real-time water level / discharge |
+
+
+## MQTT / AMQP transport variants
+
+* MQTT image: `docker pull ghcr.io/clemensv/real-time-sources-canada-eccc-wateroffice-mqtt:latest`; configure `MQTT_BROKER_URL`, optional `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_TLS`, `MQTT_CLIENT_ID`, and `ONCE_MODE`.
+* AMQP image: `docker pull ghcr.io/clemensv/real-time-sources-canada-eccc-wateroffice-amqp:latest`; configure `AMQP_HOST`/`AMQP_BROKER_URL`, `AMQP_ADDRESS`, `AMQP_AUTH_MODE` (`password`, `entra`, or `sas`), credentials, `AMQP_TLS`, and `ONCE_MODE`.
+* Azure templates: MQTT BYO broker (`azure-template-mqtt.json`), MQTT with Event Grid (`azure-template-with-eventgrid-mqtt.json`), and AMQP with Service Bus (`azure-template-with-servicebus.json`).

@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from nepal_bipad_hydrology_producer_kafka_producer.producer import NpGovBipadHydrologyEventProducer
+from nepal_bipad_hydrology_producer_kafka_producer.producer import NpGovBipadHydrologyMqttEventProducer
+from nepal_bipad_hydrology_producer_kafka_producer.producer import NpGovBipadHydrologyAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +74,54 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'np.gov.bipad.hydrology.WaterLevelReading' event to Kafka topic.
     await np_gov_bipad_hydrology_event_producer.send_np_gov_bipad_hydrology_water_level_reading(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _water_level_reading)
     print(f"Sent 'np.gov.bipad.hydrology.WaterLevelReading' event: {_water_level_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        np_gov_bipad_hydrology_mqtt_event_producer = NpGovBipadHydrologyMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        np_gov_bipad_hydrology_mqtt_event_producer = NpGovBipadHydrologyMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- np.gov.bipad.hydrology.mqtt.RiverStation ----
+    # TODO: Supply event data for the np.gov.bipad.hydrology.mqtt.RiverStation event
+    _river_station = RiverStation()
+
+    # sends the 'np.gov.bipad.hydrology.mqtt.RiverStation' event to Kafka topic.
+    await np_gov_bipad_hydrology_mqtt_event_producer.send_np_gov_bipad_hydrology_mqtt_river_station(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _river_station)
+    print(f"Sent 'np.gov.bipad.hydrology.mqtt.RiverStation' event: {_river_station.to_json()}")
+
+    # ---- np.gov.bipad.hydrology.mqtt.WaterLevelReading ----
+    # TODO: Supply event data for the np.gov.bipad.hydrology.mqtt.WaterLevelReading event
+    _water_level_reading = WaterLevelReading()
+
+    # sends the 'np.gov.bipad.hydrology.mqtt.WaterLevelReading' event to Kafka topic.
+    await np_gov_bipad_hydrology_mqtt_event_producer.send_np_gov_bipad_hydrology_mqtt_water_level_reading(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _water_level_reading)
+    print(f"Sent 'np.gov.bipad.hydrology.mqtt.WaterLevelReading' event: {_water_level_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        np_gov_bipad_hydrology_amqp_event_producer = NpGovBipadHydrologyAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        np_gov_bipad_hydrology_amqp_event_producer = NpGovBipadHydrologyAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- np.gov.bipad.hydrology.amqp.RiverStation ----
+    # TODO: Supply event data for the np.gov.bipad.hydrology.amqp.RiverStation event
+    _river_station = RiverStation()
+
+    # sends the 'np.gov.bipad.hydrology.amqp.RiverStation' event to Kafka topic.
+    await np_gov_bipad_hydrology_amqp_event_producer.send_np_gov_bipad_hydrology_amqp_river_station(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _river_station)
+    print(f"Sent 'np.gov.bipad.hydrology.amqp.RiverStation' event: {_river_station.to_json()}")
+
+    # ---- np.gov.bipad.hydrology.amqp.WaterLevelReading ----
+    # TODO: Supply event data for the np.gov.bipad.hydrology.amqp.WaterLevelReading event
+    _water_level_reading = WaterLevelReading()
+
+    # sends the 'np.gov.bipad.hydrology.amqp.WaterLevelReading' event to Kafka topic.
+    await np_gov_bipad_hydrology_amqp_event_producer.send_np_gov_bipad_hydrology_amqp_water_level_reading(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', data = _water_level_reading)
+    print(f"Sent 'np.gov.bipad.hydrology.amqp.WaterLevelReading' event: {_water_level_reading.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

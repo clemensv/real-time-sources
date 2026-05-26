@@ -21,6 +21,50 @@
         "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring"
       ],
       "description": "Kafka producer endpoint for UK Environment Agency Flood Monitoring CloudEvents on the `uk-ea-flood-monitoring` topic keyed by `{station_reference}`."
+    },
+    "UK.Gov.Environment.EA.FloodMonitoring.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for uk-ea-flood-monitoring CloudEvents using the documented UNS topic hierarchy."
+    },
+    "UK.Gov.Environment.EA.FloodMonitoring.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/uk-ea-flood-monitoring"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for uk-ea-flood-monitoring CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -66,6 +110,92 @@
         }
       },
       "description": "Events from UK Environment Agency Flood Monitoring covering monitoring stations across England and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
+    },
+    "UK.Gov.Environment.EA.FloodMonitoring.mqtt": {
+      "description": "MQTT 5 variant of uk-ea-flood-monitoring events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "UK.Gov.Environment.EA.FloodMonitoring.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/gb/ea/uk-ea-flood-monitoring/{river}/{station_reference}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading": {
+          "name": "Reading",
+          "basemessageurl": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Reading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/gb/ea/uk-ea-flood-monitoring/{river}/{station_reference}/reading",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "UK.Gov.Environment.EA.FloodMonitoring.amqp": {
+      "description": "AMQP 1.0 variant of uk-ea-flood-monitoring events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "UK.Gov.Environment.EA.FloodMonitoring.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_reference}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "river": {
+                "type": "uritemplate",
+                "value": "{river}",
+                "description": "Routing property for AMQP subscription filters (river)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_reference}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "UK.Gov.Environment.EA.FloodMonitoring.amqp.Reading": {
+          "name": "Reading",
+          "basemessageurl": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Reading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_reference}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "river": {
+                "type": "uritemplate",
+                "value": "{river}",
+                "description": "Routing property for AMQP subscription filters (river)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_reference}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -144,6 +274,10 @@
                       "null"
                     ],
                     "description": "Provider-supplied date opened value for this record."
+                  },
+                  "river": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for uk-ea-flood-monitoring."
                   }
                 },
                 "$id": "https://example.com/schemas/UK/Gov/Environment/EA/FloodMonitoring/Station",
@@ -185,6 +319,10 @@
                   "value": {
                     "type": "double",
                     "description": "Measured value reported by the upstream provider."
+                  },
+                  "river": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for uk-ea-flood-monitoring."
                   }
                 },
                 "$id": "https://example.com/schemas/UK/Gov/Environment/EA/FloodMonitoring/Reading",

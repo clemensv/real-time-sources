@@ -20,6 +20,50 @@
       "messagegroups": [
         "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC"
       ]
+    },
+    "Microsoft.OpenData.US.NOAA.NDBC.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for noaa-ndbc CloudEvents using the documented UNS topic hierarchy."
+    },
+    "Microsoft.OpenData.US.NOAA.NDBC.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/noaa-ndbc"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NDBC.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for noaa-ndbc CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -114,78 +158,430 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation": {
+          "name": "BuoyContinuousWindObservation",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation"
+            },
+            "source": {
+              "value": "https://www.ndbc.noaa.gov/data/realtime2/"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
           },
-          "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation": {
-            "name": "BuoyContinuousWindObservation",
-            "envelope": "CloudEvents/1.0",
-            "envelopemetadata": {
-              "type": {
-                "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation"
-              },
-              "source": {
-                "value": "https://www.ndbc.noaa.gov/data/realtime2/"
-              },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement": {
+          "name": "BuoySupplementalMeasurement",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement"
+            },
+            "source": {
+              "value": "https://www.ndbc.noaa.gov/data/realtime2/"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary": {
+          "name": "BuoyDetailedWaveSummary",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary"
+            },
+            "source": {
+              "value": "https://www.ndbc.noaa.gov/data/realtime2/"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary"
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement": {
+          "name": "BuoyHourlyRainMeasurement",
+          "envelope": "CloudEvents/1.0",
+          "envelopemetadata": {
+            "type": {
+              "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement"
+            },
+            "source": {
+              "value": "https://www.ndbc.noaa.gov/data/realtime2/"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NDBC.mqtt": {
+      "description": "MQTT 5 variant of noaa-ndbc events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation": {
+          "name": "BuoyObservation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation": {
+          "name": "BuoyStation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation": {
+          "name": "BuoySolarRadiationObservation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/solar-radiation",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation": {
+          "name": "BuoyOceanographicObservation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/oceanographic",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement": {
+          "name": "BuoyDartMeasurement",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/dart-measurement",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation": {
+          "name": "BuoyContinuousWindObservation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/continuous-wind",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement": {
+          "name": "BuoySupplementalMeasurement",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/supplemental",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary": {
+          "name": "BuoyDetailedWaveSummary",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/detailed-wave-summary",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement": {
+          "name": "BuoyHourlyRainMeasurement",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/hourly-rain",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NDBC.amqp": {
+      "description": "AMQP 1.0 variant of noaa-ndbc events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation": {
+          "name": "BuoyObservation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
               "subject": {
+                "type": "uritemplate",
                 "value": "{station_id}",
-                "type": "uritemplate"
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "dataschemaformat": "JsonStructure/draft-02",
-            "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation"
-          },
-          "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement": {
-            "name": "BuoySupplementalMeasurement",
-            "envelope": "CloudEvents/1.0",
-            "envelopemetadata": {
-              "type": {
-                "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement"
-              },
-              "source": {
-                "value": "https://www.ndbc.noaa.gov/data/realtime2/"
-              },
-              "subject": {
-                "value": "{station_id}",
-                "type": "uritemplate"
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
               }
             },
-            "dataschemaformat": "JsonStructure/draft-02",
-            "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement"
-          },
-          "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary": {
-            "name": "BuoyDetailedWaveSummary",
-            "envelope": "CloudEvents/1.0",
-            "envelopemetadata": {
-              "type": {
-                "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary"
-              },
-              "source": {
-                "value": "https://www.ndbc.noaa.gov/data/realtime2/"
-              },
-              "subject": {
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
                 "value": "{station_id}",
-                "type": "uritemplate"
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation": {
+          "name": "BuoyStation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "dataschemaformat": "JsonStructure/draft-02",
-            "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary"
-          },
-          "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement": {
-            "name": "BuoyHourlyRainMeasurement",
-            "envelope": "CloudEvents/1.0",
-            "envelopemetadata": {
-              "type": {
-                "value": "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement"
-              },
-              "source": {
-                "value": "https://www.ndbc.noaa.gov/data/realtime2/"
-              },
-              "subject": {
-                "value": "{station_id}",
-                "type": "uritemplate"
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
               }
             },
-            "dataschemaformat": "JsonStructure/draft-02",
-            "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NDBC.jstruct/schemas/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement"
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation": {
+          "name": "BuoySolarRadiationObservation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation": {
+          "name": "BuoyOceanographicObservation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement": {
+          "name": "BuoyDartMeasurement",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation": {
+          "name": "BuoyContinuousWindObservation",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement": {
+          "name": "BuoySupplementalMeasurement",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary": {
+          "name": "BuoyDetailedWaveSummary",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement": {
+          "name": "BuoyHourlyRainMeasurement",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property for AMQP subscription filters (region)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
         }
       }
     }
@@ -228,88 +624,134 @@
                     "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC data."
                   },
                   "wind_direction": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Wind direction (the direction the wind is coming from) averaged over an 8-minute period for buoys or a 2-minute period for land stations. Unit: degrees true.",
                     "unit": "deg",
-                    "symbol": "\u00b0"
+                    "symbol": "°"
                   },
                   "wind_speed": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average wind speed during the observation period: 8 minutes for buoys, 2 minutes for land stations. Unit: meters per second.",
                     "unit": "m/s",
                     "symbol": "m/s"
                   },
                   "gust": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Peak 5-second or 8-second gust speed during the observation period. Unit: meters per second.",
                     "unit": "m/s",
                     "symbol": "m/s"
                   },
                   "wave_height": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Significant wave height — the average of the highest one-third of all wave heights during a 20-minute sampling period. Unit: meters.",
                     "unit": "m",
                     "symbol": "m"
                   },
                   "dominant_wave_period": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Dominant wave period — the period (in seconds) of the wave band with the maximum energy in the spectral wave analysis. Unit: seconds.",
                     "unit": "s",
                     "symbol": "s"
                   },
                   "average_wave_period": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average wave period of all waves during the 20-minute sampling period. Unit: seconds.",
                     "unit": "s",
                     "symbol": "s"
                   },
                   "mean_wave_direction": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Mean wave direction corresponding to the energy at the dominant wave period (DPD). Unit: degrees true.",
                     "unit": "deg",
-                    "symbol": "\u00b0"
+                    "symbol": "°"
                   },
                   "pressure": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Sea-level pressure reduced using the standard atmosphere from the station elevation. Unit: hectopascals.",
                     "unit": "hPa",
                     "symbol": "hPa"
                   },
                   "air_temperature": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Air temperature measured at the station. Unit: degrees Celsius.",
                     "unit": "CEL",
-                    "symbol": "\u00b0C"
+                    "symbol": "°C"
                   },
                   "water_temperature": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Sea surface temperature. For buoys, measured by a hull-contact sensor near the waterline. Unit: degrees Celsius.",
                     "unit": "CEL",
-                    "symbol": "\u00b0C"
+                    "symbol": "°C"
                   },
                   "dewpoint": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Dewpoint temperature computed from air temperature and relative humidity. Unit: degrees Celsius.",
                     "unit": "CEL",
                     "symbol": "°C"
                   },
                   "pressure_tendency": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Pressure tendency — the signed change in sea-level pressure over the preceding 3 hours. A negative value indicates falling pressure; a positive value indicates rising pressure. Unit: hectopascals.",
                     "unit": "hPa",
                     "symbol": "hPa"
                   },
                   "visibility": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station visibility as reported by the observing platform. Buoy visibility sensors have a range of 0 to 1.6 nautical miles and are generally only available on C-MAN stations. Unit: nautical miles.",
                     "unit": "[nmi_i]",
                     "symbol": "nmi"
                   },
                   "tide": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Water level above or below Mean Lower Low Water (MLLW) at coastal and C-MAN stations. Unit: feet.",
                     "unit": "[ft_i]",
                     "symbol": "ft"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyObservation",
@@ -339,15 +781,24 @@
                     "description": "NDBC station identifier. Five-character alphanumeric code assigned by NDBC and reused across the station table, latest observations, and realtime2 products."
                   },
                   "owner": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Owning organization as listed in the NDBC station table, such as NDBC, NOS, or another partner agency."
                   },
                   "station_type": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Platform type from the station table, such as Weather Buoy or C-MAN Station."
                   },
                   "hull": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Hull or platform class reported in the station table, for example DISCUS or 3-meter."
                   },
                   "name": {
@@ -355,20 +806,33 @@
                     "description": "Human-readable station name from the NDBC station table."
                   },
                   "latitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station latitude in decimal degrees north parsed from the station table LOCATION field. Negative values indicate southern hemisphere.",
                     "unit": "deg",
                     "symbol": "deg"
                   },
                   "longitude": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Station longitude in decimal degrees east parsed from the station table LOCATION field. Negative values indicate western hemisphere.",
                     "unit": "deg",
                     "symbol": "deg"
                   },
                   "timezone": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Single-letter time-zone code carried in the NDBC station table for display and forecast products."
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyStation",
@@ -402,22 +866,35 @@
                     "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .srad realtime2 file."
                   },
                   "shortwave_radiation_licor": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average shortwave radiation over the preceding hour from a LI-COR LI-200 pyranometer when the SRAD1 column is present. Unit: watts per square meter.",
                     "unit": "W/m2",
                     "symbol": "W/m2"
                   },
                   "shortwave_radiation_eppley": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average shortwave radiation over the preceding hour from an Eppley PSP Precision Spectral Pyranometer when the SWRAD column is present. Unit: watts per square meter.",
                     "unit": "W/m2",
                     "symbol": "W/m2"
                   },
                   "longwave_radiation": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average downwelling longwave radiation over the preceding hour from an Eppley PIR Precision Infrared Radiometer when the LWRAD column is present. Unit: watts per square meter.",
                     "unit": "W/m2",
                     "symbol": "W/m2"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoySolarRadiationObservation",
@@ -458,56 +935,87 @@
                     "symbol": "m"
                   },
                   "ocean_temperature": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Direct ocean temperature measurement from the OTMP column. Unit: degrees Celsius.",
                     "unit": "CEL",
                     "symbol": "degC"
                   },
                   "conductivity": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Electrical conductivity of seawater from the COND column. Unit: millisiemens per centimeter.",
                     "unit": "mS/cm",
                     "symbol": "mS/cm"
                   },
                   "salinity": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Practical salinity computed from conductivity, temperature, and pressure using the Practical Salinity Scale of 1978. Unit: practical salinity units.",
                     "unit": "psu",
                     "symbol": "psu"
                   },
                   "oxygen_saturation": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Dissolved oxygen saturation percentage from the O2% column.",
                     "unit": "%",
                     "symbol": "%"
                   },
                   "oxygen_concentration": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Dissolved oxygen concentration from the O2PPM column. Unit: parts per million.",
                     "unit": "ppm",
                     "symbol": "ppm"
                   },
                   "chlorophyll_concentration": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Chlorophyll concentration from the CLCON column. Unit: micrograms per liter.",
                     "unit": "ug/L",
                     "symbol": "ug/L"
                   },
                   "turbidity": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Turbidity from the TURB column. Unit: Formazin Turbidity Units.",
                     "unit": "FTU",
                     "symbol": "FTU"
                   },
                   "ph": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Acidity or alkalinity of the seawater sample from the PH column. This is dimensionless."
                   },
                   "redox_potential": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Oxidation-reduction potential of seawater from the EH column. Unit: millivolts.",
                     "unit": "mV",
                     "symbol": "mV"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyOceanographicObservation",
@@ -551,6 +1059,10 @@
                     "description": "Height of the measured water column from the HEIGHT column in the DART file. Unit: meters.",
                     "unit": "m",
                     "symbol": "m"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyDartMeasurement",
@@ -584,33 +1096,52 @@
                     "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .cwind realtime2 file."
                   },
                   "wind_direction": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Ten-minute average wind direction from the WDIR column, measured clockwise from true north. Unit: degrees true.",
                     "unit": "deg",
                     "symbol": "°"
                   },
                   "wind_speed": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Ten-minute average wind speed from the WSPD column. Unit: meters per second.",
                     "unit": "m/s",
                     "symbol": "m/s"
                   },
                   "gust_direction": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Direction of the hourly peak gust from the GDR column, measured clockwise from true north. Unit: degrees true.",
                     "unit": "deg",
                     "symbol": "°"
                   },
                   "gust": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Maximum 5-second peak gust from the GST column during the measurement hour. Unit: meters per second.",
                     "unit": "m/s",
                     "symbol": "m/s"
                   },
                   "gust_time_code": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "HHMM UTC time code from the GTIME column indicating when the reported gust occurred within the surrounding hourly window. Around midnight the code can refer to the previous UTC day.",
                     "pattern": "^[0-9]{4}$"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyContinuousWindObservation",
@@ -644,32 +1175,51 @@
                     "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .supl realtime2 file."
                   },
                   "lowest_pressure": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Lowest one-minute atmospheric pressure recorded during the hour from the PRES column. Unit: hectopascals.",
                     "unit": "hPa",
                     "symbol": "hPa"
                   },
                   "lowest_pressure_time_code": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "HHMM UTC time code from the PTIME column indicating when the lowest one-minute pressure occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day.",
                     "pattern": "^[0-9]{4}$"
                   },
                   "highest_wind_speed": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Highest one-minute wind speed recorded during the hour from the WSPD column. Unit: meters per second.",
                     "unit": "m/s",
                     "symbol": "m/s"
                   },
                   "highest_wind_direction": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Direction associated with the highest one-minute wind speed from the WDIR column, measured clockwise from true north. Unit: degrees true.",
                     "unit": "deg",
                     "symbol": "°"
                   },
                   "highest_wind_time_code": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "HHMM UTC time code from the WTIME column indicating when the highest one-minute wind speed occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day.",
                     "pattern": "^[0-9]{4}$"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoySupplementalMeasurement",
@@ -703,58 +1253,92 @@
                     "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .spec realtime2 file."
                   },
                   "significant_wave_height": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Significant wave height from the WVHT column, representing the average height of the highest one-third of waves during the sampling period. Unit: meters.",
                     "unit": "m",
                     "symbol": "m"
                   },
                   "swell_height": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Swell-wave height from the SwH column. Unit: meters.",
                     "unit": "m",
                     "symbol": "m"
                   },
                   "swell_period": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Swell-wave period from the SwP column. Unit: seconds.",
                     "unit": "s",
                     "symbol": "s"
                   },
                   "wind_wave_height": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Wind-wave height from the WWH column. Unit: meters.",
                     "unit": "m",
                     "symbol": "m"
                   },
                   "wind_wave_period": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Wind-wave period from the WWP column. Unit: seconds.",
                     "unit": "s",
                     "symbol": "s"
                   },
                   "swell_direction": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Swell direction from the SwD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value."
                   },
                   "wind_wave_direction": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Wind-wave direction from the WWD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value."
                   },
                   "steepness": {
-                    "type": ["string", "null"],
+                    "type": [
+                      "string",
+                      "null"
+                    ],
                     "description": "Wave steepness category from the STEEPNESS column, for example SWELL, AVERAGE, or VERY_STEEP."
                   },
                   "average_wave_period": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Average wave period from the APD column. Unit: seconds.",
                     "unit": "s",
                     "symbol": "s"
                   },
                   "mean_wave_direction": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Mean wave direction from the MWD column, measured clockwise from true north. Unit: degrees true.",
                     "unit": "deg",
                     "symbol": "°"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyDetailedWaveSummary",
@@ -788,10 +1372,17 @@
                     "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .rain realtime2 file."
                   },
                   "accumulation": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Hourly rain accumulation from the ACCUM column. This is the total precipitation accumulated during the 60-minute period ending at the reported timestamp. Unit: millimeters.",
                     "unit": "mm",
                     "symbol": "mm"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc."
                   }
                 },
                 "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyHourlyRainMeasurement",

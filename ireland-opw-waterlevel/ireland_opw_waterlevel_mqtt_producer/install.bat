@@ -1,0 +1,2 @@
+pip install .\ireland_opw_waterlevel_mqtt_producer_data
+pip install .\ireland_opw_waterlevel_mqtt_producer_mqtt_client

@@ -20,7 +20,7 @@ import datetime
 @dataclass
 class Reading:
     """
-    Reading
+    Measurement payload for observations in the UK Environment Agency Flood Monitoring source.
     Attributes:
         station_reference (str): 
         date_time (datetime.datetime): 
@@ -33,7 +33,7 @@ class Reading:
     value: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Reading\", \"doc\": \"Reading\", \"fields\": [{\"name\": \"station_reference\", \"type\": \"string\"}, {\"name\": \"date_time\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"measure\", \"type\": \"string\"}, {\"name\": \"value\", \"type\": \"double\"}], \"namespace\": \"UK.Gov.Environment.EA.FloodMonitoring\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Reading\", \"doc\": \"Measurement payload for observations in the UK Environment Agency Flood Monitoring source.\", \"fields\": [{\"name\": \"station_reference\", \"type\": \"string\"}, {\"name\": \"date_time\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"measure\", \"type\": \"string\"}, {\"name\": \"value\", \"type\": \"double\"}], \"namespace\": \"UK.Gov.Environment.EA.FloodMonitoring\", \"description\": \"Measurement payload for observations in the UK Environment Agency Flood Monitoring source.\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

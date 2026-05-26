@@ -21,6 +21,50 @@
         "#/messagegroups/ie.gov.opw.waterlevel"
       ],
       "description": "Kafka producer endpoint for Ireland OPW waterlevel.ie CloudEvents on the `ireland-opw-waterlevel` topic keyed by `{station_ref}`."
+    },
+    "ie.gov.opw.waterlevel.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/ie.gov.opw.waterlevel.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for ireland-opw-waterlevel CloudEvents using the documented UNS topic hierarchy."
+    },
+    "ie.gov.opw.waterlevel.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/ireland-opw-waterlevel"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/ie.gov.opw.waterlevel.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for ireland-opw-waterlevel CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -68,6 +112,92 @@
         }
       },
       "description": "Events from Ireland OPW waterlevel.ie covering Irish hydrometric stations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
+    },
+    "ie.gov.opw.waterlevel.mqtt": {
+      "description": "MQTT 5 variant of ireland-opw-waterlevel events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "ie.gov.opw.waterlevel.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/ie/opw/ireland-opw-waterlevel/{basin}/{station_ref}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "ie.gov.opw.waterlevel.mqtt.WaterLevelReading": {
+          "name": "WaterLevelReading",
+          "basemessageurl": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.WaterLevelReading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/ie/opw/ireland-opw-waterlevel/{basin}/{station_ref}/water-level",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "ie.gov.opw.waterlevel.amqp": {
+      "description": "AMQP 1.0 variant of ireland-opw-waterlevel events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "ie.gov.opw.waterlevel.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_ref}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "Routing property for AMQP subscription filters (basin)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_ref}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "ie.gov.opw.waterlevel.amqp.WaterLevelReading": {
+          "name": "WaterLevelReading",
+          "basemessageurl": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.WaterLevelReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_ref}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "Routing property for AMQP subscription filters (basin)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_ref}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -113,6 +243,10 @@
                               "latitude": {
                                 "type": "double",
                                 "description": "Latitude of the station location in WGS84 decimal degrees."
+                              },
+                              "basin": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel."
                               }
                             },
                             "required": [
@@ -181,6 +315,10 @@
                               "err_code": {
                                 "type": "int32",
                                 "description": "Upstream error code for the reading. A value of 99 indicates the reading is valid (OK). Other values indicate various error conditions."
+                              },
+                              "basin": {
+                                "type": "string",
+                                "description": "Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel."
                               }
                             },
                             "required": [
