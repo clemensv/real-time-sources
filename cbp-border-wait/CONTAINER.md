@@ -1,158 +1,203 @@
-# US CBP Border Wait Times Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# US CBP Border Wait container images
 
-This container image provides a bridge between the US Customs and Border Protection (CBP) Border Wait Time API and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge fetches wait times at US land border crossings with Canada and Mexico and forwards them to the configured Kafka endpoints.
+This document covers the published OCI container images for the US CBP Border Wait feeder, their environment-variable contract, authentication modes, and one-click Azure deployments.
 
-## CBP Border Wait Time API
+Companion docs:
 
-The US CBP publishes real-time wait times at approximately 81 land border ports of entry along the US-Canada and US-Mexico borders. Data includes wait times for passenger vehicles, pedestrians, and commercial vehicles, broken down by lane type (standard, SENTRI/NEXUS, Ready Lane, FAST). Data is updated approximately every hour.
+- [README.md](README.md) — source overview, value framing, and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing details.
 
-- **API**: `https://bwt.cbp.gov/api/bwtnew`
-- **Format**: JSON
-- **Auth**: None (US Government public domain)
-- **Update Frequency**: Approximately hourly
+## Why this container
 
-## Functionality
+Cross-border logistics operators, customs-broker tools, travel apps, and public-sector planning teams use border wait telemetry for routing, staffing, and delay forecasting. These containers package polling, event normalization, dedupe, and transport-specific publishing so teams can run production ingestion without custom bridge code.
 
-The bridge polls the CBP Border Wait Time API and writes wait time updates to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md). Previously seen wait time timestamps per port are tracked in a state file to prevent duplicates.
+## What ships in the box
 
-## Database Schemas and Handling
+| Image | Transport | Runtime entrypoint |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-cbp-border-wait` | Kafka | `python -m cbp_border_wait feed` |
+| `ghcr.io/clemensv/real-time-sources-cbp-border-wait-mqtt` | MQTT | `python -m cbp_border_wait_mqtt feed` |
+| `ghcr.io/clemensv/real-time-sources-cbp-border-wait-amqp` | AMQP | `python -m cbp_border_wait_amqp feed` |
 
-If you want to build a full data pipeline with all events ingested into a database, the integration with Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md).
+The image set shares a single xRegistry contract and publishes the same event families listed in [EVENTS.md](EVENTS.md).
 
-## Installing the Container Image
+## Image contract
 
-Pull the container image from the GitHub Container Registry:
+| Aspect | Value |
+|---|---|
+| Base image | Source Dockerfiles (`Dockerfile*`) currently use Python slim bases (Kafka may differ from MQTT/AMQP in some sources). |
+| Entry point | `python -m <source>{,_mqtt,_amqp} feed` per image. |
+| Exposed ports | None (outbound publisher only). |
+| Signals | Graceful process termination on `SIGTERM`. |
+| Persistent state | `STATE_FILE` (mount `/state` volume for restart-safe dedupe). |
+| Tags | `latest`, plus immutable release/sha tags from GHCR publishing workflows. |
 
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-cbp-border-wait:latest
+## Installing the container images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-cbp-border-wait:latest
+docker pull ghcr.io/clemensv/real-time-sources-cbp-border-wait-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-cbp-border-wait-amqp:latest
 ```
 
-To use it as a base image in a Dockerfile:
+## Using the Kafka image
 
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-cbp-border-wait:latest
-```
-
-## Using the Container Image
-
-The container starts the bridge, polling the CBP API and writing wait times to Kafka, Azure Event Hubs, or Fabric Event Streams.
-
-### With a Kafka Broker
-
-Ensure you have a Kafka broker configured with TLS and SASL PLAIN authentication. Run the container:
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-cbp-border-wait:latest
-```
-
-### With Azure Event Hubs or Fabric Event Streams
-
-Use the connection string to establish a connection to the service:
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-cbp-border-wait:latest
-```
-
-### Preserving State Between Restarts
-
-To preserve the last seen timestamps between restarts and avoid reprocessing:
-
-```shell
-$ docker run --rm \
-    -v /path/to/state:/mnt/fileshare \
-    -e STATE_FILE='/mnt/fileshare/cbp_state.json' \
-    ... other args ... \
-    ghcr.io/clemensv/real-time-sources-cbp-border-wait:latest
-```
-
-## Environment Variables
-
-### `CONNECTION_STRING`
-
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs or Fabric Event Streams. This replaces the need for `KAFKA_BOOTSTRAP_SERVERS`, `SASL_USERNAME`, and `SASL_PASSWORD`.
-
-### `KAFKA_BOOTSTRAP_SERVERS`
-
-The address of the Kafka broker. Provide a comma-separated list of host and port pairs (e.g., `broker1:9092,broker2:9092`).
-
-### `KAFKA_TOPIC`
-
-The Kafka topic to send messages to.
-
-### `SASL_USERNAME`
-
-The username for SASL PLAIN authentication with the Kafka broker.
-
-### `SASL_PASSWORD`
-
-The password for SASL PLAIN authentication with the Kafka broker.
-
-### `POLLING_INTERVAL`
-
-How often to poll the CBP API, in seconds. Defaults to `3600` (one hour).
-
-### `STATE_FILE`
-
-The file path for storing last seen timestamps per port for deduplication.
-
-## Deploying into Azure Container Instances
-
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcbp-border-wait%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcbp-border-wait%2Fazure-template-with-eventhub.json)
-
-## MQTT/UNS variant
-
-`Dockerfile.mqtt` builds an MQTT 5.0 binary-mode CloudEvents publisher for CBP port reference records and current wait-time snapshots.
+### With a Kafka broker (SASL PLAIN)
 
 ```bash
 docker run --rm \
-  -e MQTT_BROKER_URL="mqtt://broker:1883" \
-  ghcr.io/clemensv/real-time-sources/cbp-border-wait-mqtt:latest
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/cbp-border-wait.json \
+  -e KAFKA_BOOTSTRAP_SERVERS=<host:port> \
+  -e KAFKA_TOPIC=cbp-border-wait \
+  -e SASL_USERNAME=<username> \
+  -e SASL_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-cbp-border-wait:latest
 ```
 
-MQTT topics are retained QoS 1 under:
+### With Azure Event Hubs / Fabric Event Stream connection string
 
-- `traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/info` — port reference data
-- `traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/wait-time` — current wait-time snapshot
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/cbp-border-wait.json \
+  -e CONNECTION_STRING='<connection-string>' \
+  ghcr.io/clemensv/real-time-sources-cbp-border-wait:latest
+```
 
-`{border_slug}` is derived from CBP's `border` field (`canadian-border` or `mexican-border`), and `{port_number}` is the existing Kafka key and CloudEvents subject. Wait-time snapshots carry MQTT message expiry (`7200` seconds) so stale retained state ages out if polling stops.
+## Using the MQTT image
 
-MQTT-specific environment variables:
+### Generic MQTT 5 broker (username/password)
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `MQTT_BROKER_URL` | No | `mqtt://localhost:1883` | MQTT broker URL (`mqtt://` or `mqtts://`) |
-| `MQTT_USERNAME` | No | — | MQTT username |
-| `MQTT_PASSWORD` | No | — | MQTT password |
-| `MQTT_CLIENT_ID` | No | — | MQTT client id; autogenerated by broker when empty |
-| `MQTT_CONTENT_MODE` | No | `binary` | CloudEvents MQTT content mode (`binary` or `structured`) |
-| `STATE_FILE` | No | — | Optional deduplication state file |
-| `POLLING_INTERVAL` | No | `3600` | Polling interval in seconds |
-| `ONCE_MODE` | No | `false` | Exit after one complete polling cycle |
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/cbp-border-wait.json \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-cbp-border-wait-mqtt:latest
+```
 
-## AMQP 1.0 companion
+### Azure Event Grid namespace MQTT broker (Entra OAUTH2-JWT)
 
-This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/cbp-border-wait.json \
+  -e MQTT_BROKER_URL='mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883' \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+  -e MQTT_CLIENT_ID='<unique-client-id>' \
+  ghcr.io/clemensv/real-time-sources-cbp-border-wait-mqtt:latest
+```
+
+## Using the AMQP image
+
+### Generic AMQP 1.0 broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/cbp-border-wait.json \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/cbp-border-wait' \
+  ghcr.io/clemensv/real-time-sources-cbp-border-wait-amqp:latest
+```
+
+### Azure Service Bus / Event Hubs (Entra CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/cbp-border-wait.json \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='cbp-border-wait' \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default' \
+  -e AMQP_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+  ghcr.io/clemensv/real-time-sources-cbp-border-wait-amqp:latest
+```
+
+### Azure Service Bus emulator / SAS namespaces (SAS CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/cbp-border-wait.json \
+  -e AMQP_HOST='servicebus-emulator' \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS='cbp-border-wait' \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+  -e AMQP_SAS_KEY='<sas-key>' \
+  ghcr.io/clemensv/real-time-sources-cbp-border-wait-amqp:latest
+```
+
+## Environment variables
+
+### Common
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to persisted poll/dedupe state file. |
+| `POLLING_INTERVAL` | Polling interval in seconds (where supported by the runtime variant). |
+| `ONCE_MODE` | Run one poll cycle and exit (used by notebook scheduling). |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric style connection string (overrides bootstrap/SASL fields). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka broker list. |
+| `KAFKA_TOPIC` | Kafka topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka links. |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` or `MQTT_HOST`/`MQTT_PORT` | MQTT broker endpoint. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Password auth for generic brokers. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` / `MQTT_ENTRA_AUDIENCE` | Entra token configuration for Event Grid MQTT. |
+| `MQTT_CLIENT_ID` | MQTT client identifier. |
+| `MQTT_CONTENT_MODE` | `binary` or `structured` CloudEvents payload mode. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` or `AMQP_HOST`/`AMQP_PORT`/`AMQP_TLS` | AMQP broker endpoint. |
+| `AMQP_ADDRESS` | Queue/topic/address target. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials (`password` mode). |
+| `AMQP_ENTRA_CLIENT_ID` / `AMQP_ENTRA_AUDIENCE` | Entra CBS token configuration. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS token material for emulator/SAS namespaces. |
+
+## Deploying into Azure Container Instances
+
+### Kafka — provision a new Event Hub
+
+Deploy Kafka plus a new Event Hubs namespace and event hub.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcbp-border-wait%2Fazure-template-with-eventhub.json)
+
+### AMQP — provision a new Azure Service Bus namespace
+
+Deploy AMQP plus Service Bus and managed-identity sender permissions.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcbp-border-wait%2Fazure-template-with-servicebus.json)
+
+### Kafka — bring your own Event Hub / Kafka
+
+Deploy the Kafka container with your own Event Hubs/Fabric/Event Stream connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcbp-border-wait%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md) — project overview and hosting options.
+- [EVENTS.md](EVENTS.md) — event contract and schema details.
+- [`xreg/cbp_border_wait.xreg.json`](xreg/cbp_border_wait.xreg.json) — authoritative contract source.

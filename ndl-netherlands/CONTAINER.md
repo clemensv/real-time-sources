@@ -1,114 +1,209 @@
-# NDW Netherlands Road Traffic bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# NDL Netherlands container images
 
-This container image bridges the NDW (Nationaal Dataportaal Wegverkeer)
-open data feeds at `https://opendata.ndw.nu` to Apache Kafka, Azure Event Hubs,
-and Fabric Event Streams. It downloads gzip-compressed DATEX II XML files
-containing traffic speed measurements, travel times, and current traffic
-situations from the entire Dutch road network, and emits them as CloudEvents.
+This document covers the published OCI container images for the NDL Netherlands feeder, their environment-variable contract, authentication modes, and one-click Azure deployments.
 
-Events are emitted in CloudEvents structured JSON format. See [EVENTS.md](EVENTS.md)
-for the full event catalog.
+Companion docs:
 
-## Topics
+- [README.md](README.md) — source overview, value framing, and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing details.
 
-| Topic | Key | Content |
+## Why this container
+
+Dutch roadway operators, traveler-information systems, logistics optimizers, and analytics teams depend on NDW measurements and situations for real-time mobility operations. These containers package polling, event normalization, dedupe, and transport-specific publishing so teams can run production ingestion without custom bridge code.
+
+## What ships in the box
+
+| Image | Transport | Runtime entrypoint |
 |---|---|---|
-| `ndl-traffic` | `{site_id}` | Speed and travel time per measurement site |
-| `ndl-traffic-situations` | `{situation_id}` | Road works, closures, incidents |
+| `ghcr.io/clemensv/real-time-sources-ndl-netherlands` | Kafka | `python -m ndl_netherlands feed` |
+| `ghcr.io/clemensv/real-time-sources-ndl-netherlands-mqtt` | MQTT | `python -m ndl_netherlands_mqtt feed` |
+| `ghcr.io/clemensv/real-time-sources-ndl-netherlands-amqp` | AMQP | `python -m ndl_netherlands_amqp feed` |
+
+The image set shares a single xRegistry contract and publishes the same event families listed in [EVENTS.md](EVENTS.md).
+
+## Image contract
+
+| Aspect | Value |
+|---|---|
+| Base image | Source Dockerfiles (`Dockerfile*`) currently use Python slim bases (Kafka may differ from MQTT/AMQP in some sources). |
+| Entry point | `python -m <source>{,_mqtt,_amqp} feed` per image. |
+| Exposed ports | None (outbound publisher only). |
+| Signals | Graceful process termination on `SIGTERM`. |
+| Persistent state | `STATE_FILE` (mount `/state` volume for restart-safe dedupe). |
+| Tags | `latest`, plus immutable release/sha tags from GHCR publishing workflows. |
+
+## Installing the container images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-ndl-netherlands:latest
+docker pull ghcr.io/clemensv/real-time-sources-ndl-netherlands-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-ndl-netherlands-amqp:latest
+```
+
+## Using the Kafka image
+
+### With a Kafka broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ndl-netherlands.json \
+  -e KAFKA_BOOTSTRAP_SERVERS=<host:port> \
+  -e KAFKA_TOPIC=ndl-netherlands \
+  -e SASL_USERNAME=<username> \
+  -e SASL_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-ndl-netherlands:latest
+```
+
+### With Azure Event Hubs / Fabric Event Stream connection string
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ndl-netherlands.json \
+  -e CONNECTION_STRING='<connection-string>' \
+  ghcr.io/clemensv/real-time-sources-ndl-netherlands:latest
+```
+
+## Using the MQTT image
+
+### Generic MQTT 5 broker (username/password)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ndl-netherlands.json \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-ndl-netherlands-mqtt:latest
+```
+
+### Azure Event Grid namespace MQTT broker (Entra OAUTH2-JWT)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ndl-netherlands.json \
+  -e MQTT_BROKER_URL='mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883' \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+  -e MQTT_CLIENT_ID='<unique-client-id>' \
+  ghcr.io/clemensv/real-time-sources-ndl-netherlands-mqtt:latest
+```
+
+## Using the AMQP image
+
+### Generic AMQP 1.0 broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ndl-netherlands.json \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/ndl-netherlands' \
+  ghcr.io/clemensv/real-time-sources-ndl-netherlands-amqp:latest
+```
+
+### Azure Service Bus / Event Hubs (Entra CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ndl-netherlands.json \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='ndl-netherlands' \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default' \
+  -e AMQP_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+  ghcr.io/clemensv/real-time-sources-ndl-netherlands-amqp:latest
+```
+
+### Azure Service Bus emulator / SAS namespaces (SAS CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/ndl-netherlands.json \
+  -e AMQP_HOST='servicebus-emulator' \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS='ndl-netherlands' \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+  -e AMQP_SAS_KEY='<sas-key>' \
+  ghcr.io/clemensv/real-time-sources-ndl-netherlands-amqp:latest
+```
 
 ## Environment variables
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `CONNECTION_STRING` | **Yes** | — | Kafka or Event Hubs connection string |
-| `KAFKA_ENABLE_TLS` | No | `true` | Set to `false` for plain Kafka |
-| `KAFKA_TOPIC` | No | `ndl-traffic` | Override measurements topic |
-| `MEASUREMENTS_TOPIC` | No | `ndl-traffic` | Override measurements topic |
-| `SITUATIONS_TOPIC` | No | `ndl-traffic-situations` | Override situations topic |
-| `POLLING_INTERVAL` | No | `60` | Seconds between poll cycles |
-| `STATE_FILE` | No | `~/.ndl_netherlands_state.json` | Dedup state persistence |
+### Common
 
-## Docker
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to persisted poll/dedupe state file. |
+| `POLLING_INTERVAL` | Polling interval in seconds (where supported by the runtime variant). |
+| `ONCE_MODE` | Run one poll cycle and exit (used by notebook scheduling). |
 
-```bash
-docker pull ghcr.io/clemensv/real-time-sources/ndl-netherlands:latest
-```
+### Kafka image
 
-### Plain Kafka
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric style connection string (overrides bootstrap/SASL fields). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka broker list. |
+| `KAFKA_TOPIC` | Kafka topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka links. |
 
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=ndl-traffic" \
-  -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources/ndl-netherlands:latest
-```
+### MQTT image
 
-### Azure Event Hubs
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` or `MQTT_HOST`/`MQTT_PORT` | MQTT broker endpoint. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Password auth for generic brokers. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` / `MQTT_ENTRA_AUDIENCE` | Entra token configuration for Event Grid MQTT. |
+| `MQTT_CLIENT_ID` | MQTT client identifier. |
+| `MQTT_CONTENT_MODE` | `binary` or `structured` CloudEvents payload mode. |
 
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=ndl-traffic" \
-  ghcr.io/clemensv/real-time-sources/ndl-netherlands:latest
-```
+### AMQP image
 
-### Azure Container Instance
-
-```bash
-az container create \
-  --resource-group myRG \
-  --name ndl-netherlands \
-  --image ghcr.io/clemensv/real-time-sources/ndl-netherlands:latest \
-  --restart-policy Always \
-  --environment-variables \
-    CONNECTION_STRING="Endpoint=sb://..." \
-    POLLING_INTERVAL=60
-```
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` or `AMQP_HOST`/`AMQP_PORT`/`AMQP_TLS` | AMQP broker endpoint. |
+| `AMQP_ADDRESS` | Queue/topic/address target. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials (`password` mode). |
+| `AMQP_ENTRA_CLIENT_ID` / `AMQP_ENTRA_AUDIENCE` | Entra CBS token configuration. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS token material for emulator/SAS namespaces. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### MQTT — bring your own broker
 
-### Option 1: Bring your own Event Hub
+Deploy MQTT against an existing MQTT 5.0 broker endpoint.
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndl-netherlands%2Fazure-template-mqtt.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndl-netherlands%2Fazure-template.json)
+### MQTT — provision a new Event Grid MQTT broker
 
-### Option 2: Deploy with a new Event Hub
+Deploy MQTT plus an Event Grid namespace broker and managed-identity role assignment.
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndl-netherlands%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
+
+Deploy Kafka plus a new Event Hubs namespace and event hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndl-netherlands%2Fazure-template-with-eventhub.json)
 
+### Kafka — bring your own Event Hub / Kafka
 
-## MQTT 5.0 / Unified Namespace
+Deploy the Kafka container with your own Event Hubs/Fabric/Event Stream connection string.
 
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-ndl-netherlands-mqtt:latest
-docker run --rm -e MQTT_BROKER_URL=mqtt://broker:1883 ghcr.io/clemensv/real-time-sources-ndl-netherlands-mqtt:latest
-```
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndl-netherlands%2Fazure-template.json)
 
-| Variable | Required | Default | Description |
-|---|---:|---|---|
-| `MQTT_BROKER_URL` | No | `mqtt://localhost:1883` | MQTT broker URL. |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | No | — | Optional username/password auth. |
-| `MQTT_TLS` | No | `false` | Enable TLS for broker connections. |
+## Related
 
-## AMQP 1.0
-
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-ndl-netherlands-amqp:latest
-docker run --rm -e AMQP_HOST=broker -e AMQP_ADDRESS=ndl-netherlands ghcr.io/clemensv/real-time-sources-ndl-netherlands-amqp:latest
-```
-
-| Variable | Required | Default | Description |
-|---|---:|---|---|
-| `AMQP_HOST` | No | `localhost` | AMQP 1.0 broker host. |
-| `AMQP_PORT` | No | `5672` | AMQP 1.0 broker port. |
-| `AMQP_ADDRESS` | No | `ndl-netherlands` | Queue/topic/address to send to. |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | No | — | Optional SASL PLAIN credentials. |
+- [README.md](README.md) — project overview and hosting options.
+- [EVENTS.md](EVENTS.md) — event contract and schema details.
+- [`xreg/ndl_netherlands.xreg.json`](xreg/ndl_netherlands.xreg.json) — authoritative contract source.

@@ -1,4 +1,4 @@
-# German Autobahn Traffic Bridge Events
+# Autobahn feeder Events
 
 Autobahn publishes road traffic incidents, closures, webcams, and travel information from Germany's Autobahn GmbH traffic APIs for German motorway segments, roadworks, closures, and traffic messages. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -8,7 +8,7 @@ Autobahn publishes road traffic incidents, closures, webcams, and travel informa
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 6 reference/catalog event types and 24 telemetry event types.
 - **Identity:** `{identifier}` identifies the resource each event is about.
-- **Operations:** The bridge documentation mentions ETag-aware polling, so consumers should expect unchanged upstream responses to be skipped.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -2903,11 +2903,11 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- The bridge documentation mentions ETag-aware polling, so consumers should expect unchanged upstream responses to be skipped.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/autobahn.xreg.json`](xreg/autobahn.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- German Autobahn APIs: <https://verkehr.autobahn.de/o/autobahn>

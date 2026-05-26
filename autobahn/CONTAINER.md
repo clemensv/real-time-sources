@@ -1,146 +1,215 @@
-# German Autobahn Traffic bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Autobahn container images
 
-This container image bridges the German Autobahn API at
-`https://verkehr.autobahn.de/o/autobahn` to Apache Kafka, Azure Event Hubs,
-and Fabric Event Streams. It polls current roadworks, warnings, closures,
-entry and exit closures, weight-limit restrictions, lorry parking metadata,
-electric charging station metadata, and webcam metadata and emits CloudEvents
-documented in [EVENTS.md](EVENTS.md).
+This document covers the published OCI container images for the Autobahn feeder, their environment-variable contract, authentication modes, and one-click Azure deployments.
 
-## Functionality
+Companion docs:
 
-The upstream API serves current-state snapshots, not a change feed. The bridge
-uses ETags per road and resource where possible and keeps a local state file to
-detect newly appeared, updated, and resolved items. Event families are split by
-resource schema and, where relevant, by `display_type` so short-term roadworks,
-entry and exit closures, and strong charging stations remain distinguishable in
-the output stream.
+- [README.md](README.md) — source overview, value framing, and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing details.
 
-## Database Schemas and Handling
+## Why this container
 
-If you want to build a full data pipeline with all events ingested into a
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
+German motorway operations teams, logistics platforms, emergency planners, navigation systems, and insurers use Autobahn status data for closures, incidents, and restrictions. These containers package polling, event normalization, dedupe, and transport-specific publishing so teams can run production ingestion without custom bridge code.
 
-## Installing the Container Image
+## What ships in the box
 
-Pull the container image from the GitHub Container Registry:
+| Image | Transport | Runtime entrypoint |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-autobahn` | Kafka | `python -m autobahn feed` |
+| `ghcr.io/clemensv/real-time-sources-autobahn-mqtt` | MQTT | `python -m autobahn_mqtt feed` |
+| `ghcr.io/clemensv/real-time-sources-autobahn-amqp` | AMQP | `python -m autobahn_amqp feed` |
 
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-autobahn:latest
+The image set shares a single xRegistry contract and publishes the same event families listed in [EVENTS.md](EVENTS.md).
+
+## Image contract
+
+| Aspect | Value |
+|---|---|
+| Base image | Source Dockerfiles (`Dockerfile*`) currently use Python slim bases (Kafka may differ from MQTT/AMQP in some sources). |
+| Entry point | `python -m <source>{,_mqtt,_amqp} feed` per image. |
+| Exposed ports | None (outbound publisher only). |
+| Signals | Graceful process termination on `SIGTERM`. |
+| Persistent state | `AUTOBAHN_STATE_FILE` (mount `/state` volume for restart-safe dedupe). |
+| Tags | `latest`, plus immutable release/sha tags from GHCR publishing workflows. |
+
+## Installing the container images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-autobahn:latest
+docker pull ghcr.io/clemensv/real-time-sources-autobahn-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-autobahn-amqp:latest
 ```
 
-## Using the Container Image
+## Using the Kafka image
 
-Run the bridge against a Kafka broker:
+### With a Kafka broker (SASL PLAIN)
 
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='broker:9092' \
-    -e KAFKA_TOPIC='autobahn' \
-    -e KAFKA_ENABLE_TLS='false' \
-    ghcr.io/clemensv/real-time-sources-autobahn:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AUTOBAHN_STATE_FILE=/state/autobahn.json \
+  -e KAFKA_BOOTSTRAP_SERVERS=<host:port> \
+  -e KAFKA_TOPIC=autobahn \
+  -e SASL_USERNAME=<username> \
+  -e SASL_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-autobahn:latest
 ```
 
-Or use an Event Hubs or Fabric Event Streams connection string:
+### With Azure Event Hubs / Fabric Event Stream connection string
 
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-autobahn:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AUTOBAHN_STATE_FILE=/state/autobahn.json \
+  -e CONNECTION_STRING='<connection-string>' \
+  ghcr.io/clemensv/real-time-sources-autobahn:latest
 ```
 
-## MQTT 5.0 / Unified-Namespace Feeder
+## Using the MQTT image
 
-The sibling MQTT image runs `python -m autobahn_mqtt feed` and publishes binary-mode CloudEvents under:
+### Generic MQTT 5 broker (username/password)
 
-```text
-traffic/de/autobahn/autobahn/{road}/{kind}/{identifier}/{state}
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AUTOBAHN_STATE_FILE=/state/autobahn.json \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-autobahn-mqtt:latest
 ```
 
-Run it against a broker:
+### Azure Event Grid namespace MQTT broker (Entra OAUTH2-JWT)
 
-```shell
-$ docker run --rm \
-    -e MQTT_BROKER_URL='mqtt://broker:1883' \
-    ghcr.io/clemensv/real-time-sources-autobahn-mqtt:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AUTOBAHN_STATE_FILE=/state/autobahn.json \
+  -e MQTT_BROKER_URL='mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883' \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+  -e MQTT_CLIENT_ID='<unique-client-id>' \
+  ghcr.io/clemensv/real-time-sources-autobahn-mqtt:latest
 ```
 
-Lifecycle traffic families (`roadwork`, `short-term-roadwork`, `closure`, `entry-exit-closure`, `warning`) use QoS 1 and `retain=false`. Stable object families (`weight-limit-3-5`, `webcam`, `parking-lorry`, `electric-charging-station`, `strong-electric-charging-station`) use QoS 1 and `retain=true`; resolved stable objects publish an empty retained payload to clear the last-known-value slot.
+## Using the AMQP image
 
-Example wildcard subscriptions:
+### Generic AMQP 1.0 broker (SASL PLAIN)
 
-- All Autobahn MQTT events: `traffic/de/autobahn/autobahn/#`
-- All roadworks on A1: `traffic/de/autobahn/autobahn/a1/roadwork/+/+`
-- All closures on A3: `traffic/de/autobahn/autobahn/a3/closure/+/+`
-- All webcams on all roads: `traffic/de/autobahn/autobahn/+/webcam/+/+`
-- All charging station events: `traffic/de/autobahn/autobahn/+/electric-charging-station/+/+` and `traffic/de/autobahn/autobahn/+/strong-electric-charging-station/+/+`
-
-To preserve ETags and last-seen snapshots across restarts, mount a writable
-volume and point the bridge at a state file on that volume:
-
-```shell
-$ docker run --rm \
-    -v /path/to/state:/mnt/fileshare \
-    -e AUTOBAHN_STATE_FILE='/mnt/fileshare/autobahn_state.json' \
-    ghcr.io/clemensv/real-time-sources-autobahn:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AUTOBAHN_STATE_FILE=/state/autobahn.json \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/autobahn' \
+  ghcr.io/clemensv/real-time-sources-autobahn-amqp:latest
 ```
 
-## Environment Variables
+### Azure Service Bus / Event Hubs (Entra CBS)
 
-- `CONNECTION_STRING`: Event Hubs or Fabric Event Streams connection string.
-- `KAFKA_BOOTSTRAP_SERVERS`: Kafka bootstrap servers.
-- `KAFKA_TOPIC`: Kafka topic. Defaults to `autobahn`.
-- `SASL_USERNAME`: SASL/PLAIN username.
-- `SASL_PASSWORD`: SASL/PLAIN password.
-- `KAFKA_ENABLE_TLS`: When no SASL credentials are supplied, use `true` for
-  TLS or `false` for plain Kafka.
-- `AUTOBAHN_STATE_FILE`: File that stores ETags and the last successful
-  snapshots. Defaults to `/mnt/fileshare/autobahn_state.json` in the ACI
-  template below.
-- `AUTOBAHN_POLL_INTERVAL`: Poll interval in seconds. Defaults to `300`.
-- `AUTOBAHN_RESOURCES`: Comma-separated resource list or `*`.
-- `AUTOBAHN_ROADS`: Comma-separated road list or `*`.
-- `AUTOBAHN_REQUEST_CONCURRENCY`: Maximum concurrent API requests.
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AUTOBAHN_STATE_FILE=/state/autobahn.json \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='autobahn' \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default' \
+  -e AMQP_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+  ghcr.io/clemensv/real-time-sources-autobahn-amqp:latest
+```
 
-### MQTT environment variables
+### Azure Service Bus emulator / SAS namespaces (SAS CBS)
 
-| Variable | Required | Default | Description |
-|---|---:|---|---|
-| `MQTT_BROKER_URL` | yes | — | Broker URL such as `mqtt://host:1883` or `mqtts://host:8883`. |
-| `MQTT_ENABLE_TLS` | no | scheme/port-derived | Force TLS when set to `true`. |
-| `MQTT_AUTH_MODE` | no | `anonymous` | `anonymous`, `userpass`, `tls-cert`, or `entra`. |
-| `MQTT_USERNAME` | conditional | — | Username for `userpass`; Event Grid client name for `entra`. |
-| `MQTT_PASSWORD` | conditional | — | Password for `userpass`. |
-| `MQTT_CLIENT_CERT` | conditional | — | Client certificate PEM path for `tls-cert`. |
-| `MQTT_CLIENT_KEY` | conditional | — | Client key PEM path for `tls-cert`. |
-| `MQTT_CA_FILE` | no | system trust | Broker CA chain path. |
-| `MQTT_CLIENT_ID` | no | `autobahn-mqtt` | MQTT client identifier. |
-| `MQTT_ENTRA_CLIENT_ID` | conditional | — | Managed identity client id for Event Grid Namespace MQTT enhanced auth. |
-| `MQTT_ENTRA_AUDIENCE` | no | `https://eventgrid.azure.net/` | Entra token audience. |
-| `AUTOBAHN_MQTT_EMIT_MOCK_CORPUS` | no | `false` | Emit synthetic one-shot corpus for Docker E2E tests. |
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AUTOBAHN_STATE_FILE=/state/autobahn.json \
+  -e AMQP_HOST='servicebus-emulator' \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS='autobahn' \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+  -e AMQP_SAS_KEY='<sas-key>' \
+  ghcr.io/clemensv/real-time-sources-autobahn-amqp:latest
+```
+
+## Environment variables
+
+### Common
+
+| Variable | Description |
+|---|---|
+| `AUTOBAHN_STATE_FILE` | Path to persisted poll/dedupe state file. |
+| `AUTOBAHN_POLL_INTERVAL` | Polling interval in seconds (where supported by the runtime variant). |
+| `ONCE_MODE` | Run one poll cycle and exit (used by notebook scheduling). |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric style connection string (overrides bootstrap/SASL fields). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka broker list. |
+| `KAFKA_TOPIC` | Kafka topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka links. |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` or `MQTT_HOST`/`MQTT_PORT` | MQTT broker endpoint. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Password auth for generic brokers. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` / `MQTT_ENTRA_AUDIENCE` | Entra token configuration for Event Grid MQTT. |
+| `MQTT_CLIENT_ID` | MQTT client identifier. |
+| `MQTT_CONTENT_MODE` | `binary` or `structured` CloudEvents payload mode. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` or `AMQP_HOST`/`AMQP_PORT`/`AMQP_TLS` | AMQP broker endpoint. |
+| `AMQP_ADDRESS` | Queue/topic/address target. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials (`password` mode). |
+| `AMQP_ENTRA_CLIENT_ID` / `AMQP_ENTRA_AUDIENCE` | Entra CBS token configuration. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS token material for emulator/SAS namespaces. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### MQTT — bring your own broker
 
-### Option 1: Bring your own Event Hub
+Deploy MQTT against an existing MQTT 5.0 broker endpoint.
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fautobahn%2Fazure-template-mqtt.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fautobahn%2Fazure-template.json)
+### MQTT — provision a new Event Grid MQTT broker
 
-### Option 2: Deploy with a new Event Hub
+Deploy MQTT plus an Event Grid namespace broker and managed-identity role assignment.
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fautobahn%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
+
+Deploy Kafka plus a new Event Hubs namespace and event hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fautobahn%2Fazure-template-with-eventhub.json)
 
-## AMQP 1.0 companion
+### AMQP — provision a new Azure Service Bus namespace
 
-This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.
+Deploy AMQP plus Service Bus and managed-identity sender permissions.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fautobahn%2Fazure-template-with-servicebus.json)
+
+### Kafka — bring your own Event Hub / Kafka
+
+Deploy the Kafka container with your own Event Hubs/Fabric/Event Stream connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fautobahn%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md) — project overview and hosting options.
+- [EVENTS.md](EVENTS.md) — event contract and schema details.
+- [`xreg/autobahn.xreg.json`](xreg/autobahn.xreg.json) — authoritative contract source.
