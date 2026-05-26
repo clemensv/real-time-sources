@@ -653,7 +653,7 @@
                   },
                   "severity": {
                     "type": [
-                      "int32",
+                      "string",
                       "null"
                     ],
                     "description": "Severity level indicator from the severity field in the US SIGMET response. Higher values indicate greater severity."

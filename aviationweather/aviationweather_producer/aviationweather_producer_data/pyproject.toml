@@ -1,15 +1,18 @@
-[build-system]
-requires = ["setuptools>=64"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "aviationweather_producer_data"
+[tool.poetry]
+name = "aviationweather-producer-data"
 version = "0.1.0"
-description = "AviationWeather.gov producer data classes"
-requires-python = ">=3.10"
-dependencies = [
-    "dataclasses_json>=0.6.7",
-]
+description = "A package for handling JSON Structure schema data"
+authors = ["Your Name"]
+license = "MIT"
+packages = [ { include = "aviationweather_producer_data", from="src" } ]
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.poetry.dependencies]
+python = "<4.0,>=3.10"
+dataclasses-json = "^0.6.7"
+
+[tool.poetry.dev-dependencies]
+pylint = "^3.2.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

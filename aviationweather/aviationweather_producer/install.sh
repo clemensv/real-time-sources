@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./aviationweather_producer_data
+pip install ./aviationweather_producer_kafka_producer

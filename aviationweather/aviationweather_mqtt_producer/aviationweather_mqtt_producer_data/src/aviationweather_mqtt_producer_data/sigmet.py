@@ -33,7 +33,7 @@ class Sigmet:
         altitude_low (typing.Optional[int])
         movement_dir (typing.Optional[str])
         movement_spd (typing.Optional[str])
-        severity (typing.Optional[int])
+        severity (typing.Optional[str])
         raw_sigmet (typing.Optional[str])
         coords (typing.Optional[str])
         sigmet_id (typing.Optional[str])
@@ -52,7 +52,7 @@ class Sigmet:
     altitude_low: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="altitude_low"))
     movement_dir: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="movement_dir"))
     movement_spd: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="movement_spd"))
-    severity: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="severity"))
+    severity: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="severity"))
     raw_sigmet: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="raw_sigmet"))
     coords: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="coords"))
     sigmet_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sigmet_id"))
@@ -183,20 +183,20 @@ class Sigmet:
             An instance of the dataclass.
         """
         return cls(
-            icao_id='jseoamhmpwtpxjknswjs',
-            series_id='jxziapszvipdqahiifhk',
+            icao_id='gjpzeuzwjdirsfntjxco',
+            series_id='cjyhqvrizofdbdctluwn',
             valid_time_from=datetime.datetime.now(datetime.timezone.utc),
             valid_time_to=datetime.datetime.now(datetime.timezone.utc),
-            hazard='zorqaoanxdglgaickzdo',
-            qualifier='zpkdjsqrhlbujcexovem',
-            sigmet_type='wqbozrfvczlammyhitgq',
-            altitude_hi=int(54),
-            altitude_low=int(5),
-            movement_dir='qnmvepirscstjhbbxjgt',
-            movement_spd='cnbwwskwuieajivicgaf',
-            severity=int(84),
-            raw_sigmet='qbvikmmhprkicyaqqcxg',
-            coords='teagjjihthpsuftqewzv',
-            sigmet_id='vgdvrcporzzdcnnkbgxh',
-            region='abgoakebjdwnzoxvbxrx'
+            hazard='ongqtuxjzfywevxdoycw',
+            qualifier='kwowlqtvmzmrigjfqnxe',
+            sigmet_type='kskonwnojqvihkfwtkqx',
+            altitude_hi=int(63),
+            altitude_low=int(94),
+            movement_dir='buxfubloryvmewmrtgpb',
+            movement_spd='zarykahusbtxdfeiskvr',
+            severity='qqdiozoewboqoftxxncg',
+            raw_sigmet='ffmrbwumsdzebgckuxev',
+            coords='vxxuxpncpsxijuqirjbv',
+            sigmet_id='vkzjutkmsqcpmzrnnbiv',
+            region='rjhztzqpypnqxoscjryv'
         )
