@@ -86,7 +86,7 @@
             },
             "time": {
               "value": "{created}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",

@@ -163,7 +163,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -187,7 +187,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -211,7 +211,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -235,7 +235,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -259,7 +259,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -283,7 +283,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -307,7 +307,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -331,7 +331,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -355,7 +355,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -379,7 +379,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -403,7 +403,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -427,7 +427,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -451,7 +451,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -475,7 +475,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -499,7 +499,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -523,7 +523,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -547,7 +547,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -571,7 +571,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -595,7 +595,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -619,7 +619,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -643,7 +643,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -667,7 +667,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -691,7 +691,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -715,7 +715,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -739,7 +739,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -763,7 +763,7 @@
             },
             "time": {
               "value": "{datetime}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",

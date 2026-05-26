@@ -87,7 +87,7 @@
             },
             "time": {
               "value": "{incident_datetime_utc}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",

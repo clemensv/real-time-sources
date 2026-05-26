@@ -268,11 +268,11 @@
               "type": "uritemplate"
             },
             "time": {
-              "type": "string",
+              "type": "timestamp",
               "required": true
             },
             "dataschema": {
-              "type": "string",
+              "type": "uritemplate",
               "required": true
             }
           },
@@ -291,7 +291,7 @@
             },
             "subject": {
               "value": "{station_id}",
-              "type": "uritemplate"
+              "type": "timestamp"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
