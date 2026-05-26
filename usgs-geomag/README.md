@@ -2,6 +2,14 @@
 
 This feeder turns USGS Geomagnetism data into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.usgs.gov/programs/geomagnetism>
+- API / data documentation: <https://geomag.usgs.gov/ws/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

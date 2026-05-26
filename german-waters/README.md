@@ -2,6 +2,14 @@
 
 This feeder turns hydrometric data from 12 German federal-state water authorities into a CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://hvz.lubw.baden-wuerttemberg.de/>
+- API / data documentation: <https://www.hvz.baden-wuerttemberg.de/php/datenfuerentwickler.php>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

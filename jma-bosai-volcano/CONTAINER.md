@@ -2,6 +2,14 @@
 
 This document covers the published OCI images for the JMA Bosai Volcano source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.jma.go.jp/bosai/map.html?contents=volcano>
+- API / data documentation: <https://www.jma.go.jp/bosai/volcano/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 JMA volcanic products are used by hazard monitoring and operational planning workflows. This feeder emits them as normalized CloudEvents so consumer systems can subscribe instead of implementing custom polling and normalization.

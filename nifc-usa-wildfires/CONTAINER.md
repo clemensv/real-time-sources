@@ -5,6 +5,14 @@ Center (NIFC)](https://www.nifc.gov/) ArcGIS Feature Service and Apache Kafka,
 Azure Event Hubs, and Fabric Event Streams. The bridge fetches active wildfire
 incident data and forwards them to the configured Kafka endpoints.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.nifc.gov/>
+- API / data documentation: <https://data-nifc.opendata.arcgis.com/>
+
+<!-- upstream-links:end -->
+
 ## NIFC USA Wildfires
 
 The [NIFC](https://www.nifc.gov/) provides real-time wildfire incident data

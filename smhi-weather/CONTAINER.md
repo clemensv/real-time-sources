@@ -3,6 +3,14 @@
 This document covers the published OCI container images for the SMHI Weather feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 ## Why this container
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.smhi.se/>
+- API / data documentation: <https://opendata.smhi.se/apidocs/metobs/>
+
+<!-- upstream-links:end -->
+
 These images package the poller, contract-generated producers, and transport adapters so you can run SMHI Weather ingestion as a containerized workload without writing custom bridge code.
 
 ## What ships in the box

@@ -2,6 +2,14 @@
 
 This document covers the published OCI images for the JMA Bosai AMeDAS source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.jma.go.jp/bosai/amedas/>
+- API / data documentation: <https://www.jma.go.jp/bosai/amedas/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 AMeDAS station observations are used by weather operations, transport planning, and climate analytics. This feeder publishes a normalized event stream from the JMA Bosai source for consistent downstream consumption.

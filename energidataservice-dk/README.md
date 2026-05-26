@@ -2,6 +2,14 @@
 
 This feeder turns the [Energi Data Service API](https://www.energidataservice.dk/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.energidataservice.dk/>
+- API / data documentation: <https://www.energidataservice.dk/guides/api-guides>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published images, environment variables, and deployment options.

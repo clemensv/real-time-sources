@@ -3,6 +3,14 @@
 This source ships two container images backed by the same upstream poller
 and xRegistry contract:
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.dmi.dk/>
+- API / data documentation: <https://opendatadocs.dmi.govcloud.dk/>
+
+<!-- upstream-links:end -->
+
 | Image | Transport | Default behavior |
 |---|---|---|
 | `ghcr.io/clemensv/real-time-sources-dmi-kafka` | Apache Kafka 2.x (Azure Event Hubs, Fabric Event Streams, Confluent Cloud, plain Kafka) | Single topic `dmi`, JSON CloudEvents (binary mode); subscribers route by `ce_type` |

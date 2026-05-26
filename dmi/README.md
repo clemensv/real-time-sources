@@ -2,6 +2,14 @@
 
 ## Overview
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.dmi.dk/>
+- API / data documentation: <https://opendatadocs.dmi.govcloud.dk/>
+
+<!-- upstream-links:end -->
+
 **DMI** is a bridge that polls the [Danish Meteorological Institute Open Data
 API](https://opendatadocs.dmi.govcloud.dk/) and re-emits the **observation
 triad** (`metObs` + `oceanObs` + `lightningData`) as CloudEvents. A single

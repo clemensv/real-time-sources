@@ -5,6 +5,14 @@ Coordination System (GDACS)](https://www.gdacs.org) RSS feed and Apache Kafka,
 Azure Event Hubs, and Fabric Event Streams. The bridge polls GDACS for disaster
 alerts worldwide and forwards them to the configured Kafka endpoints.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.gdacs.org/>
+- API / data documentation: <https://www.gdacs.org/xml/rss.xml>
+
+<!-- upstream-links:end -->
+
 ## GDACS
 
 The [Global Disaster Alert and Coordination System](https://www.gdacs.org) is a

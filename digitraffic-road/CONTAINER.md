@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the Digitraffic Road feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.digitraffic.fi/en/road-traffic/>
+- API / data documentation: <https://tie.digitraffic.fi/swagger/>
+
+<!-- upstream-links:end -->
+
 > [!CAUTION]
 > **Creative Commons 4.0 BY attribution is required when you use this data.** Use this exact attribution text in downstream products and documentation: **"Licensed materials from the Finnish Transport Infrastructure Agency (Väylävirasto) and the Finnish Transport and Communications Agency (Traficom) Digitraffic service, www.digitraffic.fi"**
 

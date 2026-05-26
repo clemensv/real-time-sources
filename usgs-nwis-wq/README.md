@@ -2,6 +2,14 @@
 
 This feeder turns the upstream USGS NWIS Water Quality hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://waterdata.usgs.gov/>
+- API / data documentation: <https://waterservices.usgs.gov/docs/water-quality-samples/water-quality-samples-details/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

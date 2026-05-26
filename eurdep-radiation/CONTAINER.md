@@ -2,6 +2,14 @@
 
 This document covers the published OCI images for the EURDEP Radiation source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://remon.jrc.ec.europa.eu/>
+- API / data documentation: <https://eurdep.jrc.ec.europa.eu/Basic/Pages/Public/Data/Default.aspx>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 EURDEP provides cross-country radiation measurements used for monitoring, preparedness, and compliance workflows. This feeder emits the data as CloudEvents so consumers can subscribe through their preferred transport without custom polling and normalization logic.

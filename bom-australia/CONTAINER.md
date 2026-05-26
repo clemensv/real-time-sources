@@ -3,6 +3,14 @@
 This document covers the published OCI container images for the BOM Australia feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 ## Why this container
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.bom.gov.au/>
+- API / data documentation: <http://www.bom.gov.au/catalogue/data-feeds.shtml>
+
+<!-- upstream-links:end -->
+
 These images package the poller, contract-generated producers, and transport adapters so you can run BOM Australia ingestion as a containerized workload without writing custom bridge code.
 
 ## What ships in the box

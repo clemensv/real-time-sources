@@ -2,6 +2,14 @@
 
 Related docs:
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://wikitech.wikimedia.org/wiki/Event_Platform/EventStreams>
+- API / data documentation: <https://stream.wikimedia.org/?doc>
+
+<!-- upstream-links:end -->
+
 - [README.md](README.md) — source context, quick-start flow, and deployment guidance.
 - [EVENTS.md](EVENTS.md) — event families, CloudEvents types, and payload schemas.
 

@@ -2,6 +2,14 @@
 
 This document covers the published OCI images for the TfL Road Traffic feeder and their runtime contract. See [README.md](README.md) for source overview and [EVENTS.md](EVENTS.md) for the CloudEvents schema/routing contract.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://tfl.gov.uk/>
+- API / data documentation: <https://api.tfl.gov.uk/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 These images package the upstream connector, CloudEvents normalization, and transport-specific publisher wiring into ready-to-run artifacts for Kafka, MQTT/UNS, AMQP deployments.

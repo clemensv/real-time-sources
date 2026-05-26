@@ -2,6 +2,14 @@
 
 ## Why this bridge
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.swpc.noaa.gov/>
+- API / data documentation: <https://services.swpc.noaa.gov/>
+
+<!-- upstream-links:end -->
+
 NOAA Space Weather Prediction Center (**SWPC**) publishes the
 [propagated solar wind](https://services.swpc.noaa.gov/products/geospace/propagated-solar-wind.json)
 product: the L1 solar-wind time series forward-projected to predicted

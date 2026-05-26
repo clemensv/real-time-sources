@@ -2,6 +2,14 @@
 
 This document covers the published container images for the TEPCO Denkiyoho feeder. For overview and business context see [README.md](README.md); for event-contract details see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.tepco.co.jp/forecast/>
+- API / data documentation: <https://www.tepco.co.jp/forecast/html/download-j.html>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 TEPCO demand/supply telemetry is used in Kanto-region power operations and forecasting. This feeder normalizes the CSV stream into CloudEvents across Kafka, MQTT, and AMQP.

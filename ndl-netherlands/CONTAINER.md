@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the NDL Netherlands feeder, their environment-variable contract, authentication modes, and one-click Azure deployments.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.ndw.nu/>
+- API / data documentation: <https://docs.ndw.nu/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [README.md](README.md) — source overview, value framing, and deployment options.

@@ -2,6 +2,14 @@
 
 This feeder turns Seattle street closure open-data feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://data.seattle.gov/>
+- API / data documentation: <https://data.seattle.gov/Transportation/Right-of-Way-Closure-Data/qhcj-3xgi>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

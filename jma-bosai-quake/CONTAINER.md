@@ -2,6 +2,14 @@
 
 This document covers the published OCI images for the JMA Bosai Quake source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.jma.go.jp/bosai/map.html?contents=earthquake_map>
+- API / data documentation: <https://www.jma.go.jp/bosai/quake/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 JMA earthquake and intensity publications are critical for situational awareness and downstream analytics. This feeder exposes them as CloudEvents across three transports so subscribers can integrate without managing JMA feed polling and state logic directly.

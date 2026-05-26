@@ -2,6 +2,14 @@
 
 This feeder turns the [National Grid ESO Carbon Intensity API](https://api.carbonintensity.org.uk/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://carbonintensity.org.uk/>
+- API / data documentation: <https://carbon-intensity.github.io/api-definitions/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published images, environment variables, and deployment options.

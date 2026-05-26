@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the IMGW Hydro feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.imgw.pl/>
+- API / data documentation: <https://danepubliczne.imgw.pl/apiinfo>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 The IMGW Hydro source is exposed as a polling API upstream. These container images package polling cadence control, stateful dedupe, CloudEvents production, and transport/auth wiring so operators can deploy a ready-to-run feeder instead of building source-specific integration code.

@@ -2,6 +2,14 @@
 
 This feeder turns the public [Deutscher Wetterdienst (DWD) open-data file server](https://opendata.dwd.de/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.dwd.de/>
+- API / data documentation: <https://opendata.dwd.de/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

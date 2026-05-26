@@ -2,6 +2,14 @@
 
 This document describes the published OCI images for the GIOŚ Poland feeder. For solution overview and usage scenarios, see [README.md](README.md). For the CloudEvents contract and schemas, see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.gios.gov.pl/>
+- API / data documentation: <https://api.gios.gov.pl/pjp-api/swagger-ui/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 These images package the poller, normalization logic, and transport producers so teams can subscribe to standardized air-quality CloudEvents without writing their own ingestion pipeline.

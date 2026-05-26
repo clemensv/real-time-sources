@@ -2,6 +2,14 @@
 
 This document covers the published OCI images for the NDW Road Traffic feeder and their runtime contract. See [README.md](README.md) for source overview and [EVENTS.md](EVENTS.md) for the CloudEvents schema/routing contract.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.ndw.nu/>
+- API / data documentation: <https://opendata.ndw.nu/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 These images package the upstream connector, CloudEvents normalization, and transport-specific publisher wiring into ready-to-run artifacts for Kafka, MQTT/UNS, AMQP deployments.

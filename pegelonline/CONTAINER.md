@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the PegelOnline feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.pegelonline.wsv.de/>
+- API / data documentation: <https://www.pegelonline.wsv.de/webservice/dokuRestapi>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 The German Federal Waterways and Shipping Administration (**WSV**)

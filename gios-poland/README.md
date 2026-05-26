@@ -2,6 +2,14 @@
 
 This feeder turns the upstream GIOŚ Poland air-quality feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.gios.gov.pl/>
+- API / data documentation: <https://api.gios.gov.pl/pjp-api/swagger-ui/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

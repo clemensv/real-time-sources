@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the Ireland OPW Water Level feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://waterlevel.ie/>
+- API / data documentation: <https://waterlevel.ie/data/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 The Ireland OPW Water Level source is exposed as a polling API upstream. These container images package polling cadence control, stateful dedupe, CloudEvents production, and transport/auth wiring so operators can deploy a ready-to-run feeder instead of building source-specific integration code.

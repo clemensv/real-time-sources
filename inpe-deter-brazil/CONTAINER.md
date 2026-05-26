@@ -6,6 +6,14 @@ feeds and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The bridge
 fetches deforestation alerts from the Amazon and Cerrado biomes and forwards
 them to the configured Kafka endpoints.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <http://terrabrasilis.dpi.inpe.br/>
+- API / data documentation: <http://terrabrasilis.dpi.inpe.br/geoserver/web/>
+
+<!-- upstream-links:end -->
+
 ## INPE TerraBrasilis DETER
 
 [INPE DETER](http://terrabrasilis.dpi.inpe.br/) is Brazil's National Institute

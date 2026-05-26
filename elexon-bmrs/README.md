@@ -2,6 +2,14 @@
 
 This feeder turns the [Elexon BMRS API](https://data.elexon.co.uk/bmrs/api/v1/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.elexon.co.uk/>
+- API / data documentation: <https://bmrs.elexon.co.uk/api-documentation>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published images, environment variables, and deployment options.

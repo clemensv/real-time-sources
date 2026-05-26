@@ -2,6 +2,14 @@
 
 This feeder turns the upstream UBA AirData air-quality feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.umweltbundesamt.de/>
+- API / data documentation: <https://www.umweltbundesamt.de/daten/luft/luftdaten/doc>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

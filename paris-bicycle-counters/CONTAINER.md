@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the Paris Bicycle Counters feeder, their environment-variable contract, authentication modes, and one-click Azure deployments.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://opendata.paris.fr/>
+- API / data documentation: <https://opendata.paris.fr/explore/dataset/comptage-velo-donnees-compteurs/information/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [README.md](README.md) — source overview, value framing, and deployment options.

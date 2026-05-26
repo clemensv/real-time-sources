@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the German Waters hydrometric feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://hvz.lubw.baden-wuerttemberg.de/>
+- API / data documentation: <https://www.hvz.baden-wuerttemberg.de/php/datenfuerentwickler.php>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 **German Waters** federates roughly **2,724 stations** across **12 German federal-state water authorities** and normalizes a deliberately heterogeneous set of upstream feeds: WISKI JSON, ArcGIS GeoJSON, Azure-hosted REST APIs, HTML tables, OpenLayers feature payloads, Leaflet markup, and JavaScript arrays. The source data stays official and open, but every consumer otherwise has to maintain 12 provider-specific ingestion paths plus downstream normalization, deduplication, and transport wiring.

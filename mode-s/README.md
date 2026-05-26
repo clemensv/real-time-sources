@@ -2,6 +2,14 @@
 
 This feeder turns the upstream Mode-S feed into a real-time CloudEvents stream over KAFKA / MQTT / AMQP.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://opensky-network.org/>
+- API / data documentation: <https://opensky-network.org/apidoc/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

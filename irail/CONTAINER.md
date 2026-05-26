@@ -2,6 +2,14 @@
 
 This document covers the published container images for the iRail feeder. For overview and business context see [README.md](README.md); for event-contract details see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://irail.be/>
+- API / data documentation: <https://docs.irail.be/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 iRail publishes live NMBS/SNCB station-board data for the Belgian rail network. This feeder republishes it as CloudEvents so operations and analytics teams subscribe to streams instead of polling hundreds of stations directly.

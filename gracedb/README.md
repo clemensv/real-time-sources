@@ -2,6 +2,14 @@
 
 This feeder turns the public [GraceDB superevents API](https://gracedb.ligo.org/api/superevents/?format=json) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://gracedb.ligo.org/>
+- API / data documentation: <https://gracedb.ligo.org/documentation/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published images, environment variables, and deployment options.

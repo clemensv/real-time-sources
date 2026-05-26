@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the Seattle Fire 911 feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://data.seattle.gov/>
+- API / data documentation: <https://data.seattle.gov/Public-Safety/Call-Data/33kz-ixgy>
+
+<!-- upstream-links:end -->
+
 > [!IMPORTANT]
 > This feed publishes raw operational dispatch records. It is **not** an official emergency-information service: do not use it to drive citizen-facing safety alerts or to substitute for SPD/SFD public-information channels. Honour the City of Seattle Open Data [Terms of Use](https://data.seattle.gov/stories/s/Data-Policy/6ukr-c5dv/) when redistributing.
 

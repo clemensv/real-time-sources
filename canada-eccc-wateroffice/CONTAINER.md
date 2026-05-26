@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the Canada ECCC Water Office hydrometric feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://wateroffice.ec.gc.ca/>
+- API / data documentation: <https://api.weather.gc.ca/openapi>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 The [Environment and Climate Change Canada (ECCC) Water Survey of Canada](https://wateroffice.ec.gc.ca/) publishes official real-time hydrometric data for roughly **2,100 active stations** through the OGC API Features service at `https://api.weather.gc.ca`. Consumers get national water-level and discharge telemetry plus station metadata without an API key, but they still need to poll a rolling time window, refresh the station catalog, normalize the payloads, and wire the results into Kafka, MQTT, or AMQP.

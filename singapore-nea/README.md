@@ -2,6 +2,14 @@
 
 This feeder turns the upstream Singapore NEA weather data into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.nea.gov.sg/>
+- API / data documentation: <https://www.nea.gov.sg/corporate-functions/weather/weather-data-services>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

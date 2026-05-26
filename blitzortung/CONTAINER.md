@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the Blitzortung lightning feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.blitzortung.org/>
+- API / data documentation: <https://www.lightningmaps.org/>
+
+<!-- upstream-links:end -->
+
 > [!IMPORTANT]
 > **Blitzortung / LightningMaps is a community-run, non-commercial service.** The upstream project explicitly frames its data as **not** an official safety information service: do not use it for life-safety alerting, aviation operations, or as a substitute for a certified lightning-detection feed. Honour the upstream non-commercial terms when redistributing.
 

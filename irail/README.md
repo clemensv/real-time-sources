@@ -2,6 +2,14 @@
 
 This feeder turns the Belgian [iRail API](https://docs.irail.be/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://irail.be/>
+- API / data documentation: <https://docs.irail.be/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published images, environment variables, and deployment options.

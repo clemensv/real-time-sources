@@ -2,6 +2,14 @@
 
 This document covers the published OCI images for the Australian Wildfires source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.rfs.nsw.gov.au/>
+- API / data documentation: <https://www.rfs.nsw.gov.au/news-and-media/current-incidents>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 Australian fire agencies publish incident updates independently across state services. This feeder normalizes those live feeds into one event contract so emergency analytics teams, insurers, infrastructure operators, and researchers can subscribe to a single stream instead of polling multiple APIs and reconciling shapes themselves.

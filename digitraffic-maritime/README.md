@@ -2,6 +2,14 @@
 
 This feeder turns the upstream Digitraffic Maritime feed into a real-time CloudEvents stream over KAFKA.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.digitraffic.fi/en/marine-traffic/>
+- API / data documentation: <https://meri.digitraffic.fi/swagger/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

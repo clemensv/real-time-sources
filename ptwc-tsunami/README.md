@@ -2,6 +2,14 @@
 
 This feeder turns the upstream PTWC Tsunami feed into a real-time CloudEvents stream over KAFKA / MQTT / AMQP.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.tsunami.gov/>
+- API / data documentation: <https://www.tsunami.gov/?page=message_definitions>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

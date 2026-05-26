@@ -4,6 +4,14 @@ This bridge polls the EUMETNET Meteoalarm API for severe weather warnings from
 30+ European national meteorological services and forwards them to Apache
 Kafka, Azure Event Hubs, Microsoft Fabric Event Streams, MQTT 5.0, or AMQP 1.0 as CloudEvents.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://meteoalarm.org/>
+- API / data documentation: <https://feeds.meteoalarm.org/>
+
+<!-- upstream-links:end -->
+
 ## Data Source
 
 - API: `https://feeds.meteoalarm.org/api/v1/warnings/feeds-{country}`

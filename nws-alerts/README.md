@@ -5,6 +5,14 @@ weather and non-weather alerts and forwards them to Apache Kafka, Azure Event
 Hubs, Microsoft Fabric Event Streams, or MQTT 5.0 Unified Namespace brokers as
 CloudEvents.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.weather.gov/>
+- API / data documentation: <https://www.weather.gov/documentation/services-web-api>
+
+<!-- upstream-links:end -->
+
 ## Data Source
 
 - API: `https://api.weather.gov/alerts/active`

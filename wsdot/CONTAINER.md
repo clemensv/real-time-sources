@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the WSDOT Traveler Information feeder, their environment-variable contract, authentication modes, and one-click Azure deployments.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://wsdot.wa.gov/>
+- API / data documentation: <https://wsdot.wa.gov/traffic/api/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [README.md](README.md) — source overview, value framing, and deployment options.

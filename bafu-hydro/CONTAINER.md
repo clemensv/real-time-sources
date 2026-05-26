@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the BAFU Hydro feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.hydrodaten.admin.ch/>
+- API / data documentation: <https://www.hydrodaten.admin.ch/en/stations-and-data.html>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 The BAFU Hydro source is exposed as a polling API upstream. These container images package polling cadence control, stateful dedupe, CloudEvents production, and transport/auth wiring so operators can deploy a ready-to-run feeder instead of building source-specific integration code.

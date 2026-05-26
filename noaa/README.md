@@ -2,6 +2,14 @@
 
 This feeder turns the public [NOAA Tides and Currents API](https://api.tidesandcurrents.noaa.gov/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://tidesandcurrents.noaa.gov/>
+- API / data documentation: <https://api.tidesandcurrents.noaa.gov/api/prod/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

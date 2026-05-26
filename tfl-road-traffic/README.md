@@ -2,6 +2,14 @@
 
 This feeder turns the upstream TfL Road Traffic feed into a real-time CloudEvents stream over KAFKA / MQTT / AMQP.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://tfl.gov.uk/>
+- API / data documentation: <https://api.tfl.gov.uk/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

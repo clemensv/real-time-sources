@@ -2,6 +2,14 @@
 
 Companion docs:
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://wikitech.wikimedia.org/wiki/Event_Platform/EventStreams>
+- API / data documentation: <https://stream.wikimedia.org/?doc>
+
+<!-- upstream-links:end -->
+
 - [CONTAINER.md](CONTAINER.md) — container images, runtime configuration, and ARM deployments.
 - [EVENTS.md](EVENTS.md) — CloudEvents contracts, schemas, and routing metadata.
 

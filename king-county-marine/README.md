@@ -2,6 +2,14 @@
 
 This feeder turns the upstream King County Marine hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://green2.kingcounty.gov/marine/>
+- API / data documentation: <https://data.kingcounty.gov/Environment-Waste-Management/Marine-Buoy-Data/9j7t-rs5d>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

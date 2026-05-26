@@ -2,6 +2,14 @@
 
 Companion docs:
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://billetto.com/>
+- API / data documentation: <https://developer.billetto.com/>
+
+<!-- upstream-links:end -->
+
 - [CONTAINER.md](CONTAINER.md) — container images, runtime configuration, and ARM deployments.
 - [EVENTS.md](EVENTS.md) — CloudEvents contracts, schemas, and routing metadata.
 

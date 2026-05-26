@@ -2,6 +2,14 @@
 
 This feeder turns the upstream Nextbus feed into a real-time CloudEvents stream over KAFKA / MQTT / AMQP.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.umoiq.com/>
+- API / data documentation: <https://retro.umoiq.com/xmlFeedDocs/NextBusXMLFeed.pdf>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

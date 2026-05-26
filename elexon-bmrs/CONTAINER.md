@@ -2,6 +2,14 @@
 
 This document covers the published container images for the Elexon BMRS feeder. For overview and business context see [README.md](README.md); for event-contract details see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.elexon.co.uk/>
+- API / data documentation: <https://bmrs.elexon.co.uk/api-documentation>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 BMRS demand and generation outturn data drives balancing and market analytics in Great Britain. This feeder normalizes and streams those records as CloudEvents.

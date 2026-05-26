@@ -2,6 +2,14 @@
 
 This document covers the published container images for the Energy-Charts feeder. For overview and business context see [README.md](README.md); for event-contract details see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.energy-charts.info/>
+- API / data documentation: <https://api.energy-charts.info/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 Energy-Charts provides generation, pricing, and grid-signal data used in European power-market operations. This feeder publishes those records as CloudEvents for stream consumers.

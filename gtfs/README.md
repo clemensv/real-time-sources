@@ -2,6 +2,14 @@
 
 This feeder turns the upstream GTFS Realtime feed into a real-time CloudEvents stream over KAFKA / MQTT / AMQP.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://gtfs.org/>
+- API / data documentation: <https://gtfs.org/documentation/realtime/reference/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

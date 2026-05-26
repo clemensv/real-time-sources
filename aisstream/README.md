@@ -2,6 +2,14 @@
 
 This feeder turns the global [AISstream.io](https://aisstream.io/) WebSocket firehose into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://aisstream.io/>
+- API / data documentation: <https://aisstream.io/documentation>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

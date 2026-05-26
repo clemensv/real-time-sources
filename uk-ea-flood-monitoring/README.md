@@ -2,6 +2,14 @@
 
 This feeder turns the upstream UK EA Flood Monitoring hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://environment.data.gov.uk/flood-monitoring/doc/reference>
+- API / data documentation: <https://environment.data.gov.uk/flood-monitoring/doc/reference>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

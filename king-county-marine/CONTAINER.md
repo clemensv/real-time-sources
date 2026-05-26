@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the King County Marine feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://green2.kingcounty.gov/marine/>
+- API / data documentation: <https://data.kingcounty.gov/Environment-Waste-Management/Marine-Buoy-Data/9j7t-rs5d>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 The King County Marine source is exposed as a polling API upstream. These container images package polling cadence control, stateful dedupe, CloudEvents production, and transport/auth wiring so operators can deploy a ready-to-run feeder instead of building source-specific integration code.

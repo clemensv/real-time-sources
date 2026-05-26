@@ -4,6 +4,14 @@ This document covers the published OCI container images for the AviationWeather.
 > [!IMPORTANT]
 > Always mount a volume for `AVIATIONWEATHER_LAST_POLLED_FILE`. Without a persisted state file, the poller restarts cold and may republish already-seen records.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://aviationweather.gov/>
+- API / data documentation: <https://aviationweather.gov/data/api/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 These images package the poller, contract-generated producers, and transport adapters so you can run AviationWeather.gov ingestion as a containerized workload without writing custom bridge code.

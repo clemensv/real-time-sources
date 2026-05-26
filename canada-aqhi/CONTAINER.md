@@ -2,6 +2,14 @@
 
 This document describes the published OCI images for the Canada AQHI feeder. For solution overview and usage scenarios, see [README.md](README.md). For the CloudEvents contract and schemas, see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://weather.gc.ca/airquality/pages/index_e.html>
+- API / data documentation: <https://eccc-msc.github.io/open-data/msc-datamart/readme_en/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 These images package the poller, normalization logic, and transport producers so teams can subscribe to standardized air-quality CloudEvents without writing their own ingestion pipeline.

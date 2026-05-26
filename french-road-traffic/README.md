@@ -2,6 +2,14 @@
 
 This feeder turns Bison Futé road traffic feeds into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.bison-fute.gouv.fr/>
+- API / data documentation: <https://tipi.bison-fute.gouv.fr/bison-fute-ouvert/publicationsDIR/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

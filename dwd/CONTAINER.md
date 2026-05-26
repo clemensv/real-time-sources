@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the DWD Open Data feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.dwd.de/>
+- API / data documentation: <https://opendata.dwd.de/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 [Deutscher Wetterdienst (DWD)](https://opendata.dwd.de/) publishes weather-station observations, CAP alerts, radar product listings, and ICON-D2 forecast file metadata from a large open-data estate spanning station directories, ZIP bundles, alert archives, and rolling product trees. The data is free to use under GeoNutzV, but every production consumer otherwise ends up rebuilding the same state tracking, ZIP/file parsing, directory-diffing, dedupe, and schema-validation logic.

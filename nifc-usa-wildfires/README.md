@@ -2,6 +2,14 @@
 
 ## Overview
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.nifc.gov/>
+- API / data documentation: <https://data-nifc.opendata.arcgis.com/>
+
+<!-- upstream-links:end -->
+
 **NIFC-USA-Wildfires** is a tool designed to interact with the [National
 Interagency Fire Center (NIFC)](https://www.nifc.gov/) ArcGIS Feature Service to
 fetch active wildfire incident data from the USA. The tool can list recent

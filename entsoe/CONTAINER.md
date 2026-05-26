@@ -2,6 +2,14 @@
 
 Related docs:
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://transparency.entsoe.eu/>
+- API / data documentation: <https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html>
+
+<!-- upstream-links:end -->
+
 - [README.md](README.md) — source context, quick-start flow, and deployment guidance.
 - [EVENTS.md](EVENTS.md) — event families, CloudEvents types, and payload schemas.
 

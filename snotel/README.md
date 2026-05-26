@@ -2,6 +2,14 @@
 
 This feeder turns the upstream SNOTEL Snow hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.nrcs.usda.gov/wps/portal/wcc/home/>
+- API / data documentation: <https://wcc.sc.egov.usda.gov/awdbRestWebService/swagger-ui/index.html>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

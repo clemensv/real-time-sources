@@ -2,6 +2,14 @@
 
 This document covers the published container images for the Wikimedia OSM Diffs feeder. For overview and business context see [README.md](README.md); for event-contract details see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.openstreetmap.org/>
+- API / data documentation: <https://wiki.openstreetmap.org/wiki/Planet.osm/diffs>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 OSM minutely diffs are a high-volume global map-change stream used in geospatial monitoring and ETL pipelines. This feeder parses the feed and emits CloudEvents for downstream consumers.

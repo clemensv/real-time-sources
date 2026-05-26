@@ -2,6 +2,14 @@
 
 This feeder turns the Finnish national [Digitraffic Road](https://www.digitraffic.fi/en/road-traffic/) stream into real-time CloudEvents over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.digitraffic.fi/en/road-traffic/>
+- API / data documentation: <https://tie.digitraffic.fi/swagger/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

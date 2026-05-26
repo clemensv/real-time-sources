@@ -2,6 +2,14 @@
 
 ## Overview
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.gdacs.org/>
+- API / data documentation: <https://www.gdacs.org/xml/rss.xml>
+
+<!-- upstream-links:end -->
+
 **GDACS** is a bridge that polls the [Global Disaster Alert and Coordination
 System](https://www.gdacs.org) RSS feed to fetch real-time disaster alert data.
 The bridge converts alerts into [CloudEvents](https://cloudevents.io/) structured

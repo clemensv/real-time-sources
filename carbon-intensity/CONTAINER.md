@@ -2,6 +2,14 @@
 
 This document covers the published container images for the Carbon Intensity UK feeder. For overview and business context see [README.md](README.md); for event-contract details see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://carbonintensity.org.uk/>
+- API / data documentation: <https://carbon-intensity.github.io/api-definitions/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 UK carbon-intensity signals are used for dispatch, low-carbon scheduling, and sustainability reporting. This feeder emits the same records as CloudEvents for event-driven processing and warehousing.

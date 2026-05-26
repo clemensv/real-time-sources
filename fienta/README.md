@@ -2,6 +2,14 @@
 
 Companion docs:
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://fienta.com/>
+- API / data documentation: <https://fienta.com/api-public-events>
+
+<!-- upstream-links:end -->
+
 - [CONTAINER.md](CONTAINER.md) — container images, runtime configuration, and ARM deployments.
 - [EVENTS.md](EVENTS.md) — CloudEvents contracts, schemas, and routing metadata.
 

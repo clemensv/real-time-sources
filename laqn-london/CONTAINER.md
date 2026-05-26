@@ -2,6 +2,14 @@
 
 This document describes the published OCI images for the LAQN London feeder. For solution overview and usage scenarios, see [README.md](README.md). For the CloudEvents contract and schemas, see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.londonair.org.uk/>
+- API / data documentation: <https://api.erg.ic.ac.uk/AirQuality/help>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 These images package the poller, normalization logic, and transport producers so teams can subscribe to standardized air-quality CloudEvents without writing their own ingestion pipeline.

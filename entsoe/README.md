@@ -2,6 +2,14 @@
 
 Companion docs:
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://transparency.entsoe.eu/>
+- API / data documentation: <https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html>
+
+<!-- upstream-links:end -->
+
 - [CONTAINER.md](CONTAINER.md) — container images, runtime configuration, and ARM deployments.
 - [EVENTS.md](EVENTS.md) — CloudEvents contracts, schemas, and routing metadata.
 

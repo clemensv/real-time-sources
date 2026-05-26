@@ -2,6 +2,14 @@
 
 This document covers the published OCI images for the JMA Bosai Warning source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.jma.go.jp/bosai/map.html?contents=warning>
+- API / data documentation: <https://www.jma.go.jp/bosai/warning/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 JMA warning products are operationally relevant for public-sector monitoring and enterprise resilience analytics. This feeder standardizes those products into CloudEvents across Kafka, MQTT, and AMQP transports.

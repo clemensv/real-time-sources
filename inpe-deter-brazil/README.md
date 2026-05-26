@@ -2,6 +2,14 @@
 
 ## Overview
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <http://terrabrasilis.dpi.inpe.br/>
+- API / data documentation: <http://terrabrasilis.dpi.inpe.br/geoserver/web/>
+
+<!-- upstream-links:end -->
+
 **INPE-DETER-Brazil** is a tool designed to interact with the [INPE
 TerraBrasilis DETER](http://terrabrasilis.dpi.inpe.br/) real-time deforestation
 detection system to fetch deforestation alert data for the Amazon and Cerrado

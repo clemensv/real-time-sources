@@ -2,6 +2,14 @@
 
 This document covers the published OCI images for the USGS Geomag source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.usgs.gov/programs/geomagnetism>
+- API / data documentation: <https://geomag.usgs.gov/ws/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 USGS geomagnetic observations support space-weather operations, power-grid risk analysis, and scientific monitoring. This feeder standardizes those observations into CloudEvents across three transports for operational and analytical consumers.

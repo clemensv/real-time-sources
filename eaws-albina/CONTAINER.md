@@ -2,6 +2,14 @@
 
 This document covers the published OCI images for the EAWS ALBINA source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://avalanche.report/>
+- API / data documentation: <https://docs.avalanche.report/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 EAWS ALBINA bulletin data drives avalanche risk decisions across Alpine regions. This feeder publishes the bulletins as event streams for hazard dashboards, ski-area operations, transport planners, and risk analytics pipelines without bespoke CAAML polling code.

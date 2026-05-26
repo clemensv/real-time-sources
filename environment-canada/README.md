@@ -2,6 +2,14 @@
 
 This feeder turns the upstream Environment Canada weather data into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://weather.gc.ca/>
+- API / data documentation: <https://api.weather.gc.ca/openapi>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

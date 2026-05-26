@@ -2,6 +2,14 @@
 
 This feeder turns German BfS ODL ambient dose-rate data into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://odlinfo.bfs.de/>
+- API / data documentation: <https://odlinfo.bfs.de/ODL/EN/service/datenschnittstelle/datenschnittstelle_node.html>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

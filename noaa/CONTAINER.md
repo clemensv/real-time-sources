@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the NOAA Tides and Currents feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://tidesandcurrents.noaa.gov/>
+- API / data documentation: <https://api.tidesandcurrents.noaa.gov/api/prod/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 [NOAA Tides and Currents](https://api.tidesandcurrents.noaa.gov/) exposes real-time coastal and tidal observations for U.S. stations — water levels, tidal predictions, currents, temperatures, wind, salinity, visibility, and station metadata — as public-domain HTTP endpoints with no authentication. The data is easy to query once, but production consumers quickly end up rebuilding the same station discovery, per-product polling, checkpointing, schema-validation, and routing logic.

@@ -2,6 +2,14 @@
 
 This feeder turns the upstream NINA/BBK feed into a real-time CloudEvents stream over KAFKA / MQTT / AMQP.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://warnung.bund.de/>
+- API / data documentation: <https://nina.api.bund.dev/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

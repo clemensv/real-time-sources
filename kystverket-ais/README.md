@@ -2,6 +2,14 @@
 
 This feeder turns the upstream Kystverket AIS feed into a real-time CloudEvents stream over KAFKA / MQTT / AMQP.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.kystverket.no/>
+- API / data documentation: <https://kystdatahuset.no/ws/swagger/index.html>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

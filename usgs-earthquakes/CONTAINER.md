@@ -2,6 +2,14 @@
 
 This document covers the published OCI images for the USGS Earthquakes source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://earthquake.usgs.gov/>
+- API / data documentation: <https://earthquake.usgs.gov/fdsnws/event/1/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 USGS earthquake feeds are a core public signal for seismic monitoring, civil-protection dashboards, and risk models. This feeder provides a transport-agnostic CloudEvents contract so downstream systems can subscribe once and fan out to analytics, alerting, and archival pipelines.

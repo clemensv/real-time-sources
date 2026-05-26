@@ -3,6 +3,14 @@
 This document covers the published OCI container images for the NOAA GOES / SWPC feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 ## Why this container
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.swpc.noaa.gov/>
+- API / data documentation: <https://services.swpc.noaa.gov/>
+
+<!-- upstream-links:end -->
+
 These images package the poller, contract-generated producers, and transport adapters so you can run NOAA GOES / SWPC ingestion as a containerized workload without writing custom bridge code.
 
 ## What ships in the box

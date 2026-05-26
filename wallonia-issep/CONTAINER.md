@@ -2,6 +2,14 @@
 
 This container polls the public Wallonia ISSeP Opendatasoft air quality API and emits CloudEvents to Kafka in structured mode with `application/cloudevents+json`.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.issep.be/>
+- API / data documentation: <https://www.odwb.be/explore/dataset/last-data-capteurs-qualite-de-l-air-issep/information/>
+
+<!-- upstream-links:end -->
+
 ## MQTT/UNS transport
 
 The **MQTT variant** (`Dockerfile.mqtt`) publishes retained, QoS-1,

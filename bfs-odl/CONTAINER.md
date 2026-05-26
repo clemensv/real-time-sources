@@ -2,6 +2,14 @@
 
 This document covers the published OCI images for the BfS ODL source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://odlinfo.bfs.de/>
+- API / data documentation: <https://odlinfo.bfs.de/ODL/EN/service/datenschnittstelle/datenschnittstelle_node.html>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 Ambient gamma dose-rate monitoring is consumed by radiological situational-awareness systems and long-term compliance analytics. This feeder converts the BfS ODL source into normalized CloudEvents for reliable downstream subscription and replay.

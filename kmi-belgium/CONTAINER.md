@@ -3,6 +3,14 @@
 This document covers the published OCI container images for the KMI Belgium feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 ## Why this container
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.meteo.be/>
+- API / data documentation: <https://opendata.meteo.be/>
+
+<!-- upstream-links:end -->
+
 These images package the poller, contract-generated producers, and transport adapters so you can run KMI Belgium ingestion as a containerized workload without writing custom bridge code.
 
 ## What ships in the box

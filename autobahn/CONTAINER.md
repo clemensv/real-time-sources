@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the Autobahn feeder, their environment-variable contract, authentication modes, and one-click Azure deployments.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://autobahn.de/>
+- API / data documentation: <https://autobahn.api.bund.dev/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [README.md](README.md) — source overview, value framing, and deployment options.

@@ -2,6 +2,14 @@
 
 This feeder turns the upstream BAFU Hydro hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.hydrodaten.admin.ch/>
+- API / data documentation: <https://www.hydrodaten.admin.ch/en/stations-and-data.html>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

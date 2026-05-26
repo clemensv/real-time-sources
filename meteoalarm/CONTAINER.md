@@ -2,6 +2,14 @@
 
 ## Quick Start
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://meteoalarm.org/>
+- API / data documentation: <https://feeds.meteoalarm.org/>
+
+<!-- upstream-links:end -->
+
 ```bash
 docker build -t meteoalarm .
 docker run --rm -e CONNECTION_STRING="<your-connection-string>" meteoalarm

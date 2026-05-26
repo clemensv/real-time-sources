@@ -2,6 +2,14 @@
 
 This feeder turns the [Fraunhofer ISE Energy-Charts API](https://api.energy-charts.info/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.energy-charts.info/>
+- API / data documentation: <https://api.energy-charts.info/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published images, environment variables, and deployment options.

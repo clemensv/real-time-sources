@@ -2,6 +2,14 @@
 
 ## Quick Start
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.weather.gov/>
+- API / data documentation: <https://www.weather.gov/documentation/services-web-api>
+
+<!-- upstream-links:end -->
+
 ```bash
 docker build -t nws-alerts .
 docker run --rm -e CONNECTION_STRING="<your-connection-string>" nws-alerts

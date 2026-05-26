@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the AISstream.io feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://aisstream.io/>
+- API / data documentation: <https://aisstream.io/documentation>
+
+<!-- upstream-links:end -->
+
 > [!WARNING]
 > **AISstream.io is a free, community-run service with no SLA.** During testing on 2026-04-02 the WebSocket accepted connections and API keys without error but delivered **zero messages** over sustained periods. Silent outages lasting hours to days have been [reported by multiple users](https://github.com/aisstream/issues/issues/134). These containers reconnect with exponential backoff, but data gaps are expected.
 

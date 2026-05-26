@@ -2,6 +2,14 @@
 
 This feeder turns the upstream Hong Kong EPD AQHI air-quality feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.aqhi.gov.hk/>
+- API / data documentation: <https://www.aqhi.gov.hk/en/aqhi/statistics-of-aqhi.html>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

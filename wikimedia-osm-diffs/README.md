@@ -2,6 +2,14 @@
 
 This feeder turns the OpenStreetMap minutely replication feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.openstreetmap.org/>
+- API / data documentation: <https://wiki.openstreetmap.org/wiki/Planet.osm/diffs>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published images, environment variables, and deployment options.

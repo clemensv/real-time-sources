@@ -2,6 +2,14 @@
 
 This source bridges the Wallonia ISSeP (Institut Scientifique de Service Public) air quality sensor API into Kafka as CloudEvents. It covers the low-cost sensor network deployed across Wallonia, Belgium, and emits both reference data and near-real-time telemetry into a single topic.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.issep.be/>
+- API / data documentation: <https://www.odwb.be/explore/dataset/last-data-capteurs-qualite-de-l-air-issep/information/>
+
+<!-- upstream-links:end -->
+
 ## What it publishes
 
 - Sensor configuration reference events for each deployed sensor unit

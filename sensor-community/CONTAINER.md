@@ -2,6 +2,14 @@
 
 This document describes the published OCI images for the Sensor.Community feeder. For solution overview and usage scenarios, see [README.md](README.md). For the CloudEvents contract and schemas, see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://sensor.community/>
+- API / data documentation: <https://github.com/opendata-stuttgart/meta/wiki/APIs>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 These images package the poller, normalization logic, and transport producers so teams can subscribe to standardized air-quality CloudEvents without writing their own ingestion pipeline.

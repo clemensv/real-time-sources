@@ -2,6 +2,14 @@
 
 Related docs:
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://billetto.com/>
+- API / data documentation: <https://developer.billetto.com/>
+
+<!-- upstream-links:end -->
+
 - [README.md](README.md) — source context, quick-start flow, and deployment guidance.
 - [EVENTS.md](EVENTS.md) — event families, CloudEvents types, and payload schemas.
 

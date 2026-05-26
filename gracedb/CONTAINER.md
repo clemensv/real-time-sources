@@ -2,6 +2,14 @@
 
 This document covers the published container images for the GraceDB feeder. For overview and business context see [README.md](README.md); for event-contract details see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://gracedb.ligo.org/>
+- API / data documentation: <https://gracedb.ligo.org/documentation/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 GraceDB superevents are key inputs for multi-messenger astronomy alerting and analysis workflows. This feeder republishes candidate alerts as CloudEvents.

@@ -2,6 +2,14 @@
 
 This feeder turns the upstream Canada AQHI air-quality feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://weather.gc.ca/airquality/pages/index_e.html>
+- API / data documentation: <https://eccc-msc.github.io/open-data/msc-datamart/readme_en/>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.

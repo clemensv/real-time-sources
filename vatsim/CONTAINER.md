@@ -2,6 +2,14 @@
 
 This document covers the published OCI images for the VATSIM source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.vatsim.net/>
+- API / data documentation: <https://data.vatsim.net/>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 VATSIM network data is useful for aviation simulation analytics, traffic visualization, and research. This feeder normalizes live VATSIM updates into CloudEvents so consumers can build streaming applications without bespoke ingest logic.

@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the Madrid Traffic feeder, their environment-variable contract, authentication modes, and one-click Azure deployments.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://datos.madrid.es/>
+- API / data documentation: <https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=02f2c23866b93410VgnVCM1000000b205a0aRCRD>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [README.md](README.md) — source overview, value framing, and deployment options.

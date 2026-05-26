@@ -2,6 +2,14 @@
 
 This document covers the published container images for the Energi Data Service DK feeder. For overview and business context see [README.md](README.md); for event-contract details see [EVENTS.md](EVENTS.md).
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://www.energidataservice.dk/>
+- API / data documentation: <https://www.energidataservice.dk/guides/api-guides>
+
+<!-- upstream-links:end -->
+
 ## Why this container
 
 Energinet power snapshots and spot prices are core inputs for Danish grid operations, market monitoring, and forecasting. This feeder emits those records as CloudEvents.

@@ -2,6 +2,14 @@
 
 This document covers the published OCI container images for the US CBP Border Wait feeder, their environment-variable contract, authentication modes, and one-click Azure deployments.
 
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://bwt.cbp.gov/>
+- API / data documentation: <https://bwt.cbp.gov/api/bwtnew>
+
+<!-- upstream-links:end -->
+
 Companion docs:
 
 - [README.md](README.md) — source overview, value framing, and deployment options.
