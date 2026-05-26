@@ -3,12 +3,19 @@ $inputFile = Join-Path $scriptDir "..\xreg\gtfs.xreg.json"
 $kqlFile = Join-Path $scriptDir "gtfs.kql"
 $generatorScript = Join-Path $scriptDir "..\..\tools\generate-kql-from-xreg.ps1"
 
-& $generatorScript -XregPath $inputFile -OutputPath $kqlFile
+& $generatorScript -XregPath $inputFile -OutputPath $kqlFile -Qualified -Namespace GeneralTransitFeed
 
-# append the following to gtfs.kql
-@"
+# Append the hand-authored flat tables and update policies.  Each block is
+# written via Add-Content so adjacent commands are guaranteed to be separated
+# by a newline; the previous Out-File-Append pattern silently glued
+# consecutive @"..."@ here-strings together when the trailing newline was
+# elided, producing invalid KQL.
+function Append-Kql([string]$Text) {
+    Add-Content -Path $kqlFile -Value "`r`n$Text`r`n"
+}
 
-.create table VehiclePositionsFlat (
+Append-Kql @"
+.create table ['GeneralTransitFeed.VehiclePositionsFlat'] (
     trip_id:string,
     route_id:string,
     direction_id:int,
@@ -34,27 +41,26 @@ $generatorScript = Join-Path $scriptDir "..\..\tools\generate-kql-from-xreg.ps1"
     ___id:string,
     ___time:datetime,
     ___subject:string
-"@ | Out-File -Append -FilePath $kqlFile
+)
+"@
 
-@"
-
-.alter table VehiclePositionsFlat policy update
-```
+Append-Kql @"
+.alter table ['GeneralTransitFeed.VehiclePositionsFlat'] policy update
+``````
 [
   {
     "IsEnabled": true,
-    "Source": "VehiclePosition",
-    "Query": "VehiclePosition | extend trip_id = tostring(trip.trip_id), route_id = tostring(trip.route_id), direction_id = toint(trip.direction_id), start_time = tostring(trip.start_time), start_date = tostring(trip.start_date), schedule_relationship = tostring(trip.schedule_relationship), vehicle_id = tostring(vehicle.id), vehicle_label = tostring(vehicle.label), vehicle_license_plate = tostring(vehicle.license_plate), latitude = todouble(position.latitude), longitude = todouble(position.longitude), bearing = todouble(position.bearing), odometer = todouble(position.odometer), speed = todouble(position.speed) | extend timestamp = unixtime_seconds_todatetime(timestamp) | project trip_id, route_id, direction_id, start_time, start_date, schedule_relationship, vehicle_id, vehicle_label, vehicle_license_plate, latitude, longitude, bearing, odometer, speed, current_stop_sequence, stop_id, current_status, timestamp, congestion_level, occupancy_status, ___type, ___source, ___id, ___time, ___subject",
+    "Source": "GeneralTransitFeed.VehiclePosition",
+    "Query": "['GeneralTransitFeed.VehiclePosition'] | extend trip_id = tostring(trip.trip_id), route_id = tostring(trip.route_id), direction_id = toint(trip.direction_id), start_time = tostring(trip.start_time), start_date = tostring(trip.start_date), schedule_relationship = tostring(trip.schedule_relationship), vehicle_id = tostring(vehicle.id), vehicle_label = tostring(vehicle.label), vehicle_license_plate = tostring(vehicle.license_plate), latitude = todouble(position.latitude), longitude = todouble(position.longitude), bearing = todouble(position.bearing), odometer = todouble(position.odometer), speed = todouble(position.speed) | extend timestamp = unixtime_seconds_todatetime(timestamp) | project trip_id, route_id, direction_id, start_time, start_date, schedule_relationship, vehicle_id, vehicle_label, vehicle_license_plate, latitude, longitude, bearing, odometer, speed, current_stop_sequence, stop_id, current_status, timestamp, congestion_level, occupancy_status, ___type, ___source, ___id, ___time, ___subject",
     "IsTransactional": true,
     "PropagateIngestionProperties": true
   }
 ]
-```
-"@ | Out-File -Append -FilePath $kqlFile
+``````
+"@
 
-@"
-
-.create-merge table TripUpdateFlattened (
+Append-Kql @"
+.create-merge table ['GeneralTransitFeed.TripUpdateFlattened'] (
     trip_id: string,
     route_id: string,
     direction_id: int,
@@ -80,13 +86,12 @@ $generatorScript = Join-Path $scriptDir "..\..\tools\generate-kql-from-xreg.ps1"
     ___id: string,
     ___time: datetime,
     ___subject: string
-);
-"@ | Out-File -Append -FilePath $kqlFile
+)
+"@
 
-@"
-
+Append-Kql @"
 .create-or-alter function with (skipvalidation = "true") TripUpdateFlattenFunction() {
-    TripUpdate
+    ['GeneralTransitFeed.TripUpdate']
     | where isnotempty(stop_time_update)
     | mv-expand stop_time_update
     | extend
@@ -140,15 +145,19 @@ $generatorScript = Join-Path $scriptDir "..\..\tools\generate-kql-from-xreg.ps1"
         ___time,
         ___subject
 }
-"@ | Out-File -Append -FilePath $kqlFile
+"@
 
-@"
-
-.alter table TripUpdateFlattened policy update @'[{
+Append-Kql @"
+.alter table ['GeneralTransitFeed.TripUpdateFlattened'] policy update
+``````
+[
+  {
     "IsEnabled": true,
-    "Source": "TripUpdate",
+    "Source": "GeneralTransitFeed.TripUpdate",
     "Query": "TripUpdateFlattenFunction()",
     "IsTransactional": false,
     "PropagateIngestionProperties": false
-}]'
-"@ | Out-File -Append -FilePath $kqlFile
+  }
+]
+``````
+"@
