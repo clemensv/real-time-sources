@@ -538,7 +538,9 @@
     "cat": "Disasters",
     "key": false,
     "desc": "United States — active wildfire incidents, NIFC",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "nina-bbk",
@@ -600,7 +602,9 @@
     "key": false,
     "desc": "Europe — ~5,500 stations, 39 countries, gamma dose",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "usgs-geomag",
