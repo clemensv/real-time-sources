@@ -141,6 +141,18 @@ a:hover { text-decoration: underline; }
 }
 .gh-link:hover { background: var(--btn-hover); text-decoration: none; }
 
+.xreg-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+}
+.xreg-logo {
+  height: 18px;
+  width: auto;
+  display: block;
+}
+
 #theme-toggle {
   background: none;
   border: none;
