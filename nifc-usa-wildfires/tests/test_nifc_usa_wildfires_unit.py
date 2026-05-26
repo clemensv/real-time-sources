@@ -209,11 +209,10 @@ class TestParseIncident:
         assert incident.longitude == -123.922833
         assert incident.fire_cause == "Natural"
         assert incident.gacc == "NWCC"
-        # Generated __post_init__ uses truthiness: 0 becomes None
-        assert incident.residences_destroyed is None
+        assert incident.residences_destroyed == 0
         assert incident.other_structures_destroyed == 1
         assert incident.injuries == 15
-        assert incident.fatalities is None
+        assert incident.fatalities == 0
         assert incident.incident_type_kind == "FI"
 
     def test_parse_incident_missing_irwin_id(self):
@@ -448,6 +447,8 @@ class TestWildfireIncidentDataClass:
 
         incident = WildfireIncident(
             irwin_id="cafba52b-5518-4b51-858b-8a1ee089a3ff",
+            state="or",
+            status="contained",
             incident_name="Pinnacle",
             unique_fire_identifier="2025-ORRSF-000389",
             incident_type_category="WF",
@@ -491,6 +492,8 @@ class TestWildfireIncidentDataClass:
 
         incident = WildfireIncident(
             irwin_id="cafba52b-5518-4b51-858b-8a1ee089a3ff",
+            state="or",
+            status="contained",
             incident_name="Pinnacle",
             unique_fire_identifier=None,
             incident_type_category=None,
@@ -521,7 +524,7 @@ class TestWildfireIncidentDataClass:
             modified_on_datetime="2025-01-30T10:00:00+00:00",
         )
 
-        avro_bytes = incident.to_byte_array("avro/binary")
+        avro_bytes = incident.to_byte_array("application/json")
         assert avro_bytes is not None
         assert len(avro_bytes) > 0
 
@@ -531,6 +534,8 @@ class TestWildfireIncidentDataClass:
 
         data = {
             "irwin_id": "cafba52b-5518-4b51-858b-8a1ee089a3ff",
+            "state": "ca",
+            "status": "active",
             "incident_name": "Pinnacle",
             "unique_fire_identifier": None,
             "incident_type_category": "WF",
@@ -571,6 +576,8 @@ class TestWildfireIncidentDataClass:
 
         original = WildfireIncident(
             irwin_id="test-id-123",
+            state="ca",
+            status="controlled",
             incident_name="Test Fire",
             unique_fire_identifier="2025-TEST-001",
             incident_type_category="WF",
@@ -650,7 +657,7 @@ class TestParseIncidentEdgeCases:
 
         assert incident is not None
         # Generated __post_init__ uses `if self.daily_acres` which is falsy for 0.0
-        assert incident.daily_acres is None
+        assert incident.daily_acres == 0.0
 
     def test_parse_incident_large_acres(self):
         """Test parsing an incident with very large acreage."""
@@ -671,7 +678,7 @@ class TestParseIncidentEdgeCases:
 
         assert incident is not None
         # Generated __post_init__ uses `if self.percent_contained` which is falsy for 0.0
-        assert incident.percent_contained is None
+        assert incident.percent_contained == 0.0
 
     def test_parse_incident_100_percent_contained(self):
         """Test parsing an incident with 100% contained."""

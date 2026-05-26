@@ -122,3 +122,10 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnifc-usa-wildfires%2Fazure-template-with-eventhub.json)
+
+
+## MQTT and AMQP companion feeders
+
+This source now ships separate Kafka, MQTT, and AMQP containers. The MQTT companion publishes binary-mode CloudEvents to `wildfire/us/nifc/nifc-usa-wildfires/{state}/{status}/{irwin_id}/incident`, where `status` is one of `active`, `contained`, `controlled`, or `out`. The AMQP companion publishes the same CloudEvents to AMQP 1.0 brokers or Azure Service Bus using the IRWIN id subject and `state`/`status` application properties.
+
+Images: `ghcr.io/clemensv/real-time-sources-nifc-usa-wildfires-mqtt:latest`, `ghcr.io/clemensv/real-time-sources-nifc-usa-wildfires-amqp:latest`. Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`, and `infra/azure-template-amqp.json`.

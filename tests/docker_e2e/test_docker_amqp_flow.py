@@ -198,6 +198,14 @@ class TestAustraliaWildfiresAmqpDockerFlow(AmqpDockerFlowBase):
     expected_count = 1
 
 
+class TestBfsOdlAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "bfs-odl"
+    image = "bfs-odl-amqp"
+    env = {"ONCE_MODE": "true", "BFS_ODL_SAMPLE_MODE": "true"}
+    expected_types = {"de.bfs.odl.Station", "de.bfs.odl.DoseRateMeasurement"}
+    expected_count = 2
+
+
 class TestCarbonIntensityAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "carbon-intensity"
     image = "carbon-intensity-amqp"
@@ -426,4 +434,19 @@ class TestInpeDeterBrazilAmqpDockerFlow(AmqpDockerFlowBase):
     image = "inpe-deter-brazil-amqp"
     env = {"ONCE_MODE": "true", "INPE_DETER_MOCK": "true"}
     expected_types = {'BR.INPE.DETER.DeforestationAlert'}
+
+
+class TestEurdepRadiationAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "eurdep-radiation"
+    image = "eurdep-radiation-amqp"
+    env = {"ONCE_MODE": "true", "EURDEP_RADIATION_SAMPLE_MODE": "true"}
+    expected_types = {"eu.jrc.eurdep.Station", "eu.jrc.eurdep.DoseRateReading"}
+    expected_count = 2
+
+
+class TestNifcUsaWildfiresAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "nifc-usa-wildfires"
+    image = "nifc-usa-wildfires-amqp"
+    env = {"ONCE_MODE": "true", "NIFC_USA_WILDFIRES_SAMPLE_MODE": "true"}
+    expected_types = {"Gov.NIFC.Wildfires.WildfireIncident"}
     expected_count = 1
