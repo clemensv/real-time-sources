@@ -54,6 +54,12 @@
       "module": "bfs_odl_mqtt"
     },
     {
+      "dir": "bfs-odl",
+      "image": "bfs-odl-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "bfs_odl_amqp"
+    },
+    {
       "dir": "canada-aqhi",
       "module": "canada_aqhi"
     },
@@ -722,12 +728,6 @@
       "module": "blitzortung_amqp"
     },
     {
-      "dir": "bfs-odl",
-      "image": "bfs-odl-amqp",
-      "file": "Dockerfile.amqp",
-      "module": "bfs_odl_amqp"
-    },
-    {
       "dir": "gracedb",
       "image": "gracedb-amqp",
       "file": "Dockerfile.amqp",
@@ -738,6 +738,126 @@
       "image": "inpe-deter-brazil-amqp",
       "file": "Dockerfile.amqp",
       "module": "inpe_deter_brazil_amqp"
+    },
+    {
+      "dir": "eurdep-radiation",
+      "image": "eurdep-radiation-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "eurdep_radiation_mqtt"
+    },
+    {
+      "dir": "eurdep-radiation",
+      "image": "eurdep-radiation-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "eurdep_radiation_amqp"
+    },
+    {
+      "dir": "nifc-usa-wildfires",
+      "image": "nifc-usa-wildfires-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "nifc_usa_wildfires_mqtt"
+    },
+    {
+      "dir": "nifc-usa-wildfires",
+      "image": "nifc-usa-wildfires-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "nifc_usa_wildfires_amqp"
+    },
+    {
+      "dir": "xceed",
+      "image": "xceed-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "xceed_mqtt"
+    },
+    {
+      "dir": "xceed",
+      "image": "xceed-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "xceed_amqp"
+    },
+    {
+      "dir": "elexon-bmrs",
+      "image": "elexon-bmrs-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "elexon_bmrs_mqtt"
+    },
+    {
+      "dir": "elexon-bmrs",
+      "image": "elexon-bmrs-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "elexon_bmrs_amqp"
+    },
+    {
+      "dir": "energidataservice-dk",
+      "image": "energidataservice-dk-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "energidataservice_dk_mqtt"
+    },
+    {
+      "dir": "energidataservice-dk",
+      "image": "energidataservice-dk-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "energidataservice_dk_amqp"
+    },
+    {
+      "dir": "energy-charts",
+      "image": "energy-charts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "energy_charts_mqtt"
+    },
+    {
+      "dir": "energy-charts",
+      "image": "energy-charts-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "energy_charts_amqp"
+    },
+    {
+      "dir": "billetto",
+      "image": "billetto-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "billetto_mqtt"
+    },
+    {
+      "dir": "billetto",
+      "image": "billetto-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "billetto_amqp"
+    },
+    {
+      "dir": "fienta",
+      "image": "fienta-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "fienta_mqtt"
+    },
+    {
+      "dir": "fienta",
+      "image": "fienta-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "fienta_amqp"
+    },
+    {
+      "dir": "ticketmaster",
+      "image": "ticketmaster-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "ticketmaster_mqtt"
+    },
+    {
+      "dir": "ticketmaster",
+      "image": "ticketmaster-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "ticketmaster_amqp"
+    },
+    {
+      "dir": "tepco-denkiyoho",
+      "image": "tepco-denkiyoho-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "tepco_denkiyoho_mqtt"
+    },
+    {
+      "dir": "tepco-denkiyoho",
+      "image": "tepco-denkiyoho-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "tepco_denkiyoho_amqp"
     },
     {
       "dir": "jma-bosai-amedas",
@@ -828,6 +948,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestBfsOdlMqttDockerFlow"
+    },
+    {
+      "dir": "bfs-odl",
+      "image": "bfs-odl-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestBfsOdlAmqpDockerFlow"
     },
     {
       "dir": "bafu-hydro",
@@ -1542,13 +1669,6 @@
       "test_class": "TestBlitzortungAmqpDockerFlow"
     },
     {
-      "dir": "bfs-odl",
-      "image": "bfs-odl-amqp",
-      "file": "Dockerfile.amqp",
-      "test_file": "test_docker_amqp_flow.py",
-      "test_class": "TestBfsOdlAmqpDockerFlow"
-    },
-    {
       "dir": "gracedb",
       "image": "gracedb-amqp",
       "file": "Dockerfile.amqp",
@@ -1561,6 +1681,130 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestInpeDeterBrazilAmqpDockerFlow"
+    },
+    {
+      "dir": "eurdep-radiation",
+      "image": "eurdep-radiation-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestEurdepRadiationMqttDockerFlow"
+    },
+    {
+      "dir": "eurdep-radiation",
+      "image": "eurdep-radiation-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestEurdepRadiationAmqpDockerFlow"
+    },
+    {
+      "dir": "nifc-usa-wildfires",
+      "image": "nifc-usa-wildfires-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNifcUsaWildfiresMqttDockerFlow"
+    },
+    {
+      "dir": "nifc-usa-wildfires",
+      "image": "nifc-usa-wildfires-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNifcUsaWildfiresAmqpDockerFlow"
+    },
+    {
+      "dir": "xceed",
+      "image": "xceed-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestXceedMqttDockerFlow"
+    },
+    {
+      "dir": "xceed",
+      "image": "xceed-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestXceedAmqpDockerFlow"
+    },
+    {
+      "dir": "elexon-bmrs",
+      "image": "elexon-bmrs-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestElexonBmrsMqttDockerFlow"
+    },
+    {
+      "dir": "elexon-bmrs",
+      "image": "elexon-bmrs-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestElexonBmrsAmqpDockerFlow"
+    },
+    {
+      "dir": "energidataservice-dk",
+      "image": "energidataservice-dk-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestEnergidataserviceDkMqttDockerFlow"
+    },
+    {
+      "dir": "energidataservice-dk",
+      "image": "energidataservice-dk-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestEnergidataserviceDkAmqpDockerFlow"
+    },
+    {
+      "dir": "energy-charts",
+      "image": "energy-charts-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestEnergyChartsMqttDockerFlow"
+    },
+    {
+      "dir": "energy-charts",
+      "image": "energy-charts-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestEnergyChartsAmqpDockerFlow"
+    },
+    {
+      "dir": "billetto",
+      "image": "billetto-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestBillettoMqttDockerFlow"
+    },
+    {
+      "dir": "billetto",
+      "image": "billetto-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestBillettoAmqpDockerFlow"
+    },
+    {
+      "dir": "fienta",
+      "image": "fienta-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestFientaMqttDockerFlow"
+    },
+    {
+      "dir": "fienta",
+      "image": "fienta-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestFientaAmqpDockerFlow"
+    },
+    {
+      "dir": "ticketmaster",
+      "image": "ticketmaster-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestTicketmasterMqttDockerFlow"
+    },
+    {
+      "dir": "ticketmaster",
+      "image": "ticketmaster-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestTicketmasterAmqpDockerFlow"
+    },
+    {
+      "dir": "tepco-denkiyoho",
+      "image": "tepco-denkiyoho-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestTepcoDenkiyohoMqttDockerFlow"
+    },
+    {
+      "dir": "tepco-denkiyoho",
+      "image": "tepco-denkiyoho-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestTepcoDenkiyohoAmqpDockerFlow"
     },
     {
       "dir": "jma-bosai-amedas",

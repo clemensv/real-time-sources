@@ -18,7 +18,7 @@ import json
 class Event:
     """
     Reference data for a Fienta public event as exposed by the public events endpoint. Emitted at bridge startup and refreshed periodically so downstream consumers can correlate sale-status change events with the latest published event metadata from https://fienta.com/api/v1/public/events.
-    
+
     Attributes:
         event_id (str)
         name (str)
@@ -45,8 +45,8 @@ class Event:
         organizer_id (typing.Optional[int])
         categories (typing.Optional[typing.List[str]])
     """
-    
-    
+
+
     event_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_id"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     start: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start"))
@@ -76,10 +76,10 @@ class Event:
     def from_serializer_dict(cls, data: dict) -> 'Event':
         """
         Converts a dictionary to a dataclass instance.
-        
+
         Args:
             data: The dictionary to convert to a dataclass.
-        
+
         Returns:
             The dataclass representation of the dataclass.
         """
@@ -98,7 +98,7 @@ class Event:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """ 
+        """
         def _resolve_enum(v):
             if isinstance(v, enum.Enum):
                 return v.value
@@ -110,7 +110,7 @@ class Event:
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-        
+
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -119,11 +119,11 @@ class Event:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.        
+            The byte array representation of the dataclass.
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -149,10 +149,10 @@ class Event:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Event']:
         """
         Converts the data to a dataclass based on the content type string.
-        
+
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to. 
+            content_type_string: The content type string to convert the data to.
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
@@ -176,7 +176,7 @@ class Event:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -192,33 +192,33 @@ class Event:
     def create_instance(cls) -> 'Event':
         """
         Creates an instance of the dataclass with test values.
-        
+
         Returns:
             An instance of the dataclass.
         """
         return cls(
-            event_id='djtzdgmvrzfdaarqwuty',
-            name='xeiikcujtuykssjnktwy',
-            start='ocyyjreshixminugpgnu',
-            end='tkeujtjmfvmelsyicpwp',
-            duration_text='lupwdecaoveupkopxtvz',
-            time_notes='rwscjbrhpvyvjkpkqtmq',
-            event_status='flnodrcloslkrcmbuvcz',
-            sale_status='zeqkfwwrddshwopllhyb',
-            attendance_mode='mqumguhqnkymugrsvocn',
-            venue_name='qfqouzrktkqdtteusffe',
-            venue_id='hbpxmejndrjqkpodhioo',
-            address='ikkdryklkxczehmocugh',
-            postal_code='qvfbnxatzwllfprfxbpi',
-            description='htpimvsvhmknjgkwnmas',
-            url='zravhrfceljvqzaaidrl',
-            buy_tickets_url='dthexgqyljrmlkqqawbb',
-            image_url='btpudhqhndqgbhcfwyka',
-            image_small_url='leiskeyjttzibshozgmr',
-            series_id='egclyjqxbmokuigaldbs',
-            organizer_name='bxyzplbtindbzwurjaby',
-            organizer_phone='ipziyovqbtxewxzlnshn',
-            organizer_email='wwurmymyvddbqmnptgjr',
-            organizer_id=int(94),
-            categories=['kiuewsrpqkvwbrfkejin', 'pghtppfesottjgizyjkx']
+            event_id='qupynfessdubjzjqeejf',
+            name='tyyzqtyraywkfcobvzql',
+            start='xewytshjtkatzdibenzh',
+            end='pgenptpueyrlhufgtekw',
+            duration_text='ezrrdgrfqqubwpbgxcal',
+            time_notes='kqdplkockisdiajlhvpg',
+            event_status='xftgvinkwgcarpylpbyl',
+            sale_status='lsdonyjzmmnvouqkialx',
+            attendance_mode='udwrvxvaqhjudmtwddax',
+            venue_name='xaojtuaqydwhuizicedn',
+            venue_id='rpzqofehxvuemjvbrlrd',
+            address='atywwcehsugktpvfvzdg',
+            postal_code='pcobvtdpievvetsuxnuw',
+            description='trnievojazckwdokgsgt',
+            url='lvozicputvlkppuvcsfv',
+            buy_tickets_url='kpliycclvcxfrhfmgeuk',
+            image_url='nyekgzoeohpoqmtttzbw',
+            image_small_url='ilcesqrrxdskfhyseqyb',
+            series_id='ybiwqgbwqdhlafoemhky',
+            organizer_name='tocbudtmmpjfxelgfedh',
+            organizer_phone='stomvdmqzxuypegfngnr',
+            organizer_email='ucmmbhzoyppseunkcfye',
+            organizer_id=int(28),
+            categories=['ajymcxfyxycckvejuice', 'syykaazaobvntekrlydk']
         )

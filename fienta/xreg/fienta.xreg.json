@@ -20,6 +20,54 @@
       "messagegroups": [
         "#/messagegroups/Com.Fienta"
       ]
+    },
+    "Com.Fienta.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Com.Fienta.mqtt"
+      ],
+      "description": "MQTT 5.0 producer endpoint for fienta."
+    },
+    "Com.Fienta.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/fienta"
+          }
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "fienta"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Com.Fienta.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for fienta."
     }
   },
   "messagegroups": {
@@ -60,6 +108,78 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Com.Fienta.jstruct/schemas/Com.Fienta.EventSaleStatus"
+        }
+      }
+    },
+    "Com.Fienta.mqtt": {
+      "description": "MQTT 5.0 binary-mode CloudEvents variant of Com.Fienta.",
+      "messages": {
+        "Com.Fienta.mqtt.Event": {
+          "name": "Event",
+          "basemessageurl": "/messagegroups/Com.Fienta/messages/Com.Fienta.Event",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "civic-events/intl/fienta/fienta/{country}/{city}/{category}/{event_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Com.Fienta.mqtt.EventSaleStatus": {
+          "name": "EventSaleStatus",
+          "basemessageurl": "/messagegroups/Com.Fienta/messages/Com.Fienta.EventSaleStatus",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "civic-events/intl/fienta/fienta/{country}/{city}/{category}/{event_id}/sale-status",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "Com.Fienta.amqp": {
+      "description": "AMQP 1.0 binary-mode CloudEvents variant of Com.Fienta.",
+      "messages": {
+        "Com.Fienta.amqp.Event": {
+          "name": "Event",
+          "basemessageurl": "/messagegroups/Com.Fienta/messages/Com.Fienta.Event",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{event_id}",
+                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{event_id}",
+                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        },
+        "Com.Fienta.amqp.EventSaleStatus": {
+          "name": "EventSaleStatus",
+          "basemessageurl": "/messagegroups/Com.Fienta/messages/Com.Fienta.EventSaleStatus",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{event_id}",
+                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{event_id}",
+                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
         }
       }
     }

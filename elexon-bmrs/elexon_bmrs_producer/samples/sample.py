@@ -33,11 +33,14 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from elexon_bmrs_producer_kafka_producer.producer import UKCoElexonBMRSEventProducer
+from elexon_bmrs_producer_kafka_producer.producer import UKCoElexonBMRSMqttEventProducer
+from elexon_bmrs_producer_kafka_producer.producer import UKCoElexonBMRSAmqpEventProducer
 
 # imports for the data classes for each event
 
 from elexon_bmrs_producer_data.generationmix import GenerationMix
 from elexon_bmrs_producer_data.demandoutturn import DemandOutturn
+from elexon_bmrs_producer_data.info import Info
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -72,6 +75,78 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'UK.Co.Elexon.BMRS.DemandOutturn' event to Kafka topic.
     await ukco_elexon_bmrsevent_producer.send_uk_co_elexon_bmrs_demand_outturn(_settlement_period = 'TODO: replace me', data = _demand_outturn)
     print(f"Sent 'UK.Co.Elexon.BMRS.DemandOutturn' event: {_demand_outturn.to_json()}")
+
+    # ---- UK.Co.Elexon.BMRS.Info ----
+    # TODO: Supply event data for the UK.Co.Elexon.BMRS.Info event
+    _info = Info()
+
+    # sends the 'UK.Co.Elexon.BMRS.Info' event to Kafka topic.
+    await ukco_elexon_bmrsevent_producer.send_uk_co_elexon_bmrs_info(_settlement_period = 'TODO: replace me', data = _info)
+    print(f"Sent 'UK.Co.Elexon.BMRS.Info' event: {_info.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        ukco_elexon_bmrsmqtt_event_producer = UKCoElexonBMRSMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        ukco_elexon_bmrsmqtt_event_producer = UKCoElexonBMRSMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- UK.Co.Elexon.BMRS.mqtt.GenerationMix ----
+    # TODO: Supply event data for the UK.Co.Elexon.BMRS.mqtt.GenerationMix event
+    _generation_mix = GenerationMix()
+
+    # sends the 'UK.Co.Elexon.BMRS.mqtt.GenerationMix' event to Kafka topic.
+    await ukco_elexon_bmrsmqtt_event_producer.send_uk_co_elexon_bmrs_mqtt_generation_mix(_settlement_period = 'TODO: replace me', data = _generation_mix)
+    print(f"Sent 'UK.Co.Elexon.BMRS.mqtt.GenerationMix' event: {_generation_mix.to_json()}")
+
+    # ---- UK.Co.Elexon.BMRS.mqtt.DemandOutturn ----
+    # TODO: Supply event data for the UK.Co.Elexon.BMRS.mqtt.DemandOutturn event
+    _demand_outturn = DemandOutturn()
+
+    # sends the 'UK.Co.Elexon.BMRS.mqtt.DemandOutturn' event to Kafka topic.
+    await ukco_elexon_bmrsmqtt_event_producer.send_uk_co_elexon_bmrs_mqtt_demand_outturn(_settlement_period = 'TODO: replace me', data = _demand_outturn)
+    print(f"Sent 'UK.Co.Elexon.BMRS.mqtt.DemandOutturn' event: {_demand_outturn.to_json()}")
+
+    # ---- UK.Co.Elexon.BMRS.mqtt.Info ----
+    # TODO: Supply event data for the UK.Co.Elexon.BMRS.mqtt.Info event
+    _info = Info()
+
+    # sends the 'UK.Co.Elexon.BMRS.mqtt.Info' event to Kafka topic.
+    await ukco_elexon_bmrsmqtt_event_producer.send_uk_co_elexon_bmrs_mqtt_info(_settlement_period = 'TODO: replace me', data = _info)
+    print(f"Sent 'UK.Co.Elexon.BMRS.mqtt.Info' event: {_info.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        ukco_elexon_bmrsamqp_event_producer = UKCoElexonBMRSAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        ukco_elexon_bmrsamqp_event_producer = UKCoElexonBMRSAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- UK.Co.Elexon.BMRS.amqp.GenerationMix ----
+    # TODO: Supply event data for the UK.Co.Elexon.BMRS.amqp.GenerationMix event
+    _generation_mix = GenerationMix()
+
+    # sends the 'UK.Co.Elexon.BMRS.amqp.GenerationMix' event to Kafka topic.
+    await ukco_elexon_bmrsamqp_event_producer.send_uk_co_elexon_bmrs_amqp_generation_mix(_settlement_period = 'TODO: replace me', data = _generation_mix)
+    print(f"Sent 'UK.Co.Elexon.BMRS.amqp.GenerationMix' event: {_generation_mix.to_json()}")
+
+    # ---- UK.Co.Elexon.BMRS.amqp.DemandOutturn ----
+    # TODO: Supply event data for the UK.Co.Elexon.BMRS.amqp.DemandOutturn event
+    _demand_outturn = DemandOutturn()
+
+    # sends the 'UK.Co.Elexon.BMRS.amqp.DemandOutturn' event to Kafka topic.
+    await ukco_elexon_bmrsamqp_event_producer.send_uk_co_elexon_bmrs_amqp_demand_outturn(_settlement_period = 'TODO: replace me', data = _demand_outturn)
+    print(f"Sent 'UK.Co.Elexon.BMRS.amqp.DemandOutturn' event: {_demand_outturn.to_json()}")
+
+    # ---- UK.Co.Elexon.BMRS.amqp.Info ----
+    # TODO: Supply event data for the UK.Co.Elexon.BMRS.amqp.Info event
+    _info = Info()
+
+    # sends the 'UK.Co.Elexon.BMRS.amqp.Info' event to Kafka topic.
+    await ukco_elexon_bmrsamqp_event_producer.send_uk_co_elexon_bmrs_amqp_info(_settlement_period = 'TODO: replace me', data = _info)
+    print(f"Sent 'UK.Co.Elexon.BMRS.amqp.Info' event: {_info.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

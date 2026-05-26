@@ -1,26 +1,15 @@
+# Regenerate Kafka, MQTT, and AMQP producers from the source xRegistry manifest.
 . (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
-
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$projectRoot = $scriptDir
-$xregFile = Join-Path $projectRoot "xreg\energy_charts.xreg.json"
-$outputDir = Join-Path $projectRoot "energy_charts_producer"
-
-Write-Host "Generating Energy-Charts producer from xRegistry definitions..." -ForegroundColor Cyan
-Write-Host "  xRegistry file: $xregFile" -ForegroundColor Gray
-Write-Host "  Output directory: $outputDir" -ForegroundColor Gray
-
-if (Test-Path $outputDir) {
-    Write-Host "  Cleaning existing output directory..." -ForegroundColor Yellow
-    Remove-Item -Path $outputDir -Recurse -Force
+$xregFile = Join-Path $scriptDir "xreg\energy_charts.xreg.json"
+foreach ($output in @("energy_charts_producer", "energy_charts_mqtt_producer", "energy_charts_amqp_producer")) {
+  $outputDir = Join-Path $scriptDir $output
+  if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
 }
-
-Write-Host "  Generating Kafka producer code..." -ForegroundColor Cyan
-xrcg generate --style kafkaproducer --language py --projectname energy-charts-producer --definitions $xregFile --output $outputDir
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "Producer generation completed successfully" -ForegroundColor Green
-} else {
-    Write-Host "Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
-    exit 1
-}
+xrcg generate --style kafkaproducer --language py --definitions $xregFile --projectname energy_charts_producer --output (Join-Path $scriptDir "energy_charts_producer")
+if ($LASTEXITCODE -ne 0) { throw "Kafka producer generation failed" }
+xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint info.energy_charts.Mqtt --projectname energy_charts_mqtt_producer --output (Join-Path $scriptDir "energy_charts_mqtt_producer")
+if ($LASTEXITCODE -ne 0) { throw "MQTT producer generation failed" }
+xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint info.energy_charts.Amqp --projectname energy_charts_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir "energy_charts_amqp_producer")
+if ($LASTEXITCODE -ne 0) { throw "AMQP producer generation failed" }

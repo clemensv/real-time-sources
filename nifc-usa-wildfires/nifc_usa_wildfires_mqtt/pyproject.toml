@@ -1,0 +1,13 @@
+[build-system]
+requires=["setuptools>=68.0","wheel"]
+build-backend="setuptools.build_meta"
+[project]
+name="nifc-usa-wildfires-mqtt"
+version="0.1.0"
+description="MQTT feeder for NIFC USA wildfires"
+requires-python=">=3.10"
+dependencies=["aiohttp>=3.9.0","paho-mqtt>=2.1.0","cloudevents>=1.11.0,<2.0.0","dataclasses_json>=0.6.7","avro>=1.11.3"]
+[project.scripts]
+nifc-usa-wildfires-mqtt="nifc_usa_wildfires_mqtt.app:main"
+[tool.setuptools.packages.find]
+include=["nifc_usa_wildfires_mqtt*"]

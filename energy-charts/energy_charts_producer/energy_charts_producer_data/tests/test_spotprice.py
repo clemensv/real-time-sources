@@ -29,32 +29,32 @@ class Test_SpotPrice(unittest.TestCase):
         Create instance of SpotPrice for testing
         """
         instance = SpotPrice(
-            country='afdfqayebpeqauqbnutd',
-            bidding_zone='xgelpigrmdleufehrmoa',
+            country='bgtwuixdnyvwnekqbzcr',
+            bidding_zone='oegludapwxeoaltjjpij',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(98),
-            price_eur_per_mwh=float(26.680756529476678),
-            unit='bfdjtvkevstxxwdjeirc'
+            unix_seconds=int(9),
+            price_eur_per_mwh=float(45.860063566150224),
+            unit='jzaeferrbisiilkyqqqo'
         )
         return instance
 
-    
+
     def test_country_property(self):
         """
         Test country property
         """
-        test_value = 'afdfqayebpeqauqbnutd'
+        test_value = 'bgtwuixdnyvwnekqbzcr'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
-    
+
     def test_bidding_zone_property(self):
         """
         Test bidding_zone property
         """
-        test_value = 'xgelpigrmdleufehrmoa'
+        test_value = 'oegludapwxeoaltjjpij'
         self.instance.bidding_zone = test_value
         self.assertEqual(self.instance.bidding_zone, test_value)
-    
+
     def test_timestamp_property(self):
         """
         Test timestamp property
@@ -62,31 +62,40 @@ class Test_SpotPrice(unittest.TestCase):
         test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
-    
+
     def test_unix_seconds_property(self):
         """
         Test unix_seconds property
         """
-        test_value = int(98)
+        test_value = int(9)
         self.instance.unix_seconds = test_value
         self.assertEqual(self.instance.unix_seconds, test_value)
-    
+
     def test_price_eur_per_mwh_property(self):
         """
         Test price_eur_per_mwh property
         """
-        test_value = float(26.680756529476678)
+        test_value = float(45.860063566150224)
         self.instance.price_eur_per_mwh = test_value
         self.assertEqual(self.instance.price_eur_per_mwh, test_value)
-    
+
     def test_unit_property(self):
         """
         Test unit property
         """
-        test_value = 'bfdjtvkevstxxwdjeirc'
+        test_value = 'jzaeferrbisiilkyqqqo'
         self.instance.unit = test_value
         self.assertEqual(self.instance.unit, test_value)
-    
+
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = SpotPrice.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

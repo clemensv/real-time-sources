@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./elexon_bmrs_mqtt_producer_data
+pip install ./elexon_bmrs_mqtt_producer_mqtt_client

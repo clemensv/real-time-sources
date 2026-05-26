@@ -1,35 +1,37 @@
 """ DoseRateReading dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class DoseRateReading:
     """
-    An ambient gamma dose rate reading from a EURDEP monitoring station.
+    An ambient gamma dose rate reading from a EURDEP monitoring station. The gross dose rate value is the total ambient dose equivalent rate at the station location, expressed in microsieverts per hour (µSv/h). Each reading covers a one-hour measurement window and includes validation status and the nuclide type measured. Normal European background levels range from approximately 0.04 to 0.20 µSv/h depending on local geology and altitude.
+    
     Attributes:
-        station_id (str): Alphanumeric station identifier from the EURDEP network.
-        name (str): Human-readable station location name.
-        value (typing.Optional[float]): Gross ambient gamma dose rate in µSv/h. Null if not reported.
-        unit (str): Unit of the dose rate value, typically 'µSv/h'.
-        start_measure (str): Start of measurement period in ISO 8601 UTC.
-        end_measure (str): End of measurement period in ISO 8601 UTC.
-        nuclide (str): Nuclide identifier, typically 'Gamma-ODL-Brutto'.
-        duration (str): Measurement integration period (e.g. '1h').
-        validated (int): Validation status flag. 0 = not validated, 1 = nationally validated, 2 = EURDEP validated."""
+        station_id (str)
+        name (str)
+        value (typing.Optional[float])
+        unit (str)
+        start_measure (str)
+        end_measure (str)
+        nuclide (str)
+        duration (str)
+        validated (int)
+        country (str)
+    """
+    
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
@@ -40,22 +42,7 @@ class DoseRateReading:
     nuclide: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="nuclide"))
     duration: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="duration"))
     validated: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="validated"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"DoseRateReading\", \"namespace\": \"eu.jrc.eurdep\", \"doc\": \"An ambient gamma dose rate reading from a EURDEP monitoring station.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Alphanumeric station identifier from the EURDEP network.\"}, {\"name\": \"name\", \"type\": \"string\", \"doc\": \"Human-readable station location name.\"}, {\"name\": \"value\", \"type\": [\"null\", \"double\"], \"doc\": \"Gross ambient gamma dose rate in \u00b5Sv/h. Null if not reported.\", \"default\": null}, {\"name\": \"unit\", \"type\": \"string\", \"doc\": \"Unit of the dose rate value, typically '\u00b5Sv/h'.\"}, {\"name\": \"start_measure\", \"type\": \"string\", \"doc\": \"Start of measurement period in ISO 8601 UTC.\"}, {\"name\": \"end_measure\", \"type\": \"string\", \"doc\": \"End of measurement period in ISO 8601 UTC.\"}, {\"name\": \"nuclide\", \"type\": \"string\", \"doc\": \"Nuclide identifier, typically 'Gamma-ODL-Brutto'.\"}, {\"name\": \"duration\", \"type\": \"string\", \"doc\": \"Measurement integration period (e.g. '1h').\"}, {\"name\": \"validated\", \"type\": \"int\", \"doc\": \"Validation status flag. 0 = not validated, 1 = nationally validated, 2 = EURDEP validated.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.station_id=str(self.station_id)
-        self.name=str(self.name)
-        self.value=float(self.value) if self.value else None
-        self.unit=str(self.unit)
-        self.start_measure=str(self.start_measure)
-        self.end_measure=str(self.end_measure)
-        self.nuclide=str(self.nuclide)
-        self.duration=str(self.duration)
-        self.validated=int(self.validated)
+    country: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'DoseRateReading':
@@ -66,7 +53,7 @@ class DoseRateReading:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -85,7 +72,7 @@ class DoseRateReading:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -99,8 +86,6 @@ class DoseRateReading:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -113,12 +98,6 @@ class DoseRateReading:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -147,10 +126,6 @@ class DoseRateReading:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -176,18 +151,6 @@ class DoseRateReading:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return DoseRateReading.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -195,5 +158,25 @@ class DoseRateReading:
                 return DoseRateReading.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'DoseRateReading':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            station_id='pnpoawuytynckcucoktm',
+            name='vooyewvexlmsusxrcded',
+            value=float(47.84538929737525),
+            unit='wvklijmwwfrmxudgtzov',
+            start_measure='bnzdbjdzzcgalpvqvmml',
+            end_measure='ociohoodygbmqjalvnrk',
+            nuclide='ymwkzshmhmcuampzlrlv',
+            duration='sdhjkrqlnmgplulypypq',
+            validated=int(36),
+            country='ujfiytuwhrbqrvtvergk'
+        )

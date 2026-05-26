@@ -49,3 +49,8 @@ tepco-denkiyoho feed --connection-string "BootstrapServer=localhost:9092;EntityP
 ```
 
 Configuration can be supplied by command-line arguments or environment variables: `CONNECTION_STRING`, `KAFKA_TOPIC`, `POLLING_INTERVAL`, `KAFKA_ENABLE_TLS`, and `STATE_FILE`.
+
+
+## Transports
+
+This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.

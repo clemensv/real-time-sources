@@ -102,3 +102,8 @@ passes through directly:
 |---|---|---|
 | `country` | `FIENTA_COUNTRY` | ISO 3166-1 alpha-2 country code. Live probes returned country-specific result sets for `EE`, `LV`, `LT`, `FI`, `GB`, `DE`, `DK`, `SE`, `NO`, `BE`, `AT`, and `IE`. |
 | `locale` | `FIENTA_LOCALE` | Localized URL/text variant such as `en` or `et`. |
+
+
+## Transports
+
+This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.
