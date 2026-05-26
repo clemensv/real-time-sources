@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from cdec_reservoirs_producer_kafka_producer.producer import GovCaWaterCdecEventProducer
+from cdec_reservoirs_producer_kafka_producer.producer import GovCaWaterCdecMqttEventProducer
+from cdec_reservoirs_producer_kafka_producer.producer import GovCaWaterCdecAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -63,6 +65,38 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'gov.ca.water.cdec.ReservoirReading' event to Kafka topic.
     await gov_ca_water_cdec_event_producer.send_gov_ca_water_cdec_reservoir_reading(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', _sensor_num = 'TODO: replace me', data = _reservoir_reading)
     print(f"Sent 'gov.ca.water.cdec.ReservoirReading' event: {_reservoir_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        gov_ca_water_cdec_mqtt_event_producer = GovCaWaterCdecMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        gov_ca_water_cdec_mqtt_event_producer = GovCaWaterCdecMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- gov.ca.water.cdec.mqtt.ReservoirReading ----
+    # TODO: Supply event data for the gov.ca.water.cdec.mqtt.ReservoirReading event
+    _reservoir_reading = ReservoirReading()
+
+    # sends the 'gov.ca.water.cdec.mqtt.ReservoirReading' event to Kafka topic.
+    await gov_ca_water_cdec_mqtt_event_producer.send_gov_ca_water_cdec_mqtt_reservoir_reading(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', _sensor_num = 'TODO: replace me', data = _reservoir_reading)
+    print(f"Sent 'gov.ca.water.cdec.mqtt.ReservoirReading' event: {_reservoir_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        gov_ca_water_cdec_amqp_event_producer = GovCaWaterCdecAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        gov_ca_water_cdec_amqp_event_producer = GovCaWaterCdecAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- gov.ca.water.cdec.amqp.ReservoirReading ----
+    # TODO: Supply event data for the gov.ca.water.cdec.amqp.ReservoirReading event
+    _reservoir_reading = ReservoirReading()
+
+    # sends the 'gov.ca.water.cdec.amqp.ReservoirReading' event to Kafka topic.
+    await gov_ca_water_cdec_amqp_event_producer.send_gov_ca_water_cdec_amqp_reservoir_reading(_feedurl = 'TODO: replace me', _station_id = 'TODO: replace me', _sensor_num = 'TODO: replace me', data = _reservoir_reading)
+    print(f"Sent 'gov.ca.water.cdec.amqp.ReservoirReading' event: {_reservoir_reading.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

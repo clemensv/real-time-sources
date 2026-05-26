@@ -4,8 +4,8 @@ CDEC California Reservoirs publishes reservoir storage and elevation observation
 
 ## At a glance
 
-- **Event types:** 1 documented event type.
-- **Transports:** KAFKA
+- **Event types:** 1 documented event type (3 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
 - **Identity:** `{station_id}/{sensor_num}` identifies the resource each event is about.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
@@ -28,6 +28,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `hydro/us/cdec/cdec-reservoirs/+/+/+/reservoir-reading`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('hydro/us/cdec/cdec-reservoirs/+/+/+/reservoir-reading', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `cdec-reservoirs`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/cdec-reservoirs')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -48,6 +76,8 @@ Each event identifies the real-world resource with `{station_id}/{sensor_num}`. 
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `cdec-reservoirs`, key `{station_id}/{sensor_num}` |
+| `MQTT/5.0` | topic `hydro/us/cdec/cdec-reservoirs/{basin}/{station_id}/{sensor_num}/reservoir-reading`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/cdec-reservoirs`, message subject `{station_id}/{sensor_num}`; application properties basin `{basin}`, sensor_num `{sensor_num}` |
 
 #### Payload
 
@@ -61,6 +91,7 @@ Each event identifies the real-world resource with `{station_id}/{sensor_num}`. 
 - **`date`** (string, required): Observation timestamp as reported by CDEC in PST (Pacific Standard Time, UTC-8). Format from the API is 'YYYY-M-D H:MM' and is normalized to ISO 8601 format 'YYYY-MM-DDTHH:MM:SS-08:00'. CDEC always reports in PST regardless of daylight saving time.
 - **`dur_code`** (string, required): Duration code indicating the measurement interval. 'H' for hourly observations, 'D' for daily observations, 'E' for event-based (15-minute or irregular).
 - **`data_flag`** (string, required): Quality flag character applied to the observation by CDEC. A single space ' ' means no flag (normal data). Other values indicate provisional, edited, or suspect data.
+- **`basin`** (string, optional): Stable routing axis used by MQTT and AMQP transport templates for cdec-reservoirs.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -74,7 +105,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "units": "string",
   "date": "string",
   "dur_code": "string",
-  "data_flag": "string"
+  "data_flag": "string",
+  "basin": "string"
 }
 ```
 

@@ -19,7 +19,7 @@ import avro.io
 @dataclass
 class Station:
     """
-    Station
+    Reference details for one monitoring station or site in the SYKE Hydrology source.
     Attributes:
         station_id (str): 
         name (str): 
@@ -38,7 +38,7 @@ class Station:
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"river_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_area_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"municipality\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}], \"namespace\": \"FI.SYKE.Hydrology\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Reference details for one monitoring station or site in the SYKE Hydrology source.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"river_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_area_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"municipality\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}], \"namespace\": \"FI.SYKE.Hydrology\", \"description\": \"Reference details for one monitoring station or site in the SYKE Hydrology source.\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

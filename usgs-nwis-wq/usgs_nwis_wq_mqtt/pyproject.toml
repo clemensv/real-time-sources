@@ -1,0 +1,16 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "usgs-nwis-wq-mqtt"
+version = "0.1.0"
+packages = [{include = "usgs_nwis_wq_mqtt"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+usgs_nwis_wq_mqtt_producer_data = {path = "../usgs_nwis_wq_mqtt_producer/usgs_nwis_wq_mqtt_producer_data"}
+usgs_nwis_wq_mqtt_producer_mqtt_client = {path = "../usgs_nwis_wq_mqtt_producer/usgs_nwis_wq_mqtt_producer_mqtt_client"}

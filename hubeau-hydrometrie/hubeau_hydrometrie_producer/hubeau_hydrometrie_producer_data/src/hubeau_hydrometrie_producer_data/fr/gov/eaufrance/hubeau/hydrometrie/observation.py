@@ -20,7 +20,7 @@ import datetime
 @dataclass
 class Observation:
     """
-    Observation
+    Measurement payload for observations in the Hub'Eau Hydrométrie source.
     Attributes:
         code_station (str): 
         date_obs (datetime.datetime): 
@@ -37,7 +37,7 @@ class Observation:
     libelle_qualification_obs: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="libelle_qualification_obs"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Observation\", \"doc\": \"Observation\", \"fields\": [{\"name\": \"code_station\", \"type\": \"string\"}, {\"name\": \"date_obs\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"resultat_obs\", \"type\": \"double\"}, {\"name\": \"grandeur_hydro\", \"type\": \"string\"}, {\"name\": \"libelle_methode_obs\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"libelle_qualification_obs\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"FR.Gov.Eaufrance.HubEau.Hydrometrie\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Observation\", \"doc\": \"Measurement payload for observations in the Hub'Eau Hydrom\u00e9trie source.\", \"fields\": [{\"name\": \"code_station\", \"type\": \"string\"}, {\"name\": \"date_obs\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}}, {\"name\": \"resultat_obs\", \"type\": \"double\"}, {\"name\": \"grandeur_hydro\", \"type\": \"string\"}, {\"name\": \"libelle_methode_obs\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"libelle_qualification_obs\", \"type\": [\"null\", \"string\"], \"default\": null}], \"namespace\": \"FR.Gov.Eaufrance.HubEau.Hydrometrie\", \"description\": \"Measurement payload for observations in the Hub'Eau Hydrom\u00e9trie source.\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

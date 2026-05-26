@@ -29,10 +29,11 @@ class Test_Reading(unittest.TestCase):
         Create instance of Reading for testing
         """
         instance = Reading(
-            station_reference='xjvhvrlcpbgeleasvlhu',
+            station_reference='ucakjgogqfinlhfygzxx',
             date_time=datetime.datetime.now(datetime.timezone.utc),
-            measure='jmtjznljhxtqezkdbobf',
-            value=float(0.8807012543097792)
+            measure='wvfhxqwrfmopjwjfftpx',
+            value=float(60.44744259800721),
+            river='jevgdulejrbtefwtmlcw'
         )
         return instance
 
@@ -41,7 +42,7 @@ class Test_Reading(unittest.TestCase):
         """
         Test station_reference property
         """
-        test_value = 'xjvhvrlcpbgeleasvlhu'
+        test_value = 'ucakjgogqfinlhfygzxx'
         self.instance.station_reference = test_value
         self.assertEqual(self.instance.station_reference, test_value)
     
@@ -57,7 +58,7 @@ class Test_Reading(unittest.TestCase):
         """
         Test measure property
         """
-        test_value = 'jmtjznljhxtqezkdbobf'
+        test_value = 'wvfhxqwrfmopjwjfftpx'
         self.instance.measure = test_value
         self.assertEqual(self.instance.measure, test_value)
     
@@ -65,10 +66,27 @@ class Test_Reading(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(0.8807012543097792)
+        test_value = float(60.44744259800721)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
+    def test_river_property(self):
+        """
+        Test river property
+        """
+        test_value = 'jevgdulejrbtefwtmlcw'
+        self.instance.river = test_value
+        self.assertEqual(self.instance.river, test_value)
+    
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Reading.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

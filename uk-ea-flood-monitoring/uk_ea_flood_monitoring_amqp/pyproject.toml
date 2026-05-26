@@ -1,0 +1,15 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "uk-ea-flood-monitoring-amqp"
+version = "0.1.0"
+packages = [{include = "uk_ea_flood_monitoring_amqp"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+azure-identity = ">=1.17.0"
+dataclasses_json = ">=0.6.7"
+uk_ea_flood_monitoring_amqp_producer_data = {path = "../uk_ea_flood_monitoring_amqp_producer/uk_ea_flood_monitoring_amqp_producer_data"}
+uk_ea_flood_monitoring_amqp_producer_amqp_producer = {path = "../uk_ea_flood_monitoring_amqp_producer/uk_ea_flood_monitoring_amqp_producer_amqp_producer"}

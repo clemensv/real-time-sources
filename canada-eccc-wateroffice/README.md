@@ -31,3 +31,10 @@ Kafka key and CloudEvents subject: `stations/{station_number}` (e.g. `stations/0
 ## Usage
 
 See [CONTAINER.md](CONTAINER.md) for Docker deployment details.
+
+
+## MQTT and AMQP companion feeders
+
+This source now ships transport-split Kafka, MQTT, and AMQP containers. The MQTT image (`ghcr.io/clemensv/real-time-sources-canada-eccc-wateroffice-mqtt:latest`) publishes retained MQTT 5 binary-mode CloudEvents on `hydro/ca/eccc/canada-eccc-wateroffice/...`. The AMQP image (`ghcr.io/clemensv/real-time-sources-canada-eccc-wateroffice-amqp:latest`) publishes the same CloudEvents to a broker address or Azure Service Bus queue.
+
+Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, and `azure-template-with-servicebus.json`.

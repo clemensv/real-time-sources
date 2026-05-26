@@ -21,6 +21,50 @@
         "#/messagegroups/FI.SYKE.Hydrology"
       ],
       "description": "Kafka producer endpoint for SYKE Hydrology CloudEvents on the `syke-hydro` topic keyed by `{station_id}`."
+    },
+    "FI.SYKE.Hydrology.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/FI.SYKE.Hydrology.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for syke-hydro CloudEvents using the documented UNS topic hierarchy."
+    },
+    "FI.SYKE.Hydrology.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/syke-hydro"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/FI.SYKE.Hydrology.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for syke-hydro CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -66,6 +110,92 @@
         }
       },
       "description": "Events from SYKE Hydrology covering Finnish hydrological monitoring stations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
+    },
+    "FI.SYKE.Hydrology.mqtt": {
+      "description": "MQTT 5 variant of syke-hydro events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "FI.SYKE.Hydrology.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/FI.SYKE.Hydrology/messages/FI.SYKE.Hydrology.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/fi/syke/syke-hydro/{basin}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "FI.SYKE.Hydrology.mqtt.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "basemessageurl": "/messagegroups/FI.SYKE.Hydrology/messages/FI.SYKE.Hydrology.WaterLevelObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/fi/syke/syke-hydro/{basin}/{station_id}/water-level",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "FI.SYKE.Hydrology.amqp": {
+      "description": "AMQP 1.0 variant of syke-hydro events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "FI.SYKE.Hydrology.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/FI.SYKE.Hydrology/messages/FI.SYKE.Hydrology.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "Routing property for AMQP subscription filters (basin)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "FI.SYKE.Hydrology.amqp.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "basemessageurl": "/messagegroups/FI.SYKE.Hydrology/messages/FI.SYKE.Hydrology.WaterLevelObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "Routing property for AMQP subscription filters (basin)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -131,6 +261,10 @@
                   "longitude": {
                     "type": "double",
                     "description": "Longitude of the station in WGS 84 coordinates."
+                  },
+                  "basin": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for syke-hydro."
                   }
                 },
                 "$id": "https://example.com/schemas/FI/SYKE/Hydrology/Station",
@@ -214,6 +348,10 @@
                     "altnames": {
                       "lang:fi": "Aika"
                     }
+                  },
+                  "basin": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for syke-hydro."
                   }
                 },
                 "$id": "https://example.com/schemas/FI/SYKE/Hydrology/WaterLevelObservation",

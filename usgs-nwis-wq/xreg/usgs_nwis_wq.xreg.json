@@ -43,6 +43,52 @@
         "#/messagegroups/USGS.WaterQuality.Readings"
       ],
       "description": "Kafka producer endpoint for USGS NWIS Water Quality CloudEvents on the `usgs-nwis-wq` topic keyed by `{site_number}/{parameter_code}`."
+    },
+    "USGS.WaterQuality.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/USGS.WaterQuality.Sites.mqtt",
+        "#/messagegroups/USGS.WaterQuality.Readings.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for usgs-nwis-wq CloudEvents using the documented UNS topic hierarchy."
+    },
+    "USGS.WaterQuality.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/usgs-nwis-wq"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/USGS.WaterQuality.Sites.amqp",
+        "#/messagegroups/USGS.WaterQuality.Readings.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for usgs-nwis-wq CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -95,6 +141,107 @@
         }
       },
       "description": "Events from USGS NWIS Water Quality covering United States water-quality monitoring sites and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
+    },
+    "USGS.WaterQuality.Sites.mqtt": {
+      "description": "MQTT 5 variant of usgs-nwis-wq events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "USGS.WaterQuality.Sites.mqtt.MonitoringSite": {
+          "name": "MonitoringSite",
+          "basemessageurl": "/messagegroups/USGS.WaterQuality.Sites/messages/USGS.WaterQuality.Sites.MonitoringSite",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-nwis-wq/{state}/{site_number}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "USGS.WaterQuality.Sites.amqp": {
+      "description": "AMQP 1.0 variant of usgs-nwis-wq events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "USGS.WaterQuality.Sites.amqp.MonitoringSite": {
+          "name": "MonitoringSite",
+          "basemessageurl": "/messagegroups/USGS.WaterQuality.Sites/messages/USGS.WaterQuality.Sites.MonitoringSite",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{site_number}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing property for AMQP subscription filters (state)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{site_number}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "USGS.WaterQuality.Readings.mqtt": {
+      "description": "MQTT 5 variant of usgs-nwis-wq events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "USGS.WaterQuality.Readings.mqtt.WaterQualityReading": {
+          "name": "WaterQualityReading",
+          "basemessageurl": "/messagegroups/USGS.WaterQuality.Readings/messages/USGS.WaterQuality.Readings.WaterQualityReading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usgs/usgs-nwis-wq/{state}/{site_number}/{parameter_code}/water-quality",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "USGS.WaterQuality.Readings.amqp": {
+      "description": "AMQP 1.0 variant of usgs-nwis-wq events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "USGS.WaterQuality.Readings.amqp.WaterQualityReading": {
+          "name": "WaterQualityReading",
+          "basemessageurl": "/messagegroups/USGS.WaterQuality.Readings/messages/USGS.WaterQuality.Readings.WaterQualityReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{site_number}/{parameter_code}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing property for AMQP subscription filters (state)."
+              },
+              "parameter_code": {
+                "type": "uritemplate",
+                "value": "{parameter_code}",
+                "description": "Routing property for AMQP subscription filters (parameter_code)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{site_number}/{parameter_code}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -108,74 +255,61 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$id": "gov.usgs.waterservices.wq.MonitoringSite",
-                "type": "record",
+                "type": "object",
                 "name": "MonitoringSite",
                 "description": "USGS water quality monitoring site. Describes a physical surface-water or groundwater monitoring location equipped with continuous water quality sensors. Site metadata is extracted from the WaterML 2.0 JSON response sourceInfo block returned by the USGS Instantaneous Values Service.",
-                "fields": [
-                  {
-                    "name": "site_number",
+                "properties": {
+                  "site_number": {
                     "type": "string",
                     "description": "USGS site identification number. A unique 8-to-15-digit number assigned by the USGS to each monitoring location (e.g. '01646500')."
                   },
-                  {
-                    "name": "site_name",
+                  "site_name": {
                     "type": "string",
                     "description": "Official USGS station name describing the monitoring location (e.g. 'POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA')."
                   },
-                  {
-                    "name": "agency_code",
+                  "agency_code": {
                     "type": "string",
                     "description": "Code identifying the agency responsible for the site. Typically 'USGS' for United States Geological Survey."
                   },
-                  {
-                    "name": "latitude",
-                    "type": [
-                      "double",
-                      "null"
-                    ],
+                  "latitude": {
+                    "type": "double",
                     "description": "Decimal latitude of the monitoring site in the WGS84 (EPSG:4326) coordinate reference system."
                   },
-                  {
-                    "name": "longitude",
-                    "type": [
-                      "double",
-                      "null"
-                    ],
+                  "longitude": {
+                    "type": "double",
                     "description": "Decimal longitude of the monitoring site in the WGS84 (EPSG:4326) coordinate reference system."
                   },
-                  {
-                    "name": "site_type",
-                    "type": [
-                      "string",
-                      "null"
-                    ],
+                  "site_type": {
+                    "type": "string",
                     "description": "USGS site type code indicating the category of the monitoring location. Common values include 'ST' (stream), 'LK' (lake), 'GW' (groundwater), 'ES' (estuary)."
                   },
-                  {
-                    "name": "state_code",
-                    "type": [
-                      "string",
-                      "null"
-                    ],
+                  "state_code": {
+                    "type": "string",
                     "description": "Two-digit FIPS state code for the state or territory where the site is located (e.g. '24' for Maryland)."
                   },
-                  {
-                    "name": "county_code",
-                    "type": [
-                      "string",
-                      "null"
-                    ],
+                  "county_code": {
+                    "type": "string",
                     "description": "Five-digit FIPS county code for the county where the site is located (e.g. '24031' for Montgomery County, MD)."
                   },
-                  {
-                    "name": "huc_code",
-                    "type": [
-                      "string",
-                      "null"
-                    ],
+                  "huc_code": {
+                    "type": "string",
                     "description": "Hydrologic Unit Code (HUC) identifying the watershed or drainage basin containing the site."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for usgs-nwis-wq."
+                  },
+                  "parameter_code": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for usgs-nwis-wq."
                   }
-                ]
+                },
+                "required": [
+                  "site_number",
+                  "site_name",
+                  "agency_code"
+                ],
+                "$schema": "https://json-structure.org/meta/extended/v0/#"
               }
             }
           }
@@ -192,57 +326,56 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$id": "gov.usgs.waterservices.wq.WaterQualityReading",
-                "type": "record",
+                "type": "object",
                 "name": "WaterQualityReading",
                 "description": "A single water quality observation from a USGS continuous monitoring sensor. The USGS Instantaneous Values Service returns time series of sensor readings in WaterML 2.0 JSON format. Each reading represents one measurement at a specific date_time for one parameter at one site.",
-                "fields": [
-                  {
-                    "name": "site_number",
+                "properties": {
+                  "site_number": {
                     "type": "string",
                     "description": "USGS site identification number for the monitoring location that produced this reading (e.g. '01646500')."
                   },
-                  {
-                    "name": "site_name",
+                  "site_name": {
                     "type": "string",
                     "description": "Official USGS station name for the monitoring location."
                   },
-                  {
-                    "name": "parameter_code",
+                  "parameter_code": {
                     "type": "string",
                     "description": "Five-digit USGS parameter code identifying the measured quantity. Key water quality codes: 00010 (water temperature °C), 00300 (dissolved oxygen mg/L), 00400 (pH), 00095 (specific conductance µS/cm), 63680 (turbidity FNU), 99133 (nitrate+nitrite mg/L as N)."
                   },
-                  {
-                    "name": "parameter_name",
+                  "parameter_name": {
                     "type": "string",
                     "description": "Human-readable name of the measured parameter as provided in the USGS variable description (e.g. 'Temperature, water, degrees Celsius')."
                   },
-                  {
-                    "name": "value",
-                    "type": [
-                      "double",
-                      "null"
-                    ],
+                  "value": {
+                    "type": "double",
                     "description": "Numeric sensor reading for the parameter at the given date_time. Null when the sensor did not return a valid numeric value (e.g. equipment malfunction, ice-affected, or the USGS noDataValue sentinel -999999.0)."
                   },
-                  {
-                    "name": "unit",
+                  "unit": {
                     "type": "string",
                     "description": "Unit of measurement for the reading as reported by the USGS (e.g. 'deg C', 'mg/l', 'uS/cm @25C', 'FNU', 'mg/l as N')."
                   },
-                  {
-                    "name": "qualifier",
-                    "type": [
-                      "string",
-                      "null"
-                    ],
+                  "qualifier": {
+                    "type": "string",
                     "description": "USGS data qualifier code indicating the quality or status of the reading. Common values: 'P' (provisional), 'A' (approved), 'e' (estimated). Null when no qualifier is provided."
                   },
-                  {
-                    "name": "date_time",
+                  "date_time": {
                     "type": "string",
                     "description": "ISO 8601 date-time string of the observation in UTC (e.g. '2024-11-15T16:45:00+00:00'). Converted from the site-local timestamp using the timezone information provided in the WaterML 2.0 response."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for usgs-nwis-wq."
                   }
-                ]
+                },
+                "required": [
+                  "site_number",
+                  "site_name",
+                  "parameter_code",
+                  "parameter_name",
+                  "unit",
+                  "date_time"
+                ],
+                "$schema": "https://json-structure.org/meta/extended/v0/#"
               }
             }
           }

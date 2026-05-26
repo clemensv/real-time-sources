@@ -1,0 +1,15 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "syke-hydro-amqp"
+version = "0.1.0"
+packages = [{include = "syke_hydro_amqp"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+azure-identity = ">=1.17.0"
+dataclasses_json = ">=0.6.7"
+syke_hydro_amqp_producer_data = {path = "../syke_hydro_amqp_producer/syke_hydro_amqp_producer_data"}
+syke_hydro_amqp_producer_amqp_producer = {path = "../syke_hydro_amqp_producer/syke_hydro_amqp_producer_amqp_producer"}

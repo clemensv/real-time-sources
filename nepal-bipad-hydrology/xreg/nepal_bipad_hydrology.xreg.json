@@ -21,6 +21,50 @@
         "#/messagegroups/np.gov.bipad.hydrology"
       ],
       "description": "Kafka producer endpoint for Nepal BIPAD River Monitoring CloudEvents on the `nepal-bipad-hydrology` topic keyed by `{station_id}`."
+    },
+    "np.gov.bipad.hydrology.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/np.gov.bipad.hydrology.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for nepal-bipad-hydrology CloudEvents using the documented UNS topic hierarchy."
+    },
+    "np.gov.bipad.hydrology.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/nepal-bipad-hydrology"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/np.gov.bipad.hydrology.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for nepal-bipad-hydrology CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -68,6 +112,92 @@
         }
       },
       "description": "Events from Nepal BIPAD River Monitoring covering river monitoring stations in Nepal and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
+    },
+    "np.gov.bipad.hydrology.mqtt": {
+      "description": "MQTT 5 variant of nepal-bipad-hydrology events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "np.gov.bipad.hydrology.mqtt.RiverStation": {
+          "name": "RiverStation",
+          "basemessageurl": "/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.RiverStation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/np/bipad/nepal-bipad-hydrology/{basin}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "np.gov.bipad.hydrology.mqtt.WaterLevelReading": {
+          "name": "WaterLevelReading",
+          "basemessageurl": "/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.WaterLevelReading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/np/bipad/nepal-bipad-hydrology/{basin}/{station_id}/water-level",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "np.gov.bipad.hydrology.amqp": {
+      "description": "AMQP 1.0 variant of nepal-bipad-hydrology events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "np.gov.bipad.hydrology.amqp.RiverStation": {
+          "name": "RiverStation",
+          "basemessageurl": "/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.RiverStation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "Routing property for AMQP subscription filters (basin)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "np.gov.bipad.hydrology.amqp.WaterLevelReading": {
+          "name": "WaterLevelReading",
+          "basemessageurl": "/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.WaterLevelReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "Routing property for AMQP subscription filters (basin)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

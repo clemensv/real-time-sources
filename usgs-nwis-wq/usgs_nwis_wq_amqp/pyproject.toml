@@ -1,0 +1,15 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "usgs-nwis-wq-amqp"
+version = "0.1.0"
+packages = [{include = "usgs_nwis_wq_amqp"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+azure-identity = ">=1.17.0"
+dataclasses_json = ">=0.6.7"
+usgs_nwis_wq_amqp_producer_data = {path = "../usgs_nwis_wq_amqp_producer/usgs_nwis_wq_amqp_producer_data"}
+usgs_nwis_wq_amqp_producer_amqp_producer = {path = "../usgs_nwis_wq_amqp_producer/usgs_nwis_wq_amqp_producer_amqp_producer"}

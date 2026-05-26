@@ -20,6 +20,50 @@
       "messagegroups": [
         "#/messagegroups/gov.usda.nrcs.snotel"
       ]
+    },
+    "gov.usda.nrcs.snotel.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.usda.nrcs.snotel.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for snotel CloudEvents using the documented UNS topic hierarchy."
+    },
+    "gov.usda.nrcs.snotel.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/snotel"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/gov.usda.nrcs.snotel.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for snotel CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -60,6 +104,92 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/gov.usda.nrcs.snotel.jstruct/schemas/gov.usda.nrcs.snotel.SnowObservation"
+        }
+      }
+    },
+    "gov.usda.nrcs.snotel.mqtt": {
+      "description": "MQTT 5 variant of snotel events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "gov.usda.nrcs.snotel.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usda/snotel/{state}/{station_triplet}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "gov.usda.nrcs.snotel.mqtt.SnowObservation": {
+          "name": "SnowObservation",
+          "basemessageurl": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.SnowObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/us/usda/snotel/{state}/{station_triplet}/snow-observation",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "gov.usda.nrcs.snotel.amqp": {
+      "description": "AMQP 1.0 variant of snotel events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "gov.usda.nrcs.snotel.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_triplet}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing property for AMQP subscription filters (state)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_triplet}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "gov.usda.nrcs.snotel.amqp.SnowObservation": {
+          "name": "SnowObservation",
+          "basemessageurl": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.SnowObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_triplet}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing property for AMQP subscription filters (state)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_triplet}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
         }
       }
     }
@@ -145,28 +275,44 @@
                     "description": "Observation timestamp reported by the SNOTEL station. Hourly readings are transmitted via satellite telemetry, typically at the top of each hour. The time is in the station's local standard time as reported by the NRCS Report Generator."
                   },
                   "snow_water_equivalent": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Snow Water Equivalent (SWE) — the depth of water that would theoretically result if the entire snowpack were melted instantaneously. Measured by a snow pillow sensor at the station. This is the primary measurement for water supply forecasting. Reported in inches.",
                     "unit": "[in_i]",
                     "symbol": "in"
                   },
                   "snow_depth": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Total snow depth measured by an ultrasonic depth sensor mounted above the snow surface. Reported in inches. Can fluctuate due to settling, wind redistribution, and measurement noise.",
                     "unit": "[in_i]",
                     "symbol": "in"
                   },
                   "precipitation": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Water-year accumulated precipitation measured by a storage-type precipitation gauge. The accumulation resets on October 1 (start of the water year). Reported in inches. Values are cumulative and should be monotonically increasing within a water year.",
                     "unit": "[in_i]",
                     "symbol": "in"
                   },
                   "air_temperature": {
-                    "type": ["double", "null"],
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Instantaneously observed air temperature at the station. SNOTEL air temperature data contains a known bias rooted in the sensor conversion equation that varies through the output range; see the NRCS Air Temperature Bias Correction documentation. Reported in degrees Fahrenheit.",
                     "unit": "[degF]",
                     "symbol": "°F"
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for snotel."
                   }
                 },
                 "$id": "https://wcc.sc.egov.usda.gov/schemas/gov/usda/nrcs/snotel/SnowObservation",
