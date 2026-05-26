@@ -61,6 +61,9 @@ Deep-dive round 1 added coverage across Scandinavia, Central Europe, and the Alp
 | 15 | [BKK Budapest](bkk-budapest.md) | 🇭🇺 Hungary | GTFS-RT + REST/JSON (Futár) | **14/18** | `bkk-budapest.md` |
 | 16 | [Rejseplanen Denmark](rejseplanen-denmark.md) | 🇩🇰 Denmark | REST/JSON (HAFAS) | **11/18** | `rejseplanen-denmark.md` |
 | 17 | [HSL MQTT Helsinki](hsl-mqtt.md) | 🇫🇮 Finland | MQTT 3.1.1 (push, ~1 Hz) | **18/18** | `hsl-mqtt.md` |
+| 17a | [Danish NAP — SIRI over AMQP](dk-nap-siri-amqp.md) 🆕 | 🇩🇰 Denmark | **SIRI 2.x over AMQP** (CC BY 4.0) | **16/18** (⚠️ gated on eIDAS) | `dk-nap-siri-amqp.md` |
+
+**SIRI transport bindings — May 2026 survey**: a comprehensive Europe-wide search (see [`_research-rounds/2026-05-eu-siri-amqp-survey.md`](../_research-rounds/2026-05-eu-siri-amqp-survey.md)) confirmed that **the Danish NAP is the only publicly accessible SIRI-over-AMQP endpoint in Europe**. Every other public European SIRI source (Entur, Trafiklab, opentransportdata.swiss, IDFM PRIM, TfL) publishes over HTTP only. Skånetrafiken's Azure Service Bus deployment is internal-only and not subscribable by third parties. The Danish NAP requires MitID Erhverv or an eIDAS-federated foreign eID for credential signup — this is the only friction blocking a clean upstream-AMQP build. **Implication for the repo**: an AMQP downstream variant on the existing `entur-norway` source ships a complete SIRI/AMQP feeder pattern *today* without depending on the Danish IDP. See the survey doc for the full plan.
 
 **Recommendation**: Entur is a standout — 18/18, no auth needed, native SIRI with pub/sub, full national coverage. It pairs perfectly with Trafiklab for a Nordic SIRI bridge. HSL's MQTT stream is a dream for an MQTT-to-CloudEvents bridge — high-frequency push telemetry with zero authentication friction.
 
