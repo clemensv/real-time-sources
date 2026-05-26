@@ -106,12 +106,11 @@
             }
           },
           "protocoloptions": {
-            "options": {
-              "topic": "social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change",
-              "qos": 0,
-              "retain": false
-            }
-          }
+            "topic_name": "social/intl/wikimedia/wikimedia-eventstreams/{wiki}/{namespace}/{event_id}/recent-change",
+            "qos": 0,
+            "retain": false
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },

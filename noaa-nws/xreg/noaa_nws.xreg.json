@@ -218,7 +218,8 @@
             "topic_name": "alerts/us/noaa/noaa-nws/{state}/{severity}/{event_type}/{alert_id}/alert",
             "qos": 1,
             "retain": false
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -250,7 +251,8 @@
               }
             },
             "application-properties": {}
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -277,7 +279,8 @@
             "topic_name": "weather/us/noaa/noaa-nws/{state}/{zone_id}/{station_id}/info",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.WeatherObservation": {
           "name": "WeatherObservation",
@@ -299,7 +302,8 @@
             "topic_name": "weather/us/noaa/noaa-nws/{state}/{zone_id}/{station_id}/observation",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -342,7 +346,8 @@
                 "description": "Routing value for zone_id."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation": {
           "name": "WeatherObservation",
@@ -380,7 +385,8 @@
                 "description": "Routing value for zone_id."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     }

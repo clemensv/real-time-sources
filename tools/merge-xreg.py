@@ -223,8 +223,54 @@ def merge(pattern: str, repo_root: Path) -> dict:
     if "messagegroups" in combined:
         _normalize_message_attrs(combined["messagegroups"])
 
+    # WORKAROUND(xregistry/xrserver): xrserver truncates message IDs (and
+    # other XID path components) at 64 characters when storing them in the
+    # registry database, but accepts longer IDs at import time without
+    # error. The download step then fails to resolve cross-references
+    # (basemessageuri) because the stored ID is truncated but the reference
+    # is not. Until the upstream fix lands, truncate long message IDs and
+    # rewrite basemessageuri references to match.
+    if "messagegroups" in combined:
+        _truncate_long_message_ids(combined["messagegroups"])
+
     # Drop empty collections so the import body is clean
     return {k: v for k, v in combined.items() if v}
+
+
+_MAX_ID_LEN = 64
+
+
+def _truncate_long_message_ids(messagegroups: dict) -> None:
+    """Truncate message IDs > _MAX_ID_LEN and rewrite cross-references."""
+    rename_map: dict[str, str] = {}
+    for mgid, mg in messagegroups.items():
+        msgs = mg.get("messages", {})
+        new_msgs: dict = {}
+        for mid, m in msgs.items():
+            if len(mid) > _MAX_ID_LEN:
+                new_mid = mid[:_MAX_ID_LEN]
+                if new_mid in new_msgs or new_mid in msgs:
+                    raise SystemExit(
+                        f"Truncation collision in {mgid}: {mid} -> {new_mid}"
+                    )
+                rename_map[f"/messagegroups/{mgid}/messages/{mid}"] = (
+                    f"/messagegroups/{mgid}/messages/{new_mid}"
+                )
+                m["messageid"] = new_mid
+                new_msgs[new_mid] = m
+            else:
+                new_msgs[mid] = m
+        mg["messages"] = new_msgs
+
+    if not rename_map:
+        return
+
+    # Rewrite all basemessageuri references inside messagegroups
+    for mg in messagegroups.values():
+        for m in mg.get("messages", {}).values():
+            ref = m.get("basemessageuri")
+            if isinstance(ref, str) and ref in rename_map:
+                m["basemessageuri"] = rename_map[ref]
 
 
 def main() -> None:

@@ -134,7 +134,8 @@
             "topic_name": "weather/se/smhi/smhi-weather/{lan}/{station_id}/info",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "SE.Gov.SMHI.Weather.mqtt.WeatherObservation": {
           "name": "WeatherObservation",
@@ -156,7 +157,8 @@
             "topic_name": "weather/se/smhi/smhi-weather/{lan}/{station_id}/observation",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -194,7 +196,8 @@
                 "description": "Routing value for lan."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "SE.Gov.SMHI.Weather.amqp.WeatherObservation": {
           "name": "WeatherObservation",
@@ -227,7 +230,8 @@
                 "description": "Routing value for lan."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     }

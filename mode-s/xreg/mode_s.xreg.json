@@ -209,7 +209,7 @@
           "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.ADSB",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df17-adsb",
+            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df17-adsb",
             "qos": 0,
             "retain": false
           }
@@ -218,7 +218,7 @@
           "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude",
+            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude",
             "qos": 0,
             "retain": false
           }
@@ -227,7 +227,7 @@
           "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df5-identity",
+            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df5-identity",
             "qos": 0,
             "retain": false
           }
@@ -236,7 +236,7 @@
           "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df11-acquisition",
+            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df11-acquisition",
             "qos": 0,
             "retain": false
           }
@@ -245,7 +245,7 @@
           "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df20-comm-b",
+            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df20-comm-b",
             "qos": 0,
             "retain": false
           }
@@ -254,7 +254,7 @@
           "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b",
+            "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b",
             "qos": 0,
             "retain": false
           }

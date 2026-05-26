@@ -148,7 +148,8 @@
             "topic_name": "aviation/intl/noaa/aviationweather/{icao_id}/info",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "gov.noaa.aviationweather.mqtt.Metar": {
           "name": "Metar",
@@ -170,7 +171,8 @@
             "topic_name": "aviation/intl/noaa/aviationweather/{icao_id}/metar",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "gov.noaa.aviationweather.mqtt.Sigmet": {
           "name": "Sigmet",
@@ -192,7 +194,8 @@
             "topic_name": "aviation/intl/noaa/aviationweather/sigmets/{region}/{sigmet_id}/sigmet",
             "qos": 1,
             "retain": false
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -224,7 +227,8 @@
               }
             },
             "application-properties": {}
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "gov.noaa.aviationweather.amqp.Metar": {
           "name": "Metar",
@@ -251,7 +255,8 @@
               }
             },
             "application-properties": {}
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "gov.noaa.aviationweather.amqp.Sigmet": {
           "name": "Sigmet",
@@ -278,7 +283,8 @@
               }
             },
             "application-properties": {}
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     }

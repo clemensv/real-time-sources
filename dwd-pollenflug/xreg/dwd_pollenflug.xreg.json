@@ -134,7 +134,8 @@
             "topic_name": "air-quality/de/dwd/dwd-pollenflug/{region_id}/info",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.Pollenflug.mqtt.PollenForecast": {
           "name": "PollenForecast",
@@ -156,7 +157,8 @@
             "topic_name": "air-quality/de/dwd/dwd-pollenflug/{region_id}/{pollen_type}/pollen-forecast",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -188,7 +190,8 @@
               }
             },
             "application-properties": {}
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.Pollenflug.amqp.PollenForecast": {
           "name": "PollenForecast",
@@ -215,7 +218,8 @@
               }
             },
             "application-properties": {}
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     }

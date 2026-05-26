@@ -304,17 +304,9 @@
           "basemessageuri": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsStation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "properties": {
-              "topic": "weather/dk/dmi/met-obs/{station_id}/info",
-              "qos": {
-                "type": "integer",
-                "value": 1
-              },
-              "retain": {
-                "type": "boolean",
-                "value": true
-              }
-            }
+            "topic_name": "weather/dk/dmi/met-obs/{station_id}/info",
+            "qos": 1,
+            "retain": true
           }
         },
         "dk.dmi.metObs.mqtt.Observation": {
@@ -322,17 +314,9 @@
           "basemessageuri": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "properties": {
-              "topic": "weather/dk/dmi/met-obs/{station_id}/{parameter_id}",
-              "qos": {
-                "type": "integer",
-                "value": 1
-              },
-              "retain": {
-                "type": "boolean",
-                "value": true
-              }
-            }
+            "topic_name": "weather/dk/dmi/met-obs/{station_id}/{parameter_id}",
+            "qos": 1,
+            "retain": true
           }
         }
       }
@@ -344,17 +328,9 @@
           "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "properties": {
-              "topic": "ocean/dk/dmi/ocean-obs/{station_id}/info",
-              "qos": {
-                "type": "integer",
-                "value": 1
-              },
-              "retain": {
-                "type": "boolean",
-                "value": true
-              }
-            }
+            "topic_name": "ocean/dk/dmi/ocean-obs/{station_id}/info",
+            "qos": 1,
+            "retain": true
           }
         },
         "dk.dmi.oceanObs.mqtt.TidewaterStation": {
@@ -362,17 +338,9 @@
           "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "properties": {
-              "topic": "ocean/dk/dmi/tidewater/{station_id}/info",
-              "qos": {
-                "type": "integer",
-                "value": 1
-              },
-              "retain": {
-                "type": "boolean",
-                "value": true
-              }
-            }
+            "topic_name": "ocean/dk/dmi/tidewater/{station_id}/info",
+            "qos": 1,
+            "retain": true
           }
         },
         "dk.dmi.oceanObs.mqtt.Observation": {
@@ -380,17 +348,9 @@
           "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "properties": {
-              "topic": "ocean/dk/dmi/ocean-obs/{station_id}/{parameter_id}",
-              "qos": {
-                "type": "integer",
-                "value": 1
-              },
-              "retain": {
-                "type": "boolean",
-                "value": true
-              }
-            }
+            "topic_name": "ocean/dk/dmi/ocean-obs/{station_id}/{parameter_id}",
+            "qos": 1,
+            "retain": true
           }
         },
         "dk.dmi.oceanObs.mqtt.TidewaterPrediction": {
@@ -398,17 +358,9 @@
           "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "properties": {
-              "topic": "ocean/dk/dmi/tidewater/{station_id}/prediction",
-              "qos": {
-                "type": "integer",
-                "value": 1
-              },
-              "retain": {
-                "type": "boolean",
-                "value": true
-              }
-            }
+            "topic_name": "ocean/dk/dmi/tidewater/{station_id}/prediction",
+            "qos": 1,
+            "retain": true
           }
         }
       }

@@ -115,7 +115,8 @@
             "topic_name": "weather/jp/jma/jma-japan/{office}/{bulletin_id}/bulletin",
             "qos": 1,
             "retain": false
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -147,7 +148,8 @@
               }
             },
             "application-properties": {}
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     }

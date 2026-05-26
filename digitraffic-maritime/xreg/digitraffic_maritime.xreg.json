@@ -262,7 +262,7 @@
           "basemessageurl": "#/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselLocation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic": "maritime/fi/fintraffic/digitraffic-maritime/vessels/{mmsi}/location",
+            "topic_name": "maritime/fi/fintraffic/digitraffic-maritime/vessels/{mmsi}/location",
             "qos": 1,
             "retain": true
           },
@@ -273,7 +273,7 @@
           "basemessageurl": "#/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselMetadata",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic": "maritime/fi/fintraffic/digitraffic-maritime/vessels/{mmsi}/metadata",
+            "topic_name": "maritime/fi/fintraffic/digitraffic-maritime/vessels/{mmsi}/metadata",
             "qos": 1,
             "retain": true
           },
@@ -338,7 +338,7 @@
           "basemessageurl": "#/messagegroups/fi.digitraffic.marine.portcall/messages/fi.digitraffic.marine.portcall.PortCall",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic": "maritime/fi/fintraffic/digitraffic-maritime/port-calls/{port_call_id}/port-call",
+            "topic_name": "maritime/fi/fintraffic/digitraffic-maritime/port-calls/{port_call_id}/port-call",
             "qos": 1,
             "retain": false
           },
@@ -381,7 +381,7 @@
           "basemessageurl": "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails/messages/fi.digitraffic.marine.portcall.VesselDetails",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic": "maritime/fi/fintraffic/digitraffic-maritime/vessels/{vessel_id}/vessel-details",
+            "topic_name": "maritime/fi/fintraffic/digitraffic-maritime/vessels/{vessel_id}/vessel-details",
             "qos": 1,
             "retain": true
           },
@@ -424,7 +424,7 @@
           "basemessageurl": "#/messagegroups/fi.digitraffic.marine.portcall.portlocation/messages/fi.digitraffic.marine.portcall.PortLocation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "topic": "maritime/fi/fintraffic/digitraffic-maritime/ports/{locode}/port-location",
+            "topic_name": "maritime/fi/fintraffic/digitraffic-maritime/ports/{locode}/port-location",
             "qos": 1,
             "retain": true
           },
