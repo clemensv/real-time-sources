@@ -1,114 +1,172 @@
-# USGS NWIS Water Quality - Continuous Water Quality Sensor Data
+# USGS NWIS Water Quality feeder
+
+This feeder turns the upstream USGS NWIS Water Quality hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+This bridge publishes the USGS NWIS Water Quality source as a transport-agnostic event stream so downstream systems subscribe once and avoid re-implementing poll scheduling, retry handling, dedupe state, CloudEvents mapping, and schema lifecycle management.
+
+- **Flood and water-risk operations** — power near-real-time threshold monitoring and alert pipelines.
+- **Infrastructure operations** — feed lock/port/river-management dashboards and operations centers.
+- **Environmental analytics** — ingest standardized events into Fabric Eventhouse, ADX, or lakehouse systems.
+- **Insurance and resilience workflows** — drive trigger-based monitoring and post-event replay analysis.
+- **Research and public-data products** — maintain reproducible timelines without source-specific ETL glue.
 
 ## Overview
 
-**usgs-nwis-wq** is a bridge that polls the [USGS Water Services](https://waterservices.usgs.gov/)
-Instantaneous Values Service API for continuous water quality sensor readings from over 3,000
-monitoring sites across the United States. The bridge focuses specifically on water quality
-parameters: dissolved oxygen, pH, water temperature, specific conductance, turbidity, and nitrate.
+**USGS NWIS Water Quality** is a poll-based bridge that emits CloudEvents across available transport variants:
 
-This is distinct from the [usgs-iv](../usgs-iv/) bridge which covers a broader set of instantaneous
-values including streamflow, gage height, precipitation, and meteorological data.
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-usgs-nwis-wq` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents on one topic, key = `{site_number}/{parameter_code}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-mqtt` | MQTT 5.0 broker (incl. Event Grid MQTT and Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic template `(see EVENTS.md)` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-amqp` | AMQP 1.0 (incl. Service Bus and Event Hubs via CBS auth) | Binary CloudEvents to AMQP node `usgs-nwis-wq` |
 
-## Key Features
+All variants share:
 
-- **Water Quality Monitoring**: Real-time dissolved oxygen, pH, temperature, turbidity, conductance, and nitrate readings.
-- **Site Metadata**: Reference data for monitoring sites including location, type, and watershed info.
-- **Kafka Integration**: Sends readings as CloudEvents to Kafka, Azure Event Hubs, or Fabric Event Streams.
-- **Configurable Scope**: Filter by state, specific sites, or parameter codes.
-- **Deduplication**: Tracks last-polled timestamps to avoid duplicate readings.
+- The same upstream polling logic and dedupe state model.
+- The same xRegistry contract (`xreg/usgs_nwis_wq.xreg.json`).
+- The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
 
-## Installation
+## Key features
 
-```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=usgs-nwis-wq
+- Poll-based ingestion with restart-safe dedupe/checkpoint persistence via `USGS_WQ_LAST_POLLED_FILE`.
+- Consistent CloudEvents identities and schemas across transport variants.
+- Contract-first event modeling from the checked-in xRegistry manifest.
+- Deployment options for local Docker, Microsoft Fabric, and Azure Container Instances.
+- Reference and telemetry event families aligned for downstream joins and enrichment.
+
+## Repository layout
+
+```text
+usgs-nwis-wq/
+  xreg/usgs_nwis_wq.xreg.json                 # shared xRegistry contract
+  usgs_nwis_wq/
+  usgs_nwis_wq_amqp/
+  usgs_nwis_wq_amqp_producer/
+  usgs_nwis_wq_mqtt/
+  usgs_nwis_wq_mqtt_producer/
+  usgs_nwis_wq_producer/
+  Dockerfile                         # Kafka feeder image
+  Dockerfile.mqtt                    # MQTT feeder image
+  Dockerfile.amqp                    # AMQP feeder image
+  kql/                               # KQL/Eventhouse schema
+  notebook/                          # Fabric notebook feeder
+  tests/                             # unit + integration tests
 ```
 
-Or from a clone:
+## Prerequisites
+
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound HTTPS access to the upstream source API.
+- Network access to your Kafka broker / MQTT broker / AMQP 1.0 endpoint.
+- A writable host directory mounted to persist `USGS_WQ_LAST_POLLED_FILE` across container restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `USGS_WQ_LAST_POLLED_FILE` so dedupe/checkpoint state survives restarts.
+
+### Kafka
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/usgs-nwis-wq
-pip install .
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_WQ_LAST_POLLED_FILE=/state/usgs-nwis-wq.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-usgs-nwis-wq:latest
 ```
 
-For container deployment, see [CONTAINER.md](CONTAINER.md). For Fabric notebook hosting (scheduled single-cycle runs in a Microsoft Fabric workspace), see [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
-
-## Usage
-
-### Feed to Kafka
+### MQTT (Unified Namespace)
 
 ```bash
-usgs-nwis-wq feed --connection-string "<your_connection_string>"
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_WQ_LAST_POLLED_FILE=/state/usgs-nwis-wq.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-mqtt:latest
 ```
 
-Or with explicit Kafka settings:
+Topic template:
+
+```text
+(see EVENTS.md)
+```
+
+### AMQP 1.0
 
 ```bash
-usgs-nwis-wq feed \
-  --kafka-bootstrap-servers "<servers>" \
-  --kafka-topic "<topic>" \
-  --sasl-username "<username>" \
-  --sasl-password "<password>"
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_WQ_LAST_POLLED_FILE=/state/usgs-nwis-wq.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/usgs-nwis-wq" \
+  ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-amqp:latest
 ```
 
-### Filter by State or Sites
+For Entra-ID and SAS-CBS AMQP authentication variants, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image).
 
-```bash
-usgs-nwis-wq feed --connection-string "<cs>" --states "MD,VA,DC"
-usgs-nwis-wq feed --connection-string "<cs>" --sites "01646500,01578310"
-```
+## Configuration reference
 
-### Environment Variables
+The complete environment-variable matrix for each image is documented in [CONTAINER.md](CONTAINER.md). Runtime entry points come from image `CMD`: Kafka ["python", "-m", "usgs_nwis_wq", "feed"] MQTT ["python", "-m", "usgs_nwis_wq_mqtt", "feed"] AMQP ["python", "-m", "usgs_nwis_wq_amqp", "feed"].
 
-- `CONNECTION_STRING`: Event Hubs / Fabric connection string
-- `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC`, `SASL_USERNAME`, `SASL_PASSWORD`
-- `USGS_WQ_STATES`: Comma-separated state codes
-- `USGS_WQ_SITES`: Comma-separated site numbers
-- `USGS_WQ_PARAMETER_CODES`: Comma-separated parameter codes
-- `USGS_WQ_LAST_POLLED_FILE`: State persistence file path
+## Data model
 
-## Water Quality Parameters
+This feeder emits the following event families:
 
-| Code | Parameter | Unit |
-|------|-----------|------|
-| 00010 | Water Temperature | °C |
-| 00300 | Dissolved Oxygen | mg/L |
-| 00400 | pH | standard units |
-| 00095 | Specific Conductance | µS/cm @25°C |
-| 63680 | Turbidity | FNU |
-| 99133 | Nitrate+Nitrite | mg/L as N |
-| 00480 | Salinity | PSU |
-| 32295 | fDOM | µg/L QSE |
+- **USGS.WaterQuality.Sites** — `MonitoringSite`.
+- **USGS.WaterQuality.Readings** — `WaterQualityReading`.
 
-## Events
+Event field descriptions, schema references, and routing details are documented in [EVENTS.md](EVENTS.md).
 
-Events are documented in [EVENTS.md](EVENTS.md).
+## Deploying into Microsoft Fabric
+
+USGS NWIS Water Quality supports both Fabric hosting patterns used in this repository.
+
+### Fabric Notebook feeder
+
+This source includes a notebook feeder under [`notebook/`](notebook/) and `catalog.json` marks `notebook: true`.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#usgs-nwis-wq/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use the ACI deployment flow for always-on container execution into a Fabric Event Stream custom endpoint.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#usgs-nwis-wq/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Azure templates shipped with this source:
 
-### Option 1: Bring your own Event Hub
+### MQTT — bring your own broker
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-nwis-wq%2Fazure-template-mqtt.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-nwis-wq%2Fazure-template.json)
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-### Option 2: Deploy with a new Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-nwis-wq%2Fazure-template-with-eventgrid-mqtt.json)
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-nwis-wq%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace
 
-## MQTT and AMQP companion feeders
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-nwis-wq%2Fazure-template-with-servicebus.json)
 
-This source now ships transport-split Kafka, MQTT, and AMQP containers. The MQTT image (`ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-mqtt:latest`) publishes retained MQTT 5 binary-mode CloudEvents on `hydro/us/usgs/usgs-nwis-wq/...`. The AMQP image (`ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-amqp:latest`) publishes the same CloudEvents to a broker address or Azure Service Bus queue.
+### Kafka — bring your own Event Hub / Kafka
 
-Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, and `azure-template-with-servicebus.json`.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-nwis-wq%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before onboarding consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full per-image auth and environment settings.
+- Select Fabric Notebook/Fabric ACI/Azure ACI based on your runtime and operational requirements.

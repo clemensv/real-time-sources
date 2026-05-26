@@ -1,4 +1,4 @@
-# King County Marine Bridge Events
+# King County Marine feeder Events
 
 King County Marine publishes marine transit schedule and status updates from King County Metro marine feeds for King County water-taxi routes and sailings. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -218,8 +218,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 

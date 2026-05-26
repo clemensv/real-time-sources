@@ -1,268 +1,181 @@
-# RWS Waterwebservices Bridge to Apache Kafka, Azure Event Hubs, Fabric Event Streams, and MQTT
+# RWS Waterwebservices container images
 
-This container image provides a bridge between the Rijkswaterstaat (RWS) Waterwebservices API and Apache Kafka, Azure Event Hubs, Fabric Event Streams, and MQTT. The bridge polls real-time water level observations from approximately 785 monitoring stations across the Netherlands and forwards them to the configured endpoint.
+This document covers the published OCI container images for the RWS Waterwebservices feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
-## RWS Waterwebservices API
+## Why this container
 
-Rijkswaterstaat is the executive agency of the Dutch Ministry of Infrastructure and Water Management. The Waterwebservices API provides free, unauthenticated access to real-time water level measurements (WATHTE) from surface water stations across the Netherlands, updated every 10 minutes. The data produces approximately 113,000 readings per day.
+The RWS Waterwebservices source is exposed as a polling API upstream. These container images package polling cadence control, stateful dedupe, CloudEvents production, and transport/auth wiring so operators can deploy a ready-to-run feeder instead of building source-specific integration code.
 
-## Functionality
+## What ships in the box
 
-The bridge fetches water level data from the RWS API and writes it to a Kafka topic as [CloudEvents](https://cloudevents.io/) in JSON format, documented in [EVENTS.md](EVENTS.md). Station reference data is emitted at startup, followed by continuous water level observations. Previously seen readings are tracked in a state file to prevent duplicates.
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-rws-waterwebservices` | Apache Kafka 2.x | JSON CloudEvents on one topic; key template `{station_code}` |
+| `ghcr.io/clemensv/real-time-sources-rws-waterwebservices-mqtt` | MQTT 5.0 | Unified-Namespace topic template `(see EVENTS.md)` |
+| `ghcr.io/clemensv/real-time-sources-rws-waterwebservices-amqp` | AMQP 1.0 | Binary CloudEvents to AMQP node `rws-waterwebservices` |
 
-## Database Schemas and Handling
+Event families in this source:
 
-If you want to build a full data pipeline with all events ingested into a database, the integration with Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md).
+- **NL.RWS.Waterwebservices** — `Station`, `WaterLevelObservation`.
 
-## Installing the Container Image
+## Image contract
 
-Pull the container image from the GitHub Container Registry:
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.10-slim` (source Dockerfiles) |
+| Default entry point | Kafka `["python", "-m", "rws_waterwebservices", "feed"]`; MQTT `["python", "-m", "rws_waterwebservices_mqtt", "feed"]`; AMQP `["python", "-m", "rws_waterwebservices_amqp", "feed"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | process exits cleanly on `SIGTERM` |
+| Persistent state | `STATE_FILE`; mount a host volume for restart-safe dedupe/checkpoint behavior |
+| Image tags | `:latest` and immutable release/sha tags published from repository CI |
 
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-rws-waterwebservices:latest
+## Installing the container images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-rws-waterwebservices:latest
+docker pull ghcr.io/clemensv/real-time-sources-rws-waterwebservices-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-rws-waterwebservices-amqp:latest
 ```
 
-## Using the Container Image
+## Using the Kafka image
 
-### With Azure Event Hubs or Fabric Event Streams
+### With a Kafka broker (SASL/PLAIN)
 
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-rws-waterwebservices:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/rws-waterwebservices.json \
+  -e KAFKA_BOOTSTRAP_SERVERS="<host:port>" \
+  -e KAFKA_TOPIC="<topic>" \
+  -e SASL_USERNAME="<username>" \
+  -e SASL_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-rws-waterwebservices:latest
 ```
 
-### With a Kafka Broker
+### With Azure Event Hubs / Fabric Event Streams
 
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-rws-waterwebservices:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/rws-waterwebservices.json \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-rws-waterwebservices:latest
 ```
 
-### Preserving State Between Restarts
+## Using the MQTT image
 
-Mount a volume and set the `STATE_FILE` environment variable to persist deduplication state:
+### With a generic MQTT 5 broker (username/password)
 
-```shell
-$ docker run --rm \
-    -v /path/to/state:/mnt/fileshare \
-    -e STATE_FILE='/mnt/fileshare/rws_state.json' \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-rws-waterwebservices:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/rws-waterwebservices.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-rws-waterwebservices-mqtt:latest
 ```
 
-## Environment Variables
+### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
 
-### `CONNECTION_STRING`
-
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs or Fabric Event Streams.
-
-### `KAFKA_BOOTSTRAP_SERVERS`
-
-The address of the Kafka broker. Provide a comma-separated list of host and port pairs.
-
-### `KAFKA_TOPIC`
-
-The Kafka topic where messages will be produced.
-
-### `SASL_USERNAME`
-
-Username for SASL PLAIN authentication.
-
-### `SASL_PASSWORD`
-
-Password for SASL PLAIN authentication.
-
-### `POLLING_INTERVAL`
-
-Polling interval in seconds. Default: `600` (10 minutes).
-
-### `STATE_FILE`
-
-Path to the deduplication state file. Default: `~/.rws_waterwebservices_state.json`.
-
-## Azure Deployment
-
-Deploy using the provided ARM template:
-
-```shell
-$ az deployment group create \
-    --resource-group <resource-group> \
-    --template-file azure-template.json \
-    --parameters connectionStringSecret='<connection-string>'
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/rws-waterwebservices.json \
+  -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883" \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
+  -e MQTT_CLIENT_ID="<unique-client-id>" \
+  ghcr.io/clemensv/real-time-sources-rws-waterwebservices-mqtt:latest
 ```
+
+## Using the AMQP image
+
+### With AMQP 1.0 and Microsoft Entra ID (CBS put-token)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/rws-waterwebservices.json \
+  -e AMQP_HOST="<namespace>.servicebus.windows.net" \
+  -e AMQP_PORT=5671 \
+  -e AMQP_TLS=true \
+  -e AMQP_ADDRESS="rws-waterwebservices" \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE="https://servicebus.azure.net/.default" \
+  -e AMQP_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
+  ghcr.io/clemensv/real-time-sources-rws-waterwebservices-amqp:latest
+```
+
+### With AMQP 1.0 and SAS-token CBS
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/rws-waterwebservices.json \
+  -e AMQP_HOST="servicebus-emulator" \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS="rws-waterwebservices" \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey" \
+  -e AMQP_SAS_KEY="<sas-key>" \
+  ghcr.io/clemensv/real-time-sources-rws-waterwebservices-amqp:latest
+```
+
+## Environment variables
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `CONNECTION_STRING` | Event Hubs/Fabric-style connection string (optional alternative to explicit Kafka variables). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list. |
+| `KAFKA_TOPIC` | Kafka destination topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials for Kafka. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for `MQTT_AUTH_MODE=password`. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID. |
+| `MQTT_CLIENT_ID` | MQTT client ID (must be unique per broker). |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `AMQP_BROKER_URL` | Full AMQP URL form (`amqp://` or `amqps://`). |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component endpoint settings when URL form is not used. |
+| `AMQP_ADDRESS` | AMQP node/address name. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra-ID CBS settings. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token CBS settings. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frws-waterwebservices%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frws-waterwebservices%2Fazure-template-with-eventhub.json)
 
-## MQTT/UNS Container Image
+### AMQP — provision a new Azure Service Bus namespace
 
-A separate container image publishes the same data as MQTT 5.0 binary-mode
-CloudEvents into a Unified Namespace topic tree:
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frws-waterwebservices%2Fazure-template-with-servicebus.json)
 
-```
-hydro/nl/rws/rws-waterwebservices/{station_code}/info
-hydro/nl/rws/rws-waterwebservices/{station_code}/water-level
-```
+### Kafka — bring your own Event Hub / Kafka
 
-### Installing
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Frws-waterwebservices%2Fazure-template.json)
 
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-rws-waterwebservices-mqtt:latest
-```
+## Related
 
-### Running
-
-```shell
-$ docker run --rm \
-    -e MQTT_BROKER_URL='mqtt://your-broker:1883' \
-    ghcr.io/clemensv/real-time-sources-rws-waterwebservices-mqtt:latest
-```
-
-### MQTT Wildcard Examples
-
-Subscribe to all events from all stations:
-
-```
-hydro/nl/rws/rws-waterwebservices/#
-```
-
-Subscribe to all water-level observations:
-
-```
-hydro/nl/rws/rws-waterwebservices/+/+/water-level
-```
-
-Subscribe to all events from a specific water body (e.g. Hoek van Holland):
-
-```
-hydro/nl/rws/rws-waterwebservices/{station_code}/#
-```
-
-### MQTT Environment Variables
-
-#### `MQTT_BROKER_URL`
-
-Full MQTT broker URL (e.g. `mqtt://host:1883` or `mqtts://host:8883`).
-
-#### `MQTT_HOST`
-
-MQTT broker hostname (alternative to `MQTT_BROKER_URL`).
-
-#### `MQTT_PORT`
-
-MQTT broker port. Default: `1883` (or `8883` if TLS).
-
-#### `MQTT_USERNAME`
-
-Username for MQTT broker authentication.
-
-#### `MQTT_PASSWORD`
-
-Password for MQTT broker authentication.
-
-#### `MQTT_TLS`
-
-Enable TLS. Set to `1`, `true`, or `yes`.
-
-#### `MQTT_CLIENT_ID`
-
-MQTT client ID. Default: auto-generated.
-
-#### `MQTT_CONTENT_MODE`
-
-CloudEvents content mode: `binary` (default) or `structured`.
-
-#### `POLLING_INTERVAL`
-
-Polling interval in seconds. Default: `600` (10 minutes).
-
-#### `ONCE_MODE`
-
-Exit after one polling cycle. Set to `1`, `true`, or `yes`.
-
-#### `STATE_FILE`
-
-Path to the deduplication state file. Default: `~/.rws_waterwebservices_mqtt_state.json`.
-
-## AMQP 1.0 image
-
-Image: `ghcr.io/clemensv/real-time-sources-rws-waterwebservices-amqp:latest`
-
-The AMQP image publishes the same reference and telemetry CloudEvents as the Kafka and MQTT variants, but targets queue-oriented AMQP 1.0 consumers such as ActiveMQ Artemis, RabbitMQ AMQP 1.0, Qpid Dispatch, Azure Service Bus, and Azure Event Hubs.
-
-### Generic AMQP broker (SASL PLAIN)
-
-```bash
-docker run --rm \
-  -e AMQP_BROKER_URL=amqp://user:password@broker:5672/rws-waterwebservices \
-  -e AMQP_AUTH_MODE=password \
-  ghcr.io/clemensv/real-time-sources-rws-waterwebservices-amqp:latest
-```
-
-### Azure Service Bus / Event Hubs (Entra CBS)
-
-```bash
-docker run --rm \
-  -e AMQP_HOST=<namespace>.servicebus.windows.net \
-  -e AMQP_PORT=5671 \
-  -e AMQP_TLS=true \
-  -e AMQP_ADDRESS=rws-waterwebservices \
-  -e AMQP_AUTH_MODE=entra \
-  -e AMQP_ENTRA_AUDIENCE=https://servicebus.azure.net/.default \
-  ghcr.io/clemensv/real-time-sources-rws-waterwebservices-amqp:latest
-```
-
-### Service Bus emulator / SAS CBS
-
-```bash
-docker run --rm \
-  -e AMQP_HOST=servicebus-emulator \
-  -e AMQP_PORT=5672 \
-  -e AMQP_ADDRESS=rws-waterwebservices \
-  -e AMQP_AUTH_MODE=sas \
-  -e AMQP_SAS_KEY_NAME=RootManageSharedAccessKey \
-  -e AMQP_SAS_KEY=<emulator-key> \
-  ghcr.io/clemensv/real-time-sources-rws-waterwebservices-amqp:latest
-```
-
-### AMQP environment variables
-
-| Variable | Description | Default |
-|---|---|---|
-| `AMQP_BROKER_URL` | Full AMQP URL; path becomes the address when present. | empty |
-| `AMQP_HOST` / `AMQP_PORT` | Broker host and port when not using `AMQP_BROKER_URL`. | `localhost` / `5672` or `5671` with TLS |
-| `AMQP_ADDRESS` | Queue, topic, or event hub name. | `rws-waterwebservices` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `AMQP_AUTH_MODE=password`. | empty |
-| `AMQP_TLS` | Enable TLS for AMQP. | `false` (`true` for Entra deployments) |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
-| `AMQP_ENTRA_AUDIENCE` | Token audience for CBS Entra auth. | `https://servicebus.azure.net/.default` |
-| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed identity client id. | empty |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS policy and key for CBS SAS auth / emulator. | empty |
-| `AMQP_CONTENT_MODE` | CloudEvents content mode. | `binary` |
-| `MOCK_MODE` | Emit deterministic reference + telemetry mock events and exit; used by Docker E2E. | `false` |
-
-Deploy to Azure with `azure-template-with-servicebus.json` (mirrored at `infra/azure-template-amqp.json`). The template provisions a Service Bus namespace and queue, user-assigned managed identity, Data Sender role assignment, ACI container group, Log Analytics workspace, and Azure Files state share.
-
+- [README.md](README.md) — project overview and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
+- [`xreg/rws_waterwebservices.xreg.json`](xreg/rws_waterwebservices.xreg.json) — source contract used to generate producer bindings.

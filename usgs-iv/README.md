@@ -1,158 +1,165 @@
-# USGS Water Services - Instantaneous Value Service Usage Guide
+# USGS Instantaneous Values feeder
+
+This feeder turns the upstream USGS Instantaneous Values hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+This bridge publishes the USGS Instantaneous Values source as a transport-agnostic event stream so downstream systems subscribe once and avoid re-implementing poll scheduling, retry handling, dedupe state, CloudEvents mapping, and schema lifecycle management.
+
+- **Flood and water-risk operations** — power near-real-time threshold monitoring and alert pipelines.
+- **Infrastructure operations** — feed lock/port/river-management dashboards and operations centers.
+- **Environmental analytics** — ingest standardized events into Fabric Eventhouse, ADX, or lakehouse systems.
+- **Insurance and resilience workflows** — drive trigger-based monitoring and post-event replay analysis.
+- **Research and public-data products** — maintain reproducible timelines without source-specific ETL glue.
 
 ## Overview
 
-**USGS-IV** is a tool designed to interact with the [USGS Water Services](https://waterservices.usgs.gov/) Instantaneous Value Service API to fetch water level data for rivers in the United States. The tool can retrieve water level data from individual stations, list available stations, or continuously poll the API to send water level updates to a Kafka topic.
+**USGS Instantaneous Values** is a poll-based bridge that emits CloudEvents across available transport variants:
 
-## Key Features:
-- **Water Level Fetching**: Retrieve current water level data for specific stations from the USGS Instantaneous Value Service API.
-- **Station Listing**: List all available monitoring stations.
-- **Kafka Integration**: Send water level updates as CloudEvents to a Kafka topic, supporting Microsoft Event Hubs and Microsoft Fabric Event Streams.
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-usgs-iv` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents on one topic, key = `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-usgs-iv-mqtt` | MQTT 5.0 broker (incl. Event Grid MQTT and Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic template `(see EVENTS.md)` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-usgs-iv-amqp` | AMQP 1.0 (incl. Service Bus and Event Hubs via CBS auth) | Binary CloudEvents to AMQP node `usgs-iv` |
 
-## Installation
+All variants share:
 
-The tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/) or get it from the Microsoft Store if you are on Windows.
+- The same upstream polling logic and dedupe state model.
+- The same xRegistry contract (`xreg/usgs_iv.xreg.json`).
+- The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
 
-### Installation Steps
+## Key features
 
-Once Python is installed, you can install the tool from the command line as follows:
+- Poll-based ingestion with restart-safe dedupe/checkpoint persistence via `USGS_LAST_POLLED_FILE`.
+- Consistent CloudEvents identities and schemas across transport variants.
+- Contract-first event modeling from the checked-in xRegistry manifest.
+- Deployment options for local Docker, Microsoft Fabric, and Azure Container Instances.
+- Reference and telemetry event families aligned for downstream joins and enrichment.
+
+## Repository layout
+
+```text
+usgs-iv/
+  xreg/usgs_iv.xreg.json                 # shared xRegistry contract
+  usgs_iv/
+  usgs_iv_amqp/
+  usgs_iv_amqp_producer/
+  usgs_iv_mqtt/
+  usgs_iv_mqtt_producer/
+  usgs_iv_producer/
+  Dockerfile                         # Kafka feeder image
+  Dockerfile.mqtt                    # MQTT feeder image
+  Dockerfile.amqp                    # AMQP feeder image
+  kql/                               # KQL/Eventhouse schema
+  notebook/                          # Fabric notebook feeder
+  tests/                             # unit + integration tests
+```
+
+## Prerequisites
+
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound HTTPS access to the upstream source API.
+- Network access to your Kafka broker / MQTT broker / AMQP 1.0 endpoint.
+- A writable host directory mounted to persist `USGS_LAST_POLLED_FILE` across container restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `USGS_LAST_POLLED_FILE` so dedupe/checkpoint state survives restarts.
+
+### Kafka
 
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=usgs-iv
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_LAST_POLLED_FILE=/state/usgs-iv.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-usgs-iv:latest
 ```
 
-If you clone the repository, you can install the tool as follows:
+### MQTT (Unified Namespace)
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/usgs-iv
-pip install .
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_LAST_POLLED_FILE=/state/usgs-iv.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-usgs-iv-mqtt:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
+Topic template:
 
-### Fabric notebook hosting
+```text
+(see EVENTS.md)
+```
 
-A scheduled-execution variant runs the bridge inside a Microsoft Fabric notebook (`notebook/usgs-iv-feed.ipynb`) deployed via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1); the notebook invokes `usgs-iv feed --once` per scheduled tick and persists dedupe state to the attached Lakehouse.
-
-## How to Use
-
-After installation, the tool can be run using the `usgs-iv` command. It supports multiple subcommands:
-- **List Stations (`sites`)**: Fetch and display all available monitoring stations.
-- **Feed Stations (`feed`)**: Continuously poll usgs-iv API for water levels and send updates to a Kafka topic.
-
-### **List Stations (`sites`)**
-
-Fetches and displays all available monitoring stations from the usgs-iv API.
-
-#### Example Usage:
+### AMQP 1.0
 
 ```bash
-usgs-iv sites
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_LAST_POLLED_FILE=/state/usgs-iv.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/usgs-iv" \
+  ghcr.io/clemensv/real-time-sources-usgs-iv-amqp:latest
 ```
 
-### **Feed Stations (`feed`)**
+For Entra-ID and SAS-CBS AMQP authentication variants, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image).
 
-Polls the usgs-iv API for water level measurements and sends them as
-CloudEvents to a Kafka topic. The events are formatted using CloudEvents
-structured JSON format and described in [EVENTS.md](EVENTS.md).
+## Configuration reference
 
-- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
-- `--kafka-topic`: Kafka topic to send messages to.
-- `--sasl-username`: Username for SASL PLAIN authentication.
-- `--sasl-password`: Password for SASL PLAIN authentication.
-- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream [connection string](#connection-string-for-microsoft-event-hubs-or-fabric-event-streams) (overrides other Kafka parameters).
+The complete environment-variable matrix for each image is documented in [CONTAINER.md](CONTAINER.md). Runtime entry points come from image `CMD`: Kafka ["python", "-m", "usgs_iv", "feed"] MQTT ["python", "-m", "usgs_iv_mqtt", "feed"] AMQP ["python", "-m", "usgs_iv_amqp", "feed"].
 
+## Data model
 
-#### Example Usage:
+This feeder emits the following event families:
 
-```bash
-usgs-iv feed --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-topic "<topic_name>" --sasl-username "<username>" --sasl-password "<password>" --polling-interval 60
-```
+- **USGS.Sites** — `Site`.
+- **USGS.SiteTimeseries** — `SiteTimeseries`.
+- **USGS.InstantaneousValues** — `OtherParameter`, `Precipitation`, `Streamflow`, `GageHeight`, `WaterTemperature`, `DissolvedOxygen`, `pH`, `SpecificConductance`, `Turbidity`, `AirTemperature`, `WindSpeed`, `WindDirection`, `RelativeHumidity`, `BarometricPressure`, `TurbidityFNU`, `fDOM`, `ReservoirStorage`, `LakeElevationNGVD29`, `WaterDepth`, `EquipmentStatus`, `TidallyFilteredDischarge`, `WaterVelocity`, `EstuaryElevationNGVD29`, `LakeElevationNAVD88`, `Salinity`, `GateOpening`.
 
-Alternatively, using a connection string for Microsoft Event Hubs or Microsoft Fabric Event Streams:
+Event field descriptions, schema references, and routing details are documented in [EVENTS.md](EVENTS.md).
 
-```bash
-usgs-iv feed --connection-string "<your_connection_string>" --polling-interval 60
-```
+## Deploying into Microsoft Fabric
 
-### Connection String for Microsoft Event Hubs or Fabric Event Streams
+USGS Instantaneous Values supports both Fabric hosting patterns used in this repository.
 
-The connection string format is as follows:
+### Fabric Notebook feeder
 
-```
-Endpoint=sb://<your-event-hubs-namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy-name>;SharedAccessKey=<access-key>;EntityPath=<event-hub-name>
-```
+This source includes a notebook feeder under [`notebook/`](notebook/) and `catalog.json` marks `notebook: true`.
 
-When provided, the connection string is parsed to extract the Kafka configuration parameters:
-- **Bootstrap Servers**: Derived from the `Endpoint` value.
-- **Kafka Topic**: Derived from the `EntityPath` value.
-- **SASL Username and Password**: The username is set to `'$ConnectionString'`, and the password is the entire connection string.
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#usgs-iv/fabric-notebook)
 
-### Environment Variables
-The tool supports the following environment variables to avoid passing them via the command line:
-- `KAFKA_BOOTSTRAP_SERVERS`: Kafka bootstrap servers (comma-separated list).
-- `KAFKA_TOPIC`: Kafka topic for publishing.
-- `SASL_USERNAME`: SASL username for Kafka authentication.
-- `SASL_PASSWORD`: SASL password for Kafka authentication.
-- `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
-- `POLLING_INTERVAL`: Polling interval in seconds.
+### Fabric ACI feeder
 
-## State Management
+Use the ACI deployment flow for always-on container execution into a Fabric Event Stream custom endpoint.
 
-The tool handles state internally for efficient API polling and sending updates.
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#usgs-iv/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Azure templates shipped with this source:
 
-### Option 1: Bring your own Event Hub
+### AMQP — bring your own AMQP broker
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-iv%2Fazure-template-amqp.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-iv%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-iv%2Fazure-template-with-eventhub.json)
 
-## Transports
+### Kafka — bring your own Event Hub / Kafka
 
-This source now ships separate Kafka, MQTT, and AMQP containers over the same xRegistry contract. The Kafka image is the best fit when consumers need replay, batch catch-up, or a single ordered stream. The MQTT image (`ghcr.io/clemensv/real-time-sources-usgs-iv-mqtt:latest`) is the better fit for operational dashboards and Unified Namespace subscribers that want to subscribe directly to the current state or live event slice for this source.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-iv%2Fazure-template.json)
 
-The MQTT contract is source-specific: MQTT/5.0 transport variants for USGS site metadata. Topics are retained QoS-1 site info leaves under hydro/us/usgs/usgs-iv/{site_no}/info. The manifest intentionally uses existing schema field names site_no and parameter_cd rather than adding aliases.
+## Next steps
 
-MQTT publishes binary-mode CloudEvents with JSON payloads and CloudEvent attributes in MQTT 5 user properties. Topic patterns from `xreg/usgs_iv.xreg.json`:
-
-| Topic pattern | Message type | Delivery |
-|---|---|---|
-| `hydro/us/usgs/usgs-iv/{site_no}/info` | `USGS.Sites.Site` | QoS 1, retain=true, expiry=2592000s |
-
-Four Azure Container Instance deployment shapes are documented for this source:
-
-| Transport | Template |
-|---|---|
-| Kafka, bring your own Event Hub or compatible broker | `azure-template.json` |
-| Kafka, create an Event Hubs namespace and hub | `azure-template-with-eventhub.json` |
-| MQTT, bring your own MQTT 5 broker | `azure-template-mqtt.json` |
-| MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
-
-See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.
-
-## AMQP 1.0 companion feeder
-
-This source also ships an AMQP 1.0 companion container, `ghcr.io/clemensv/real-time-sources-usgs-iv-amqp:latest`, for queue-oriented consumers using generic AMQP brokers or Azure Service Bus. It emits the same CloudEvents and payload schemas as the Kafka and MQTT variants on a single broker address (default `usgs-iv`).
-
-```bash
-docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=usgs-iv   ghcr.io/clemensv/real-time-sources-usgs-iv-amqp:latest
-```
-
-[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-iv%2Fazure-template-amqp.json)
-
+- Review [EVENTS.md](EVENTS.md) before onboarding consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full per-image auth and environment settings.
+- Select Fabric Notebook/Fabric ACI/Azure ACI based on your runtime and operational requirements.

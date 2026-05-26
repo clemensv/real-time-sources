@@ -1,4 +1,4 @@
-# Nepal BIPAD Portal — Real-Time River Monitoring Bridge Events
+# Nepal BIPAD Hydrology feeder Events
 
 Nepal BIPAD River Monitoring publishes river water level observations from Nepal's BIPAD Portal for river monitoring stations in Nepal. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -198,7 +198,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 

@@ -1,133 +1,190 @@
-# USGS NWIS Water Quality bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# USGS NWIS Water Quality container images
 
-This container image provides a bridge between the [USGS Water Services](https://waterservices.usgs.gov/)
-Instantaneous Values Service (water quality parameters) and Apache Kafka, Azure Event Hubs, and
-Fabric Event Streams. The bridge fetches continuous water quality sensor data
-(dissolved oxygen, pH, temperature, turbidity, specific conductance, nitrate) and
-forwards readings to the configured Kafka endpoints.
+This document covers the published OCI container images for the USGS NWIS Water Quality feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
-## Functionality
+## Why this container
 
-The bridge retrieves water quality data from the USGS Instantaneous Values Service
-and writes readings to a Kafka topic as [CloudEvents](https://cloudevents.io/) in
-JSON format, documented in [EVENTS.md](EVENTS.md).
+The USGS NWIS Water Quality source is exposed as a polling API upstream. These container images package polling cadence control, stateful dedupe, CloudEvents production, and transport/auth wiring so operators can deploy a ready-to-run feeder instead of building source-specific integration code.
 
-## Database Schemas and Handling
+## What ships in the box
 
-If you want to build a full data pipeline with all events ingested into a database,
-the integration with Fabric Eventhouse and Azure Data Explorer is described in
-[DATABASE.md](../DATABASE.md).
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-usgs-nwis-wq` | Apache Kafka 2.x | JSON CloudEvents on one topic; key template `{site_number}/{parameter_code}` |
+| `ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-mqtt` | MQTT 5.0 | Unified-Namespace topic template `(see EVENTS.md)` |
+| `ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-amqp` | AMQP 1.0 | Binary CloudEvents to AMQP node `usgs-nwis-wq` |
 
-## Installing the Container Image
+Event families in this source:
 
-Pull the container image from the GitHub Container Registry:
+- **USGS.WaterQuality.Sites** — `MonitoringSite`.
+- **USGS.WaterQuality.Readings** — `WaterQualityReading`.
 
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-usgs-nwis-wq:latest
+## Image contract
+
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.10-slim` (source Dockerfiles) |
+| Default entry point | Kafka `["python", "-m", "usgs_nwis_wq", "feed"]`; MQTT `["python", "-m", "usgs_nwis_wq_mqtt", "feed"]`; AMQP `["python", "-m", "usgs_nwis_wq_amqp", "feed"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | process exits cleanly on `SIGTERM` |
+| Persistent state | `USGS_WQ_LAST_POLLED_FILE`; mount a host volume for restart-safe dedupe/checkpoint behavior |
+| Image tags | `:latest` and immutable release/sha tags published from repository CI |
+
+## Installing the container images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-usgs-nwis-wq:latest
+docker pull ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-amqp:latest
 ```
 
-To use it as a base image in a Dockerfile:
+## Using the Kafka image
 
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-usgs-nwis-wq:latest
+### With a Kafka broker (SASL/PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_WQ_LAST_POLLED_FILE=/state/usgs-nwis-wq.json \
+  -e KAFKA_BOOTSTRAP_SERVERS="<host:port>" \
+  -e KAFKA_TOPIC="<topic>" \
+  -e SASL_USERNAME="<username>" \
+  -e SASL_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-usgs-nwis-wq:latest
 ```
 
-## Using the Container Image
+### With Azure Event Hubs / Fabric Event Streams
 
-The container starts the bridge, reading water quality data from USGS and writing
-to Kafka, Azure Event Hubs, or Fabric Event Streams.
-
-### With a Kafka Broker
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-usgs-nwis-wq:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_WQ_LAST_POLLED_FILE=/state/usgs-nwis-wq.json \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-usgs-nwis-wq:latest
 ```
 
-### With Azure Event Hubs or Fabric Event Streams
+## Using the MQTT image
 
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-usgs-nwis-wq:latest
+### With a generic MQTT 5 broker (username/password)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_WQ_LAST_POLLED_FILE=/state/usgs-nwis-wq.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-mqtt:latest
 ```
 
-### Preserving State Between Restarts
+### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
 
-```shell
-$ docker run --rm \
-    -v /path/to/state:/mnt/state \
-    -e USGS_WQ_LAST_POLLED_FILE='/mnt/state/usgs_wq_last_polled.json' \
-    ... other args ... \
-    ghcr.io/clemensv/real-time-sources-usgs-nwis-wq:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_WQ_LAST_POLLED_FILE=/state/usgs-nwis-wq.json \
+  -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883" \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
+  -e MQTT_CLIENT_ID="<unique-client-id>" \
+  ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-mqtt:latest
 ```
 
-## Environment Variables
+## Using the AMQP image
 
-### `CONNECTION_STRING`
+### With AMQP 1.0 and Microsoft Entra ID (CBS put-token)
 
-An Azure Event Hubs-style connection string for Azure Event Hubs or Fabric Event Streams.
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_WQ_LAST_POLLED_FILE=/state/usgs-nwis-wq.json \
+  -e AMQP_HOST="<namespace>.servicebus.windows.net" \
+  -e AMQP_PORT=5671 \
+  -e AMQP_TLS=true \
+  -e AMQP_ADDRESS="usgs-nwis-wq" \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE="https://servicebus.azure.net/.default" \
+  -e AMQP_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
+  ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-amqp:latest
+```
 
-### `KAFKA_BOOTSTRAP_SERVERS`
+### With AMQP 1.0 and SAS-token CBS
 
-Kafka broker addresses (comma-separated host:port pairs).
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_WQ_LAST_POLLED_FILE=/state/usgs-nwis-wq.json \
+  -e AMQP_HOST="servicebus-emulator" \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS="usgs-nwis-wq" \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey" \
+  -e AMQP_SAS_KEY="<sas-key>" \
+  ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-amqp:latest
+```
 
-### `KAFKA_TOPIC`
+## Environment variables
 
-Kafka topic for message production.
+### Kafka image
 
-### `SASL_USERNAME`
+| Variable | Description |
+|---|---|
+| `USGS_WQ_LAST_POLLED_FILE` | Path to dedupe/checkpoint state file. |
+| `CONNECTION_STRING` | Event Hubs/Fabric-style connection string (optional alternative to explicit Kafka variables). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list. |
+| `KAFKA_TOPIC` | Kafka destination topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials for Kafka. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
-Username for SASL PLAIN authentication.
+### MQTT image
 
-### `SASL_PASSWORD`
+| Variable | Description |
+|---|---|
+| `USGS_WQ_LAST_POLLED_FILE` | Path to dedupe/checkpoint state file. |
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for `MQTT_AUTH_MODE=password`. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID. |
+| `MQTT_CLIENT_ID` | MQTT client ID (must be unique per broker). |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
-Password for SASL PLAIN authentication.
+### AMQP image
 
-### `USGS_WQ_LAST_POLLED_FILE`
-
-File path for state persistence. Default: `/mnt/state/usgs_wq_last_polled.json`.
-
-### `USGS_WQ_STATES`
-
-Comma-separated state codes to poll (e.g. `MD,VA,CA`). Default: all US states and territories.
-
-### `USGS_WQ_SITES`
-
-Comma-separated USGS site numbers to poll (e.g. `01646500,01578310`). Overrides state-based polling.
-
-### `USGS_WQ_PARAMETER_CODES`
-
-Comma-separated USGS parameter codes (e.g. `00300,00010,00400`). Default: all water quality parameters.
+| Variable | Description |
+|---|---|
+| `USGS_WQ_LAST_POLLED_FILE` | Path to dedupe/checkpoint state file. |
+| `AMQP_BROKER_URL` | Full AMQP URL form (`amqp://` or `amqps://`). |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component endpoint settings when URL form is not used. |
+| `AMQP_ADDRESS` | AMQP node/address name. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra-ID CBS settings. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token CBS settings. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### MQTT — bring your own broker
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-nwis-wq%2Fazure-template-mqtt.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-nwis-wq%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-nwis-wq%2Fazure-template-with-eventgrid-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-nwis-wq%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace
 
-## MQTT / AMQP transport variants
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-nwis-wq%2Fazure-template-with-servicebus.json)
 
-* MQTT image: `docker pull ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-mqtt:latest`; configure `MQTT_BROKER_URL`, optional `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_TLS`, `MQTT_CLIENT_ID`, and `ONCE_MODE`.
-* AMQP image: `docker pull ghcr.io/clemensv/real-time-sources-usgs-nwis-wq-amqp:latest`; configure `AMQP_HOST`/`AMQP_BROKER_URL`, `AMQP_ADDRESS`, `AMQP_AUTH_MODE` (`password`, `entra`, or `sas`), credentials, `AMQP_TLS`, and `ONCE_MODE`.
-* Azure templates: MQTT BYO broker (`azure-template-mqtt.json`), MQTT with Event Grid (`azure-template-with-eventgrid-mqtt.json`), and AMQP with Service Bus (`azure-template-with-servicebus.json`).
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-nwis-wq%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md) — project overview and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
+- [`xreg/usgs_nwis_wq.xreg.json`](xreg/usgs_nwis_wq.xreg.json) — source contract used to generate producer bindings.

@@ -1,4 +1,4 @@
-# USGS NWIS Water Quality - Continuous Water Quality Sensor Data Events
+# USGS NWIS Water Quality feeder Events
 
 USGS NWIS Water Quality publishes continuous water-quality sensor readings from the U.S. Geological Survey (USGS) Water Services API for United States water-quality monitoring sites. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -198,4 +198,3 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/usgs_nwis_wq.xreg.json`](xreg/usgs_nwis_wq.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- USGS Water Services: <https://waterservices.usgs.gov/>

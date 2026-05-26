@@ -1,4 +1,4 @@
-# USDA NRCS SNOTEL Snow and Weather Bridge Events
+# SNOTEL Snow feeder Events
 
 MQTT 5 variant of snotel events with UNS topics for wildcard subscribers.
 
@@ -178,7 +178,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 

@@ -1,4 +1,4 @@
-# RWS Waterwebservices (Netherlands) Water Level Bridge Events
+# RWS Waterwebservices feeder Events
 
 RWS Waterwebservices publishes water level observations from Rijkswaterstaat for Dutch water monitoring locations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -180,11 +180,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/rws_waterwebservices.xreg.json`](xreg/rws_waterwebservices.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- Rijkswaterstaat Waterwebservices: <https://waterwebservices.rijkswaterstaat.nl/>

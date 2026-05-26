@@ -1,4 +1,4 @@
-# CDEC California Reservoirs Bridge Events
+# CDEC Reservoirs feeder Events
 
 CDEC California Reservoirs publishes reservoir storage and elevation observations from the California Data Exchange Center (CDEC) for California reservoirs. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -8,6 +8,7 @@ CDEC California Reservoirs publishes reservoir storage and elevation observation
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
 - **Identity:** `{station_id}/{sensor_num}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -131,7 +132,7 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 

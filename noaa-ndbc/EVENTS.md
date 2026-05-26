@@ -1,4 +1,4 @@
-# NOAA NDBC Buoy Observations Poller Events
+# NOAA NDBC feeder Events
 
 MQTT 5 variant of noaa-ndbc events with UNS topics for wildcard subscribers.
 
