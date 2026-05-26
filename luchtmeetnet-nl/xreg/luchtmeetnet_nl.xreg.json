@@ -43,6 +43,52 @@
         "#/messagegroups/nl.rivm.luchtmeetnet.components"
       ],
       "description": "Kafka producer endpoint for Luchtmeetnet NL CloudEvents on the `luchtmeetnet-nl` topic keyed by `{formula}`."
+    },
+    "nl.rivm.luchtmeetnet.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/nl.rivm.luchtmeetnet.mqtt",
+        "#/messagegroups/nl.rivm.luchtmeetnet.components.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for luchtmeetnet-nl CloudEvents using the documented Unified Namespace topic hierarchy."
+    },
+    "nl.rivm.luchtmeetnet.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/luchtmeetnet-nl"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/nl.rivm.luchtmeetnet.amqp",
+        "#/messagegroups/nl.rivm.luchtmeetnet.components.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for luchtmeetnet-nl CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -131,6 +177,170 @@
         }
       },
       "description": "Events from Luchtmeetnet NL covering Dutch air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "nl.rivm.luchtmeetnet.mqtt": {
+      "description": "MQTT 5 variant of nl.rivm.luchtmeetnet events with subscriber-friendly UNS topics.",
+      "messages": {
+        "nl.rivm.luchtmeetnet.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/{region}/{station_number}/{formula}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "nl.rivm.luchtmeetnet.mqtt.Measurement": {
+          "name": "Measurement",
+          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Measurement",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/{region}/{station_number}/{formula}/measurement",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "nl.rivm.luchtmeetnet.mqtt.LKI": {
+          "name": "LKI",
+          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.LKI",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/{region}/{station_number}/{formula}/lki",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.amqp": {
+      "description": "AMQP 1.0 variant of nl.rivm.luchtmeetnet events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "nl.rivm.luchtmeetnet.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_number}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "formula": {
+                "type": "uritemplate",
+                "value": "{formula}",
+                "description": "Routing attribute `formula` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.amqp.Measurement": {
+          "name": "Measurement",
+          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Measurement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_number}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "formula": {
+                "type": "uritemplate",
+                "value": "{formula}",
+                "description": "Routing attribute `formula` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "nl.rivm.luchtmeetnet.amqp.LKI": {
+          "name": "LKI",
+          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.LKI",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_number}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "formula": {
+                "type": "uritemplate",
+                "value": "{formula}",
+                "description": "Routing attribute `formula` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.components.mqtt": {
+      "description": "MQTT 5 variant of nl.rivm.luchtmeetnet.components events with subscriber-friendly UNS topics.",
+      "messages": {
+        "nl.rivm.luchtmeetnet.components.mqtt.Component": {
+          "name": "Component",
+          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet.components/messages/nl.rivm.luchtmeetnet.components.Component",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/{region}/{station_number}/{formula}/component",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "nl.rivm.luchtmeetnet.components.amqp": {
+      "description": "AMQP 1.0 variant of nl.rivm.luchtmeetnet.components events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "nl.rivm.luchtmeetnet.components.amqp.Component": {
+          "name": "Component",
+          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet.components/messages/nl.rivm.luchtmeetnet.components.Component",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{formula}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "station_number": {
+                "type": "uritemplate",
+                "value": "{station_number}",
+                "description": "Routing attribute `station_number` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

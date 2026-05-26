@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./defra_aurn_mqtt_producer_data
+pip install ./defra_aurn_mqtt_producer_mqtt_client

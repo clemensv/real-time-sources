@@ -1,3 +1,3 @@
-from .weather import Observation, Forecast, Community
+from .weather import Community, Observation, Forecast
 
-__all__ = ["Observation", "Forecast", "Community"]
+__all__ = ["Community", "Observation", "Forecast"]

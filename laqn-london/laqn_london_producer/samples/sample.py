@@ -34,6 +34,10 @@ from confluent_kafka import Producer as KafkaProducer
 
 from laqn_london_producer_kafka_producer.producer import UkKclLaqnEventProducer
 from laqn_london_producer_kafka_producer.producer import UkKclLaqnSpeciesEventProducer
+from laqn_london_producer_kafka_producer.producer import UkKclLaqnMqttEventProducer
+from laqn_london_producer_kafka_producer.producer import UkKclLaqnAmqpEventProducer
+from laqn_london_producer_kafka_producer.producer import UkKclLaqnSpeciesMqttEventProducer
+from laqn_london_producer_kafka_producer.producer import UkKclLaqnSpeciesAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -99,6 +103,102 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'uk.kcl.laqn.Species' event to Kafka topic.
     await uk_kcl_laqn_species_event_producer.send_uk_kcl_laqn_species(_species_code = 'TODO: replace me', data = _species)
     print(f"Sent 'uk.kcl.laqn.Species' event: {_species.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uk_kcl_laqn_mqtt_event_producer = UkKclLaqnMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uk_kcl_laqn_mqtt_event_producer = UkKclLaqnMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- uk.kcl.laqn.mqtt.Site ----
+    # TODO: Supply event data for the uk.kcl.laqn.mqtt.Site event
+    _site = Site()
+
+    # sends the 'uk.kcl.laqn.mqtt.Site' event to Kafka topic.
+    await uk_kcl_laqn_mqtt_event_producer.send_uk_kcl_laqn_mqtt_site(_site_code = 'TODO: replace me', data = _site)
+    print(f"Sent 'uk.kcl.laqn.mqtt.Site' event: {_site.to_json()}")
+
+    # ---- uk.kcl.laqn.mqtt.Measurement ----
+    # TODO: Supply event data for the uk.kcl.laqn.mqtt.Measurement event
+    _measurement = Measurement()
+
+    # sends the 'uk.kcl.laqn.mqtt.Measurement' event to Kafka topic.
+    await uk_kcl_laqn_mqtt_event_producer.send_uk_kcl_laqn_mqtt_measurement(_site_code = 'TODO: replace me', data = _measurement)
+    print(f"Sent 'uk.kcl.laqn.mqtt.Measurement' event: {_measurement.to_json()}")
+
+    # ---- uk.kcl.laqn.mqtt.DailyIndex ----
+    # TODO: Supply event data for the uk.kcl.laqn.mqtt.DailyIndex event
+    _daily_index = DailyIndex()
+
+    # sends the 'uk.kcl.laqn.mqtt.DailyIndex' event to Kafka topic.
+    await uk_kcl_laqn_mqtt_event_producer.send_uk_kcl_laqn_mqtt_daily_index(_site_code = 'TODO: replace me', data = _daily_index)
+    print(f"Sent 'uk.kcl.laqn.mqtt.DailyIndex' event: {_daily_index.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uk_kcl_laqn_amqp_event_producer = UkKclLaqnAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uk_kcl_laqn_amqp_event_producer = UkKclLaqnAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- uk.kcl.laqn.amqp.Site ----
+    # TODO: Supply event data for the uk.kcl.laqn.amqp.Site event
+    _site = Site()
+
+    # sends the 'uk.kcl.laqn.amqp.Site' event to Kafka topic.
+    await uk_kcl_laqn_amqp_event_producer.send_uk_kcl_laqn_amqp_site(_site_code = 'TODO: replace me', data = _site)
+    print(f"Sent 'uk.kcl.laqn.amqp.Site' event: {_site.to_json()}")
+
+    # ---- uk.kcl.laqn.amqp.Measurement ----
+    # TODO: Supply event data for the uk.kcl.laqn.amqp.Measurement event
+    _measurement = Measurement()
+
+    # sends the 'uk.kcl.laqn.amqp.Measurement' event to Kafka topic.
+    await uk_kcl_laqn_amqp_event_producer.send_uk_kcl_laqn_amqp_measurement(_site_code = 'TODO: replace me', data = _measurement)
+    print(f"Sent 'uk.kcl.laqn.amqp.Measurement' event: {_measurement.to_json()}")
+
+    # ---- uk.kcl.laqn.amqp.DailyIndex ----
+    # TODO: Supply event data for the uk.kcl.laqn.amqp.DailyIndex event
+    _daily_index = DailyIndex()
+
+    # sends the 'uk.kcl.laqn.amqp.DailyIndex' event to Kafka topic.
+    await uk_kcl_laqn_amqp_event_producer.send_uk_kcl_laqn_amqp_daily_index(_site_code = 'TODO: replace me', data = _daily_index)
+    print(f"Sent 'uk.kcl.laqn.amqp.DailyIndex' event: {_daily_index.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uk_kcl_laqn_species_mqtt_event_producer = UkKclLaqnSpeciesMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uk_kcl_laqn_species_mqtt_event_producer = UkKclLaqnSpeciesMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- uk.kcl.laqn.species.mqtt.Species ----
+    # TODO: Supply event data for the uk.kcl.laqn.species.mqtt.Species event
+    _species = Species()
+
+    # sends the 'uk.kcl.laqn.species.mqtt.Species' event to Kafka topic.
+    await uk_kcl_laqn_species_mqtt_event_producer.send_uk_kcl_laqn_species_mqtt_species(_species_code = 'TODO: replace me', data = _species)
+    print(f"Sent 'uk.kcl.laqn.species.mqtt.Species' event: {_species.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uk_kcl_laqn_species_amqp_event_producer = UkKclLaqnSpeciesAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uk_kcl_laqn_species_amqp_event_producer = UkKclLaqnSpeciesAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- uk.kcl.laqn.species.amqp.Species ----
+    # TODO: Supply event data for the uk.kcl.laqn.species.amqp.Species event
+    _species = Species()
+
+    # sends the 'uk.kcl.laqn.species.amqp.Species' event to Kafka topic.
+    await uk_kcl_laqn_species_amqp_event_producer.send_uk_kcl_laqn_species_amqp_species(_species_code = 'TODO: replace me', data = _species)
+    print(f"Sent 'uk.kcl.laqn.species.amqp.Species' event: {_species.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

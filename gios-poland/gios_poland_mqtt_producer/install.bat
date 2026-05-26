@@ -1,0 +1,2 @@
+pip install .\gios_poland_mqtt_producer_data
+pip install .\gios_poland_mqtt_producer_mqtt_client

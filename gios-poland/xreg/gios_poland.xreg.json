@@ -21,6 +21,50 @@
         "#/messagegroups/pl.gov.gios.airquality"
       ],
       "description": "Kafka producer endpoint for GIOŚ Poland Air Quality CloudEvents on the `gios-poland` topic keyed by `{station_id}`."
+    },
+    "pl.gov.gios.airquality.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/pl.gov.gios.airquality.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for gios-poland CloudEvents using the documented Unified Namespace topic hierarchy."
+    },
+    "pl.gov.gios.airquality.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/gios-poland"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/pl.gov.gios.airquality.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for gios-poland CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -104,6 +148,170 @@
         }
       },
       "description": "Events from GIOŚ Poland Air Quality covering Polish air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "pl.gov.gios.airquality.mqtt": {
+      "description": "MQTT 5 variant of pl.gov.gios.airquality events with subscriber-friendly UNS topics.",
+      "messages": {
+        "pl.gov.gios.airquality.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/pl/gios/gios-poland/{voivodeship}/{station_id}/{pollutant}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "pl.gov.gios.airquality.mqtt.Sensor": {
+          "name": "Sensor",
+          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/pl/gios/gios-poland/{voivodeship}/{station_id}/{pollutant}/sensor",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "pl.gov.gios.airquality.mqtt.Measurement": {
+          "name": "Measurement",
+          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Measurement",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/pl/gios/gios-poland/{voivodeship}/{station_id}/{pollutant}/measurement",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "pl.gov.gios.airquality.mqtt.AirQualityIndex": {
+          "name": "AirQualityIndex",
+          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.AirQualityIndex",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/pl/gios/gios-poland/{voivodeship}/{station_id}/{pollutant}/aqi",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "pl.gov.gios.airquality.amqp": {
+      "description": "AMQP 1.0 variant of pl.gov.gios.airquality events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "pl.gov.gios.airquality.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "voivodeship": {
+                "type": "uritemplate",
+                "value": "{voivodeship}",
+                "description": "Routing attribute `voivodeship` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "pollutant": {
+                "type": "uritemplate",
+                "value": "{pollutant}",
+                "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "pl.gov.gios.airquality.amqp.Sensor": {
+          "name": "Sensor",
+          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}/{sensor_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "voivodeship": {
+                "type": "uritemplate",
+                "value": "{voivodeship}",
+                "description": "Routing attribute `voivodeship` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Routing attribute `station_id` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "pollutant": {
+                "type": "uritemplate",
+                "value": "{pollutant}",
+                "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "pl.gov.gios.airquality.amqp.Measurement": {
+          "name": "Measurement",
+          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Measurement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}/{sensor_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "voivodeship": {
+                "type": "uritemplate",
+                "value": "{voivodeship}",
+                "description": "Routing attribute `voivodeship` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Routing attribute `station_id` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "pollutant": {
+                "type": "uritemplate",
+                "value": "{pollutant}",
+                "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "pl.gov.gios.airquality.amqp.AirQualityIndex": {
+          "name": "AirQualityIndex",
+          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.AirQualityIndex",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "voivodeship": {
+                "type": "uritemplate",
+                "value": "{voivodeship}",
+                "description": "Routing attribute `voivodeship` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "pollutant": {
+                "type": "uritemplate",
+                "value": "{pollutant}",
+                "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

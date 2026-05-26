@@ -1,0 +1,16 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/uba-airdata"
+LABEL org.opencontainers.image.title="Uba Airdata → AMQP 1.0 bridge"
+LABEL org.opencontainers.image.description="Publishes Uba Airdata CloudEvents over AMQP 1.0 for generic brokers and Azure Service Bus."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/uba-airdata/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+LABEL source.transport="amqp"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev libsasl2-2 libsasl2-modules && rm -rf /var/lib/apt/lists/*
+COPY . /app
+RUN pip install --no-cache-dir ./uba_airdata_amqp_producer/uba_airdata_amqp_producer_data  && pip install --no-cache-dir ./uba_airdata_amqp_producer/uba_airdata_amqp_producer_amqp_producer  && pip install --no-cache-dir ./uba_airdata_amqp  && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev && rm -rf /root/.cache /var/lib/apt/lists/*
+ENV AMQP_BROKER_URL=""
+ENV AMQP_ADDRESS="uba-airdata"
+CMD ["python", "-m", "uba_airdata_amqp", "feed"]

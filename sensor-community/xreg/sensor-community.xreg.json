@@ -20,6 +20,50 @@
       "messagegroups": [
         "#/messagegroups/io.sensor.community"
       ]
+    },
+    "io.sensor.community.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/io.sensor.community.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for sensor-community CloudEvents using the documented Unified Namespace topic hierarchy."
+    },
+    "io.sensor.community.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/sensor-community"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/io.sensor.community.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for sensor-community CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -64,6 +108,88 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/io.sensor.community.jstruct/schemas/io.sensor.community.SensorReading"
+        }
+      }
+    },
+    "io.sensor.community.mqtt": {
+      "description": "MQTT 5 variant of io.sensor.community events with subscriber-friendly UNS topics.",
+      "messages": {
+        "io.sensor.community.mqtt.SensorInfo": {
+          "name": "SensorInfo",
+          "basemessageurl": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorInfo",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/intl/sensor-community/sensor-community/{country}/{geohash5}/{sensor_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "io.sensor.community.mqtt.SensorReading": {
+          "name": "SensorReading",
+          "basemessageurl": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorReading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/intl/sensor-community/sensor-community/{country}/{geohash5}/{sensor_id}/reading",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "io.sensor.community.amqp": {
+      "description": "AMQP 1.0 variant of io.sensor.community events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "io.sensor.community.amqp.SensorInfo": {
+          "name": "SensorInfo",
+          "basemessageurl": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorInfo",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{sensor_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "country": {
+                "type": "uritemplate",
+                "value": "{country}",
+                "description": "Routing attribute `country` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "geohash5": {
+                "type": "uritemplate",
+                "value": "{geohash5}",
+                "description": "Routing attribute `geohash5` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "io.sensor.community.amqp.SensorReading": {
+          "name": "SensorReading",
+          "basemessageurl": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{sensor_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "country": {
+                "type": "uritemplate",
+                "value": "{country}",
+                "description": "Routing attribute `country` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "geohash5": {
+                "type": "uritemplate",
+                "value": "{geohash5}",
+                "description": "Routing attribute `geohash5` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
         }
       }
     }

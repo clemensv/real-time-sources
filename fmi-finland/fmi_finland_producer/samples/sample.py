@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from fmi_finland_producer_kafka_producer.producer import FiFmiOpendataAirqualityEventProducer
+from fmi_finland_producer_kafka_producer.producer import FiFmiOpendataAirqualityMqttEventProducer
+from fmi_finland_producer_kafka_producer.producer import FiFmiOpendataAirqualityAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +74,54 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'fi.fmi.opendata.airquality.Observation' event to Kafka topic.
     await fi_fmi_opendata_airquality_event_producer.send_fi_fmi_opendata_airquality_observation(_fmisid = 'TODO: replace me', data = _observation)
     print(f"Sent 'fi.fmi.opendata.airquality.Observation' event: {_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fi_fmi_opendata_airquality_mqtt_event_producer = FiFmiOpendataAirqualityMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fi_fmi_opendata_airquality_mqtt_event_producer = FiFmiOpendataAirqualityMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fi.fmi.opendata.airquality.mqtt.Station ----
+    # TODO: Supply event data for the fi.fmi.opendata.airquality.mqtt.Station event
+    _station = Station()
+
+    # sends the 'fi.fmi.opendata.airquality.mqtt.Station' event to Kafka topic.
+    await fi_fmi_opendata_airquality_mqtt_event_producer.send_fi_fmi_opendata_airquality_mqtt_station(_fmisid = 'TODO: replace me', data = _station)
+    print(f"Sent 'fi.fmi.opendata.airquality.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- fi.fmi.opendata.airquality.mqtt.Observation ----
+    # TODO: Supply event data for the fi.fmi.opendata.airquality.mqtt.Observation event
+    _observation = Observation()
+
+    # sends the 'fi.fmi.opendata.airquality.mqtt.Observation' event to Kafka topic.
+    await fi_fmi_opendata_airquality_mqtt_event_producer.send_fi_fmi_opendata_airquality_mqtt_observation(_fmisid = 'TODO: replace me', data = _observation)
+    print(f"Sent 'fi.fmi.opendata.airquality.mqtt.Observation' event: {_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fi_fmi_opendata_airquality_amqp_event_producer = FiFmiOpendataAirqualityAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fi_fmi_opendata_airquality_amqp_event_producer = FiFmiOpendataAirqualityAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fi.fmi.opendata.airquality.amqp.Station ----
+    # TODO: Supply event data for the fi.fmi.opendata.airquality.amqp.Station event
+    _station = Station()
+
+    # sends the 'fi.fmi.opendata.airquality.amqp.Station' event to Kafka topic.
+    await fi_fmi_opendata_airquality_amqp_event_producer.send_fi_fmi_opendata_airquality_amqp_station(_fmisid = 'TODO: replace me', data = _station)
+    print(f"Sent 'fi.fmi.opendata.airquality.amqp.Station' event: {_station.to_json()}")
+
+    # ---- fi.fmi.opendata.airquality.amqp.Observation ----
+    # TODO: Supply event data for the fi.fmi.opendata.airquality.amqp.Observation event
+    _observation = Observation()
+
+    # sends the 'fi.fmi.opendata.airquality.amqp.Observation' event to Kafka topic.
+    await fi_fmi_opendata_airquality_amqp_event_producer.send_fi_fmi_opendata_airquality_amqp_observation(_fmisid = 'TODO: replace me', data = _observation)
+    print(f"Sent 'fi.fmi.opendata.airquality.amqp.Observation' event: {_observation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

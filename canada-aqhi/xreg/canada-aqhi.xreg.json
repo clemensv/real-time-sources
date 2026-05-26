@@ -21,6 +21,50 @@
         "#/messagegroups/ca.gc.weather.aqhi"
       ],
       "description": "Kafka producer endpoint for Canada AQHI CloudEvents on the `canada-aqhi` topic keyed by `{province}/{community_name}`."
+    },
+    "ca.gc.weather.aqhi.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/ca.gc.weather.aqhi.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for canada-aqhi CloudEvents using the documented Unified Namespace topic hierarchy."
+    },
+    "ca.gc.weather.aqhi.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/canada-aqhi"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/ca.gc.weather.aqhi.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for canada-aqhi CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -88,6 +132,124 @@
         }
       },
       "description": "Events from Canada AQHI covering Canadian Air Quality Health Index communities. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "ca.gc.weather.aqhi.mqtt": {
+      "description": "MQTT 5 variant of ca.gc.weather.aqhi events with subscriber-friendly UNS topics.",
+      "messages": {
+        "ca.gc.weather.aqhi.mqtt.Community": {
+          "name": "Community",
+          "basemessageurl": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Community",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/ca/eccc/canada-aqhi/{province}/{community_name}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "ca.gc.weather.aqhi.mqtt.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Observation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/ca/eccc/canada-aqhi/{province}/{community_name}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "ca.gc.weather.aqhi.mqtt.Forecast": {
+          "name": "Forecast",
+          "basemessageurl": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Forecast",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/ca/eccc/canada-aqhi/{province}/{community_name}/forecast",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "ca.gc.weather.aqhi.amqp": {
+      "description": "AMQP 1.0 variant of ca.gc.weather.aqhi events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "ca.gc.weather.aqhi.amqp.Community": {
+          "name": "Community",
+          "basemessageurl": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Community",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{province}/{community_name}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "province": {
+                "type": "uritemplate",
+                "value": "{province}",
+                "description": "Routing attribute `province` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "community_name": {
+                "type": "uritemplate",
+                "value": "{community_name}",
+                "description": "Routing attribute `community_name` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "ca.gc.weather.aqhi.amqp.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Observation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{province}/{community_name}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "province": {
+                "type": "uritemplate",
+                "value": "{province}",
+                "description": "Routing attribute `province` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "community_name": {
+                "type": "uritemplate",
+                "value": "{community_name}",
+                "description": "Routing attribute `community_name` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "ca.gc.weather.aqhi.amqp.Forecast": {
+          "name": "Forecast",
+          "basemessageurl": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Forecast",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{province}/{community_name}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "province": {
+                "type": "uritemplate",
+                "value": "{province}",
+                "description": "Routing attribute `province` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "community_name": {
+                "type": "uritemplate",
+                "value": "{community_name}",
+                "description": "Routing attribute `community_name` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

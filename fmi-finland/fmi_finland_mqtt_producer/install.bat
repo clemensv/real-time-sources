@@ -1,0 +1,2 @@
+pip install .\fmi_finland_mqtt_producer_data
+pip install .\fmi_finland_mqtt_producer_mqtt_client

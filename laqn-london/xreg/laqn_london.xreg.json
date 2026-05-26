@@ -43,6 +43,52 @@
         "#/messagegroups/uk.kcl.laqn.species"
       ],
       "description": "Kafka producer endpoint for London Air Quality Network CloudEvents on the `laqn-london` topic keyed by `{species_code}`."
+    },
+    "uk.kcl.laqn.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/uk.kcl.laqn.mqtt",
+        "#/messagegroups/uk.kcl.laqn.species.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for laqn-london CloudEvents using the documented Unified Namespace topic hierarchy."
+    },
+    "uk.kcl.laqn.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/laqn-london"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/uk.kcl.laqn.amqp",
+        "#/messagegroups/uk.kcl.laqn.species.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for laqn-london CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -131,6 +177,170 @@
         }
       },
       "description": "Events from London Air Quality Network covering London air-quality monitoring sites. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "uk.kcl.laqn.mqtt": {
+      "description": "MQTT 5 variant of uk.kcl.laqn events with subscriber-friendly UNS topics.",
+      "messages": {
+        "uk.kcl.laqn.mqtt.Site": {
+          "name": "Site",
+          "basemessageurl": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Site",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/gb/london/laqn-london/{borough}/{site_code}/{species_code}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "uk.kcl.laqn.mqtt.Measurement": {
+          "name": "Measurement",
+          "basemessageurl": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Measurement",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/gb/london/laqn-london/{borough}/{site_code}/{species_code}/measurement",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "uk.kcl.laqn.mqtt.DailyIndex": {
+          "name": "DailyIndex",
+          "basemessageurl": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.DailyIndex",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/gb/london/laqn-london/{borough}/{site_code}/{species_code}/daily-index",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "uk.kcl.laqn.amqp": {
+      "description": "AMQP 1.0 variant of uk.kcl.laqn events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "uk.kcl.laqn.amqp.Site": {
+          "name": "Site",
+          "basemessageurl": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Site",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{site_code}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "borough": {
+                "type": "uritemplate",
+                "value": "{borough}",
+                "description": "Routing attribute `borough` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "species_code": {
+                "type": "uritemplate",
+                "value": "{species_code}",
+                "description": "Routing attribute `species_code` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "uk.kcl.laqn.amqp.Measurement": {
+          "name": "Measurement",
+          "basemessageurl": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Measurement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{site_code}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "borough": {
+                "type": "uritemplate",
+                "value": "{borough}",
+                "description": "Routing attribute `borough` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "species_code": {
+                "type": "uritemplate",
+                "value": "{species_code}",
+                "description": "Routing attribute `species_code` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "uk.kcl.laqn.amqp.DailyIndex": {
+          "name": "DailyIndex",
+          "basemessageurl": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.DailyIndex",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{site_code}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "borough": {
+                "type": "uritemplate",
+                "value": "{borough}",
+                "description": "Routing attribute `borough` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "species_code": {
+                "type": "uritemplate",
+                "value": "{species_code}",
+                "description": "Routing attribute `species_code` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        }
+      }
+    },
+    "uk.kcl.laqn.species.mqtt": {
+      "description": "MQTT 5 variant of uk.kcl.laqn.species events with subscriber-friendly UNS topics.",
+      "messages": {
+        "uk.kcl.laqn.species.mqtt.Species": {
+          "name": "Species",
+          "basemessageurl": "/messagegroups/uk.kcl.laqn.species/messages/uk.kcl.laqn.Species",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/gb/london/laqn-london/{borough}/{site_code}/{species_code}/species",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "uk.kcl.laqn.species.amqp": {
+      "description": "AMQP 1.0 variant of uk.kcl.laqn.species events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "uk.kcl.laqn.species.amqp.Species": {
+          "name": "Species",
+          "basemessageurl": "/messagegroups/uk.kcl.laqn.species/messages/uk.kcl.laqn.Species",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{species_code}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "borough": {
+                "type": "uritemplate",
+                "value": "{borough}",
+                "description": "Routing attribute `borough` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "site_code": {
+                "type": "uritemplate",
+                "value": "{site_code}",
+                "description": "Routing attribute `site_code` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

@@ -15,7 +15,11 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - CaGcWeatherAqhiEventDispatcher
+3. [Quick Start](#quick-start)    - CaGcWeatherAqhiEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    CaGcWeatherAqhiMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    CaGcWeatherAqhiAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +43,14 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - CaGcWeatherAqhiProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- CaGcWeatherAqhiMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- CaGcWeatherAqhiAmqpProducersolution for event-driven applications.
 
 
 
@@ -191,6 +203,80 @@ ca_gc_weather_aqhi_dispatcher.ca_gc_weather_aqhi_community_async = ca_gc_weather
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiMqttProducer- `data`: The event data of type `canada_aqhi_producer_data.Community`.
+
+
+
+Producer for `ca.gc.weather.aqhi.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_community_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Community) -> None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_mqtt_dispatcher.ca_gc_weather_aqhi_community_async = ca_gc_weather_aqhi_community_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiAmqpProducer- `data`: The event data of type `canada_aqhi_producer_data.Community`.
+
+
+
+Producer for `ca.gc.weather.aqhi.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_community_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Community) -> None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_amqp_dispatcher.ca_gc_weather_aqhi_community_async = ca_gc_weather_aqhi_community_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -255,6 +341,82 @@ ca_gc_weather_aqhi_dispatcher.ca_gc_weather_aqhi_observation_async = ca_gc_weath
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiMqttProducer- `data`: The event data of type `canada_aqhi_producer_data.Observation`.
+
+
+
+Producer for `ca.gc.weather.aqhi.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_mqtt_dispatcher.ca_gc_weather_aqhi_observation_async = ca_gc_weather_aqhi_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiAmqpProducer- `data`: The event data of type `canada_aqhi_producer_data.Observation`.
+
+
+
+Producer for `ca.gc.weather.aqhi.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_amqp_dispatcher.ca_gc_weather_aqhi_observation_async = ca_gc_weather_aqhi_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -313,6 +475,80 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 ca_gc_weather_aqhi_dispatcher.ca_gc_weather_aqhi_forecast_async = ca_gc_weather_aqhi_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiMqttProducer- `data`: The event data of type `canada_aqhi_producer_data.Forecast`.
+
+
+
+Producer for `ca.gc.weather.aqhi.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Forecast) -> None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_mqtt_dispatcher.ca_gc_weather_aqhi_forecast_async = ca_gc_weather_aqhi_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiAmqpProducer- `data`: The event data of type `canada_aqhi_producer_data.Forecast`.
+
+
+
+Producer for `ca.gc.weather.aqhi.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Forecast) -> None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_amqp_dispatcher.ca_gc_weather_aqhi_forecast_async = ca_gc_weather_aqhi_forecast_event
 
 **Parameters:**```
 
@@ -621,6 +857,1658 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_ca_gc_weather_aqhi_forecast_batch(```
+
+    messages=[
+
+        Forecast(...),Initializes the runner with a Kafka consumer.
+
+        Forecast(...),
+
+        Forecast(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### CaGcWeatherAqhiMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`CaGcWeatherAqhiMqttEventDispatcher` handles events for the ca.gc.weather.aqhi.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from canada_aqhi_producer import CaGcWeatherAqhiProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = CaGcWeatherAqhiProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_ca_gc_weather_aqhi_community(```python
+
+    data=Community(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The CaGcWeatherAqhiMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = CaGcWeatherAqhiProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ca_gc_weather_aqhi_mqtt_community_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ca_gc_weather_aqhi_mqtt_community_async:  Callable[[ConsumerRecord, CloudEvent,
+Community], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `ca.gc.weather.aqhi.mqtt.Community`: Reference data for a Canadian Air Quality Health
+Index reporting community, including its stable CGNDB identifier and current upstream feed URLs.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiProducer- `data`: The event data of type `canada_aqhi_producer_data.Community`.
+
+
+
+Producer for `ca.gc.weather.aqhi` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_mqtt_community_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Community) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_dispatcher.ca_gc_weather_aqhi_mqtt_community_async = ca_gc_weather_aqhi_mqtt_community_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiMqttProducer- `data`: The event data of type `canada_aqhi_producer_data.Community`.
+
+
+
+Producer for `ca.gc.weather.aqhi.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_mqtt_community_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Community) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_mqtt_dispatcher.ca_gc_weather_aqhi_mqtt_community_async = ca_gc_weather_aqhi_mqtt_community_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiAmqpProducer- `data`: The event data of type `canada_aqhi_producer_data.Community`.
+
+
+
+Producer for `ca.gc.weather.aqhi.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_mqtt_community_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Community) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_amqp_dispatcher.ca_gc_weather_aqhi_mqtt_community_async = ca_gc_weather_aqhi_mqtt_community_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ca_gc_weather_aqhi_mqtt_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ca_gc_weather_aqhi_mqtt_observation_async:  Callable[[ConsumerRecord, CloudEvent,
+Observation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `ca.gc.weather.aqhi.mqtt.Observation`: Latest AQHI observation for a reporting community.
+Observations are published hourly and may include decimal AQHI values.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiProducer- `data`: The event data of type `canada_aqhi_producer_data.Observation`.
+
+
+
+Producer for `ca.gc.weather.aqhi` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation)
+-> None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_dispatcher.ca_gc_weather_aqhi_mqtt_observation_async = ca_gc_weather_aqhi_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiMqttProducer- `data`: The event data of type `canada_aqhi_producer_data.Observation`.
+
+
+
+Producer for `ca.gc.weather.aqhi.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation)
+-> None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_mqtt_dispatcher.ca_gc_weather_aqhi_mqtt_observation_async = ca_gc_weather_aqhi_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiAmqpProducer- `data`: The event data of type `canada_aqhi_producer_data.Observation`.
+
+
+
+Producer for `ca.gc.weather.aqhi.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_mqtt_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation)
+-> None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_amqp_dispatcher.ca_gc_weather_aqhi_mqtt_observation_async = ca_gc_weather_aqhi_mqtt_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ca_gc_weather_aqhi_mqtt_forecast_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ca_gc_weather_aqhi_mqtt_forecast_async:  Callable[[ConsumerRecord, CloudEvent,
+Forecast], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `ca.gc.weather.aqhi.mqtt.Forecast`: Public AQHI forecast for one of the four standard
+Canadian forecast periods published for an AQHI community.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiProducer- `data`: The event data of type `canada_aqhi_producer_data.Forecast`.
+
+
+
+Producer for `ca.gc.weather.aqhi` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_mqtt_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Forecast) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_dispatcher.ca_gc_weather_aqhi_mqtt_forecast_async = ca_gc_weather_aqhi_mqtt_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiMqttProducer- `data`: The event data of type `canada_aqhi_producer_data.Forecast`.
+
+
+
+Producer for `ca.gc.weather.aqhi.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_mqtt_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Forecast) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_mqtt_dispatcher.ca_gc_weather_aqhi_mqtt_forecast_async = ca_gc_weather_aqhi_mqtt_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiAmqpProducer- `data`: The event data of type `canada_aqhi_producer_data.Forecast`.
+
+
+
+Producer for `ca.gc.weather.aqhi.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_mqtt_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Forecast) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_amqp_dispatcher.ca_gc_weather_aqhi_mqtt_forecast_async = ca_gc_weather_aqhi_mqtt_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_ca_gc_weather_aqhi_mqtt_community`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ca_gc_weather_aqhi_mqtt_community(
+
+    self,##### `_process_event`
+
+    data: Community,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `ca.gc.weather.aqhi.mqtt.Community` message. Reference data for a Canadian Air Quality Health Index
+reporting community, including its stable CGNDB identifier and current upstream feed URLs.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Community`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ca_gc_weather_aqhi_mqtt_community(
+
+    data=Community(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `ca.gc.weather.aqhi.mqtt.Community` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ca_gc_weather_aqhi_mqtt_community_batch(```
+
+    messages=[
+
+        Community(...),Initializes the runner with a Kafka consumer.
+
+        Community(...),
+
+        Community(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_ca_gc_weather_aqhi_mqtt_observation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ca_gc_weather_aqhi_mqtt_observation(
+
+    self,##### `_process_event`
+
+    data: Observation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `ca.gc.weather.aqhi.mqtt.Observation` message. Latest AQHI observation for a reporting community.
+Observations are published hourly and may include decimal AQHI values.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Observation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ca_gc_weather_aqhi_mqtt_observation(
+
+    data=Observation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `ca.gc.weather.aqhi.mqtt.Observation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ca_gc_weather_aqhi_mqtt_observation_batch(```
+
+    messages=[
+
+        Observation(...),Initializes the runner with a Kafka consumer.
+
+        Observation(...),
+
+        Observation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_ca_gc_weather_aqhi_mqtt_forecast`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ca_gc_weather_aqhi_mqtt_forecast(
+
+    self,##### `_process_event`
+
+    data: Forecast,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `ca.gc.weather.aqhi.mqtt.Forecast` message. Public AQHI forecast for one of the four standard Canadian
+forecast periods published for an AQHI community.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Forecast`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ca_gc_weather_aqhi_mqtt_forecast(
+
+    data=Forecast(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `ca.gc.weather.aqhi.mqtt.Forecast` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ca_gc_weather_aqhi_mqtt_forecast_batch(```
+
+    messages=[
+
+        Forecast(...),Initializes the runner with a Kafka consumer.
+
+        Forecast(...),
+
+        Forecast(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### CaGcWeatherAqhiAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`CaGcWeatherAqhiAmqpEventDispatcher` handles events for the ca.gc.weather.aqhi.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from canada_aqhi_producer import CaGcWeatherAqhiProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = CaGcWeatherAqhiProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_ca_gc_weather_aqhi_community(```python
+
+    data=Community(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The CaGcWeatherAqhiAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = CaGcWeatherAqhiProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ca_gc_weather_aqhi_amqp_community_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ca_gc_weather_aqhi_amqp_community_async:  Callable[[ConsumerRecord, CloudEvent,
+Community], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `ca.gc.weather.aqhi.amqp.Community`: Reference data for a Canadian Air Quality Health
+Index reporting community, including its stable CGNDB identifier and current upstream feed URLs.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiProducer- `data`: The event data of type `canada_aqhi_producer_data.Community`.
+
+
+
+Producer for `ca.gc.weather.aqhi` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_amqp_community_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Community) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_dispatcher.ca_gc_weather_aqhi_amqp_community_async = ca_gc_weather_aqhi_amqp_community_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiMqttProducer- `data`: The event data of type `canada_aqhi_producer_data.Community`.
+
+
+
+Producer for `ca.gc.weather.aqhi.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_amqp_community_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Community) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_mqtt_dispatcher.ca_gc_weather_aqhi_amqp_community_async = ca_gc_weather_aqhi_amqp_community_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiAmqpProducer- `data`: The event data of type `canada_aqhi_producer_data.Community`.
+
+
+
+Producer for `ca.gc.weather.aqhi.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_amqp_community_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Community) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_amqp_dispatcher.ca_gc_weather_aqhi_amqp_community_async = ca_gc_weather_aqhi_amqp_community_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ca_gc_weather_aqhi_amqp_observation_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ca_gc_weather_aqhi_amqp_observation_async:  Callable[[ConsumerRecord, CloudEvent,
+Observation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `ca.gc.weather.aqhi.amqp.Observation`: Latest AQHI observation for a reporting community.
+Observations are published hourly and may include decimal AQHI values.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiProducer- `data`: The event data of type `canada_aqhi_producer_data.Observation`.
+
+
+
+Producer for `ca.gc.weather.aqhi` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation)
+-> None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_dispatcher.ca_gc_weather_aqhi_amqp_observation_async = ca_gc_weather_aqhi_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiMqttProducer- `data`: The event data of type `canada_aqhi_producer_data.Observation`.
+
+
+
+Producer for `ca.gc.weather.aqhi.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation)
+-> None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_mqtt_dispatcher.ca_gc_weather_aqhi_amqp_observation_async = ca_gc_weather_aqhi_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiAmqpProducer- `data`: The event data of type `canada_aqhi_producer_data.Observation`.
+
+
+
+Producer for `ca.gc.weather.aqhi.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_amqp_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Observation)
+-> None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_amqp_dispatcher.ca_gc_weather_aqhi_amqp_observation_async = ca_gc_weather_aqhi_amqp_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ca_gc_weather_aqhi_amqp_forecast_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ca_gc_weather_aqhi_amqp_forecast_async:  Callable[[ConsumerRecord, CloudEvent,
+Forecast], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `ca.gc.weather.aqhi.amqp.Forecast`: Public AQHI forecast for one of the four standard
+Canadian forecast periods published for an AQHI community.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiProducer- `data`: The event data of type `canada_aqhi_producer_data.Forecast`.
+
+
+
+Producer for `ca.gc.weather.aqhi` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_amqp_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Forecast) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_dispatcher.ca_gc_weather_aqhi_amqp_forecast_async = ca_gc_weather_aqhi_amqp_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiMqttProducer- `data`: The event data of type `canada_aqhi_producer_data.Forecast`.
+
+
+
+Producer for `ca.gc.weather.aqhi.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_amqp_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Forecast) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_mqtt_dispatcher.ca_gc_weather_aqhi_amqp_forecast_async = ca_gc_weather_aqhi_amqp_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### CaGcWeatherAqhiAmqpProducer- `data`: The event data of type `canada_aqhi_producer_data.Forecast`.
+
+
+
+Producer for `ca.gc.weather.aqhi.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ca_gc_weather_aqhi_amqp_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Forecast) ->
+None:
+
+```python    # Process the event data
+
+CaGcWeatherAqhiAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ca_gc_weather_aqhi_amqp_dispatcher.ca_gc_weather_aqhi_amqp_forecast_async = ca_gc_weather_aqhi_amqp_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_ca_gc_weather_aqhi_amqp_community`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ca_gc_weather_aqhi_amqp_community(
+
+    self,##### `_process_event`
+
+    data: Community,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `ca.gc.weather.aqhi.amqp.Community` message. Reference data for a Canadian Air Quality Health Index
+reporting community, including its stable CGNDB identifier and current upstream feed URLs.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Community`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ca_gc_weather_aqhi_amqp_community(
+
+    data=Community(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `ca.gc.weather.aqhi.amqp.Community` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ca_gc_weather_aqhi_amqp_community_batch(```
+
+    messages=[
+
+        Community(...),Initializes the runner with a Kafka consumer.
+
+        Community(...),
+
+        Community(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_ca_gc_weather_aqhi_amqp_observation`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ca_gc_weather_aqhi_amqp_observation(
+
+    self,##### `_process_event`
+
+    data: Observation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `ca.gc.weather.aqhi.amqp.Observation` message. Latest AQHI observation for a reporting community.
+Observations are published hourly and may include decimal AQHI values.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Observation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ca_gc_weather_aqhi_amqp_observation(
+
+    data=Observation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `ca.gc.weather.aqhi.amqp.Observation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ca_gc_weather_aqhi_amqp_observation_batch(```
+
+    messages=[
+
+        Observation(...),Initializes the runner with a Kafka consumer.
+
+        Observation(...),
+
+        Observation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_ca_gc_weather_aqhi_amqp_forecast`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ca_gc_weather_aqhi_amqp_forecast(
+
+    self,##### `_process_event`
+
+    data: Forecast,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `ca.gc.weather.aqhi.amqp.Forecast` message. Public AQHI forecast for one of the four standard Canadian
+forecast periods published for an AQHI community.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Forecast`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ca_gc_weather_aqhi_amqp_forecast(
+
+    data=Forecast(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `ca.gc.weather.aqhi.amqp.Forecast` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ca_gc_weather_aqhi_amqp_forecast_batch(```
 
     messages=[
 

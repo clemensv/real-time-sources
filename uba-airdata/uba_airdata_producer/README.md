@@ -17,7 +17,15 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - DeUbaAirdataEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    DeUbaAirdataComponentsEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    DeUbaAirdataComponentsEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    DeUbaAirdataMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    DeUbaAirdataAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    DeUbaAirdataComponentsMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    DeUbaAirdataComponentsAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +53,22 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - DeUbaAirdataComponentsProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- DeUbaAirdataMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- DeUbaAirdataAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- DeUbaAirdataComponentsMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- DeUbaAirdataComponentsAmqpProducersolution for event-driven applications.
 
 
 
@@ -235,6 +259,154 @@ de_uba_airdata_components_dispatcher.de_uba_airdata_station_async = de_uba_airda
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_mqtt_dispatcher.de_uba_airdata_station_async = de_uba_airdata_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_amqp_dispatcher.de_uba_airdata_station_async = de_uba_airdata_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_mqtt_dispatcher.de_uba_airdata_station_async = de_uba_airdata_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_amqp_dispatcher.de_uba_airdata_station_async = de_uba_airdata_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -330,6 +502,154 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_uba_airdata_components_dispatcher.de_uba_airdata_measure_async = de_uba_airdata_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_mqtt_dispatcher.de_uba_airdata_measure_async = de_uba_airdata_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_amqp_dispatcher.de_uba_airdata_measure_async = de_uba_airdata_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_mqtt_dispatcher.de_uba_airdata_measure_async = de_uba_airdata_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_amqp_dispatcher.de_uba_airdata_measure_async = de_uba_airdata_measure_event
 
 **Parameters:**```
 
@@ -742,6 +1062,160 @@ de_uba_airdata_components_component_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Component) ->
+None:
+
+```python    # Process the event data
+
+DeUbaAirdataMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_mqtt_dispatcher.de_uba_airdata_components_component_async = de_uba_airdata_components_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Component) ->
+None:
+
+```python    # Process the event data
+
+DeUbaAirdataAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_amqp_dispatcher.de_uba_airdata_components_component_async = de_uba_airdata_components_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Component) ->
+None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_mqtt_dispatcher.de_uba_airdata_components_component_async =
+de_uba_airdata_components_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Component) ->
+None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_amqp_dispatcher.de_uba_airdata_components_component_async =
+de_uba_airdata_components_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -838,6 +1312,2526 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_de_uba_airdata_components_component_batch(```
+
+    messages=[
+
+        Component(...),Initializes the runner with a Kafka consumer.
+
+        Component(...),
+
+        Component(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### DeUbaAirdataMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`DeUbaAirdataMqttEventDispatcher` handles events for the de.uba.airdata.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from uba_airdata_producer import DeUbaAirdataProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = DeUbaAirdataProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_de_uba_airdata_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The DeUbaAirdataMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = DeUbaAirdataProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_uba_airdata_mqtt_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_uba_airdata_mqtt_station_async:  Callable[[ConsumerRecord, CloudEvent, Station],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `de.uba.airdata.mqtt.Station`: Reference data for a UBA air quality monitoring station,
+including geographic position, station environment, and the denormalized monitoring network metadata published by the
+UBA air_data/v3 station catalog.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_dispatcher.de_uba_airdata_mqtt_station_async = de_uba_airdata_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_dispatcher.de_uba_airdata_mqtt_station_async = de_uba_airdata_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_mqtt_dispatcher.de_uba_airdata_mqtt_station_async = de_uba_airdata_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_amqp_dispatcher.de_uba_airdata_mqtt_station_async = de_uba_airdata_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_mqtt_dispatcher.de_uba_airdata_mqtt_station_async = de_uba_airdata_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_amqp_dispatcher.de_uba_airdata_mqtt_station_async = de_uba_airdata_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_uba_airdata_mqtt_measure_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_uba_airdata_mqtt_measure_async:  Callable[[ConsumerRecord, CloudEvent, Measure],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `de.uba.airdata.mqtt.Measure`: Hourly one-hour-average air quality measurement for a UBA
+monitoring station and pollutant component as returned by the air_data/v3 measures endpoint.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_mqtt_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_dispatcher.de_uba_airdata_mqtt_measure_async = de_uba_airdata_mqtt_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_mqtt_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_dispatcher.de_uba_airdata_mqtt_measure_async = de_uba_airdata_mqtt_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_mqtt_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_mqtt_dispatcher.de_uba_airdata_mqtt_measure_async = de_uba_airdata_mqtt_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_mqtt_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_amqp_dispatcher.de_uba_airdata_mqtt_measure_async = de_uba_airdata_mqtt_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_mqtt_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_mqtt_dispatcher.de_uba_airdata_mqtt_measure_async = de_uba_airdata_mqtt_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_mqtt_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_amqp_dispatcher.de_uba_airdata_mqtt_measure_async = de_uba_airdata_mqtt_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_de_uba_airdata_mqtt_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_uba_airdata_mqtt_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `de.uba.airdata.mqtt.Station` message. Reference data for a UBA air quality monitoring station, including
+geographic position, station environment, and the denormalized monitoring network metadata published by the UBA
+air_data/v3 station catalog.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_uba_airdata_mqtt_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `de.uba.airdata.mqtt.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_uba_airdata_mqtt_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_uba_airdata_mqtt_measure`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_uba_airdata_mqtt_measure(
+
+    self,##### `_process_event`
+
+    data: Measure,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `de.uba.airdata.mqtt.Measure` message. Hourly one-hour-average air quality measurement for a UBA
+monitoring station and pollutant component as returned by the air_data/v3 measures endpoint.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Measure`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_uba_airdata_mqtt_measure(
+
+    data=Measure(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `de.uba.airdata.mqtt.Measure` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_uba_airdata_mqtt_measure_batch(```
+
+    messages=[
+
+        Measure(...),Initializes the runner with a Kafka consumer.
+
+        Measure(...),
+
+        Measure(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### DeUbaAirdataAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`DeUbaAirdataAmqpEventDispatcher` handles events for the de.uba.airdata.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from uba_airdata_producer import DeUbaAirdataProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = DeUbaAirdataProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_de_uba_airdata_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The DeUbaAirdataAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = DeUbaAirdataProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_uba_airdata_amqp_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_uba_airdata_amqp_station_async:  Callable[[ConsumerRecord, CloudEvent, Station],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `de.uba.airdata.amqp.Station`: Reference data for a UBA air quality monitoring station,
+including geographic position, station environment, and the denormalized monitoring network metadata published by the
+UBA air_data/v3 station catalog.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_dispatcher.de_uba_airdata_amqp_station_async = de_uba_airdata_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_dispatcher.de_uba_airdata_amqp_station_async = de_uba_airdata_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_mqtt_dispatcher.de_uba_airdata_amqp_station_async = de_uba_airdata_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_amqp_dispatcher.de_uba_airdata_amqp_station_async = de_uba_airdata_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_mqtt_dispatcher.de_uba_airdata_amqp_station_async = de_uba_airdata_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Station`.
+
+
+
+Producer for `de.uba.airdata.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_amqp_dispatcher.de_uba_airdata_amqp_station_async = de_uba_airdata_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_uba_airdata_amqp_measure_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_uba_airdata_amqp_measure_async:  Callable[[ConsumerRecord, CloudEvent, Measure],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `de.uba.airdata.amqp.Measure`: Hourly one-hour-average air quality measurement for a UBA
+monitoring station and pollutant component as returned by the air_data/v3 measures endpoint.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_amqp_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_dispatcher.de_uba_airdata_amqp_measure_async = de_uba_airdata_amqp_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_amqp_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_dispatcher.de_uba_airdata_amqp_measure_async = de_uba_airdata_amqp_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_amqp_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_mqtt_dispatcher.de_uba_airdata_amqp_measure_async = de_uba_airdata_amqp_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_amqp_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_amqp_dispatcher.de_uba_airdata_amqp_measure_async = de_uba_airdata_amqp_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_amqp_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_mqtt_dispatcher.de_uba_airdata_amqp_measure_async = de_uba_airdata_amqp_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Measure`.
+
+
+
+Producer for `de.uba.airdata.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_amqp_measure_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measure) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_amqp_dispatcher.de_uba_airdata_amqp_measure_async = de_uba_airdata_amqp_measure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_de_uba_airdata_amqp_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_uba_airdata_amqp_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `de.uba.airdata.amqp.Station` message. Reference data for a UBA air quality monitoring station, including
+geographic position, station environment, and the denormalized monitoring network metadata published by the UBA
+air_data/v3 station catalog.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_uba_airdata_amqp_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `de.uba.airdata.amqp.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_uba_airdata_amqp_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_uba_airdata_amqp_measure`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_uba_airdata_amqp_measure(
+
+    self,##### `_process_event`
+
+    data: Measure,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `de.uba.airdata.amqp.Measure` message. Hourly one-hour-average air quality measurement for a UBA
+monitoring station and pollutant component as returned by the air_data/v3 measures endpoint.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Measure`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_uba_airdata_amqp_measure(
+
+    data=Measure(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `de.uba.airdata.amqp.Measure` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_uba_airdata_amqp_measure_batch(```
+
+    messages=[
+
+        Measure(...),Initializes the runner with a Kafka consumer.
+
+        Measure(...),
+
+        Measure(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### DeUbaAirdataComponentsMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`DeUbaAirdataComponentsMqttEventDispatcher` handles events for the de.uba.airdata.components.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from uba_airdata_producer import DeUbaAirdataProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = DeUbaAirdataProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_de_uba_airdata_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The DeUbaAirdataComponentsMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = DeUbaAirdataProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_uba_airdata_components_mqtt_component_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_uba_airdata_components_mqtt_component_async:  Callable[[ConsumerRecord, CloudEvent,
+Component], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `de.uba.airdata.components.mqtt.Component`: Reference data for an air pollutant component
+published by the UBA air_data/v3 components catalog, including the stable numeric component identifier, code, symbol,
+unit, and English display name.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_mqtt_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_dispatcher.de_uba_airdata_components_mqtt_component_async =
+de_uba_airdata_components_mqtt_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_mqtt_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_dispatcher.de_uba_airdata_components_mqtt_component_async =
+de_uba_airdata_components_mqtt_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_mqtt_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_mqtt_dispatcher.de_uba_airdata_components_mqtt_component_async =
+de_uba_airdata_components_mqtt_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_mqtt_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_amqp_dispatcher.de_uba_airdata_components_mqtt_component_async =
+de_uba_airdata_components_mqtt_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_mqtt_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_mqtt_dispatcher.de_uba_airdata_components_mqtt_component_async =
+de_uba_airdata_components_mqtt_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_mqtt_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_amqp_dispatcher.de_uba_airdata_components_mqtt_component_async =
+de_uba_airdata_components_mqtt_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_de_uba_airdata_components_mqtt_component`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_uba_airdata_components_mqtt_component(
+
+    self,##### `_process_event`
+
+    data: Component,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `de.uba.airdata.components.mqtt.Component` message. Reference data for an air pollutant component
+published by the UBA air_data/v3 components catalog, including the stable numeric component identifier, code, symbol,
+unit, and English display name.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Component`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_uba_airdata_components_mqtt_component(
+
+    data=Component(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `de.uba.airdata.components.mqtt.Component` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_uba_airdata_components_mqtt_component_batch(```
+
+    messages=[
+
+        Component(...),Initializes the runner with a Kafka consumer.
+
+        Component(...),
+
+        Component(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### DeUbaAirdataComponentsAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`DeUbaAirdataComponentsAmqpEventDispatcher` handles events for the de.uba.airdata.components.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from uba_airdata_producer import DeUbaAirdataProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = DeUbaAirdataProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_de_uba_airdata_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The DeUbaAirdataComponentsAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = DeUbaAirdataProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_uba_airdata_components_amqp_component_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_uba_airdata_components_amqp_component_async:  Callable[[ConsumerRecord, CloudEvent,
+Component], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `de.uba.airdata.components.amqp.Component`: Reference data for an air pollutant component
+published by the UBA air_data/v3 components catalog, including the stable numeric component identifier, code, symbol,
+unit, and English display name.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_amqp_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_dispatcher.de_uba_airdata_components_amqp_component_async =
+de_uba_airdata_components_amqp_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_amqp_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_dispatcher.de_uba_airdata_components_amqp_component_async =
+de_uba_airdata_components_amqp_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_amqp_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_mqtt_dispatcher.de_uba_airdata_components_amqp_component_async =
+de_uba_airdata_components_amqp_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_amqp_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_amqp_dispatcher.de_uba_airdata_components_amqp_component_async =
+de_uba_airdata_components_amqp_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsMqttProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_amqp_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_mqtt_dispatcher.de_uba_airdata_components_amqp_component_async =
+de_uba_airdata_components_amqp_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DeUbaAirdataComponentsAmqpProducer- `data`: The event data of type `uba_airdata_producer_data.Component`.
+
+
+
+Producer for `de.uba.airdata.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_uba_airdata_components_amqp_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+DeUbaAirdataComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_uba_airdata_components_amqp_dispatcher.de_uba_airdata_components_amqp_component_async =
+de_uba_airdata_components_amqp_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_de_uba_airdata_components_amqp_component`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_uba_airdata_components_amqp_component(
+
+    self,##### `_process_event`
+
+    data: Component,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `de.uba.airdata.components.amqp.Component` message. Reference data for an air pollutant component
+published by the UBA air_data/v3 components catalog, including the stable numeric component identifier, code, symbol,
+unit, and English display name.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Component`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_uba_airdata_components_amqp_component(
+
+    data=Component(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `de.uba.airdata.components.amqp.Component` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_uba_airdata_components_amqp_component_batch(```
 
     messages=[
 

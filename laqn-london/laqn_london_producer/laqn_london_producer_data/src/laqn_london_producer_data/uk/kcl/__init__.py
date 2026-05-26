@@ -1,3 +1,3 @@
-from .laqn import Species, Measurement, DailyIndex, Site
+from .laqn import Species, Measurement, Site, DailyIndex
 
-__all__ = ["Species", "Measurement", "DailyIndex", "Site"]
+__all__ = ["Species", "Measurement", "Site", "DailyIndex"]

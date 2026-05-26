@@ -34,6 +34,10 @@ from confluent_kafka import Producer as KafkaProducer
 
 from defra_aurn_producer_kafka_producer.producer import UkGovDefraAurnStationsEventProducer
 from defra_aurn_producer_kafka_producer.producer import UkGovDefraAurnTimeseriesEventProducer
+from defra_aurn_producer_kafka_producer.producer import UkGovDefraAurnStationsMqttEventProducer
+from defra_aurn_producer_kafka_producer.producer import UkGovDefraAurnStationsAmqpEventProducer
+from defra_aurn_producer_kafka_producer.producer import UkGovDefraAurnTimeseriesMqttEventProducer
+from defra_aurn_producer_kafka_producer.producer import UkGovDefraAurnTimeseriesAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -90,6 +94,86 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'uk.gov.defra.aurn.Observation' event to Kafka topic.
     await uk_gov_defra_aurn_timeseries_event_producer.send_uk_gov_defra_aurn_observation(_timeseries_id = 'TODO: replace me', data = _observation)
     print(f"Sent 'uk.gov.defra.aurn.Observation' event: {_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uk_gov_defra_aurn_stations_mqtt_event_producer = UkGovDefraAurnStationsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uk_gov_defra_aurn_stations_mqtt_event_producer = UkGovDefraAurnStationsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- uk.gov.defra.aurn.Stations.mqtt.Station ----
+    # TODO: Supply event data for the uk.gov.defra.aurn.Stations.mqtt.Station event
+    _station = Station()
+
+    # sends the 'uk.gov.defra.aurn.Stations.mqtt.Station' event to Kafka topic.
+    await uk_gov_defra_aurn_stations_mqtt_event_producer.send_uk_gov_defra_aurn_stations_mqtt_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'uk.gov.defra.aurn.Stations.mqtt.Station' event: {_station.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uk_gov_defra_aurn_stations_amqp_event_producer = UkGovDefraAurnStationsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uk_gov_defra_aurn_stations_amqp_event_producer = UkGovDefraAurnStationsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- uk.gov.defra.aurn.Stations.amqp.Station ----
+    # TODO: Supply event data for the uk.gov.defra.aurn.Stations.amqp.Station event
+    _station = Station()
+
+    # sends the 'uk.gov.defra.aurn.Stations.amqp.Station' event to Kafka topic.
+    await uk_gov_defra_aurn_stations_amqp_event_producer.send_uk_gov_defra_aurn_stations_amqp_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'uk.gov.defra.aurn.Stations.amqp.Station' event: {_station.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uk_gov_defra_aurn_timeseries_mqtt_event_producer = UkGovDefraAurnTimeseriesMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uk_gov_defra_aurn_timeseries_mqtt_event_producer = UkGovDefraAurnTimeseriesMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- uk.gov.defra.aurn.Timeseries.mqtt.Timeseries ----
+    # TODO: Supply event data for the uk.gov.defra.aurn.Timeseries.mqtt.Timeseries event
+    _timeseries = Timeseries()
+
+    # sends the 'uk.gov.defra.aurn.Timeseries.mqtt.Timeseries' event to Kafka topic.
+    await uk_gov_defra_aurn_timeseries_mqtt_event_producer.send_uk_gov_defra_aurn_timeseries_mqtt_timeseries(_timeseries_id = 'TODO: replace me', data = _timeseries)
+    print(f"Sent 'uk.gov.defra.aurn.Timeseries.mqtt.Timeseries' event: {_timeseries.to_json()}")
+
+    # ---- uk.gov.defra.aurn.Timeseries.mqtt.Observation ----
+    # TODO: Supply event data for the uk.gov.defra.aurn.Timeseries.mqtt.Observation event
+    _observation = Observation()
+
+    # sends the 'uk.gov.defra.aurn.Timeseries.mqtt.Observation' event to Kafka topic.
+    await uk_gov_defra_aurn_timeseries_mqtt_event_producer.send_uk_gov_defra_aurn_timeseries_mqtt_observation(_timeseries_id = 'TODO: replace me', data = _observation)
+    print(f"Sent 'uk.gov.defra.aurn.Timeseries.mqtt.Observation' event: {_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uk_gov_defra_aurn_timeseries_amqp_event_producer = UkGovDefraAurnTimeseriesAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uk_gov_defra_aurn_timeseries_amqp_event_producer = UkGovDefraAurnTimeseriesAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- uk.gov.defra.aurn.Timeseries.amqp.Timeseries ----
+    # TODO: Supply event data for the uk.gov.defra.aurn.Timeseries.amqp.Timeseries event
+    _timeseries = Timeseries()
+
+    # sends the 'uk.gov.defra.aurn.Timeseries.amqp.Timeseries' event to Kafka topic.
+    await uk_gov_defra_aurn_timeseries_amqp_event_producer.send_uk_gov_defra_aurn_timeseries_amqp_timeseries(_timeseries_id = 'TODO: replace me', data = _timeseries)
+    print(f"Sent 'uk.gov.defra.aurn.Timeseries.amqp.Timeseries' event: {_timeseries.to_json()}")
+
+    # ---- uk.gov.defra.aurn.Timeseries.amqp.Observation ----
+    # TODO: Supply event data for the uk.gov.defra.aurn.Timeseries.amqp.Observation event
+    _observation = Observation()
+
+    # sends the 'uk.gov.defra.aurn.Timeseries.amqp.Observation' event to Kafka topic.
+    await uk_gov_defra_aurn_timeseries_amqp_event_producer.send_uk_gov_defra_aurn_timeseries_amqp_observation(_timeseries_id = 'TODO: replace me', data = _observation)
+    print(f"Sent 'uk.gov.defra.aurn.Timeseries.amqp.Observation' event: {_observation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

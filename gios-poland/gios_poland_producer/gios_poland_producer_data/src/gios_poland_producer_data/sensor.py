@@ -17,7 +17,7 @@ import json
 @dataclass
 class Sensor:
     """
-    Reference record for a sensor installed at a GIOŚ air quality station. Identifies the specific pollutant being measured (e.g. PM10, NO₂, O₃) along with the sensor and station identifiers. Fields are mapped from the Polish-language /station/sensors/{stationId} endpoint.
+    Reference data for a sensor (measurement point) installed at a GIOŚ station, identifying the pollutant it measures.
     
     Attributes:
         sensor_id (int)
@@ -161,10 +161,10 @@ class Sensor:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id=int(53),
-            station_id=int(70),
-            parameter_name='bmzsqcniyilaqlexnizz',
-            parameter_formula='ltgpbreqyanoyrfcugzm',
-            parameter_code='mddcmvtyrdgzxlbjrgbx',
-            parameter_id=int(79)
+            sensor_id=int(49),
+            station_id=int(14),
+            parameter_name='uisoylmtykvulvmjlrmc',
+            parameter_formula='jqplxjjodzmibcgzkmda',
+            parameter_code='wawunocgyctmxuymfuoz',
+            parameter_id=int(58)
         )

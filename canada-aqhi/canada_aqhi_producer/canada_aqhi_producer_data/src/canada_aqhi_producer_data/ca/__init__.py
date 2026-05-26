@@ -1,3 +1,3 @@
-from .gc import Observation, Forecast, Community
+from .gc import Community, Observation, Forecast
 
-__all__ = ["Observation", "Forecast", "Community"]
+__all__ = ["Community", "Observation", "Forecast"]

@@ -17,7 +17,15 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - NlRivmLuchtmeetnetEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    NlRivmLuchtmeetnetComponentsEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    NlRivmLuchtmeetnetComponentsEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NlRivmLuchtmeetnetMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NlRivmLuchtmeetnetAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NlRivmLuchtmeetnetComponentsMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NlRivmLuchtmeetnetComponentsAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +53,22 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - NlRivmLuchtmeetnetComponentsProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NlRivmLuchtmeetnetMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NlRivmLuchtmeetnetAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NlRivmLuchtmeetnetComponentsMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NlRivmLuchtmeetnetComponentsAmqpProducersolution for event-driven applications.
 
 
 
@@ -234,6 +258,154 @@ nl_rivm_luchtmeetnet_components_dispatcher.nl_rivm_luchtmeetnet_station_async = 
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_mqtt_dispatcher.nl_rivm_luchtmeetnet_station_async = nl_rivm_luchtmeetnet_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_amqp_dispatcher.nl_rivm_luchtmeetnet_station_async = nl_rivm_luchtmeetnet_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_mqtt_dispatcher.nl_rivm_luchtmeetnet_station_async = nl_rivm_luchtmeetnet_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_amqp_dispatcher.nl_rivm_luchtmeetnet_station_async = nl_rivm_luchtmeetnet_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -337,6 +509,162 @@ nl_rivm_luchtmeetnet_measurement_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_mqtt_dispatcher.nl_rivm_luchtmeetnet_measurement_async = nl_rivm_luchtmeetnet_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_amqp_dispatcher.nl_rivm_luchtmeetnet_measurement_async = nl_rivm_luchtmeetnet_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsMqttProducer- `data`: The event data of type
+`luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_mqtt_dispatcher.nl_rivm_luchtmeetnet_measurement_async =
+nl_rivm_luchtmeetnet_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsAmqpProducer- `data`: The event data of type
+`luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Measurement) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_amqp_dispatcher.nl_rivm_luchtmeetnet_measurement_async =
+nl_rivm_luchtmeetnet_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -431,6 +759,154 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 nl_rivm_luchtmeetnet_components_dispatcher.nl_rivm_luchtmeetnet_lki_async = nl_rivm_luchtmeetnet_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_mqtt_dispatcher.nl_rivm_luchtmeetnet_lki_async = nl_rivm_luchtmeetnet_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_amqp_dispatcher.nl_rivm_luchtmeetnet_lki_async = nl_rivm_luchtmeetnet_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_mqtt_dispatcher.nl_rivm_luchtmeetnet_lki_async = nl_rivm_luchtmeetnet_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_amqp_dispatcher.nl_rivm_luchtmeetnet_lki_async = nl_rivm_luchtmeetnet_lki_event
 
 **Parameters:**```
 
@@ -945,6 +1421,162 @@ nl_rivm_luchtmeetnet_components_component_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_mqtt_dispatcher.nl_rivm_luchtmeetnet_components_component_async =
+nl_rivm_luchtmeetnet_components_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_amqp_dispatcher.nl_rivm_luchtmeetnet_components_component_async =
+nl_rivm_luchtmeetnet_components_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_mqtt_dispatcher.nl_rivm_luchtmeetnet_components_component_async =
+nl_rivm_luchtmeetnet_components_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_amqp_dispatcher.nl_rivm_luchtmeetnet_components_component_async =
+nl_rivm_luchtmeetnet_components_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1040,6 +1672,3270 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_nl_rivm_luchtmeetnet_components_component_batch(```
+
+    messages=[
+
+        Component(...),Initializes the runner with a Kafka consumer.
+
+        Component(...),
+
+        Component(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NlRivmLuchtmeetnetMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NlRivmLuchtmeetnetMqttEventDispatcher` handles events for the nl.rivm.luchtmeetnet.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from luchtmeetnet_nl_producer import NlRivmLuchtmeetnetProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NlRivmLuchtmeetnetProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_rivm_luchtmeetnet_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NlRivmLuchtmeetnetMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NlRivmLuchtmeetnetProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_rivm_luchtmeetnet_mqtt_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_rivm_luchtmeetnet_mqtt_station_async:  Callable[[ConsumerRecord, CloudEvent,
+Station], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `nl.rivm.luchtmeetnet.mqtt.Station`: Luchtmeetnet station metadata with location,
+operator, coordinates, and the formulas measured at the station.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_dispatcher.nl_rivm_luchtmeetnet_mqtt_station_async = nl_rivm_luchtmeetnet_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_dispatcher.nl_rivm_luchtmeetnet_mqtt_station_async =
+nl_rivm_luchtmeetnet_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_mqtt_dispatcher.nl_rivm_luchtmeetnet_mqtt_station_async = nl_rivm_luchtmeetnet_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_amqp_dispatcher.nl_rivm_luchtmeetnet_mqtt_station_async = nl_rivm_luchtmeetnet_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_mqtt_dispatcher.nl_rivm_luchtmeetnet_mqtt_station_async =
+nl_rivm_luchtmeetnet_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_amqp_dispatcher.nl_rivm_luchtmeetnet_mqtt_station_async =
+nl_rivm_luchtmeetnet_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_rivm_luchtmeetnet_mqtt_measurement_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_rivm_luchtmeetnet_mqtt_measurement_async:  Callable[[ConsumerRecord, CloudEvent,
+Measurement], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `nl.rivm.luchtmeetnet.mqtt.Measurement`: Hourly Luchtmeetnet measurement for a station and
+component formula.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Measurement) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_dispatcher.nl_rivm_luchtmeetnet_mqtt_measurement_async =
+nl_rivm_luchtmeetnet_mqtt_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Measurement) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_dispatcher.nl_rivm_luchtmeetnet_mqtt_measurement_async =
+nl_rivm_luchtmeetnet_mqtt_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Measurement) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_mqtt_dispatcher.nl_rivm_luchtmeetnet_mqtt_measurement_async =
+nl_rivm_luchtmeetnet_mqtt_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Measurement) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_amqp_dispatcher.nl_rivm_luchtmeetnet_mqtt_measurement_async =
+nl_rivm_luchtmeetnet_mqtt_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsMqttProducer- `data`: The event data of type
+`luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Measurement) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_mqtt_dispatcher.nl_rivm_luchtmeetnet_mqtt_measurement_async =
+nl_rivm_luchtmeetnet_mqtt_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsAmqpProducer- `data`: The event data of type
+`luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Measurement) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_amqp_dispatcher.nl_rivm_luchtmeetnet_mqtt_measurement_async =
+nl_rivm_luchtmeetnet_mqtt_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_rivm_luchtmeetnet_mqtt_lki_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_rivm_luchtmeetnet_mqtt_lki_async:  Callable[[ConsumerRecord, CloudEvent, LKI],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `nl.rivm.luchtmeetnet.mqtt.LKI`: Hourly Dutch Luchtkwaliteitsindex value for a station.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_dispatcher.nl_rivm_luchtmeetnet_mqtt_lki_async = nl_rivm_luchtmeetnet_mqtt_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_dispatcher.nl_rivm_luchtmeetnet_mqtt_lki_async = nl_rivm_luchtmeetnet_mqtt_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_mqtt_dispatcher.nl_rivm_luchtmeetnet_mqtt_lki_async = nl_rivm_luchtmeetnet_mqtt_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_amqp_dispatcher.nl_rivm_luchtmeetnet_mqtt_lki_async = nl_rivm_luchtmeetnet_mqtt_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_mqtt_dispatcher.nl_rivm_luchtmeetnet_mqtt_lki_async =
+nl_rivm_luchtmeetnet_mqtt_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_mqtt_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_amqp_dispatcher.nl_rivm_luchtmeetnet_mqtt_lki_async =
+nl_rivm_luchtmeetnet_mqtt_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_rivm_luchtmeetnet_mqtt_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_rivm_luchtmeetnet_mqtt_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `nl.rivm.luchtmeetnet.mqtt.Station` message. Luchtmeetnet station metadata with location, operator,
+coordinates, and the formulas measured at the station.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_rivm_luchtmeetnet_mqtt_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `nl.rivm.luchtmeetnet.mqtt.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_rivm_luchtmeetnet_mqtt_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_rivm_luchtmeetnet_mqtt_measurement`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_rivm_luchtmeetnet_mqtt_measurement(
+
+    self,##### `_process_event`
+
+    data: Measurement,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `nl.rivm.luchtmeetnet.mqtt.Measurement` message. Hourly Luchtmeetnet measurement for a station and
+component formula.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Measurement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_rivm_luchtmeetnet_mqtt_measurement(
+
+    data=Measurement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `nl.rivm.luchtmeetnet.mqtt.Measurement` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_rivm_luchtmeetnet_mqtt_measurement_batch(```
+
+    messages=[
+
+        Measurement(...),Initializes the runner with a Kafka consumer.
+
+        Measurement(...),
+
+        Measurement(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_rivm_luchtmeetnet_mqtt_lki`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_rivm_luchtmeetnet_mqtt_lki(
+
+    self,##### `_process_event`
+
+    data: LKI,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `nl.rivm.luchtmeetnet.mqtt.LKI` message. Hourly Dutch Luchtkwaliteitsindex value for a station.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `LKI`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_rivm_luchtmeetnet_mqtt_lki(
+
+    data=LKI(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `nl.rivm.luchtmeetnet.mqtt.LKI` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_rivm_luchtmeetnet_mqtt_lki_batch(```
+
+    messages=[
+
+        LKI(...),Initializes the runner with a Kafka consumer.
+
+        LKI(...),
+
+        LKI(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NlRivmLuchtmeetnetAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NlRivmLuchtmeetnetAmqpEventDispatcher` handles events for the nl.rivm.luchtmeetnet.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from luchtmeetnet_nl_producer import NlRivmLuchtmeetnetProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NlRivmLuchtmeetnetProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_rivm_luchtmeetnet_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NlRivmLuchtmeetnetAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NlRivmLuchtmeetnetProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_rivm_luchtmeetnet_amqp_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_rivm_luchtmeetnet_amqp_station_async:  Callable[[ConsumerRecord, CloudEvent,
+Station], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `nl.rivm.luchtmeetnet.amqp.Station`: Luchtmeetnet station metadata with location,
+operator, coordinates, and the formulas measured at the station.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_dispatcher.nl_rivm_luchtmeetnet_amqp_station_async = nl_rivm_luchtmeetnet_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_dispatcher.nl_rivm_luchtmeetnet_amqp_station_async =
+nl_rivm_luchtmeetnet_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_mqtt_dispatcher.nl_rivm_luchtmeetnet_amqp_station_async = nl_rivm_luchtmeetnet_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_amqp_dispatcher.nl_rivm_luchtmeetnet_amqp_station_async = nl_rivm_luchtmeetnet_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_mqtt_dispatcher.nl_rivm_luchtmeetnet_amqp_station_async =
+nl_rivm_luchtmeetnet_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Station`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_amqp_dispatcher.nl_rivm_luchtmeetnet_amqp_station_async =
+nl_rivm_luchtmeetnet_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_rivm_luchtmeetnet_amqp_measurement_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_rivm_luchtmeetnet_amqp_measurement_async:  Callable[[ConsumerRecord, CloudEvent,
+Measurement], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `nl.rivm.luchtmeetnet.amqp.Measurement`: Hourly Luchtmeetnet measurement for a station and
+component formula.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Measurement) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_dispatcher.nl_rivm_luchtmeetnet_amqp_measurement_async =
+nl_rivm_luchtmeetnet_amqp_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Measurement) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_dispatcher.nl_rivm_luchtmeetnet_amqp_measurement_async =
+nl_rivm_luchtmeetnet_amqp_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Measurement) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_mqtt_dispatcher.nl_rivm_luchtmeetnet_amqp_measurement_async =
+nl_rivm_luchtmeetnet_amqp_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Measurement) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_amqp_dispatcher.nl_rivm_luchtmeetnet_amqp_measurement_async =
+nl_rivm_luchtmeetnet_amqp_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsMqttProducer- `data`: The event data of type
+`luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Measurement) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_mqtt_dispatcher.nl_rivm_luchtmeetnet_amqp_measurement_async =
+nl_rivm_luchtmeetnet_amqp_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsAmqpProducer- `data`: The event data of type
+`luchtmeetnet_nl_producer_data.Measurement`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Measurement) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_amqp_dispatcher.nl_rivm_luchtmeetnet_amqp_measurement_async =
+nl_rivm_luchtmeetnet_amqp_measurement_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_rivm_luchtmeetnet_amqp_lki_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_rivm_luchtmeetnet_amqp_lki_async:  Callable[[ConsumerRecord, CloudEvent, LKI],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `nl.rivm.luchtmeetnet.amqp.LKI`: Hourly Dutch Luchtkwaliteitsindex value for a station.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_dispatcher.nl_rivm_luchtmeetnet_amqp_lki_async = nl_rivm_luchtmeetnet_amqp_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_dispatcher.nl_rivm_luchtmeetnet_amqp_lki_async = nl_rivm_luchtmeetnet_amqp_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_mqtt_dispatcher.nl_rivm_luchtmeetnet_amqp_lki_async = nl_rivm_luchtmeetnet_amqp_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_amqp_dispatcher.nl_rivm_luchtmeetnet_amqp_lki_async = nl_rivm_luchtmeetnet_amqp_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_mqtt_dispatcher.nl_rivm_luchtmeetnet_amqp_lki_async =
+nl_rivm_luchtmeetnet_amqp_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.LKI`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_amqp_lki_event(record: ConsumerRecord, cloud_event: CloudEvent, data: LKI) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_amqp_dispatcher.nl_rivm_luchtmeetnet_amqp_lki_async =
+nl_rivm_luchtmeetnet_amqp_lki_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_rivm_luchtmeetnet_amqp_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_rivm_luchtmeetnet_amqp_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `nl.rivm.luchtmeetnet.amqp.Station` message. Luchtmeetnet station metadata with location, operator,
+coordinates, and the formulas measured at the station.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_rivm_luchtmeetnet_amqp_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `nl.rivm.luchtmeetnet.amqp.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_rivm_luchtmeetnet_amqp_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_rivm_luchtmeetnet_amqp_measurement`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_rivm_luchtmeetnet_amqp_measurement(
+
+    self,##### `_process_event`
+
+    data: Measurement,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `nl.rivm.luchtmeetnet.amqp.Measurement` message. Hourly Luchtmeetnet measurement for a station and
+component formula.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Measurement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_rivm_luchtmeetnet_amqp_measurement(
+
+    data=Measurement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `nl.rivm.luchtmeetnet.amqp.Measurement` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_rivm_luchtmeetnet_amqp_measurement_batch(```
+
+    messages=[
+
+        Measurement(...),Initializes the runner with a Kafka consumer.
+
+        Measurement(...),
+
+        Measurement(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_rivm_luchtmeetnet_amqp_lki`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_rivm_luchtmeetnet_amqp_lki(
+
+    self,##### `_process_event`
+
+    data: LKI,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `nl.rivm.luchtmeetnet.amqp.LKI` message. Hourly Dutch Luchtkwaliteitsindex value for a station.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `LKI`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_rivm_luchtmeetnet_amqp_lki(
+
+    data=LKI(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `nl.rivm.luchtmeetnet.amqp.LKI` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_rivm_luchtmeetnet_amqp_lki_batch(```
+
+    messages=[
+
+        LKI(...),Initializes the runner with a Kafka consumer.
+
+        LKI(...),
+
+        LKI(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NlRivmLuchtmeetnetComponentsMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NlRivmLuchtmeetnetComponentsMqttEventDispatcher` handles events for the nl.rivm.luchtmeetnet.components.mqtt message
+group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from luchtmeetnet_nl_producer import NlRivmLuchtmeetnetProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NlRivmLuchtmeetnetProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_rivm_luchtmeetnet_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NlRivmLuchtmeetnetComponentsMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NlRivmLuchtmeetnetProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_rivm_luchtmeetnet_components_mqtt_component_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_rivm_luchtmeetnet_components_mqtt_component_async:  Callable[[ConsumerRecord,
+CloudEvent, Component], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `nl.rivm.luchtmeetnet.components.mqtt.Component`: Reference definition for a monitored
+component formula in the Luchtmeetnet network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_mqtt_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_dispatcher.nl_rivm_luchtmeetnet_components_mqtt_component_async =
+nl_rivm_luchtmeetnet_components_mqtt_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_mqtt_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_dispatcher.nl_rivm_luchtmeetnet_components_mqtt_component_async =
+nl_rivm_luchtmeetnet_components_mqtt_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_mqtt_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_mqtt_dispatcher.nl_rivm_luchtmeetnet_components_mqtt_component_async =
+nl_rivm_luchtmeetnet_components_mqtt_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_mqtt_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_amqp_dispatcher.nl_rivm_luchtmeetnet_components_mqtt_component_async =
+nl_rivm_luchtmeetnet_components_mqtt_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_mqtt_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_mqtt_dispatcher.nl_rivm_luchtmeetnet_components_mqtt_component_async =
+nl_rivm_luchtmeetnet_components_mqtt_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_mqtt_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_amqp_dispatcher.nl_rivm_luchtmeetnet_components_mqtt_component_async =
+nl_rivm_luchtmeetnet_components_mqtt_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_rivm_luchtmeetnet_components_mqtt_component`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_rivm_luchtmeetnet_components_mqtt_component(
+
+    self,##### `_process_event`
+
+    data: Component,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `nl.rivm.luchtmeetnet.components.mqtt.Component` message. Reference definition for a monitored component
+formula in the Luchtmeetnet network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Component`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_rivm_luchtmeetnet_components_mqtt_component(
+
+    data=Component(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `nl.rivm.luchtmeetnet.components.mqtt.Component` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_rivm_luchtmeetnet_components_mqtt_component_batch(```
+
+    messages=[
+
+        Component(...),Initializes the runner with a Kafka consumer.
+
+        Component(...),
+
+        Component(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NlRivmLuchtmeetnetComponentsAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NlRivmLuchtmeetnetComponentsAmqpEventDispatcher` handles events for the nl.rivm.luchtmeetnet.components.amqp message
+group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from luchtmeetnet_nl_producer import NlRivmLuchtmeetnetProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NlRivmLuchtmeetnetProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_rivm_luchtmeetnet_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NlRivmLuchtmeetnetComponentsAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NlRivmLuchtmeetnetProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_rivm_luchtmeetnet_components_amqp_component_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_rivm_luchtmeetnet_components_amqp_component_async:  Callable[[ConsumerRecord,
+CloudEvent, Component], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `nl.rivm.luchtmeetnet.components.amqp.Component`: Reference definition for a monitored
+component formula in the Luchtmeetnet network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_amqp_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_dispatcher.nl_rivm_luchtmeetnet_components_amqp_component_async =
+nl_rivm_luchtmeetnet_components_amqp_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_amqp_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_dispatcher.nl_rivm_luchtmeetnet_components_amqp_component_async =
+nl_rivm_luchtmeetnet_components_amqp_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_amqp_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_mqtt_dispatcher.nl_rivm_luchtmeetnet_components_amqp_component_async =
+nl_rivm_luchtmeetnet_components_amqp_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_amqp_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_amqp_dispatcher.nl_rivm_luchtmeetnet_components_amqp_component_async =
+nl_rivm_luchtmeetnet_components_amqp_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsMqttProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_amqp_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_mqtt_dispatcher.nl_rivm_luchtmeetnet_components_amqp_component_async =
+nl_rivm_luchtmeetnet_components_amqp_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NlRivmLuchtmeetnetComponentsAmqpProducer- `data`: The event data of type `luchtmeetnet_nl_producer_data.Component`.
+
+
+
+Producer for `nl.rivm.luchtmeetnet.components.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_rivm_luchtmeetnet_components_amqp_component_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Component) -> None:
+
+```python    # Process the event data
+
+NlRivmLuchtmeetnetComponentsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_rivm_luchtmeetnet_components_amqp_dispatcher.nl_rivm_luchtmeetnet_components_amqp_component_async =
+nl_rivm_luchtmeetnet_components_amqp_component_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_rivm_luchtmeetnet_components_amqp_component`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_rivm_luchtmeetnet_components_amqp_component(
+
+    self,##### `_process_event`
+
+    data: Component,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `nl.rivm.luchtmeetnet.components.amqp.Component` message. Reference definition for a monitored component
+formula in the Luchtmeetnet network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Component`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_rivm_luchtmeetnet_components_amqp_component(
+
+    data=Component(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `nl.rivm.luchtmeetnet.components.amqp.Component` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_rivm_luchtmeetnet_components_amqp_component_batch(```
 
     messages=[
 

@@ -89,3 +89,8 @@ configured.
 ## Deploying as a Fabric notebook feeder
 
 - This source ships a Microsoft Fabric notebook that polls one cycle per scheduled run, looks up the Event Stream connection string at runtime, and writes dedupe state to OneLake. Deploy it with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1); the notebook source is at [`gios-poland/notebook/gios-poland-feed.ipynb`](notebook/gios-poland-feed.ipynb).
+
+
+## MQTT + AMQP companion feeders
+
+This source now ships Kafka plus transport-split MQTT and AMQP companion feeders. MQTT publishes retained binary-mode CloudEvents under `air-quality/pl/gios/gios-poland/...`; AMQP publishes the same CloudEvents to a configurable AMQP 1.0 address (default `gios-poland`). Deployment templates: `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`.

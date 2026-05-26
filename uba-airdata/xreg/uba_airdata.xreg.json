@@ -43,6 +43,52 @@
         "#/messagegroups/de.uba.airdata.components"
       ],
       "description": "Kafka producer endpoint for UBA Airdata CloudEvents on the `uba-airdata` topic keyed by `{component_id}`."
+    },
+    "de.uba.airdata.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/de.uba.airdata.mqtt",
+        "#/messagegroups/de.uba.airdata.components.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for uba-airdata CloudEvents using the documented Unified Namespace topic hierarchy."
+    },
+    "de.uba.airdata.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/uba-airdata"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/de.uba.airdata.amqp",
+        "#/messagegroups/de.uba.airdata.components.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for uba-airdata CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -115,6 +161,134 @@
         }
       },
       "description": "Events from UBA Airdata covering Austrian air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "de.uba.airdata.mqtt": {
+      "description": "MQTT 5 variant of de.uba.airdata events with subscriber-friendly UNS topics.",
+      "messages": {
+        "de.uba.airdata.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/at/uba/uba-airdata/{bundesland}/{station_id}/{component_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "de.uba.airdata.mqtt.Measure": {
+          "name": "Measure",
+          "basemessageurl": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Measure",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/at/uba/uba-airdata/{bundesland}/{station_id}/{component_id}/measure",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "de.uba.airdata.amqp": {
+      "description": "AMQP 1.0 variant of de.uba.airdata events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "de.uba.airdata.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "bundesland": {
+                "type": "uritemplate",
+                "value": "{bundesland}",
+                "description": "Routing attribute `bundesland` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "component_id": {
+                "type": "uritemplate",
+                "value": "{component_id}",
+                "description": "Routing attribute `component_id` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        },
+        "de.uba.airdata.amqp.Measure": {
+          "name": "Measure",
+          "basemessageurl": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Measure",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "bundesland": {
+                "type": "uritemplate",
+                "value": "{bundesland}",
+                "description": "Routing attribute `bundesland` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "component_id": {
+                "type": "uritemplate",
+                "value": "{component_id}",
+                "description": "Routing attribute `component_id` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        }
+      }
+    },
+    "de.uba.airdata.components.mqtt": {
+      "description": "MQTT 5 variant of de.uba.airdata.components events with subscriber-friendly UNS topics.",
+      "messages": {
+        "de.uba.airdata.components.mqtt.Component": {
+          "name": "Component",
+          "basemessageurl": "/messagegroups/de.uba.airdata.components/messages/de.uba.airdata.components.Component",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/at/uba/uba-airdata/{bundesland}/{station_id}/{component_id}/component",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "de.uba.airdata.components.amqp": {
+      "description": "AMQP 1.0 variant of de.uba.airdata.components events for generic brokers and Azure Service Bus.",
+      "messages": {
+        "de.uba.airdata.components.amqp.Component": {
+          "name": "Component",
+          "basemessageurl": "/messagegroups/de.uba.airdata.components/messages/de.uba.airdata.components.Component",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{component_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "bundesland": {
+                "type": "uritemplate",
+                "value": "{bundesland}",
+                "description": "Routing attribute `bundesland` used in the MQTT topic hierarchy and AMQP subscription filters."
+              },
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Routing attribute `station_id` used in the MQTT topic hierarchy and AMQP subscription filters."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

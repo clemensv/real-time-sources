@@ -34,6 +34,10 @@ from confluent_kafka import Producer as KafkaProducer
 
 from luchtmeetnet_nl_producer_kafka_producer.producer import NlRivmLuchtmeetnetEventProducer
 from luchtmeetnet_nl_producer_kafka_producer.producer import NlRivmLuchtmeetnetComponentsEventProducer
+from luchtmeetnet_nl_producer_kafka_producer.producer import NlRivmLuchtmeetnetMqttEventProducer
+from luchtmeetnet_nl_producer_kafka_producer.producer import NlRivmLuchtmeetnetAmqpEventProducer
+from luchtmeetnet_nl_producer_kafka_producer.producer import NlRivmLuchtmeetnetComponentsMqttEventProducer
+from luchtmeetnet_nl_producer_kafka_producer.producer import NlRivmLuchtmeetnetComponentsAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -99,6 +103,102 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'nl.rivm.luchtmeetnet.components.Component' event to Kafka topic.
     await nl_rivm_luchtmeetnet_components_event_producer.send_nl_rivm_luchtmeetnet_components_component(_formula = 'TODO: replace me', data = _component)
     print(f"Sent 'nl.rivm.luchtmeetnet.components.Component' event: {_component.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        nl_rivm_luchtmeetnet_mqtt_event_producer = NlRivmLuchtmeetnetMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        nl_rivm_luchtmeetnet_mqtt_event_producer = NlRivmLuchtmeetnetMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- nl.rivm.luchtmeetnet.mqtt.Station ----
+    # TODO: Supply event data for the nl.rivm.luchtmeetnet.mqtt.Station event
+    _station = Station()
+
+    # sends the 'nl.rivm.luchtmeetnet.mqtt.Station' event to Kafka topic.
+    await nl_rivm_luchtmeetnet_mqtt_event_producer.send_nl_rivm_luchtmeetnet_mqtt_station(_station_number = 'TODO: replace me', data = _station)
+    print(f"Sent 'nl.rivm.luchtmeetnet.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- nl.rivm.luchtmeetnet.mqtt.Measurement ----
+    # TODO: Supply event data for the nl.rivm.luchtmeetnet.mqtt.Measurement event
+    _measurement = Measurement()
+
+    # sends the 'nl.rivm.luchtmeetnet.mqtt.Measurement' event to Kafka topic.
+    await nl_rivm_luchtmeetnet_mqtt_event_producer.send_nl_rivm_luchtmeetnet_mqtt_measurement(_station_number = 'TODO: replace me', data = _measurement)
+    print(f"Sent 'nl.rivm.luchtmeetnet.mqtt.Measurement' event: {_measurement.to_json()}")
+
+    # ---- nl.rivm.luchtmeetnet.mqtt.LKI ----
+    # TODO: Supply event data for the nl.rivm.luchtmeetnet.mqtt.LKI event
+    _lki = LKI()
+
+    # sends the 'nl.rivm.luchtmeetnet.mqtt.LKI' event to Kafka topic.
+    await nl_rivm_luchtmeetnet_mqtt_event_producer.send_nl_rivm_luchtmeetnet_mqtt_lki(_station_number = 'TODO: replace me', data = _lki)
+    print(f"Sent 'nl.rivm.luchtmeetnet.mqtt.LKI' event: {_lki.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        nl_rivm_luchtmeetnet_amqp_event_producer = NlRivmLuchtmeetnetAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        nl_rivm_luchtmeetnet_amqp_event_producer = NlRivmLuchtmeetnetAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- nl.rivm.luchtmeetnet.amqp.Station ----
+    # TODO: Supply event data for the nl.rivm.luchtmeetnet.amqp.Station event
+    _station = Station()
+
+    # sends the 'nl.rivm.luchtmeetnet.amqp.Station' event to Kafka topic.
+    await nl_rivm_luchtmeetnet_amqp_event_producer.send_nl_rivm_luchtmeetnet_amqp_station(_station_number = 'TODO: replace me', data = _station)
+    print(f"Sent 'nl.rivm.luchtmeetnet.amqp.Station' event: {_station.to_json()}")
+
+    # ---- nl.rivm.luchtmeetnet.amqp.Measurement ----
+    # TODO: Supply event data for the nl.rivm.luchtmeetnet.amqp.Measurement event
+    _measurement = Measurement()
+
+    # sends the 'nl.rivm.luchtmeetnet.amqp.Measurement' event to Kafka topic.
+    await nl_rivm_luchtmeetnet_amqp_event_producer.send_nl_rivm_luchtmeetnet_amqp_measurement(_station_number = 'TODO: replace me', data = _measurement)
+    print(f"Sent 'nl.rivm.luchtmeetnet.amqp.Measurement' event: {_measurement.to_json()}")
+
+    # ---- nl.rivm.luchtmeetnet.amqp.LKI ----
+    # TODO: Supply event data for the nl.rivm.luchtmeetnet.amqp.LKI event
+    _lki = LKI()
+
+    # sends the 'nl.rivm.luchtmeetnet.amqp.LKI' event to Kafka topic.
+    await nl_rivm_luchtmeetnet_amqp_event_producer.send_nl_rivm_luchtmeetnet_amqp_lki(_station_number = 'TODO: replace me', data = _lki)
+    print(f"Sent 'nl.rivm.luchtmeetnet.amqp.LKI' event: {_lki.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        nl_rivm_luchtmeetnet_components_mqtt_event_producer = NlRivmLuchtmeetnetComponentsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        nl_rivm_luchtmeetnet_components_mqtt_event_producer = NlRivmLuchtmeetnetComponentsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- nl.rivm.luchtmeetnet.components.mqtt.Component ----
+    # TODO: Supply event data for the nl.rivm.luchtmeetnet.components.mqtt.Component event
+    _component = Component()
+
+    # sends the 'nl.rivm.luchtmeetnet.components.mqtt.Component' event to Kafka topic.
+    await nl_rivm_luchtmeetnet_components_mqtt_event_producer.send_nl_rivm_luchtmeetnet_components_mqtt_component(_formula = 'TODO: replace me', data = _component)
+    print(f"Sent 'nl.rivm.luchtmeetnet.components.mqtt.Component' event: {_component.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        nl_rivm_luchtmeetnet_components_amqp_event_producer = NlRivmLuchtmeetnetComponentsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        nl_rivm_luchtmeetnet_components_amqp_event_producer = NlRivmLuchtmeetnetComponentsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- nl.rivm.luchtmeetnet.components.amqp.Component ----
+    # TODO: Supply event data for the nl.rivm.luchtmeetnet.components.amqp.Component event
+    _component = Component()
+
+    # sends the 'nl.rivm.luchtmeetnet.components.amqp.Component' event to Kafka topic.
+    await nl_rivm_luchtmeetnet_components_amqp_event_producer.send_nl_rivm_luchtmeetnet_components_amqp_component(_formula = 'TODO: replace me', data = _component)
+    print(f"Sent 'nl.rivm.luchtmeetnet.components.amqp.Component' event: {_component.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

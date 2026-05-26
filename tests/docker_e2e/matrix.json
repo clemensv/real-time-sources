@@ -1206,6 +1206,54 @@
       "image": "wsdot-amqp",
       "file": "Dockerfile.amqp",
       "module": "wsdot_amqp"
+    },
+    {
+      "dir": "canada-aqhi",
+      "image": "canada-aqhi-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "canada_aqhi_mqtt"
+    },
+    {
+      "dir": "canada-aqhi",
+      "image": "canada-aqhi-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "canada_aqhi_amqp"
+    },
+    {
+      "dir": "defra-aurn",
+      "image": "defra-aurn-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "defra_aurn_mqtt"
+    },
+    {
+      "dir": "defra-aurn",
+      "image": "defra-aurn-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "defra_aurn_amqp"
+    },
+    {
+      "dir": "sensor-community",
+      "image": "sensor-community-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "sensor_community_mqtt"
+    },
+    {
+      "dir": "sensor-community",
+      "image": "sensor-community-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "sensor_community_amqp"
+    },
+    {
+      "dir": "uba-airdata",
+      "image": "uba-airdata-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "uba_airdata_mqtt"
+    },
+    {
+      "dir": "uba-airdata",
+      "image": "uba-airdata-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "uba_airdata_amqp"
     }
   ],
   "flow": [
@@ -2584,6 +2632,46 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestWSDOTAmqpDockerFlow"
+    },
+    {
+      "dir": "canada-aqhi",
+      "test_class": "TestCanadaAqhiMqttDockerFlow",
+      "test_file": "test_docker_mqtt_flow.py"
+    },
+    {
+      "dir": "canada-aqhi",
+      "test_class": "TestCanadaAqhiAmqpDockerFlow",
+      "test_file": "test_docker_amqp_flow.py"
+    },
+    {
+      "dir": "defra-aurn",
+      "test_class": "TestDefraAurnMqttDockerFlow",
+      "test_file": "test_docker_mqtt_flow.py"
+    },
+    {
+      "dir": "defra-aurn",
+      "test_class": "TestDefraAurnAmqpDockerFlow",
+      "test_file": "test_docker_amqp_flow.py"
+    },
+    {
+      "dir": "sensor-community",
+      "test_class": "TestSensorCommunityMqttDockerFlow",
+      "test_file": "test_docker_mqtt_flow.py"
+    },
+    {
+      "dir": "sensor-community",
+      "test_class": "TestSensorCommunityAmqpDockerFlow",
+      "test_file": "test_docker_amqp_flow.py"
+    },
+    {
+      "dir": "uba-airdata",
+      "test_class": "TestUbaAirdataMqttDockerFlow",
+      "test_file": "test_docker_mqtt_flow.py"
+    },
+    {
+      "dir": "uba-airdata",
+      "test_class": "TestUbaAirdataAmqpDockerFlow",
+      "test_file": "test_docker_amqp_flow.py"
     }
   ]
 }
