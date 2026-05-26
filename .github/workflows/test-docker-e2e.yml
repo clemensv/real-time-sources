@@ -62,6 +62,8 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
           CHANGED_FILES: ${{ steps.changed.outputs.files }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.event.after }}
         run: python tests/docker_e2e/discover_matrix.py
 
   docker-build:
