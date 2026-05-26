@@ -107,28 +107,24 @@
           "dataschemauri": "#/schemagroups/xceed.jstruct/schemas/xceed.Event",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents specification version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "xceed.Event",
               "description": "CloudEvents type identifier for an Xceed event record"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Base URL of the Xceed Open Event API feed"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "required": true,
               "value": "{event_id}",
@@ -151,28 +147,24 @@
           "dataschemauri": "#/schemagroups/xceed.jstruct/schemas/xceed.EventAdmission",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents specification version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "xceed.EventAdmission",
               "description": "CloudEvents type identifier for an Xceed admission record"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Base URL of the Xceed public offer API feed"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "required": true,
               "value": "{event_id}/{admission_id}",

@@ -80,28 +80,24 @@
           "modifiedat": "2024-11-14T12:00:00",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "Bluesky.Feed.Post",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{firehoseurl}",
               "description": "Source Firehose URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
               "description": "Decentralized Identifier",
@@ -120,28 +116,24 @@
           "modifiedat": "2024-11-14T12:00:01",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "Bluesky.Feed.Like",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{firehoseurl}",
               "description": "Source Firehose URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
               "description": "Decentralized Identifier",
@@ -160,28 +152,24 @@
           "modifiedat": "2024-11-14T12:00:02",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "Bluesky.Feed.Repost",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{firehoseurl}",
               "description": "Source Firehose URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
               "description": "Decentralized Identifier",
@@ -200,28 +188,24 @@
           "modifiedat": "2024-11-14T12:00:03",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "Bluesky.Graph.Follow",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{firehoseurl}",
               "description": "Source Firehose URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
               "description": "Decentralized Identifier",
@@ -240,28 +224,24 @@
           "modifiedat": "2024-11-14T12:00:04",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "Bluesky.Graph.Block",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{firehoseurl}",
               "description": "Source Firehose URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
               "description": "Decentralized Identifier",
@@ -280,28 +260,24 @@
           "modifiedat": "2024-11-14T12:00:05",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "Bluesky.Actor.Profile",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{firehoseurl}",
               "description": "Source Firehose URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
               "description": "Decentralized Identifier",
