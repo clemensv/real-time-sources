@@ -1,219 +1,183 @@
-# GraceDB Gravitational Wave Candidate Alert bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# GraceDB container images
 
-This container image provides a bridge between
-[GraceDB](https://gracedb.ligo.org/) (Gravitational-Wave Candidate Event
-Database) and Apache Kafka, Azure Event Hubs, and Fabric Event Streams. The
-bridge fetches gravitational wave candidate superevents and forwards them to the
-configured Kafka endpoints.
+This document covers the published container images for the GraceDB feeder. For overview and business context see [README.md](README.md); for event-contract details see [EVENTS.md](EVENTS.md).
 
-## GraceDB
+## Why this container
 
-[GraceDB](https://gracedb.ligo.org/) is the public database of the
-LIGO/Virgo/KAGRA collaboration that tracks gravitational wave candidate events
-(superevents). Each superevent aggregates one or more pipeline detections into a
-single candidate and carries false alarm rate, classification, detector
-participation, and alert-lifecycle labels.
+GraceDB superevents are key inputs for multi-messenger astronomy alerting and analysis workflows. This feeder republishes candidate alerts as CloudEvents.
 
-## Functionality
+## What ships in the box
 
-The bridge polls the GraceDB superevent API at regular intervals and writes
-superevent records to a Kafka topic as [CloudEvents](https://cloudevents.io/) in
-JSON format, documented in [EVENTS.md](EVENTS.md).
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-gracedb` | Kafka | Polls upstream and publishes CloudEvents to one topic |
+| `ghcr.io/clemensv/real-time-sources-gracedb-mqtt` | MQTT 5.0 | Publishes CloudEvents to xRegistry-mapped topics |
+| `ghcr.io/clemensv/real-time-sources-gracedb-amqp` | AMQP 1.0 | Publishes CloudEvents to one AMQP address |
 
-## Database Schemas and Handling
+## Image contract
 
-If you want to build a full data pipeline with all events ingested into a
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
-
-## Installing the Container Image
-
-Pull the container image from the GitHub Container Registry:
-
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-gracedb:latest
-```
-
-To use it as a base image in a Dockerfile:
-
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-gracedb:latest
-```
-
-## Using the Container Image
-
-The container defines a command that starts the bridge, reading superevent data
-from GraceDB and writing it to Kafka, Azure Event Hubs, or Fabric Event Streams.
-
-### With a Kafka Broker
-
-Ensure you have a Kafka broker configured with TLS and SASL PLAIN
-authentication. Run the container with the following command:
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-gracedb:latest
-```
-
-### With Azure Event Hubs or Fabric Event Streams
-
-Use the connection string from Azure Event Hubs or Microsoft Fabric Event
-Streams:
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-gracedb:latest
-```
-
-## Environment Variables
-
-### `CONNECTION_STRING`
-
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs
-or Fabric Event Streams. This replaces the need for `KAFKA_BOOTSTRAP_SERVERS`,
-`SASL_USERNAME`, and `SASL_PASSWORD`.
-
-### `KAFKA_BOOTSTRAP_SERVERS`
-
-The address of the Kafka broker. Provide a comma-separated list of host and port
-pairs (e.g., `broker1:9092,broker2:9092`).
-
-### `KAFKA_TOPIC`
-
-The Kafka topic where messages will be produced.
-
-### `SASL_USERNAME`
-
-Username for SASL PLAIN authentication.
-
-### `SASL_PASSWORD`
-
-Password for SASL PLAIN authentication.
-
-### `LOG_LEVEL`
-
-The logging level. Default: `INFO`.
-
-### `GRACEDB_LAST_POLLED_FILE`
-
-The file path where the bridge stores the IDs of previously processed
-superevents to avoid duplication after restarts. Default:
-`~/.gracedb_last_polled.json`.
-
-## Deploying into Azure Container Instances
-
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template-with-eventhub.json)
-
-## MQTT/Unified Namespace image
-
-A sibling MQTT container image, `ghcr.io/clemensv/real-time-sources-gracedb-mqtt:latest`, publishes the same source events as MQTT 5.0 binary-mode CloudEvents. It uses the xRegistry MQTT messagegroup `org.ligo.gracedb.mqtt` and the source-specific Unified Namespace topic tree described in [EVENTS.md](EVENTS.md).
-
-### Run against a generic MQTT 5 broker
-
-```shell
-docker run --rm \
-    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \
-    -e MQTT_USERNAME='<username>' \
-    -e MQTT_PASSWORD='<password>' \
-    ghcr.io/clemensv/real-time-sources-gracedb-mqtt:latest
-```
-
-### MQTT environment variables
-
-| Variable | Description |
+| Aspect | Value |
 |---|---|
-| `MQTT_BROKER_URL` | Broker URL including host, port, and TLS scheme, for example `mqtt://host:1883` or `mqtts://host:8883`. |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional username/password credentials for brokers that require user authentication. Leave unset for anonymous brokers. |
-| `MQTT_CLIENT_ID` | Optional MQTT client identifier. Set it explicitly on shared brokers and Event Grid namespaces. |
-| `MQTT_CONTENT_MODE` | CloudEvents content mode, `binary` by default. Keep `binary` for MQTT 5 user-property metadata. |
-| `POLLING_INTERVAL` | Source polling interval in seconds, when supported by the feeder. |
-| `STATE_FILE` | Optional path for source dedupe/checkpoint state, when the feeder maintains local state. |
-| topic prefix | Fixed by the xRegistry contract, not an environment variable. Root: `seismic/intl/ligo/gracedb`. |
-| retain default | Per message in xRegistry; see the topic table below. |
-| QoS default | Per message in xRegistry; MQTT messages in this source use QoS 1 unless noted otherwise. |
+| Base image | `python:3.10-slim` |
+| Default entrypoint | `python -m gracedb feed; python -m gracedb_mqtt feed; python -m gracedb_amqp feed` |
+| Exposed ports | none — outbound publisher only |
+| Signals | exits on `SIGTERM`; in-flight poll cycle is completed/flushed before shutdown where supported |
+| State | Kafka: GRACEDB_LAST_POLLED_FILE; MQTT: GRACEDB_MQTT_LAST_POLLED_FILE; AMQP: GRACEDB_AMQP_LAST_POLLED_FILE. Mount `/state` when state is used. |
+| Tags | `:latest` (mainline), plus immutable release/SHA tags published in GHCR. |
 
-### MQTT topic patterns
-
-| Topic pattern | Message type | Retained | QoS | Expiry seconds |
-|---|---|---|---|---|
-| `seismic/intl/ligo/gracedb/{category}/{group}/{superevent_id}/superevent` | `org.ligo.gracedb.Superevent` | `false` | `1` | `` |
-
-### Subscription patterns
-
-```text
-# Everything from this source
-seismic/intl/ligo/gracedb/#
-```
-
-### MQTT Azure deployment
-
-Deploy the MQTT container against an existing MQTT 5 broker:
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template-mqtt.json)
-
-Deploy the MQTT container with a new Azure Event Grid namespace MQTT broker:
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template-with-eventgrid-mqtt.json)
-
-## AMQP 1.0 container
-
-The AMQP companion image publishes the same `Gracedb` CloudEvents to a generic AMQP 1.0 broker, Azure Service Bus with Entra ID CBS, or a SAS-token Service Bus-compatible endpoint.
+## Installing the container images
 
 ```bash
+docker pull ghcr.io/clemensv/real-time-sources-gracedb:latest
+docker pull ghcr.io/clemensv/real-time-sources-gracedb-mqtt:latest
 docker pull ghcr.io/clemensv/real-time-sources-gracedb-amqp:latest
 ```
 
-### Generic AMQP broker (SASL PLAIN)
+## Using the Kafka image
+
+### With a Kafka broker (SASL PLAIN)
 
 ```bash
-docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=gracedb   ghcr.io/clemensv/real-time-sources-gracedb-amqp:latest
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e GRACEDB_LAST_POLLED_FILE=/state/gracedb.json \
+  -e KAFKA_BOOTSTRAP_SERVERS='<broker:9093>' \
+  -e KAFKA_TOPIC='<topic>' \
+  -e SASL_USERNAME='<username>' \
+  -e SASL_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-gracedb:latest
 ```
 
-### Azure Service Bus (Entra ID)
+### With Azure Event Hubs / Fabric Event Streams
 
 ```bash
-docker run --rm   -e AMQP_HOST=<namespace>.servicebus.windows.net   -e AMQP_PORT=5671   -e AMQP_TLS=true   -e AMQP_ADDRESS=gracedb   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_AUDIENCE=https://servicebus.azure.net/.default   ghcr.io/clemensv/real-time-sources-gracedb-amqp:latest
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e GRACEDB_LAST_POLLED_FILE=/state/gracedb.json \
+  -e CONNECTION_STRING='<connection-string>' \
+  ghcr.io/clemensv/real-time-sources-gracedb:latest
 ```
 
-### Service Bus emulator / SAS CBS
+## Using the MQTT image
+
+### With username/password authentication
 
 ```bash
-docker run --rm   -e AMQP_HOST=servicebus-emulator   -e AMQP_PORT=5672   -e AMQP_ADDRESS=gracedb   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME=RootManageSharedAccessKey   -e AMQP_SAS_KEY=<base64-key>   ghcr.io/clemensv/real-time-sources-gracedb-amqp:latest
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e GRACEDB_MQTT_LAST_POLLED_FILE=/state/gracedb-mqtt.json \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-gracedb-mqtt:latest
 ```
 
-| Variable | Description | Default |
-|---|---|---|
-| `AMQP_BROKER_URL` | Optional AMQP URI for generic brokers. | unset |
-| `AMQP_HOST` / `AMQP_PORT` | Broker host and port when no URI is supplied. | `localhost` / `5672` |
-| `AMQP_ADDRESS` | Queue/topic/address to publish to. | `gracedb` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `AMQP_AUTH_MODE=password`. | unset |
-| `AMQP_TLS` | Use TLS (`true`, `1`, or `yes`). | `false` |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
-| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra token scope and optional managed identity client ID. | Service Bus scope / unset |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS CBS credentials. | unset |
-| `AMQP_CONTENT_MODE` | CloudEvents content mode: `binary` or `structured`. | `binary` |
+### With Azure Event Grid namespace MQTT broker (Entra)
 
-[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template-amqp.json)
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e GRACEDB_MQTT_LAST_POLLED_FILE=/state/gracedb-mqtt.json \
+  -e MQTT_BROKER_URL='mqtts://<ns>.<region>-1.ts.eventgrid.azure.net:8883' \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID='<managed-identity-client-id>' \
+  -e MQTT_CLIENT_ID='<unique-client-id>' \
+  ghcr.io/clemensv/real-time-sources-gracedb-mqtt:latest
+```
 
+## Using the AMQP image
+
+### With Microsoft Entra ID (AMQP CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e GRACEDB_AMQP_LAST_POLLED_FILE=/state/gracedb-amqp.json \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='gracedb' \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default' \
+  -e AMQP_ENTRA_CLIENT_ID='<managed-identity-client-id>' \
+  ghcr.io/clemensv/real-time-sources-gracedb-amqp:latest
+```
+
+### With SAS token CBS (Service Bus emulator / SAS-only namespaces)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e GRACEDB_AMQP_LAST_POLLED_FILE=/state/gracedb-amqp.json \
+  -e AMQP_HOST='servicebus-emulator' \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS='gracedb' \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+  -e AMQP_SAS_KEY='<sas-key>' \
+  ghcr.io/clemensv/real-time-sources-gracedb-amqp:latest
+```
+
+## Environment variables
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs/Fabric-style or Kafka-style connection string. |
+| `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC` | Explicit Kafka destination. |
+| `SASL_USERNAME`, `SASL_PASSWORD` | SASL PLAIN credentials when needed. |
+| `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka. |
+| `ONCE_MODE` | Run one cycle and exit (where supported). |
+| State variable | `GRACEDB_LAST_POLLED_FILE` |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional broker credentials. |
+| `MQTT_CLIENT_ID` | Optional explicit client ID. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured` where supported. |
+| State variable | `GRACEDB_MQTT_LAST_POLLED_FILE` |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Broker URL (`amqp://` or `amqps://`). |
+| `AMQP_HOST`, `AMQP_PORT`, `AMQP_ADDRESS` | Component-level AMQP endpoint settings. |
+| `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials (if used). |
+| `AMQP_AUTH_MODE` | Auth mode where supported (`password`/`entra`/`sas`). |
+| `AMQP_TLS` | Enable TLS where supported. |
+| State variable | `GRACEDB_AMQP_LAST_POLLED_FILE` |
+
+## Deploying into Microsoft Fabric
+
+Fabric notebook and Fabric ACI hosting are both supported:
+
+- Notebook: `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source gracedb ...`
+- ACI: `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source gracedb ...`
+
+Portal links:
+
+- [Fabric Notebook](https://clemensv.github.io/real-time-sources/#gracedb/fabric-notebook)
+- [Fabric ACI](https://clemensv.github.io/real-time-sources/#gracedb/fabric-aci)
+
+## Deploying into Azure Container Instances
+
+### AMQP — bring your own broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template-amqp.json)
+
+### Kafka — provision a new Event Hub
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template-with-eventhub.json)
+
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template.json)
+
+## Related
+- [README.md](README.md) — source overview, use cases, and quick start.
+- [EVENTS.md](EVENTS.md) — event contract and schema details.
+- [`xreg/gracedb.xreg.json`](xreg/gracedb.xreg.json) — authoritative manifest.

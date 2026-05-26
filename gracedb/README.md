@@ -1,92 +1,149 @@
-# GraceDB Gravitational Wave Candidate Alerts
+# GraceDB feeder
 
-GraceDB (Gravitational-Wave Candidate Event Database) is a public database
-maintained by the LIGO/Virgo/KAGRA collaboration that tracks gravitational wave
-candidate events (superevents) detected by the worldwide network of
-gravitational wave observatories.
+This feeder turns the public [GraceDB superevents API](https://gracedb.ligo.org/api/superevents/?format=json) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-This bridge polls the GraceDB public REST API for new superevents and forwards
-them to Apache Kafka, Azure Event Hubs, or Fabric Event Streams as CloudEvents.
+Companion docs:
 
-## Source
+- [CONTAINER.md](CONTAINER.md) — published images, environment variables, and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing details.
 
-- **API**: https://gracedb.ligo.org/api/superevents/?format=json
-- **Auth**: None (public read access)
-- **Update frequency**: Events posted within seconds of detection; bridge polls
-  every 2 minutes
-- **Coverage**: Global — LIGO Hanford (H1), LIGO Livingston (L1), Virgo (V1),
-  KAGRA (K1)
+## Why this bridge
 
-## Events
+GraceDB superevents are key inputs for multi-messenger astronomy alerting and analysis workflows. This feeder republishes candidate alerts as CloudEvents.
 
-The bridge emits a single event type, documented in [EVENTS.md](EVENTS.md):
+Concrete consumer scenarios:
 
-- `org.ligo.gracedb.Superevent` — Gravitational wave candidate superevent with
-  ID, category, false alarm rate, labels, preferred pipeline event metadata.
+- **Operations dashboards** ingest the stream for near-real-time visibility without polling logic in every app.
+- **Data engineering pipelines** land events in Eventhouse/Data Lake/Kafka topics with stable keys and schemas.
+- **Alerting and automation** subscribe to the relevant event families and trigger downstream workflows.
+- **Research and analytics teams** replay the same contract across historical and live windows.
+- **Cross-domain correlation** joins these events with weather, traffic, or incident streams from sibling feeders.
 
-## Related
+## Overview
 
-- [GraceDB Web Interface](https://gracedb.ligo.org/)
-- [GraceDB API Docs](https://gracedb.ligo.org/documentation/rest.html)
-- [LIGO Scientific Collaboration](https://www.ligo.org/)
+Polls GraceDB superevents and emits one CloudEvent family for each candidate alert.
 
-## Fabric notebook hosting
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-gracedb` | Apache Kafka compatible (incl. Azure Event Hubs/Fabric Event Streams) | CloudEvents on one topic |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-gracedb-mqtt` | MQTT 5.0 broker | CloudEvents with xRegistry topic mapping |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-gracedb-amqp` | AMQP 1.0 broker / Service Bus | CloudEvents on one AMQP address |
 
-This source can also be hosted as a scheduled Fabric notebook via
-[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
-which deploys `gracedb/notebook/gracedb-feed.ipynb` to a Fabric workspace.
+All variants share:
+
+- The same upstream acquisition logic and poll cadence.
+- The same xRegistry contract and schema set.
+- The same event identities and key/subject model across transports.
+
+## Key features
+
+- Shared contract and event schemas across Kafka, MQTT, and AMQP images.
+- Container-first deployment model for Azure ACI and Fabric hosting.
+- Dedupe/resume behavior for long-running ingestion.
+- Source-specific event families are documented in [EVENTS.md](EVENTS.md).
+
+## Repository layout
+
+```text
+gracedb/
+  xreg/gracedb.xreg.json     # shared xRegistry contract
+  gracedb/ # feeder runtime
+  gracedb_amqp/ # AMQP feeder application
+  gracedb_mqtt/ # MQTT feeder application
+  gracedb_amqp_producer/ # generated producer package
+  gracedb_mqtt_producer/ # generated producer package
+  gracedb_producer/ # generated producer package
+  kql/ # KQL schema scripts
+  notebook/ # Fabric notebook feeder
+  tests/ # unit + integration tests
+  infra/ # feeder runtime
+  Dockerfile                # builds the Kafka feeder image
+  Dockerfile.mqtt                # builds the MQTT feeder image
+  Dockerfile.amqp                # builds the AMQP feeder image
+```
+
+## Prerequisites
+
+- Docker 20.10+.
+- Outbound HTTPS access to the upstream source.
+- Network access to your Kafka, MQTT, or AMQP destination.
+- A writable `/state` mount for stateful polling deployments.
+
+## Quick start with Docker
+
+### Kafka
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e GRACEDB_LAST_POLLED_FILE=/state/gracedb.json \
+  -e CONNECTION_STRING="<event-hubs-or-kafka-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-gracedb:latest
+```
+
+### MQTT
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e GRACEDB_MQTT_LAST_POLLED_FILE=/state/gracedb-mqtt.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-gracedb-mqtt:latest
+```
+
+### AMQP
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e GRACEDB_AMQP_LAST_POLLED_FILE=/state/gracedb-amqp.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/gracedb" \
+  ghcr.io/clemensv/real-time-sources-gracedb-amqp:latest
+```
+
+## Configuration reference
+
+Full per-transport environment-variable matrices live in [CONTAINER.md](CONTAINER.md).
+
+State-file behavior: Kafka uses `GRACEDB_LAST_POLLED_FILE`; MQTT uses `GRACEDB_MQTT_LAST_POLLED_FILE`; AMQP uses `GRACEDB_AMQP_LAST_POLLED_FILE`.
+
+## Data model
+
+- `org.ligo.gracedb.Superevent` — gravitational-wave candidate event
+
+## Deploying into Microsoft Fabric
+
+This source supports both Fabric-hosted deployment models.
+
+### Fabric Notebook feeder
+
+Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source gracedb ...` to schedule the poller in a Fabric notebook using the source notebook under [`notebook/`](notebook/).
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#gracedb/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source gracedb ...` to run the container continuously in Azure Container Instances with Fabric Event Stream / Eventhouse wiring.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#gracedb/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### AMQP — bring your own broker
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template-amqp.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template-with-eventhub.json)
 
-## Transports
+### Kafka — bring your own Event Hub / Kafka
 
-This source now ships separate Kafka, MQTT, and AMQP containers over the same xRegistry contract. The Kafka image is the best fit when consumers need replay, batch catch-up, or a single ordered stream. The MQTT image (`ghcr.io/clemensv/real-time-sources-gracedb-mqtt:latest`) is the better fit for operational dashboards and Unified Namespace subscribers that want to subscribe directly to the current state or live event slice for this source.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template.json)
 
-The MQTT contract is source-specific: MQTT/5.0 transport variant for GraceDB superevents. Non-retained QoS-1 event stream routed by category, physics group, and superevent id under seismic/intl/ligo/gracedb/...
-
-MQTT publishes binary-mode CloudEvents with JSON payloads and CloudEvent attributes in MQTT 5 user properties. Topic patterns from `xreg/gracedb.xreg.json`:
-
-| Topic pattern | Message type | Delivery |
-|---|---|---|
-| `seismic/intl/ligo/gracedb/{category}/{group}/{superevent_id}/superevent` | `org.ligo.gracedb.Superevent` | QoS 1, retain=false |
-
-Four Azure Container Instance deployment shapes are documented for this source:
-
-| Transport | Template |
-|---|---|
-| Kafka, bring your own Event Hub or compatible broker | `azure-template.json` |
-| Kafka, create an Event Hubs namespace and hub | `azure-template-with-eventhub.json` |
-| MQTT, bring your own MQTT 5 broker | `azure-template-mqtt.json` |
-| MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
-
-See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.
-
-## AMQP 1.0 companion feeder
-
-This source also ships an AMQP 1.0 companion container, `ghcr.io/clemensv/real-time-sources-gracedb-amqp:latest`, for queue-oriented consumers using generic AMQP brokers or Azure Service Bus. It emits the same CloudEvents and payload schemas as the Kafka and MQTT variants on a single broker address (default `gracedb`).
-
-```bash
-docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=gracedb   ghcr.io/clemensv/real-time-sources-gracedb-amqp:latest
-```
-
-[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgracedb%2Fazure-template-amqp.json)
-
+## Next steps
+- Review [EVENTS.md](EVENTS.md) before writing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for complete environment-variable and auth-mode details.
+- Mount persistent state storage in production.

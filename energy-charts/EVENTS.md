@@ -1,4 +1,4 @@
-# Energy-Charts (Fraunhofer ISE) — European Electricity Data Bridge Events
+# Energy-Charts feeder Events
 
 MQTT 5.0 binary-mode CloudEvents variant of info.energy_charts.
 
@@ -332,4 +332,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/energy_charts.xreg.json`](xreg/energy_charts.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- Energy-Charts API: <https://api.energy-charts.info/>
+- Fraunhofer ISE Energy-Charts API: <https://api.energy-charts.info/>

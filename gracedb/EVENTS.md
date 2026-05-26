@@ -1,4 +1,4 @@
-# GraceDB Gravitational Wave Candidate Alerts Events
+# GraceDB feeder Events
 
 GraceDB publishes superevent alerts and classifications from the LIGO/Virgo/KAGRA GraceDB service for gravitational-wave candidate events. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
@@ -157,12 +157,10 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
 ## References
 
 - xRegistry manifest: [`xreg/gracedb.xreg.json`](xreg/gracedb.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- GraceDB API Docs: <https://gracedb.ligo.org/documentation/rest.html>
-- ![Deploy AMQP to Azure Service Bus: <https://aka.ms/deploytoazurebutton>
+- GraceDB superevents API: <https://gracedb.ligo.org/api/superevents/?format=json>

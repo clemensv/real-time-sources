@@ -1,4 +1,4 @@
-# iRail Belgian Railway Bridge Events
+# iRail feeder Events
 
 iRail publishes train departure, arrival, and connection updates from the Belgian iRail train data API for Belgian railway stations, vehicles, and connections. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -8,7 +8,7 @@ iRail publishes train departure, arrival, and connection updates from the Belgia
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 2 reference/catalog event types and 1 telemetry event type.
 - **Identity:** `{station_id}` identifies the resource each event is about.
-- **Operations:** The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -256,8 +256,7 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 

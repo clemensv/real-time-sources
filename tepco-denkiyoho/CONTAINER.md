@@ -1,65 +1,183 @@
-# TEPCO Denki Yoho Container
+# TEPCO Denkiyoho container images
 
-This container bridges TEPCO Electricity Forecast (でんき予報) open CSV data to Apache Kafka-compatible endpoints as structured JSON CloudEvents.
+This document covers the published container images for the TEPCO Denkiyoho feeder. For overview and business context see [README.md](README.md); for event-contract details see [EVENTS.md](EVENTS.md).
 
-## Upstream
+## Why this container
 
-The bridge polls `https://www.tepco.co.jp/forecast/html/images/juyo-d1-j.csv`, a Shift-JIS CSV updated about every five minutes. It covers the TEPCO service area in the Kanto region and emits daily supply capacity, five-minute actual demand, and hourly demand forecast events.
+TEPCO demand/supply telemetry is used in Kanto-region power operations and forecasting. This feeder normalizes the CSV stream into CloudEvents across Kafka, MQTT, and AMQP.
 
-Event shapes are documented in [EVENTS.md](EVENTS.md).
+## What ships in the box
 
-## Pull
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-tepco-denkiyoho` | Kafka | Polls upstream and publishes CloudEvents to one topic |
+| `ghcr.io/clemensv/real-time-sources-tepco-denkiyoho-mqtt` | MQTT 5.0 | Publishes CloudEvents to xRegistry-mapped topics |
+| `ghcr.io/clemensv/real-time-sources-tepco-denkiyoho-amqp` | AMQP 1.0 | Publishes CloudEvents to one AMQP address |
 
-```shell
+## Image contract
+
+| Aspect | Value |
+|---|---|
+| Base image | `python:3.10-slim` |
+| Default entrypoint | `python -m tepco_denkiyoho feed; python -m tepco_denkiyoho_mqtt feed; python -m tepco_denkiyoho_amqp feed` |
+| Exposed ports | none — outbound publisher only |
+| Signals | exits on `SIGTERM`; in-flight poll cycle is completed/flushed before shutdown where supported |
+| State | Kafka: STATE_FILE; MQTT: Not used; AMQP: Not used. Mount `/state` when state is used. |
+| Tags | `:latest` (mainline), plus immutable release/SHA tags published in GHCR. |
+
+## Installing the container images
+
+```bash
 docker pull ghcr.io/clemensv/real-time-sources-tepco-denkiyoho:latest
+docker pull ghcr.io/clemensv/real-time-sources-tepco-denkiyoho-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-tepco-denkiyoho-amqp:latest
 ```
 
-## Kafka broker
+## Using the Kafka image
 
-```shell
+### With a Kafka broker (SASL PLAIN)
+
+```bash
 docker run --rm \
-  -e KAFKA_BOOTSTRAP_SERVERS='broker:9092' \
-  -e KAFKA_TOPIC='tepco-denkiyoho' \
-  -e KAFKA_ENABLE_TLS='false' \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/tepco-denkiyoho.json \
+  -e KAFKA_BOOTSTRAP_SERVERS='<broker:9093>' \
+  -e KAFKA_TOPIC='<topic>' \
+  -e SASL_USERNAME='<username>' \
+  -e SASL_PASSWORD='<password>' \
   ghcr.io/clemensv/real-time-sources-tepco-denkiyoho:latest
 ```
 
-For SASL PLAIN, add `SASL_USERNAME` and `SASL_PASSWORD`. If TLS is enabled, omit `KAFKA_ENABLE_TLS=false`.
+### With Azure Event Hubs / Fabric Event Streams
 
-## Event Hubs or Fabric Event Streams
-
-Use an Event Hubs-style connection string or the custom endpoint connection string from Fabric Event Streams:
-
-```shell
+```bash
 docker run --rm \
-  -e CONNECTION_STRING='Endpoint=sb://namespace.servicebus.windows.net/;SharedAccessKeyName=policy;SharedAccessKey=key;EntityPath=eventhub' \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/tepco-denkiyoho.json \
+  -e CONNECTION_STRING='<connection-string>' \
   ghcr.io/clemensv/real-time-sources-tepco-denkiyoho:latest
 ```
 
-The Docker E2E/plain Kafka convention is also supported:
+## Using the MQTT image
 
-```shell
-CONNECTION_STRING='BootstrapServer=host:9092;EntityPath=tepco-denkiyoho'
-KAFKA_ENABLE_TLS=false
+### With username/password authentication
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-tepco-denkiyoho-mqtt:latest
+```
+
+### With Azure Event Grid namespace MQTT broker (Entra)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e MQTT_BROKER_URL='mqtts://<ns>.<region>-1.ts.eventgrid.azure.net:8883' \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID='<managed-identity-client-id>' \
+  -e MQTT_CLIENT_ID='<unique-client-id>' \
+  ghcr.io/clemensv/real-time-sources-tepco-denkiyoho-mqtt:latest
+```
+
+## Using the AMQP image
+
+### With Microsoft Entra ID (AMQP CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='tepco-denkiyoho' \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default' \
+  -e AMQP_ENTRA_CLIENT_ID='<managed-identity-client-id>' \
+  ghcr.io/clemensv/real-time-sources-tepco-denkiyoho-amqp:latest
+```
+
+### With SAS token CBS (Service Bus emulator / SAS-only namespaces)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AMQP_HOST='servicebus-emulator' \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS='tepco-denkiyoho' \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+  -e AMQP_SAS_KEY='<sas-key>' \
+  ghcr.io/clemensv/real-time-sources-tepco-denkiyoho-amqp:latest
 ```
 
 ## Environment variables
 
-| Variable | Required | Default | Description |
-| --- | --- | --- | --- |
-| `CONNECTION_STRING` | No | empty | Event Hubs/Fabric connection string, or `BootstrapServer=...;EntityPath=...`. Overrides explicit Kafka settings. |
-| `KAFKA_BOOTSTRAP_SERVERS` | Required without `CONNECTION_STRING` | empty | Kafka bootstrap server list. |
-| `KAFKA_TOPIC` | No | `tepco-denkiyoho` | Kafka topic. |
-| `SASL_USERNAME` | No | empty | SASL PLAIN username. |
-| `SASL_PASSWORD` | No | empty | SASL PLAIN password. |
-| `KAFKA_ENABLE_TLS` | No | `true` | Set `false` for plaintext Kafka in local/E2E flows. |
-| `POLLING_INTERVAL` | No | `300` | Seconds between polls. |
-| `STATE_FILE` | No | `./state/tepco-denkiyoho.json` | Persistent deduplication state file. |
-| `ONCE_MODE` | No | `false` | Set `true` to run one poll and exit. |
+### Kafka image
 
-Mount a volume for `./state` if deduplication state should survive container replacement.
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs/Fabric-style or Kafka-style connection string. |
+| `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC` | Explicit Kafka destination. |
+| `SASL_USERNAME`, `SASL_PASSWORD` | SASL PLAIN credentials when needed. |
+| `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka. |
+| `ONCE_MODE` | Run one cycle and exit (where supported). |
+| State variable | `STATE_FILE` |
 
+### MQTT image
 
-## Transports
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional broker credentials. |
+| `MQTT_CLIENT_ID` | Optional explicit client ID. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured` where supported. |
+| State variable | Not used by current MQTT companion app |
 
-This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Broker URL (`amqp://` or `amqps://`). |
+| `AMQP_HOST`, `AMQP_PORT`, `AMQP_ADDRESS` | Component-level AMQP endpoint settings. |
+| `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials (if used). |
+| `AMQP_AUTH_MODE` | Auth mode where supported (`password`/`entra`/`sas`). |
+| `AMQP_TLS` | Enable TLS where supported. |
+| State variable | Not used by current AMQP companion app |
+
+## Deploying into Microsoft Fabric
+
+Fabric notebook and Fabric ACI hosting are both supported:
+
+- Notebook: `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source tepco-denkiyoho ...`
+- ACI: `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source tepco-denkiyoho ...`
+
+Portal links:
+
+- [Fabric Notebook](https://clemensv.github.io/real-time-sources/#tepco-denkiyoho/fabric-notebook)
+- [Fabric ACI](https://clemensv.github.io/real-time-sources/#tepco-denkiyoho/fabric-aci)
+
+## Deploying into Azure Container Instances
+
+### AMQP — bring your own broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ftepco-denkiyoho%2Fazure-template-amqp.json)
+
+### MQTT — bring your own broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ftepco-denkiyoho%2Fazure-template-mqtt.json)
+
+### MQTT — provision a new Event Grid MQTT broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ftepco-denkiyoho%2Fazure-template-with-eventgrid-mqtt.json)
+
+### AMQP — provision a new Azure Service Bus namespace
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ftepco-denkiyoho%2Fazure-template-with-servicebus.json)
+
+## Related
+- [README.md](README.md) — source overview, use cases, and quick start.
+- [EVENTS.md](EVENTS.md) — event contract and schema details.
+- [`xreg/tepco-denkiyoho.xreg.json`](xreg/tepco-denkiyoho.xreg.json) — authoritative manifest.

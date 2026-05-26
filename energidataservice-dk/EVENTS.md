@@ -1,4 +1,4 @@
-# Energi Data Service (Energinet) Denmark Bridge Events
+# Energi Data Service DK feeder Events
 
 MQTT 5.0 binary-mode CloudEvents variant of dk.energinet.energidataservice.
 
@@ -281,4 +281,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/energidataservice_dk.xreg.json`](xreg/energidataservice_dk.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- Energi Data Service: <https://www.energidataservice.dk/>
+- Energi Data Service API: <https://www.energidataservice.dk/>

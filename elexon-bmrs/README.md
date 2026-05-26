@@ -1,111 +1,159 @@
-# Elexon BMRS (GB Electricity Market) Poller
+# Elexon BMRS feeder
+
+This feeder turns the [Elexon BMRS API](https://data.elexon.co.uk/bmrs/api/v1/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published images, environment variables, and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing details.
+
+## Why this bridge
+
+BMRS demand and generation outturn data drives balancing and market analytics in Great Britain. This feeder normalizes and streams those records as CloudEvents.
+
+Concrete consumer scenarios:
+
+- **Operations dashboards** ingest the stream for near-real-time visibility without polling logic in every app.
+- **Data engineering pipelines** land events in Eventhouse/Data Lake/Kafka topics with stable keys and schemas.
+- **Alerting and automation** subscribe to the relevant event families and trigger downstream workflows.
+- **Research and analytics teams** replay the same contract across historical and live windows.
+- **Cross-domain correlation** joins these events with weather, traffic, or incident streams from sibling feeders.
 
 ## Overview
 
-**Elexon BMRS Poller** polls the Elexon Balancing Mechanism Reporting Service (BMRS) API for the latest GB electricity market data and sends it to a Kafka topic as CloudEvents. The tool tracks previously seen settlement periods to avoid sending duplicates.
+Polls generation outturn and demand outturn feeds and emits settlement-period events.
 
-## Key Features
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-elexon-bmrs` | Apache Kafka compatible (incl. Azure Event Hubs/Fabric Event Streams) | CloudEvents on one topic |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-elexon-bmrs-mqtt` | MQTT 5.0 broker | CloudEvents with xRegistry topic mapping |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-elexon-bmrs-amqp` | AMQP 1.0 broker / Service Bus | CloudEvents on one AMQP address |
 
-- **Generation Mix Polling**: Fetch the latest generation outturn summary (MW by fuel type) from the BMRS API.
-- **Demand Outturn Polling**: Fetch the latest national demand outturn data.
-- **Deduplication**: Tracks last seen settlement periods in a state file to avoid reprocessing.
-- **Kafka Integration**: Send events to a Kafka topic using SASL PLAIN authentication.
-- **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
-- **Fabric notebook hosting**: Deployable as a scheduled Fabric notebook via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) using [`notebook/elexon-bmrs-feed.ipynb`](notebook/elexon-bmrs-feed.ipynb).
+All variants share:
 
-## Installation
+- The same upstream acquisition logic and poll cadence.
+- The same xRegistry contract and schema set.
+- The same event identities and key/subject model across transports.
 
-The tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/) or from the Microsoft Store if you are on Windows.
+## Key features
 
-### Installation Steps
+- Shared contract and event schemas across Kafka, MQTT, and AMQP images.
+- Container-first deployment model for Azure ACI and Fabric hosting.
+- Dedupe/resume behavior for long-running ingestion.
+- Source-specific event families are documented in [EVENTS.md](EVENTS.md).
+
+## Repository layout
+
+```text
+elexon-bmrs/
+  xreg/elexon_bmrs.xreg.json     # shared xRegistry contract
+  elexon_bmrs/ # feeder runtime
+  elexon_bmrs_amqp/ # AMQP feeder application
+  elexon_bmrs_mqtt/ # MQTT feeder application
+  elexon_bmrs_amqp_producer/ # generated producer package
+  elexon_bmrs_mqtt_producer/ # generated producer package
+  elexon_bmrs_producer/ # generated producer package
+  kql/ # KQL schema scripts
+  notebook/ # Fabric notebook feeder
+  tests/ # unit + integration tests
+  Dockerfile                # builds the Kafka feeder image
+  Dockerfile.mqtt                # builds the MQTT feeder image
+  Dockerfile.amqp                # builds the AMQP feeder image
+```
+
+## Prerequisites
+
+- Docker 20.10+.
+- Outbound HTTPS access to the upstream source.
+- Network access to your Kafka, MQTT, or AMQP destination.
+- A writable `/state` mount for stateful polling deployments.
+
+## Quick start with Docker
+
+### Kafka
 
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=elexon-bmrs
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e BMRS_LAST_POLLED_FILE=/state/elexon-bmrs.json \
+  -e CONNECTION_STRING="<event-hubs-or-kafka-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-elexon-bmrs:latest
 ```
 
-If you clone the repository:
+### MQTT
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/elexon-bmrs
-pip install .
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-elexon-bmrs-mqtt:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
-
-## How to Use
-
-After installation, the tool can be run using `python -m elexon_bmrs`. It supports several arguments for configuring the polling process and sending data to Kafka.
-
-### Command-Line Arguments
-
-- `--last-polled-file`: Path to the file where last seen settlement period timestamps are stored. Defaults to `~/.bmrs_last_polled.json`.
-- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
-- `--kafka-topic`: The Kafka topic to send messages to.
-- `--sasl-username`: Username for SASL PLAIN authentication.
-- `--sasl-password`: Password for SASL PLAIN authentication.
-- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string (overrides other Kafka parameters).
-
-### Example Usage
-
-#### Using a Connection String
+### AMQP
 
 ```bash
-python -m elexon_bmrs --connection-string "<your_connection_string>"
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/elexon-bmrs" \
+  ghcr.io/clemensv/real-time-sources-elexon-bmrs-amqp:latest
 ```
 
-#### Using Kafka Parameters Directly
+## Configuration reference
 
-```bash
-python -m elexon_bmrs --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-topic "<topic_name>" --sasl-username "<username>" --sasl-password "<password>"
-```
+Full per-transport environment-variable matrices live in [CONTAINER.md](CONTAINER.md).
 
-### Connection String Format
+State-file behavior: Kafka uses `BMRS_LAST_POLLED_FILE`; MQTT companion app is stateless; AMQP companion app is stateless.
 
-```
-Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=<hub>
-```
+## Data model
 
-### Environment Variables
+- Generation outturn events
+- Demand outturn events
 
-- `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
-- `BMRS_LAST_POLLED_FILE`: File to store last seen settlement period timestamps for deduplication.
+## Deploying into Microsoft Fabric
 
-## Data Source
+This source supports both Fabric-hosted deployment models.
 
-The Elexon Balancing Mechanism Reporting Service (BMRS) provides real-time and near-real-time data about the GB electricity market. The data is published under the CC-BY 4.0 licence and requires no authentication.
+### Fabric Notebook feeder
 
-- **API base**: `https://data.elexon.co.uk/bmrs/api/v1/`
-- **Generation outturn**: `https://data.elexon.co.uk/bmrs/api/v1/generation/outturn/summary?format=json`
-- **Demand outturn**: `https://data.elexon.co.uk/bmrs/api/v1/demand/outturn?format=json`
-- **BMRS home page**: `https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/`
+Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source elexon-bmrs ...` to schedule the poller in a Fabric notebook using the source notebook under [`notebook/`](notebook/).
 
-## License
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#elexon-bmrs/fabric-notebook)
 
-[MIT](../LICENSE.md)
+### Fabric ACI feeder
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source elexon-bmrs ...` to run the container continuously in Azure Container Instances with Fabric Event Stream / Eventhouse wiring.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#elexon-bmrs/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### AMQP — bring your own broker
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Felexon-bmrs%2Fazure-template-amqp.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — bring your own broker
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Felexon-bmrs%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Felexon-bmrs%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision a new Event Grid MQTT broker
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Felexon-bmrs%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Felexon-bmrs%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace
 
-## Transports
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Felexon-bmrs%2Fazure-template-with-servicebus.json)
 
-This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Felexon-bmrs%2Fazure-template.json)
+
+## Next steps
+- Review [EVENTS.md](EVENTS.md) before writing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for complete environment-variable and auth-mode details.
+- Mount persistent state storage in production.
