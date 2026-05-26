@@ -1,0 +1,23 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "dmi_kafka"
+version = "0.1.0"
+description = "Kafka feeder for the DMI observation triad (metObs + oceanObs + lightning)."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "dmi_kafka" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+dmi_core = { path = "../dmi_core" }
+dmi_producer_data = { path = "../dmi_producer/dmi_producer_data" }
+dmi_producer_kafka_producer = { path = "../dmi_producer/dmi_producer_kafka_producer" }
+
+[tool.poetry.scripts]
+dmi-kafka = "dmi_kafka.app:main"

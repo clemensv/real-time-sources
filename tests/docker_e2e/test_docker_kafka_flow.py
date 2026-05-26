@@ -2171,6 +2171,7 @@ class TestTepcoDenkiyohoDockerFlow:
 
 
 
+@pytest.fixture(scope='module')
 def noaa_swpc_l1_image():
     return build_image('noaa-swpc-l1', dockerfile='Dockerfile.kafka')
 
@@ -2195,5 +2196,41 @@ class TestNoaaSwpcL1DockerFlow:
                 # has a recent gap, but small enough to stay well under the
                 # 300 s _run_kafka_flow_test consume window.
                 'BACKFILL_MINUTES': '1440',
+            },
+        )
+
+
+# DMI (Denmark — Danish Meteorological Institute observation triad)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def dmi_kafka_image():
+    if not os.environ.get('DMI_METOBS_API_KEY', '') or \
+       not os.environ.get('DMI_OCEANOBS_API_KEY', '') or \
+       not os.environ.get('DMI_LIGHTNING_API_KEY', ''):
+        pytest.skip('DMI_METOBS_API_KEY / DMI_OCEANOBS_API_KEY / DMI_LIGHTNING_API_KEY not set')
+    return build_image('dmi', dockerfile='Dockerfile.kafka', tag='test-dmi-kafka')
+
+
+class TestDMIDockerFlow:
+    TOPIC = 'dmi'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, dmi_kafka_image):
+        _run_kafka_flow_test(
+            kafka, dmi_kafka_image, self.TOPIC,
+            reference_types=[
+                'dk.dmi.metObs.MetObsStation',
+                'dk.dmi.oceanObs.OceanStation',
+                'dk.dmi.oceanObs.TidewaterStation',
+                'dk.dmi.lightning.LightningSensor',
+            ],
+            telemetry_types=[
+                'dk.dmi.metObs.MetObsObservation',
+                'dk.dmi.oceanObs.OceanObservation',
+            ],
+            extra_env={
+                'DMI_METOBS_API_KEY': os.environ['DMI_METOBS_API_KEY'],
+                'DMI_OCEANOBS_API_KEY': os.environ['DMI_OCEANOBS_API_KEY'],
+                'DMI_LIGHTNING_API_KEY': os.environ['DMI_LIGHTNING_API_KEY'],
             },
         )

@@ -5841,20 +5841,41 @@ class TestSmhiWeatherMqttDockerFlow:
 
 from typing import Any, Dict, List
 # ===========================================================================
+
+# ===========================================================================
 # NOAA SWPC L1 (single-spacecraft retained UNS leaf)
 # ===========================================================================
 
 @pytest.fixture(scope='module')
 def noaa_swpc_l1_mqtt_image():
     return build_image('noaa-swpc-l1', dockerfile='Dockerfile.mqtt', tag='test-noaa-swpc-l1-mqtt')
+
+
 @pytest.fixture()
 def mosquitto_container_swpc():
+    client = docker.from_env()
     network = client.networks.create('noaa-swpc-l1-mqtt-e2e', driver='bridge')
+    host_port = _find_free_port()
     config = 'listener 1883\nallow_anonymous true\n'
+    container = client.containers.run(
+        'eclipse-mosquitto:2',
+        command=['sh', '-c', f"printf '{config}' > /m.conf && exec mosquitto -c /m.conf"],
         name='noaa-swpc-l1-mqtt-e2e-broker',
         detach=True, remove=True, network=network.name,
+        ports={'1883/tcp': host_port},
+    )
+    container.reload()
+    deadline = time.time() + 20
+    while time.time() < deadline:
+        try:
+            with closing(socket.create_connection(('127.0.0.1', host_port), timeout=1)):
+                break
+        except OSError:
+            time.sleep(0.5)
+    else:
         try: container.kill()
         finally: network.remove()
+        pytest.skip('Mosquitto broker did not start')
     try:
         yield {
             'host_port': host_port,
@@ -5867,30 +5888,74 @@ def mosquitto_container_swpc():
         except docker.errors.APIError: pass
         try: network.remove()
         except docker.errors.APIError: pass
+
+
 def _collect_swpc_messages(host: str, port: int, timeout: float = 25.0) -> List[Dict[str, Any]]:
+    collected: List[Dict[str, Any]] = []
+    last_msg_time = [time.time()]
+
     def on_message(_c, _u, msg):
+        last_msg_time[0] = time.time()
         props: Dict[str, Any] = {}
+        if msg.properties is not None:
+            for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                props[k] = v
+            ct = getattr(msg.properties, 'ContentType', None)
             if ct: props['_contenttype'] = ct
         try: payload = json.loads(msg.payload)
         except (TypeError, ValueError): payload = None
+        collected.append({
             'topic': msg.topic, 'retain': bool(msg.retain), 'qos': msg.qos,
             'user_properties': props, 'payload': payload,
+        })
+
+    client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    client.on_message = on_message
+    client.connect(host, port, 30)
     client.subscribe('space-weather/us/noaa-swpc/l1/#', qos=1)
+    client.loop_start()
+    try:
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            time.sleep(0.5)
             if collected and time.time() - last_msg_time[0] > 3.0:
+                break
+    finally:
         client.loop_stop(); client.disconnect()
+    return collected
+
+
 class TestNoaaSwpcL1MqttDockerFlow:
     """Verify the noaa-swpc-l1-mqtt container publishes the retained UNS leaf."""
+
     def test_emits_retained_propagated_solar_wind(self, mosquitto_container_swpc, noaa_swpc_l1_mqtt_image):
+        client = docker.from_env()
         broker_url = f"mqtt://{mosquitto_container_swpc['internal_host']}:{mosquitto_container_swpc['internal_port']}"
+        feeder = client.containers.run(
             noaa_swpc_l1_mqtt_image.id, detach=True, remove=False,
             network=mosquitto_container_swpc['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '60',
+                'ONCE_MODE': 'true',
                 'BACKFILL_MINUTES': '1440',
+                'PYTHONUNBUFFERED': '1',
+            },
+        )
+        try:
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode('utf-8', errors='replace')
             assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+        finally:
             try: feeder.remove(force=True)
             except docker.errors.APIError: pass
+
         messages = _collect_swpc_messages('127.0.0.1', mosquitto_container_swpc['host_port'])
+        assert messages, 'No retained messages received from broker'
+
         psw_msgs = [m for m in messages if m['topic'].endswith('/propagated-solar-wind')]
         assert psw_msgs, f'No /propagated-solar-wind retained leaves. Topics seen: {sorted({m["topic"] for m in messages})}'
+
         sample = psw_msgs[0]
         for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
             assert required in sample['user_properties'], f"missing CE attribute {required}: {sample['user_properties']}"
@@ -5902,3 +5967,165 @@ class TestNoaaSwpcL1MqttDockerFlow:
         assert parts[:4] == ['space-weather', 'us', 'noaa-swpc', 'l1']
         assert parts[-1] == 'propagated-solar-wind'
         assert sample['user_properties']['subject'] == parts[-2]
+
+# ---------------------------------------------------------------------------
+# DMI (Denmark — Danish Meteorological Institute) MQTT/UNS
+# ---------------------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def dmi_mqtt_image():
+    if not os.environ.get('DMI_METOBS_API_KEY', '') or \
+       not os.environ.get('DMI_OCEANOBS_API_KEY', ''):
+        pytest.skip('DMI_METOBS_API_KEY / DMI_OCEANOBS_API_KEY not set')
+    return build_image('dmi', dockerfile='Dockerfile.mqtt', tag='test-dmi-mqtt')
+
+
+@pytest.fixture()
+def dmi_mosquitto_container():
+    client = docker.from_env()
+    network = client.networks.create('dmi-mqtt-e2e', driver='bridge')
+    host_port = _find_free_port()
+    config = (
+        'listener 1883\n'
+        'allow_anonymous true\n'
+    )
+    container = client.containers.run(
+        'eclipse-mosquitto:2',
+        command=['sh', '-c', f"printf '{config}' > /m.conf && exec mosquitto -c /m.conf"],
+        name='dmi-mqtt-e2e-broker',
+        detach=True,
+        remove=True,
+        network=network.name,
+        ports={'1883/tcp': host_port},
+    )
+    container.reload()
+    deadline = time.time() + 20
+    while time.time() < deadline:
+        try:
+            with closing(socket.create_connection(('127.0.0.1', host_port), timeout=1)):
+                break
+        except OSError:
+            time.sleep(0.5)
+    else:
+        try:
+            container.kill()
+        finally:
+            network.remove()
+        pytest.skip('Mosquitto broker did not start')
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'dmi-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+def _collect_dmi_messages(host: str, port: int, timeout: float = 60.0) -> List[Dict[str, Any]]:
+    collected: List[Dict[str, Any]] = []
+    last_msg_time = [time.time()]
+
+    def on_message(client, userdata, msg):
+        last_msg_time[0] = time.time()
+        props = {}
+        if msg.properties is not None:
+            for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                props[k] = v
+            ct = getattr(msg.properties, 'ContentType', None)
+            if ct:
+                props['_contenttype'] = ct
+        try:
+            payload = json.loads(msg.payload)
+        except (TypeError, ValueError):
+            payload = None
+        collected.append({
+            'topic': msg.topic,
+            'retain': bool(msg.retain),
+            'qos': msg.qos,
+            'user_properties': props,
+            'payload': payload,
+        })
+
+    client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    client.on_message = on_message
+    client.connect(host, port, 30)
+    client.subscribe('weather/dk/dmi/#', qos=1)
+    client.subscribe('ocean/dk/dmi/#', qos=1)
+    client.loop_start()
+    try:
+        deadline = time.time() + timeout
+        idle_threshold = 5.0
+        while time.time() < deadline:
+            time.sleep(0.5)
+            if collected and time.time() - last_msg_time[0] > idle_threshold:
+                break
+    finally:
+        client.loop_stop()
+        client.disconnect()
+    return collected
+
+
+class TestDMIMqttDockerFlow:
+    """Verify the dmi-mqtt container publishes a valid UNS tree (no lightning)."""
+
+    def test_emits_retained_uns_topics(self, dmi_mosquitto_container, dmi_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{dmi_mosquitto_container['internal_host']}:{dmi_mosquitto_container['internal_port']}"
+        feeder = client.containers.run(
+            dmi_mqtt_image.id,
+            detach=True,
+            remove=False,
+            network=dmi_mosquitto_container['network'],
+            environment={
+                'MQTT_BROKER_URL': broker_url,
+                'POLLING_INTERVAL': '60',
+                'ONCE_MODE': 'true',
+                'PYTHONUNBUFFERED': '1',
+                'DMI_METOBS_API_KEY': os.environ['DMI_METOBS_API_KEY'],
+                'DMI_OCEANOBS_API_KEY': os.environ['DMI_OCEANOBS_API_KEY'],
+            },
+        )
+        try:
+            result = feeder.wait(timeout=600)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            )
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _collect_dmi_messages('127.0.0.1', dmi_mosquitto_container['host_port'])
+        assert messages, 'No retained messages received from broker'
+
+        info_msgs = [m for m in messages if m['topic'].endswith('/info')]
+        pred_msgs = [m for m in messages if m['topic'].endswith('/prediction')]
+        telemetry_msgs = [m for m in messages if not (m['topic'].endswith('/info') or m['topic'].endswith('/prediction'))]
+        assert info_msgs, 'No /info reference events published'
+        assert telemetry_msgs, 'No telemetry events published'
+
+        topics_root = {m['topic'].split('/')[0] for m in messages}
+        assert topics_root <= {'weather', 'ocean'}, f"unexpected topic roots: {topics_root}"
+
+        for sample in info_msgs[:1] + telemetry_msgs[:1] + pred_msgs[:1]:
+            up = sample['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in up, f"missing CE attribute {required} on {sample['topic']}: {up}"
+            assert sample['retain'] is True
+            assert sample['qos'] == 1
+
+        # Lightning must NOT be published over MQTT.
+        types_seen = {m['user_properties'].get('type') for m in messages}
+        assert all(not (t or '').startswith('dk.dmi.lightning.') for t in types_seen), \
+            f"lightning event types leaked to MQTT: {types_seen}"
