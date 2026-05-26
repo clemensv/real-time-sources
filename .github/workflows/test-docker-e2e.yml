@@ -27,7 +27,7 @@ jobs:
       reason: ${{ steps.compute.outputs.reason }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -77,7 +77,7 @@ jobs:
       matrix: ${{ fromJson(needs.discover.outputs.build_matrix) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Build Docker image
         run: |
@@ -99,7 +99,7 @@ jobs:
       matrix: ${{ fromJson(needs.discover.outputs.flow_matrix) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
