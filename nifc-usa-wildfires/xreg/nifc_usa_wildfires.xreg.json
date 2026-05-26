@@ -128,7 +128,7 @@
                 "description": "AMQP message subject matching the IRWIN CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",

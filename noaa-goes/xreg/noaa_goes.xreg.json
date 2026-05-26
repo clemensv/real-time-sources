@@ -431,7 +431,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "event": {
                 "type": "uritemplate",
                 "value": "{event}",
@@ -452,7 +452,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "event": {
                 "type": "uritemplate",
                 "value": "{event}",
@@ -473,7 +473,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "event": {
                 "type": "uritemplate",
                 "value": "{event}",
@@ -494,7 +494,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "event": {
                 "type": "uritemplate",
                 "value": "{event}",
@@ -515,7 +515,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         },
         "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp": {
@@ -530,7 +530,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "flare_class": {
                 "type": "uritemplate",
                 "value": "{flare_class}",

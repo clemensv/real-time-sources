@@ -151,7 +151,7 @@
                 "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "stream_name": {
                 "type": "uritemplate",
                 "value": "{stream_name}",
@@ -172,7 +172,7 @@
                 "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "stream_name": {
                 "type": "uritemplate",
                 "value": "{stream_name}",

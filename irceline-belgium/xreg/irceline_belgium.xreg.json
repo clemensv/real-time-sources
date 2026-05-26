@@ -189,7 +189,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
@@ -245,7 +245,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
@@ -276,7 +276,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",

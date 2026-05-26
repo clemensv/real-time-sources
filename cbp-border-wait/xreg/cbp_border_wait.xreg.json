@@ -152,14 +152,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "border_slug": {
                 "type": "uritemplate",
                 "value": "{border_slug}",
                 "description": "AMQP application property mirroring the border_slug routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{port_number}",
@@ -181,14 +181,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "border_slug": {
                 "type": "uritemplate",
                 "value": "{border_slug}",
                 "description": "AMQP application property mirroring the border_slug routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{port_number}",

@@ -120,7 +120,7 @@
                 "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for cross-transport correlation."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "country": {
                 "type": "uritemplate",
                 "value": "{country}",

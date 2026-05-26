@@ -137,7 +137,7 @@
                 "description": "AMQP message subject — stable spacecraft channel identifier matching the CloudEvent subject so SB/EH consumers can correlate."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{spacecraft}",

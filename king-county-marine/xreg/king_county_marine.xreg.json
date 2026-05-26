@@ -152,7 +152,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         },
         "US.WA.KingCounty.Marine.amqp.WaterQualityReading": {
@@ -167,7 +167,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         }
       }

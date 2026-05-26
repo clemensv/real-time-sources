@@ -226,7 +226,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agency_id}/{route_tag}/vehicle/{vehicle_id}",
@@ -247,7 +247,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}",
@@ -268,7 +268,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}",
@@ -289,7 +289,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agency_id}/{route_tag}/message/{stop_or_vehicle_id}",

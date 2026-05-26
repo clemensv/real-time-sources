@@ -208,7 +208,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{country}",
@@ -229,7 +229,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{country}",
@@ -250,7 +250,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{country}",
@@ -271,7 +271,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{country}",

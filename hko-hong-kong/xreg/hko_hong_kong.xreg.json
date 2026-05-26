@@ -187,7 +187,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "district": {
                 "type": "uritemplate",
                 "value": "{district}",
@@ -220,7 +220,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "district": {
                 "type": "uritemplate",
                 "value": "{district}",

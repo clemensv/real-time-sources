@@ -209,7 +209,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "voivodeship": {
                 "type": "uritemplate",
                 "value": "{voivodeship}",
@@ -235,7 +235,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "voivodeship": {
                 "type": "uritemplate",
                 "value": "{voivodeship}",
@@ -266,7 +266,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "voivodeship": {
                 "type": "uritemplate",
                 "value": "{voivodeship}",
@@ -297,7 +297,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "voivodeship": {
                 "type": "uritemplate",
                 "value": "{voivodeship}",

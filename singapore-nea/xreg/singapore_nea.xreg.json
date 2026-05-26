@@ -272,7 +272,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
@@ -298,7 +298,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
@@ -329,7 +329,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "station_id": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -355,7 +355,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "station_id": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -381,7 +381,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "station_id": {
                 "type": "uritemplate",
                 "value": "{station_id}",
