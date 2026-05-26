@@ -21,14 +21,47 @@ from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any
 
 import requests
+from cloudevents.http import CloudEvent
+from cloudevents.kafka import to_binary, to_structured
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from tfl_road_traffic_producer_data import RoadCorridor, RoadStatus, RoadDisruption
-from tfl_road_traffic_producer_kafka_producer.producer import (
-    UkGovTflRoadCorridorsEventProducer,
-    UkGovTflRoadDisruptionsEventProducer,
-)
+from tfl_road_traffic_producer_kafka_producer.producer import UkGovTflRoadCorridorsEventProducer
+
+
+class UkGovTflRoadDisruptionsEventProducer:
+    def __init__(self, producer, topic: str, content_mode: str = "structured"):
+        self.producer = producer
+        self.topic = topic
+        self.content_mode = content_mode
+
+    @staticmethod
+    def _map_key(event: CloudEvent, data: RoadDisruption, key_mapper, default_key: str):
+        if key_mapper:
+            return key_mapper(event, data)
+        return default_key or f"{event['type']}:{event['source']}-{event.get('subject', '')}"
+
+    def send_uk_gov_tfl_road_road_disruption(self, _road_id: str, _severity: str, _disruption_id: str, data: RoadDisruption, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        subject = f"roads/{_road_id}/disruptions/{_severity}/{_disruption_id}"
+        event = CloudEvent.create(
+            {
+                "type": "uk.gov.tfl.road.RoadDisruption",
+                "source": "https://api.tfl.gov.uk/Road/all/Disruption",
+                "subject": subject,
+                "datacontenttype": content_type,
+            },
+            data,
+        )
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self._map_key(x, data, key_mapper, subject))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self._map_key(x, data, key_mapper, subject))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
