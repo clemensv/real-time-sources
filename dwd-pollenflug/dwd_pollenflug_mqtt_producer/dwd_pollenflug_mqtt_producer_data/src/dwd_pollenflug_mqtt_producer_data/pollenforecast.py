@@ -20,7 +20,7 @@ class PollenForecast:
     A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries pollen exposure forecasts by region and plant type for the period published by the upstream source.
     
     Attributes:
-        region_id (int)
+        region_id (str)
         region_name (str)
         last_update (str)
         next_update (str)
@@ -53,7 +53,7 @@ class PollenForecast:
     """
     
     
-    region_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_id"))
+    region_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_id"))
     region_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_name"))
     last_update: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="last_update"))
     next_update: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="next_update"))
@@ -209,34 +209,34 @@ class PollenForecast:
             An instance of the dataclass.
         """
         return cls(
-            region_id=int(44),
-            region_name='leilugoopnzptipkyduw',
-            last_update='xoavtcfrzkrwbojhcqbx',
-            next_update='gsmamtihuunaxwbbwski',
-            sender='gxrfyatkpyundppmhvzm',
-            hazel_today='nabhlpsccbpoykxozata',
-            hazel_tomorrow='tvazzpiwdbbhppmtqmni',
-            hazel_dayafter_to='ilrgljxlvikxsvxmbdqr',
-            alder_today='pbqlurudklpnzocndphu',
-            alder_tomorrow='dtdmisrfncbyqrcchttm',
-            alder_dayafter_to='vayxnrswxlzazzhpyebn',
-            birch_today='yrdlvrtoxwjcqntnhzrt',
-            birch_tomorrow='exzctmcsrjxatjpvezgi',
-            birch_dayafter_to='fpipsralplrzrmndptnv',
-            ash_today='kaghstrhbpfwgrexwdzr',
-            ash_tomorrow='fueellutcqkpkhozmzsz',
-            ash_dayafter_to='zjcffhybjdtzjujllwrb',
-            grasses_today='xlbzdmcrzheyaxngbrnt',
-            grasses_tomorrow='prbrywmozqdgddcltnvt',
-            grasses_dayafter_to='cgxjpvcqquigbnewzjjt',
-            rye_today='tyksfvltckjdebfdwxbj',
-            rye_tomorrow='tlhwwcnablnaadongfmc',
-            rye_dayafter_to='ydevcpxefilnujtdbmbm',
-            mugwort_today='glqjhsyvbpsuzchdmtcj',
-            mugwort_tomorrow='opuqrghcvyirltbyzjeh',
-            mugwort_dayafter_to='tiaudftqkdkffhmswnex',
-            ragweed_today='eciaarcmuhniqagpdtfq',
-            ragweed_tomorrow='vnnwvlumesnsmecvbuqe',
-            ragweed_dayafter_to='ixvkilrkpugxzyognteq',
-            pollen_type='yvrqzoagmphazechbgsw'
+            region_id='bskcnigtyekskkwtbbiu',
+            region_name='jpecvfprkksepngzfejy',
+            last_update='xugyiysjrzbsnnedxxtl',
+            next_update='hjduhrmqifxvnofqczyg',
+            sender='wnljybvrvwlevaevryel',
+            hazel_today='doqkhjnkrgmzepgwfpfq',
+            hazel_tomorrow='ujknlednisjmixhryhod',
+            hazel_dayafter_to='wqsztejxbxtqpfbcilhu',
+            alder_today='iovtfozluwiihqlthaaw',
+            alder_tomorrow='doygebhoqimzltoqnvjg',
+            alder_dayafter_to='gumylqynlujlvrvivsua',
+            birch_today='noqealjfzjzapzshnbwg',
+            birch_tomorrow='ekhfykmelhlgyogzllmd',
+            birch_dayafter_to='bdjnudcefkbhmigqakvs',
+            ash_today='gmlomjujdutagmnypweb',
+            ash_tomorrow='urwvoewgsolafvitvzqn',
+            ash_dayafter_to='ewxkblcoysfwdrlzhsfg',
+            grasses_today='czjjqspkfqrcqupoosbc',
+            grasses_tomorrow='epbjrogjesqxeljjinhs',
+            grasses_dayafter_to='lmkyiyhwjqengeaytvwp',
+            rye_today='tqaarxxtxkrbndyyfkab',
+            rye_tomorrow='ayveywcjoqsguxjohftg',
+            rye_dayafter_to='hqfwpyxidbcndviiwrex',
+            mugwort_today='xszoftxuommufvofvimu',
+            mugwort_tomorrow='mvtsyenlsiorqzwrnufd',
+            mugwort_dayafter_to='gjygtpqmjongfocuiltp',
+            ragweed_today='rqsbcwfnnbyeubcgswrp',
+            ragweed_tomorrow='xyiewcdpzcadkcgdkhqn',
+            ragweed_dayafter_to='rzseodphrbtsmgpzfwkh',
+            pollen_type='aobchrrxcwpwilopktat'
         )

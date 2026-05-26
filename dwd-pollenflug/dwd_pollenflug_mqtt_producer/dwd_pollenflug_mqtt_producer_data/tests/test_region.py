@@ -28,10 +28,10 @@ class Test_Region(unittest.TestCase):
         Create instance of Region for testing
         """
         instance = Region(
-            region_id=int(50),
-            region_name='nxbewnbzrlouukyydhxg',
-            partregion_id=int(15),
-            partregion_name='rjdricfifqboupnmdlyx'
+            region_id='icmvncairuddweawkknw',
+            region_name='rmxweorquyoywzrpqjqs',
+            partregion_id=int(2),
+            partregion_name='kemygmpqevgxglpjlczv'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Region(unittest.TestCase):
         """
         Test region_id property
         """
-        test_value = int(50)
+        test_value = 'icmvncairuddweawkknw'
         self.instance.region_id = test_value
         self.assertEqual(self.instance.region_id, test_value)
     
@@ -48,7 +48,7 @@ class Test_Region(unittest.TestCase):
         """
         Test region_name property
         """
-        test_value = 'nxbewnbzrlouukyydhxg'
+        test_value = 'rmxweorquyoywzrpqjqs'
         self.instance.region_name = test_value
         self.assertEqual(self.instance.region_name, test_value)
     
@@ -56,7 +56,7 @@ class Test_Region(unittest.TestCase):
         """
         Test partregion_id property
         """
-        test_value = int(15)
+        test_value = int(2)
         self.instance.partregion_id = test_value
         self.assertEqual(self.instance.partregion_id, test_value)
     
@@ -64,7 +64,7 @@ class Test_Region(unittest.TestCase):
         """
         Test partregion_name property
         """
-        test_value = 'rjdricfifqboupnmdlyx'
+        test_value = 'kemygmpqevgxglpjlczv'
         self.instance.partregion_name = test_value
         self.assertEqual(self.instance.partregion_name, test_value)
     

@@ -1,4 +1,4 @@
-from .region import Region
 from .pollenforecast import PollenForecast
+from .region import Region
 
-__all__ = ["Region", "PollenForecast"]
+__all__ = ["PollenForecast", "Region"]

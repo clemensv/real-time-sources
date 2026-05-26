@@ -242,7 +242,7 @@
                 ],
                 "properties": {
                   "region_id": {
-                    "type": "int32",
+                    "type": "string",
                     "description": "Unique numeric identifier for the forecast area. For regions without sub-regions this is the main region_id (e.g. 20 for Mecklenburg-Vorpommern). For sub-regions it is the partregion_id (e.g. 11 for 'Inseln und Marschen' within Schleswig-Holstein). Derived from the DWD JSON fields region_id and partregion_id."
                   },
                   "region_name": {
@@ -289,7 +289,7 @@
                 ],
                 "properties": {
                   "region_id": {
-                    "type": "int32",
+                    "type": "string",
                     "description": "Unique numeric identifier for the forecast area. Same identity model as Region: uses partregion_id when the area is a sub-region, otherwise uses the main region_id."
                   },
                   "region_name": {

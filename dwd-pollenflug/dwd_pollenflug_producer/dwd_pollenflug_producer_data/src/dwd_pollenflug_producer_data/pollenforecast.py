@@ -17,10 +17,10 @@ import json
 @dataclass
 class PollenForecast:
     """
-    Daily pollen forecast for a single German region or sub-region, published by the Deutscher Wetterdienst (DWD). Contains intensity values for eight pollen types across three forecast days (today, tomorrow, day after tomorrow). Intensity is on a scale from 0 (no load) to 3 (high load) with intermediate half-step ranges such as '0-1', '1-2', '2-3'. The bridge maps the German pollen names from the upstream API to English equivalents.
+    A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries pollen exposure forecasts by region and plant type for the period published by the upstream source.
     
     Attributes:
-        region_id (int)
+        region_id (str)
         region_name (str)
         last_update (str)
         next_update (str)
@@ -49,10 +49,11 @@ class PollenForecast:
         ragweed_today (typing.Optional[str])
         ragweed_tomorrow (typing.Optional[str])
         ragweed_dayafter_to (typing.Optional[str])
+        pollen_type (typing.Optional[str])
     """
     
     
-    region_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_id"))
+    region_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_id"))
     region_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_name"))
     last_update: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="last_update"))
     next_update: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="next_update"))
@@ -81,6 +82,7 @@ class PollenForecast:
     ragweed_today: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ragweed_today"))
     ragweed_tomorrow: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ragweed_tomorrow"))
     ragweed_dayafter_to: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ragweed_dayafter_to"))
+    pollen_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pollen_type"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'PollenForecast':
@@ -207,33 +209,34 @@ class PollenForecast:
             An instance of the dataclass.
         """
         return cls(
-            region_id=int(38),
-            region_name='mibeaybvhfrbaesyuwhw',
-            last_update='zkxhjztpfywjhywdzwcm',
-            next_update='ahsxvoplkkzodcwoakjd',
-            sender='ygffiaitdavchyboxixe',
-            hazel_today='tsbrajujiwofujizzjys',
-            hazel_tomorrow='ynsftgzdxlxvfwbdabxj',
-            hazel_dayafter_to='kzypledpklqziiydtilc',
-            alder_today='iwgdazwprgryapebqctr',
-            alder_tomorrow='qonthetpwjyqzlomveoj',
-            alder_dayafter_to='spmkxbokmosytzlazavy',
-            birch_today='eocsannertigxehevrvd',
-            birch_tomorrow='zzonetnhdzpkvksburxb',
-            birch_dayafter_to='eufpdvffcxlmhnfscqnv',
-            ash_today='gjqodvqqvbeorfvvbcrz',
-            ash_tomorrow='bxjzushvvibwddclplpr',
-            ash_dayafter_to='tapnaqpicpfxbsgzezzp',
-            grasses_today='vdrtybjahsxwttjsfvzy',
-            grasses_tomorrow='zsqlwkevumvvizkewvdj',
-            grasses_dayafter_to='pgqngouvmvnllxflbsnf',
-            rye_today='ucqqjahduqikvbhuqgun',
-            rye_tomorrow='eqyrcwncxisxyktnvqlg',
-            rye_dayafter_to='jkplcimkqxfwroddfdkv',
-            mugwort_today='wrkctvhjhblomaevhpml',
-            mugwort_tomorrow='bcythmtyiodoyqirgozq',
-            mugwort_dayafter_to='fdcrjaeelesdgfmbkrhu',
-            ragweed_today='ljyxcquqaxodgcbpkdxz',
-            ragweed_tomorrow='vkkdgoiuiamuanenfaos',
-            ragweed_dayafter_to='oekzpotwmcudnkqmtexk'
+            region_id='jmnaimilrxrvqruyrlla',
+            region_name='zbpaggjrxbwwgegkmihd',
+            last_update='ksjwkgdddeewfhnawyok',
+            next_update='hiqdbjvtobjzmjplnbdp',
+            sender='fhnqtrguxkxwassxwcwg',
+            hazel_today='dajhjqhlnkgbwteubabu',
+            hazel_tomorrow='uvfqxgfvxthfnwgiwtdy',
+            hazel_dayafter_to='lwwqsduolelukexumpoy',
+            alder_today='quomnskpbhhjljrrecdk',
+            alder_tomorrow='ppasqmasfufklpfdyqdb',
+            alder_dayafter_to='ulxfwmsygnbmkikvwyps',
+            birch_today='tqehdpqcdbrqallydaws',
+            birch_tomorrow='qpljjjdofodwdbnrnjue',
+            birch_dayafter_to='kvmdfbsfsizjwffdruea',
+            ash_today='atlzoxqurjdcsmbjefht',
+            ash_tomorrow='vxgshlqorezbaycscivu',
+            ash_dayafter_to='uhvvlqejgvkhedvsvffi',
+            grasses_today='kepaivwicfxgzqvixixf',
+            grasses_tomorrow='wbohannslvnflnhkmnwp',
+            grasses_dayafter_to='ywxlypgmlfvdsplnugvf',
+            rye_today='uwbyykzqpgjflguagoxf',
+            rye_tomorrow='colnbgfpdqapogylzhck',
+            rye_dayafter_to='umrtmzmjbswyvkdtwtwt',
+            mugwort_today='ktuqrtosiszjfrkckujn',
+            mugwort_tomorrow='ajvkvhbiuehtxvpbtfsl',
+            mugwort_dayafter_to='liixpovpbhoexhdsksew',
+            ragweed_today='ztrqiqkijzkfragzdzgp',
+            ragweed_tomorrow='etyiwdsnpzxgbycpkpwl',
+            ragweed_dayafter_to='giojmnvimiopuvrnbscl',
+            pollen_type='kjgttoqbunerodxryzth'
         )

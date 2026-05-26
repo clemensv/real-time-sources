@@ -20,14 +20,14 @@ class Region:
     A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events.
     
     Attributes:
-        region_id (int)
+        region_id (str)
         region_name (str)
         partregion_id (typing.Optional[int])
         partregion_name (typing.Optional[str])
     """
     
     
-    region_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_id"))
+    region_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_id"))
     region_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_name"))
     partregion_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="partregion_id"))
     partregion_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="partregion_name"))
@@ -157,8 +157,8 @@ class Region:
             An instance of the dataclass.
         """
         return cls(
-            region_id=int(36),
-            region_name='bbgyhplnsreghajpecaw',
-            partregion_id=int(97),
-            partregion_name='banfgrgfmgnfjjfskbev'
+            region_id='omvrdiuatlgitfrkvldg',
+            region_name='ztojpxunrivjbfyfrcqi',
+            partregion_id=int(39),
+            partregion_name='ghpbqzhmqopdovcreywh'
         )

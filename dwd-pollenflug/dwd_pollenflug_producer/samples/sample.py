@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from dwd_pollenflug_producer_kafka_producer.producer import DEDWDPollenflugEventProducer
+from dwd_pollenflug_producer_kafka_producer.producer import DEDWDPollenflugMqttEventProducer
+from dwd_pollenflug_producer_kafka_producer.producer import DEDWDPollenflugAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +74,54 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'DE.DWD.Pollenflug.PollenForecast' event to Kafka topic.
     await dedwdpollenflug_event_producer.send_de_dwd_pollenflug_pollen_forecast(_region_id = 'TODO: replace me', data = _pollen_forecast)
     print(f"Sent 'DE.DWD.Pollenflug.PollenForecast' event: {_pollen_forecast.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        dedwdpollenflug_mqtt_event_producer = DEDWDPollenflugMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        dedwdpollenflug_mqtt_event_producer = DEDWDPollenflugMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- DE.DWD.Pollenflug.mqtt.Region ----
+    # TODO: Supply event data for the DE.DWD.Pollenflug.mqtt.Region event
+    _region = Region()
+
+    # sends the 'DE.DWD.Pollenflug.mqtt.Region' event to Kafka topic.
+    await dedwdpollenflug_mqtt_event_producer.send_de_dwd_pollenflug_mqtt_region(_region_id = 'TODO: replace me', data = _region)
+    print(f"Sent 'DE.DWD.Pollenflug.mqtt.Region' event: {_region.to_json()}")
+
+    # ---- DE.DWD.Pollenflug.mqtt.PollenForecast ----
+    # TODO: Supply event data for the DE.DWD.Pollenflug.mqtt.PollenForecast event
+    _pollen_forecast = PollenForecast()
+
+    # sends the 'DE.DWD.Pollenflug.mqtt.PollenForecast' event to Kafka topic.
+    await dedwdpollenflug_mqtt_event_producer.send_de_dwd_pollenflug_mqtt_pollen_forecast(_region_id = 'TODO: replace me', _pollen_type = 'TODO: replace me', data = _pollen_forecast)
+    print(f"Sent 'DE.DWD.Pollenflug.mqtt.PollenForecast' event: {_pollen_forecast.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        dedwdpollenflug_amqp_event_producer = DEDWDPollenflugAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        dedwdpollenflug_amqp_event_producer = DEDWDPollenflugAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- DE.DWD.Pollenflug.amqp.Region ----
+    # TODO: Supply event data for the DE.DWD.Pollenflug.amqp.Region event
+    _region = Region()
+
+    # sends the 'DE.DWD.Pollenflug.amqp.Region' event to Kafka topic.
+    await dedwdpollenflug_amqp_event_producer.send_de_dwd_pollenflug_amqp_region(_region_id = 'TODO: replace me', data = _region)
+    print(f"Sent 'DE.DWD.Pollenflug.amqp.Region' event: {_region.to_json()}")
+
+    # ---- DE.DWD.Pollenflug.amqp.PollenForecast ----
+    # TODO: Supply event data for the DE.DWD.Pollenflug.amqp.PollenForecast event
+    _pollen_forecast = PollenForecast()
+
+    # sends the 'DE.DWD.Pollenflug.amqp.PollenForecast' event to Kafka topic.
+    await dedwdpollenflug_amqp_event_producer.send_de_dwd_pollenflug_amqp_pollen_forecast(_region_id = 'TODO: replace me', _pollen_type = 'TODO: replace me', data = _pollen_forecast)
+    print(f"Sent 'DE.DWD.Pollenflug.amqp.PollenForecast' event: {_pollen_forecast.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
