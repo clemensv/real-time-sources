@@ -22,10 +22,11 @@ jobs:
   find-dockerfiles:
     runs-on: ubuntu-latest
     outputs:
-      containers: ${{ steps.get-dockerfiles.outputs.containers }}
+      containers_base: ${{ steps.get-dockerfiles.outputs.containers_base }}
+      containers_transport: ${{ steps.get-dockerfiles.outputs.containers_transport }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
@@ -36,7 +37,10 @@ jobs:
           # The image suffix for a plain Dockerfile is its directory name with
           # slashes replaced by dashes; for a Dockerfile.<variant> we append
           # "-<variant>" so each transport variant publishes its own image.
-          CONTAINERS_JSON=$(find . \( -name 'Dockerfile' -o -name 'Dockerfile.*' \) -type f \
+          # Split into two lists to stay under GitHub's 256-config matrix limit:
+          #   containers_base      – plain Dockerfile only (~102)
+          #   containers_transport – Dockerfile.<variant>  (~213)
+          ALL_JSON=$(find . \( -name 'Dockerfile' -o -name 'Dockerfile.*' \) -type f \
             | sed 's|^\./||' \
             | sort \
             | jq -R -s -c '
@@ -51,16 +55,19 @@ jobs:
                         )
                       }
                   )')
-          echo "containers=${CONTAINERS_JSON}" >> $GITHUB_OUTPUT
+          BASE_JSON=$(echo "$ALL_JSON" | jq -c '[.[] | select(.variant == null or .variant == "")]')
+          TRANSPORT_JSON=$(echo "$ALL_JSON" | jq -c '[.[] | select(.variant != null and .variant != "")]')
+          echo "containers_base=${BASE_JSON}" >> $GITHUB_OUTPUT
+          echo "containers_transport=${TRANSPORT_JSON}" >> $GITHUB_OUTPUT
 
-  build:
+  build-base:
     needs: find-dockerfiles
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       max-parallel: 20
       matrix:
-        container: ${{ fromJson(needs.find-dockerfiles.outputs.containers) }}
+        container: ${{ fromJson(needs.find-dockerfiles.outputs.containers_base) }}
     permissions:
       contents: read
       packages: write
@@ -68,7 +75,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
@@ -100,9 +107,6 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      
-      # Build and push Docker image with Buildx (don't push on PR)
-      # https://github.com/docker/build-push-action
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
@@ -114,24 +118,111 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          
-      # Sign the resulting Docker image digest except on PRs.
-      # This will only write to the public Rekor transparency log when the Docker
-      # repository is public to avoid leaking data.  If you would like to publish
-      # transparency data even for private images, pass --force to cosign below.
-      # https://github.com/sigstore/cosign
+
       - name: Sign the published Docker image
         if: ${{ github.event_name != 'pull_request' }}
         env:
-          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
           TAGS: ${{ steps.meta.outputs.tags }}
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
           COSIGN_DOCKER_MEDIA_TYPES: "1"
           COSIGN_REGISTRY_USERNAME: ${{ github.actor }}
           COSIGN_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance. Retries absorb
-        # transient ghcr.io BLOB_UNKNOWN / DENIED races right after push.
+        run: |
+          set -u
+          sign_one() {
+            local ref="$1"
+            local attempt=1
+            local max=5
+            local delay=6
+            while [ "$attempt" -le "$max" ]; do
+              echo "cosign sign attempt $attempt/$max for $ref"
+              if cosign sign --yes \
+                  --registry-username "${COSIGN_REGISTRY_USERNAME}" \
+                  --registry-password "${COSIGN_REGISTRY_PASSWORD}" \
+                  "$ref"; then
+                return 0
+              fi
+              echo "cosign sign failed (attempt $attempt); sleeping ${delay}s"
+              sleep "$delay"
+              attempt=$((attempt + 1))
+            done
+            echo "::error::cosign sign failed for $ref after $max attempts"
+            return 1
+          }
+          rc=0
+          while IFS= read -r tag; do
+            [ -z "$tag" ] && continue
+            sign_one "${tag}@${DIGEST}" || rc=1
+          done <<< "${TAGS}"
+          exit "$rc"
+
+  build-transport:
+    needs: find-dockerfiles
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        container: ${{ fromJson(needs.find-dockerfiles.outputs.containers_transport) }}
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install cosign
+        if: github.event_name != 'pull_request'
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
+        with:
+          cosign-release: 'v2.2.4'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@80c7e94dd9b9319bd5eb7a0e0fe9291e23a2a2e9
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.container.image }}
+          tags: |
+            type=sha,format=long,prefix=
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' }}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf # v7.2.0
+        with:
+          context: ./${{ matrix.container.path }}
+          file: ./${{ matrix.container.path }}/${{ matrix.container.file }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Sign the published Docker image
+        if: ${{ github.event_name != 'pull_request' }}
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+          COSIGN_DOCKER_MEDIA_TYPES: "1"
+          COSIGN_REGISTRY_USERNAME: ${{ github.actor }}
+          COSIGN_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -u
           sign_one() {

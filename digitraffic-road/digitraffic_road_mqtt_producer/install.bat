@@ -1,0 +1,2 @@
+pip install .\digitraffic_road_mqtt_producer_data
+pip install .\digitraffic_road_mqtt_producer_mqtt_client

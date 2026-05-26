@@ -1,64 +1,80 @@
 # Digitraffic Road feeder
 
-This feeder turns the upstream Digitraffic Road feed into a real-time CloudEvents stream over KAFKA.
+This feeder turns the Finnish national [Digitraffic Road](https://www.digitraffic.fi/en/road-traffic/) stream into real-time CloudEvents over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
 Companion docs:
 
 - [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
+> [!CAUTION]
+> **Creative Commons 4.0 BY attribution is required when you use this data.** Use this exact attribution text in downstream products and documentation: **"Licensed materials from the Finnish Transport Infrastructure Agency (Väylävirasto) and the Finnish Transport and Communications Agency (Traficom) Digitraffic service, www.digitraffic.fi"**
+
 ## Why this bridge
 
-Digitraffic Road publishes operational real-time data that is useful across hazard and mobility analytics workflows, but each consumer otherwise has to build and operate its own source connector, transport adapter, and schema normalization.
+Digitraffic Road exposes Finland's national road traffic network as a live MQTT-over-WebSocket feed at `wss://tie.digitraffic.fi/mqtt` plus reference-data REST endpoints under `https://tie.digitraffic.fi/api/`. The source covers automatic traffic measurement stations, road weather stations, traffic announcements, road works, weight restrictions, exempted transports, and maintenance vehicle tracking.
 
-This bridge provides one reusable feed for common scenarios:
+This bridge turns that upstream stream into a production-friendly event source so consumers can subscribe on their messaging fabric of choice instead of writing and operating their own long-lived MQTT client, REST bootstrap, gzip/base64 decoding, CloudEvents wrapping, and transport-specific publishing.
 
-- **Operations dashboards** — power near-real-time fleet, traffic, or incident views.
-- **Streaming analytics** — ingest directly into Eventhouse, ADX, or a lakehouse pipeline.
-- **Cross-source correlation** — join this stream with weather, hydrology, and public-safety feeds in this repository.
-- **Alerting and automation** — trigger rules based on stable CloudEvents payloads and keys.
-- **Research and reporting** — keep a reproducible event archive for retrospective analysis.
+Typical consumers include:
+
+- **Traffic operations centers** — live road-network monitoring, congestion dashboards, and hazard response.
+- **Winter maintenance and contractor analytics** — route, task, and vehicle tracking for maintenance fleets.
+- **Logistics and fleet planning** — weather, flow, and incident awareness for routing decisions.
+- **Microsoft Fabric / Eventhouse / ADX pipelines** — queryable real-time telemetry and reference data.
+- **Research and public-interest applications** — reproducible ingest of Finnish road traffic data.
 
 ## Overview
 
-**Digitraffic Road** in this repository is a streaming bridge and ships in the transport variants below:
+**Digitraffic Road** is a streaming bridge: it keeps an open connection to `tie.digitraffic.fi` for telemetry and fetches reference catalogs from the REST API at startup. The source ships in three transport variants:
 
 | Variant | Container image | Transport | Default delivery shape |
 |---|---|---|---|
-| **Kafka** | `ghcr.io/clemensv/real-time-sources-digitraffic-road` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Fabric Event Streams) | Topic(s): `digitraffic-road-maintenance`, `digitraffic-road-messages`, `digitraffic-road-sensors`, key = `{domain}`, `{situation_id}`, `{station_id}`, `{station_id}/{sensor_id}`, `{task_id}` |
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-digitraffic-road:latest` | Apache Kafka 2.x compatible (including Azure Event Hubs and Microsoft Fabric Event Streams) | Three Kafka topics, JSON CloudEvents, keys aligned to source identity (`{station_id}`, `{station_id}/{sensor_id}`, `{situation_id}`, `{domain}`, `{task_id}`) |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-digitraffic-road-mqtt:latest` | MQTT 5.0 broker / Unified Namespace | Topic tree under `traffic/fi/fintraffic/digitraffic-road/...`, telemetry non-retained, reference data retained |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-digitraffic-road-amqp:latest` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs) | Single AMQP node, binary or structured CloudEvents, SASL PLAIN or Microsoft Entra ID |
 
-All variants share:
+All three variants share:
 
-- The xRegistry contract (`xreg/digitraffic_road.xreg.json`).
-- A common upstream acquisition path and normalized event payloads.
-- Stable CloudEvents subject/key identity derived from source-native identifiers.
+- The same upstream Digitraffic Road data source.
+- The same xRegistry contract in `xreg/digitraffic-road.xreg.json`.
+- The same ten event types: three reference-data types and seven live telemetry types.
 
 ## Key features
 
-- Real-time source ingestion for **Finland — TMS sensors, road weather, traffic messages**.
-- Contract-first CloudEvents output with JsonStructure schemas.
-- Transport variants aligned to the same core event model.
-- Deployment-ready container images for local, Azure, and Fabric-aligned topologies.
+- **No API key required** — the upstream Digitraffic Road road-traffic feed is open.
+- **Streaming telemetry + reference bootstrap** — station catalogs and maintenance task types are emitted first, then live telemetry flows continuously.
+- **Ten event types** spanning stations, sensors, traffic messages, and maintenance tracking.
+- **Three transport targets** with the same source semantics: Kafka, MQTT/UNS, and AMQP 1.0.
+- **Selective subscriptions** via `DIGITRAFFIC_ROAD_SUBSCRIBE` (`tms`, `weather`, `traffic-messages`, `maintenance`).
+- **Station filtering** for sensor families via `DIGITRAFFIC_ROAD_STATION_FILTER`.
+- **Azure-ready packaging** with published images and ARM templates for Event Hubs, Event Grid MQTT, and Service Bus.
 
 ## Repository layout
 
 ```text
 digitraffic-road/
-  xreg/                           # xRegistry contracts
-  digitraffic_road/
-  digitraffic_road_producer/
-  kql/
-  tests/
-  Dockerfile
+  xreg/digitraffic-road.xreg.json   # shared xRegistry contract
+  digitraffic_road/                 # Kafka feeder application
+  digitraffic_road_mqtt/            # MQTT/UNS feeder application
+  digitraffic_road_amqp/            # AMQP 1.0 feeder application
+  digitraffic_road_producer/        # xRegistry-generated Kafka producer
+  digitraffic_road_mqtt_producer/   # xRegistry-generated MQTT producer
+  digitraffic_road_amqp_producer/   # xRegistry-generated AMQP producer
+  Dockerfile                        # Kafka image
+  Dockerfile.mqtt                   # MQTT image
+  Dockerfile.amqp                   # AMQP image
+  kql/digitraffic-road.kql          # Eventhouse / KQL schema
+  tests/                            # unit + integration tests
 ```
 
 ## Prerequisites
 
-- Docker 20.10+ (or any OCI-compatible runtime).
-- Network access to the upstream data endpoint(s).
-- Network access to your target broker (Kafka, MQTT, or AMQP).
+- Docker 20.10+ (or another OCI-compatible runtime).
+- Outbound HTTPS / WSS access to `tie.digitraffic.fi` on port 443.
+- Network access to your target Kafka broker, MQTT broker, or AMQP 1.0 broker.
 
-This source is handled as a streaming feeder in this batch; no notebook runtime section is included.
+This is a pure streaming feeder. It does **not** require a persistent state file or mounted host volume.
 
 ## Quick start with Docker
 
@@ -70,44 +86,121 @@ docker run --rm \
   ghcr.io/clemensv/real-time-sources-digitraffic-road:latest
 ```
 
+You can also target a plain Kafka broker with explicit bootstrap servers and topics:
+
+```bash
+docker run --rm \
+  -e KAFKA_BOOTSTRAP_SERVERS="broker:9092" \
+  -e KAFKA_TOPIC_SENSORS="digitraffic-road-sensors" \
+  -e KAFKA_TOPIC_MESSAGES="digitraffic-road-messages" \
+  -e KAFKA_TOPIC_MAINTENANCE="digitraffic-road-maintenance" \
+  -e KAFKA_ENABLE_TLS=false \
+  ghcr.io/clemensv/real-time-sources-digitraffic-road:latest
+```
+
+### MQTT (Unified Namespace)
+
+```bash
+docker run --rm \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_AUTH_MODE=userpass \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-digitraffic-road-mqtt:latest
+```
+
+Topics published include:
+
+```text
+traffic/fi/fintraffic/digitraffic-road/{station_id}/{sensor_id}/tms-sensor-data
+traffic/fi/fintraffic/digitraffic-road/{station_id}/{sensor_id}/weather-sensor-data
+traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/traffic-announcement
+traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/road-work
+traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/weight-restriction
+traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/exempted-transport
+traffic/fi/fintraffic/digitraffic-road/maintenance/{domain}/tracking
+traffic/fi/fintraffic/digitraffic-road/stations/{station_id}/tms-station
+traffic/fi/fintraffic/digitraffic-road/stations/{station_id}/weather-station
+traffic/fi/fintraffic/digitraffic-road/maintenance-tasks/{task_id}/task-type
+```
+
+### AMQP 1.0
+
+```bash
+docker run --rm \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/digitraffic-road' \
+  ghcr.io/clemensv/real-time-sources-digitraffic-road-amqp:latest
+```
+
+For Azure Service Bus with Microsoft Entra ID:
+
+```bash
+docker run --rm \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 \
+  -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='digitraffic-road' \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_CLIENT_ID='<managed-identity-client-id>' \
+  ghcr.io/clemensv/real-time-sources-digitraffic-road-amqp:latest
+```
+
 ## Configuration reference
 
-The complete environment-variable contract per image is documented in [CONTAINER.md](CONTAINER.md), including connection-string mode, direct broker parameters, authentication options, and transport-specific knobs.
+The full environment-variable matrix for Kafka, MQTT, and AMQP images lives in [CONTAINER.md](CONTAINER.md). Runtime entry points are:
 
-## Data model
+- `python -m digitraffic_road feed`
+- `python -m digitraffic_road_mqtt feed`
+- `python -m digitraffic_road_amqp feed`
 
-This source exposes **10 event type(s)** across **5 base message group(s)**:
+## Event families
 
-- `fi.digitraffic.road.sensors.TmsSensorData`
-- `fi.digitraffic.road.sensors.WeatherSensorData`
-- `fi.digitraffic.road.messages.TrafficAnnouncement`
-- `fi.digitraffic.road.messages.RoadWork`
-- `fi.digitraffic.road.messages.WeightRestriction`
-- `fi.digitraffic.road.messages.ExemptedTransport`
-- `fi.digitraffic.road.maintenance.MaintenanceTracking`
-- `fi.digitraffic.road.stations.TmsStation`
-- `fi.digitraffic.road.stations.WeatherStation`
-- `fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType`
+### Reference data (emitted at startup)
 
-See [EVENTS.md](EVENTS.md) for the full field-level schema contract and routing metadata.
+| Event type | Description |
+|---|---|
+| `fi.digitraffic.road.stations.TmsStation` | Automatic traffic measurement station metadata |
+| `fi.digitraffic.road.stations.WeatherStation` | Road weather station metadata |
+| `fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType` | Maintenance task-type catalog |
 
-## Deploying into Microsoft Fabric
+### Telemetry (streamed continuously)
 
-This source is documented as a streaming feeder for this rollout. Use the **Fabric ACI feeder** model to host the container and route into a Fabric Event Stream custom endpoint, then materialize into Eventhouse with the checked-in KQL assets.
-
-[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#digitraffic-road/fabric-aci)
+| Event type | Description |
+|---|---|
+| `fi.digitraffic.road.sensors.TmsSensorData` | TMS sensor measurements such as vehicle count, speed, and occupancy |
+| `fi.digitraffic.road.sensors.WeatherSensorData` | Weather measurements such as temperature, wind, and humidity |
+| `fi.digitraffic.road.messages.TrafficAnnouncement` | Traffic incidents and hazard announcements |
+| `fi.digitraffic.road.messages.RoadWork` | Planned or active road works |
+| `fi.digitraffic.road.messages.WeightRestriction` | Weight restrictions on roads or bridges |
+| `fi.digitraffic.road.messages.ExemptedTransport` | Oversize / heavy transport notices |
+| `fi.digitraffic.road.maintenance.MaintenanceTracking` | Maintenance vehicle position and active task tracking |
 
 ## Deploying into Azure Container Instances
 
-The following ARM templates exist in this source folder:
+Five one-click deployment templates are available:
 
-- **azure-template-with-eventhub.json** (with eventhub)
-  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-road%2Fazure-template-with-eventhub.json)
-- **azure-template.json** (default (BYO Event Hubs/Kafka))
-  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-road%2Fazure-template.json)
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-road%2Fazure-template.json)
+
+### Kafka — provision a new Event Hub
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-road%2Fazure-template-with-eventhub.json)
+
+### MQTT — bring your own broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-road%2Fazure-template-mqtt.json)
+
+### MQTT — provision an Event Grid namespace
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-road%2Fazure-template-with-eventgrid-mqtt.json)
+
+### AMQP — provision a new Azure Service Bus namespace
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-road%2Fazure-template-with-servicebus.json)
 
 ## Next steps
 
 - Review [EVENTS.md](EVENTS.md) before writing consumers.
-- Use [CONTAINER.md](CONTAINER.md) for the full env-var matrix and auth variants.
-- Choose Fabric ACI or direct Azure deployment based on your runtime target.
+- Use [CONTAINER.md](CONTAINER.md) for the full container and environment-variable contract.
+- Consult the upstream Digitraffic Road documentation at <https://www.digitraffic.fi/en/road-traffic/>.

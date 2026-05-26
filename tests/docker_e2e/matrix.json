@@ -1410,6 +1410,22 @@
       "image": "digitraffic-maritime-amqp",
       "file": "Dockerfile.amqp",
       "module": "digitraffic_maritime_amqp"
+    },
+    {
+      "dir": "digitraffic-road",
+      "module": "digitraffic_road"
+    },
+    {
+      "dir": "digitraffic-road",
+      "image": "digitraffic-road-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "digitraffic_road_mqtt"
+    },
+    {
+      "dir": "digitraffic-road",
+      "image": "digitraffic-road-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "digitraffic_road_amqp"
     }
   ],
   "flow": [
@@ -2989,6 +3005,24 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestDigitrafficMaritimeAmqpDockerFlow"
+    },
+    {
+      "dir": "digitraffic-road",
+      "test_class": "TestDigitrafficRoadDockerFlow"
+    },
+    {
+      "dir": "digitraffic-road",
+      "image": "digitraffic-road-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestDigitrafficRoadMqttDockerFlow"
+    },
+    {
+      "dir": "digitraffic-road",
+      "image": "digitraffic-road-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestDigitrafficRoadAmqpDockerFlow"
     }
   ]
 }

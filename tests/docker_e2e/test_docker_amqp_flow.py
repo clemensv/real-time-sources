@@ -867,3 +867,16 @@ class TestSmhiWeatherAmqpDockerFlow(AmqpDockerFlowBase):
     env = {"SMHI_WEATHER_MOCK": "true", "ONCE_MODE": "true"}
     expected_types = {'SE.Gov.SMHI.Weather.WeatherObservation', 'SE.Gov.SMHI.Weather.Station'}
     expected_count = 2
+
+
+class TestDigitrafficRoadAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "digitraffic-road"
+    image = "digitraffic-road-amqp"
+    env = {"DIGITRAFFIC_ROAD_MOCK": "true"}
+    expected_types = {
+        "fi.digitraffic.road.sensors.TmsSensorData",
+        "fi.digitraffic.road.stations.TmsStation",
+        "fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType",
+        "fi.digitraffic.road.messages.TrafficAnnouncement",
+    }
+    expected_count = 4
