@@ -5837,3 +5837,68 @@ class TestSmhiWeatherMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_smhi_weather, smhi_weather_mqtt_image):
         _run_mqtt_contract_flow('smhi-weather', smhi_weather_mqtt_image, mosquitto_smhi_weather, extra_env={'SMHI_WEATHER_MOCK': 'true'}, timeout=300)
 
+
+
+from typing import Any, Dict, List
+# ===========================================================================
+# NOAA SWPC L1 (single-spacecraft retained UNS leaf)
+# ===========================================================================
+
+@pytest.fixture(scope='module')
+def noaa_swpc_l1_mqtt_image():
+    return build_image('noaa-swpc-l1', dockerfile='Dockerfile.mqtt', tag='test-noaa-swpc-l1-mqtt')
+@pytest.fixture()
+def mosquitto_container_swpc():
+    network = client.networks.create('noaa-swpc-l1-mqtt-e2e', driver='bridge')
+    config = 'listener 1883\nallow_anonymous true\n'
+        name='noaa-swpc-l1-mqtt-e2e-broker',
+        detach=True, remove=True, network=network.name,
+        try: container.kill()
+        finally: network.remove()
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'noaa-swpc-l1-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+def _collect_swpc_messages(host: str, port: int, timeout: float = 25.0) -> List[Dict[str, Any]]:
+    def on_message(_c, _u, msg):
+        props: Dict[str, Any] = {}
+            if ct: props['_contenttype'] = ct
+        try: payload = json.loads(msg.payload)
+        except (TypeError, ValueError): payload = None
+            'topic': msg.topic, 'retain': bool(msg.retain), 'qos': msg.qos,
+            'user_properties': props, 'payload': payload,
+    client.subscribe('space-weather/us/noaa-swpc/l1/#', qos=1)
+            if collected and time.time() - last_msg_time[0] > 3.0:
+        client.loop_stop(); client.disconnect()
+class TestNoaaSwpcL1MqttDockerFlow:
+    """Verify the noaa-swpc-l1-mqtt container publishes the retained UNS leaf."""
+    def test_emits_retained_propagated_solar_wind(self, mosquitto_container_swpc, noaa_swpc_l1_mqtt_image):
+        broker_url = f"mqtt://{mosquitto_container_swpc['internal_host']}:{mosquitto_container_swpc['internal_port']}"
+            noaa_swpc_l1_mqtt_image.id, detach=True, remove=False,
+            network=mosquitto_container_swpc['network'],
+                'BACKFILL_MINUTES': '1440',
+            assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            try: feeder.remove(force=True)
+            except docker.errors.APIError: pass
+        messages = _collect_swpc_messages('127.0.0.1', mosquitto_container_swpc['host_port'])
+        psw_msgs = [m for m in messages if m['topic'].endswith('/propagated-solar-wind')]
+        assert psw_msgs, f'No /propagated-solar-wind retained leaves. Topics seen: {sorted({m["topic"] for m in messages})}'
+        sample = psw_msgs[0]
+        for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+            assert required in sample['user_properties'], f"missing CE attribute {required}: {sample['user_properties']}"
+        assert sample['user_properties']['type'] == 'gov.noaa.swpc.l1.PropagatedSolarWind'
+        assert sample['retain'] is True
+        assert sample['qos'] == 1
+        # Topic shape: space-weather/us/noaa-swpc/l1/{spacecraft}/propagated-solar-wind
+        parts = sample['topic'].split('/')
+        assert parts[:4] == ['space-weather', 'us', 'noaa-swpc', 'l1']
+        assert parts[-1] == 'propagated-solar-wind'
+        assert sample['user_properties']['subject'] == parts[-2]

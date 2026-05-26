@@ -378,6 +378,17 @@
     "amqp": true
   },
   {
+    "id": "noaa-swpc-l1",
+    "name": "NOAA SWPC L1",
+    "cat": "Weather",
+    "key": false,
+    "desc": "Global — L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30–60 min Earth-impact lead time",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "noaa-nws",
     "name": "NOAA NWS",
     "cat": "Weather",

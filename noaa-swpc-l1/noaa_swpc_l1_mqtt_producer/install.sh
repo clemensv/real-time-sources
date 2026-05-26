@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./noaa_swpc_l1_mqtt_producer_data
+pip install ./noaa_swpc_l1_mqtt_producer_mqtt_client

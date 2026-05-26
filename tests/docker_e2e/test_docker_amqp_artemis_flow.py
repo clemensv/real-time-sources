@@ -632,3 +632,129 @@ class TestWaterinfoVmmAmqpArtemisFlow:
     def test_emits_cloudevents_to_amqp_queue(self):
         _run_b1_amqp_artemis_flow(12)
 
+
+
+# ===========================================================================
+# NOAA SWPC L1 AMQP 1.0 (Artemis) ΓÇö also asserts x-opt-partition-key
+# ===========================================================================
+SWPC_QUEUE_NAME = "noaa-swpc-l1"
+@pytest.fixture(scope="module")
+def noaa_swpc_l1_amqp_image():
+    return build_image("noaa-swpc-l1", dockerfile="Dockerfile.amqp", tag="test-noaa-swpc-l1-amqp")
+
+@pytest.fixture()
+def artemis_broker_swpc():
+    network = client.networks.create("noaa-swpc-l1-amqp-e2e", driver="bridge")
+    container = None
+        container = client.containers.run(
+            name="noaa-swpc-l1-amqp-e2e-broker",
+            detach=True, remove=True, network=network.name,
+                "EXTRA_ARGS": f"--queues {SWPC_QUEUE_NAME}",
+        ready = False
+                    logs = container.logs().decode("utf-8", errors="replace")
+                        ready = True
+        if not ready:
+            tail = container.logs().decode("utf-8", errors="replace")[-2000:]
+            pytest.skip(f"Artemis broker not ready. Tail:\n{tail}")
+        yield {
+            "internal_host": "noaa-swpc-l1-amqp-e2e-broker",
+            "internal_port": 5672,
+            "host_port": host_port,
+            "network": network.name,
+            "user": ARTEMIS_USER,
+            "password": ARTEMIS_PASSWORD,
+            "queue": SWPC_QUEUE_NAME,
+        }
+    finally:
+        if container is not None:
+            try: container.kill()
+            except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestNoaaSwpcL1AmqpArtemisFlow:
+    """End-to-end: SWPC L1 feeder pushes CloudEvents + partition annotation."""
+
+    def test_emits_cloudevents_with_partition_key(self, artemis_broker_swpc, noaa_swpc_l1_amqp_image):
+        client = docker.from_env()
+            noaa_swpc_l1_amqp_image.id,
+            detach=True, remove=False,
+            network=artemis_broker_swpc["network"],
+                "AMQP_HOST": artemis_broker_swpc["internal_host"],
+                "AMQP_PORT": str(artemis_broker_swpc["internal_port"]),
+                "AMQP_ADDRESS": artemis_broker_swpc["queue"],
+                "AMQP_USERNAME": artemis_broker_swpc["user"],
+                "AMQP_PASSWORD": artemis_broker_swpc["password"],
+                "POLLING_INTERVAL": "60",
+                "BACKFILL_MINUTES": "1440",
+            result = feeder.wait(timeout=600)
+            assert result.get("StatusCode") == 0, (
+                f"Feeder exited non-zero: {result}\n--- LOGS (last 4KB) ---\n{logs[-4000:]}"
+            )
+            try: feeder.remove(force=True)
+        messages = _receive_messages(
+            "127.0.0.1",
+            artemis_broker_swpc["host_port"],
+            artemis_broker_swpc["queue"],
+            artemis_broker_swpc["user"],
+            artemis_broker_swpc["password"],
+            expected=2000,
+            timeout=60,
+        )
+        assert messages, "No AMQP messages received from Artemis"
+        # All messages should be PropagatedSolarWind
+        types: Dict[str, List[Any]] = {}
+        for m in messages:
+            ce = _extract_ce_attrs(m)
+            t = ce.get("type")
+            if t:
+                types.setdefault(t, []).append((m, ce))
+        assert "gov.noaa.swpc.l1.PropagatedSolarWind" in types, (
+            f"No PropagatedSolarWind events. Types seen: {sorted(types.keys())}"
+        )
+        # Subject = {spacecraft} (currently 'dscovr')
+        sample_msg, sample_ce = types["gov.noaa.swpc.l1.PropagatedSolarWind"][0]
+        for required in ("id", "source", "type", "subject", "specversion"):
+            assert required in sample_ce, f"Missing CE attribute {required!r}: {sample_ce}"
+        assert sample_ce["specversion"] == "1.0"
+        assert sample_ce["subject"] in ("dscovr", "ace")
+
+        # ----- Partition key annotation verification -----
+        # The bridge wraps every send to stamp x-opt-partition-key into
+        # the AMQP message annotations. This is the default partitioning
+        # for all new sources (Service Bus PartitionKey / Event Hubs
+        # partition selector).
+        annotations = getattr(sample_msg, "annotations", None) or {}
+        anno_map: Dict[str, Any] = {}
+        try:
+            for k, v in dict(annotations).items():
+                key = k if isinstance(k, str) else (k.name if hasattr(k, "name") else str(k))
+                anno_map[key] = v
+        except Exception:  # pylint: disable=broad-except
+            pass
+        pk = anno_map.get("x-opt-partition-key")
+        assert pk is not None, (
+            f"x-opt-partition-key annotation missing. Annotations seen: {list(anno_map.keys())}"
+        )
+        if isinstance(pk, (bytes, bytearray)):
+            pk = pk.decode("utf-8", errors="replace")
+        assert pk == sample_ce["subject"], (
+            f"x-opt-partition-key {pk!r} != CE subject {sample_ce['subject']!r}"
+        )
+        # Validate JsonStructure schema for the body
+        xreg_path = os.path.join(REPO_ROOT, "noaa-swpc-l1", "xreg", "noaa_swpc_l1.xreg.json")
+        with open(xreg_path, "r", encoding="utf-8") as fh:
+            manifest = json.load(fh)
+        schemagroup = manifest["schemagroups"]["gov.noaa.swpc.l1.jstruct"]
+        schemas: Dict[str, Dict[str, Any]] = {}
+        for full_name, schema in schemagroup["schemas"].items():
+            schemas[full_name] = schema["versions"]["1"]["schema"]
+        from json_structure import InstanceValidator, SchemaValidator
+        validator_factory = SchemaValidator(extended=True)
+        schema = schemas["gov.noaa.swpc.l1.PropagatedSolarWind"]
+        assert not validator_factory.validate(schema), "Invalid JsonStructure schema"
+        body = _body_to_obj(sample_msg)
+        assert isinstance(body, dict), f"body not a JSON object: {body!r}"
+        errors = InstanceValidator(schema, extended=True).validate_instance(body)
+        assert not errors, f"JsonStructure validation failed: {errors[:3]}"

@@ -1374,6 +1374,24 @@
       "image": "smhi-weather-amqp",
       "file": "Dockerfile.amqp",
       "module": "smhi_weather_amqp"
+    },
+    {
+      "dir": "noaa-swpc-l1",
+      "image": "noaa-swpc-l1-kafka",
+      "file": "Dockerfile.kafka",
+      "module": "noaa_swpc_l1_kafka"
+    },
+    {
+      "dir": "noaa-swpc-l1",
+      "image": "noaa-swpc-l1-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "noaa_swpc_l1_mqtt"
+    },
+    {
+      "dir": "noaa-swpc-l1",
+      "image": "noaa-swpc-l1-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "noaa_swpc_l1_amqp"
     }
   ],
   "flow": [
@@ -2912,6 +2930,26 @@
       "image": "smhi-weather-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestSmhiWeatherAmqpDockerFlow"
+    },
+    {
+      "dir": "noaa-swpc-l1",
+      "image": "noaa-swpc-l1-kafka",
+      "file": "Dockerfile.kafka",
+      "test_class": "TestNoaaSwpcL1DockerFlow"
+    },
+    {
+      "dir": "noaa-swpc-l1",
+      "image": "noaa-swpc-l1-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNoaaSwpcL1MqttDockerFlow"
+    },
+    {
+      "dir": "noaa-swpc-l1",
+      "image": "noaa-swpc-l1-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestNoaaSwpcL1AmqpArtemisFlow"
     }
   ]
 }

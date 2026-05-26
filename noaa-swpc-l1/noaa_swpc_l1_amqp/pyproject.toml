@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "noaa_swpc_l1_amqp"
+version = "0.1.0"
+description = "AMQP 1.0 feeder for the NOAA SWPC L1 propagated solar wind product."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "noaa_swpc_l1_amqp" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+python-qpid-proton = ">=0.39.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+azure-identity = ">=1.17.0"
+noaa_swpc_l1_core = { path = "../noaa_swpc_l1_core" }
+noaa_swpc_l1_amqp_producer_data = { path = "../noaa_swpc_l1_amqp_producer/noaa_swpc_l1_amqp_producer_data" }
+noaa_swpc_l1_amqp_producer_amqp_producer = { path = "../noaa_swpc_l1_amqp_producer/noaa_swpc_l1_amqp_producer_amqp_producer" }
+
+[tool.poetry.scripts]
+noaa-swpc-l1-amqp = "noaa_swpc_l1_amqp.app:main"

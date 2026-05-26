@@ -2169,3 +2169,31 @@ class TestTepcoDenkiyohoDockerFlow:
             ],
         )
 
+
+
+def noaa_swpc_l1_image():
+    return build_image('noaa-swpc-l1', dockerfile='Dockerfile.kafka')
+
+
+# ---------------------------------------------------------------------------
+# NOAA SWPC L1 (Propagated Solar Wind from DSCOVR/ACE at Lagrange-1)
+# ---------------------------------------------------------------------------
+
+class TestNoaaSwpcL1DockerFlow:
+    TOPIC = 'test-noaa-swpc-l1'
+
+    def test_emits_propagated_solar_wind(self, kafka: KafkaFixture, noaa_swpc_l1_image):
+        _run_kafka_flow_test(
+            kafka, noaa_swpc_l1_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['gov.noaa.swpc.l1.PropagatedSolarWind'],
+            min_messages=1,
+            extra_env={
+                'POLLING_INTERVAL': '60',
+                'ONCE_MODE': 'true',
+                # 24 h backfill so the test sees data even when the live feed
+                # has a recent gap, but small enough to stay well under the
+                # 300 s _run_kafka_flow_test consume window.
+                'BACKFILL_MINUTES': '1440',
+            },
+        )
