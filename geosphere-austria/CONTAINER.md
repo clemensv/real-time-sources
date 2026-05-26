@@ -1,108 +1,161 @@
-# GeoSphere Austria TAWES Weather Bridge — Container
+# GeoSphere Austria container images
 
-This container bridges 10-minute weather observations from the
-[GeoSphere Austria](https://geosphere.at) TAWES automatic station network
-into Apache Kafka as CloudEvents.
+This document covers the published OCI container images for the GeoSphere Austria feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
+## Why this container
 
-## What It Does
+These images package the poller, contract-generated producers, and transport adapters so you can run GeoSphere Austria ingestion as a containerized workload without writing custom bridge code.
 
-The bridge polls the GeoSphere Austria TAWES v1 10-minute current dataset API
-every 10 minutes (configurable) and emits two event types:
+## What ships in the box
 
-- **WeatherStation** — reference data for each active TAWES station (emitted
-  at startup and refreshed daily)
-- **WeatherObservation** — 10-minute telemetry: temperature, humidity,
-  precipitation, wind direction, wind speed, pressure, sunshine duration,
-  and global radiation
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-geosphere-austria` | Apache Kafka 2.x | JSON CloudEvents (binary mode), key = `{station_id}` |
+| `ghcr.io/clemensv/real-time-sources-geosphere-austria-mqtt` | MQTT 5.0 | Topic template `(see xreg endpoint options)`, QoS 1, CloudEvent attrs as MQTT properties |
+| `ghcr.io/clemensv/real-time-sources-geosphere-austria-amqp` | AMQP 1.0 | AMQP node `geosphere-austria`, binary CloudEvents, password/Entra/SAS auth |
 
-Events are [CloudEvents](https://cloudevents.io/) in structured JSON mode.
-See [EVENTS.md](EVENTS.md) for the full event catalog.
+Event families emitted by these images:
 
-## Environment Variables
+- **`WeatherStation`**
+- **`WeatherObservation`**
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `CONNECTION_STRING` | **Yes** | — | Kafka or Event Hubs connection string |
-| `POLLING_INTERVAL` | No | `600` | Seconds between observation polls |
-| `STATION_REFRESH_INTERVAL` | No | `86400` | Seconds between station metadata refreshes |
-| `STATE_FILE` | No | `geosphere_austria_state.json` | Path for dedup state file |
-| `KAFKA_ENABLE_TLS` | No | `true` | Set to `false` for plain Kafka brokers |
-| `KAFKA_TOPIC` | No | `geosphere-austria-tawes` | Kafka topic override |
+## Image contract
 
-## Docker Pull and Run
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.12-slim` (multi-arch `linux/amd64`, `linux/arm64`) |
+| Default entry point | Kafka `CMD from Dockerfile`; MQTT `["python", "-m", "geosphere_austria_mqtt", "feed"]`; AMQP `["python", "-m", "geosphere_austria_amqp", "feed"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | graceful shutdown on `SIGTERM` |
+| Persistent state | `STATE_FILE` (mount `/state` to persist dedupe/resume) |
+| Image tags | `:latest`, `:v<semver>`, and `:sha-<git-sha>` |
 
-```bash
-docker pull ghcr.io/clemensv/real-time-sources/geosphere-austria:latest
-```
-
-### Plain Kafka Broker
+## Installing the container images
 
 ```bash
-docker run --rm \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=geosphere-austria-tawes" \
-  -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources/geosphere-austria:latest
+docker pull ghcr.io/clemensv/real-time-sources-geosphere-austria:latest
+docker pull ghcr.io/clemensv/real-time-sources-geosphere-austria-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-geosphere-austria-amqp:latest
 ```
 
-### Azure Event Hubs
+## Using the Kafka image
+
+### With a Kafka broker
 
 ```bash
-docker run --rm \
-  -e CONNECTION_STRING="Endpoint=sb://mynamespace.servicebus.windows.net/;SharedAccessKeyName=send;SharedAccessKey=...;EntityPath=geosphere-austria-tawes" \
-  ghcr.io/clemensv/real-time-sources/geosphere-austria:latest
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/geosphere-austria.json   -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>'   -e KAFKA_TOPIC='<kafka-topic>'   -e SASL_USERNAME='<sasl-username>'   -e SASL_PASSWORD='<sasl-password>'   ghcr.io/clemensv/real-time-sources-geosphere-austria:latest
 ```
 
-### Microsoft Fabric Event Streams
+### With Azure Event Hubs or Fabric Event Streams
 
 ```bash
-docker run --rm \
-  -e CONNECTION_STRING="Endpoint=sb://....servicebus.windows.net/;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=..." \
-  ghcr.io/clemensv/real-time-sources/geosphere-austria:latest
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/geosphere-austria.json   -e CONNECTION_STRING='<connection-string>'   ghcr.io/clemensv/real-time-sources-geosphere-austria:latest
 ```
 
-### State Persistence
+## Using the MQTT image
 
-Mount a volume to persist dedup state across container restarts:
+### With a generic MQTT 5 broker (username/password)
 
 ```bash
-docker run --rm \
-  -v geosphere-state:/app/state \
-  -e STATE_FILE=/app/state/geosphere_austria_state.json \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=geosphere-austria-tawes" \
-  -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources/geosphere-austria:latest
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/geosphere-austria.json   -e MQTT_BROKER_URL='mqtts://<broker-host>:8883'   -e MQTT_USERNAME='<username>'   -e MQTT_PASSWORD='<password>'   ghcr.io/clemensv/real-time-sources-geosphere-austria-mqtt:latest
 ```
 
-## Azure Container Instance
+### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
 
-Use the provided `azure-template.json` to deploy as an Azure Container Instance.
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/geosphere-austria.json   -e MQTT_BROKER_URL='mqtts://<ns>.<region>-1.ts.eventgrid.azure.net:8883'   -e MQTT_AUTH_MODE=entra   -e MQTT_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>'   -e MQTT_CLIENT_ID='<unique-client-id>'   ghcr.io/clemensv/real-time-sources-geosphere-austria-mqtt:latest
+```
+
+## Using the AMQP image
+
+### Generic AMQP 1.0 brokers (SASL PLAIN)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/geosphere-austria.json   -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/geosphere-austria'   ghcr.io/clemensv/real-time-sources-geosphere-austria-amqp:latest
+```
+
+### Azure Service Bus / Event Hubs (Microsoft Entra ID via CBS)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/geosphere-austria.json   -e AMQP_HOST='<namespace>.servicebus.windows.net'   -e AMQP_PORT=5671 -e AMQP_TLS=true   -e AMQP_ADDRESS='geosphere-austria'   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default'   -e AMQP_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>'   ghcr.io/clemensv/real-time-sources-geosphere-austria-amqp:latest
+```
+
+### Azure Service Bus emulator / SAS-only namespaces (SAS-token CBS)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/geosphere-austria.json   -e AMQP_HOST='servicebus-emulator'   -e AMQP_PORT=5672   -e AMQP_ADDRESS='geosphere-austria'   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey'   -e AMQP_SAS_KEY='<sas-key>'   ghcr.io/clemensv/real-time-sources-geosphere-austria-amqp:latest
+```
+
+## Environment variables
+
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to the dedupe/resume state file. Mount `/state` so it survives restarts. |
+| `POLLING_INTERVAL` | Seconds between polling cycles. |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric Event Stream connection string (overrides bootstrap settings). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka broker list when not using `CONNECTION_STRING`. |
+| `KAFKA_TOPIC` | Target topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | `false` disables TLS (default `true`). |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (e.g. `mqtts://host:8883`). |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for password mode. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed identity client id. |
+| `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured`. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Full broker URL (`amqp://` / `amqps://`). |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Host-style configuration when not using URL. |
+| `AMQP_ADDRESS` | Target AMQP node (queue/topic/address). |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `password` mode. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra ID token settings for `entra` mode. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token inputs for `sas` mode. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured`. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### AMQP — bring your own AMQP broker
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgeosphere-austria%2Fazure-template-amqp.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — bring your own broker
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgeosphere-austria%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgeosphere-austria%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgeosphere-austria%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgeosphere-austria%2Fazure-template-with-eventhub.json)
 
-## MQTT and AMQP companion transports
+### AMQP — provision a new Azure Service Bus namespace
 
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`geosphere-austria`). Docker E2E mock mode is available through `GEOSPHERE_AUSTRIA_MOCK=true`.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgeosphere-austria%2Fazure-template-with-servicebus.json)
 
-- MQTT image: `ghcr.io/clemensv/real-time-sources/geosphere-austria-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/geosphere-austria-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgeosphere-austria%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md) — project overview, use cases, and quick-start paths.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing metadata.
+- [`xreg/geosphere-austria.xreg.json`](xreg/geosphere-austria.xreg.json) — source contract used for generated producers and EVENTS.md.

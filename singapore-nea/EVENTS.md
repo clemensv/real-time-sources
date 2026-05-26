@@ -1,4 +1,4 @@
-# Singapore NEA Weather and Air Quality Bridge Events
+# Singapore NEA feeder Events
 
 Singapore NEA Environment publishes weather observations, air-quality readings, and environmental indexes from Singapore's National Environment Agency (NEA) for Singapore weather and air-quality regions and stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
@@ -335,11 +335,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/singapore_nea.xreg.json`](xreg/singapore_nea.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- data.gov.sg environment API: <https://data.gov.sg/datasets?topics=environment>

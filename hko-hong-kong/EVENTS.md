@@ -1,11 +1,11 @@
-# HKO Hong Kong Weather Observation Bridge Events
+# HKO Hong Kong feeder Events
 
 Hong Kong Observatory Weather publishes weather observations from the Hong Kong Observatory for Hong Kong weather observation locations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 2 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{place_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `weather/hk/hko/hko-hong-kong/+/+/info`, `weather/hk/hko/hko-hong-kong/+/+/observation`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('weather/hk/hko/hko-hong-kong/+/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `hko-hong-kong`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/hko-hong-kong')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,6 +77,8 @@ Each event identifies the real-world resource with `{place_id}`. `{place_id}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `hko-hong-kong`, key `{place_id}` |
+| `MQTT/5.0` | topic `weather/hk/hko/hko-hong-kong/{district}/{place_id}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/hko-hong-kong`, message subject `{place_id}`; application properties district `{district}` |
 
 #### Payload
 
@@ -57,6 +87,7 @@ Each event identifies the real-world resource with `{place_id}`. `{place_id}` is
 - **`place_id`** (string, required): URL-safe slug identifier derived from the English place name, e.g. 'kings-park', 'central-western-district'. Used as Kafka key and CloudEvents subject.
 - **`name`** (string, required): Original English place name from the HKO rhrread API, e.g. 'King's Park', 'Central & Western District'.
 - **`data_types`** (string, required): Comma-separated list of data types reported by this place. Values: 'temperature', 'rainfall', 'humidity', 'uvindex'.
+- **`district`** (string, optional): Normalized routing field 'district' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -65,7 +96,8 @@ Synthetic example values are generated deterministically from the schema: consta
 {
   "place_id": "string",
   "name": "string",
-  "data_types": "string"
+  "data_types": "string",
+  "district": "string"
 }
 ```
 
@@ -90,6 +122,8 @@ Each event identifies the real-world resource with `{place_id}`. `{place_id}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `hko-hong-kong`, key `{place_id}` |
+| `MQTT/5.0` | topic `weather/hk/hko/hko-hong-kong/{district}/{place_id}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/hko-hong-kong`, message subject `{place_id}`; application properties district `{district}` |
 
 #### Payload
 
@@ -103,6 +137,7 @@ Each event identifies the real-world resource with `{place_id}`. `{place_id}` is
 - **`humidity`** (int32 or null, optional, percent (%)): Relative humidity, currently only from Hong Kong Observatory headquarters.
 - **`uv_index`** (double or null, optional, 1): UV index during the past hour, currently only from King's Park.
 - **`uv_description`** (string or null, optional): HKO descriptive UV level: 'low', 'moderate', 'high', 'very high', 'extreme'.
+- **`district`** (string, optional): Normalized routing field 'district' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -116,7 +151,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "rainfall_max": 0,
   "humidity": 0,
   "uv_index": 0,
-  "uv_description": "string"
+  "uv_description": "string",
+  "district": "string"
 }
 ```
 
@@ -142,20 +178,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/hko_hong_kong.xreg.json`](xreg/hko_hong_kong.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- HKO Open Data API: <https://www.hko.gov.hk/en/abouthko/opendata_intro.htm>
-
-## MQTT and AMQP companion transports
-
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`hko-hong-kong`). Docker E2E mock mode is available through `HKO_HONG_KONG_MOCK=true`.
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources/hko-hong-kong-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/hko-hong-kong-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

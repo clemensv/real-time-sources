@@ -1,78 +1,160 @@
-# Singapore NEA Weather and Air Quality — Container Deployment
+# Singapore NEA container images
 
-## Upstream Source
+This document covers the published OCI container images for the Singapore NEA feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
+## Why this container
 
-The [data.gov.sg environment API](https://data.gov.sg/datasets?topics=environment)
-provides free real-time weather and air quality data from Singapore's NEA.
-The bridge emits weather station reference data plus observations, and a second
-air-quality stream keyed by NEA's five reporting regions. Data is published
-under the Singapore Open Data License.
+These images package the poller, contract-generated producers, and transport adapters so you can run Singapore NEA ingestion as a containerized workload without writing custom bridge code.
 
-## Docker Pull
+## What ships in the box
 
-```bash
-docker pull ghcr.io/clemensv/real-time-sources/singapore-nea:latest
-```
-
-## Environment Variables
-
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `CONNECTION_STRING` | Yes | — | Kafka or Event Hubs connection string |
-| `KAFKA_TOPIC` | No | `singapore-nea` | Target Kafka topic |
-| `AIRQUALITY_TOPIC` | No | `singapore-nea-airquality` | Target Kafka topic for air quality events |
-| `POLLING_INTERVAL` | No | `300` | Seconds between polling cycles |
-| `AIRQUALITY_POLLING_INTERVAL` | No | `3600` | Seconds between air quality polling cycles |
-| `STATE_FILE` | No | `~/.singapore_nea_state.json` | Deduplication state file path |
-| `KAFKA_ENABLE_TLS` | No | `true` | Set to `false` to disable TLS |
-
-## Docker Run (Plain Kafka)
-
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=singapore-nea" \
-  -e AIRQUALITY_TOPIC=singapore-nea-airquality \
-  -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources/singapore-nea:latest
-```
-
-## Docker Run (Azure Event Hubs)
-
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<name>;SharedAccessKey=<key>;EntityPath=singapore-nea" \
-  -e AIRQUALITY_TOPIC=singapore-nea-airquality \
-  ghcr.io/clemensv/real-time-sources/singapore-nea:latest
-```
-
-## Kafka Topics and Keys
-
-| Topic | Key | Event Types |
+| Image | Transport | Default behavior |
 |---|---|---|
-| `singapore-nea` | `{station_id}` | `SG.Gov.NEA.Weather.Station`, `SG.Gov.NEA.Weather.WeatherObservation` |
-| `singapore-nea-airquality` | `{region}` | `SG.Gov.NEA.AirQuality.Region`, `SG.Gov.NEA.AirQuality.PSIReading`, `SG.Gov.NEA.AirQuality.PM25Reading` |
+| `ghcr.io/clemensv/real-time-sources-singapore-nea` | Apache Kafka 2.x | JSON CloudEvents (binary mode), key = `{region}` |
+| `ghcr.io/clemensv/real-time-sources-singapore-nea-mqtt` | MQTT 5.0 | Topic template `(see xreg endpoint options)`, QoS 1, CloudEvent attrs as MQTT properties |
+| `ghcr.io/clemensv/real-time-sources-singapore-nea-amqp` | AMQP 1.0 | AMQP node `singapore-nea`, binary CloudEvents, password/Entra/SAS auth |
+
+Event families emitted by these images:
+
+- **`Station`**
+- **`WeatherObservation`**
+- **`Region`**
+- **`PSIReading`**
+- **`PM25Reading`**
+
+## Image contract
+
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.12-slim` (multi-arch `linux/amd64`, `linux/arm64`) |
+| Default entry point | Kafka `["python", "-m", "singapore_nea", "feed"]`; MQTT `["python", "-m", "singapore_nea_mqtt", "feed"]`; AMQP `["python", "-m", "singapore_nea_amqp", "feed"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | graceful shutdown on `SIGTERM` |
+| Persistent state | `STATE_FILE` (mount `/state` to persist dedupe/resume) |
+| Image tags | `:latest`, `:v<semver>`, and `:sha-<git-sha>` |
+
+## Installing the container images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-singapore-nea:latest
+docker pull ghcr.io/clemensv/real-time-sources-singapore-nea-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-singapore-nea-amqp:latest
+```
+
+## Using the Kafka image
+
+### With a Kafka broker
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/singapore-nea.json   -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>'   -e KAFKA_TOPIC='<kafka-topic>'   -e SASL_USERNAME='<sasl-username>'   -e SASL_PASSWORD='<sasl-password>'   ghcr.io/clemensv/real-time-sources-singapore-nea:latest
+```
+
+### With Azure Event Hubs or Fabric Event Streams
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/singapore-nea.json   -e CONNECTION_STRING='<connection-string>'   ghcr.io/clemensv/real-time-sources-singapore-nea:latest
+```
+
+## Using the MQTT image
+
+### With a generic MQTT 5 broker (username/password)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/singapore-nea.json   -e MQTT_BROKER_URL='mqtts://<broker-host>:8883'   -e MQTT_USERNAME='<username>'   -e MQTT_PASSWORD='<password>'   ghcr.io/clemensv/real-time-sources-singapore-nea-mqtt:latest
+```
+
+### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/singapore-nea.json   -e MQTT_BROKER_URL='mqtts://<ns>.<region>-1.ts.eventgrid.azure.net:8883'   -e MQTT_AUTH_MODE=entra   -e MQTT_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>'   -e MQTT_CLIENT_ID='<unique-client-id>'   ghcr.io/clemensv/real-time-sources-singapore-nea-mqtt:latest
+```
+
+## Using the AMQP image
+
+### Generic AMQP 1.0 brokers (SASL PLAIN)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/singapore-nea.json   -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/singapore-nea'   ghcr.io/clemensv/real-time-sources-singapore-nea-amqp:latest
+```
+
+### Azure Service Bus / Event Hubs (Microsoft Entra ID via CBS)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/singapore-nea.json   -e AMQP_HOST='<namespace>.servicebus.windows.net'   -e AMQP_PORT=5671 -e AMQP_TLS=true   -e AMQP_ADDRESS='singapore-nea'   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default'   -e AMQP_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>'   ghcr.io/clemensv/real-time-sources-singapore-nea-amqp:latest
+```
+
+### Azure Service Bus emulator / SAS-only namespaces (SAS-token CBS)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/singapore-nea.json   -e AMQP_HOST='servicebus-emulator'   -e AMQP_PORT=5672   -e AMQP_ADDRESS='singapore-nea'   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey'   -e AMQP_SAS_KEY='<sas-key>'   ghcr.io/clemensv/real-time-sources-singapore-nea-amqp:latest
+```
+
+## Environment variables
+
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to the dedupe/resume state file. Mount `/state` so it survives restarts. |
+| `POLLING_INTERVAL` | Seconds between polling cycles. |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric Event Stream connection string (overrides bootstrap settings). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka broker list when not using `CONNECTION_STRING`. |
+| `KAFKA_TOPIC` | Target topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | `false` disables TLS (default `true`). |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (e.g. `mqtts://host:8883`). |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for password mode. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed identity client id. |
+| `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured`. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Full broker URL (`amqp://` / `amqps://`). |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Host-style configuration when not using URL. |
+| `AMQP_ADDRESS` | Target AMQP node (queue/topic/address). |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `password` mode. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra ID token settings for `entra` mode. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token inputs for `sas` mode. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured`. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### MQTT — bring your own broker
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsingapore-nea%2Fazure-template-mqtt.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsingapore-nea%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsingapore-nea%2Fazure-template-with-eventgrid-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsingapore-nea%2Fazure-template-with-eventhub.json)
 
-## MQTT and AMQP images
+### AMQP — provision a new Azure Service Bus namespace
 
-Build with Dockerfile.mqtt for MQTT 5 or Dockerfile.amqp for AMQP 1.0. MQTT uses MQTT_BROKER_URL; AMQP uses AMQP_HOST, AMQP_PORT, AMQP_ADDRESS, AMQP_USERNAME, AMQP_PASSWORD, and AMQP_AUTH_MODE (password, ntra, or sas). Service Bus deployment uses zure-template-with-servicebus.json and is mirrored at infra/azure-template-amqp.json.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsingapore-nea%2Fazure-template-with-servicebus.json)
+
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsingapore-nea%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md) — project overview, use cases, and quick-start paths.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing metadata.
+- [`xreg/singapore_nea.xreg.json`](xreg/singapore_nea.xreg.json) — source contract used for generated producers and EVENTS.md.

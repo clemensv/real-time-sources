@@ -1,142 +1,160 @@
-# JMA Japan Weather Bulletins Poller
+# JMA Japan feeder
+
+This feeder turns the upstream JMA Japan weather data into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+## Why this bridge
+
+This source wraps the upstream JMA Japan APIs into a contract-first event stream so consumers can subscribe instead of implementing custom polling, pagination, dedupe, retry, and schema handling in every downstream system.
+
+- **Operational dashboards** — subscribe to `jma-japan` events for near-real-time situational awareness and KPI tracking.
+- **Data engineering pipelines** — land validated CloudEvents in Eventhouse/ADX/lakehouse without polling the upstream API directly.
+- **Alerting and automation** — trigger workflow actions from fresh `JMA Japan` observations and advisories.
+- **Cross-domain analytics** — correlate weather signals with transport, safety, energy, or hydrology feeders from this repository.
+- **Research and compliance archives** — keep a durable, replayable stream with stable subject/key identity (`{bulletin_id}`).
 
 ## Overview
 
-**JMA Japan Weather Bulletins Poller** polls the Japan Meteorological Agency
-(JMA) Atom XML feeds for weather bulletins—forecasts, warnings, advisories, and
-risk notifications—and sends them to a Kafka topic as CloudEvents. The tool
-tracks previously seen bulletin IDs to avoid sending duplicates.
+**JMA Japan** is a poll-based bridge. The source ships in 3 transport variants from a shared upstream poller:
 
-## Key Features
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-jma-japan` | Apache Kafka 2.x compatible (incl. Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud) | One topic, JSON CloudEvents (binary mode), key = `{bulletin_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-jma-japan-mqtt` | MQTT 5.0 broker (incl. Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric Real-Time Hub MQTT broker) | UNS topic template `(see xreg endpoint options)`, QoS 1 CloudEvents with MQTT 5 user properties |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-jma-japan-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs) | Single AMQP node `jma-japan`, binary CloudEvents, SASL PLAIN / Entra CBS / SAS CBS auth modes |
 
-- **Dual Atom Feed Polling**: Fetches weather bulletins from both the *regular*
-  feed (`regular.xml` — scheduled forecasts) and the *extra* feed
-  (`extra.xml` — warnings and advisories).
-- **Deduplication**: Tracks seen bulletin IDs in a state file to avoid
-  reprocessing.
-- **Japanese Text Support**: Handles Japanese (UTF-8) titles, author names, and
-  content text natively.
-- **Kafka Integration**: Sends bulletins to a Kafka topic using SASL PLAIN
-  authentication.
-- **CloudEvents**: All events are formatted as CloudEvents, documented in
-  [EVENTS.md](EVENTS.md).
-- **Fabric notebook hosting**: This source ships a Fabric notebook feeder
-  at [`notebook/jma-japan-feed.ipynb`](notebook/jma-japan-feed.ipynb),
-  deployable via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+All variants share:
 
-## Data Sources
+- The upstream polling runtime in this source folder.
+- The xRegistry contract at `xreg/jma_japan.xreg.json`.
+- The same CloudEvents event families and identity model.
 
-| Feed | URL | Description |
-|------|-----|-------------|
-| Regular | `https://www.data.jma.go.jp/developer/xml/feed/regular.xml` | Scheduled forecasts, risk notifications |
-| Extra | `https://www.data.jma.go.jp/developer/xml/feed/extra.xml` | Warnings, advisories, typhoon bulletins |
+## Key features
 
-Both feeds are Atom XML documents updated every minute by JMA.
+- Contract-first CloudEvents output aligned with the xRegistry manifest.
+- Stateful poller with dedupe/resume support via `JMA_LAST_POLLED_FILE`.
+- Transport parity across Kafka, MQTT, and AMQP with the same event semantics.
+- Ready for Azure Event Hubs / Fabric Event Streams connection strings.
 
-## Installation
+## Repository layout
 
-The tool is written in Python and requires Python 3.10 or later. You can
-download Python from [here](https://www.python.org/downloads/) or from the
-Microsoft Store if you are on Windows.
+```text
+jma-japan/
+  xreg/
+  kql/
+  notebook/
+  tests/
+  Dockerfile
+  Dockerfile.amqp
+  Dockerfile.mqtt
+  azure-template-amqp.json
+  azure-template-mqtt.json
+  azure-template-with-eventgrid-mqtt.json
+  azure-template-with-eventhub.json
+  azure-template-with-servicebus.json
+  azure-template.json
+  generate_amqp_producer.ps1
+```
 
-### Installation Steps
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound network access to the upstream JMA Japan API endpoints.
+- Network access to your target broker(s).
+- A writable host directory mounted at `/state` to persist `JMA_LAST_POLLED_FILE` across restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Always mount a volume for `JMA_LAST_POLLED_FILE`. Without a persisted state file, the poller restarts cold and may republish already-seen records.
+
+### Kafka
 
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=jma-japan
+docker run --rm   -v "$PWD/state:/state"   -e JMA_LAST_POLLED_FILE=/state/jma-japan.json   -e CONNECTION_STRING="<event-hubs-connection-string>"   ghcr.io/clemensv/real-time-sources-jma-japan:latest
 ```
 
-If you clone the repository:
+### MQTT (Unified Namespace)
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/jma-japan
-pip install .
+docker run --rm   -v "$PWD/state:/state"   -e JMA_LAST_POLLED_FILE=/state/jma-japan.json   -e MQTT_BROKER_URL=mqtts://<broker-host>:8883   -e MQTT_USERNAME=<username>   -e MQTT_PASSWORD=<password>   ghcr.io/clemensv/real-time-sources-jma-japan-mqtt:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
+Topic template:
 
-## How to Use
+```text
+(see xreg endpoint options)
+```
 
-After installation, the tool can be run using `python -m jma_japan`. It supports
-several arguments for configuring the polling process and sending data to Kafka.
-
-### Command-Line Arguments
-
-- `--last-polled-file`: Path to the file where seen bulletin IDs are stored.
-  Defaults to `~/.jma_last_polled.json`.
-- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
-- `--kafka-topic`: The Kafka topic to send messages to.
-- `--sasl-username`: Username for SASL PLAIN authentication.
-- `--sasl-password`: Password for SASL PLAIN authentication.
-- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream
-  connection string (overrides other Kafka parameters).
-
-### Example Usage
-
-#### Using a Connection String
+### AMQP 1.0
 
 ```bash
-python -m jma_japan --connection-string "<your_connection_string>"
+docker run --rm   -v "$PWD/state:/state"   -e JMA_LAST_POLLED_FILE=/state/jma-japan.json   -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/jma-japan'   ghcr.io/clemensv/real-time-sources-jma-japan-amqp:latest
 ```
 
-#### Using Kafka Parameters Directly
+For full authentication matrices (Kafka SASL/Event Hubs, MQTT password/Entra, AMQP password/Entra/SAS), see [CONTAINER.md](CONTAINER.md).
 
-```bash
-python -m jma_japan --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-topic "<topic_name>" --sasl-username "<username>" --sasl-password "<password>"
-```
+## Configuration reference
 
-### Connection String Format
+The complete environment-variable matrix for all images is documented in [CONTAINER.md](CONTAINER.md). Docker entrypoints are taken from image `CMD` values (`["python", "-m", "jma_japan"]`, `["python", "-m", "jma_japan_mqtt", "feed"]`, `["python", "-m", "jma_japan_amqp", "feed"]`).
 
-```
-Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=<hub>
-```
+## Data model
 
-### Environment Variables
+This feeder emits the following event families:
 
-- `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream
-  connection string.
-- `JMA_LAST_POLLED_FILE`: File to store seen bulletin IDs for deduplication.
+- **`WeatherBulletin`**
 
-## Weather Bulletin Properties
+Identity follows the xRegistry key/subject model (`{bulletin_id}`) and is consistent across transports.
 
-Each weather bulletin includes these properties:
+## Deploying into Microsoft Fabric
 
-| Property | Description |
-|----------|-------------|
-| `bulletin_id` | Stable hash-based ID derived from the Atom entry ID |
-| `title` | Bulletin title in Japanese (e.g., "気象特別警報・警報・注意報") |
-| `author` | Issuing authority name (e.g., "気象庁", "松江地方気象台") |
-| `updated` | When the bulletin was last updated (ISO 8601) |
-| `link` | URL to the full XML document |
-| `content` | Brief text summary in Japanese |
-| `feed_type` | Feed origin: "regular" or "extra" |
+JMA Japan supports Fabric end-to-end: events flow into a Fabric Event Stream custom endpoint, and the source KQL script in `kql/` materializes typed tables and update policies in Eventhouse.
+
+Two hosting models are supported using the deploy buttons on the [project portal](https://clemensv.github.io/real-time-sources/#jma-japan).
+
+### Fabric Notebook feeder
+
+A scheduled notebook in [`notebook/`](notebook/) runs the poller inside the Fabric workspace using the per-source Fabric Environment produced by `tools/deploy-fabric/deploy-feeder-notebook.ps1`. Runtime diagnostics and persisted state are written to OneLake.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#jma-japan/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source jma-japan` to run the container continuously in Azure Container Instances while targeting a Fabric Event Stream custom endpoint.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#jma-japan/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### AMQP — bring your own AMQP broker
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-japan%2Fazure-template-amqp.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — bring your own broker
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-japan%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-japan%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-japan%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-japan%2Fazure-template-with-eventhub.json)
 
-## MQTT and AMQP companion transports
+### AMQP — provision a new Azure Service Bus namespace
 
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`jma-japan`). Docker E2E mock mode is available through `JMA_JAPAN_MOCK=true`.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-japan%2Fazure-template-with-servicebus.json)
 
-- MQTT image: `ghcr.io/clemensv/real-time-sources/jma-japan-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/jma-japan-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fjma-japan%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full environment-variable and authentication details.
+- Validate deployment choices (Notebook vs ACI vs direct Azure templates) against your latency and operations requirements.
