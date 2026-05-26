@@ -1,4 +1,11 @@
-# PegelOnline → Apache Kafka, MQTT/UNS & AMQP 1.0
+# PegelOnline feeder
+
+This feeder turns the German [WSV PegelOnline](https://www.pegelonline.wsv.de/) REST API into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
 ## Why this bridge
 
@@ -57,7 +64,7 @@ All three variants share:
 * The CloudEvents schemas for the `Station` reference event and the
   `CurrentMeasurement` telemetry event.
 
-## Key Features
+## Key features
 - **Station catalog** emitted at startup as reference CloudEvents and
   refreshed periodically — consumers learn the universe of gauges
   without a separate metadata fetch.
@@ -66,7 +73,7 @@ All three variants share:
 - **Three transport binaries** with identical configuration knobs
   upstream (polling interval, state file, once-mode) — switch transport
   without changing the data model.
-- **Microsoft Event Hubs / Fabric Event Streams** ready via standard
+- **Azure Event Hubs / Microsoft Fabric Event Streams** ready via standard
   connection strings (Kafka variant).
 - **Unified Namespace** ready out of the box with retained MQTT 5.0
   binary CloudEvents (MQTT variant).
@@ -75,47 +82,63 @@ All three variants share:
   plus SAS-token CBS for the Service Bus emulator and SAS-only
   namespaces.
 
-## Repository Layout
+## Repository layout
 
-```
+```text
 pegelonline/
   xreg/pegelonline.xreg.json     # shared xRegistry contract
   pegelonline_core/              # transport-agnostic poller
   pegelonline_kafka/             # Kafka feeder application
   pegelonline_mqtt/              # MQTT/UNS feeder application
   pegelonline_amqp/              # AMQP 1.0 feeder application
-  pegelonline_producer/          # xrcg-generated Kafka producer
-  pegelonline_mqtt_producer/     # xrcg-generated MQTT producer
-  pegelonline_amqp_producer/     # xrcg-generated AMQP producer
+  pegelonline_producer/          # xRegistry-generated Kafka producer
+  pegelonline_mqtt_producer/     # xRegistry-generated MQTT producer
+  pegelonline_amqp_producer/     # xRegistry-generated AMQP producer
   Dockerfile.kafka               # builds the Kafka feeder image
   Dockerfile.mqtt                # builds the MQTT feeder image
   Dockerfile.amqp                # builds the AMQP feeder image
   tests/                         # unit + integration tests
 ```
 
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS to `pegelonline.wsv.de` (the upstream REST API; no credentials required).
+- Network access to your target Kafka broker, MQTT broker, or AMQP 1.0 peer.
+- A writable host directory mounted into the container at `/state` to persist the dedupe state file across restarts. Without it, dedupe restarts cold on every container start, and "long-running, dedupe-aware ingestion" only holds for the lifetime of one container.
+
 ## Quick start with Docker
+
+> [!IMPORTANT]
+> Always mount a volume for `STATE_FILE`. The default path lives inside the container's home directory and is lost on restart, which silently disables cross-restart deduplication. The examples below mount the host directory `./state` into `/state` and point `STATE_FILE` at it.
 
 ### Kafka
 
 ```bash
 docker run --rm \
-  -e CONNECTION_STRING="$EVENT_HUBS_CONNECTION_STRING" \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/pegelonline.json \
+  -e CONNECTION_STRING="<event-hubs-connection-string>" \
   ghcr.io/clemensv/real-time-sources-pegelonline-kafka:latest
 ```
 
-### MQTT / UNS
+Replace `<event-hubs-connection-string>` with a connection string from your Azure Event Hubs namespace, Microsoft Fabric Event Stream custom endpoint, or any Kafka 2.x broker that accepts the same SASL-PLAIN-over-TLS shape.
+
+### MQTT (Unified Namespace)
 
 ```bash
 docker run --rm \
-  -e MQTT_BROKER_URL=mqtts://broker.example.com:8883 \
-  -e MQTT_USERNAME=alice \
-  -e MQTT_PASSWORD=secret \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/pegelonline.json \
+  -e MQTT_BROKER_URL=mqtts://<broker-host>:8883 \
+  -e MQTT_USERNAME=<username> \
+  -e MQTT_PASSWORD=<password> \
   ghcr.io/clemensv/real-time-sources-pegelonline-mqtt:latest
 ```
 
 Topics published (retained, QoS 1):
 
-```
+```text
 hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info          # Station reference
 hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level   # CurrentMeasurement telemetry
 ```
@@ -124,28 +147,21 @@ hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level   # CurrentM
 
 ```bash
 docker run --rm \
-  -e AMQP_BROKER_URL='amqp://user:pw@broker.example.com:5672/pegelonline' \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/pegelonline.json \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/pegelonline' \
   ghcr.io/clemensv/real-time-sources-pegelonline-amqp:latest
 ```
 
-For Azure Service Bus or Event Hubs with Microsoft Entra ID, the SAS
-emulator, or SAS-only namespaces, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image)
-for the full env-var matrix.
+For Azure Service Bus or Event Hubs with Microsoft Entra ID, the Service Bus emulator, or SAS-only namespaces, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image) for the full environment-variable matrix.
 
 ## Configuration reference
 
-The complete list of environment variables for every variant
-(Kafka / MQTT / AMQP), every authentication mode (SASL PLAIN, Microsoft
-Entra ID via CBS / OAUTH2-JWT, SAS-token CBS), and every Azure
-deployment shape lives in [CONTAINER.md](CONTAINER.md). The runtime
-also exposes a `pegelonline` CLI inside each container for ad-hoc
-probing — `docker run --rm <image> pegelonline --help`.
+The complete list of environment variables for every variant (Kafka, MQTT, AMQP), every authentication mode (SASL PLAIN, Microsoft Entra ID via CBS or OAUTH2-JWT, SAS-token CBS), and every Azure deployment shape lives in [CONTAINER.md](CONTAINER.md). The runtime entry point for every image is `python -m pegelonline_{kafka,mqtt,amqp} feed`; the image's default `CMD` invokes it for you.
 
 ## Deploying into Azure Container Instances
 
-Five one-click deployment templates are available — one for each
-realistic Azure target. All templates create a storage account and
-file share for persistent dedupe state.
+Five one-click deployment templates are available — one for each realistic Azure target. All templates create a storage account and file share for persistent dedupe state.
 
 ### Kafka — bring your own Event Hub / Kafka
 
@@ -191,3 +207,8 @@ key rotation required.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-with-servicebus.json)
 
+## Next steps
+
+- Review the [event contract and schemas](EVENTS.md) before writing a consumer.
+- Look up authentication modes and the full environment-variable matrix in [CONTAINER.md](CONTAINER.md).
+- The upstream API surface, terms of use, and station coverage are documented at the [WSV PegelOnline portal](https://www.pegelonline.wsv.de/).

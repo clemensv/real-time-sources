@@ -1,4 +1,6 @@
-# WSV PegelOnline → Apache Kafka, MQTT/UNS & AMQP 1.0
+# PegelOnline container images
+
+This document covers the published OCI container images for the PegelOnline feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
 ## Why this container
 
@@ -42,35 +44,49 @@ The on-the-wire schemas live in [EVENTS.md](EVENTS.md). The container images
 work with any Apache Kafka–compatible server or service that supports TLS
 with SASL/PLAIN, and with any MQTT 5.0 broker.
 
-## Database Schemas and Handling
+## Database schemas and handling
 
-If you want to build a full data pipeline with all events ingested into a
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
+If you want to build a full data pipeline with all events ingested into a database, the integration with Microsoft Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md).
 
-## Installing the Container Images
+## Image contract
+
+All three images share the same operational contract:
+
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.12-slim` (multi-arch: `linux/amd64`, `linux/arm64`) |
+| Default entry point | `python -m pegelonline_{kafka,mqtt,amqp} feed` |
+| Default user | root (no `USER` directive) |
+| Exposed ports | none — the feeder is an outbound publisher only |
+| Health check | none defined; treat process liveness as health |
+| Signals | terminates cleanly on `SIGTERM`; the polling loop flushes producers before exit |
+| Persistent state | `STATE_FILE` (default `~/.pegelonline_state.json` inside the container). **Mount a volume** to keep dedupe state across restarts. |
+| Image tags | `:latest` tracks the default branch; immutable tags `:v<MAJOR>.<MINOR>.<PATCH>` and `:sha-<git-sha>` are published per release. |
+
+Pull and inspect available tags at <https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-pegelonline-kafka>.
+
+## Installing the container images
 
 Pull the container images from the GitHub Container Registry:
 
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-pegelonline-kafka:latest
-$ docker pull ghcr.io/clemensv/real-time-sources-pegelonline-mqtt:latest
-$ docker pull ghcr.io/clemensv/real-time-sources-pegelonline-amqp:latest
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-pegelonline-kafka:latest
+docker pull ghcr.io/clemensv/real-time-sources-pegelonline-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-pegelonline-amqp:latest
 ```
 
 ## Using the Kafka image
 
-The Kafka image (`…-pegelonline-kafka`) reads data from the WSV Pegelonline
-API and writes JSON CloudEvents (binary mode) to a Kafka topic. It works
-with Apache Kafka 2.x, Azure Event Hubs, and Microsoft Fabric Event Streams.
+The Kafka image (`…-pegelonline-kafka`) reads data from the WSV PegelOnline API and writes JSON CloudEvents (binary mode) to a Kafka topic. It works with Apache Kafka 2.x, Azure Event Hubs, and Microsoft Fabric Event Streams.
 
-### With a Kafka Broker
+### With a Kafka broker
 
-Ensure you have a Kafka broker configured with TLS and SASL PLAIN
-authentication. Run the container with the following command:
+Ensure you have a Kafka broker configured with TLS and SASL PLAIN authentication. Run the container with the following command:
 
-```shell
-$ docker run --rm \
+```bash
+docker run --rm \
+    -v "$PWD/state:/state" \
+    -e STATE_FILE=/state/pegelonline.json \
     -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
     -e KAFKA_TOPIC='<kafka-topic>' \
     -e SASL_USERNAME='<sasl-username>' \
@@ -80,31 +96,27 @@ $ docker run --rm \
 
 ### With Azure Event Hubs or Fabric Event Streams
 
-Use the connection string to establish a connection to the service. Obtain
-the connection string from the Azure portal, Azure CLI, or the "custom
-endpoint" of a Fabric Event Stream.
+Use the connection string to establish a connection to the service. Obtain the connection string from the Azure portal, the Azure CLI, or the "custom endpoint" of a Fabric Event Stream.
 
-```shell
-$ docker run --rm \
+```bash
+docker run --rm \
+    -v "$PWD/state:/state" \
+    -e STATE_FILE=/state/pegelonline.json \
     -e CONNECTION_STRING='<connection-string>' \
     ghcr.io/clemensv/real-time-sources-pegelonline-kafka:latest
 ```
 
 ## Using the MQTT image
 
-The MQTT image (`…-pegelonline-mqtt`) publishes MQTT 5.0 binary-mode
-CloudEvents into a Unified-Namespace topic tree
-(`hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/{info|water-level}`)
-at QoS 1 with retained=true on each leaf. It works against any MQTT 5
-broker (Mosquitto, EMQX, HiveMQ, …) and against the
-[Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview)
-including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/fabric/real-time-hub/add-source-event-grid).
+The MQTT image (`…-pegelonline-mqtt`) publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (`hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/{info|water-level}`) at QoS 1 with `retain=true` on each leaf. It works against any MQTT 5 broker (Mosquitto, EMQX, HiveMQ, …) and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/fabric/real-time-hub/add-source-event-grid).
 
 ### With a generic MQTT 5 broker (username/password)
 
-```shell
-$ docker run --rm \
-    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \
+```bash
+docker run --rm \
+    -v "$PWD/state:/state" \
+    -e STATE_FILE=/state/pegelonline.json \
+    -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
     -e MQTT_USERNAME='<username>' \
     -e MQTT_PASSWORD='<password>' \
     ghcr.io/clemensv/real-time-sources-pegelonline-mqtt:latest
@@ -112,14 +124,15 @@ $ docker run --rm \
 
 ### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
 
-When the host is an Azure VM, Container Instance, App Service, etc. with a
-managed identity that holds the **EventGrid TopicSpaces Publisher** role on
-the target topic space, the feeder uses MQTT v5 enhanced authentication
-(`OAUTH2-JWT`) to authenticate with a token issued for audience
-`https://eventgrid.azure.net/`.
+When the host is an Azure VM, Container Instance, App Service, etc. with a managed identity that holds the **EventGrid TopicSpaces Publisher** role on the target topic space, the feeder uses MQTT v5 enhanced authentication (`OAUTH2-JWT`) to authenticate with a token issued for audience `https://eventgrid.azure.net/`.
 
-```shell
-$ docker run --rm \
+> [!IMPORTANT]
+> `MQTT_CLIENT_ID` must be globally unique across all clients connected to the same broker. Azure Event Grid disconnects an existing session when a second client connects with the same identifier ("subscription steal"). Use a deterministic but unique value (for example a hostname-plus-suffix) per deployed feeder instance.
+
+```bash
+docker run --rm \
+    -v "$PWD/state:/state" \
+    -e STATE_FILE=/state/pegelonline.json \
     -e MQTT_BROKER_URL='mqtts://<ns>.<region>-1.ts.eventgrid.azure.net:8883' \
     -e MQTT_AUTH_MODE=entra \
     -e MQTT_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
@@ -129,32 +142,34 @@ $ docker run --rm \
 
 ## Using the AMQP image
 
-The AMQP image (`…-pegelonline-amqp`) publishes CloudEvents over AMQP 1.0
-to a single AMQP node (queue, topic, or address). It targets two
-deployment shapes:
+The AMQP image (`…-pegelonline-amqp`) publishes CloudEvents over AMQP 1.0 to a single AMQP node (queue, topic, or address). It targets two deployment shapes:
 
 ### Generic AMQP 1.0 brokers (RabbitMQ AMQP 1.0, Artemis, Qpid Dispatch)
 
 Use SASL PLAIN with a connection URL:
 
-```shell
-$ docker run --rm \
-    -e AMQP_BROKER_URL='amqp://user:pw@broker.example.com:5672/pegelonline' \
+```bash
+docker run --rm \
+    -v "$PWD/state:/state" \
+    -e STATE_FILE=/state/pegelonline.json \
+    -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/pegelonline' \
     ghcr.io/clemensv/real-time-sources-pegelonline-amqp:latest
 ```
 
-For TLS-enabled brokers use `amqps://...:5671/...`.
+For TLS-enabled brokers use `amqps://<broker-host>:5671/<address>`.
 
 ### Azure Service Bus / Event Hubs (Microsoft Entra ID, no SAS keys)
 
-Run the image with `AMQP_AUTH_MODE=entra` against a user-assigned
-managed identity. The identity must hold the **Azure Service Bus Data
-Sender** role (or **Azure Event Hubs Data Sender** for Event Hubs) on
-the target queue / hub:
+> [!IMPORTANT]
+> For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`. Port 5672 is only valid against the local Service Bus emulator.
 
-```shell
-$ docker run --rm \
-    -e AMQP_HOST='myns.servicebus.windows.net' \
+Run the image with `AMQP_AUTH_MODE=entra` against a user-assigned managed identity. The identity must hold the **Azure Service Bus Data Sender** role (or **Azure Event Hubs Data Sender** for Event Hubs) on the target queue or hub:
+
+```bash
+docker run --rm \
+    -v "$PWD/state:/state" \
+    -e STATE_FILE=/state/pegelonline.json \
+    -e AMQP_HOST='<namespace>.servicebus.windows.net' \
     -e AMQP_PORT=5671 -e AMQP_TLS=true \
     -e AMQP_ADDRESS='pegelonline' \
     -e AMQP_AUTH_MODE=entra \
@@ -163,33 +178,28 @@ $ docker run --rm \
     ghcr.io/clemensv/real-time-sources-pegelonline-amqp:latest
 ```
 
-The bridge mints an Entra access token via `DefaultAzureCredential` and
-hands it to the broker through the AMQP CBS (Claims-Based Security) put-
-token control link — no SAS-key rotation required.
+The bridge mints an Entra ID access token via `DefaultAzureCredential` and hands it to the broker through the AMQP CBS (Claims-Based Security) put-token control link — no SAS-key rotation required.
 
 ### Azure Service Bus emulator / SAS-only namespaces (SAS-token CBS)
 
-For local development against the
-[Azure Service Bus emulator](https://learn.microsoft.com/azure/service-bus-messaging/test-locally-with-service-bus-emulator)
-or for Service Bus / Event Hubs namespaces still configured for SAS
-authentication (no Entra ID), use `AMQP_AUTH_MODE=sas`. The bridge
-mints a `SharedAccessSignature` token from the key + key-name and
-presents it via AMQP CBS (`type=servicebus.windows.net:sastoken`):
+For local development against the [Azure Service Bus emulator](https://learn.microsoft.com/azure/service-bus-messaging/test-locally-with-service-bus-emulator) or for Service Bus / Event Hubs namespaces still configured for SAS authentication (no Entra ID), use `AMQP_AUTH_MODE=sas`. The bridge mints a `SharedAccessSignature` token from the key and key-name and presents it via AMQP CBS (`type=servicebus.windows.net:sastoken`):
 
-```shell
-$ docker run --rm \
+```bash
+docker run --rm \
+    -v "$PWD/state:/state" \
+    -e STATE_FILE=/state/pegelonline.json \
     -e AMQP_HOST='servicebus-emulator' \
     -e AMQP_PORT=5672 \
     -e AMQP_ADDRESS='pegelonline' \
     -e AMQP_AUTH_MODE=sas \
     -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
-    -e AMQP_SAS_KEY='SAS_KEY_VALUE' \
+    -e AMQP_SAS_KEY='<sas-key>' \
     ghcr.io/clemensv/real-time-sources-pegelonline-amqp:latest
 ```
 
 For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 
-## Environment Variables
+## Environment variables
 
 ### Kafka image
 
@@ -240,7 +250,7 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 
 ## Deploying into Azure Container Instances
 
-Four one-click deployment templates are available:
+Five one-click deployment templates are available — one per realistic Azure target. All templates create a storage account and file share for persistent dedupe state.
 
 ### Kafka — bring your own Event Hub / Kafka
 
@@ -290,3 +300,9 @@ audience `https://servicebus.azure.net/`. Works the same way against an
 Event Hubs namespace by changing the audience and endpoint.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-with-servicebus.json)
+
+## Related
+
+- [README.md](README.md) — project overview, audience, and one-paragraph operational summary.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, per-transport routing, and example payloads.
+- [`xreg/pegelonline.xreg.json`](xreg/pegelonline.xreg.json) — the xRegistry manifest the producers and EVENTS.md are derived from.
