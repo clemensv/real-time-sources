@@ -20,7 +20,7 @@ class Station:
     Reference metadata for a BOM weather observation station identified by its WMO station number. Stations report half-hourly surface observations covering temperature, wind, pressure, rainfall, humidity, cloud, and visibility.
     
     Attributes:
-        station_wmo (int)
+        station_wmo (str)
         name (str)
         product_id (typing.Optional[str])
         state (typing.Optional[str])
@@ -30,7 +30,7 @@ class Station:
     """
     
     
-    station_wmo: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_wmo"))
+    station_wmo: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_wmo"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     product_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="product_id"))
     state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
@@ -163,11 +163,11 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_wmo=int(42),
-            name='itgptzkuvelvrsftnzvk',
-            product_id='bcrfcgsqjzizxinwrhrf',
-            state='sseepscixckrceqnovsx',
-            time_zone='ndjdoasayigqgekrdrev',
-            latitude=float(79.43119946953381),
-            longitude=float(20.611636816063662)
+            station_wmo='fcsvmaeohibaxgtqrdtn',
+            name='vzasuzmdamjatizekboo',
+            product_id='jkkztwcnaivpkfmtgzcz',
+            state='nekrbcnunrsqqgsuyktv',
+            time_zone='hylloddohhzqjwxzetnd',
+            latitude=float(59.676220515916036),
+            longitude=float(15.617979909679047)
         )

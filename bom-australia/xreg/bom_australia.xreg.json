@@ -356,7 +356,7 @@
                 ],
                 "properties": {
                   "station_wmo": {
-                    "type": "int32",
+                    "type": "string",
                     "description": "WMO station number assigned by the World Meteorological Organization, used as the stable identity for this station across all BOM products."
                   },
                   "name": {
@@ -412,7 +412,7 @@
                 ],
                 "properties": {
                   "station_wmo": {
-                    "type": "int32",
+                    "type": "string",
                     "description": "WMO station number identifying the reporting station."
                   },
                   "station_name": {

@@ -22,7 +22,7 @@ class WeatherObservation:
     Half-hourly surface weather observation from a BOM automatic weather station. Each record contains temperature, wind, pressure, humidity, rainfall, cloud, and visibility measurements as reported in the station's 72-hour observation product.
     
     Attributes:
-        station_wmo (int)
+        station_wmo (str)
         station_name (str)
         observation_time_utc (datetime.datetime)
         local_time (typing.Optional[str])
@@ -53,10 +53,11 @@ class WeatherObservation:
         swell_period (typing.Optional[float])
         latitude (typing.Optional[float])
         longitude (typing.Optional[float])
+        state (typing.Optional[str])
     """
     
     
-    station_wmo: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_wmo"))
+    station_wmo: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_wmo"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
     observation_time_utc: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observation_time_utc", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     local_time: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="local_time"))
@@ -87,6 +88,7 @@ class WeatherObservation:
     swell_period: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="swell_period"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherObservation':
@@ -213,35 +215,36 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_wmo=int(22),
-            station_name='nzobyirbkziltrenmwky',
+            station_wmo='kkqcjhzliddymmoyzgnx',
+            station_name='jpwtvmcmkphxrrbkugmy',
             observation_time_utc=datetime.datetime.now(datetime.timezone.utc),
-            local_time='ulcsyinepyuuucjelocq',
-            air_temp=float(99.6140392688212),
-            apparent_temp=float(65.08083177550346),
-            dewpt=float(17.562947990819012),
-            rel_hum=int(61),
-            delta_t=float(50.65213978988275),
-            wind_dir='mlckctxqdolkdqaouowd',
-            wind_spd_kmh=int(80),
-            wind_spd_kt=int(62),
-            gust_kmh=int(27),
-            gust_kt=int(34),
-            press=float(59.993338368605976),
-            press_qnh=float(69.48699744387412),
-            press_msl=float(50.27226085650533),
-            press_tend='khvcklmfgvvkbnhbwbyd',
-            rain_trace='rirbmwywzueadboirwrf',
-            cloud='irtijjqcindvfxwwzegc',
-            cloud_oktas=int(92),
-            cloud_base_m=int(48),
-            cloud_type='mochhyzqztwojwokgeyt',
-            vis_km='qwwepifgakfesbqdzyjg',
-            weather='zthgtfwkqhufmpcwspff',
-            sea_state='xytiqlqdapzjhrocnvcj',
-            swell_dir_worded='uhohcpxukcemktkrjwgn',
-            swell_height=float(30.81825222512936),
-            swell_period=float(32.97194492281446),
-            latitude=float(77.91668852438734),
-            longitude=float(28.346978722955985)
+            local_time='msagrdiirhhicydutnxn',
+            air_temp=float(49.348356117682236),
+            apparent_temp=float(29.3540759083455),
+            dewpt=float(93.30327453217582),
+            rel_hum=int(51),
+            delta_t=float(30.55386768571654),
+            wind_dir='ofamtlujboadovkyslhv',
+            wind_spd_kmh=int(87),
+            wind_spd_kt=int(91),
+            gust_kmh=int(84),
+            gust_kt=int(42),
+            press=float(47.76887495749372),
+            press_qnh=float(76.29758243512624),
+            press_msl=float(74.86539740584166),
+            press_tend='pwrmivwtjaflcwaztimh',
+            rain_trace='fuzqfeymzvsgcgxpbtlg',
+            cloud='vclvcypqbnsoohndgvos',
+            cloud_oktas=int(9),
+            cloud_base_m=int(16),
+            cloud_type='ituofvllazdbkkbfedvg',
+            vis_km='wccfhjxzrlwahbqtxexu',
+            weather='lktyoiazykmccdumblxd',
+            sea_state='khljwgumzwkgmmfokqiy',
+            swell_dir_worded='mwhozdohxfiklchysrii',
+            swell_height=float(64.61236652806247),
+            swell_period=float(89.13179868228073),
+            latitude=float(76.21500072774592),
+            longitude=float(71.37388145326706),
+            state='miikhbvotvgicjzrreas'
         )

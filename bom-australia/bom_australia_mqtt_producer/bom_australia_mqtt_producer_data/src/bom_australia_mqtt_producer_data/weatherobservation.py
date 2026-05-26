@@ -22,7 +22,7 @@ class WeatherObservation:
     Half-hourly surface weather observation from a BOM automatic weather station. Each record contains temperature, wind, pressure, humidity, rainfall, cloud, and visibility measurements as reported in the station's 72-hour observation product.
     
     Attributes:
-        station_wmo (int)
+        station_wmo (str)
         station_name (str)
         observation_time_utc (datetime.datetime)
         local_time (typing.Optional[str])
@@ -57,7 +57,7 @@ class WeatherObservation:
     """
     
     
-    station_wmo: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_wmo"))
+    station_wmo: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_wmo"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
     observation_time_utc: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observation_time_utc", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     local_time: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="local_time"))
@@ -215,36 +215,36 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_wmo=int(97),
-            station_name='dlopmkddexkyfbghcprg',
+            station_wmo='duvxyjfespadubitcuuy',
+            station_name='ccfrajxvaevvijnhursq',
             observation_time_utc=datetime.datetime.now(datetime.timezone.utc),
-            local_time='gwphodzgufydjfbwlhux',
-            air_temp=float(41.228991840153526),
-            apparent_temp=float(28.106007318275715),
-            dewpt=float(32.118615757165244),
-            rel_hum=int(51),
-            delta_t=float(28.286836618034485),
-            wind_dir='qiqjtkgmtaphmvgqvhzt',
-            wind_spd_kmh=int(37),
-            wind_spd_kt=int(35),
-            gust_kmh=int(37),
-            gust_kt=int(71),
-            press=float(83.65500197885994),
-            press_qnh=float(58.0922794919467),
-            press_msl=float(81.18887669746093),
-            press_tend='uwveqktxouqpckiohqyl',
-            rain_trace='urtzcwybkisymxbpiklh',
-            cloud='hkhqtbqrnzxhtarkxvhn',
-            cloud_oktas=int(54),
-            cloud_base_m=int(43),
-            cloud_type='zjlglqnhlmoqmiamjsrw',
-            vis_km='iilyfpmdkgvjiwxdcjxh',
-            weather='aqyfpidpwuxxgolsytro',
-            sea_state='bqqnudcqpjqfbqbagjjf',
-            swell_dir_worded='eewbmgqpafptlmdfbouw',
-            swell_height=float(17.627344971236138),
-            swell_period=float(54.06574226716185),
-            latitude=float(99.69660202133379),
-            longitude=float(97.51817158458965),
-            state='hfyobhdigygllbrobrai'
+            local_time='fzyftamwaxyqdikqdrux',
+            air_temp=float(44.82998753325836),
+            apparent_temp=float(26.94189572065816),
+            dewpt=float(99.86492438437983),
+            rel_hum=int(65),
+            delta_t=float(69.89135177717478),
+            wind_dir='xpcehqyzrklxletezomq',
+            wind_spd_kmh=int(5),
+            wind_spd_kt=int(42),
+            gust_kmh=int(93),
+            gust_kt=int(38),
+            press=float(7.424884476187977),
+            press_qnh=float(54.44875775072203),
+            press_msl=float(84.96496453155895),
+            press_tend='obqcyivacnhnqhlzfbdv',
+            rain_trace='otavysovuzpoichxqmmk',
+            cloud='chbahvsbafrvfjfckjij',
+            cloud_oktas=int(15),
+            cloud_base_m=int(62),
+            cloud_type='dzvkedgynmwmrsyglzwi',
+            vis_km='tfzfcyamqvkkyiudefut',
+            weather='mssmtodszawmdxzbifhp',
+            sea_state='vvtvvtdvxhuvwbbiykds',
+            swell_dir_worded='rrlblxywwirjgtgwwwnx',
+            swell_height=float(98.13741804002419),
+            swell_period=float(28.108454791279957),
+            latitude=float(11.585198124080897),
+            longitude=float(96.75929586623894),
+            state='rulqulnxplfydrfetwiu'
         )

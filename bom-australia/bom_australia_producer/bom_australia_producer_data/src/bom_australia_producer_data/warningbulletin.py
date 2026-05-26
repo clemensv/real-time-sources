@@ -31,6 +31,8 @@ class WarningBulletin:
         issued_local_time_text (typing.Optional[str])
         warning_type (typing.Optional[str])
         affected_area_text (typing.Optional[str])
+        severity (typing.Optional[str])
+        state (typing.Optional[str])
     """
     
     
@@ -43,6 +45,8 @@ class WarningBulletin:
     issued_local_time_text: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="issued_local_time_text"))
     warning_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="warning_type"))
     affected_area_text: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="affected_area_text"))
+    severity: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="severity"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WarningBulletin':
@@ -169,13 +173,15 @@ class WarningBulletin:
             An instance of the dataclass.
         """
         return cls(
-            warning_id='zvvcrzfdskpvdlbzgiaa',
-            warning_url='xgpmmqtxcpdqycorkyzh',
-            feed_url='phcfipwbgxpsdahgylwb',
-            feed_title='szdmrqrkujfnwdobfwcc',
-            title='hufnefvgthmamwncjlzw',
+            warning_id='fkkqjzmgeogftwcizdvd',
+            warning_url='nzykpdgvpxpowbafcxyo',
+            feed_url='sdfcxsuivuucogjvvdfq',
+            feed_title='tkmtxrlfomrkpaxzjdam',
+            title='ubnyoktodrzssvlmwnhg',
             published_at=datetime.datetime.now(datetime.timezone.utc),
-            issued_local_time_text='ghnyzsufmlcabyqtmzxh',
-            warning_type='bhouiconyiwinvadizqj',
-            affected_area_text='fzyaqtrsarpxqvqnwbhm'
+            issued_local_time_text='eiurnldlgphpgkcquyiv',
+            warning_type='dxyljmiogspvqifdszql',
+            affected_area_text='tgjhsmzndvzhekyldhaa',
+            severity='lasgqsgqygnzskrluggg',
+            state='ltigouvprqywoopjhzuf'
         )
