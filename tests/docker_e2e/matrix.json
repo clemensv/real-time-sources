@@ -1016,7 +1016,6 @@
       "module": "waterinfo_vmm_amqp"
     },
     {
-    {
       "dir": "noaa-goes",
       "image": "noaa-goes-mqtt",
       "file": "Dockerfile.mqtt",
