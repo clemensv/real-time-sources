@@ -33,12 +33,15 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from energy_charts_producer_kafka_producer.producer import InfoEnergyChartsEventProducer
+from energy_charts_producer_kafka_producer.producer import InfoEnergyChartsMqttEventProducer
+from energy_charts_producer_kafka_producer.producer import InfoEnergyChartsAmqpEventProducer
 
 # imports for the data classes for each event
 
 from energy_charts_producer_data.publicpower import PublicPower
 from energy_charts_producer_data.spotprice import SpotPrice
 from energy_charts_producer_data.gridsignal import GridSignal
+from energy_charts_producer_data.info import Info
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -81,6 +84,94 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'info.energy_charts.GridSignal' event to Kafka topic.
     await info_energy_charts_event_producer.send_info_energy_charts_grid_signal(_country = 'TODO: replace me', data = _grid_signal)
     print(f"Sent 'info.energy_charts.GridSignal' event: {_grid_signal.to_json()}")
+
+    # ---- info.energy_charts.Info ----
+    # TODO: Supply event data for the info.energy_charts.Info event
+    _info = Info()
+
+    # sends the 'info.energy_charts.Info' event to Kafka topic.
+    await info_energy_charts_event_producer.send_info_energy_charts_info(_country = 'TODO: replace me', data = _info)
+    print(f"Sent 'info.energy_charts.Info' event: {_info.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        info_energy_charts_mqtt_event_producer = InfoEnergyChartsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        info_energy_charts_mqtt_event_producer = InfoEnergyChartsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- info.energy_charts.mqtt.PublicPower ----
+    # TODO: Supply event data for the info.energy_charts.mqtt.PublicPower event
+    _public_power = PublicPower()
+
+    # sends the 'info.energy_charts.mqtt.PublicPower' event to Kafka topic.
+    await info_energy_charts_mqtt_event_producer.send_info_energy_charts_mqtt_public_power(_country = 'TODO: replace me', data = _public_power)
+    print(f"Sent 'info.energy_charts.mqtt.PublicPower' event: {_public_power.to_json()}")
+
+    # ---- info.energy_charts.mqtt.SpotPrice ----
+    # TODO: Supply event data for the info.energy_charts.mqtt.SpotPrice event
+    _spot_price = SpotPrice()
+
+    # sends the 'info.energy_charts.mqtt.SpotPrice' event to Kafka topic.
+    await info_energy_charts_mqtt_event_producer.send_info_energy_charts_mqtt_spot_price(_country = 'TODO: replace me', data = _spot_price)
+    print(f"Sent 'info.energy_charts.mqtt.SpotPrice' event: {_spot_price.to_json()}")
+
+    # ---- info.energy_charts.mqtt.GridSignal ----
+    # TODO: Supply event data for the info.energy_charts.mqtt.GridSignal event
+    _grid_signal = GridSignal()
+
+    # sends the 'info.energy_charts.mqtt.GridSignal' event to Kafka topic.
+    await info_energy_charts_mqtt_event_producer.send_info_energy_charts_mqtt_grid_signal(_country = 'TODO: replace me', data = _grid_signal)
+    print(f"Sent 'info.energy_charts.mqtt.GridSignal' event: {_grid_signal.to_json()}")
+
+    # ---- info.energy_charts.mqtt.Info ----
+    # TODO: Supply event data for the info.energy_charts.mqtt.Info event
+    _info = Info()
+
+    # sends the 'info.energy_charts.mqtt.Info' event to Kafka topic.
+    await info_energy_charts_mqtt_event_producer.send_info_energy_charts_mqtt_info(_country = 'TODO: replace me', data = _info)
+    print(f"Sent 'info.energy_charts.mqtt.Info' event: {_info.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        info_energy_charts_amqp_event_producer = InfoEnergyChartsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        info_energy_charts_amqp_event_producer = InfoEnergyChartsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- info.energy_charts.amqp.PublicPower ----
+    # TODO: Supply event data for the info.energy_charts.amqp.PublicPower event
+    _public_power = PublicPower()
+
+    # sends the 'info.energy_charts.amqp.PublicPower' event to Kafka topic.
+    await info_energy_charts_amqp_event_producer.send_info_energy_charts_amqp_public_power(_country = 'TODO: replace me', data = _public_power)
+    print(f"Sent 'info.energy_charts.amqp.PublicPower' event: {_public_power.to_json()}")
+
+    # ---- info.energy_charts.amqp.SpotPrice ----
+    # TODO: Supply event data for the info.energy_charts.amqp.SpotPrice event
+    _spot_price = SpotPrice()
+
+    # sends the 'info.energy_charts.amqp.SpotPrice' event to Kafka topic.
+    await info_energy_charts_amqp_event_producer.send_info_energy_charts_amqp_spot_price(_country = 'TODO: replace me', data = _spot_price)
+    print(f"Sent 'info.energy_charts.amqp.SpotPrice' event: {_spot_price.to_json()}")
+
+    # ---- info.energy_charts.amqp.GridSignal ----
+    # TODO: Supply event data for the info.energy_charts.amqp.GridSignal event
+    _grid_signal = GridSignal()
+
+    # sends the 'info.energy_charts.amqp.GridSignal' event to Kafka topic.
+    await info_energy_charts_amqp_event_producer.send_info_energy_charts_amqp_grid_signal(_country = 'TODO: replace me', data = _grid_signal)
+    print(f"Sent 'info.energy_charts.amqp.GridSignal' event: {_grid_signal.to_json()}")
+
+    # ---- info.energy_charts.amqp.Info ----
+    # TODO: Supply event data for the info.energy_charts.amqp.Info event
+    _info = Info()
+
+    # sends the 'info.energy_charts.amqp.Info' event to Kafka topic.
+    await info_energy_charts_amqp_event_producer.send_info_energy_charts_amqp_info(_country = 'TODO: replace me', data = _info)
+    print(f"Sent 'info.energy_charts.amqp.Info' event: {_info.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

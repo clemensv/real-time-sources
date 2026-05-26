@@ -57,3 +57,10 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Feurdep-radiation%2Fazure-template-with-eventhub.json)
+
+
+## MQTT and AMQP companion feeders
+
+This source now ships separate Kafka, MQTT, and AMQP containers. The MQTT companion publishes binary-mode CloudEvents to `radiation/intl/eurdep/eurdep-radiation/{country}/{station_id}/{event}` (`info`, `dose-rate`) with retained QoS 1 messages. The AMQP companion publishes the same CloudEvents to AMQP 1.0 brokers or Azure Service Bus using the station subject and a `country` application property.
+
+Images: `ghcr.io/clemensv/real-time-sources-eurdep-radiation-mqtt:latest`, `ghcr.io/clemensv/real-time-sources-eurdep-radiation-amqp:latest`. Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`, and `infra/azure-template-amqp.json`.

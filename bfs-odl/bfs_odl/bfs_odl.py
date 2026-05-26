@@ -31,6 +31,16 @@ WFS_PARAMS_BASE = {
     "outputFormat": "application/json",
 }
 
+_AGS_TO_CANTON = {
+    "01": "schleswig-holstein", "02": "hamburg", "03": "niedersachsen", "04": "bremen",
+    "05": "nordrhein-westfalen", "06": "hessen", "07": "rheinland-pfalz", "08": "baden-wuerttemberg",
+    "09": "bayern", "10": "saarland", "11": "berlin", "12": "brandenburg",
+    "13": "mecklenburg-vorpommern", "14": "sachsen", "15": "sachsen-anhalt", "16": "thueringen",
+}
+
+def canton_from_station_id(station_id: str) -> str:
+    return _AGS_TO_CANTON.get((station_id or "")[:2], "unknown")
+
 
 def _load_state(state_file: str) -> dict:
     """Load persisted dedup state from a JSON file."""
@@ -84,6 +94,7 @@ class BfsOdlAPI:
         coords = geom.get("coordinates", [None, None])
         return Station(
             station_id=props["kenn"],
+            canton=canton_from_station_id(props.get("kenn", "")),
             station_code=props.get("id", ""),
             name=props.get("name", ""),
             postal_code=props.get("plz", ""),
@@ -101,6 +112,7 @@ class BfsOdlAPI:
         props = feature["properties"]
         return DoseRateMeasurement(
             station_id=props["kenn"],
+            canton=canton_from_station_id(props.get("kenn", "")),
             start_measure=props.get("start_measure", ""),
             end_measure=props.get("end_measure", ""),
             value=props.get("value"),

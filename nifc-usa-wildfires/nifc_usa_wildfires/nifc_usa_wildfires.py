@@ -55,6 +55,22 @@ def build_query_url(where_clause: str = "1=1", result_offset: int = 0,
     )
 
 
+def _topic_state(poo_state: Optional[str]) -> str:
+    text = (poo_state or "unknown").strip().lower()
+    if text.startswith("us-"):
+        text = text[3:]
+    return text or "unknown"
+
+def _incident_status(containment: Optional[str], control: Optional[str], out: Optional[str]) -> str:
+    if out:
+        return "out"
+    if control:
+        return "controlled"
+    if containment:
+        return "contained"
+    return "active"
+
+
 class NIFCWildfirePoller:
     """Polls the NIFC ArcGIS Feature Service for active wildfire incidents."""
 
@@ -126,8 +142,14 @@ class NIFCWildfirePoller:
         if modified_on_datetime is None:
             modified_on_datetime = datetime.now(timezone.utc).isoformat()
 
+        containment_datetime = epoch_ms_to_iso(props.get("ContainmentDateTime"))
+        control_datetime = epoch_ms_to_iso(props.get("ControlDateTime"))
+        fire_out_datetime = epoch_ms_to_iso(props.get("FireOutDateTime"))
+
         return WildfireIncident(
             irwin_id=irwin_id,
+            state=_topic_state(props.get("POOState")),
+            status=_incident_status(containment_datetime, control_datetime, fire_out_datetime),
             incident_name=incident_name,
             unique_fire_identifier=props.get("UniqueFireIdentifier"),
             incident_type_category=props.get("IncidentTypeCategory"),
@@ -151,9 +173,9 @@ class NIFCWildfirePoller:
             other_structures_destroyed=props.get("OtherStructuresDestroyed"),
             injuries=props.get("Injuries"),
             fatalities=props.get("Fatalities"),
-            containment_datetime=epoch_ms_to_iso(props.get("ContainmentDateTime")),
-            control_datetime=epoch_ms_to_iso(props.get("ControlDateTime")),
-            fire_out_datetime=epoch_ms_to_iso(props.get("FireOutDateTime")),
+            containment_datetime=containment_datetime,
+            control_datetime=control_datetime,
+            fire_out_datetime=fire_out_datetime,
             final_acres=props.get("FinalAcres"),
             modified_on_datetime=modified_on_datetime,
         )

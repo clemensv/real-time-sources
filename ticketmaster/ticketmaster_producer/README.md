@@ -1,6 +1,6 @@
 
 
-# Ticketmaster-producer Kafka Producer# Ticketmaster-producer Event Dispatcher for Apache Kafka
+# Ticketmaster_producer Kafka Producer# Ticketmaster_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -17,7 +17,15 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - TicketmasterEventsEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    TicketmasterReferenceEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    TicketmasterReferenceEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    TicketmasterEventsMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    TicketmasterEventsAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    TicketmasterReferenceMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    TicketmasterReferenceAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +53,22 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - TicketmasterReferenceProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- TicketmasterEventsMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- TicketmasterEventsAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- TicketmasterReferenceMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- TicketmasterReferenceAmqpProducersolution for event-driven applications.
 
 
 
@@ -92,7 +116,7 @@ Initializes the dispatcher.
 
 ```python
 
-from ticketmaster-producer import TicketmasterEventsProducer```python
+from ticketmaster_producer import TicketmasterEventsProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -230,6 +254,154 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 ticketmaster_reference_dispatcher.ticketmaster_events_event_async = ticketmaster_events_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_events_event_async = ticketmaster_events_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_events_event_async = ticketmaster_events_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_events_event_async = ticketmaster_events_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_events_event_async = ticketmaster_events_event_event
 
 **Parameters:**```
 
@@ -392,7 +564,7 @@ Initializes the dispatcher.
 
 ```python
 
-from ticketmaster-producer import TicketmasterEventsProducer```python
+from ticketmaster_producer import TicketmasterEventsProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -535,6 +707,154 @@ ticketmaster_reference_dispatcher.ticketmaster_reference_venue_async = ticketmas
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_reference_venue_async = ticketmaster_reference_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_reference_venue_async = ticketmaster_reference_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_reference_venue_async = ticketmaster_reference_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_reference_venue_async = ticketmaster_reference_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -633,6 +953,158 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 ticketmaster_reference_dispatcher.ticketmaster_reference_attraction_async = ticketmaster_reference_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Attraction) ->
+None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_reference_attraction_async = ticketmaster_reference_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Attraction) ->
+None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_reference_attraction_async = ticketmaster_reference_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Attraction) ->
+None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_reference_attraction_async = ticketmaster_reference_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Attraction) ->
+None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_reference_attraction_async = ticketmaster_reference_attraction_event
 
 **Parameters:**```
 
@@ -737,6 +1209,410 @@ responsible for calling the appropriate handler function when a message is recei
 
 ticketmaster_reference_dispatcher.ticketmaster_reference_classification_async =
 ticketmaster_reference_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_reference_classification_async =
+ticketmaster_reference_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_reference_classification_async =
+ticketmaster_reference_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_reference_classification_async =
+ticketmaster_reference_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_reference_classification_async =
+ticketmaster_reference_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ticketmaster_reference_info_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ticketmaster_reference_info_async:  Callable[[ConsumerRecord, CloudEvent, Info],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Ticketmaster.Reference.Info`: Retained reference information for MQTT/AMQP topic
+discovery.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Events` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_dispatcher.ticketmaster_reference_info_async = ticketmaster_reference_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Reference` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_dispatcher.ticketmaster_reference_info_async = ticketmaster_reference_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_reference_info_async = ticketmaster_reference_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_reference_info_async = ticketmaster_reference_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_reference_info_async = ticketmaster_reference_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_reference_info_async = ticketmaster_reference_info_event
 
 **Parameters:**```
 
@@ -1056,6 +1932,4069 @@ await producer.send_ticketmaster_reference_classification_batch(```
         Classification(...),
 
         Classification(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_ticketmaster_reference_info`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ticketmaster_reference_info(
+
+    self,##### `_process_event`
+
+    data: Info,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Ticketmaster.Reference.Info` message. Retained reference information for MQTT/AMQP topic discovery.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Info`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ticketmaster_reference_info(
+
+    data=Info(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Ticketmaster.Reference.Info` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ticketmaster_reference_info_batch(```
+
+    messages=[
+
+        Info(...),Initializes the runner with a Kafka consumer.
+
+        Info(...),
+
+        Info(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### TicketmasterEventsMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`TicketmasterEventsMqttEventDispatcher` handles events for the Ticketmaster.Events.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ticketmaster_producer import TicketmasterEventsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = TicketmasterEventsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_ticketmaster_events_event(```python
+
+    data=Event(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The TicketmasterEventsMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = TicketmasterEventsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ticketmaster_events_mqtt_event_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ticketmaster_events_mqtt_event_async:  Callable[[ConsumerRecord, CloudEvent, Event],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Ticketmaster.Events.mqtt.Event`: A Ticketmaster event representing a concert, sports
+match, theater performance, or other live public event. Emitted when a new event is discovered or when an existing
+event's status or schedule changes.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Events` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_mqtt_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_dispatcher.ticketmaster_events_mqtt_event_async = ticketmaster_events_mqtt_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Reference` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_mqtt_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_dispatcher.ticketmaster_events_mqtt_event_async = ticketmaster_events_mqtt_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_mqtt_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_events_mqtt_event_async = ticketmaster_events_mqtt_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_mqtt_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_events_mqtt_event_async = ticketmaster_events_mqtt_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_mqtt_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_events_mqtt_event_async = ticketmaster_events_mqtt_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_mqtt_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_events_mqtt_event_async = ticketmaster_events_mqtt_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_ticketmaster_events_mqtt_event`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ticketmaster_events_mqtt_event(
+
+    self,##### `_process_event`
+
+    data: Event,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Ticketmaster.Events.mqtt.Event` message. A Ticketmaster event representing a concert, sports match,
+theater performance, or other live public event. Emitted when a new event is discovered or when an existing event's
+status or schedule changes.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Event`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ticketmaster_events_mqtt_event(
+
+    data=Event(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Ticketmaster.Events.mqtt.Event` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ticketmaster_events_mqtt_event_batch(```
+
+    messages=[
+
+        Event(...),Initializes the runner with a Kafka consumer.
+
+        Event(...),
+
+        Event(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### TicketmasterEventsAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`TicketmasterEventsAmqpEventDispatcher` handles events for the Ticketmaster.Events.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ticketmaster_producer import TicketmasterEventsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = TicketmasterEventsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_ticketmaster_events_event(```python
+
+    data=Event(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The TicketmasterEventsAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = TicketmasterEventsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ticketmaster_events_amqp_event_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ticketmaster_events_amqp_event_async:  Callable[[ConsumerRecord, CloudEvent, Event],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Ticketmaster.Events.amqp.Event`: A Ticketmaster event representing a concert, sports
+match, theater performance, or other live public event. Emitted when a new event is discovered or when an existing
+event's status or schedule changes.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Events` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_amqp_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_dispatcher.ticketmaster_events_amqp_event_async = ticketmaster_events_amqp_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Reference` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_amqp_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_dispatcher.ticketmaster_events_amqp_event_async = ticketmaster_events_amqp_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_amqp_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_events_amqp_event_async = ticketmaster_events_amqp_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_amqp_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_events_amqp_event_async = ticketmaster_events_amqp_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_amqp_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_events_amqp_event_async = ticketmaster_events_amqp_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Event`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_events_amqp_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_events_amqp_event_async = ticketmaster_events_amqp_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_ticketmaster_events_amqp_event`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ticketmaster_events_amqp_event(
+
+    self,##### `_process_event`
+
+    data: Event,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Ticketmaster.Events.amqp.Event` message. A Ticketmaster event representing a concert, sports match,
+theater performance, or other live public event. Emitted when a new event is discovered or when an existing event's
+status or schedule changes.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Event`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ticketmaster_events_amqp_event(
+
+    data=Event(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Ticketmaster.Events.amqp.Event` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ticketmaster_events_amqp_event_batch(```
+
+    messages=[
+
+        Event(...),Initializes the runner with a Kafka consumer.
+
+        Event(...),
+
+        Event(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### TicketmasterReferenceMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`TicketmasterReferenceMqttEventDispatcher` handles events for the Ticketmaster.Reference.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ticketmaster_producer import TicketmasterEventsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = TicketmasterEventsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_ticketmaster_events_event(```python
+
+    data=Event(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The TicketmasterReferenceMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = TicketmasterEventsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ticketmaster_reference_mqtt_venue_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ticketmaster_reference_mqtt_venue_async:  Callable[[ConsumerRecord, CloudEvent, Venue],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Ticketmaster.Reference.mqtt.Venue`: Reference data for a Ticketmaster venue. Emitted at
+bridge startup and refreshed periodically. Carries the stable venue identifier, location, address, timezone, and
+capacity information.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Events` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_dispatcher.ticketmaster_reference_mqtt_venue_async = ticketmaster_reference_mqtt_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Reference` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_dispatcher.ticketmaster_reference_mqtt_venue_async = ticketmaster_reference_mqtt_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_reference_mqtt_venue_async = ticketmaster_reference_mqtt_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_reference_mqtt_venue_async = ticketmaster_reference_mqtt_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_reference_mqtt_venue_async = ticketmaster_reference_mqtt_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_reference_mqtt_venue_async = ticketmaster_reference_mqtt_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ticketmaster_reference_mqtt_attraction_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ticketmaster_reference_mqtt_attraction_async:  Callable[[ConsumerRecord, CloudEvent,
+Attraction], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Ticketmaster.Reference.mqtt.Attraction`: Reference data for a Ticketmaster attraction
+(performer, artist, sports team, or production). Emitted at bridge startup and refreshed periodically. Carries stable
+attraction identifier, name, and classification.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Events` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Attraction) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_dispatcher.ticketmaster_reference_mqtt_attraction_async =
+ticketmaster_reference_mqtt_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Reference` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Attraction) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_dispatcher.ticketmaster_reference_mqtt_attraction_async =
+ticketmaster_reference_mqtt_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Attraction) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_reference_mqtt_attraction_async =
+ticketmaster_reference_mqtt_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Attraction) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_reference_mqtt_attraction_async =
+ticketmaster_reference_mqtt_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Attraction) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_reference_mqtt_attraction_async =
+ticketmaster_reference_mqtt_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Attraction) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_reference_mqtt_attraction_async =
+ticketmaster_reference_mqtt_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ticketmaster_reference_mqtt_classification_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ticketmaster_reference_mqtt_classification_async:  Callable[[ConsumerRecord,
+CloudEvent, Classification], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Ticketmaster.Reference.mqtt.Classification`: Reference data for a Ticketmaster
+classification segment (e.g. Music, Sports, Arts & Theatre). Emitted at bridge startup and refreshed daily. Carries the
+stable segment identifier, name, and the primary genre and subgenre under that segment.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Events` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_dispatcher.ticketmaster_reference_mqtt_classification_async =
+ticketmaster_reference_mqtt_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Reference` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_dispatcher.ticketmaster_reference_mqtt_classification_async =
+ticketmaster_reference_mqtt_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_reference_mqtt_classification_async =
+ticketmaster_reference_mqtt_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_reference_mqtt_classification_async =
+ticketmaster_reference_mqtt_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_reference_mqtt_classification_async =
+ticketmaster_reference_mqtt_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_reference_mqtt_classification_async =
+ticketmaster_reference_mqtt_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ticketmaster_reference_mqtt_info_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ticketmaster_reference_mqtt_info_async:  Callable[[ConsumerRecord, CloudEvent, Info],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Ticketmaster.Reference.mqtt.Info`: Retained reference information for MQTT/AMQP topic
+discovery.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Events` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_dispatcher.ticketmaster_reference_mqtt_info_async = ticketmaster_reference_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Reference` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_dispatcher.ticketmaster_reference_mqtt_info_async = ticketmaster_reference_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_reference_mqtt_info_async = ticketmaster_reference_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_reference_mqtt_info_async = ticketmaster_reference_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_reference_mqtt_info_async = ticketmaster_reference_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_reference_mqtt_info_async = ticketmaster_reference_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_ticketmaster_reference_mqtt_venue`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ticketmaster_reference_mqtt_venue(
+
+    self,##### `_process_event`
+
+    data: Venue,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Ticketmaster.Reference.mqtt.Venue` message. Reference data for a Ticketmaster venue. Emitted at bridge
+startup and refreshed periodically. Carries the stable venue identifier, location, address, timezone, and capacity
+information.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Venue`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ticketmaster_reference_mqtt_venue(
+
+    data=Venue(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Ticketmaster.Reference.mqtt.Venue` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ticketmaster_reference_mqtt_venue_batch(```
+
+    messages=[
+
+        Venue(...),Initializes the runner with a Kafka consumer.
+
+        Venue(...),
+
+        Venue(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_ticketmaster_reference_mqtt_attraction`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ticketmaster_reference_mqtt_attraction(
+
+    self,##### `_process_event`
+
+    data: Attraction,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Ticketmaster.Reference.mqtt.Attraction` message. Reference data for a Ticketmaster attraction (performer,
+artist, sports team, or production). Emitted at bridge startup and refreshed periodically. Carries stable attraction
+identifier, name, and classification.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Attraction`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ticketmaster_reference_mqtt_attraction(
+
+    data=Attraction(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Ticketmaster.Reference.mqtt.Attraction` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ticketmaster_reference_mqtt_attraction_batch(```
+
+    messages=[
+
+        Attraction(...),Initializes the runner with a Kafka consumer.
+
+        Attraction(...),
+
+        Attraction(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_ticketmaster_reference_mqtt_classification`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ticketmaster_reference_mqtt_classification(
+
+    self,##### `_process_event`
+
+    data: Classification,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Ticketmaster.Reference.mqtt.Classification` message. Reference data for a Ticketmaster classification
+segment (e.g. Music, Sports, Arts & Theatre). Emitted at bridge startup and refreshed daily. Carries the stable segment
+identifier, name, and the primary genre and subgenre under that segment.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Classification`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ticketmaster_reference_mqtt_classification(
+
+    data=Classification(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Ticketmaster.Reference.mqtt.Classification` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ticketmaster_reference_mqtt_classification_batch(```
+
+    messages=[
+
+        Classification(...),Initializes the runner with a Kafka consumer.
+
+        Classification(...),
+
+        Classification(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_ticketmaster_reference_mqtt_info`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ticketmaster_reference_mqtt_info(
+
+    self,##### `_process_event`
+
+    data: Info,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Ticketmaster.Reference.mqtt.Info` message. Retained reference information for MQTT/AMQP topic
+discovery.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Info`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ticketmaster_reference_mqtt_info(
+
+    data=Info(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Ticketmaster.Reference.mqtt.Info` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ticketmaster_reference_mqtt_info_batch(```
+
+    messages=[
+
+        Info(...),Initializes the runner with a Kafka consumer.
+
+        Info(...),
+
+        Info(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### TicketmasterReferenceAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`TicketmasterReferenceAmqpEventDispatcher` handles events for the Ticketmaster.Reference.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ticketmaster_producer import TicketmasterEventsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = TicketmasterEventsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_ticketmaster_events_event(```python
+
+    data=Event(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The TicketmasterReferenceAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = TicketmasterEventsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ticketmaster_reference_amqp_venue_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ticketmaster_reference_amqp_venue_async:  Callable[[ConsumerRecord, CloudEvent, Venue],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Ticketmaster.Reference.amqp.Venue`: Reference data for a Ticketmaster venue. Emitted at
+bridge startup and refreshed periodically. Carries the stable venue identifier, location, address, timezone, and
+capacity information.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Events` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_dispatcher.ticketmaster_reference_amqp_venue_async = ticketmaster_reference_amqp_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Reference` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_dispatcher.ticketmaster_reference_amqp_venue_async = ticketmaster_reference_amqp_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_reference_amqp_venue_async = ticketmaster_reference_amqp_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_reference_amqp_venue_async = ticketmaster_reference_amqp_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_reference_amqp_venue_async = ticketmaster_reference_amqp_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Venue`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_venue_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Venue) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_reference_amqp_venue_async = ticketmaster_reference_amqp_venue_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ticketmaster_reference_amqp_attraction_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ticketmaster_reference_amqp_attraction_async:  Callable[[ConsumerRecord, CloudEvent,
+Attraction], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Ticketmaster.Reference.amqp.Attraction`: Reference data for a Ticketmaster attraction
+(performer, artist, sports team, or production). Emitted at bridge startup and refreshed periodically. Carries stable
+attraction identifier, name, and classification.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Events` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Attraction) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_dispatcher.ticketmaster_reference_amqp_attraction_async =
+ticketmaster_reference_amqp_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Reference` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Attraction) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_dispatcher.ticketmaster_reference_amqp_attraction_async =
+ticketmaster_reference_amqp_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Attraction) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_reference_amqp_attraction_async =
+ticketmaster_reference_amqp_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Attraction) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_reference_amqp_attraction_async =
+ticketmaster_reference_amqp_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Attraction) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_reference_amqp_attraction_async =
+ticketmaster_reference_amqp_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Attraction`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_attraction_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Attraction) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_reference_amqp_attraction_async =
+ticketmaster_reference_amqp_attraction_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ticketmaster_reference_amqp_classification_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ticketmaster_reference_amqp_classification_async:  Callable[[ConsumerRecord,
+CloudEvent, Classification], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Ticketmaster.Reference.amqp.Classification`: Reference data for a Ticketmaster
+classification segment (e.g. Music, Sports, Arts & Theatre). Emitted at bridge startup and refreshed daily. Carries the
+stable segment identifier, name, and the primary genre and subgenre under that segment.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Events` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_dispatcher.ticketmaster_reference_amqp_classification_async =
+ticketmaster_reference_amqp_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Reference` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_dispatcher.ticketmaster_reference_amqp_classification_async =
+ticketmaster_reference_amqp_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_reference_amqp_classification_async =
+ticketmaster_reference_amqp_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_reference_amqp_classification_async =
+ticketmaster_reference_amqp_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_reference_amqp_classification_async =
+ticketmaster_reference_amqp_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Classification`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_classification_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+Classification) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_reference_amqp_classification_async =
+ticketmaster_reference_amqp_classification_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `ticketmaster_reference_amqp_info_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'ticketmaster_reference_amqp_info_async:  Callable[[ConsumerRecord, CloudEvent, Info],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Ticketmaster.Reference.amqp.Info`: Retained reference information for MQTT/AMQP topic
+discovery.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Events` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_dispatcher.ticketmaster_reference_amqp_info_async = ticketmaster_reference_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Reference` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_dispatcher.ticketmaster_reference_amqp_info_async = ticketmaster_reference_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Events.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_mqtt_dispatcher.ticketmaster_reference_amqp_info_async = ticketmaster_reference_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterEventsAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Events.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterEventsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_events_amqp_dispatcher.ticketmaster_reference_amqp_info_async = ticketmaster_reference_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceMqttProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Reference.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_mqtt_dispatcher.ticketmaster_reference_amqp_info_async = ticketmaster_reference_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### TicketmasterReferenceAmqpProducer- `data`: The event data of type `ticketmaster_producer_data.Info`.
+
+
+
+Producer for `Ticketmaster.Reference.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def ticketmaster_reference_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+TicketmasterReferenceAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+ticketmaster_reference_amqp_dispatcher.ticketmaster_reference_amqp_info_async = ticketmaster_reference_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_ticketmaster_reference_amqp_venue`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ticketmaster_reference_amqp_venue(
+
+    self,##### `_process_event`
+
+    data: Venue,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Ticketmaster.Reference.amqp.Venue` message. Reference data for a Ticketmaster venue. Emitted at bridge
+startup and refreshed periodically. Carries the stable venue identifier, location, address, timezone, and capacity
+information.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Venue`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ticketmaster_reference_amqp_venue(
+
+    data=Venue(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Ticketmaster.Reference.amqp.Venue` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ticketmaster_reference_amqp_venue_batch(```
+
+    messages=[
+
+        Venue(...),Initializes the runner with a Kafka consumer.
+
+        Venue(...),
+
+        Venue(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_ticketmaster_reference_amqp_attraction`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ticketmaster_reference_amqp_attraction(
+
+    self,##### `_process_event`
+
+    data: Attraction,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Ticketmaster.Reference.amqp.Attraction` message. Reference data for a Ticketmaster attraction (performer,
+artist, sports team, or production). Emitted at bridge startup and refreshed periodically. Carries stable attraction
+identifier, name, and classification.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Attraction`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ticketmaster_reference_amqp_attraction(
+
+    data=Attraction(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Ticketmaster.Reference.amqp.Attraction` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ticketmaster_reference_amqp_attraction_batch(```
+
+    messages=[
+
+        Attraction(...),Initializes the runner with a Kafka consumer.
+
+        Attraction(...),
+
+        Attraction(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_ticketmaster_reference_amqp_classification`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ticketmaster_reference_amqp_classification(
+
+    self,##### `_process_event`
+
+    data: Classification,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Ticketmaster.Reference.amqp.Classification` message. Reference data for a Ticketmaster classification
+segment (e.g. Music, Sports, Arts & Theatre). Emitted at bridge startup and refreshed daily. Carries the stable segment
+identifier, name, and the primary genre and subgenre under that segment.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Classification`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ticketmaster_reference_amqp_classification(
+
+    data=Classification(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Ticketmaster.Reference.amqp.Classification` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ticketmaster_reference_amqp_classification_batch(```
+
+    messages=[
+
+        Classification(...),Initializes the runner with a Kafka consumer.
+
+        Classification(...),
+
+        Classification(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_ticketmaster_reference_amqp_info`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_ticketmaster_reference_amqp_info(
+
+    self,##### `_process_event`
+
+    data: Info,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Ticketmaster.Reference.amqp.Info` message. Retained reference information for MQTT/AMQP topic
+discovery.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Info`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_ticketmaster_reference_amqp_info(
+
+    data=Info(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Ticketmaster.Reference.amqp.Info` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_ticketmaster_reference_amqp_info_batch(```
+
+    messages=[
+
+        Info(...),Initializes the runner with a Kafka consumer.
+
+        Info(...),
+
+        Info(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

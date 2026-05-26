@@ -1,0 +1,2 @@
+pip install .\energy_charts_mqtt_producer_data
+pip install .\energy_charts_mqtt_producer_mqtt_client
