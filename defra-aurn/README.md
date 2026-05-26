@@ -1,149 +1,155 @@
-# Defra AURN Bridge Usage Guide
+# Defra AURN feeder
+
+This feeder turns the upstream Defra AURN air-quality feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+The upstream source is open and operationally useful, but every downstream team otherwise has to rebuild polling, dedupe, schema normalization, retry handling, and transport-specific publishing. This bridge centralizes that work and republishes a stable CloudEvents contract for subscribers.
+
+- **Public-health operations** — power near-real-time air-quality dashboards and incident triage for municipal, regional, or national teams.
+- **Compliance and reporting** — persist normalized observations into Eventhouse / ADX / data lakes for regulatory and policy reporting.
+- **Industrial and facility response** — trigger ventilation, activity restrictions, or maintenance workflows from threshold-based alerts.
+- **Research and forecasting** — join air-quality observations with weather, mobility, and health indicators for modelling.
+- **Citizen-information products** — feed apps, kiosks, and map tiles with a stable event contract instead of custom API pollers.
 
 ## Overview
 
-This bridge polls the UK Defra Automatic Urban and Rural Network (AURN) SOS
-Timeseries API and republishes station metadata, timeseries metadata, and fresh
- hourly observations to Kafka as CloudEvents in structured JSON mode.
-
-It is a poller. It fetches reference data first, then polls every known
-timeseries. Fresh containers use a six-hour bootstrap lookback so they can emit
-the latest available telemetry even when the upstream feed lags a few hours;
-steady-state polling then returns to the most recent two-hour window and emits
-only values it has not seen before.
-
-## Data Source
-
-- **Provider**: UK Air / Defra AURN
-- **Base URL**: `https://uk-air.defra.gov.uk/sos-ukair/api/v1`
-- **Transport**: REST (52°North SOS Timeseries API)
-- **Authentication**: None
-- **Update cadence**: Hourly
-- **Data license**: Open Government Licence v3.0
-
-## API Surface Reviewed
-
-The upstream API families reviewed for this source are:
-
-| Family | Endpoint | Keep? | Reason |
+| Variant | Container image | Transport | Default delivery shape |
 |---|---|---|---|
-| Stations | `GET /stations` | Keep | Reference data for monitoring locations and labels |
-| Phenomena | `GET /phenomena` | Drop as standalone family | Already carried in timeseries metadata as `phenomenon_id` and `phenomenon_label` |
-| Categories | `GET /categories` | Drop as standalone family | Current API mirrors `phenomena`; modeled as fields on timeseries metadata |
-| Timeseries list | `GET /timeseries` | Keep | Enumerates all station × pollutant combinations |
-| Timeseries detail | `GET /timeseries/{id}?expanded=true` | Keep | Needed for pollutant and category metadata |
-| Observation values | `GET /timeseries/{id}/getData` | Keep | Telemetry feed |
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-defra-aurn` | Apache Kafka 2.x compatible (including Azure Event Hubs and Microsoft Fabric Event Streams) | One topic with CloudEvents JSON and xRegistry-defined keying |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-defra-aurn-mqtt` | MQTT 5.0 broker (including Azure Event Grid MQTT namespace) | Unified-Namespace-style topic publishing with CloudEvents metadata as MQTT user properties |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-defra-aurn-amqp` | AMQP 1.0 brokers (generic + Azure Service Bus / Event Hubs) | Single AMQP node/address with binary CloudEvents |
 
-## Event Model
+All variants share:
 
-The bridge emits three CloudEvents types:
+- The same upstream poller semantics and dedupe model.
+- The same xRegistry contract in `xreg/defra_aurn.xreg.json`.
+- The same event families in [EVENTS.md](EVENTS.md).
 
-| CloudEvents `type` | Category | Key / Subject |
-|---|---|---|
-| `uk.gov.defra.aurn.Station` | Reference | `{station_id}` |
-| `uk.gov.defra.aurn.Timeseries` | Reference | `{timeseries_id}` |
-| `uk.gov.defra.aurn.Observation` | Telemetry | `{timeseries_id}` |
+## Key features
 
-Station events describe the monitoring network. Timeseries events describe the
-station-and-pollutant combinations that produce observations. Observation events
-carry hourly pollutant values with ISO 8601 UTC timestamps.
+- Poll-based ingestion with stateful resume across restarts.
+- One contract, three transport options (Kafka, MQTT, AMQP).
+- CloudEvents-compatible envelope and schema metadata.
+- Azure-ready deployment options (Fabric, Event Hubs, Service Bus, Event Grid MQTT).
 
-## Measurements
+## Repository layout
 
-The AURN network covers 300+ UK monitoring locations and publishes pollutant
-timeseries including ozone, nitrogen dioxide, sulfur dioxide, PM2.5, PM10,
-carbon monoxide, and heavy-metal related particulate measurements where
-available.
-
-## Installation
-
-From this repository:
-
-```powershell
-pip install defra_aurn_producer\defra_aurn_producer_data
-pip install defra_aurn_producer\defra_aurn_producer_kafka_producer
-pip install -e .
+```text
+defra-aurn/
+  xreg/defra_aurn.xreg.json                # shared xRegistry contract
+  defra_aurn/                        # Kafka feeder application
+  defra_aurn_mqtt/                        # MQTT/UNS feeder application
+  defra_aurn_amqp/                        # AMQP 1.0 feeder application
+  defra_aurn_producer/               # xRegistry-generated Kafka producer
+  defra_aurn_mqtt_producer/               # xRegistry-generated MQTT producer
+  defra_aurn_amqp_producer/               # xRegistry-generated AMQP producer
+  Dockerfile                      # builds the Kafka feeder image
+  Dockerfile.mqtt                 # builds the MQTT feeder image
+  Dockerfile.amqp                 # builds the AMQP feeder image
+  kql/                            # Eventhouse / KQL schema and update policies
+  notebook/                       # Fabric notebook feeder
+  tests/                          # unit + integration tests
 ```
 
-## Running the bridge
+## Prerequisites
 
-### Event Hubs or Fabric Event Streams
+- Docker 20.10+ (or another OCI-compatible runtime).
+- Outbound network access to the upstream Defra AURN endpoints.
+- Network access to your target Kafka/MQTT/AMQP broker.
+- A writable host folder mounted to `/state` for persistent `STATE_FILE`.
 
-```powershell
-python -m defra_aurn feed --connection-string "Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=defra-aurn"
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `STATE_FILE` so poller resume/dedupe state survives container restarts.
+
+### Kafka
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/defra-aurn.json   -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>"   ghcr.io/clemensv/real-time-sources-defra-aurn:latest
 ```
 
-### Plain Kafka
+### MQTT (Unified Namespace)
 
-```powershell
-python -m defra_aurn feed --connection-string "BootstrapServer=localhost:9092;EntityPath=defra-aurn" --kafka-enable-tls false
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/defra-aurn.json   -e MQTT_BROKER_URL="mqtts://<broker-host>:8883"   -e MQTT_USERNAME="<username>"   -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-defra-aurn-mqtt:latest
 ```
 
-You can also provide the Kafka settings with environment variables.
+### AMQP 1.0
 
-## Feed configuration
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/defra-aurn.json   -e AMQP_BROKER_URL="amqp://<user>:<password>@<host>:5672/defra-aurn"   ghcr.io/clemensv/real-time-sources-defra-aurn-amqp:latest
+```
 
-| Argument | Environment variable | Description |
-|---|---|---|
-| `--connection-string` | `CONNECTION_STRING` | Event Hubs or `BootstrapServer=...;EntityPath=...` connection string |
-| `--kafka-bootstrap-servers` | `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers |
-| `--kafka-topic` | `KAFKA_TOPIC` | Topic name, default `defra-aurn` |
-| `--sasl-username` | `SASL_USERNAME` | SASL username |
-| `--sasl-password` | `SASL_PASSWORD` | SASL password |
-| `--polling-interval` | `POLLING_INTERVAL` | Polling interval in seconds, default `3600` |
-| `--state-file` | `STATE_FILE` | De-duplication state file, default `~/.defra_aurn_state.json` |
-| `--kafka-enable-tls` | `KAFKA_ENABLE_TLS` | Enable TLS, default `true` |
+## Configuration reference
 
-## Runtime behavior
+See [CONTAINER.md](CONTAINER.md) for the full per-image environment-variable matrix and all supported auth modes (Kafka SASL/Event Hubs, MQTT password/Entra, AMQP password/Entra-CBS/SAS-CBS).
 
-1. Fetch all stations and emit `uk.gov.defra.aurn.Station`.
-2. Fetch all timeseries, expand each one, and emit `uk.gov.defra.aurn.Timeseries`.
-3. Poll every timeseries with a six-hour bootstrap lookback on first start, then
-   use the last two hours of values on steady-state loops.
-4. Emit only observations newer than the last stored timestamp per timeseries.
-5. Refresh reference data periodically so downstream consumers do not have to
-   fetch station context out of band.
+## Data model
 
-## Coordinates
+This source emits the following event types:
 
-The upstream station GeoJSON uses `geometry.coordinates[0]` as latitude and
-`geometry.coordinates[1]` as longitude. That is the reverse of normal GeoJSON
-ordering, and the bridge preserves the actual upstream semantics rather than the
-convention.
+- **`Station`**
+- **`Timeseries`**
+- **`Observation`**
 
-## Fabric notebook hosting
+Kafka key template `{station_id}`; Kafka key template `{timeseries_id}`
 
-This source ships a Fabric notebook feeder at
-`notebook/defra-aurn-feed.ipynb` that runs the bridge in `--once` mode on a
-Fabric schedule. Deploy it with
-[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1);
-the script builds a per-source Fabric Environment with the producer and
-bridge wheels, binds the Lakehouse, KQL database, and Environment to the
-notebook, looks up the Event Stream connection string at runtime via the
-Topology API, and schedules the notebook.
+## Deploying into Microsoft Fabric
+
+Two Fabric hosting models are supported for this poll-based source:
+
+- **Fabric Notebook feeder** — scheduled runs inside Fabric, best for periodic polling workloads.
+- **Fabric ACI feeder** — continuously running container feeder for always-on delivery.
+
+### Fabric Notebook feeder
+
+This source ships a notebook feeder in [`notebook/`](notebook/) for scheduled in-workspace execution. It runs the same poller logic, resolves the Event Stream custom-endpoint connection string at runtime, and stores run diagnostics in OneLake.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#defra-aurn/fabric-notebook)
+
+### Fabric ACI feeder
+
+Deploy the container feeder directly into Azure Container Instances with Fabric Event Stream and Eventhouse wiring.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#defra-aurn/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Use the ARM templates that ship with this source:
 
-### Option 1: Bring your own Event Hub
+### AMQP — deploy the AMQP image against an existing AMQP 1.0 endpoint you configure.
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-amqp.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template.json)
+### MQTT — bring your own MQTT 5.0 broker and deploy the MQTT image.
 
-### Option 2: Deploy with a new Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-mqtt.json)
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### MQTT — provision an Azure Event Grid namespace MQTT broker plus required identity wiring.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Azure Event Hubs namespace + event hub and wire the feeder automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace with managed identity + sender role assignment.
 
-## MQTT + AMQP companion feeders
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template-with-servicebus.json)
 
-This source now ships Kafka plus transport-split MQTT and AMQP companion feeders. MQTT publishes retained binary-mode CloudEvents under `air-quality/gb/defra/defra-aurn/...`; AMQP publishes the same CloudEvents to a configurable AMQP 1.0 address (default `defra-aurn`). Deployment templates: `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`.
+### Kafka — bring your own Event Hubs / Fabric Event Stream connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdefra-aurn%2Fazure-template.json)
+
+## Next steps
+
+- Choose a hosting model (Fabric Notebook, Fabric ACI, or direct Azure template deployment).
+- Review [EVENTS.md](EVENTS.md) before building consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full auth-mode and environment-variable details.

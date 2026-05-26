@@ -1,4 +1,4 @@
-# Canada AQHI Bridge Events
+# Canada AQHI feeder Events
 
 Canada AQHI publishes air-quality health index observations and forecasts from Environment and Climate Change Canada (ECCC) for Canadian Air Quality Health Index communities. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
@@ -265,4 +265,3 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/canada-aqhi.xreg.json`](xreg/canada-aqhi.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- ![Deploy AMQP Service Bus: <https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white>

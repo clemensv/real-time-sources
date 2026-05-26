@@ -1,114 +1,156 @@
-# Luchtmeetnet Netherlands Air Quality Bridge
+# Luchtmeetnet Netherlands feeder
 
-This source bridges the public Dutch **Luchtmeetnet** API into Apache Kafka
-compatible brokers as structured JSON CloudEvents. It emits both slowly changing
-reference data and hourly telemetry so downstream consumers can reconstruct air
-quality context and measurements over time without making their own side calls.
+This feeder turns the upstream Luchtmeetnet Netherlands air-quality feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
-## Upstream
+Companion docs:
 
-- API base URL: `https://api.luchtmeetnet.nl/open_api`
-- Documentation: <https://api-docs.luchtmeetnet.nl/>
-- Open data information: <https://www.luchtmeetnet.nl/informatie/download-data/open-data>
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-The upstream data updates hourly and is publicly accessible without
-authentication.
+## Why this bridge
 
-## Event Families
+The upstream source is open and operationally useful, but every downstream team otherwise has to rebuild polling, dedupe, schema normalization, retry handling, and transport-specific publishing. This bridge centralizes that work and republishes a stable CloudEvents contract for subscribers.
 
-- `nl.rivm.luchtmeetnet.Station` — station reference metadata keyed by
-  `station_number`
-- `nl.rivm.luchtmeetnet.Measurement` — hourly station measurements keyed by
-  `station_number`
-- `nl.rivm.luchtmeetnet.LKI` — hourly Dutch air-quality-index values keyed by
-  `station_number`
-- `nl.rivm.luchtmeetnet.components.Component` — component catalog records keyed
-  by `formula`
+- **Public-health operations** — power near-real-time air-quality dashboards and incident triage for municipal, regional, or national teams.
+- **Compliance and reporting** — persist normalized observations into Eventhouse / ADX / data lakes for regulatory and policy reporting.
+- **Industrial and facility response** — trigger ventilation, activity restrictions, or maintenance workflows from threshold-based alerts.
+- **Research and forecasting** — join air-quality observations with weather, mobility, and health indicators for modelling.
+- **Citizen-information products** — feed apps, kiosks, and map tiles with a stable event contract instead of custom API pollers.
 
-See [EVENTS.md](EVENTS.md) for the event contract.
+## Overview
 
-## Upstream Channel Audit
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-luchtmeetnet-nl` | Apache Kafka 2.x compatible (including Azure Event Hubs and Microsoft Fabric Event Streams) | One topic with CloudEvents JSON and xRegistry-defined keying |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-luchtmeetnet-nl-mqtt` | MQTT 5.0 broker (including Azure Event Grid MQTT namespace) | Unified-Namespace-style topic publishing with CloudEvents metadata as MQTT user properties |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-luchtmeetnet-nl-amqp` | AMQP 1.0 brokers (generic + Azure Service Bus / Event Hubs) | Single AMQP node/address with binary CloudEvents |
 
-| Family | Endpoint | Identity | Cadence | Decision |
-|---|---|---|---|---|
-| Station metadata list | `GET /stations?page={n}` | `station_number` | Rarely changes | KEEP — used to discover all stations. |
-| Station metadata detail | `GET /stations/{number}` | `station_number` | Rarely changes | KEEP — authoritative reference data for station events. |
-| Component catalog list | `GET /components` | `formula` | Rarely changes | KEEP — component reference data. |
-| Component detail | `GET /components/{formula}` | `formula` | Rarely changes | DROP — richer prose and limits metadata exists, but the bridge contract only needs stable catalog names for reference events. |
-| Station-scoped measurements | `GET /stations/{number}/measurements` | `station_number` + `formula` | Hourly | DROP — duplicate presentation of the measurement family already available from `/measurements`. |
-| Measurements | `GET /measurements?station_number={n}&formula={f}` | `station_number` + `formula` | Hourly | KEEP — core telemetry family. |
-| LKI | `GET /lki?station_number={n}` | `station_number` | Hourly | KEEP — derived air-quality-index telemetry. |
-| Organisations | `GET /organisations` | `organisation_id` | Rarely changes | DROP — useful catalog, but not required by the requested event model because station events already carry organisation names. |
-| Concentrations (ASCII) | `GET /concentrations?...` | coordinate + formula | Hourly | DROP — alternate presentation for map-style concentration lookup, not station-keyed telemetry and outside the requested source scope. |
+All variants share:
 
-## Runtime Behavior
+- The same upstream poller semantics and dedupe model.
+- The same xRegistry contract in `xreg/luchtmeetnet_nl.xreg.json`.
+- The same event families in [EVENTS.md](EVENTS.md).
 
-The bridge is a poller.
+## Key features
 
-1. At startup it fetches all stations and all components.
-2. It emits station reference events first, then component reference events.
-3. Every poll cycle it fetches the latest page of measurements for each
-   station/formula combination and the latest page of LKI values for each
-   station.
-4. It deduplicates by remembered timestamp and only emits new records.
-5. It refreshes station metadata periodically so downstream consumers can see
-   reference-data drift over time.
+- Poll-based ingestion with stateful resume across restarts.
+- One contract, three transport options (Kafka, MQTT, AMQP).
+- CloudEvents-compatible envelope and schema metadata.
+- Azure-ready deployment options (Fabric, Event Hubs, Service Bus, Event Grid MQTT).
 
-## Usage
+## Repository layout
 
-Install locally:
-
-```powershell
-pip install luchtmeetnet_nl_producer\luchtmeetnet_nl_producer_data
-pip install luchtmeetnet_nl_producer\luchtmeetnet_nl_producer_kafka_producer
-pip install -e .
+```text
+luchtmeetnet-nl/
+  xreg/luchtmeetnet_nl.xreg.json                # shared xRegistry contract
+  luchtmeetnet_nl/                        # Kafka feeder application
+  luchtmeetnet_nl_mqtt/                        # MQTT/UNS feeder application
+  luchtmeetnet_nl_amqp/                        # AMQP 1.0 feeder application
+  luchtmeetnet_nl_producer/               # xRegistry-generated Kafka producer
+  luchtmeetnet_nl_mqtt_producer/               # xRegistry-generated MQTT producer
+  luchtmeetnet_nl_amqp_producer/               # xRegistry-generated AMQP producer
+  Dockerfile                      # builds the Kafka feeder image
+  Dockerfile.mqtt                 # builds the MQTT feeder image
+  Dockerfile.amqp                 # builds the AMQP feeder image
+  kql/                            # Eventhouse / KQL schema and update policies
+  notebook/                       # Fabric notebook feeder
+  tests/                          # unit + integration tests
 ```
 
-Run the bridge:
+## Prerequisites
 
-```powershell
-python -m luchtmeetnet_nl feed --kafka-bootstrap-servers localhost:9092 --kafka-topic luchtmeetnet-nl
+- Docker 20.10+ (or another OCI-compatible runtime).
+- Outbound network access to the upstream Luchtmeetnet Netherlands endpoints.
+- Network access to your target Kafka/MQTT/AMQP broker.
+- A writable host folder mounted to `/state` for persistent `STATE_FILE`.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `STATE_FILE` so poller resume/dedupe state survives container restarts.
+
+### Kafka
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/luchtmeetnet-nl.json   -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>"   ghcr.io/clemensv/real-time-sources-luchtmeetnet-nl:latest
 ```
 
-Or with an Event Hubs / Fabric connection string:
+### MQTT (Unified Namespace)
 
-```powershell
-python -m luchtmeetnet_nl feed --connection-string "Endpoint=sb://namespace.servicebus.windows.net/;SharedAccessKeyName=policy;SharedAccessKey=...;EntityPath=luchtmeetnet-nl"
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/luchtmeetnet-nl.json   -e MQTT_BROKER_URL="mqtts://<broker-host>:8883"   -e MQTT_USERNAME="<username>"   -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-luchtmeetnet-nl-mqtt:latest
 ```
 
-## License
+### AMQP 1.0
 
-This project is licensed under the MIT License. See [LICENSE.md](../LICENSE.md).
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/luchtmeetnet-nl.json   -e AMQP_BROKER_URL="amqp://<user>:<password>@<host>:5672/luchtmeetnet-nl"   ghcr.io/clemensv/real-time-sources-luchtmeetnet-nl-amqp:latest
+```
 
-## Fabric notebook hosting
+## Configuration reference
 
-This source can also be hosted as a scheduled Fabric notebook via
-[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
-which deploys [`notebook/luchtmeetnet-nl-feed.ipynb`](notebook/luchtmeetnet-nl-feed.ipynb)
-to run one polling cycle per scheduled execution.
+See [CONTAINER.md](CONTAINER.md) for the full per-image environment-variable matrix and all supported auth modes (Kafka SASL/Event Hubs, MQTT password/Entra, AMQP password/Entra-CBS/SAS-CBS).
+
+## Data model
+
+This source emits the following event types:
+
+- **`Station`**
+- **`Measurement`**
+- **`LKI`**
+- **`Component`**
+
+Kafka key template `{station_number}`; Kafka key template `{formula}`
+
+## Deploying into Microsoft Fabric
+
+Two Fabric hosting models are supported for this poll-based source:
+
+- **Fabric Notebook feeder** — scheduled runs inside Fabric, best for periodic polling workloads.
+- **Fabric ACI feeder** — continuously running container feeder for always-on delivery.
+
+### Fabric Notebook feeder
+
+This source ships a notebook feeder in [`notebook/`](notebook/) for scheduled in-workspace execution. It runs the same poller logic, resolves the Event Stream custom-endpoint connection string at runtime, and stores run diagnostics in OneLake.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#luchtmeetnet-nl/fabric-notebook)
+
+### Fabric ACI feeder
+
+Deploy the container feeder directly into Azure Container Instances with Fabric Event Stream and Eventhouse wiring.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#luchtmeetnet-nl/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Use the ARM templates that ship with this source:
 
-### Option 1: Bring your own Event Hub
+### AMQP — deploy the AMQP image against an existing AMQP 1.0 endpoint you configure.
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fluchtmeetnet-nl%2Fazure-template-amqp.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fluchtmeetnet-nl%2Fazure-template.json)
+### MQTT — bring your own MQTT 5.0 broker and deploy the MQTT image.
 
-### Option 2: Deploy with a new Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fluchtmeetnet-nl%2Fazure-template-mqtt.json)
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### MQTT — provision an Azure Event Grid namespace MQTT broker plus required identity wiring.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fluchtmeetnet-nl%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Azure Event Hubs namespace + event hub and wire the feeder automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fluchtmeetnet-nl%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace with managed identity + sender role assignment.
 
-## MQTT + AMQP companion feeders
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fluchtmeetnet-nl%2Fazure-template-with-servicebus.json)
 
-This source now ships Kafka plus transport-split MQTT and AMQP companion feeders. MQTT publishes retained binary-mode CloudEvents under `air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/...`; AMQP publishes the same CloudEvents to a configurable AMQP 1.0 address (default `luchtmeetnet-nl`). Deployment templates: `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`.
+### Kafka — bring your own Event Hubs / Fabric Event Stream connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fluchtmeetnet-nl%2Fazure-template.json)
+
+## Next steps
+
+- Choose a hosting model (Fabric Notebook, Fabric ACI, or direct Azure template deployment).
+- Review [EVENTS.md](EVENTS.md) before building consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full auth-mode and environment-variable details.

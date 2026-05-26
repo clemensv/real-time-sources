@@ -1,132 +1,163 @@
-# FMI Finland Air Quality Bridge to Kafka, Event Hubs, and Fabric
+# FMI Finland container images
 
-This container image runs the FMI Finland air quality bridge. The bridge polls
-the Finnish Meteorological Institute OGC WFS service for hourly air quality
-observations, emits station reference data first, and then emits hourly
-observation events as structured JSON CloudEvents. The event contract is
-documented in [EVENTS.md](EVENTS.md).
+This document describes the published OCI images for the FMI Finland feeder. For solution overview and usage scenarios, see [README.md](README.md). For the CloudEvents contract and schemas, see [EVENTS.md](EVENTS.md).
 
-## Upstream Source
+## Why this container
 
-- FMI OGC WFS 2.0 open data service
-- No authentication required
-- Hourly air quality observations for Finnish monitoring stations
-- Station metadata from the `fmi::ef::stations` stored query
+These images package the poller, normalization logic, and transport producers so teams can subscribe to standardized air-quality CloudEvents without writing their own ingestion pipeline.
 
-## Container Image
+## What ships in the box
 
-Pull the image from GitHub Container Registry:
-
-```powershell
-docker pull ghcr.io/clemensv/real-time-sources-fmi-finland:latest
-```
-
-## Running with Kafka
-
-```powershell
-docker run --rm `
-  -e KAFKA_BOOTSTRAP_SERVERS=host.docker.internal:9092 `
-  -e KAFKA_TOPIC=fmi-finland-airquality `
-  -e POLLING_INTERVAL=3600 `
-  ghcr.io/clemensv/real-time-sources-fmi-finland:latest
-```
-
-## Running with Azure Event Hubs or Fabric Event Streams
-
-```powershell
-docker run --rm `
-  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<name>;SharedAccessKey=<key>;EntityPath=fmi-finland-airquality" `
-  -e POLLING_INTERVAL=3600 `
-  ghcr.io/clemensv/real-time-sources-fmi-finland:latest
-```
-
-## Running with the repo Docker E2E Kafka convention
-
-```powershell
-docker run --rm `
-  -e CONNECTION_STRING="BootstrapServer=host.docker.internal:9092;EntityPath=fmi-finland-airquality" `
-  -e KAFKA_ENABLE_TLS=false `
-  ghcr.io/clemensv/real-time-sources-fmi-finland:latest
-```
-
-## Environment Variables
-
-| Variable | Required | Description |
+| Image | Transport | Default behavior |
 |---|---|---|
-| `CONNECTION_STRING` | No | Event Hubs style or plain Kafka connection string. If `EntityPath` is present, it becomes the topic unless `KAFKA_TOPIC` is set. |
-| `KAFKA_BOOTSTRAP_SERVERS` | No | Explicit Kafka bootstrap servers. Use this for a plain Kafka broker without a connection string. |
-| `KAFKA_TOPIC` | No | Kafka topic name. Defaults to `fmi-finland-airquality`. |
-| `SASL_USERNAME` | No | Optional SASL username for direct Kafka connections. |
-| `SASL_PASSWORD` | No | Optional SASL password for direct Kafka connections. |
-| `POLLING_INTERVAL` | No | Polling interval in seconds. Default `3600`. |
-| `STATION_REFRESH_INTERVAL` | No | Interval in seconds for re-emitting station reference data. Default `86400`. |
-| `STATE_FILE` | No | Path to the JSON state file used for observation deduplication. |
+| `ghcr.io/clemensv/real-time-sources-fmi-finland` | Kafka | Poll upstream and publish CloudEvents to one Kafka topic with xRegistry keying |
+| `ghcr.io/clemensv/real-time-sources-fmi-finland-mqtt` | MQTT 5.0 | Poll upstream and publish CloudEvents to MQTT topic hierarchy |
+| `ghcr.io/clemensv/real-time-sources-fmi-finland-amqp` | AMQP 1.0 | Poll upstream and publish CloudEvents to a configured AMQP address |
 
-## Persisting State
+Event families in this source:
 
-If you want the bridge to survive restarts without replaying the same
-observation windows, mount a volume and point `STATE_FILE` at that location:
+- **`fi.fmi.opendata.airquality`**: Station, Observation
+- **`fi.fmi.opendata.airquality.mqtt`**: Station, Observation
+- **`fi.fmi.opendata.airquality.amqp`**: Station, Observation
 
-```powershell
-docker run --rm `
-  -v ${PWD}\state:C:\state `
-  -e KAFKA_BOOTSTRAP_SERVERS=host.docker.internal:9092 `
-  -e STATE_FILE=C:\state\fmi_finland_state.json `
-  ghcr.io/clemensv/real-time-sources-fmi-finland:latest
+## Image contract
+
+| Aspect | Value |
+|---|---|
+| Base image | `python:3.10-slim` |
+| Kafka entrypoint | `python -m fmi_finland` |
+| MQTT entrypoint | `python -m fmi_finland_mqtt` |
+| AMQP entrypoint | `python -m fmi_finland_amqp` |
+| Exposed ports | none (outbound publisher only) |
+| Signals | terminates on `SIGTERM` with producer flush on shutdown |
+| Persistent state | `STATE_FILE` (mount host storage at `/state`) |
+| Tags | `latest`, version tags, and immutable SHA tags in GHCR |
+
+## Installing the images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-fmi-finland:latest
+docker pull ghcr.io/clemensv/real-time-sources-fmi-finland-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-fmi-finland-amqp:latest
 ```
+
+## Using the Kafka image
+
+### Kafka with SASL/PLAIN
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/fmi-finland.json   -e KAFKA_BOOTSTRAP_SERVERS="<host:port>"   -e KAFKA_TOPIC="fmi-finland"   -e SASL_USERNAME="<username>"   -e SASL_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-fmi-finland:latest
+```
+
+### Kafka with Azure Event Hubs / Fabric Event Streams
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/fmi-finland.json   -e CONNECTION_STRING="<connection-string>"   ghcr.io/clemensv/real-time-sources-fmi-finland:latest
+```
+
+## Using the MQTT image
+
+### MQTT with username/password
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/fmi-finland.json   -e MQTT_BROKER_URL="mqtts://<broker-host>:8883"   -e MQTT_USERNAME="<username>"   -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-fmi-finland-mqtt:latest
+```
+
+### MQTT with Azure Event Grid + Microsoft Entra ID
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/fmi-finland.json   -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883"   -e MQTT_AUTH_MODE=entra   -e MQTT_ENTRA_CLIENT_ID="<managed-identity-client-id>"   -e MQTT_CLIENT_ID="<unique-client-id>"   ghcr.io/clemensv/real-time-sources-fmi-finland-mqtt:latest
+```
+
+## Using the AMQP image
+
+### AMQP generic broker (SASL PLAIN)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/fmi-finland.json   -e AMQP_BROKER_URL="amqp://<user>:<password>@<host>:5672/fmi-finland"   ghcr.io/clemensv/real-time-sources-fmi-finland-amqp:latest
+```
+
+### AMQP with Azure Service Bus / Event Hubs (Entra-CBS)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/fmi-finland.json   -e AMQP_HOST="<namespace>.servicebus.windows.net"   -e AMQP_PORT=5671 -e AMQP_TLS=true   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_CLIENT_ID="<managed-identity-client-id>"   ghcr.io/clemensv/real-time-sources-fmi-finland-amqp:latest
+```
+
+### AMQP with Service Bus emulator / SAS-CBS
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/fmi-finland.json   -e AMQP_HOST="servicebus-emulator"   -e AMQP_PORT=5672   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey"   -e AMQP_SAS_KEY="<sas-key>"   ghcr.io/clemensv/real-time-sources-fmi-finland-amqp:latest
+```
+
+## Environment variable matrix
+
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to persistent poller resume/dedupe state file. |
+| `POLLING_INTERVAL` | Polling interval in seconds (source default applies when not set). |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric custom endpoint connection string shortcut. |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers when not using `CONNECTION_STRING`. |
+| `KAFKA_TOPIC` | Output topic name. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` to disable TLS for local brokers. |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Username/password credentials for `password` mode. |
+| `MQTT_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
+| `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Full AMQP connection URL shortcut. |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Host/port/TLS settings when not using URL shortcut. |
+| `AMQP_ADDRESS` | Destination queue/topic/address. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | Credentials for `password` mode. |
+| `AMQP_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | Required when `AMQP_AUTH_MODE=sas`. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### AMQP — deploy the AMQP image against an existing AMQP 1.0 endpoint you configure.
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-amqp.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — bring your own MQTT 5.0 broker and deploy the MQTT image.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision an Azure Event Grid namespace MQTT broker plus required identity wiring.
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Azure Event Hubs namespace + event hub and wire the feeder automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace with managed identity + sender role assignment.
 
-## MQTT 5.0 / Unified Namespace feeder
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-with-servicebus.json)
 
-Image: `real-time-sources-fmi-finland-mqtt`. Publishes binary-mode CloudEvents to `weather/fi/fmi/fmi-finland/...`.
+### Kafka — bring your own Event Hubs / Fabric Event Stream connection string.
 
-| Variable | Purpose |
-|---|---|
-| `MQTT_BROKER_URL` | Broker URL, for example `mqtt://host:1883`. |
-| `MQTT_HOST`, `MQTT_PORT`, `MQTT_TLS` | Host/port/TLS alternatives to `MQTT_BROKER_URL`. |
-| `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional username/password authentication. |
-| `MQTT_CONTENT_MODE` | CloudEvents content mode; default `binary`. |
-| `ONCE_MODE` | Exit after one publish cycle for jobs/tests. |
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template.json)
 
-[![Deploy MQTT BYO](https://img.shields.io/badge/Azure-Container%20(BYO%20MQTT)-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-mqtt.json)
-[![Deploy MQTT Event Grid](https://img.shields.io/badge/Azure-Container%20%2B%20Event%20Grid%20MQTT-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-with-eventgrid-mqtt.json)
+## Related
 
-## AMQP 1.0 feeder
-
-Image: `real-time-sources-fmi-finland-amqp`. Publishes binary-mode CloudEvents to a configurable AMQP 1.0 address.
-
-| Variable | Purpose |
-|---|---|
-| `AMQP_BROKER_URL` | Broker URL, for example `amqp://user:pass@host:5672/fmi-finland`. |
-| `AMQP_HOST`, `AMQP_PORT`, `AMQP_TLS` | Host/port/TLS alternatives to `AMQP_BROKER_URL`. |
-| `AMQP_ADDRESS` | Queue/topic/address; default `fmi-finland`. |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
-| `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials. |
-| `AMQP_ENTRA_CLIENT_ID`, `AMQP_ENTRA_AUDIENCE` | Entra CBS authentication settings. |
-| `AMQP_SAS_KEY_NAME`, `AMQP_SAS_KEY` | SAS CBS authentication settings. |
-| `AMQP_CONTENT_MODE` | CloudEvents content mode; default `binary`. |
-| `ONCE_MODE` | Exit after one publish cycle for jobs/tests. |
-
-[![Deploy AMQP BYO](https://img.shields.io/badge/Azure-Container%20(BYO%20AMQP)-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-amqp.json)
-[![Deploy AMQP Service Bus](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffmi-finland%2Fazure-template-with-servicebus.json)
+- [README.md](README.md) — source overview, deployment options, and quick starts.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
+- [`xreg/fmi-finland.xreg.json`](xreg/fmi-finland.xreg.json) — authoritative event contract manifest.

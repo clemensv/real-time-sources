@@ -1,110 +1,155 @@
-# UBA Germany Air Quality Bridge
+# UBA AirData feeder
 
-This source bridges the Umweltbundesamt (UBA) `air_data/v3` API into Apache
-Kafka compatible brokers as structured JSON CloudEvents.
+This feeder turns the upstream UBA AirData air-quality feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
-It emits:
+Companion docs:
 
-- `Station` reference events for air quality monitoring stations
-- `Component` reference events for pollutant components such as NO₂, O₃, PM10,
-  and PM2.5
-- `Measure` telemetry events for hourly measurements
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-The bridge follows the repo-standard poller pattern: it emits reference data at
-startup, refreshes it periodically, and then polls hourly measurements on a
-cadence you control.
+## Why this bridge
 
-## Upstream API
+The upstream source is open and operationally useful, but every downstream team otherwise has to rebuild polling, dedupe, schema normalization, retry handling, and transport-specific publishing. This bridge centralizes that work and republishes a stable CloudEvents contract for subscribers.
 
-- Base URL: `https://www.umweltbundesamt.de/api/air_data/v3/`
-- Stations: `/stations/json?lang=en`
-- Components: `/components/json?lang=en`
-- Networks: `/networks/json?lang=en` (reviewed during source design; station
-  payloads already carry denormalized network metadata, so no separate network
-  event type is emitted)
-- Scopes: `/scopes/json?lang=en` (reviewed during source design; not emitted as
-  separate events)
-- Measures: `/measures/json?component={id}&scope={id}&date_from={date}&date_to={date}&lang=en`
+- **Public-health operations** — power near-real-time air-quality dashboards and incident triage for municipal, regional, or national teams.
+- **Compliance and reporting** — persist normalized observations into Eventhouse / ADX / data lakes for regulatory and policy reporting.
+- **Industrial and facility response** — trigger ventilation, activity restrictions, or maintenance workflows from threshold-based alerts.
+- **Research and forecasting** — join air-quality observations with weather, mobility, and health indicators for modelling.
+- **Citizen-information products** — feed apps, kiosks, and map tiles with a stable event contract instead of custom API pollers.
 
-## Event Model
+## Overview
 
-Two message groups share the same Kafka topic:
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-uba-airdata` | Apache Kafka 2.x compatible (including Azure Event Hubs and Microsoft Fabric Event Streams) | One topic with CloudEvents JSON and xRegistry-defined keying |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-uba-airdata-mqtt` | MQTT 5.0 broker (including Azure Event Grid MQTT namespace) | Unified-Namespace-style topic publishing with CloudEvents metadata as MQTT user properties |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-uba-airdata-amqp` | AMQP 1.0 brokers (generic + Azure Service Bus / Event Hubs) | Single AMQP node/address with binary CloudEvents |
 
-- `de.uba.airdata`
-  - key / subject: `{station_id}`
-  - messages: `Station`, `Measure`
-- `de.uba.airdata.components`
-  - key / subject: `{component_id}`
-  - messages: `Component`
+All variants share:
 
-See [EVENTS.md](EVENTS.md) for the contract details.
+- The same upstream poller semantics and dedupe model.
+- The same xRegistry contract in `xreg/uba_airdata.xreg.json`.
+- The same event families in [EVENTS.md](EVENTS.md).
 
-## Installation
+## Key features
 
-From this directory:
+- Poll-based ingestion with stateful resume across restarts.
+- One contract, three transport options (Kafka, MQTT, AMQP).
+- CloudEvents-compatible envelope and schema metadata.
+- Azure-ready deployment options (Fabric, Event Hubs, Service Bus, Event Grid MQTT).
 
-```powershell
-pip install uba_airdata_producer/uba_airdata_producer_data
-pip install uba_airdata_producer/uba_airdata_producer_kafka_producer
-pip install -e .
+## Repository layout
+
+```text
+uba-airdata/
+  xreg/uba_airdata.xreg.json                # shared xRegistry contract
+  uba_airdata/                        # Kafka feeder application
+  uba_airdata_mqtt/                        # MQTT/UNS feeder application
+  uba_airdata_amqp/                        # AMQP 1.0 feeder application
+  uba_airdata_producer/               # xRegistry-generated Kafka producer
+  uba_airdata_mqtt_producer/               # xRegistry-generated MQTT producer
+  uba_airdata_amqp_producer/               # xRegistry-generated AMQP producer
+  Dockerfile                      # builds the Kafka feeder image
+  Dockerfile.mqtt                 # builds the MQTT feeder image
+  Dockerfile.amqp                 # builds the AMQP feeder image
+  kql/                            # Eventhouse / KQL schema and update policies
+  notebook/                       # Fabric notebook feeder
+  tests/                          # unit + integration tests
 ```
 
-## Usage
+## Prerequisites
 
-Run the bridge:
+- Docker 20.10+ (or another OCI-compatible runtime).
+- Outbound network access to the upstream UBA AirData endpoints.
+- Network access to your target Kafka/MQTT/AMQP broker.
+- A writable host folder mounted to `/state` for persistent `STATE_FILE`.
 
-```powershell
-uba_airdata feed --connection-string "<connection-string>"
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `STATE_FILE` so poller resume/dedupe state survives container restarts.
+
+### Kafka
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/uba-airdata.json   -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>"   ghcr.io/clemensv/real-time-sources-uba-airdata:latest
 ```
 
-or:
+### MQTT (Unified Namespace)
 
-```powershell
-uba_airdata feed --kafka-bootstrap-servers "<host:port>" --kafka-topic "uba-airdata"
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/uba-airdata.json   -e MQTT_BROKER_URL="mqtts://<broker-host>:8883"   -e MQTT_USERNAME="<username>"   -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-uba-airdata-mqtt:latest
 ```
 
-## Configuration
+### AMQP 1.0
 
-- `CONNECTION_STRING`
-- `KAFKA_BOOTSTRAP_SERVERS`
-- `KAFKA_TOPIC`
-- `SASL_USERNAME`
-- `SASL_PASSWORD`
-- `KAFKA_ENABLE_TLS`
-- `POLLING_INTERVAL`
-- `STATE_FILE`
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/uba-airdata.json   -e AMQP_BROKER_URL="amqp://<user>:<password>@<host>:5672/uba-airdata"   ghcr.io/clemensv/real-time-sources-uba-airdata-amqp:latest
+```
 
-For container usage, see [CONTAINER.md](CONTAINER.md).
+## Configuration reference
 
-## Fabric notebook hosting
+See [CONTAINER.md](CONTAINER.md) for the full per-image environment-variable matrix and all supported auth modes (Kafka SASL/Event Hubs, MQTT password/Entra, AMQP password/Entra-CBS/SAS-CBS).
 
-This source can also be deployed as a scheduled Fabric notebook via
-[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
-which runs `uba_airdata feed --once` on a Fabric schedule using
-`notebook/uba-airdata-feed.ipynb`.
+## Data model
+
+This source emits the following event types:
+
+- **`Station`**
+- **`Measure`**
+- **`Component`**
+
+Kafka key template `{station_id}`; Kafka key template `{component_id}`
+
+## Deploying into Microsoft Fabric
+
+Two Fabric hosting models are supported for this poll-based source:
+
+- **Fabric Notebook feeder** — scheduled runs inside Fabric, best for periodic polling workloads.
+- **Fabric ACI feeder** — continuously running container feeder for always-on delivery.
+
+### Fabric Notebook feeder
+
+This source ships a notebook feeder in [`notebook/`](notebook/) for scheduled in-workspace execution. It runs the same poller logic, resolves the Event Stream custom-endpoint connection string at runtime, and stores run diagnostics in OneLake.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#uba-airdata/fabric-notebook)
+
+### Fabric ACI feeder
+
+Deploy the container feeder directly into Azure Container Instances with Fabric Event Stream and Eventhouse wiring.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#uba-airdata/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Use the ARM templates that ship with this source:
 
-### Option 1: Bring your own Event Hub
+### AMQP — deploy the AMQP image against an existing AMQP 1.0 endpoint you configure.
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fuba-airdata%2Fazure-template-amqp.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fuba-airdata%2Fazure-template.json)
+### MQTT — bring your own MQTT 5.0 broker and deploy the MQTT image.
 
-### Option 2: Deploy with a new Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fuba-airdata%2Fazure-template-mqtt.json)
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### MQTT — provision an Azure Event Grid namespace MQTT broker plus required identity wiring.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fuba-airdata%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Azure Event Hubs namespace + event hub and wire the feeder automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fuba-airdata%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace with managed identity + sender role assignment.
 
-## MQTT + AMQP companion feeders
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fuba-airdata%2Fazure-template-with-servicebus.json)
 
-This source now ships Kafka plus transport-split MQTT and AMQP companion feeders. MQTT publishes retained binary-mode CloudEvents under `air-quality/at/uba/uba-airdata/...`; AMQP publishes the same CloudEvents to a configurable AMQP 1.0 address (default `uba-airdata`). Deployment templates: `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`.
+### Kafka — bring your own Event Hubs / Fabric Event Stream connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fuba-airdata%2Fazure-template.json)
+
+## Next steps
+
+- Choose a hosting model (Fabric Notebook, Fabric ACI, or direct Azure template deployment).
+- Review [EVENTS.md](EVENTS.md) before building consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full auth-mode and environment-variable details.

@@ -1,4 +1,4 @@
-# Hong Kong EPD AQHI Bridge Events
+# Hong Kong EPD AQHI feeder Events
 
 Hong Kong EPD Air Quality publishes air-quality health index and pollutant measurements from Hong Kong's Environmental Protection Department for Hong Kong air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
@@ -8,7 +8,7 @@ Hong Kong EPD Air Quality publishes air-quality health index and pollutant measu
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{station_id}` identifies the resource each event is about.
-- **Operations:** The checked-in guide documents a default polling interval of 3600 seconds.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -177,9 +177,7 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- The checked-in guide documents a default polling interval of 3600 seconds.
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 

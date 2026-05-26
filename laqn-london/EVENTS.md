@@ -1,4 +1,4 @@
-# LAQN London Air Quality Network Events
+# LAQN London feeder Events
 
 London Air Quality Network publishes pollutant concentration measurements from the London Air Quality Network for London air-quality monitoring sites. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
@@ -297,11 +297,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/laqn_london.xreg.json`](xreg/laqn_london.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- ![Deploy AMQP Service Bus: <https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white>
