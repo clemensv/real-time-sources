@@ -31,19 +31,19 @@ import re
 import sys
 
 INFRA_PATTERNS = [
-    re.compile(r"^\.github/"),
-    re.compile(r"^tools/"),
-    re.compile(r"^tests/"),
+    re.compile(r"^\.github/workflows/build_containers\.yml$"),
+    re.compile(r"^\.github/workflows/docker[-_].*\.ya?ml$"),
+    re.compile(r"^\.github/actions/"),
+    re.compile(r"^tools/ci/"),
+    re.compile(r"^tests/docker_e2e/"),
+    re.compile(r"^Dockerfile($|\.)"),
+    re.compile(r"^requirements.*\.txt$"),
+    re.compile(r"^pyproject\.toml$"),
+    re.compile(r"^poetry\.lock$"),
 ]
 
 
-def is_root_file(path: str) -> bool:
-    return "/" not in path
-
-
 def is_infra(path: str) -> bool:
-    if is_root_file(path):
-        return True
     return any(p.search(path) for p in INFRA_PATTERNS)
 
 
