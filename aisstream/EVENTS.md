@@ -1,4 +1,4 @@
-# AISstream.io Bridge Usage Guide Events
+# AISstream.io feeder Events
 
 AISStream publishes vessel position, voyage, safety, and static AIS messages from AISStream public AIS firehose for AIS-equipped vessels received by the AISStream network. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -8,6 +8,7 @@ AISStream publishes vessel position, voyage, safety, and static AIS messages fro
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 25 telemetry event types.
 - **Identity:** `{mmsi}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -1890,10 +1891,12 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/aisstream.xreg.json`](xreg/aisstream.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>
+- Azure Service Bus emulator: <https://learn.microsoft.com/azure/service-bus-messaging/test-locally-with-service-bus-emulator>
