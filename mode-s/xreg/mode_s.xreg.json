@@ -32,10 +32,8 @@
       },
       "protocoloptions": {
         "deployed": false,
-        "options": {
-          "qos": 0,
-          "retain": false
-        }
+        "qos": 0,
+        "retain": false
       },
       "messagegroups": [
         "#/messagegroups/Mode_S.mqtt"
@@ -211,66 +209,54 @@
           "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.ADSB",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "options": {
-              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df17-adsb",
-              "qos": 0,
-              "retain": false
-            }
+            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df17-adsb",
+            "qos": 0,
+            "retain": false
           }
         },
         "Mode_S.AltitudeReply.mqtt": {
           "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "options": {
-              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude",
-              "qos": 0,
-              "retain": false
-            }
+            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude",
+            "qos": 0,
+            "retain": false
           }
         },
         "Mode_S.IdentityReply.mqtt": {
           "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "options": {
-              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df5-identity",
-              "qos": 0,
-              "retain": false
-            }
+            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df5-identity",
+            "qos": 0,
+            "retain": false
           }
         },
         "Mode_S.AcquisitionReply.mqtt": {
           "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "options": {
-              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df11-acquisition",
-              "qos": 0,
-              "retain": false
-            }
+            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df11-acquisition",
+            "qos": 0,
+            "retain": false
           }
         },
         "Mode_S.CommBAltitude.mqtt": {
           "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "options": {
-              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df20-comm-b",
-              "qos": 0,
-              "retain": false
-            }
+            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df20-comm-b",
+            "qos": 0,
+            "retain": false
           }
         },
         "Mode_S.CommBIdentity.mqtt": {
           "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "options": {
-              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b",
-              "qos": 0,
-              "retain": false
-            }
+            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b",
+            "qos": 0,
+            "retain": false
           }
         }
       }
