@@ -1,4 +1,4 @@
-# Digitraffic Marine Bridge Usage Guide Events
+# Digitraffic Maritime feeder Events
 
 Digitraffic Maritime publishes maritime traffic and fairway updates from Fintraffic Digitraffic for Finnish maritime fairways and vessels. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 

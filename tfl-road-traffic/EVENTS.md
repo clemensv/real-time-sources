@@ -1,4 +1,4 @@
-# TfL Road Traffic Events
+# TfL Road Traffic feeder Events
 
 TfL Road Traffic publishes road disruption and traffic status updates from Transport for London for London roads and disruption areas. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -8,7 +8,6 @@ TfL Road Traffic publishes road disruption and traffic status updates from Trans
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 2 telemetry event types.
 - **Identity:** `roads/{road_id}`, `disruptions/{road_id}/{severity}/{disruption_id}` identifies the resource each event is about.
-- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -287,14 +286,10 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
 
 ## References
 
 - xRegistry manifest: [`xreg/tfl_road_traffic.xreg.json`](xreg/tfl_road_traffic.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- Transport for London (TfL) Unified API: <https://api.tfl.gov.uk/>
-- Road API documentation: <https://api.tfl.gov.uk/swagger/ui/index.html#!/Road>

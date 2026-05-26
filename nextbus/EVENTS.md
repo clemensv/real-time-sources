@@ -8,7 +8,6 @@ Nextbus / UMOIQ public XML feed CloudEvents.
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 4 telemetry event types.
 - **Identity:** `{agency_id}/{route_tag}/vehicle/{vehicle_id}`, `{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}`, `{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}`, `{agency_id}/{route_tag}/message/{stop_or_vehicle_id}` identifies the resource each event is about.
-- **Operations:** The bridge documentation mentions ETag-aware polling, so consumers should expect unchanged upstream responses to be skipped.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -271,8 +270,7 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- The bridge documentation mentions ETag-aware polling, so consumers should expect unchanged upstream responses to be skipped.
-- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
 
 ## References
 

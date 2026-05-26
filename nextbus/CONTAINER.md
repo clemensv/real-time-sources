@@ -1,112 +1,175 @@
-# Nextbus Bridge to Azure Event Hubs and Fabric Event Streams
+# Nextbus container images
 
-This container polls the [Nextbus/UMOIQ](https://retro.umoiq.com/) public XML feed and emits real-time transit vehicle positions, route configurations, schedules, and service messages to Azure Event Hubs or Fabric Event Streams as CloudEvents JSON.
+This document covers the published OCI images for the Nextbus feeder and their runtime contract. See [README.md](README.md) for source overview and [EVENTS.md](EVENTS.md) for the CloudEvents schema/routing contract.
 
-You must accept the [Nextbus Terms of Use](https://www.nextbus.com/xmlFeedDocs/NextBusXMLFeed.pdf) to use this container.
+## Why this container
 
-## Upstream
+These images package the upstream connector, CloudEvents normalization, and transport-specific publisher wiring into ready-to-run artifacts for Kafka, MQTT/UNS, AMQP deployments.
 
-- **Publisher:** Nextbus / UMOIQ
-- **API endpoint:** `https://retro.umoiq.com/service/publicXMLFeed`
-- **Products:** Real-time vehicle positions, route configs, schedules, service messages
-- **Auth:** None (public feed)
-- **License:** See [Nextbus Terms of Use](https://www.nextbus.com/xmlFeedDocs/NextBusXMLFeed.pdf)
+## What ships in the box
 
-## Events
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-nextbus` | Kafka | Topic(s): `nextbus`, key = `{agency_id}/{route_tag}` |
+| `ghcr.io/clemensv/real-time-sources-nextbus-mqtt` | MQTT 5.0 | Topic template `transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}` |
+| `ghcr.io/clemensv/real-time-sources-nextbus-amqp` | AMQP 1.0 | Address `nextbus` |
 
-Events emitted by this bridge are described in [EVENTS.md](EVENTS.md).
+Event families (base groups):
 
-## Behavior
+- `nextbus`
 
-The bridge runs a continuous polling loop for vehicle positions (default every 10 seconds) and optionally emits reference data (route configurations, schedules, and service messages) to a separate Event Hub every hour. The bridge deduplicates vehicle positions by last-report timestamp per vehicle and checksums reference payloads to skip unchanged data.
+## Image contract
 
-## Installing the Container Image
+| Aspect | Value |
+|---|---|
+| Base image | `python:3.12-slim` |
+| Default entry point | Kafka: `["python", "-m", "nextbus", "feed"]`; MQTT: `["python", "-m", "nextbus_mqtt", "feed"]`; AMQP: `["python", "-m", "nextbus_amqp", "feed"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | graceful shutdown on `SIGTERM` |
+| State | none required (streaming bridge) |
+| Image tags | `:latest`, `:sha-<git-sha>`, release tags |
+
+## Installing the container images
 
 ```bash
 docker pull ghcr.io/clemensv/real-time-sources-nextbus:latest
+docker pull ghcr.io/clemensv/real-time-sources-nextbus-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-nextbus-amqp:latest
 ```
 
-## Running the Container
+## Using the Kafka image
 
-### Azure Event Hubs (feed only)
+### With Azure Event Hubs / Fabric Event Streams (connection string)
 
 ```bash
 docker run --rm \
-  -e FEED_CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=<feed-hub>" \
-  -e FEED_EVENT_HUB_NAME="<feed-hub>" \
-  -e AGENCY="ttc" \
+  -e CONNECTION_STRING='<connection-string>' \
   ghcr.io/clemensv/real-time-sources-nextbus:latest
 ```
 
-### Azure Event Hubs (feed + reference data)
+### With Kafka broker parameters (SASL/PLAIN)
 
 ```bash
 docker run --rm \
-  -e FEED_CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=<feed-hub>" \
-  -e FEED_EVENT_HUB_NAME="<feed-hub>" \
-  -e REFERENCE_CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=<reference-hub>" \
-  -e REFERENCE_EVENT_HUB_NAME="<reference-hub>" \
-  -e AGENCY="ttc" \
+  -e KAFKA_BOOTSTRAP_SERVERS='<host:port>' \
+  -e KAFKA_TOPIC='nextbus' \
+  -e SASL_USERNAME='<username>' \
+  -e SASL_PASSWORD='<password>' \
   ghcr.io/clemensv/real-time-sources-nextbus:latest
 ```
 
-## Environment Variables
+## Using the MQTT image
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `FEED_CONNECTION_STRING` | Yes | — | Azure Event Hubs connection string for vehicle position events. Format: `Endpoint=sb://<ns>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=<hub>` |
-| `FEED_EVENT_HUB_NAME` | Yes | — | Name of the Event Hub receiving vehicle position events |
-| `REFERENCE_CONNECTION_STRING` | No | — | Connection string for the reference Event Hub. When set, route configs, schedules, and messages are also emitted. May be identical to `FEED_CONNECTION_STRING` |
-| `REFERENCE_EVENT_HUB_NAME` | No | — | Name of the Event Hub receiving reference data events |
-| `AGENCY` | Yes | — | Nextbus agency tag (e.g. `ttc` for Toronto Transit Commission). Use `docker run ... nextbus agencies` to list available tags |
-| `ROUTE` | No | `*` | Route tag to poll. Defaults to `*` (all routes) |
-| `POLL_INTERVAL` | No | `10` | Polling interval in seconds for vehicle positions |
-| `BACKOFF_INTERVAL` | No | `0` | Seconds to wait between requests when fetching reference data per route |
+### With generic MQTT broker (username/password)
+
+```bash
+docker run --rm \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-nextbus-mqtt:latest
+```
+
+### With Azure Event Grid MQTT broker (Microsoft Entra)
+
+```bash
+docker run --rm \
+  -e MQTT_BROKER_URL='mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883' \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_CLIENT_ID='<unique-client-id>' \
+  ghcr.io/clemensv/real-time-sources-nextbus-mqtt:latest
+```
+
+## Using the AMQP image
+
+### With generic AMQP 1.0 broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/nextbus' \
+  ghcr.io/clemensv/real-time-sources-nextbus-amqp:latest
+```
+
+### With Azure Service Bus / Event Hubs (Entra CBS)
+
+```bash
+docker run --rm \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='nextbus' \
+  -e AMQP_AUTH_MODE=entra \
+  ghcr.io/clemensv/real-time-sources-nextbus-amqp:latest
+```
+
+### With SAS-token CBS (Service Bus emulator / SAS-only)
+
+```bash
+docker run --rm \
+  -e AMQP_HOST='servicebus-emulator' \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS='nextbus' \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+  -e AMQP_SAS_KEY='<sas-key>' \
+  ghcr.io/clemensv/real-time-sources-nextbus-amqp:latest
+```
+
+## Environment variables
+
+### Common
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs/Fabric-style connection string for Kafka-mode publishing. |
+| `KAFKA_ENABLE_TLS` | Set `false` for local/plain Kafka; default `true`. |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list (`host:port,...`). |
+| `KAFKA_TOPIC` | Destination topic (default from contract). |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials for Kafka-compatible brokers. |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URI (`mqtt://` or `mqtts://`). |
+| `MQTT_HOST` / `MQTT_PORT` / `MQTT_TLS` | Component-level alternative to `MQTT_BROKER_URL`. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for password mode. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for Microsoft Entra JWT. |
+| `MQTT_CLIENT_ID` | Client identifier; must be unique per broker namespace. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Full AMQP URI (`amqp://` or `amqps://`). |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component-level alternative to `AMQP_BROKER_URL`. |
+| `AMQP_ADDRESS` | Target queue/topic/address. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `AMQP_AUTH_MODE=password`. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra ID token settings for CBS auth mode. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token settings for SAS CBS auth mode. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+One deploy button is provided per ARM template file present in this folder:
 
-### Option 1: Bring your own Event Hub
+- **azure-template-mqtt.json** (mqtt)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template-mqtt.json)
+- **azure-template-with-eventgrid-mqtt.json** (with eventgrid mqtt)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template-with-eventgrid-mqtt.json)
+- **azure-template-with-eventhub.json** (with eventhub)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template-with-eventhub.json)
+- **azure-template.json** (default (BYO Event Hubs/Kafka))
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string.
+## Related
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnextbus%2Fazure-template-with-eventhub.json)
-
-
-## MQTT 5.0 / Unified Namespace
-
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-nextbus-mqtt:latest
-docker run --rm -e MQTT_BROKER_URL=mqtt://broker:1883 ghcr.io/clemensv/real-time-sources-nextbus-mqtt:latest
-```
-
-| Variable | Required | Default | Description |
-|---|---:|---|---|
-| `MQTT_BROKER_URL` | No | `mqtt://localhost:1883` | MQTT broker URL. |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | No | — | Optional username/password auth. |
-| `MQTT_TLS` | No | `false` | Enable TLS for broker connections. |
-
-## AMQP 1.0
-
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-nextbus-amqp:latest
-docker run --rm -e AMQP_HOST=broker -e AMQP_ADDRESS=nextbus ghcr.io/clemensv/real-time-sources-nextbus-amqp:latest
-```
-
-| Variable | Required | Default | Description |
-|---|---:|---|---|
-| `AMQP_HOST` | No | `localhost` | AMQP 1.0 broker host. |
-| `AMQP_PORT` | No | `5672` | AMQP 1.0 broker port. |
-| `AMQP_ADDRESS` | No | `nextbus` | Queue/topic/address to send to. |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | No | — | Optional SASL PLAIN credentials. |
+- [README.md](README.md) — source overview and quick-start guidance.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schemas.
+- [`xreg/nextbus.xreg.json`](xreg/nextbus.xreg.json) — authoritative xRegistry manifest.

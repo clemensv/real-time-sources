@@ -1,170 +1,149 @@
-# GTFS and GTFS-RT API Bridge Usage Guide
+# GTFS Realtime feeder
+
+This feeder turns the upstream GTFS Realtime feed into a real-time CloudEvents stream over KAFKA / MQTT / AMQP.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+GTFS Realtime publishes operational real-time data that is useful across hazard and mobility analytics workflows, but each consumer otherwise has to build and operate its own source connector, transport adapter, and schema normalization.
+
+This bridge provides one reusable feed for common scenarios:
+
+- **Operations dashboards** — power near-real-time fleet, traffic, or incident views.
+- **Streaming analytics** — ingest directly into Eventhouse, ADX, or a lakehouse pipeline.
+- **Cross-source correlation** — join this stream with weather, hydrology, and public-safety feeds in this repository.
+- **Alerting and automation** — trigger rules based on stable CloudEvents payloads and keys.
+- **Research and reporting** — keep a reproducible event archive for retrospective analysis.
 
 ## Overview
 
-**GTFS and GTFS-RT API Bridge** is a tool that fetches GTFS (General Transit Feed Specification) Realtime and Static data from various transit agency sources, processes the data, and publishes it to Kafka topics using SASL PLAIN authentication. This tool can be integrated with systems like Microsoft Event Hubs or Microsoft Fabric Event Streams.
+**GTFS Realtime** in this repository is a streaming bridge and ships in the transport variants below:
 
-GTFS is a set of open data standards for public transportation schedules and
-associated geographic information. GTFS-RT is a real-time extension to GTFS that
-allows public transportation agencies to provide real-time updates about their
-fleet. Over 2000 transit agencies worldwide provide GTFS and GTFS-RT data.
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-gtfs` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Fabric Event Streams) | Topic(s): `gtfs`, key = `{agencyid}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-gtfs-mqtt` | MQTT 5.0 broker (incl. Azure Event Grid MQTT and Fabric Real-Time Hub MQTT source) | Unified Namespace topic tree `transit/intl/gtfs/gtfs/{agencyid}/static/agency/{row_id}` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-gtfs-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0, Artemis, Qpid Dispatch, Azure Service Bus/Event Hubs) | AMQP node `gtfs`, CloudEvents binary mode |
 
-The [Mobility Database](https://mobilitydatabase.org/) provides a comprehensive list of GTFS
-and GTFS-RT feeds from around the world. 
+All variants share:
 
-## Key Features:
-- **GTFS-RT Data Polling**: Poll GTFS Realtime feeds for vehicle positions, trip updates, and alerts.
-- **GTFS Static Data Processing**: Fetch GTFS static data (routes, stops, schedules) and send it to Kafka topics.
-- **Kafka Integration**: Supports sending data to Kafka topics using SASL PLAIN authentication.
+- The xRegistry contract (`xreg/gtfs.xreg.json`).
+- A common upstream acquisition path and normalized event payloads.
+- Stable CloudEvents subject/key identity derived from source-native identifiers.
 
-## Installation
+## Key features
 
-The tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/) or from the Microsoft Store if you are on Windows.
+- Real-time source ingestion for **Global — 1,000+ transit agencies, vehicles, trips, alerts**.
+- Contract-first CloudEvents output with JsonStructure schemas.
+- Transport variants aligned to the same core event model.
+- Deployment-ready container images for local, Azure, and Fabric-aligned topologies.
 
-### Installation Steps
+## Repository layout
 
-Once Python is installed, you can install the tool from the command line as follows:
+```text
+gtfs/
+  xreg/                           # xRegistry contracts
+  gtfs_amqp/
+  gtfs_amqp_producer/
+  gtfs_mqtt/
+  gtfs_mqtt_producer/
+  gtfs_producer/
+  gtfs_rt_bridge/
+  gtfs_rt_producer/
+  kql/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+```
+
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Network access to the upstream data endpoint(s).
+- Network access to your target broker (Kafka, MQTT, or AMQP).
+
+This source is handled as a streaming feeder in this batch; no notebook runtime section is included.
+
+## Quick start with Docker
+
+### Kafka
 
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=gtfs
+docker run --rm \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-gtfs:latest
 ```
 
-If you clone the repository, you can install the tool as follows:
+### MQTT (Unified Namespace)
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/gtfs
-pip install .
+docker run --rm \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-gtfs-mqtt:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
+Topics follow the contract templates in [EVENTS.md](EVENTS.md); primary template: `transit/intl/gtfs/gtfs/{agencyid}/static/agency/{row_id}`.
 
-## How to Use
-
-After installation, the tool can be run using the `gtfs` command. It supports several arguments for configuring the polling process and sending data to Kafka.
-
-The events sent to Kafka are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
-
-### `feed` Command-Line Arguments
-
-- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
-- `--kafka-topic`: The Kafka topic to send messages to.
-- `--sasl-username`: Username for SASL PLAIN authentication.
-- `--sasl-password`: Password for SASL PLAIN authentication.
-- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string (overrides other Kafka parameters).
-- `--gtfs-rt-urls`: URL(s) for GTFS Realtime feeds.
-- `--gtfs-urls`: URL(s) for GTFS Static schedule feeds.
-- `--mdb-source-id`: Mobility Database source ID for GTFS Realtime or Static feeds.
-- `--agency`: Agency ID to poll data for.
-- `--route`: (Optional) Route ID to poll data for. If not provided, data for all routes will be polled.
-- `--poll-interval`: Interval in seconds to wait between polling vehicle locations.
-- `--force-schedule-refresh`: Force a refresh of the GTFS schedule data.
-
-### Example Usage
-
-#### Poll GTFS-RT and Send Data to Kafka
-```bash
-gtfs feed --connection-string "<your_connection_string>"
-```
-
-#### Poll a Specific Route for Vehicle Data
-```bash
-gtfs feed --connection-string "<your_connection_string>" --route "<route_id>"
-```
-
-#### Using Kafka Parameters Directly
-If you do not want to use a connection string, you can provide the Kafka parameters directly:
+### AMQP 1.0
 
 ```bash
-gtfs feed --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-topic "<topic_name>" --sasl-username "<username>" --sasl-password "<password>"
+docker run --rm \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/gtfs' \
+  ghcr.io/clemensv/real-time-sources-gtfs-amqp:latest
 ```
 
-### Connection String for Microsoft Event Hubs or Fabric Event Streams
+## Configuration reference
 
-You can provide a **connection string** for Microsoft Event Hubs or Microsoft Fabric Event Streams to simplify the configuration by consolidating the Kafka bootstrap server, topic, username, and password.
+The complete environment-variable contract per image is documented in [CONTAINER.md](CONTAINER.md), including connection-string mode, direct broker parameters, authentication options, and transport-specific knobs.
 
-#### Format:
-```
-Endpoint=sb://<your-event-hubs-namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy-name>;SharedAccessKey=<access-key>;EntityPath=<event-hub-name>
-```
+## Data model
 
-### Additional Commands
+This source exposes **31 event type(s)** across **2 base message group(s)**:
 
-#### Print GTFS Realtime Feed Data
-Prints the GTFS-RT data for a single request:
+- `GeneralTransitFeedRealTime.Vehicle.VehiclePosition`
+- `GeneralTransitFeedRealTime.Trip.TripUpdate`
+- `GeneralTransitFeedRealTime.Alert.Alert`
+- `GeneralTransitFeedStatic.Agency`
+- `GeneralTransitFeedStatic.Areas`
+- `GeneralTransitFeedStatic.Attributions`
+- `GeneralTransitFeed.BookingRules`
+- `GeneralTransitFeedStatic.FareAttributes`
+- `GeneralTransitFeedStatic.FareLegRules`
+- `GeneralTransitFeedStatic.FareMedia`
+- `GeneralTransitFeedStatic.FareProducts`
+- `GeneralTransitFeedStatic.FareRules`
+- … plus 19 more event type(s)
 
-```bash
-gtfs printfeed --gtfs-rt-url "<gtfs_rt_url>"
-```
+See [EVENTS.md](EVENTS.md) for the full field-level schema contract and routing metadata.
 
-#### List Agencies
-Lists the agencies in the Mobility Database:
+## Deploying into Microsoft Fabric
 
-```bash
-gtfs agencies
-```
+This source is documented as a streaming feeder for this rollout. Use the **Fabric ACI feeder** model to host the container and route into a Fabric Event Stream custom endpoint, then materialize into Eventhouse with the checked-in KQL assets.
 
-#### List Routes
-Lists the routes from a GTFS Static feed:
-
-```bash
-gtfs routes --gtfs-url "<gtfs_url>"
-```
-
-#### List Stops
-Lists the stops for a given route:
-
-```bash
-gtfs stops --route "<route_id>" --gtfs-url "<gtfs_url>"
-```
-
-## Environment Variables
-
-You can avoid passing parameters via the command line by setting the following environment variables:
-- `KAFKA_BOOTSTRAP_SERVERS`: List of Kafka bootstrap servers.
-- `KAFKA_TOPIC`: Kafka topic to send messages to.
-- `SASL_USERNAME`: Username for SASL PLAIN authentication.
-- `SASL_PASSWORD`: Password for SASL PLAIN authentication.
-- `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
-- `GTFS_RT_URLS`: Comma-separated list of GTFS Realtime feed URLs.
-- `GTFS_URLS`: Comma-separated list of GTFS Static schedule feed URLs.
-- `MDB_SOURCE_ID`: Mobility Database source ID for the GTFS feed.
-- `AGENCY`: Agency ID to poll data for.
-
-### CloudEvents Mode
-You can specify the CloudEvents mode (either `structured` or `binary`) when sending data to Kafka:
-
-```bash
-gtfs feed --cloudevents-mode structured
-```
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#gtfs/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+The following ARM templates exist in this source folder:
 
-### Option 1: Bring your own Event Hub
+- **azure-template-mqtt.json** (mqtt)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgtfs%2Fazure-template-mqtt.json)
+- **azure-template-with-eventgrid-mqtt.json** (with eventgrid mqtt)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgtfs%2Fazure-template-with-eventgrid-mqtt.json)
+- **azure-template-with-eventhub.json** (with eventhub)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgtfs%2Fazure-template-with-eventhub.json)
+- **azure-template.json** (default (BYO Event Hubs/Kafka))
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgtfs%2Fazure-template.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+## Next steps
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgtfs%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fgtfs%2Fazure-template-with-eventhub.json)
-
-
-## MQTT and AMQP companion feeders
-
-This source now ships separate MQTT and AMQP companion containers in addition to the Kafka/Event Hubs feeder. The MQTT container publishes binary-mode CloudEvents to the UNS topic templates declared in `xreg/`; the AMQP container publishes the same CloudEvents to an AMQP 1.0 address named `gtfs` by default.
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources-gtfs-mqtt:latest`
-- AMQP image: `ghcr.io/clemensv/real-time-sources-gtfs-amqp:latest`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `infra/azure-template-amqp.json`, `infra/azure-template-with-servicebus.json`
+- Review [EVENTS.md](EVENTS.md) before writing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for the full env-var matrix and auth variants.
+- Choose Fabric ACI or direct Azure deployment based on your runtime target.

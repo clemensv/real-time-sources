@@ -1,4 +1,4 @@
-# Mode-S Data Poller Usage Guide Events
+# Mode-S feeder Events
 
 MQTT/5.0 non-retained per-record Mode-S firehose. Each Downlink Format family (DF17/18 ADS-B, DF4 altitude reply, DF5 identity reply, DF11 all-call/acquisition reply, DF20/21 Comm-B) gets a dedicated topic so subscribers can wildcard per family. QoS 0, retain=false.
 
