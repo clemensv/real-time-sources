@@ -1,107 +1,150 @@
-# iRail Belgian Railway Bridge
+# iRail feeder
 
-Real-time Belgian railway data bridge to Apache Kafka via CloudEvents.
+This feeder turns the Belgian [iRail API](https://docs.irail.be/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published images, environment variables, and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing details.
+
+## Why this bridge
+
+iRail publishes live NMBS/SNCB station-board data for the Belgian rail network. This feeder republishes it as CloudEvents so operations and analytics teams subscribe to streams instead of polling hundreds of stations directly.
+
+Concrete consumer scenarios:
+
+- **Operations dashboards** ingest the stream for near-real-time visibility without polling logic in every app.
+- **Data engineering pipelines** land events in Eventhouse/Data Lake/Kafka topics with stable keys and schemas.
+- **Alerting and automation** subscribe to the relevant event families and trigger downstream workflows.
+- **Research and analytics teams** replay the same contract across historical and live windows.
+- **Cross-domain correlation** joins these events with weather, traffic, or incident streams from sibling feeders.
 
 ## Overview
 
-This source bridges the [iRail API](https://docs.irail.be/) to Apache
-Kafka. iRail provides real-time data for the Belgian national railway
-network operated by NMBS/SNCB (Nationale Maatschappij der Belgische
-Spoorwegen / Société Nationale des Chemins de fer Belges).
+Polls station metadata plus live departure and arrival boards and emits reference + telemetry CloudEvents.
 
-The bridge polls the iRail liveboard API for approximately 600 Belgian
-railway stations, emitting station metadata as reference events and real-time
-departure boards as telemetry events in CloudEvents format.
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-irail` | Apache Kafka compatible (incl. Azure Event Hubs/Fabric Event Streams) | CloudEvents on one topic |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-irail-mqtt` | MQTT 5.0 broker | CloudEvents with xRegistry topic mapping |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-irail-amqp` | AMQP 1.0 broker / Service Bus | CloudEvents on one AMQP address |
 
-## Data Model
+All variants share:
 
-### Station (Reference)
+- The same upstream acquisition logic and poll cadence.
+- The same xRegistry contract and schema set.
+- The same event identities and key/subject model across transports.
 
-Station metadata including the 9-digit UIC-derived NMBS identifier,
-geographic coordinates, and multilingual names. Emitted at startup.
+## Key features
 
-### StationBoard (Telemetry)
+- Shared contract and event schemas across Kafka, MQTT, and AMQP images.
+- Container-first deployment model for Azure ACI and Fabric hosting.
+- Dedupe/resume behavior for long-running ingestion.
+- Source-specific event families are documented in [EVENTS.md](EVENTS.md).
 
-A snapshot of the current departure board for a station. Contains an array
-of departures with real-time delay information, platform assignments,
-cancellation status, vehicle identifiers, and crowd-sourced occupancy
-estimates. Polled periodically for each station.
+## Repository layout
 
-## Upstream API
+```text
+irail/
+  xreg/irail.xreg.json     # shared xRegistry contract
+  irail/ # feeder runtime
+  irail_amqp/ # AMQP feeder application
+  irail_mqtt/ # MQTT feeder application
+  irail_amqp_producer/ # generated producer package
+  irail_mqtt_producer/ # generated producer package
+  irail_producer/ # generated producer package
+  kql/ # KQL schema scripts
+  notebook/ # Fabric notebook feeder
+  tests/ # unit + integration tests
+  Dockerfile                # builds the Kafka feeder image
+  Dockerfile.mqtt                # builds the MQTT feeder image
+  Dockerfile.amqp                # builds the AMQP feeder image
+```
 
-- Documentation: https://docs.irail.be/
-- Rate limits: 3 requests/second with 5 burst
-- No authentication required
-- License: iRail open data
+## Prerequisites
 
-## Channel Audit
+- Docker 20.10+.
+- Outbound HTTPS access to the upstream source.
+- Network access to your Kafka, MQTT, or AMQP destination.
+- A writable `/state` mount for stateful polling deployments.
 
-| Endpoint | Decision | Reason |
-|---|---|---|
-| `/stations/` | Keep | Reference data for all NMBS stations |
-| `/liveboard/` | Keep | Core real-time departure data with delays |
-| `/vehicle/` | Drop | Requires known vehicle IDs; data available through liveboard |
-| `/connections/` | Drop | Trip planner (query-based A→B), not a feed |
-| `/composition/` | Drop | Carriage composition, noted as buggy in API docs |
-| `/disturbances/` | Drop | No stable unique identifier for keying |
-| `/feedback/` | Drop | POST endpoint for crowd-sourced occupancy |
-| `/logs/` | Drop | API usage analytics |
+## Quick start with Docker
 
-## Running
+### Kafka
 
-See [CONTAINER.md](CONTAINER.md) for Docker deployment instructions.
-See [EVENTS.md](EVENTS.md) for the full event catalog.
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/irail.json \
+  -e CONNECTION_STRING="<event-hubs-or-kafka-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-irail:latest
+```
+
+### MQTT
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/irail-mqtt.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-irail-mqtt:latest
+```
+
+### AMQP
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/irail-amqp.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/irail" \
+  ghcr.io/clemensv/real-time-sources-irail-amqp:latest
+```
+
+## Configuration reference
+
+Full per-transport environment-variable matrices live in [CONTAINER.md](CONTAINER.md).
+
+State-file behavior: Kafka uses `STATE_FILE`; MQTT uses `STATE_FILE`; AMQP uses `STATE_FILE`.
+
+## Data model
+
+- `be.irail.Station` — station metadata reference events
+- `be.irail.StationBoard` — departure board snapshots
+- `be.irail.ArrivalBoard` — arrival board snapshots
+
+## Deploying into Microsoft Fabric
+
+This source supports both Fabric-hosted deployment models.
+
+### Fabric Notebook feeder
+
+Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source irail ...` to schedule the poller in a Fabric notebook using the source notebook under [`notebook/`](notebook/).
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#irail/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source irail ...` to run the container continuously in Azure Container Instances with Fabric Event Stream / Eventhouse wiring.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#irail/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Firail%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Firail%2Fazure-template-with-eventhub.json)
 
-## Fabric notebook hosting
+### AMQP — provision a new Azure Service Bus namespace
 
-This source can also be hosted as a scheduled Microsoft Fabric notebook (see `irail/notebook/irail-feed.ipynb`) deployed via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Firail%2Fazure-template-with-servicebus.json)
 
-## Transports
+### Kafka — bring your own Event Hub / Kafka
 
-This source now ships separate Kafka and MQTT containers over the same xRegistry contract. The Kafka image is the best fit when consumers need replay, batch catch-up, or a single ordered stream. The MQTT image (`ghcr.io/clemensv/real-time-sources-irail-mqtt:latest`) is the better fit for operational dashboards and Unified Namespace subscribers that want to subscribe directly to the current state or live event slice for this source.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Firail%2Fazure-template.json)
 
-The MQTT contract is source-specific: MQTT/5.0 transport variants for iRail Belgian railway station metadata and live board snapshots. Topics are retained QoS-1 state leaves under transit/be/irail/irail/{station_id}/{event}. The station_id topic axis preserves the existing Kafka/CloudEvents subject. Use transit/be/irail/irail/{station_id}/# for one station, transit/be/irail/irail/+/station-board for all departure boards, and transit/be/irail/irail/+/arrival-board for all arrival boards. Board snapshots use message expiry so stale liveboards age out if polling stops.
-
-MQTT publishes binary-mode CloudEvents with JSON payloads and CloudEvent attributes in MQTT 5 user properties. Topic patterns from `xreg/irail.xreg.json`:
-
-| Topic pattern | Message type | Delivery |
-|---|---|---|
-| `transit/be/irail/irail/{station_id}/info` | `be.irail.Station` | QoS 1, retain=true |
-| `transit/be/irail/irail/{station_id}/station-board` | `be.irail.StationBoard` | QoS 1, retain=true, expiry=900s |
-| `transit/be/irail/irail/{station_id}/arrival-board` | `be.irail.ArrivalBoard` | QoS 1, retain=true, expiry=900s |
-
-Four Azure Container Instance deployment shapes are documented for this source:
-
-| Transport | Template |
-|---|---|
-| Kafka, bring your own Event Hub or compatible broker | `azure-template.json` |
-| Kafka, create an Event Hubs namespace and hub | `azure-template-with-eventhub.json` |
-| MQTT, bring your own MQTT 5 broker | `azure-template-mqtt.json` |
-| MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
-
-See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.
-
-## AMQP 1.0 companion
-
-This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.
+## Next steps
+- Review [EVENTS.md](EVENTS.md) before writing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for complete environment-variable and auth-mode details.
+- Mount persistent state storage in production.

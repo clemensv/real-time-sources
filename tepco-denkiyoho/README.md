@@ -1,56 +1,152 @@
-# TEPCO Electricity Supply & Demand (Denki Yoho) Bridge
+# TEPCO Denkiyoho feeder
 
-This source polls Tokyo Electric Power Company (TEPCO) Electricity Forecast (でんき予報) open data and emits CloudEvents to Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams.
+This feeder turns TEPCO electricity forecast CSV feeds into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-## Upstream source
+Companion docs:
 
-- Publisher: Tokyo Electric Power Company (TEPCO / 東京電力)
-- Coverage: Tokyo Electric Power Company service area: Tokyo, Kanagawa, Saitama, Chiba, Tochigi, Gunma, Ibaraki, Yamanashi, and Shizuoka east of the Fujikawa River
-- Main feed: `https://www.tepco.co.jp/forecast/html/images/juyo-d1-j.csv`
-- Encoding: Shift-JIS
-- Cadence: about every 5 minutes
-- Auth: none
+- [CONTAINER.md](CONTAINER.md) — published images, environment variables, and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing details.
 
-## Channel review
+## Why this bridge
 
-| Data family | Transport | Identity | Cadence | Decision |
-| --- | --- | --- | --- | --- |
-| Daily same-day CSV `juyo-d1-j.csv` | HTTPS Shift-JIS CSV | date + local time, with `_supply_capacity_` sentinel for daily supply reference | ~5 minutes | Keep: contains supply capacity, hourly forecasts, and five-minute actual demand. |
-| Archive CSV `juyo-j.csv` | HTTPS Shift-JIS CSV | date + local time | Archive/reconciliation | Drop for initial bridge: lower-priority duplicate/history view, not needed for live feed. |
-| Forecast website HTML | HTTPS HTML | page widgets | ~5 minutes | Drop: presentation layer for values carried by the CSV. |
+TEPCO demand/supply telemetry is used in Kanto-region power operations and forecasting. This feeder normalizes the CSV stream into CloudEvents across Kafka, MQTT, and AMQP.
 
-TEPCO does not expose station, sensor, zone, or entity metadata endpoints for this feed; the only reference event is the daily supply-capacity header from the same CSV.
+Concrete consumer scenarios:
 
-## Events
+- **Operations dashboards** ingest the stream for near-real-time visibility without polling logic in every app.
+- **Data engineering pipelines** land events in Eventhouse/Data Lake/Kafka topics with stable keys and schemas.
+- **Alerting and automation** subscribe to the relevant event families and trigger downstream workflows.
+- **Research and analytics teams** replay the same contract across historical and live windows.
+- **Cross-domain correlation** joins these events with weather, traffic, or incident streams from sibling feeders.
 
-The bridge emits three event types in one message group (`JP.TEPCO.Denkiyoho`):
+## Overview
 
-- `SupplyCapacity` daily reference data from the CSV header
-- `DemandActual` five-minute actual demand rows with non-zero measured values
-- `DemandForecast` hourly forecast rows
+Parses TEPCO CSV updates and emits supply-capacity, demand-actual, and demand-forecast events.
 
-Values published by TEPCO in `万kW` are preserved and also converted to MW by multiplying by 10. See [EVENTS.md](EVENTS.md) for the contract.
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-tepco-denkiyoho` | Apache Kafka compatible (incl. Azure Event Hubs/Fabric Event Streams) | CloudEvents on one topic |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-tepco-denkiyoho-mqtt` | MQTT 5.0 broker | CloudEvents with xRegistry topic mapping |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-tepco-denkiyoho-amqp` | AMQP 1.0 broker / Service Bus | CloudEvents on one AMQP address |
 
-## Usage
+All variants share:
 
-Install locally:
+- The same upstream acquisition logic and poll cadence.
+- The same xRegistry contract and schema set.
+- The same event identities and key/subject model across transports.
 
-```powershell
-cd tepco-denkiyoho
-pip install .\tepco_denkiyoho_producer\tepco_denkiyoho_producer_data
-pip install .\tepco_denkiyoho_producer\tepco_denkiyoho_producer_kafka_producer
-pip install .
+## Key features
+
+- Shared contract and event schemas across Kafka, MQTT, and AMQP images.
+- Container-first deployment model for Azure ACI and Fabric hosting.
+- Dedupe/resume behavior for long-running ingestion.
+- Source-specific event families are documented in [EVENTS.md](EVENTS.md).
+
+## Repository layout
+
+```text
+tepco-denkiyoho/
+  xreg/tepco-denkiyoho.xreg.json     # shared xRegistry contract
+  tepco_denkiyoho/ # feeder runtime
+  tepco_denkiyoho_amqp/ # AMQP feeder application
+  tepco_denkiyoho_mqtt/ # MQTT feeder application
+  tepco_denkiyoho_amqp_producer/ # generated producer package
+  tepco_denkiyoho_mqtt_producer/ # generated producer package
+  tepco_denkiyoho_producer/ # generated producer package
+  kql/ # KQL schema scripts
+  notebook/ # Fabric notebook feeder
+  tests/ # unit + integration tests
+  Dockerfile                # builds the Kafka feeder image
+  Dockerfile.mqtt                # builds the MQTT feeder image
+  Dockerfile.amqp                # builds the AMQP feeder image
 ```
 
-Run the poller:
+## Prerequisites
 
-```powershell
-tepco-denkiyoho feed --connection-string "BootstrapServer=localhost:9092;EntityPath=tepco-denkiyoho" --once
+- Docker 20.10+.
+- Outbound HTTPS access to the upstream source.
+- Network access to your Kafka, MQTT, or AMQP destination.
+- A writable `/state` mount for stateful polling deployments.
+
+## Quick start with Docker
+
+### Kafka
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/tepco-denkiyoho.json \
+  -e CONNECTION_STRING="<event-hubs-or-kafka-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-tepco-denkiyoho:latest
 ```
 
-Configuration can be supplied by command-line arguments or environment variables: `CONNECTION_STRING`, `KAFKA_TOPIC`, `POLLING_INTERVAL`, `KAFKA_ENABLE_TLS`, and `STATE_FILE`.
+### MQTT
 
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-tepco-denkiyoho-mqtt:latest
+```
 
-## Transports
+### AMQP
 
-This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/tepco-denkiyoho" \
+  ghcr.io/clemensv/real-time-sources-tepco-denkiyoho-amqp:latest
+```
+
+## Configuration reference
+
+Full per-transport environment-variable matrices live in [CONTAINER.md](CONTAINER.md).
+
+State-file behavior: Kafka uses `STATE_FILE`; MQTT companion app is stateless; AMQP companion app is stateless.
+
+## Data model
+
+- `SupplyCapacity` — daily capacity reference
+- `DemandActual` — five-minute measured demand
+- `DemandForecast` — hourly forecast demand
+
+## Deploying into Microsoft Fabric
+
+This source supports both Fabric-hosted deployment models.
+
+### Fabric Notebook feeder
+
+Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source tepco-denkiyoho ...` to schedule the poller in a Fabric notebook using the source notebook under [`notebook/`](notebook/).
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#tepco-denkiyoho/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source tepco-denkiyoho ...` to run the container continuously in Azure Container Instances with Fabric Event Stream / Eventhouse wiring.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#tepco-denkiyoho/fabric-aci)
+
+## Deploying into Azure Container Instances
+
+### AMQP — bring your own broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ftepco-denkiyoho%2Fazure-template-amqp.json)
+
+### MQTT — bring your own broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ftepco-denkiyoho%2Fazure-template-mqtt.json)
+
+### MQTT — provision a new Event Grid MQTT broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ftepco-denkiyoho%2Fazure-template-with-eventgrid-mqtt.json)
+
+### AMQP — provision a new Azure Service Bus namespace
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ftepco-denkiyoho%2Fazure-template-with-servicebus.json)
+
+## Next steps
+- Review [EVENTS.md](EVENTS.md) before writing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for complete environment-variable and auth-mode details.
+- Mount persistent state storage in production.

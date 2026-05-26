@@ -1,74 +1,159 @@
-# Energi Data Service (Energinet) Denmark Bridge
+# Energi Data Service DK feeder
 
-A real-time data bridge that polls the [Energi Data Service](https://www.energidataservice.dk/) API operated by Energinet (the Danish TSO) and streams Danish power system data to Apache Kafka, Azure Event Hubs, or Fabric Event Streams as CloudEvents.
+This feeder turns the [Energi Data Service API](https://www.energidataservice.dk/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-## Data Sources
+Companion docs:
 
-| Dataset | Update Frequency | Description |
-|---------|-----------------|-------------|
-| PowerSystemRightNow | ~1 minute | System-wide snapshot: CO2, solar, wind, exchange flows, balancing, imbalance |
-| ElspotPrices | Hourly | Day-ahead spot prices per bidding zone (DK1, DK2) in DKK and EUR |
+- [CONTAINER.md](CONTAINER.md) — published images, environment variables, and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing details.
 
-## Events
+## Why this bridge
 
-See [EVENTS.md](EVENTS.md) for the full event schema documentation.
+Energinet power snapshots and spot prices are core inputs for Danish grid operations, market monitoring, and forecasting. This feeder emits those records as CloudEvents.
 
-## Container
+Concrete consumer scenarios:
 
-See [CONTAINER.md](CONTAINER.md) for container deployment instructions.
+- **Operations dashboards** ingest the stream for near-real-time visibility without polling logic in every app.
+- **Data engineering pipelines** land events in Eventhouse/Data Lake/Kafka topics with stable keys and schemas.
+- **Alerting and automation** subscribe to the relevant event families and trigger downstream workflows.
+- **Research and analytics teams** replay the same contract across historical and live windows.
+- **Cross-domain correlation** joins these events with weather, traffic, or incident streams from sibling feeders.
 
-## Fabric notebook hosting
+## Overview
 
-This source ships a Fabric notebook feeder at [`notebook/energidataservice-dk-feed.ipynb`](notebook/energidataservice-dk-feed.ipynb); deploy it with [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) to run scheduled single-cycle polls inside a Microsoft Fabric workspace.
+Polls PowerSystemRightNow and ElspotPrices datasets and emits deduplicated events.
 
-## Quick Start
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-energidataservice-dk` | Apache Kafka compatible (incl. Azure Event Hubs/Fabric Event Streams) | CloudEvents on one topic |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-energidataservice-dk-mqtt` | MQTT 5.0 broker | CloudEvents with xRegistry topic mapping |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-energidataservice-dk-amqp` | AMQP 1.0 broker / Service Bus | CloudEvents on one AMQP address |
 
-```shell
+All variants share:
+
+- The same upstream acquisition logic and poll cadence.
+- The same xRegistry contract and schema set.
+- The same event identities and key/subject model across transports.
+
+## Key features
+
+- Shared contract and event schemas across Kafka, MQTT, and AMQP images.
+- Container-first deployment model for Azure ACI and Fabric hosting.
+- Dedupe/resume behavior for long-running ingestion.
+- Source-specific event families are documented in [EVENTS.md](EVENTS.md).
+
+## Repository layout
+
+```text
+energidataservice-dk/
+  xreg/energidataservice_dk.xreg.json     # shared xRegistry contract
+  energidataservice_dk/ # feeder runtime
+  energidataservice_dk_amqp/ # AMQP feeder application
+  energidataservice_dk_mqtt/ # MQTT feeder application
+  energidataservice_dk_amqp_producer/ # generated producer package
+  energidataservice_dk_mqtt_producer/ # generated producer package
+  energidataservice_dk_producer/ # generated producer package
+  kql/ # KQL schema scripts
+  notebook/ # Fabric notebook feeder
+  tests/ # unit + integration tests
+  Dockerfile                # builds the Kafka feeder image
+  Dockerfile.mqtt                # builds the MQTT feeder image
+  Dockerfile.amqp                # builds the AMQP feeder image
+```
+
+## Prerequisites
+
+- Docker 20.10+.
+- Outbound HTTPS access to the upstream source.
+- Network access to your Kafka, MQTT, or AMQP destination.
+- A writable `/state` mount for stateful polling deployments.
+
+## Quick start with Docker
+
+### Kafka
+
+```bash
 docker run --rm \
-    -e CONNECTION_STRING='BootstrapServer=localhost:9092;EntityPath=energidataservice-dk' \
-    -e KAFKA_ENABLE_TLS=false \
-    ghcr.io/clemensv/real-time-sources-energidataservice-dk:latest
+  -v "$PWD/state:/state" \
+  -e EDS_LAST_POLLED_FILE=/state/energidataservice-dk.json \
+  -e CONNECTION_STRING="<event-hubs-or-kafka-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-energidataservice-dk:latest
 ```
 
-## Development
+### MQTT
 
-```shell
-cd energidataservice-dk
-pip install energidataservice_dk_producer/energidataservice_dk_producer_data
-pip install energidataservice_dk_producer/energidataservice_dk_producer_kafka_producer
-pip install -e .
-pytest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-energidataservice-dk-mqtt:latest
 ```
 
-## Regenerating the Producer
+### AMQP
 
-```shell
-cd energidataservice-dk
-pwsh generate_producer.ps1
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/energidataservice-dk" \
+  ghcr.io/clemensv/real-time-sources-energidataservice-dk-amqp:latest
 ```
+
+## Configuration reference
+
+Full per-transport environment-variable matrices live in [CONTAINER.md](CONTAINER.md).
+
+State-file behavior: Kafka uses `EDS_LAST_POLLED_FILE`; MQTT companion app is stateless; AMQP companion app is stateless.
+
+## Data model
+
+- Power-system snapshot events
+- Spot-price events
+
+## Deploying into Microsoft Fabric
+
+This source supports both Fabric-hosted deployment models.
+
+### Fabric Notebook feeder
+
+Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source energidataservice-dk ...` to schedule the poller in a Fabric notebook using the source notebook under [`notebook/`](notebook/).
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#energidataservice-dk/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source energidataservice-dk ...` to run the container continuously in Azure Container Instances with Fabric Event Stream / Eventhouse wiring.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#energidataservice-dk/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### AMQP — bring your own broker
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergidataservice-dk%2Fazure-template-amqp.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — bring your own broker
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergidataservice-dk%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergidataservice-dk%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision a new Event Grid MQTT broker
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergidataservice-dk%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergidataservice-dk%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace
 
-## Transports
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergidataservice-dk%2Fazure-template-with-servicebus.json)
 
-This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fenergidataservice-dk%2Fazure-template.json)
+
+## Next steps
+- Review [EVENTS.md](EVENTS.md) before writing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for complete environment-variable and auth-mode details.
+- Mount persistent state storage in production.
