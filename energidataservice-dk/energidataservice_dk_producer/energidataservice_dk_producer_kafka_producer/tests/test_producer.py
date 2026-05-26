@@ -23,6 +23,10 @@ from energidataservice_dk_producer_data import PowerSystemSnapshot
 from test_energidataservice_dk_producer_data_powersystemsnapshot import Test_PowerSystemSnapshot
 from energidataservice_dk_producer_data import SpotPrice
 from test_energidataservice_dk_producer_data_spotprice import Test_SpotPrice
+from energidataservice_dk_producer_data import Info
+from test_energidataservice_dk_producer_data_info import Test_Info
+from energidataservice_dk_producer_kafka_producer.producer import DkEnerginetEnergidataserviceMqttEventProducer
+from energidataservice_dk_producer_kafka_producer.producer import DkEnerginetEnergidataserviceAmqpEventProducer
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -69,17 +73,17 @@ def test_dk_energinet_energidataservice_dkenerginetenergidataservicepowersystems
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-    
+
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-    
+
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-    
+
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -102,11 +106,11 @@ def test_dk_energinet_energidataservice_dkenerginetenergidataservicepowersystems
     producer_instance = DkEnerginetEnergidataserviceEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_PowerSystemSnapshot.create_instance()
-    
+
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_dk_energinet_energidataservice_power_system_snapshot(_price_area = f'test_{i}', data = event_data)
-    
+
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -132,17 +136,17 @@ def test_dk_energinet_energidataservice_dkenerginetenergidataservicespotprice(ka
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-    
+
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-    
+
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-    
+
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -165,11 +169,11 @@ def test_dk_energinet_energidataservice_dkenerginetenergidataservicespotprice(ka
     producer_instance = DkEnerginetEnergidataserviceEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_SpotPrice.create_instance()
-    
+
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_dk_energinet_energidataservice_spot_price(_price_area = f'test_{i}', data = event_data)
-    
+
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -179,6 +183,435 @@ def test_dk_energinet_energidataservice_dkenerginetenergidataservicespotprice(ka
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
         expected_key = "{price_area}".format(price_area=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_dk_energinet_energidataservice_dkenerginetenergidataserviceinfo(kafka_emulator):
+    """Test the DkEnerginetEnergidataserviceInfo event from the Dk.Energinet.Energidataservice message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_dk_energinet_energidataservice_dkenerginetenergidataserviceinfo',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "dk.energinet.energidataservice.Info":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DkEnerginetEnergidataserviceEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Info.create_instance()
+
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_dk_energinet_energidataservice_info(_price_area = f'test_{i}', data = event_data)
+
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{price_area}".format(price_area=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_dk_energinet_energidataservice_mqtt_dkenerginetenergidataservicemqttpowersystemsnapshot(kafka_emulator):
+    """Test the DkEnerginetEnergidataserviceMqttPowerSystemSnapshot event from the Dk.Energinet.Energidataservice.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_dk_energinet_energidataservice_mqtt_dkenerginetenergidataservicemqttpowersystemsnapshot',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "dk.energinet.energidataservice.mqtt.PowerSystemSnapshot":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DkEnerginetEnergidataserviceMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_PowerSystemSnapshot.create_instance()
+
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_dk_energinet_energidataservice_mqtt_power_system_snapshot(_price_area = f'test_{i}', data = event_data)
+
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_dk_energinet_energidataservice_mqtt_dkenerginetenergidataservicemqttspotprice(kafka_emulator):
+    """Test the DkEnerginetEnergidataserviceMqttSpotPrice event from the Dk.Energinet.Energidataservice.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_dk_energinet_energidataservice_mqtt_dkenerginetenergidataservicemqttspotprice',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "dk.energinet.energidataservice.mqtt.SpotPrice":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DkEnerginetEnergidataserviceMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_SpotPrice.create_instance()
+
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_dk_energinet_energidataservice_mqtt_spot_price(_price_area = f'test_{i}', data = event_data)
+
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_dk_energinet_energidataservice_mqtt_dkenerginetenergidataservicemqttinfo(kafka_emulator):
+    """Test the DkEnerginetEnergidataserviceMqttInfo event from the Dk.Energinet.Energidataservice.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_dk_energinet_energidataservice_mqtt_dkenerginetenergidataservicemqttinfo',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "dk.energinet.energidataservice.mqtt.Info":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DkEnerginetEnergidataserviceMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Info.create_instance()
+
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_dk_energinet_energidataservice_mqtt_info(_price_area = f'test_{i}', data = event_data)
+
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_dk_energinet_energidataservice_amqp_dkenerginetenergidataserviceamqppowersystemsnapshot(kafka_emulator):
+    """Test the DkEnerginetEnergidataserviceAmqpPowerSystemSnapshot event from the Dk.Energinet.Energidataservice.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_dk_energinet_energidataservice_amqp_dkenerginetenergidataserviceamqppowersystemsnapshot',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "dk.energinet.energidataservice.amqp.PowerSystemSnapshot":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DkEnerginetEnergidataserviceAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_PowerSystemSnapshot.create_instance()
+
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_dk_energinet_energidataservice_amqp_power_system_snapshot(_price_area = f'test_{i}', data = event_data)
+
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_dk_energinet_energidataservice_amqp_dkenerginetenergidataserviceamqpspotprice(kafka_emulator):
+    """Test the DkEnerginetEnergidataserviceAmqpSpotPrice event from the Dk.Energinet.Energidataservice.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_dk_energinet_energidataservice_amqp_dkenerginetenergidataserviceamqpspotprice',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "dk.energinet.energidataservice.amqp.SpotPrice":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DkEnerginetEnergidataserviceAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_SpotPrice.create_instance()
+
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_dk_energinet_energidataservice_amqp_spot_price(_price_area = f'test_{i}', data = event_data)
+
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_dk_energinet_energidataservice_amqp_dkenerginetenergidataserviceamqpinfo(kafka_emulator):
+    """Test the DkEnerginetEnergidataserviceAmqpInfo event from the Dk.Energinet.Energidataservice.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_dk_energinet_energidataservice_amqp_dkenerginetenergidataserviceamqpinfo',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "dk.energinet.energidataservice.amqp.Info":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = DkEnerginetEnergidataserviceAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Info.create_instance()
+
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_dk_energinet_energidataservice_amqp_info(_price_area = f'test_{i}', data = event_data)
+
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 

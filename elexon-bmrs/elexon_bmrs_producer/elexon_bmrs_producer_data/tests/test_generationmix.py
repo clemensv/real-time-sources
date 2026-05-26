@@ -29,37 +29,37 @@ class Test_GenerationMix(unittest.TestCase):
         Create instance of GenerationMix for testing
         """
         instance = GenerationMix(
-            settlement_period=int(31),
+            settlement_period=int(14),
             start_time=datetime.datetime.now(datetime.timezone.utc),
-            biomass_mw=float(79.43561814234602),
-            ccgt_mw=float(1.4818704234155655),
-            coal_mw=float(59.975912391983556),
-            nuclear_mw=float(30.076990053515395),
-            wind_mw=float(81.21237837669578),
-            ocgt_mw=float(8.79855711318972),
-            oil_mw=float(65.10373679706905),
-            npshyd_mw=float(44.962907729510235),
-            ps_mw=float(38.36207582912965),
-            intfr_mw=float(24.821551260137408),
-            intned_mw=float(82.10448056215003),
-            intnem_mw=float(92.25802257163124),
-            intelec_mw=float(70.51250959966026),
-            intifa2_mw=float(52.49877958605427),
-            intnsl_mw=float(98.43737759485803),
-            intvkl_mw=float(92.4311606785384),
-            other_mw=float(1.7401134392235673)
+            biomass_mw=float(53.78494758763971),
+            ccgt_mw=float(79.81621187467175),
+            coal_mw=float(13.267410372487198),
+            nuclear_mw=float(74.02248539911062),
+            wind_mw=float(3.571708556988229),
+            ocgt_mw=float(86.09882342288643),
+            oil_mw=float(68.1000452423494),
+            npshyd_mw=float(90.07973035743147),
+            ps_mw=float(33.208607768645315),
+            intfr_mw=float(49.190550338969096),
+            intned_mw=float(1.8617961448082587),
+            intnem_mw=float(9.969341523704278),
+            intelec_mw=float(13.026965619665198),
+            intifa2_mw=float(65.3553407589688),
+            intnsl_mw=float(52.60086479865818),
+            intvkl_mw=float(48.29394054329806),
+            other_mw=float(39.393538384722945)
         )
         return instance
 
-    
+
     def test_settlement_period_property(self):
         """
         Test settlement_period property
         """
-        test_value = int(31)
+        test_value = int(14)
         self.instance.settlement_period = test_value
         self.assertEqual(self.instance.settlement_period, test_value)
-    
+
     def test_start_time_property(self):
         """
         Test start_time property
@@ -67,143 +67,143 @@ class Test_GenerationMix(unittest.TestCase):
         test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
-    
+
     def test_biomass_mw_property(self):
         """
         Test biomass_mw property
         """
-        test_value = float(79.43561814234602)
+        test_value = float(53.78494758763971)
         self.instance.biomass_mw = test_value
         self.assertEqual(self.instance.biomass_mw, test_value)
-    
+
     def test_ccgt_mw_property(self):
         """
         Test ccgt_mw property
         """
-        test_value = float(1.4818704234155655)
+        test_value = float(79.81621187467175)
         self.instance.ccgt_mw = test_value
         self.assertEqual(self.instance.ccgt_mw, test_value)
-    
+
     def test_coal_mw_property(self):
         """
         Test coal_mw property
         """
-        test_value = float(59.975912391983556)
+        test_value = float(13.267410372487198)
         self.instance.coal_mw = test_value
         self.assertEqual(self.instance.coal_mw, test_value)
-    
+
     def test_nuclear_mw_property(self):
         """
         Test nuclear_mw property
         """
-        test_value = float(30.076990053515395)
+        test_value = float(74.02248539911062)
         self.instance.nuclear_mw = test_value
         self.assertEqual(self.instance.nuclear_mw, test_value)
-    
+
     def test_wind_mw_property(self):
         """
         Test wind_mw property
         """
-        test_value = float(81.21237837669578)
+        test_value = float(3.571708556988229)
         self.instance.wind_mw = test_value
         self.assertEqual(self.instance.wind_mw, test_value)
-    
+
     def test_ocgt_mw_property(self):
         """
         Test ocgt_mw property
         """
-        test_value = float(8.79855711318972)
+        test_value = float(86.09882342288643)
         self.instance.ocgt_mw = test_value
         self.assertEqual(self.instance.ocgt_mw, test_value)
-    
+
     def test_oil_mw_property(self):
         """
         Test oil_mw property
         """
-        test_value = float(65.10373679706905)
+        test_value = float(68.1000452423494)
         self.instance.oil_mw = test_value
         self.assertEqual(self.instance.oil_mw, test_value)
-    
+
     def test_npshyd_mw_property(self):
         """
         Test npshyd_mw property
         """
-        test_value = float(44.962907729510235)
+        test_value = float(90.07973035743147)
         self.instance.npshyd_mw = test_value
         self.assertEqual(self.instance.npshyd_mw, test_value)
-    
+
     def test_ps_mw_property(self):
         """
         Test ps_mw property
         """
-        test_value = float(38.36207582912965)
+        test_value = float(33.208607768645315)
         self.instance.ps_mw = test_value
         self.assertEqual(self.instance.ps_mw, test_value)
-    
+
     def test_intfr_mw_property(self):
         """
         Test intfr_mw property
         """
-        test_value = float(24.821551260137408)
+        test_value = float(49.190550338969096)
         self.instance.intfr_mw = test_value
         self.assertEqual(self.instance.intfr_mw, test_value)
-    
+
     def test_intned_mw_property(self):
         """
         Test intned_mw property
         """
-        test_value = float(82.10448056215003)
+        test_value = float(1.8617961448082587)
         self.instance.intned_mw = test_value
         self.assertEqual(self.instance.intned_mw, test_value)
-    
+
     def test_intnem_mw_property(self):
         """
         Test intnem_mw property
         """
-        test_value = float(92.25802257163124)
+        test_value = float(9.969341523704278)
         self.instance.intnem_mw = test_value
         self.assertEqual(self.instance.intnem_mw, test_value)
-    
+
     def test_intelec_mw_property(self):
         """
         Test intelec_mw property
         """
-        test_value = float(70.51250959966026)
+        test_value = float(13.026965619665198)
         self.instance.intelec_mw = test_value
         self.assertEqual(self.instance.intelec_mw, test_value)
-    
+
     def test_intifa2_mw_property(self):
         """
         Test intifa2_mw property
         """
-        test_value = float(52.49877958605427)
+        test_value = float(65.3553407589688)
         self.instance.intifa2_mw = test_value
         self.assertEqual(self.instance.intifa2_mw, test_value)
-    
+
     def test_intnsl_mw_property(self):
         """
         Test intnsl_mw property
         """
-        test_value = float(98.43737759485803)
+        test_value = float(52.60086479865818)
         self.instance.intnsl_mw = test_value
         self.assertEqual(self.instance.intnsl_mw, test_value)
-    
+
     def test_intvkl_mw_property(self):
         """
         Test intvkl_mw property
         """
-        test_value = float(92.4311606785384)
+        test_value = float(48.29394054329806)
         self.instance.intvkl_mw = test_value
         self.assertEqual(self.instance.intvkl_mw, test_value)
-    
+
     def test_other_mw_property(self):
         """
         Test other_mw property
         """
-        test_value = float(1.7401134392235673)
+        test_value = float(39.393538384722945)
         self.instance.other_mw = test_value
         self.assertEqual(self.instance.other_mw, test_value)
-    
+
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from fienta_producer_kafka_producer.producer import ComFientaEventProducer
+from fienta_producer_kafka_producer.producer import ComFientaMqttEventProducer
+from fienta_producer_kafka_producer.producer import ComFientaAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +74,54 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'Com.Fienta.EventSaleStatus' event to Kafka topic.
     await com_fienta_event_producer.send_com_fienta_event_sale_status(_event_id = 'TODO: replace me', data = _event_sale_status)
     print(f"Sent 'Com.Fienta.EventSaleStatus' event: {_event_sale_status.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        com_fienta_mqtt_event_producer = ComFientaMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        com_fienta_mqtt_event_producer = ComFientaMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Com.Fienta.mqtt.Event ----
+    # TODO: Supply event data for the Com.Fienta.mqtt.Event event
+    _event = Event()
+
+    # sends the 'Com.Fienta.mqtt.Event' event to Kafka topic.
+    await com_fienta_mqtt_event_producer.send_com_fienta_mqtt_event(_event_id = 'TODO: replace me', data = _event)
+    print(f"Sent 'Com.Fienta.mqtt.Event' event: {_event.to_json()}")
+
+    # ---- Com.Fienta.mqtt.EventSaleStatus ----
+    # TODO: Supply event data for the Com.Fienta.mqtt.EventSaleStatus event
+    _event_sale_status = EventSaleStatus()
+
+    # sends the 'Com.Fienta.mqtt.EventSaleStatus' event to Kafka topic.
+    await com_fienta_mqtt_event_producer.send_com_fienta_mqtt_event_sale_status(_event_id = 'TODO: replace me', data = _event_sale_status)
+    print(f"Sent 'Com.Fienta.mqtt.EventSaleStatus' event: {_event_sale_status.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        com_fienta_amqp_event_producer = ComFientaAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        com_fienta_amqp_event_producer = ComFientaAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Com.Fienta.amqp.Event ----
+    # TODO: Supply event data for the Com.Fienta.amqp.Event event
+    _event = Event()
+
+    # sends the 'Com.Fienta.amqp.Event' event to Kafka topic.
+    await com_fienta_amqp_event_producer.send_com_fienta_amqp_event(_event_id = 'TODO: replace me', data = _event)
+    print(f"Sent 'Com.Fienta.amqp.Event' event: {_event.to_json()}")
+
+    # ---- Com.Fienta.amqp.EventSaleStatus ----
+    # TODO: Supply event data for the Com.Fienta.amqp.EventSaleStatus event
+    _event_sale_status = EventSaleStatus()
+
+    # sends the 'Com.Fienta.amqp.EventSaleStatus' event to Kafka topic.
+    await com_fienta_amqp_event_producer.send_com_fienta_amqp_event_sale_status(_event_id = 'TODO: replace me', data = _event_sale_status)
+    print(f"Sent 'Com.Fienta.amqp.EventSaleStatus' event: {_event_sale_status.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

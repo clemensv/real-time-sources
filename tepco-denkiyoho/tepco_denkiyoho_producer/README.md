@@ -15,7 +15,11 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - JPTEPCODenkiyohoEventDispatcher
+3. [Quick Start](#quick-start)    - JPTEPCODenkiyohoEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    JPTEPCODenkiyohoMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    JPTEPCODenkiyohoAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +43,14 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - JPTEPCODenkiyohoProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- JPTEPCODenkiyohoMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- JPTEPCODenkiyohoAmqpProducersolution for event-driven applications.
 
 
 
@@ -192,6 +204,82 @@ jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_supply_capacity_async = jp_tepc
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.SupplyCapacity`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_supply_capacity_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SupplyCapacity) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_supply_capacity_async = jp_tepco_denkiyoho_supply_capacity_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.SupplyCapacity`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_supply_capacity_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SupplyCapacity) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_supply_capacity_async = jp_tepco_denkiyoho_supply_capacity_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -251,6 +339,84 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_peak_demand_forecast_async =
+jp_tepco_denkiyoho_peak_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.PeakDemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_peak_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PeakDemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_peak_demand_forecast_async =
+jp_tepco_denkiyoho_peak_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.PeakDemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_peak_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PeakDemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_peak_demand_forecast_async =
 jp_tepco_denkiyoho_peak_demand_forecast_event
 
 **Parameters:**```
@@ -322,6 +488,82 @@ jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_demand_actual_async = jp_tepco_
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandActual`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_demand_actual_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DemandActual) ->
+None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_demand_actual_async = jp_tepco_denkiyoho_demand_actual_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandActual`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_demand_actual_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DemandActual) ->
+None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_demand_actual_async = jp_tepco_denkiyoho_demand_actual_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -381,6 +623,218 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_demand_forecast_async = jp_tepco_denkiyoho_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_demand_forecast_async = jp_tepco_denkiyoho_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_demand_forecast_async = jp_tepco_denkiyoho_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_tepco_denkiyoho_info_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_tepco_denkiyoho_info_async:  Callable[[ConsumerRecord, CloudEvent, Info],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.TEPCO.Denkiyoho.Info`: Retained reference information for MQTT/AMQP topic discovery.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.Info`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_info_async = jp_tepco_denkiyoho_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.Info`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_info_async = jp_tepco_denkiyoho_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.Info`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_info_async = jp_tepco_denkiyoho_info_event
 
 **Parameters:**```
 
@@ -802,6 +1256,2755 @@ await producer.send_jp_tepco_denkiyoho_demand_forecast_batch(```
         DemandForecast(...),
 
         DemandForecast(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_jp_tepco_denkiyoho_info`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_tepco_denkiyoho_info(
+
+    self,##### `_process_event`
+
+    data: Info,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.TEPCO.Denkiyoho.Info` message. Retained reference information for MQTT/AMQP topic discovery.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Info`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_tepco_denkiyoho_info(
+
+    data=Info(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.TEPCO.Denkiyoho.Info` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_tepco_denkiyoho_info_batch(```
+
+    messages=[
+
+        Info(...),Initializes the runner with a Kafka consumer.
+
+        Info(...),
+
+        Info(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### JPTEPCODenkiyohoMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`JPTEPCODenkiyohoMqttEventDispatcher` handles events for the JP.TEPCO.Denkiyoho.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from tepco_denkiyoho_producer import JPTEPCODenkiyohoProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = JPTEPCODenkiyohoProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_jp_tepco_denkiyoho_supply_capacity(```python
+
+    data=SupplyCapacity(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The JPTEPCODenkiyohoMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = JPTEPCODenkiyohoProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_tepco_denkiyoho_mqtt_supply_capacity_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_tepco_denkiyoho_mqtt_supply_capacity_async:  Callable[[ConsumerRecord, CloudEvent,
+SupplyCapacity], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.TEPCO.Denkiyoho.mqtt.SupplyCapacity`: Daily TEPCO Electricity Forecast supply
+capability reference record for the Tokyo service area.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.SupplyCapacity`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_supply_capacity_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SupplyCapacity) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_mqtt_supply_capacity_async =
+jp_tepco_denkiyoho_mqtt_supply_capacity_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.SupplyCapacity`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_supply_capacity_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SupplyCapacity) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_mqtt_supply_capacity_async =
+jp_tepco_denkiyoho_mqtt_supply_capacity_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.SupplyCapacity`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_supply_capacity_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SupplyCapacity) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_mqtt_supply_capacity_async =
+jp_tepco_denkiyoho_mqtt_supply_capacity_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_tepco_denkiyoho_mqtt_peak_demand_forecast_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_tepco_denkiyoho_mqtt_peak_demand_forecast_async:  Callable[[ConsumerRecord,
+CloudEvent, PeakDemandForecast], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.TEPCO.Denkiyoho.mqtt.PeakDemandForecast`: Daily TEPCO Electricity Forecast maximum-
+demand forecast record for the Tokyo service area.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.PeakDemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_peak_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PeakDemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_mqtt_peak_demand_forecast_async =
+jp_tepco_denkiyoho_mqtt_peak_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.PeakDemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_peak_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PeakDemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_mqtt_peak_demand_forecast_async =
+jp_tepco_denkiyoho_mqtt_peak_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.PeakDemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_peak_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PeakDemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_mqtt_peak_demand_forecast_async =
+jp_tepco_denkiyoho_mqtt_peak_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_tepco_denkiyoho_mqtt_demand_actual_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_tepco_denkiyoho_mqtt_demand_actual_async:  Callable[[ConsumerRecord, CloudEvent,
+DemandActual], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.TEPCO.Denkiyoho.mqtt.DemandActual`: Actual electricity demand record from TEPCO
+Electricity Forecast for the Tokyo service area, emitted for hourly rows with section 3 context and for five-minute rows
+with section 5 solar context.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandActual`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_demand_actual_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandActual) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_mqtt_demand_actual_async = jp_tepco_denkiyoho_mqtt_demand_actual_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandActual`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_demand_actual_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandActual) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_mqtt_demand_actual_async =
+jp_tepco_denkiyoho_mqtt_demand_actual_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandActual`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_demand_actual_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandActual) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_mqtt_demand_actual_async =
+jp_tepco_denkiyoho_mqtt_demand_actual_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_tepco_denkiyoho_mqtt_demand_forecast_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_tepco_denkiyoho_mqtt_demand_forecast_async:  Callable[[ConsumerRecord, CloudEvent,
+DemandForecast], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.TEPCO.Denkiyoho.mqtt.DemandForecast`: Hourly electricity demand forecast record from
+TEPCO Electricity Forecast for the Tokyo service area.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_mqtt_demand_forecast_async =
+jp_tepco_denkiyoho_mqtt_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_mqtt_demand_forecast_async =
+jp_tepco_denkiyoho_mqtt_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_mqtt_demand_forecast_async =
+jp_tepco_denkiyoho_mqtt_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_tepco_denkiyoho_mqtt_info_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_tepco_denkiyoho_mqtt_info_async:  Callable[[ConsumerRecord, CloudEvent, Info],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.TEPCO.Denkiyoho.mqtt.Info`: Retained reference information for MQTT/AMQP topic
+discovery.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.Info`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_mqtt_info_async = jp_tepco_denkiyoho_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.Info`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_mqtt_info_async = jp_tepco_denkiyoho_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.Info`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_mqtt_info_async = jp_tepco_denkiyoho_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_jp_tepco_denkiyoho_mqtt_supply_capacity`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_tepco_denkiyoho_mqtt_supply_capacity(
+
+    self,##### `_process_event`
+
+    data: SupplyCapacity,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.TEPCO.Denkiyoho.mqtt.SupplyCapacity` message. Daily TEPCO Electricity Forecast supply capability
+reference record for the Tokyo service area.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `SupplyCapacity`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_tepco_denkiyoho_mqtt_supply_capacity(
+
+    data=SupplyCapacity(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.TEPCO.Denkiyoho.mqtt.SupplyCapacity` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_tepco_denkiyoho_mqtt_supply_capacity_batch(```
+
+    messages=[
+
+        SupplyCapacity(...),Initializes the runner with a Kafka consumer.
+
+        SupplyCapacity(...),
+
+        SupplyCapacity(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_jp_tepco_denkiyoho_mqtt_peak_demand_forecast`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_tepco_denkiyoho_mqtt_peak_demand_forecast(
+
+    self,##### `_process_event`
+
+    data: PeakDemandForecast,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.TEPCO.Denkiyoho.mqtt.PeakDemandForecast` message. Daily TEPCO Electricity Forecast maximum-demand
+forecast record for the Tokyo service area.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PeakDemandForecast`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_tepco_denkiyoho_mqtt_peak_demand_forecast(
+
+    data=PeakDemandForecast(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.TEPCO.Denkiyoho.mqtt.PeakDemandForecast` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_tepco_denkiyoho_mqtt_peak_demand_forecast_batch(```
+
+    messages=[
+
+        PeakDemandForecast(...),Initializes the runner with a Kafka consumer.
+
+        PeakDemandForecast(...),
+
+        PeakDemandForecast(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_jp_tepco_denkiyoho_mqtt_demand_actual`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_tepco_denkiyoho_mqtt_demand_actual(
+
+    self,##### `_process_event`
+
+    data: DemandActual,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.TEPCO.Denkiyoho.mqtt.DemandActual` message. Actual electricity demand record from TEPCO Electricity
+Forecast for the Tokyo service area, emitted for hourly rows with section 3 context and for five-minute rows with
+section 5 solar context.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DemandActual`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_tepco_denkiyoho_mqtt_demand_actual(
+
+    data=DemandActual(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.TEPCO.Denkiyoho.mqtt.DemandActual` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_tepco_denkiyoho_mqtt_demand_actual_batch(```
+
+    messages=[
+
+        DemandActual(...),Initializes the runner with a Kafka consumer.
+
+        DemandActual(...),
+
+        DemandActual(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_jp_tepco_denkiyoho_mqtt_demand_forecast`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_tepco_denkiyoho_mqtt_demand_forecast(
+
+    self,##### `_process_event`
+
+    data: DemandForecast,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.TEPCO.Denkiyoho.mqtt.DemandForecast` message. Hourly electricity demand forecast record from TEPCO
+Electricity Forecast for the Tokyo service area.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DemandForecast`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_tepco_denkiyoho_mqtt_demand_forecast(
+
+    data=DemandForecast(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.TEPCO.Denkiyoho.mqtt.DemandForecast` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_tepco_denkiyoho_mqtt_demand_forecast_batch(```
+
+    messages=[
+
+        DemandForecast(...),Initializes the runner with a Kafka consumer.
+
+        DemandForecast(...),
+
+        DemandForecast(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_jp_tepco_denkiyoho_mqtt_info`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_tepco_denkiyoho_mqtt_info(
+
+    self,##### `_process_event`
+
+    data: Info,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.TEPCO.Denkiyoho.mqtt.Info` message. Retained reference information for MQTT/AMQP topic discovery.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Info`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_tepco_denkiyoho_mqtt_info(
+
+    data=Info(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.TEPCO.Denkiyoho.mqtt.Info` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_tepco_denkiyoho_mqtt_info_batch(```
+
+    messages=[
+
+        Info(...),Initializes the runner with a Kafka consumer.
+
+        Info(...),
+
+        Info(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### JPTEPCODenkiyohoAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`JPTEPCODenkiyohoAmqpEventDispatcher` handles events for the JP.TEPCO.Denkiyoho.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from tepco_denkiyoho_producer import JPTEPCODenkiyohoProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = JPTEPCODenkiyohoProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_jp_tepco_denkiyoho_supply_capacity(```python
+
+    data=SupplyCapacity(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The JPTEPCODenkiyohoAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = JPTEPCODenkiyohoProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_tepco_denkiyoho_amqp_supply_capacity_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_tepco_denkiyoho_amqp_supply_capacity_async:  Callable[[ConsumerRecord, CloudEvent,
+SupplyCapacity], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.TEPCO.Denkiyoho.amqp.SupplyCapacity`: Daily TEPCO Electricity Forecast supply
+capability reference record for the Tokyo service area.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.SupplyCapacity`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_supply_capacity_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SupplyCapacity) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_amqp_supply_capacity_async =
+jp_tepco_denkiyoho_amqp_supply_capacity_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.SupplyCapacity`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_supply_capacity_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SupplyCapacity) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_amqp_supply_capacity_async =
+jp_tepco_denkiyoho_amqp_supply_capacity_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.SupplyCapacity`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_supply_capacity_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SupplyCapacity) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_amqp_supply_capacity_async =
+jp_tepco_denkiyoho_amqp_supply_capacity_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_tepco_denkiyoho_amqp_peak_demand_forecast_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_tepco_denkiyoho_amqp_peak_demand_forecast_async:  Callable[[ConsumerRecord,
+CloudEvent, PeakDemandForecast], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast`: Daily TEPCO Electricity Forecast maximum-
+demand forecast record for the Tokyo service area.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.PeakDemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_peak_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PeakDemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_amqp_peak_demand_forecast_async =
+jp_tepco_denkiyoho_amqp_peak_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.PeakDemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_peak_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PeakDemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_amqp_peak_demand_forecast_async =
+jp_tepco_denkiyoho_amqp_peak_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.PeakDemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_peak_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PeakDemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_amqp_peak_demand_forecast_async =
+jp_tepco_denkiyoho_amqp_peak_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_tepco_denkiyoho_amqp_demand_actual_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_tepco_denkiyoho_amqp_demand_actual_async:  Callable[[ConsumerRecord, CloudEvent,
+DemandActual], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.TEPCO.Denkiyoho.amqp.DemandActual`: Actual electricity demand record from TEPCO
+Electricity Forecast for the Tokyo service area, emitted for hourly rows with section 3 context and for five-minute rows
+with section 5 solar context.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandActual`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_demand_actual_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandActual) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_amqp_demand_actual_async = jp_tepco_denkiyoho_amqp_demand_actual_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandActual`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_demand_actual_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandActual) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_amqp_demand_actual_async =
+jp_tepco_denkiyoho_amqp_demand_actual_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandActual`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_demand_actual_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandActual) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_amqp_demand_actual_async =
+jp_tepco_denkiyoho_amqp_demand_actual_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_tepco_denkiyoho_amqp_demand_forecast_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_tepco_denkiyoho_amqp_demand_forecast_async:  Callable[[ConsumerRecord, CloudEvent,
+DemandForecast], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.TEPCO.Denkiyoho.amqp.DemandForecast`: Hourly electricity demand forecast record from
+TEPCO Electricity Forecast for the Tokyo service area.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_amqp_demand_forecast_async =
+jp_tepco_denkiyoho_amqp_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_amqp_demand_forecast_async =
+jp_tepco_denkiyoho_amqp_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.DemandForecast`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_demand_forecast_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DemandForecast) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_amqp_demand_forecast_async =
+jp_tepco_denkiyoho_amqp_demand_forecast_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_tepco_denkiyoho_amqp_info_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_tepco_denkiyoho_amqp_info_async:  Callable[[ConsumerRecord, CloudEvent, Info],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.TEPCO.Denkiyoho.amqp.Info`: Retained reference information for MQTT/AMQP topic
+discovery.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.Info`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_dispatcher.jp_tepco_denkiyoho_amqp_info_async = jp_tepco_denkiyoho_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoMqttProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.Info`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_mqtt_dispatcher.jp_tepco_denkiyoho_amqp_info_async = jp_tepco_denkiyoho_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPTEPCODenkiyohoAmqpProducer- `data`: The event data of type `tepco_denkiyoho_producer_data.Info`.
+
+
+
+Producer for `JP.TEPCO.Denkiyoho.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_tepco_denkiyoho_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+JPTEPCODenkiyohoAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_tepco_denkiyoho_amqp_dispatcher.jp_tepco_denkiyoho_amqp_info_async = jp_tepco_denkiyoho_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_jp_tepco_denkiyoho_amqp_supply_capacity`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_tepco_denkiyoho_amqp_supply_capacity(
+
+    self,##### `_process_event`
+
+    data: SupplyCapacity,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.TEPCO.Denkiyoho.amqp.SupplyCapacity` message. Daily TEPCO Electricity Forecast supply capability
+reference record for the Tokyo service area.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `SupplyCapacity`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_tepco_denkiyoho_amqp_supply_capacity(
+
+    data=SupplyCapacity(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.TEPCO.Denkiyoho.amqp.SupplyCapacity` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_tepco_denkiyoho_amqp_supply_capacity_batch(```
+
+    messages=[
+
+        SupplyCapacity(...),Initializes the runner with a Kafka consumer.
+
+        SupplyCapacity(...),
+
+        SupplyCapacity(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_jp_tepco_denkiyoho_amqp_peak_demand_forecast`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_tepco_denkiyoho_amqp_peak_demand_forecast(
+
+    self,##### `_process_event`
+
+    data: PeakDemandForecast,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast` message. Daily TEPCO Electricity Forecast maximum-demand
+forecast record for the Tokyo service area.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PeakDemandForecast`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_tepco_denkiyoho_amqp_peak_demand_forecast(
+
+    data=PeakDemandForecast(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_tepco_denkiyoho_amqp_peak_demand_forecast_batch(```
+
+    messages=[
+
+        PeakDemandForecast(...),Initializes the runner with a Kafka consumer.
+
+        PeakDemandForecast(...),
+
+        PeakDemandForecast(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_jp_tepco_denkiyoho_amqp_demand_actual`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_tepco_denkiyoho_amqp_demand_actual(
+
+    self,##### `_process_event`
+
+    data: DemandActual,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.TEPCO.Denkiyoho.amqp.DemandActual` message. Actual electricity demand record from TEPCO Electricity
+Forecast for the Tokyo service area, emitted for hourly rows with section 3 context and for five-minute rows with
+section 5 solar context.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DemandActual`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_tepco_denkiyoho_amqp_demand_actual(
+
+    data=DemandActual(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.TEPCO.Denkiyoho.amqp.DemandActual` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_tepco_denkiyoho_amqp_demand_actual_batch(```
+
+    messages=[
+
+        DemandActual(...),Initializes the runner with a Kafka consumer.
+
+        DemandActual(...),
+
+        DemandActual(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_jp_tepco_denkiyoho_amqp_demand_forecast`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_tepco_denkiyoho_amqp_demand_forecast(
+
+    self,##### `_process_event`
+
+    data: DemandForecast,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.TEPCO.Denkiyoho.amqp.DemandForecast` message. Hourly electricity demand forecast record from TEPCO
+Electricity Forecast for the Tokyo service area.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DemandForecast`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_tepco_denkiyoho_amqp_demand_forecast(
+
+    data=DemandForecast(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.TEPCO.Denkiyoho.amqp.DemandForecast` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_tepco_denkiyoho_amqp_demand_forecast_batch(```
+
+    messages=[
+
+        DemandForecast(...),Initializes the runner with a Kafka consumer.
+
+        DemandForecast(...),
+
+        DemandForecast(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_jp_tepco_denkiyoho_amqp_info`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_tepco_denkiyoho_amqp_info(
+
+    self,##### `_process_event`
+
+    data: Info,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.TEPCO.Denkiyoho.amqp.Info` message. Retained reference information for MQTT/AMQP topic discovery.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Info`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_tepco_denkiyoho_amqp_info(
+
+    data=Info(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.TEPCO.Denkiyoho.amqp.Info` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_tepco_denkiyoho_amqp_info_batch(```
+
+    messages=[
+
+        Info(...),Initializes the runner with a Kafka consumer.
+
+        Info(...),
+
+        Info(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

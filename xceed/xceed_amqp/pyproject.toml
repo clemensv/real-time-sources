@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "xceed-amqp"
+version = "0.1.0"
+description = "xceed AMQP companion feeder"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+python-qpid-proton = ">=0.39.0"
+azure-identity = ">=1.16.0"
+xceed_amqp_producer_data = {path = "../xceed_amqp_producer/xceed_amqp_producer_data"}
+xceed_amqp_producer_amqp_producer = {path = "../xceed_amqp_producer/xceed_amqp_producer_amqp_producer"}
+
+[tool.poetry.scripts]
+xceed-amqp = "xceed_amqp:main"

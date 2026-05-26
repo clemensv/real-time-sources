@@ -18,7 +18,7 @@ import json
 class EventAdmission:
     """
     Normalized offer snapshot for a single admission record of an Xceed event, retrieved from the public GET https://offer.xceed.me/v1/events/:eventId/admissions endpoint. The upstream payload groups offers into bottleService, guestList, and ticket arrays. The bridge flattens those arrays into one event stream and preserves the original offer kind in admission_type while carrying key sales-state signals, normalized price, and remaining quantity.
-    
+
     Attributes:
         event_id (str)
         admission_id (str)
@@ -30,8 +30,8 @@ class EventAdmission:
         currency (typing.Optional[str])
         remaining (typing.Optional[int])
     """
-    
-    
+
+
     event_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_id"))
     admission_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="admission_id"))
     admission_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="admission_type"))
@@ -46,10 +46,10 @@ class EventAdmission:
     def from_serializer_dict(cls, data: dict) -> 'EventAdmission':
         """
         Converts a dictionary to a dataclass instance.
-        
+
         Args:
             data: The dictionary to convert to a dataclass.
-        
+
         Returns:
             The dataclass representation of the dataclass.
         """
@@ -68,7 +68,7 @@ class EventAdmission:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """ 
+        """
         def _resolve_enum(v):
             if isinstance(v, enum.Enum):
                 return v.value
@@ -80,7 +80,7 @@ class EventAdmission:
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-        
+
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -89,11 +89,11 @@ class EventAdmission:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.        
+            The byte array representation of the dataclass.
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -119,10 +119,10 @@ class EventAdmission:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['EventAdmission']:
         """
         Converts the data to a dataclass based on the content type string.
-        
+
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to. 
+            content_type_string: The content type string to convert the data to.
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
@@ -146,7 +146,7 @@ class EventAdmission:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -162,18 +162,18 @@ class EventAdmission:
     def create_instance(cls) -> 'EventAdmission':
         """
         Creates an instance of the dataclass with test values.
-        
+
         Returns:
             An instance of the dataclass.
         """
         return cls(
-            event_id='vmnwkiskeiqcskzawknh',
-            admission_id='sttzyvbvkwnyhdorkmrz',
-            admission_type='pgkocdscomixzbpxuooh',
-            name='rifnoogznvvkveryihum',
-            is_sold_out=False,
-            is_sales_closed=False,
-            price=float(37.462110071240836),
-            currency='jxqfdhycjxurfbvqkrye',
-            remaining=int(46)
+            event_id='ilrjbgdmgmtzhusopxye',
+            admission_id='lizlroxpdmlzgsoewmrv',
+            admission_type='xvjviucnufvxbdhinerk',
+            name='xudrcvkrjaslevcgwsuc',
+            is_sold_out=True,
+            is_sales_closed=True,
+            price=float(98.21317769599115),
+            currency='ugureczwbtpbqapbgrsp',
+            remaining=int(86)
         )

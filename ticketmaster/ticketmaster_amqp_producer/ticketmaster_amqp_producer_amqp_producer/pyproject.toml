@@ -1,0 +1,33 @@
+
+[tool.poetry]
+name = "ticketmaster-amqp-producer-amqp-producer"
+description = "ticketmaster_amqp_producer_amqp_producer AMQP 1.0 producer library (Azure servicebus CBS/Entra ID enabled)"
+authors = ["Your Name <your.email@example.com>"]
+version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
+packages = [{include = "ticketmaster_amqp_producer_amqp_producer", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "<4.0,>=3.10"
+ticketmaster-amqp-producer-data = {path = "../ticketmaster_amqp_producer_data", develop = true}  
+python-qpid-proton = ">=0.39.0"
+cloudevents = ">=1.10.1,<2.0.0"
+azure-identity = ">=1.15.0"
+azure-core = ">=1.30.0"
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.2.2"
+flake8 = ">=7.1.0"
+pylint = ">=3.2.3"
+mypy = ">=1.10.0"
+testcontainers = ">=4.5.1"
+pytest-asyncio = ">=0.23.7"
+
+[tool.pytest.ini_options]
+asyncio_mode = "strict"
+filterwarnings = [
+    "ignore::DeprecationWarning:testcontainers.core.waiting_utils"
+]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

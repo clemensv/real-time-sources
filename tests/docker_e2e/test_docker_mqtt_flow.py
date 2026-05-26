@@ -5033,3 +5033,165 @@ class TestNifcUsaWildfiresMqttDockerFlow:
         for required in ('id','source','type','subject','time','specversion'): assert required in sample['user_properties']
         payload=_to_dict(sample['payload']); assert payload and payload['state']=='ca' and payload['status']=='active'
         parts=sample['topic'].split('/'); assert parts[:5]==['wildfire','us','nifc','nifc-usa-wildfires','ca']; assert parts[5]=='active'
+
+
+class TestXceedMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('xceed-mqtt-e2e', 'xceed-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('xceed', dockerfile='Dockerfile.mqtt', tag='test-xceed-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://xceed-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/xceed/xceed/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestElexonBmrsMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('elexon-bmrs-mqtt-e2e', 'elexon-bmrs-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('elexon-bmrs', dockerfile='Dockerfile.mqtt', tag='test-elexon-bmrs-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://elexon-bmrs-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/gb/elexon/elexon-bmrs/gb/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestEnergidataserviceDkMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('energidataservice-dk-mqtt-e2e', 'energidataservice-dk-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('energidataservice-dk', dockerfile='Dockerfile.mqtt', tag='test-energidataservice-dk-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://energidataservice-dk-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/dk/energidataservice/energidataservice-dk/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestEnergyChartsMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('energy-charts-mqtt-e2e', 'energy-charts-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('energy-charts', dockerfile='Dockerfile.mqtt', tag='test-energy-charts-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://energy-charts-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/de/energy-charts/energy-charts/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestBillettoMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('billetto-mqtt-e2e', 'billetto-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('billetto', dockerfile='Dockerfile.mqtt', tag='test-billetto-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://billetto-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/billetto/billetto/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestFientaMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('fienta-mqtt-e2e', 'fienta-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('fienta', dockerfile='Dockerfile.mqtt', tag='test-fienta-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://fienta-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/fienta/fienta/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestTicketmasterMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('ticketmaster-mqtt-e2e', 'ticketmaster-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('ticketmaster', dockerfile='Dockerfile.mqtt', tag='test-ticketmaster-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://ticketmaster-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'civic-events/intl/ticketmaster/ticketmaster/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
+class TestTepcoDenkiyohoMqttDockerFlow:
+    def test_emits_mqtt_cloudevents(self):
+        broker, network, host_port = _generic_mosquitto('tepco-denkiyoho-mqtt-e2e', 'tepco-denkiyoho-mqtt-e2e-broker')
+        client = docker.from_env(); feeder = None
+        try:
+            image = build_image('tepco-denkiyoho', dockerfile='Dockerfile.mqtt', tag='test-tepco-denkiyoho-mqtt')
+            feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'MQTT_BROKER_URL':'mqtt://tepco-denkiyoho-mqtt-e2e-broker:1883','ONCE_MODE':'true','PYTHONUNBUFFERED':'1'})
+            result = feeder.wait(timeout=600); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'energy/jp/tepco/tepco-denkiyoho/jp-tepco/#', timeout=30.0)
+            assert messages
+            for msg in messages:
+                up = msg['user_properties']
+                for required in ('id','source','type','subject','specversion'):
+                    assert required in up, (required, msg)
+                assert msg['qos'] == 1
+        finally:
+            if feeder is not None: feeder.remove(force=True)
+            broker.kill(); network.remove()
+
