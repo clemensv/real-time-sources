@@ -1,0 +1,13 @@
+{
+  "apiEndpoints": [
+    "https://clemensv.github.io/real-time-sources/registry"
+  ],
+  "modelUris": [],
+  "baseUrl": "/real-time-sources/registry-viewer",
+  "defaultDocumentView": true,
+  "features": {
+    "enableFilters": true,
+    "enableSearch": true,
+    "enableDocDownload": true
+  }
+}
