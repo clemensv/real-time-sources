@@ -1,0 +1,13 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/eurdep-radiation"
+LABEL org.opencontainers.image.title="EURDEP radiation -> MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Publishes EURDEP radiation CloudEvents to MQTT 5.0 topics."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/eurdep-radiation/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY . /app
+RUN pip install --no-cache-dir ./eurdep_radiation_mqtt_producer/eurdep_radiation_mqtt_producer_data && pip install --no-cache-dir ./eurdep_radiation_mqtt_producer/eurdep_radiation_mqtt_producer_mqtt_client && pip install --no-cache-dir ./eurdep_radiation_producer/eurdep_radiation_producer_data && pip install --no-cache-dir . && pip install --no-cache-dir ./eurdep_radiation_mqtt
+ENV MQTT_BROKER_URL=""
+CMD ["python", "-m", "eurdep_radiation_mqtt", "feed"]

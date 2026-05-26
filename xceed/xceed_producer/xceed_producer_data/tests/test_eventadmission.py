@@ -28,91 +28,91 @@ class Test_EventAdmission(unittest.TestCase):
         Create instance of EventAdmission for testing
         """
         instance = EventAdmission(
-            event_id='vmnwkiskeiqcskzawknh',
-            admission_id='sttzyvbvkwnyhdorkmrz',
-            admission_type='pgkocdscomixzbpxuooh',
-            name='rifnoogznvvkveryihum',
-            is_sold_out=False,
-            is_sales_closed=False,
-            price=float(37.462110071240836),
-            currency='jxqfdhycjxurfbvqkrye',
-            remaining=int(46)
+            event_id='ilrjbgdmgmtzhusopxye',
+            admission_id='lizlroxpdmlzgsoewmrv',
+            admission_type='xvjviucnufvxbdhinerk',
+            name='xudrcvkrjaslevcgwsuc',
+            is_sold_out=True,
+            is_sales_closed=True,
+            price=float(98.21317769599115),
+            currency='ugureczwbtpbqapbgrsp',
+            remaining=int(86)
         )
         return instance
 
-    
+
     def test_event_id_property(self):
         """
         Test event_id property
         """
-        test_value = 'vmnwkiskeiqcskzawknh'
+        test_value = 'ilrjbgdmgmtzhusopxye'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
-    
+
     def test_admission_id_property(self):
         """
         Test admission_id property
         """
-        test_value = 'sttzyvbvkwnyhdorkmrz'
+        test_value = 'lizlroxpdmlzgsoewmrv'
         self.instance.admission_id = test_value
         self.assertEqual(self.instance.admission_id, test_value)
-    
+
     def test_admission_type_property(self):
         """
         Test admission_type property
         """
-        test_value = 'pgkocdscomixzbpxuooh'
+        test_value = 'xvjviucnufvxbdhinerk'
         self.instance.admission_type = test_value
         self.assertEqual(self.instance.admission_type, test_value)
-    
+
     def test_name_property(self):
         """
         Test name property
         """
-        test_value = 'rifnoogznvvkveryihum'
+        test_value = 'xudrcvkrjaslevcgwsuc'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
-    
+
     def test_is_sold_out_property(self):
         """
         Test is_sold_out property
         """
-        test_value = False
+        test_value = True
         self.instance.is_sold_out = test_value
         self.assertEqual(self.instance.is_sold_out, test_value)
-    
+
     def test_is_sales_closed_property(self):
         """
         Test is_sales_closed property
         """
-        test_value = False
+        test_value = True
         self.instance.is_sales_closed = test_value
         self.assertEqual(self.instance.is_sales_closed, test_value)
-    
+
     def test_price_property(self):
         """
         Test price property
         """
-        test_value = float(37.462110071240836)
+        test_value = float(98.21317769599115)
         self.instance.price = test_value
         self.assertEqual(self.instance.price, test_value)
-    
+
     def test_currency_property(self):
         """
         Test currency property
         """
-        test_value = 'jxqfdhycjxurfbvqkrye'
+        test_value = 'ugureczwbtpbqapbgrsp'
         self.instance.currency = test_value
         self.assertEqual(self.instance.currency, test_value)
-    
+
     def test_remaining_property(self):
         """
         Test remaining property
         """
-        test_value = int(46)
+        test_value = int(86)
         self.instance.remaining = test_value
         self.assertEqual(self.instance.remaining, test_value)
-    
+
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

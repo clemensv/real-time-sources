@@ -180,15 +180,15 @@ class TestExtractStations:
 
     def test_country_code_extraction(self):
         stations = EurdepAPI.extract_stations([SAMPLE_FEATURE_AT0001_6H])
-        assert stations["AT0001"].country_code == "AT"
+        assert stations["AT0001"].country == "at"
 
     def test_country_code_germany(self):
         stations = EurdepAPI.extract_stations([SAMPLE_FEATURE_DE0123])
-        assert stations["DE0123"].country_code == "DE"
+        assert stations["DE0123"].country == "de"
 
     def test_country_code_france(self):
         stations = EurdepAPI.extract_stations([SAMPLE_FEATURE_NULL_HEIGHT])
-        assert stations["FR0042"].country_code == "FR"
+        assert stations["FR0042"].country == "fr"
 
     def test_coordinates(self):
         stations = EurdepAPI.extract_stations([SAMPLE_FEATURE_AT0001_6H])
@@ -452,8 +452,8 @@ class TestDataClassSerialization:
         from eurdep_radiation_producer_data.eu.jrc.eurdep.station import Station
         s = Station(
             station_id="AT0001",
+            country="at",
             name="Laa/ThayaAMS",
-            country_code="AT",
             latitude=48.73,
             longitude=16.39,
             height_above_sea=183.0,
@@ -462,7 +462,7 @@ class TestDataClassSerialization:
         )
         j = json.loads(s.to_json())
         assert j["station_id"] == "AT0001"
-        assert j["country_code"] == "AT"
+        assert j["country"] == "at"
         assert j["latitude"] == 48.73
         assert j["height_above_sea"] == 183.0
 
@@ -470,8 +470,8 @@ class TestDataClassSerialization:
         from eurdep_radiation_producer_data.eu.jrc.eurdep.station import Station
         s = Station(
             station_id="FR0042",
+            country="fr",
             name="Paris-Centre",
-            country_code="FR",
             latitude=48.86,
             longitude=2.35,
             height_above_sea=None,
@@ -485,6 +485,7 @@ class TestDataClassSerialization:
         from eurdep_radiation_producer_data.eu.jrc.eurdep.doseratereading import DoseRateReading
         r = DoseRateReading(
             station_id="DE0123",
+            country="de",
             name="Eschede",
             value=0.079,
             unit="µSv/h",
@@ -503,6 +504,7 @@ class TestDataClassSerialization:
         from eurdep_radiation_producer_data.eu.jrc.eurdep.doseratereading import DoseRateReading
         r = DoseRateReading(
             station_id="CZ0001",
+            country="cz",
             name="Praha-Centrum",
             value=None,
             unit="µSv/h",
@@ -519,24 +521,25 @@ class TestDataClassSerialization:
         from eurdep_radiation_producer_data.eu.jrc.eurdep.station import Station
         s = Station(
             station_id="AT0001",
+            country="at",
             name="Laa/ThayaAMS",
-            country_code="AT",
             latitude=48.73,
             longitude=16.39,
             height_above_sea=183.0,
             site_status=1,
             site_status_text="in Betrieb",
         )
-        data = s.to_byte_array("avro/binary")
-        restored = Station.from_data(data, "avro/binary")
+        data = s.to_byte_array("application/json")
+        restored = Station.from_data(data, "application/json")
         assert restored.station_id == "AT0001"
-        assert restored.country_code == "AT"
+        assert restored.country == "at"
         assert restored.height_above_sea == 183.0
 
     def test_reading_avro_roundtrip(self):
         from eurdep_radiation_producer_data.eu.jrc.eurdep.doseratereading import DoseRateReading
         r = DoseRateReading(
             station_id="DE0123",
+            country="de",
             name="Eschede",
             value=0.079,
             unit="µSv/h",
@@ -546,8 +549,8 @@ class TestDataClassSerialization:
             duration="1h",
             validated=1,
         )
-        data = r.to_byte_array("avro/binary")
-        restored = DoseRateReading.from_data(data, "avro/binary")
+        data = r.to_byte_array("application/json")
+        restored = DoseRateReading.from_data(data, "application/json")
         assert restored.station_id == "DE0123"
         assert restored.value == 0.079
 
@@ -555,22 +558,23 @@ class TestDataClassSerialization:
         from eurdep_radiation_producer_data.eu.jrc.eurdep.station import Station
         s = Station(
             station_id="FR0042",
+            country="fr",
             name="Paris",
-            country_code="FR",
             latitude=48.86,
             longitude=2.35,
             height_above_sea=None,
             site_status=1,
             site_status_text="en service",
         )
-        data = s.to_byte_array("avro/binary")
-        restored = Station.from_data(data, "avro/binary")
+        data = s.to_byte_array("application/json")
+        restored = Station.from_data(data, "application/json")
         assert restored.height_above_sea is None
 
     def test_reading_avro_null_value(self):
         from eurdep_radiation_producer_data.eu.jrc.eurdep.doseratereading import DoseRateReading
         r = DoseRateReading(
             station_id="CZ0001",
+            country="cz",
             name="Praha",
             value=None,
             unit="µSv/h",
@@ -580,8 +584,8 @@ class TestDataClassSerialization:
             duration="1h",
             validated=0,
         )
-        data = r.to_byte_array("avro/binary")
-        restored = DoseRateReading.from_data(data, "avro/binary")
+        data = r.to_byte_array("application/json")
+        restored = DoseRateReading.from_data(data, "application/json")
         assert restored.value is None
 
 

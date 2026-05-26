@@ -4,8 +4,8 @@ NIFC USA Wildfires publishes wildfire incident status records from the U.S. Nati
 
 ## At a glance
 
-- **Event types:** 1 documented event type.
-- **Transports:** KAFKA
+- **Event types:** 1 documented event type (3 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
 - **Identity:** `{irwin_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `wildfire/us/nifc/nifc-usa-wildfires/+/+/+/incident`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('wildfire/us/nifc/nifc-usa-wildfires/+/+/+/incident', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `nifc-usa-wildfires`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/nifc-usa-wildfires')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,10 +77,12 @@ Each event identifies the real-world resource with `{irwin_id}`. `{irwin_id}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `nifc-usa-wildfires`, key `{irwin_id}` |
+| `MQTT/5.0` | topic `wildfire/us/nifc/nifc-usa-wildfires/{state}/{status}/{irwin_id}/incident`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/nifc-usa-wildfires`, message subject `{irwin_id}`; application properties state `{state}`, status `{status}` |
 
 #### Payload
 
-`Wildfire Incident` payloads are JSON object. Required fields: `irwin_id`, `incident_name`, `modified_on_datetime`.
+`Wildfire Incident` payloads are JSON object. Required fields: `irwin_id`, `incident_name`, `modified_on_datetime`, `state`, `status`.
 
 - **`irwin_id`** (string, required): IRWIN incident identifier, a globally unique GUID assigned by the Integrated Reporting of Wildland-Fire Information (IRWIN) system. Primary key for wildfire incidents.
 - **`incident_name`** (string, required): The name assigned to the wildfire incident (e.g. 'Pinnacle', 'Backbone').
@@ -83,6 +113,8 @@ Each event identifies the real-world resource with `{irwin_id}`. `{irwin_id}` is
 - **`fire_out_datetime`** (string or null, optional): Date and time the fire was declared out, in ISO 8601 format. Null if the fire is still active.
 - **`final_acres`** (double or null, optional): Final fire size in acres after the fire is declared out.
 - **`modified_on_datetime`** (string, required): Date and time when the incident record was last modified in the IRWIN system, in ISO 8601 format.
+- **`state`** (string, required): Lowercase two-letter US state or territory code used as the {state} routing segment, derived from the IRWIN POOState value.
+- **`status`** (string, required): Normalized wildfire lifecycle status used as the {status} routing segment. Values are active, contained, controlled, or out, derived from containment, control, and fire-out timestamps.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -117,7 +149,9 @@ Synthetic example values are generated deterministically from the schema: consta
   "control_datetime": "string",
   "fire_out_datetime": "string",
   "final_acres": 0,
-  "modified_on_datetime": "string"
+  "modified_on_datetime": "string",
+  "state": "string",
+  "status": "string"
 }
 ```
 

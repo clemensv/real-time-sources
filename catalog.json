@@ -564,7 +564,9 @@
     "cat": "Disasters",
     "key": false,
     "desc": "United States — active wildfire incidents, NIFC",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "nina-bbk",
@@ -626,7 +628,9 @@
     "key": false,
     "desc": "Europe — ~5,500 stations, 39 countries, gamma dose",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "usgs-geomag",
@@ -840,7 +844,9 @@
     "cat": "Nightlife",
     "key": false,
     "desc": "Europe — clubs, bars, parties, festivals — event schedules",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "carbon-intensity",
@@ -860,7 +866,9 @@
     "key": false,
     "desc": "Great Britain — electricity market, generation, demand",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "energidataservice-dk",
@@ -869,7 +877,9 @@
     "key": false,
     "desc": "Denmark — power system, spot prices, CO₂",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "energy-charts",
@@ -878,7 +888,9 @@
     "key": false,
     "desc": "Europe — 40+ countries, electricity generation & prices",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "entsoe",
@@ -936,7 +948,9 @@
     "name": "Billetto",
     "cat": "Public Events",
     "key": false,
-    "desc": "Europe — pan-European ticketed public events"
+    "desc": "Europe — pan-European ticketed public events",
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "fienta",
@@ -944,14 +958,18 @@
     "cat": "Public Events",
     "key": false,
     "desc": "Europe — ticketed public events with sale-status signals",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "ticketmaster",
     "name": "Ticketmaster",
     "cat": "Public Events",
     "key": true,
-    "desc": "Global — concerts, sports, theater, arts via Discovery API"
+    "desc": "Global — concerts, sports, theater, arts via Discovery API",
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "gracedb",
@@ -1011,6 +1029,8 @@
     "key": false,
     "desc": "Japan / Kanto — TEPCO electricity supply, hourly forecast, 5-min actuals + solar",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   }
 ]

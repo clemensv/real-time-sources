@@ -18,7 +18,7 @@ import json
 class EventSaleStatus:
     """
     Telemetry event emitted whenever the bridge observes a change in the sale_status value of a Fienta public event between two polls of the public events endpoint.
-    
+
     Attributes:
         event_id (str)
         name (str)
@@ -30,8 +30,8 @@ class EventSaleStatus:
         buy_tickets_url (typing.Optional[str])
         observed_at (str)
     """
-    
-    
+
+
     event_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_id"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     sale_status: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sale_status"))
@@ -46,10 +46,10 @@ class EventSaleStatus:
     def from_serializer_dict(cls, data: dict) -> 'EventSaleStatus':
         """
         Converts a dictionary to a dataclass instance.
-        
+
         Args:
             data: The dictionary to convert to a dataclass.
-        
+
         Returns:
             The dataclass representation of the dataclass.
         """
@@ -68,7 +68,7 @@ class EventSaleStatus:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """ 
+        """
         def _resolve_enum(v):
             if isinstance(v, enum.Enum):
                 return v.value
@@ -80,7 +80,7 @@ class EventSaleStatus:
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-        
+
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -89,11 +89,11 @@ class EventSaleStatus:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.        
+            The byte array representation of the dataclass.
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -119,10 +119,10 @@ class EventSaleStatus:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['EventSaleStatus']:
         """
         Converts the data to a dataclass based on the content type string.
-        
+
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to. 
+            content_type_string: The content type string to convert the data to.
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
@@ -146,7 +146,7 @@ class EventSaleStatus:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -162,18 +162,18 @@ class EventSaleStatus:
     def create_instance(cls) -> 'EventSaleStatus':
         """
         Creates an instance of the dataclass with test values.
-        
+
         Returns:
             An instance of the dataclass.
         """
         return cls(
-            event_id='nqxjtokyeyvqmqctbzwo',
-            name='cnqlarabvamjhmfupvtd',
-            sale_status='wccxxxjszwfkpgsbdgnc',
-            event_status='hedluajfqzcrmhgxtcuk',
-            start='odnsevmusflqevfnyjna',
-            end='romhdhlgdkeogfsgfreo',
-            url='whfvzbbvugaqjvudrcod',
-            buy_tickets_url='puzeuptzybmwkgdubysr',
-            observed_at='jowwyqeajylclcokmkvo'
+            event_id='mrnugdculvcvpvxfsubt',
+            name='kaxmmsoeogfwkixjpgbi',
+            sale_status='btxntmmdcuknibgkcwfv',
+            event_status='xpokolvknkzzlaqmwvyd',
+            start='ffpcplzbvematauhbaie',
+            end='mtdnlnbfmumncsqzpvzh',
+            url='wghcwjnwxudnppyxktvw',
+            buy_tickets_url='hrfbxamynumjffmiplxk',
+            observed_at='egmbzowgoinyefmywqsq'
         )

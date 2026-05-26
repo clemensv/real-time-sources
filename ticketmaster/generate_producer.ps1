@@ -1,33 +1,15 @@
-# Generate Ticketmaster producer from xRegistry definitions
-
+# Regenerate Kafka, MQTT, and AMQP producers from the source xRegistry manifest.
 . (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
-
-Write-Host "Generating Ticketmaster producer from xRegistry definitions..." -ForegroundColor Cyan
-
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$xregFile = Join-Path (Join-Path $scriptDir "xreg") "ticketmaster.xreg.json"
-$outputDir = Join-Path $scriptDir "ticketmaster_producer"
-
-Write-Host "xRegistry file: $xregFile" -ForegroundColor Gray
-Write-Host "Output directory: $outputDir" -ForegroundColor Gray
-
-if (-not (Test-Path $xregFile)) {
-    Write-Host "Error: xRegistry file not found: $xregFile" -ForegroundColor Red
-    exit 1
+$xregFile = Join-Path $scriptDir "xreg\ticketmaster.xreg.json"
+foreach ($output in @("ticketmaster_producer", "ticketmaster_mqtt_producer", "ticketmaster_amqp_producer")) {
+  $outputDir = Join-Path $scriptDir $output
+  if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
 }
-
-if (Test-Path $outputDir) {
-    Write-Host "Removing existing output directory..." -ForegroundColor Yellow
-    Remove-Item -Path $outputDir -Recurse -Force
-}
-
-Write-Host "Generating Kafka producer code..." -ForegroundColor Cyan
-xrcg generate --style kafkaproducer --language py --projectname ticketmaster-producer --definitions $xregFile --output $outputDir
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "`nProducer generation completed successfully" -ForegroundColor Green
-} else {
-    Write-Host "`nProducer generation failed" -ForegroundColor Red
-    exit $LASTEXITCODE
-}
+xrcg generate --style kafkaproducer --language py --definitions $xregFile --projectname ticketmaster_producer --output (Join-Path $scriptDir "ticketmaster_producer")
+if ($LASTEXITCODE -ne 0) { throw "Kafka producer generation failed" }
+xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint Ticketmaster.Events.Mqtt --projectname ticketmaster_mqtt_producer --output (Join-Path $scriptDir "ticketmaster_mqtt_producer")
+if ($LASTEXITCODE -ne 0) { throw "MQTT producer generation failed" }
+xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint Ticketmaster.Events.Amqp --projectname ticketmaster_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir "ticketmaster_amqp_producer")
+if ($LASTEXITCODE -ne 0) { throw "AMQP producer generation failed" }

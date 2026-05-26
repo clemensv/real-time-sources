@@ -20,6 +20,54 @@
       "messagegroups": [
         "#/messagegroups/Billetto.Events"
       ]
+    },
+    "Billetto.Events.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Billetto.Events.mqtt"
+      ],
+      "description": "MQTT 5.0 producer endpoint for billetto."
+    },
+    "Billetto.Events.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/billetto"
+          }
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "billetto"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/Billetto.Events.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for billetto."
     }
   },
   "messagegroups": {
@@ -47,6 +95,47 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Billetto.Events.jstruct/schemas/Billetto.Events.Event"
+        }
+      }
+    },
+    "Billetto.Events.mqtt": {
+      "description": "MQTT 5.0 binary-mode CloudEvents variant of Billetto.Events.",
+      "messages": {
+        "Billetto.Events.mqtt.Event": {
+          "name": "Event",
+          "basemessageurl": "/messagegroups/Billetto.Events/messages/Billetto.Events.Event",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "civic-events/intl/billetto/billetto/{country}/{city}/{category}/{event_id}/event",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "Billetto.Events.amqp": {
+      "description": "AMQP 1.0 binary-mode CloudEvents variant of Billetto.Events.",
+      "messages": {
+        "Billetto.Events.amqp.Event": {
+          "name": "Event",
+          "basemessageurl": "/messagegroups/Billetto.Events/messages/Billetto.Events.Event",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{event_id}",
+                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{event_id}",
+                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
         }
       }
     }
@@ -183,7 +272,7 @@
                     ],
                     "description": "WGS 84 latitude of the event venue in decimal degrees. From the event location object.",
                     "unit": "degree",
-                    "symbol": "\u00b0",
+                    "symbol": "°",
                     "altnames": {
                       "upstream": "location.latitude"
                     }
@@ -195,7 +284,7 @@
                     ],
                     "description": "WGS 84 longitude of the event venue in decimal degrees. From the event location object.",
                     "unit": "degree",
-                    "symbol": "\u00b0",
+                    "symbol": "°",
                     "altnames": {
                       "upstream": "location.longitude"
                     }

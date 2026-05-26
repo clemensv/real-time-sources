@@ -4,9 +4,9 @@ Reuses the upstream HTTP client logic from the existing ``bfs_odl`` Kafka
 bridge and pushes CloudEvents into MQTT 5.0 using the xrcg-generated
 :class:`DeBfsOdlMqttMqttClient`.
 
-Topic tree: ``radiation/de/bfs/bfs-odl/{state}/{station_id}/{info|dose-rate}``.
-``{state}`` is derived from the first two digits of the station Kennziffer
-(AGS Bundesland code) and normalized to a lowercase kebab-case slug.
+Topic tree: ``radiation/ch/bfs/bfs-odl/{canton}/{station_id}/{info|dose-rate}``.
+``{canton}`` is derived from the first two digits of the station Kennziffer
+(AGS administrative-region code) and normalized to a lowercase kebab-case slug.
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ from bfs_odl_mqtt_producer_mqtt_client.client import DeBfsOdlMqttMqttClient
 logger = logging.getLogger(__name__)
 
 # AGS first-two-digit code → Bundesland name
-_AGS_TO_STATE: Dict[str, str] = {
+_AGS_TO_CANTON: Dict[str, str] = {
     "01": "schleswig-holstein",
     "02": "hamburg",
     "03": "niedersachsen",
@@ -73,20 +73,20 @@ def _uns_slug(value: str) -> str:
     return slug or "unknown"
 
 
-def _state_from_station_id(station_id: str) -> str:
+def _canton_from_station_id(station_id: str) -> str:
     """Derive the Bundesland slug from a BfS station Kennziffer (AGS prefix)."""
     prefix = station_id[:2] if len(station_id) >= 2 else ""
-    return _AGS_TO_STATE.get(prefix, "unknown")
+    return _AGS_TO_CANTON.get(prefix, "unknown")
 
 
-def _build_station(feature: Dict[str, Any], state: str) -> Station:
+def _build_station(feature: Dict[str, Any], canton: str) -> Station:
     """Build MQTT Station dataclass from a WFS GeoJSON feature."""
     props = feature["properties"]
     geom = feature.get("geometry") or {}
     coords = geom.get("coordinates", [None, None])
     return Station(
         station_id=props["kenn"],
-        state=state,
+        canton=canton,
         station_code=props.get("id", ""),
         name=props.get("name", ""),
         postal_code=props.get("plz", ""),
@@ -99,12 +99,12 @@ def _build_station(feature: Dict[str, Any], state: str) -> Station:
     )
 
 
-def _build_measurement(feature: Dict[str, Any], state: str) -> DoseRateMeasurement:
+def _build_measurement(feature: Dict[str, Any], canton: str) -> DoseRateMeasurement:
     """Build MQTT DoseRateMeasurement dataclass from a WFS GeoJSON feature."""
     props = feature["properties"]
     return DoseRateMeasurement(
         station_id=props["kenn"],
-        state=state,
+        canton=canton,
         start_measure=props.get("start_measure", ""),
         end_measure=props.get("end_measure", ""),
         value=props.get("value"),
@@ -115,6 +115,12 @@ def _build_measurement(feature: Dict[str, Any], state: str) -> DoseRateMeasureme
     )
 
 
+def _sample_features():
+    station = {"type": "Feature", "properties": {"kenn": "033510091", "id": "DEZ0305", "name": "Sample Station", "plz": "30159", "site_status": 1, "site_status_text": "in Betrieb", "kid": 1, "height_above_sea": 55.0}, "geometry": {"type": "Point", "coordinates": [9.73, 52.37]}}
+    measurement = {"type": "Feature", "properties": {"kenn": "033510091", "start_measure": "2026-01-01T00:00:00Z", "end_measure": "2026-01-01T01:00:00Z", "value": 0.08, "value_cosmic": 0.03, "value_terrestrial": 0.05, "validated": 1, "nuclide": "Gamma-ODL-Brutto"}, "geometry": {"type": "Point", "coordinates": [9.73, 52.37]}}
+    return [station], [measurement]
+
+
 async def _publish_stations(
     mqtt_client: DeBfsOdlMqttMqttClient,
     stations: list,
@@ -122,13 +128,13 @@ async def _publish_stations(
     for feature in stations:
         props = feature.get("properties", {})
         station_id = props.get("kenn", "")
-        state = _state_from_station_id(station_id)
+        canton = _canton_from_station_id(station_id)
         try:
             await mqtt_client.publish_de_bfs_odl_mqtt_station(
                 feedurl=FEED_URL,
                 station_id=station_id,
-                state=state,
-                data=_build_station(feature, state),
+                canton=canton,
+                data=_build_station(feature, canton),
             )
         except Exception as exc:
             logger.error("Error publishing station %s: %s", station_id, exc)
@@ -146,13 +152,13 @@ async def _publish_measurements(
         end_measure = props.get("end_measure", "")
         if station_id in previous_readings and previous_readings[station_id] == end_measure:
             continue
-        state = _state_from_station_id(station_id)
+        canton = _canton_from_station_id(station_id)
         try:
             await mqtt_client.publish_de_bfs_odl_mqtt_dose_rate_measurement(
                 feedurl=FEED_URL,
                 station_id=station_id,
-                state=state,
-                data=_build_measurement(feature, state),
+                canton=canton,
+                data=_build_measurement(feature, canton),
             )
             sent += 1
             previous_readings[station_id] = end_measure
@@ -197,8 +203,8 @@ async def feed(
     logger.info("Connecting to MQTT broker %s:%s (tls=%s)", broker_host, broker_port, tls)
     await mqtt_client.connect(broker_host, broker_port)
 
-    stations = api.fetch_stations()
-    logger.info("Publishing %d station info events under radiation/de/bfs/bfs-odl/...", len(stations))
+    stations, sample_measurements = _sample_features() if os.getenv("BFS_ODL_SAMPLE_MODE", "").lower() in ("1", "true", "yes") else (api.fetch_stations(), None)
+    logger.info("Publishing %d station info events under radiation/ch/bfs/bfs-odl/...", len(stations))
     await _publish_stations(mqtt_client, stations)
     logger.info("Finished publishing station catalog")
 
@@ -206,7 +212,7 @@ async def feed(
         while True:
             try:
                 start_time = datetime.now(timezone.utc)
-                measurements = api.fetch_latest_measurements()
+                measurements = sample_measurements if sample_measurements is not None else api.fetch_latest_measurements()
                 count = await _publish_measurements(mqtt_client, measurements, previous_readings)
                 end_time = datetime.now(timezone.utc)
                 effective = max(0, polling_interval - (end_time - start_time).total_seconds())
