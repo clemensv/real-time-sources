@@ -12,10 +12,10 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_warning_amqp_producer_data.severityenum import SeverityEnum
-from jma_bosai_warning_amqp_producer_data.tsunamiobservation import TsunamiObservation
-from jma_bosai_warning_amqp_producer_data.affectedcoastalregion import AffectedCoastalRegion
 from jma_bosai_warning_amqp_producer_data.infotypeenum import InfoTypeenum
+from jma_bosai_warning_amqp_producer_data.severityenum import SeverityEnum
+from jma_bosai_warning_amqp_producer_data.affectedcoastalregion import AffectedCoastalRegion
+from jma_bosai_warning_amqp_producer_data.tsunamiobservation import TsunamiObservation
 import datetime
 
 
@@ -181,17 +181,17 @@ class TsunamiAlert:
             An instance of the dataclass.
         """
         return cls(
-            event_id='fcuiosihsmzyjfsluegm',
-            serial=int(39),
+            event_id='shioaczvmqcwokhyydoz',
+            serial=int(9),
             info_type=InfoTypeenum.ISSUED,
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            title_jp='kedrwufegcafdmfpmbve',
-            title_en='zkeejmdxykrolmtdndum',
-            bulletin_type='jetpwsvyyfvsouduehtr',
-            detail_url='anrzxxdarxafnovmwkwd',
-            affected_coastal_regions=[None],
-            observations=[None, None, None, None, None],
-            prefecture='dfkvejsrwnlbxwtlppiu',
-            severity=SeverityEnum.advisory
+            title_jp='erxloikkuewvfarijxhm',
+            title_en='gyurseyczzgetmgwibpq',
+            bulletin_type='foxtrgzqtzvvgszbustm',
+            detail_url='zmlggcuigutmzsbsceuw',
+            affected_coastal_regions=[None, None, None, None],
+            observations=[None],
+            prefecture='zgkhnwmycrrtqaiodrkh',
+            severity=SeverityEnum.info
         )

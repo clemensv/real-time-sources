@@ -396,13 +396,14 @@ class _CbsAzureHandler(MessagingHandler):
         self._pending.clear()
 from jma_bosai_warning_amqp_producer_data import Office
 from jma_bosai_warning_amqp_producer_data import WeatherWarning
+from jma_bosai_warning_amqp_producer_data import TsunamiAlert
 
 class JPJMAWarningAmqpProducer:
     """
     Producer class to send messages in the `JP.JMA.Warning.amqp` message group via AMQP 1.0 protocol.
     """
-    
-    def __init__(self, 
+
+    def __init__(self,
                  host: str,
                  address: str,
                  port: int = 5672,
@@ -419,7 +420,7 @@ class JPJMAWarningAmqpProducer:
                  ):
         """
         Initialize the AMQP producer
-        
+
         Args:
             host (str): The AMQP broker hostname
             address (str): The AMQP address (queue or topic)
@@ -549,7 +550,7 @@ class JPJMAWarningAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
-    
+
     def _build_connection_url(self) -> str:
         if self.username and self.password:
             user = quote_plus(self.username)
@@ -596,8 +597,8 @@ class JPJMAWarningAmqpProducer:
                 out[lk] = v
         return out
 
-    
-    
+
+
     def send_office(self,
         data: Office,
         _feedurl: str,
@@ -607,7 +608,7 @@ class JPJMAWarningAmqpProducer:
         """
         Send the `JP.JMA.Warning.amqp.Office` message
         JMA Bosai warning office reference data from area.json offices.
-        
+
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _office_code (str): Value for placeholder office_code in attribute subject
@@ -624,16 +625,16 @@ class JPJMAWarningAmqpProducer:
             "subject":
             "jp.jma.warning/{office_code}/{area_code}".format(office_code=_office_code, area_code=_area_code),
         }
-        
+
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
-        
+
         # Serialize data
         byte_data = self._serialize_payload(data, content_type)
-        
+
         # Create CloudEvent
         cloud_event = CloudEvent(attributes, byte_data)
-        
+
         # Convert to AMQP message based on content mode
         if self.content_mode == 'structured':
             headers, body = to_structured(cloud_event)
@@ -661,13 +662,13 @@ class JPJMAWarningAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
-        
+
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
             self._sender.send(amqp_msg)
-    
+
     def send_office_batch(self,
         data_array: typing.List[Office],
         _feedurl: str,
@@ -676,7 +677,7 @@ class JPJMAWarningAmqpProducer:
         content_type: str = 'application/json') -> None:
         """
         Send multiple `JP.JMA.Warning.amqp.Office` messages
-        
+
         Args:
             data_array (typing.List[Office]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
@@ -691,8 +692,8 @@ class JPJMAWarningAmqpProducer:
                 _office_code=_office_code,
                 _area_code=_area_code,
                 content_type=content_type)
-    
-    
+
+
     def send_weather_warning(self,
         data: WeatherWarning,
         _feedurl: str,
@@ -702,7 +703,7 @@ class JPJMAWarningAmqpProducer:
         """
         Send the `JP.JMA.Warning.amqp.WeatherWarning` message
         JMA Bosai weather warning/advisory telemetry for one forecast area within an office bulletin.
-        
+
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _office_code (str): Value for placeholder office_code in attribute subject
@@ -719,16 +720,16 @@ class JPJMAWarningAmqpProducer:
             "subject":
             "jp.jma.warning/{office_code}/{area_code}".format(office_code=_office_code, area_code=_area_code),
         }
-        
+
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
-        
+
         # Serialize data
         byte_data = self._serialize_payload(data, content_type)
-        
+
         # Create CloudEvent
         cloud_event = CloudEvent(attributes, byte_data)
-        
+
         # Convert to AMQP message based on content mode
         if self.content_mode == 'structured':
             headers, body = to_structured(cloud_event)
@@ -756,13 +757,13 @@ class JPJMAWarningAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
-        
+
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
             self._sender.send(amqp_msg)
-    
+
     def send_weather_warning_batch(self,
         data_array: typing.List[WeatherWarning],
         _feedurl: str,
@@ -771,7 +772,7 @@ class JPJMAWarningAmqpProducer:
         content_type: str = 'application/json') -> None:
         """
         Send multiple `JP.JMA.Warning.amqp.WeatherWarning` messages
-        
+
         Args:
             data_array (typing.List[WeatherWarning]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
@@ -786,8 +787,103 @@ class JPJMAWarningAmqpProducer:
                 _office_code=_office_code,
                 _area_code=_area_code,
                 content_type=content_type)
-    
-    
+
+
+    def send_tsunami_alert(self,
+        data: TsunamiAlert,
+        _feedurl: str,
+        _event_id: str,
+        _serial: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `JP.JMA.Warning.amqp.TsunamiAlert` message
+        JMA Bosai active tsunami alert telemetry from list.json enriched with detail bulletin coastal forecasts.
+
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _event_id (str): Value for placeholder event_id in attribute subject
+            _serial (str): Value for placeholder serial in attribute subject
+            data (TsunamiAlert): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "JP.JMA.Tsunami.TsunamiAlert",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "jp.jma.tsunami/{event_id}/{serial}".format(event_id=_event_id, serial=_serial),
+        }
+
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "jp.jma.tsunami/{event_id}/{serial}".format(event_id=_event_id, serial=_serial)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._sender.send(amqp_msg)
+
+    def send_tsunami_alert_batch(self,
+        data_array: typing.List[TsunamiAlert],
+        _feedurl: str,
+        _event_id: str,
+        _serial: str,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `JP.JMA.Warning.amqp.TsunamiAlert` messages
+
+        Args:
+            data_array (typing.List[TsunamiAlert]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _event_id (str): Value for placeholder event_id in attribute subject
+            _serial (str): Value for placeholder serial in attribute subject
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_tsunami_alert(
+                data=data,
+                _feedurl=_feedurl,
+                _event_id=_event_id,
+                _serial=_serial,
+                content_type=content_type)
+
+
     def close(self) -> None:
         """
         Close the producer and clean up resources

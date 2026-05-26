@@ -4,7 +4,7 @@ JMA Bosai Warnings publishes weather warnings and advisories from the Japan Mete
 
 ## At a glance
 
-- **Event types:** 3 documented event types (7 transport bindings in the manifest).
+- **Event types:** 3 documented event types (9 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 3 telemetry event types.
 - **Identity:** `jp.jma.warning/{office_code}/{area_code}`, `jp.jma.tsunami/{event_id}/{serial}` identifies the resource each event is about.
@@ -31,7 +31,7 @@ while True:
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 ### MQTT 5
 
-Connect to `mqtt://localhost:1883` and subscribe to `alerts/jp/jma/jma-bosai-warning/+/+/+/+/+`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+Connect to `mqtt://localhost:1883` and subscribe to `alerts/jp/jma/jma-bosai-warning/+/+/+/+/+`, `alerts/jp/jma/jma-bosai-warning/+/+/+/+/tsunami`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
 
 ```python
 import paho.mqtt.client as mqtt
@@ -91,7 +91,7 @@ Each event identifies the real-world resource with `jp.jma.warning/{office_code}
 - **`parent_office_code`** (string or null, required): Parent JMA regional center code from area.json offices[].parent. Null is emitted only if the upstream catalog omits a parent. Constraints: pattern `^[0-9]{6}$`.
 - **`office_type`** (enum, required): Normalized office class. PREFECTURE is used for standard prefectural offices, SUBREGION for Hokkaido/Okinawa-style regional warning offices, and OFFICE for other JMA issuing-office catalog entries.
 - **`prefecture`** (string, required): ASCII-safe Romanized prefecture or JMA warning subregion slug derived from the JMA office code/name for MQTT topic routing. Japanese administrative names are preserved separately in name_jp/area_name. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
-- **`severity`** (enum, required): MQTT topic severity axis. Office REFERENCE records emit REFERENCE; weather warning records emit the highest normalized active warning severity.
+- **`severity`** (enum, required): Japan-native severity axis for JMA warning MQTT topics: info for office reference records, advisory for 注意報-level notices and cancellations, warning for 警報-level warnings, and emergency for 特別警報/special-warning category codes.
 - **`event`** (enum, required): Fixed MQTT topic event segment for retained office reference records.
 ##### `office_type` values
 
@@ -100,14 +100,13 @@ Each event identifies the real-world resource with `jp.jma.warning/{office_code}
 - `OFFICE`: Provider value `OFFICE` for this coded alert field.
 ##### `severity` values
 
-- `REFERENCE`: Provider value `REFERENCE` for this coded alert field.
-- `NONE`: Provider value `NONE` for this coded alert field.
-- `ADVISORY`: Provider value `ADVISORY` for this coded alert field.
-- `WARNING`: Provider value `WARNING` for this coded alert field.
-- `EMERGENCY_WARNING`: Provider value `EMERGENCY_WARNING` for this coded alert field.
+- `info`: Reference-information routing value used by retained JMA office records.
+- `advisory`: Normalized advisory/cancellation value for 注意報-level or cleared JMA warning items.
+- `warning`: Normalized warning value for 警報-level JMA warning items.
+- `emergency`: Normalized emergency value for 特別警報 or special-warning category codes 32-38.
 ##### `event` values
 
-- `office`: Provider value `office` for this coded alert field.
+- `info`: Provider value `info` for retained office reference records.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -121,8 +120,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "parent_office_code": "string",
   "office_type": "PREFECTURE",
   "prefecture": "string",
-  "severity": "REFERENCE",
-  "event": "office"
+  "severity": "info",
+  "event": "info"
 }
 ```
 
@@ -155,7 +154,7 @@ Each event identifies the real-world resource with `jp.jma.warning/{office_code}
 `Weather Warning` payloads are JSON object. Required fields: `prefecture`, `severity`, `office_code`, `area_code`, `event`, `area_name`, `report_datetime`, `report_datetime_local`, `headline_text`, `warnings`, `time_defines`.
 
 - **`prefecture`** (string, required): ASCII-safe Romanized prefecture or JMA warning subregion slug derived from the JMA office code/name for MQTT topic routing. Japanese administrative names are preserved separately in name_jp/area_name. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
-- **`severity`** (enum, required): MQTT topic severity axis. Weather warning records emit the highest normalized warning severity present in the area bulletin; retained office REFERENCE records use REFERENCE on the same shared axis.
+- **`severity`** (enum, required): Japan-native severity axis for JMA warning MQTT topics: info for office reference records, advisory for 注意報-level notices and cancellations, warning for 警報-level warnings, and emergency for 特別警報/special-warning category codes.
 - **`office_code`** (string, required): Six-digit JMA Bosai office targetArea code used in the warning/{office_code}.json endpoint. This is the first stable key component. Constraints: pattern `^[0-9]{6}$`.
 - **`area_code`** (string, required): JMA inner forecast-area code from timeSeries areas[].code. This is the second stable key component for weather warning telemetry. Constraints: pattern `^[0-9]{6,7}$`.
 - **`event`** (enum, required): Fixed MQTT topic event segment for JMA Bosai weather warning state records.
@@ -167,14 +166,13 @@ Each event identifies the real-world resource with `jp.jma.warning/{office_code}
 - **`time_defines`** (array of datetime, required): Time definition values from the warning timeSeries converted to RFC3339 UTC timestamps. The original JMA array describes the valid or forecast times associated with the warning area block.
 ##### `severity` values
 
-- `REFERENCE`: Provider value `REFERENCE` for this coded alert field.
-- `NONE`: Provider value `NONE` for this coded alert field.
-- `ADVISORY`: Provider value `ADVISORY` for this coded alert field.
-- `WARNING`: Provider value `WARNING` for this coded alert field.
-- `EMERGENCY_WARNING`: Provider value `EMERGENCY_WARNING` for this coded alert field.
+- `info`: Reference-information routing value used by retained JMA office records.
+- `advisory`: Normalized advisory/cancellation value for 注意報-level or cleared JMA warning items.
+- `warning`: Normalized warning value for 警報-level JMA warning items.
+- `emergency`: Normalized emergency value for 特別警報 or special-warning category codes 32-38.
 ##### `event` values
 
-- `warning`: Provider value `warning` for this coded alert field.
+- `warning`: Provider value `warning` for JMA weather warning state records.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -182,7 +180,7 @@ Synthetic example values are generated deterministically from the schema: consta
 ```json
 {
   "prefecture": "string",
-  "severity": "REFERENCE",
+  "severity": "info",
   "office_code": "string",
   "area_code": "string",
   "event": "warning",
@@ -196,7 +194,7 @@ Synthetic example values are generated deterministically from the schema: consta
       "code_description_jp": "string",
       "code_description_en": "string",
       "status": "ISSUED",
-      "severity": "NONE"
+      "severity": "advisory"
     }
   ],
   "time_defines": [
@@ -226,10 +224,12 @@ Each event identifies the real-world resource with `jp.jma.tsunami/{event_id}/{s
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `jma-bosai-tsunami`, key `jp.jma.tsunami/{event_id}/{serial}` |
+| `MQTT/5.0` | topic `alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{event_id}/{serial}/tsunami`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-warning`, message subject `jp.jma.tsunami/{event_id}/{serial}` |
 
 #### Payload
 
-`Tsunami Alert` payloads are JSON object. Required fields: `event_id`, `serial`, `info_type`, `report_datetime`, `report_datetime_local`, `title_jp`, `title_en`, `bulletin_type`, `detail_url`, `affected_coastal_regions`, `observations`.
+`Tsunami Alert` payloads are JSON object. Required fields: `event_id`, `serial`, `info_type`, `report_datetime`, `report_datetime_local`, `title_jp`, `title_en`, `bulletin_type`, `detail_url`, `affected_coastal_regions`, `observations`, `prefecture`, `severity`.
 
 - **`event_id`** (string, required): Stable JMA tsunami event identifier copied from list.json eid and corresponding detail Head.EventID. This is the first stable key component. Constraints: pattern `^[0-9]{14}$`.
 - **`serial`** (integer, required): JMA tsunami bulletin serial parsed from list.json ser or detail Head.Serial. This is the second stable key component. Constraints: minimum `0`.
@@ -242,11 +242,18 @@ Each event identifies the real-world resource with `jp.jma.tsunami/{event_id}/{s
 - **`detail_url`** (uri, required): Absolute URL for the JMA Bosai tsunami detail JSON referenced by list.json json.
 - **`affected_coastal_regions`** (array of object, required): Coastal forecast regions and expected wave/arrival data parsed from VTSE41 tsunami detail bulletins. AffectedCoastalRegion is defined inline to avoid duplicate schema definitions during Avro and producer generation.
 - **`observations`** (array of object, required): Observed tsunami station readings parsed from VTSE51/VTSE52 observed-wave detail bulletins. The bridge emits an empty array for forecast-only bulletins or when no station observations are present.
+- **`prefecture`** (string, required): ASCII-safe Japan region routing axis for tsunami MQTT/AMQP topics. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
+- **`severity`** (enum, required): Japan-native tsunami warning severity axis: advisory, warning, or emergency.
 ##### `info_type` values
 
 - `ISSUED`: Provider value `ISSUED` for this coded alert field.
 - `CORRECTED`: Provider value `CORRECTED` for this coded alert field.
 - `CANCELLED`: Provider value `CANCELLED` for this coded alert field.
+##### `severity` values
+
+- `advisory`: Tsunami advisory or forecast-level routing severity.
+- `warning`: Tsunami warning routing severity.
+- `emergency`: Major tsunami warning routing severity.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -282,7 +289,9 @@ Synthetic example values are generated deterministically from the schema: consta
       "observed_at_local": "2024-01-01T00:00:00Z",
       "arrival_status": "ESTIMATED"
     }
-  ]
+  ],
+  "prefecture": "string",
+  "severity": "advisory"
 }
 ```
 

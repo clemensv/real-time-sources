@@ -30,10 +30,10 @@ class Test_AffectedCoastalRegion(unittest.TestCase):
         Create instance of AffectedCoastalRegion for testing
         """
         instance = AffectedCoastalRegion(
-            code='hgmtmshsbblpmcfswmjd',
-            name='gbslnhfjqdxctopekuhh',
+            code='dayzfyatdyyvxfdkiaky',
+            name='almpqlpthyybzqzslsmj',
             category=CategoryEnum.MAJOR_WARNING,
-            expected_max_wave_height_m=float(79.19353263305631),
+            expected_max_wave_height_m=float(47.89960100010282),
             expected_arrival_datetime=datetime.datetime.now(datetime.timezone.utc),
             expected_arrival_datetime_local=datetime.datetime.now(datetime.timezone.utc)
         )
@@ -44,7 +44,7 @@ class Test_AffectedCoastalRegion(unittest.TestCase):
         """
         Test code property
         """
-        test_value = 'hgmtmshsbblpmcfswmjd'
+        test_value = 'dayzfyatdyyvxfdkiaky'
         self.instance.code = test_value
         self.assertEqual(self.instance.code, test_value)
     
@@ -52,7 +52,7 @@ class Test_AffectedCoastalRegion(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'gbslnhfjqdxctopekuhh'
+        test_value = 'almpqlpthyybzqzslsmj'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -68,7 +68,7 @@ class Test_AffectedCoastalRegion(unittest.TestCase):
         """
         Test expected_max_wave_height_m property
         """
-        test_value = float(79.19353263305631)
+        test_value = float(47.89960100010282)
         self.instance.expected_max_wave_height_m = test_value
         self.assertEqual(self.instance.expected_max_wave_height_m, test_value)
     

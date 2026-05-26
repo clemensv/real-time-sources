@@ -5,7 +5,7 @@ class EventEnum(Enum):
     """
     Fixed MQTT topic event segment for retained office reference records.
     """
-    office = 'office'
+    info = 'info'
 
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'EventEnum':
