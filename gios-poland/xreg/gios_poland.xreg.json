@@ -154,7 +154,7 @@
       "messages": {
         "pl.gov.gios.airquality.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Station",
+          "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/pl/gios/gios-poland/{voivodeship}/{station_id}/{pollutant}/info",
@@ -164,7 +164,7 @@
         },
         "pl.gov.gios.airquality.mqtt.Sensor": {
           "name": "Sensor",
-          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor",
+          "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/pl/gios/gios-poland/{voivodeship}/{station_id}/{pollutant}/sensor",
@@ -174,7 +174,7 @@
         },
         "pl.gov.gios.airquality.mqtt.Measurement": {
           "name": "Measurement",
-          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Measurement",
+          "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Measurement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/pl/gios/gios-poland/{voivodeship}/{station_id}/{pollutant}/measurement",
@@ -184,7 +184,7 @@
         },
         "pl.gov.gios.airquality.mqtt.AirQualityIndex": {
           "name": "AirQualityIndex",
-          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.AirQualityIndex",
+          "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.AirQualityIndex",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/pl/gios/gios-poland/{voivodeship}/{station_id}/{pollutant}/aqi",
@@ -199,7 +199,7 @@
       "messages": {
         "pl.gov.gios.airquality.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Station",
+          "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -225,7 +225,7 @@
         },
         "pl.gov.gios.airquality.amqp.Sensor": {
           "name": "Sensor",
-          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor",
+          "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -256,7 +256,7 @@
         },
         "pl.gov.gios.airquality.amqp.Measurement": {
           "name": "Measurement",
-          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Measurement",
+          "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Measurement",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -287,7 +287,7 @@
         },
         "pl.gov.gios.airquality.amqp.AirQualityIndex": {
           "name": "AirQualityIndex",
-          "basemessageurl": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.AirQualityIndex",
+          "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.AirQualityIndex",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

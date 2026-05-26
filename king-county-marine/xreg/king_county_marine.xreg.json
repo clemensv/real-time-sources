@@ -116,7 +116,7 @@
       "messages": {
         "US.WA.KingCounty.Marine.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.Station",
+          "basemessageuri": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/wa/king-county/king-county-marine/{station_id}/info",
@@ -126,7 +126,7 @@
         },
         "US.WA.KingCounty.Marine.mqtt.WaterQualityReading": {
           "name": "WaterQualityReading",
-          "basemessageurl": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.WaterQualityReading",
+          "basemessageuri": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.WaterQualityReading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/wa/king-county/king-county-marine/{station_id}/water-quality",
@@ -142,7 +142,7 @@
       "messages": {
         "US.WA.KingCounty.Marine.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.Station",
+          "basemessageuri": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -157,7 +157,7 @@
         },
         "US.WA.KingCounty.Marine.amqp.WaterQualityReading": {
           "name": "WaterQualityReading",
-          "basemessageurl": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.WaterQualityReading",
+          "basemessageuri": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.WaterQualityReading",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

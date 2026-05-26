@@ -116,7 +116,7 @@
       "messages": {
         "NO.NVE.Hydrology.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/NO.NVE.Hydrology/messages/NO.NVE.Hydrology.Station",
+          "basemessageuri": "/messagegroups/NO.NVE.Hydrology/messages/NO.NVE.Hydrology.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/no/nve/nve-hydro/{river_name}/{station_id}/info",
@@ -126,7 +126,7 @@
         },
         "NO.NVE.Hydrology.mqtt.WaterLevelObservation": {
           "name": "WaterLevelObservation",
-          "basemessageurl": "/messagegroups/NO.NVE.Hydrology/messages/NO.NVE.Hydrology.WaterLevelObservation",
+          "basemessageuri": "/messagegroups/NO.NVE.Hydrology/messages/NO.NVE.Hydrology.WaterLevelObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/no/nve/nve-hydro/{river_name}/{station_id}/water-level",
@@ -141,7 +141,7 @@
       "messages": {
         "NO.NVE.Hydrology.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/NO.NVE.Hydrology/messages/NO.NVE.Hydrology.Station",
+          "basemessageuri": "/messagegroups/NO.NVE.Hydrology/messages/NO.NVE.Hydrology.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -162,7 +162,7 @@
         },
         "NO.NVE.Hydrology.amqp.WaterLevelObservation": {
           "name": "WaterLevelObservation",
-          "basemessageurl": "/messagegroups/NO.NVE.Hydrology/messages/NO.NVE.Hydrology.WaterLevelObservation",
+          "basemessageuri": "/messagegroups/NO.NVE.Hydrology/messages/NO.NVE.Hydrology.WaterLevelObservation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

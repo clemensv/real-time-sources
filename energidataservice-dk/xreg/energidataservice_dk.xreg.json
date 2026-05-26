@@ -137,7 +137,7 @@
       "messages": {
         "dk.energinet.energidataservice.mqtt.PowerSystemSnapshot": {
           "name": "PowerSystemSnapshot",
-          "basemessageurl": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot",
+          "basemessageuri": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/dk/energidataservice/energidataservice-dk/{price_area}/power-system-snapshot",
@@ -147,7 +147,7 @@
         },
         "dk.energinet.energidataservice.mqtt.SpotPrice": {
           "name": "SpotPrice",
-          "basemessageurl": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice",
+          "basemessageuri": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/dk/energidataservice/energidataservice-dk/{price_area}/spot-price",
@@ -157,7 +157,7 @@
         },
         "dk.energinet.energidataservice.mqtt.Info": {
           "name": "Info",
-          "basemessageurl": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.Info",
+          "basemessageuri": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.Info",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/dk/energidataservice/energidataservice-dk/{price_area}/info",
@@ -172,7 +172,7 @@
       "messages": {
         "dk.energinet.energidataservice.amqp.PowerSystemSnapshot": {
           "name": "PowerSystemSnapshot",
-          "basemessageurl": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot",
+          "basemessageuri": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -193,7 +193,7 @@
         },
         "dk.energinet.energidataservice.amqp.SpotPrice": {
           "name": "SpotPrice",
-          "basemessageurl": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice",
+          "basemessageuri": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -214,7 +214,7 @@
         },
         "dk.energinet.energidataservice.amqp.Info": {
           "name": "Info",
-          "basemessageurl": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.Info",
+          "basemessageuri": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.Info",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

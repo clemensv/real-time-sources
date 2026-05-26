@@ -238,7 +238,7 @@
       "messages": {
         "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation": {
           "name": "BuoyObservation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/observation",
@@ -248,7 +248,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation": {
           "name": "BuoyStation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/info",
@@ -258,7 +258,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation": {
           "name": "BuoySolarRadiationObservation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/solar-radiation",
@@ -268,7 +268,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation": {
           "name": "BuoyOceanographicObservation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/oceanographic",
@@ -278,7 +278,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement": {
           "name": "BuoyDartMeasurement",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/dart-measurement",
@@ -288,7 +288,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation": {
           "name": "BuoyContinuousWindObservation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/continuous-wind",
@@ -298,7 +298,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement": {
           "name": "BuoySupplementalMeasurement",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/supplemental",
@@ -308,7 +308,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary": {
           "name": "BuoyDetailedWaveSummary",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/detailed-wave-summary",
@@ -318,7 +318,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement": {
           "name": "BuoyHourlyRainMeasurement",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa-ndbc/{region}/{station_id}/hourly-rain",
@@ -333,7 +333,7 @@
       "messages": {
         "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation": {
           "name": "BuoyObservation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -361,7 +361,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation": {
           "name": "BuoyStation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyStation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -389,7 +389,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation": {
           "name": "BuoySolarRadiationObservation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -417,7 +417,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation": {
           "name": "BuoyOceanographicObservation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -445,7 +445,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement": {
           "name": "BuoyDartMeasurement",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -473,7 +473,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation": {
           "name": "BuoyContinuousWindObservation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -501,7 +501,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement": {
           "name": "BuoySupplementalMeasurement",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -529,7 +529,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary": {
           "name": "BuoyDetailedWaveSummary",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -557,7 +557,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement": {
           "name": "BuoyHourlyRainMeasurement",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NDBC/messages/Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

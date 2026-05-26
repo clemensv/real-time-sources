@@ -116,7 +116,7 @@
       "messages": {
         "CZ.Gov.CHMI.Hydro.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.Station",
+          "basemessageuri": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/info",
@@ -126,7 +126,7 @@
         },
         "CZ.Gov.CHMI.Hydro.mqtt.WaterLevelObservation": {
           "name": "WaterLevelObservation",
-          "basemessageurl": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.WaterLevelObservation",
+          "basemessageuri": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.WaterLevelObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/water-level",
@@ -141,7 +141,7 @@
       "messages": {
         "CZ.Gov.CHMI.Hydro.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.Station",
+          "basemessageuri": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -162,7 +162,7 @@
         },
         "CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation": {
           "name": "WaterLevelObservation",
-          "basemessageurl": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.WaterLevelObservation",
+          "basemessageuri": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.WaterLevelObservation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

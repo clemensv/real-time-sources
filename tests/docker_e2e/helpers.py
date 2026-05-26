@@ -308,15 +308,15 @@ def _resolve_message_inheritance(
     message: Dict[str, Any],
     depth: int = 0,
 ) -> Dict[str, Any]:
-    """Flatten a message through any ``basemessageurl`` chain.
+    """Flatten a message through any ``basemessageuri`` chain.
 
     A messagegroup may declare transport-specific child messages that inherit
     schema and envelope metadata from a transport-agnostic parent via
-    ``basemessageurl``. Child fields win over parent fields.
+    ``basemessageuri``. Child fields win over parent fields.
     """
     if depth > 5:
-        raise AssertionError('basemessageurl chain too deep')
-    base_url = message.get('basemessageurl')
+        raise AssertionError('basemessageuri chain too deep')
+    base_url = message.get('basemessageuri')
     if not base_url:
         return message
     base_pointer = '#' + base_url if base_url.startswith('/') else base_url
@@ -324,7 +324,7 @@ def _resolve_message_inheritance(
     base_resolved = _resolve_message_inheritance(document, base_message, depth + 1)
     merged = dict(base_resolved)
     for key, value in message.items():
-        if key == 'basemessageurl':
+        if key == 'basemessageuri':
             continue
         merged[key] = value
     return merged

@@ -208,7 +208,7 @@
       "description": "MQTT/5.0 non-retained per-record Mode-S firehose. Each Downlink Format family (DF17/18 ADS-B, DF4 altitude reply, DF5 identity reply, DF11 all-call/acquisition reply, DF20/21 Comm-B) gets a dedicated topic so subscribers can wildcard per family. QoS 0, retain=false.",
       "messages": {
         "Mode_S.ADSB.mqtt": {
-          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.ADSB",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.ADSB",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "options": {
@@ -219,7 +219,7 @@
           }
         },
         "Mode_S.AltitudeReply.mqtt": {
-          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "options": {
@@ -230,7 +230,7 @@
           }
         },
         "Mode_S.IdentityReply.mqtt": {
-          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "options": {
@@ -241,7 +241,7 @@
           }
         },
         "Mode_S.AcquisitionReply.mqtt": {
-          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "options": {
@@ -252,7 +252,7 @@
           }
         },
         "Mode_S.CommBAltitude.mqtt": {
-          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "options": {
@@ -263,7 +263,7 @@
           }
         },
         "Mode_S.CommBIdentity.mqtt": {
-          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "options": {
@@ -280,7 +280,7 @@
       "messages": {
         "Mode_S.amqp.ADSB": {
           "name": "ADSB",
-          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.ADSB",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.ADSB",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -301,7 +301,7 @@
         },
         "Mode_S.amqp.AltitudeReply": {
           "name": "AltitudeReply",
-          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -322,7 +322,7 @@
         },
         "Mode_S.amqp.IdentityReply": {
           "name": "IdentityReply",
-          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -343,7 +343,7 @@
         },
         "Mode_S.amqp.AcquisitionReply": {
           "name": "AcquisitionReply",
-          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -364,7 +364,7 @@
         },
         "Mode_S.amqp.CommBAltitude": {
           "name": "CommBAltitude",
-          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -385,7 +385,7 @@
         },
         "Mode_S.amqp.CommBIdentity": {
           "name": "CommBIdentity",
-          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

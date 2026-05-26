@@ -100,7 +100,7 @@
       "messages": {
         "US.WA.Seattle.Fire911.mqtt.Incident": {
           "name": "Incident",
-          "basemessageurl": "/messagegroups/US.WA.Seattle.Fire911/messages/US.WA.Seattle.Fire911.Incident",
+          "basemessageuri": "/messagegroups/US.WA.Seattle.Fire911/messages/US.WA.Seattle.Fire911.Incident",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "civic-events/us/wa/seattle/public-safety/fire-dispatch/{incident_type_slug}/{incident_number}",
@@ -116,7 +116,7 @@
       "messages": {
         "US.WA.Seattle.Fire911.amqp.Incident": {
           "name": "Incident",
-          "basemessageurl": "/messagegroups/US.WA.Seattle.Fire911/messages/US.WA.Seattle.Fire911.Incident",
+          "basemessageuri": "/messagegroups/US.WA.Seattle.Fire911/messages/US.WA.Seattle.Fire911.Incident",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

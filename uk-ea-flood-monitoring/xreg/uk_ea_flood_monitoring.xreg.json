@@ -116,7 +116,7 @@
       "messages": {
         "UK.Gov.Environment.EA.FloodMonitoring.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Station",
+          "basemessageuri": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/gb/ea/uk-ea-flood-monitoring/{river}/{station_reference}/info",
@@ -126,7 +126,7 @@
         },
         "UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading": {
           "name": "Reading",
-          "basemessageurl": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Reading",
+          "basemessageuri": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Reading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/gb/ea/uk-ea-flood-monitoring/{river}/{station_reference}/reading",
@@ -141,7 +141,7 @@
       "messages": {
         "UK.Gov.Environment.EA.FloodMonitoring.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Station",
+          "basemessageuri": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -169,7 +169,7 @@
         },
         "UK.Gov.Environment.EA.FloodMonitoring.amqp.Reading": {
           "name": "Reading",
-          "basemessageurl": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Reading",
+          "basemessageuri": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Reading",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

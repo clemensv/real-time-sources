@@ -171,7 +171,7 @@
       "messages": {
         "nextbus.VehiclePosition.mqtt": {
           "name": "VehiclePosition",
-          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.VehiclePosition",
+          "basemessageuri": "/messagegroups/nextbus/messages/nextbus.VehiclePosition",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}",
@@ -181,7 +181,7 @@
         },
         "nextbus.RouteConfig.mqtt": {
           "name": "RouteConfig",
-          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.RouteConfig",
+          "basemessageuri": "/messagegroups/nextbus/messages/nextbus.RouteConfig",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}",
@@ -191,7 +191,7 @@
         },
         "nextbus.Schedule.mqtt": {
           "name": "Schedule",
-          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.Schedule",
+          "basemessageuri": "/messagegroups/nextbus/messages/nextbus.Schedule",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}",
@@ -201,7 +201,7 @@
         },
         "nextbus.Message.mqtt": {
           "name": "Message",
-          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.Message",
+          "basemessageuri": "/messagegroups/nextbus/messages/nextbus.Message",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}",
@@ -216,7 +216,7 @@
       "messages": {
         "nextbus.VehiclePosition.amqp": {
           "name": "VehiclePosition",
-          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.VehiclePosition",
+          "basemessageuri": "/messagegroups/nextbus/messages/nextbus.VehiclePosition",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -237,7 +237,7 @@
         },
         "nextbus.RouteConfig.amqp": {
           "name": "RouteConfig",
-          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.RouteConfig",
+          "basemessageuri": "/messagegroups/nextbus/messages/nextbus.RouteConfig",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -258,7 +258,7 @@
         },
         "nextbus.Schedule.amqp": {
           "name": "Schedule",
-          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.Schedule",
+          "basemessageuri": "/messagegroups/nextbus/messages/nextbus.Schedule",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -279,7 +279,7 @@
         },
         "nextbus.Message.amqp": {
           "name": "Message",
-          "basemessageurl": "/messagegroups/nextbus/messages/nextbus.Message",
+          "basemessageuri": "/messagegroups/nextbus/messages/nextbus.Message",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

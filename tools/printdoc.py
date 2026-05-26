@@ -19,7 +19,7 @@ COMMON_SCHEMA_KEYS = {"$schema","$id","$root","$uses","$ref","name","namespace",
 KNOWN_TOP_KEYS={"name","version","description","documentation","endpoints","messagegroups","schemagroups"}
 KNOWN_ENDPOINT_KEYS={"usage","protocol","envelope","envelopeoptions","protocoloptions","protocolmetadata","messagegroups","messagegroup","description","endpoints","deployed"}
 KNOWN_MESSAGEGROUP_KEYS={"id","messagegroupid","name","description","envelope","messages","createdat","modifiedat","epoch"}
-KNOWN_MESSAGE_KEYS={"id","messageid","name","description","envelope","envelopemetadata","dataschemaformat","dataschemauri","basemessageurl","basemessage","protocol","protocoloptions","protocolmetadata","createdat","modifiedat","epoch"}
+KNOWN_MESSAGE_KEYS={"id","messageid","name","description","envelope","envelopemetadata","dataschemaformat","dataschemauri","basemessageuri","basemessage","protocol","protocoloptions","protocolmetadata","createdat","modifiedat","epoch"}
 KNOWN_SCHEMA_CONTAINER_KEYS={"name","format","defaultversionid","versions","schemaid","description"}
 KNOWN_SCHEMA_VERSION_KEYS={"format","schema","createdat","modifiedat","versionid","schemaid","epoch","name","description"}
 
@@ -463,7 +463,7 @@ def extract_references(ctx: Ctx) -> list[str]:
 # Schema and manifest helpers
 
 def resolve_message_chain(msg: Json, groups: Json) -> tuple[Json,list[str]]:
-    merged=dict(msg); chain=[]; ref=msg.get("basemessageurl")
+    merged=dict(msg); chain=[]; ref=msg.get("basemessageuri")
     if isinstance(ref,str):
         base=resolve_base(ref,groups)
         if base:

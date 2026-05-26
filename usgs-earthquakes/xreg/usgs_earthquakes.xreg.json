@@ -97,7 +97,7 @@
       "messages": {
         "USGS.Earthquakes.mqtt.Event": {
           "name": "Event",
-          "basemessageurl": "/messagegroups/USGS.Earthquakes/messages/USGS.Earthquakes.Event",
+          "basemessageuri": "/messagegroups/USGS.Earthquakes/messages/USGS.Earthquakes.Event",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "seismic/intl/usgs/usgs-earthquakes/{net}/{magnitude_bucket}/{code}/quake",
@@ -112,7 +112,7 @@
       "messages": {
         "USGS.Earthquakes.amqp.Event": {
           "name": "Event",
-          "basemessageurl": "/messagegroups/USGS.Earthquakes/messages/USGS.Earthquakes.Event",
+          "basemessageuri": "/messagegroups/USGS.Earthquakes/messages/USGS.Earthquakes.Event",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

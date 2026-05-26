@@ -98,7 +98,7 @@
       "messages": {
         "PTWC.Bulletins.mqtt.TsunamiBulletin": {
           "name": "TsunamiBulletin",
-          "basemessageurl": "/messagegroups/PTWC.Bulletins/messages/PTWC.TsunamiBulletin",
+          "basemessageuri": "/messagegroups/PTWC.Bulletins/messages/PTWC.TsunamiBulletin",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/intl/ptwc/ptwc-tsunami/{basin}/{ptwc_level}/{bulletin_id}/bulletin",
@@ -113,7 +113,7 @@
       "messages": {
         "PTWC.Bulletins.amqp.TsunamiBulletin": {
           "name": "TsunamiBulletin",
-          "basemessageurl": "/messagegroups/PTWC.Bulletins/messages/PTWC.TsunamiBulletin",
+          "basemessageuri": "/messagegroups/PTWC.Bulletins/messages/PTWC.TsunamiBulletin",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

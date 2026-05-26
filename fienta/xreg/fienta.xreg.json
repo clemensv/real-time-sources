@@ -116,7 +116,7 @@
       "messages": {
         "Com.Fienta.mqtt.Event": {
           "name": "Event",
-          "basemessageurl": "/messagegroups/Com.Fienta/messages/Com.Fienta.Event",
+          "basemessageuri": "/messagegroups/Com.Fienta/messages/Com.Fienta.Event",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "civic-events/intl/fienta/fienta/{country}/{city}/{category}/{event_id}/info",
@@ -126,7 +126,7 @@
         },
         "Com.Fienta.mqtt.EventSaleStatus": {
           "name": "EventSaleStatus",
-          "basemessageurl": "/messagegroups/Com.Fienta/messages/Com.Fienta.EventSaleStatus",
+          "basemessageuri": "/messagegroups/Com.Fienta/messages/Com.Fienta.EventSaleStatus",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "civic-events/intl/fienta/fienta/{country}/{city}/{category}/{event_id}/sale-status",
@@ -141,7 +141,7 @@
       "messages": {
         "Com.Fienta.amqp.Event": {
           "name": "Event",
-          "basemessageurl": "/messagegroups/Com.Fienta/messages/Com.Fienta.Event",
+          "basemessageuri": "/messagegroups/Com.Fienta/messages/Com.Fienta.Event",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -162,7 +162,7 @@
         },
         "Com.Fienta.amqp.EventSaleStatus": {
           "name": "EventSaleStatus",
-          "basemessageurl": "/messagegroups/Com.Fienta/messages/Com.Fienta.EventSaleStatus",
+          "basemessageuri": "/messagegroups/Com.Fienta/messages/Com.Fienta.EventSaleStatus",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

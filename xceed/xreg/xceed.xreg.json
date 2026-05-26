@@ -187,7 +187,7 @@
       "messages": {
         "xceed.mqtt.Event": {
           "name": "Event",
-          "basemessageurl": "/messagegroups/xceed/messages/xceed.Event",
+          "basemessageuri": "/messagegroups/xceed/messages/xceed.Event",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "civic-events/intl/xceed/xceed/{city}/{event_id}/event",
@@ -202,7 +202,7 @@
       "messages": {
         "xceed.amqp.Event": {
           "name": "Event",
-          "basemessageurl": "/messagegroups/xceed/messages/xceed.Event",
+          "basemessageuri": "/messagegroups/xceed/messages/xceed.Event",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -228,7 +228,7 @@
       "messages": {
         "xceed.admissions.mqtt.EventAdmission": {
           "name": "EventAdmission",
-          "basemessageurl": "/messagegroups/xceed.admissions/messages/xceed.EventAdmission",
+          "basemessageuri": "/messagegroups/xceed.admissions/messages/xceed.EventAdmission",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "civic-events/intl/xceed/xceed/admissions/{event_id}/{admission_id}/admission",
@@ -243,7 +243,7 @@
       "messages": {
         "xceed.admissions.amqp.EventAdmission": {
           "name": "EventAdmission",
-          "basemessageurl": "/messagegroups/xceed.admissions/messages/xceed.EventAdmission",
+          "basemessageuri": "/messagegroups/xceed.admissions/messages/xceed.EventAdmission",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

@@ -116,7 +116,7 @@
       "messages": {
         "HK.Gov.HKO.Weather.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.Station",
+          "basemessageuri": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.Station",
           "envelopemetadata": {
             "type": {
               "value": "HK.Gov.HKO.Weather.Station"
@@ -138,7 +138,7 @@
         },
         "HK.Gov.HKO.Weather.mqtt.WeatherObservation": {
           "name": "WeatherObservation",
-          "basemessageurl": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.WeatherObservation",
+          "basemessageuri": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.WeatherObservation",
           "envelopemetadata": {
             "type": {
               "value": "HK.Gov.HKO.Weather.WeatherObservation"
@@ -165,7 +165,7 @@
       "messages": {
         "HK.Gov.HKO.Weather.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.Station",
+          "basemessageuri": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.Station",
           "envelopemetadata": {
             "type": {
               "value": "HK.Gov.HKO.Weather.Station"
@@ -198,7 +198,7 @@
         },
         "HK.Gov.HKO.Weather.amqp.WeatherObservation": {
           "name": "WeatherObservation",
-          "basemessageurl": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.WeatherObservation",
+          "basemessageuri": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.WeatherObservation",
           "envelopemetadata": {
             "type": {
               "value": "HK.Gov.HKO.Weather.WeatherObservation"

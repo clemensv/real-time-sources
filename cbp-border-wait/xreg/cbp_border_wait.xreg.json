@@ -116,7 +116,7 @@
       "messages": {
         "gov.cbp.borderwait.mqtt.Port": {
           "name": "Port",
-          "basemessageurl": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.Port",
+          "basemessageuri": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.Port",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/info",
@@ -126,7 +126,7 @@
         },
         "gov.cbp.borderwait.mqtt.WaitTime": {
           "name": "WaitTime",
-          "basemessageurl": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.WaitTime",
+          "basemessageuri": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.WaitTime",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/wait-time",
@@ -142,7 +142,7 @@
       "messages": {
         "gov.cbp.borderwait.amqp.Port": {
           "name": "Port",
-          "basemessageurl": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.Port",
+          "basemessageuri": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.Port",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -171,7 +171,7 @@
         },
         "gov.cbp.borderwait.amqp.WaitTime": {
           "name": "WaitTime",
-          "basemessageurl": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.WaitTime",
+          "basemessageuri": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.WaitTime",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

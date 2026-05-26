@@ -130,7 +130,7 @@
       "messages": {
         "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.mqtt": {
           "name": "ForecastZone",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "weather/us/noaa/nws-forecasts/{state}/{zone_type}/{zone_id}/{event}",
@@ -140,7 +140,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.mqtt": {
           "name": "LandZoneForecast",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "weather/us/noaa/nws-forecasts/{state}/{zone_type}/{zone_id}/{event}",
@@ -150,7 +150,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.mqtt": {
           "name": "MarineZoneForecast",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "weather/us/noaa/nws-forecasts/{state}/{zone_type}/{zone_id}/{event}",
@@ -165,7 +165,7 @@
       "messages": {
         "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.amqp": {
           "name": "ForecastZone",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -196,7 +196,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.amqp": {
           "name": "LandZoneForecast",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -227,7 +227,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.amqp": {
           "name": "MarineZoneForecast",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

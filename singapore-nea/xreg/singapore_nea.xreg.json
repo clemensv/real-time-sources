@@ -202,7 +202,7 @@
       "messages": {
         "SG.Gov.NEA.Weather.Station.mqtt": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.Station",
+          "basemessageuri": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "weather/sg/nea/singapore-nea/{region}/{station_id}/{event}",
@@ -212,7 +212,7 @@
         },
         "SG.Gov.NEA.Weather.WeatherObservation.mqtt": {
           "name": "WeatherObservation",
-          "basemessageurl": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.WeatherObservation",
+          "basemessageuri": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.WeatherObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "weather/sg/nea/singapore-nea/{region}/{station_id}/{event}",
@@ -227,7 +227,7 @@
       "messages": {
         "SG.Gov.NEA.AirQuality.Region.mqtt": {
           "name": "Region",
-          "basemessageurl": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.Region",
+          "basemessageuri": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.Region",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/sg/nea/singapore-nea/{region}/{station_id}/{event}",
@@ -237,7 +237,7 @@
         },
         "SG.Gov.NEA.AirQuality.PSIReading.mqtt": {
           "name": "PSIReading",
-          "basemessageurl": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PSIReading",
+          "basemessageuri": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PSIReading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/sg/nea/singapore-nea/{region}/{station_id}/{event}",
@@ -247,7 +247,7 @@
         },
         "SG.Gov.NEA.AirQuality.PM25Reading.mqtt": {
           "name": "PM25Reading",
-          "basemessageurl": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PM25Reading",
+          "basemessageuri": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PM25Reading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/sg/nea/singapore-nea/{region}/{station_id}/{event}",
@@ -262,7 +262,7 @@
       "messages": {
         "SG.Gov.NEA.Weather.Station.amqp": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.Station",
+          "basemessageuri": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -288,7 +288,7 @@
         },
         "SG.Gov.NEA.Weather.WeatherObservation.amqp": {
           "name": "WeatherObservation",
-          "basemessageurl": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.WeatherObservation",
+          "basemessageuri": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.WeatherObservation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -319,7 +319,7 @@
       "messages": {
         "SG.Gov.NEA.AirQuality.Region.amqp": {
           "name": "Region",
-          "basemessageurl": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.Region",
+          "basemessageuri": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.Region",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -345,7 +345,7 @@
         },
         "SG.Gov.NEA.AirQuality.PSIReading.amqp": {
           "name": "PSIReading",
-          "basemessageurl": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PSIReading",
+          "basemessageuri": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PSIReading",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -371,7 +371,7 @@
         },
         "SG.Gov.NEA.AirQuality.PM25Reading.amqp": {
           "name": "PM25Reading",
-          "basemessageurl": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PM25Reading",
+          "basemessageuri": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PM25Reading",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

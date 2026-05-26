@@ -118,7 +118,7 @@
       "messages": {
         "de.wsv.pegelonline.kafka.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
+          "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -130,7 +130,7 @@
         },
         "de.wsv.pegelonline.kafka.CurrentMeasurement": {
           "name": "CurrentMeasurement",
-          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
+          "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -147,7 +147,7 @@
       "messages": {
         "de.wsv.pegelonline.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
+          "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info",
@@ -157,7 +157,7 @@
         },
         "de.wsv.pegelonline.mqtt.CurrentMeasurement": {
           "name": "CurrentMeasurement",
-          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
+          "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level",
@@ -172,7 +172,7 @@
       "messages": {
         "de.wsv.pegelonline.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
+          "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -193,7 +193,7 @@
         },
         "de.wsv.pegelonline.amqp.CurrentMeasurement": {
           "name": "CurrentMeasurement",
-          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
+          "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

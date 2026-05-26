@@ -164,7 +164,7 @@
       "messages": {
         "uk.gov.defra.aurn.Stations.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/uk.gov.defra.aurn.Stations/messages/uk.gov.defra.aurn.Station",
+          "basemessageuri": "/messagegroups/uk.gov.defra.aurn.Stations/messages/uk.gov.defra.aurn.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/gb/defra/defra-aurn/{region}/{station_id}/info",
@@ -179,7 +179,7 @@
       "messages": {
         "uk.gov.defra.aurn.Stations.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/uk.gov.defra.aurn.Stations/messages/uk.gov.defra.aurn.Station",
+          "basemessageuri": "/messagegroups/uk.gov.defra.aurn.Stations/messages/uk.gov.defra.aurn.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -210,7 +210,7 @@
       "messages": {
         "uk.gov.defra.aurn.Timeseries.mqtt.Timeseries": {
           "name": "Timeseries",
-          "basemessageurl": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Timeseries",
+          "basemessageuri": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Timeseries",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/gb/defra/defra-aurn/{region}/{station_id}/{pollutant}/timeseries",
@@ -220,7 +220,7 @@
         },
         "uk.gov.defra.aurn.Timeseries.mqtt.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Observation",
+          "basemessageuri": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Observation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/gb/defra/defra-aurn/{region}/{station_id}/{pollutant}/observation",
@@ -235,7 +235,7 @@
       "messages": {
         "uk.gov.defra.aurn.Timeseries.amqp.Timeseries": {
           "name": "Timeseries",
-          "basemessageurl": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Timeseries",
+          "basemessageuri": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Timeseries",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -266,7 +266,7 @@
         },
         "uk.gov.defra.aurn.Timeseries.amqp.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Observation",
+          "basemessageuri": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Observation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

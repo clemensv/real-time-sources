@@ -210,7 +210,7 @@
       "messages": {
         "Ticketmaster.Events.mqtt.Event": {
           "name": "Event",
-          "basemessageurl": "/messagegroups/Ticketmaster.Events/messages/Ticketmaster.Events.Event",
+          "basemessageuri": "/messagegroups/Ticketmaster.Events/messages/Ticketmaster.Events.Event",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "civic-events/intl/ticketmaster/ticketmaster/{country}/{city}/{venue_id}/{event_id}/event",
@@ -225,7 +225,7 @@
       "messages": {
         "Ticketmaster.Events.amqp.Event": {
           "name": "Event",
-          "basemessageurl": "/messagegroups/Ticketmaster.Events/messages/Ticketmaster.Events.Event",
+          "basemessageuri": "/messagegroups/Ticketmaster.Events/messages/Ticketmaster.Events.Event",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -251,7 +251,7 @@
       "messages": {
         "Ticketmaster.Reference.mqtt.Venue": {
           "name": "Venue",
-          "basemessageurl": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Venue",
+          "basemessageuri": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Venue",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "civic-events/intl/ticketmaster/ticketmaster/{country}/{city}/{venue_id}/venue",
@@ -261,7 +261,7 @@
         },
         "Ticketmaster.Reference.mqtt.Attraction": {
           "name": "Attraction",
-          "basemessageurl": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Attraction",
+          "basemessageuri": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Attraction",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "civic-events/intl/ticketmaster/ticketmaster/{country}/{city}/{segment}/{entity_id}/attraction",
@@ -271,7 +271,7 @@
         },
         "Ticketmaster.Reference.mqtt.Classification": {
           "name": "Classification",
-          "basemessageurl": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Classification",
+          "basemessageuri": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Classification",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "civic-events/intl/ticketmaster/ticketmaster/{country}/{city}/{segment}/{entity_id}/classification",
@@ -281,7 +281,7 @@
         },
         "Ticketmaster.Reference.mqtt.Info": {
           "name": "Info",
-          "basemessageurl": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Info",
+          "basemessageuri": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Info",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "civic-events/intl/ticketmaster/ticketmaster/{country}/{city}/{segment}/{entity_id}/info",
@@ -296,7 +296,7 @@
       "messages": {
         "Ticketmaster.Reference.amqp.Venue": {
           "name": "Venue",
-          "basemessageurl": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Venue",
+          "basemessageuri": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Venue",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -317,7 +317,7 @@
         },
         "Ticketmaster.Reference.amqp.Attraction": {
           "name": "Attraction",
-          "basemessageurl": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Attraction",
+          "basemessageuri": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Attraction",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -338,7 +338,7 @@
         },
         "Ticketmaster.Reference.amqp.Classification": {
           "name": "Classification",
-          "basemessageurl": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Classification",
+          "basemessageuri": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Classification",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -359,7 +359,7 @@
         },
         "Ticketmaster.Reference.amqp.Info": {
           "name": "Info",
-          "basemessageurl": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Info",
+          "basemessageuri": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Info",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

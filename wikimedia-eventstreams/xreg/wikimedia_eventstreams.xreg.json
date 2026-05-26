@@ -97,7 +97,7 @@
       "messages": {
         "Wikimedia.EventStreams.RecentChange.mqtt": {
           "name": "RecentChange",
-          "basemessageurl": "/messagegroups/Wikimedia.EventStreams/messages/Wikimedia.EventStreams.RecentChange",
+          "basemessageuri": "/messagegroups/Wikimedia.EventStreams/messages/Wikimedia.EventStreams.RecentChange",
           "protocol": "MQTT/5.0",
           "envelopemetadata": {
             "subject": {
@@ -120,7 +120,7 @@
       "messages": {
         "Wikimedia.EventStreams.amqp.RecentChange": {
           "name": "RecentChange",
-          "basemessageurl": "/messagegroups/Wikimedia.EventStreams/messages/Wikimedia.EventStreams.RecentChange",
+          "basemessageuri": "/messagegroups/Wikimedia.EventStreams/messages/Wikimedia.EventStreams.RecentChange",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

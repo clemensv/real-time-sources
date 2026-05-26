@@ -48,7 +48,7 @@ def _iter_events():
     for g,gv in m.get('messagegroups',{}).items():
         if not g.endswith('.amqp'): continue
         for mid,msg in gv.get('messages',{}).items():
-            base=msg.get('basemessageurl','').split('/messages/')[-1]; yield (msg.get('name') or mid.split('.')[-1]), _sample(schemas[base])
+            base=msg.get('basemessageuri','').split('/messages/')[-1]; yield (msg.get('name') or mid.split('.')[-1]), _sample(schemas[base])
 def _norm(s): return re.sub(r'[^a-z0-9]+','_',s.lower()).strip('_')
 def _compact(s): return re.sub(r'[^a-z0-9]+','',s.lower())
 def _patch(p):

@@ -146,7 +146,7 @@
       "messages": {
         "fr.gouv.transport.bison_fute.TrafficFlowMeasurement.mqtt": {
           "name": "TrafficFlowMeasurement",
-          "basemessageurl": "/messagegroups/fr.gouv.transport.bison_fute.traffic_flow/messages/fr.gouv.transport.bison_fute.TrafficFlowMeasurement",
+          "basemessageuri": "/messagegroups/fr.gouv.transport.bison_fute.traffic_flow/messages/fr.gouv.transport.bison_fute.TrafficFlowMeasurement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fr/fr-traffic/french-road-traffic/{road}/{site_id}/flow",
@@ -161,7 +161,7 @@
       "messages": {
         "fr.gouv.transport.bison_fute.RoadEvent.mqtt": {
           "name": "RoadEvent",
-          "basemessageurl": "/messagegroups/fr.gouv.transport.bison_fute.road_event/messages/fr.gouv.transport.bison_fute.RoadEvent",
+          "basemessageuri": "/messagegroups/fr.gouv.transport.bison_fute.road_event/messages/fr.gouv.transport.bison_fute.RoadEvent",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fr/fr-traffic/french-road-traffic/situations/{road}/{situation_id}/event",
@@ -176,7 +176,7 @@
       "messages": {
         "fr.gouv.transport.bison_fute.TrafficFlowMeasurement.amqp": {
           "name": "TrafficFlowMeasurement",
-          "basemessageurl": "/messagegroups/fr.gouv.transport.bison_fute.traffic_flow/messages/fr.gouv.transport.bison_fute.TrafficFlowMeasurement",
+          "basemessageuri": "/messagegroups/fr.gouv.transport.bison_fute.traffic_flow/messages/fr.gouv.transport.bison_fute.TrafficFlowMeasurement",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -202,7 +202,7 @@
       "messages": {
         "fr.gouv.transport.bison_fute.RoadEvent.amqp": {
           "name": "RoadEvent",
-          "basemessageurl": "/messagegroups/fr.gouv.transport.bison_fute.road_event/messages/fr.gouv.transport.bison_fute.RoadEvent",
+          "basemessageuri": "/messagegroups/fr.gouv.transport.bison_fute.road_event/messages/fr.gouv.transport.bison_fute.RoadEvent",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

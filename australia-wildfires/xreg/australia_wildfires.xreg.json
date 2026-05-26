@@ -97,7 +97,7 @@
       "messages": {
         "AU.Gov.Emergency.Wildfires.mqtt.FireIncident": {
           "name": "FireIncident",
-          "basemessageurl": "/messagegroups/AU.Gov.Emergency.Wildfires/messages/AU.Gov.Emergency.Wildfires.FireIncident",
+          "basemessageuri": "/messagegroups/AU.Gov.Emergency.Wildfires/messages/AU.Gov.Emergency.Wildfires.FireIncident",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "wildfire/au/{state}/{status}/{incident_id}/incident",
@@ -113,7 +113,7 @@
       "messages": {
         "AU.Gov.Emergency.Wildfires.amqp.FireIncident": {
           "name": "FireIncident",
-          "basemessageurl": "/messagegroups/AU.Gov.Emergency.Wildfires/messages/AU.Gov.Emergency.Wildfires.FireIncident",
+          "basemessageuri": "/messagegroups/AU.Gov.Emergency.Wildfires/messages/AU.Gov.Emergency.Wildfires.FireIncident",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

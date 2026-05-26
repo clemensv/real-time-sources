@@ -166,7 +166,7 @@
       "messages": {
         "uk.org.carbonintensity.mqtt.Intensity": {
           "name": "Intensity",
-          "basemessageurl": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.Intensity",
+          "basemessageuri": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.Intensity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/gb/national-grid/carbon-intensity/{region}/intensity",
@@ -176,7 +176,7 @@
         },
         "uk.org.carbonintensity.mqtt.GenerationMix": {
           "name": "GenerationMix",
-          "basemessageurl": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.GenerationMix",
+          "basemessageuri": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.GenerationMix",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/gb/national-grid/carbon-intensity/{region}/generation-mix",
@@ -186,7 +186,7 @@
         },
         "uk.org.carbonintensity.mqtt.RegionalIntensity": {
           "name": "RegionalIntensity",
-          "basemessageurl": "/messagegroups/uk.org.carbonintensity.Regional/messages/uk.org.carbonintensity.RegionalIntensity",
+          "basemessageuri": "/messagegroups/uk.org.carbonintensity.Regional/messages/uk.org.carbonintensity.RegionalIntensity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/gb/national-grid/carbon-intensity/{region}/regional-intensity",
@@ -201,7 +201,7 @@
       "messages": {
         "uk.org.carbonintensity.amqp.Intensity": {
           "name": "Intensity",
-          "basemessageurl": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.Intensity",
+          "basemessageuri": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.Intensity",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -215,7 +215,7 @@
         },
         "uk.org.carbonintensity.amqp.GenerationMix": {
           "name": "GenerationMix",
-          "basemessageurl": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.GenerationMix",
+          "basemessageuri": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.GenerationMix",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -229,7 +229,7 @@
         },
         "uk.org.carbonintensity.amqp.RegionalIntensity": {
           "name": "RegionalIntensity",
-          "basemessageurl": "/messagegroups/uk.org.carbonintensity.Regional/messages/uk.org.carbonintensity.RegionalIntensity",
+          "basemessageuri": "/messagegroups/uk.org.carbonintensity.Regional/messages/uk.org.carbonintensity.RegionalIntensity",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

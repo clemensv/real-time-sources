@@ -163,7 +163,7 @@
       "messages": {
         "JP.ODPT.DocomoBikeshare.BikeshareSystem.mqtt": {
           "name": "BikeshareSystem",
-          "basemessageurl": "/messagegroups/JP.ODPT.DocomoBikeshare.System/messages/JP.ODPT.DocomoBikeshare.BikeshareSystem",
+          "basemessageuri": "/messagegroups/JP.ODPT.DocomoBikeshare.System/messages/JP.ODPT.DocomoBikeshare.BikeshareSystem",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/jp/docomo/tokyo-docomo-bikeshare/{system_id}/{ward}/{station_id}/info",
@@ -178,7 +178,7 @@
       "messages": {
         "JP.ODPT.DocomoBikeshare.BikeshareStation.mqtt": {
           "name": "BikeshareStation",
-          "basemessageurl": "/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStation",
+          "basemessageuri": "/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/jp/docomo/tokyo-docomo-bikeshare/{system_id}/{ward}/{station_id}/info",
@@ -188,7 +188,7 @@
         },
         "JP.ODPT.DocomoBikeshare.BikeshareStationStatus.mqtt": {
           "name": "BikeshareStationStatus",
-          "basemessageurl": "/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStationStatus",
+          "basemessageuri": "/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStationStatus",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/jp/docomo/tokyo-docomo-bikeshare/{system_id}/{ward}/{station_id}/status",
@@ -203,7 +203,7 @@
       "messages": {
         "JP.ODPT.DocomoBikeshare.BikeshareSystem.amqp": {
           "name": "BikeshareSystem",
-          "basemessageurl": "/messagegroups/JP.ODPT.DocomoBikeshare.System/messages/JP.ODPT.DocomoBikeshare.BikeshareSystem",
+          "basemessageuri": "/messagegroups/JP.ODPT.DocomoBikeshare.System/messages/JP.ODPT.DocomoBikeshare.BikeshareSystem",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -229,7 +229,7 @@
       "messages": {
         "JP.ODPT.DocomoBikeshare.BikeshareStation.amqp": {
           "name": "BikeshareStation",
-          "basemessageurl": "/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStation",
+          "basemessageuri": "/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -250,7 +250,7 @@
         },
         "JP.ODPT.DocomoBikeshare.BikeshareStationStatus.amqp": {
           "name": "BikeshareStationStatus",
-          "basemessageurl": "/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStationStatus",
+          "basemessageuri": "/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStationStatus",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
