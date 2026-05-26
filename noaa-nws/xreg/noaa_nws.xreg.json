@@ -201,6 +201,7 @@
         "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.WeatherAlert": {
           "name": "WeatherAlert",
           "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
@@ -228,6 +229,7 @@
         "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert": {
           "name": "WeatherAlert",
           "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
@@ -260,6 +262,7 @@
         "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.ObservationStation": {
           "name": "ObservationStation",
           "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "Microsoft.OpenData.US.NOAA.NWS.ObservationStation"
@@ -282,6 +285,7 @@
         "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.WeatherObservation": {
           "name": "WeatherObservation",
           "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"
@@ -309,6 +313,7 @@
         "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.ObservationStation": {
           "name": "ObservationStation",
           "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "Microsoft.OpenData.US.NOAA.NWS.ObservationStation"
@@ -347,6 +352,7 @@
         "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation": {
           "name": "WeatherObservation",
           "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"

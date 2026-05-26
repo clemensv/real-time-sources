@@ -131,6 +131,7 @@
         "gov.noaa.aviationweather.mqtt.Station": {
           "name": "Station",
           "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Station",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "gov.noaa.aviationweather.Station"
@@ -153,6 +154,7 @@
         "gov.noaa.aviationweather.mqtt.Metar": {
           "name": "Metar",
           "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Metar",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "gov.noaa.aviationweather.Metar"
@@ -175,6 +177,7 @@
         "gov.noaa.aviationweather.mqtt.Sigmet": {
           "name": "Sigmet",
           "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Sigmet",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "gov.noaa.aviationweather.Sigmet"
@@ -202,6 +205,7 @@
         "gov.noaa.aviationweather.amqp.Station": {
           "name": "Station",
           "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Station",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "gov.noaa.aviationweather.Station"
@@ -229,6 +233,7 @@
         "gov.noaa.aviationweather.amqp.Metar": {
           "name": "Metar",
           "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Metar",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "gov.noaa.aviationweather.Metar"
@@ -256,6 +261,7 @@
         "gov.noaa.aviationweather.amqp.Sigmet": {
           "name": "Sigmet",
           "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Sigmet",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "gov.noaa.aviationweather.Sigmet"

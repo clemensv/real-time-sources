@@ -119,6 +119,7 @@
         "at.geosphere.tawes.mqtt.WeatherStation": {
           "name": "WeatherStation",
           "basemessageurl": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "at.geosphere.tawes.WeatherStation"
@@ -142,6 +143,7 @@
         "at.geosphere.tawes.mqtt.WeatherObservation": {
           "name": "WeatherObservation",
           "basemessageurl": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherObservation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "at.geosphere.tawes.WeatherObservation"
@@ -170,6 +172,7 @@
         "at.geosphere.tawes.amqp.WeatherStation": {
           "name": "WeatherStation",
           "basemessageurl": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "at.geosphere.tawes.WeatherStation"
@@ -204,6 +207,7 @@
         "at.geosphere.tawes.amqp.WeatherObservation": {
           "name": "WeatherObservation",
           "basemessageurl": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherObservation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "at.geosphere.tawes.WeatherObservation"

@@ -117,6 +117,7 @@
         "BE.Gov.KMI.Weather.mqtt.Station": {
           "name": "Station",
           "basemessageurl": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.Station",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "BE.Gov.KMI.Weather.Station"
@@ -139,6 +140,7 @@
         "BE.Gov.KMI.Weather.mqtt.WeatherObservation": {
           "name": "WeatherObservation",
           "basemessageurl": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.WeatherObservation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "BE.Gov.KMI.Weather.WeatherObservation"
@@ -166,6 +168,7 @@
         "BE.Gov.KMI.Weather.amqp.Station": {
           "name": "Station",
           "basemessageurl": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.Station",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "BE.Gov.KMI.Weather.Station"
@@ -199,6 +202,7 @@
         "BE.Gov.KMI.Weather.amqp.WeatherObservation": {
           "name": "WeatherObservation",
           "basemessageurl": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.WeatherObservation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "BE.Gov.KMI.Weather.WeatherObservation"

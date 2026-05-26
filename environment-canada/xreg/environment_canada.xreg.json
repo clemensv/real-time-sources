@@ -117,6 +117,7 @@
         "CA.Gov.ECCC.Weather.mqtt.Station": {
           "name": "Station",
           "basemessageurl": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.Station",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "CA.Gov.ECCC.Weather.Station"
@@ -139,6 +140,7 @@
         "CA.Gov.ECCC.Weather.mqtt.WeatherObservation": {
           "name": "WeatherObservation",
           "basemessageurl": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.WeatherObservation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "CA.Gov.ECCC.Weather.WeatherObservation"
@@ -166,6 +168,7 @@
         "CA.Gov.ECCC.Weather.amqp.Station": {
           "name": "Station",
           "basemessageurl": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.Station",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "CA.Gov.ECCC.Weather.Station"
@@ -199,6 +202,7 @@
         "CA.Gov.ECCC.Weather.amqp.WeatherObservation": {
           "name": "WeatherObservation",
           "basemessageurl": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.WeatherObservation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "CA.Gov.ECCC.Weather.WeatherObservation"

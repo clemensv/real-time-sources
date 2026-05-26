@@ -99,6 +99,7 @@
           "name": "RecentChange",
           "basemessageurl": "/messagegroups/Wikimedia.EventStreams/messages/Wikimedia.EventStreams.RecentChange",
           "protocol": "MQTT/5.0",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "subject": {
               "value": "{wiki}/{namespace}/{event_id}",

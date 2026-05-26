@@ -413,6 +413,7 @@
         "DE.DWD.CDC.mqtt.StationMetadata": {
           "name": "StationMetadata",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.StationMetadata",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.StationMetadata"
@@ -435,6 +436,7 @@
         "DE.DWD.CDC.mqtt.AirTemperature10Min": {
           "name": "AirTemperature10Min",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.AirTemperature10Min",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.AirTemperature10Min"
@@ -457,6 +459,7 @@
         "DE.DWD.CDC.mqtt.Precipitation10Min": {
           "name": "Precipitation10Min",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Precipitation10Min",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.Precipitation10Min"
@@ -479,6 +482,7 @@
         "DE.DWD.CDC.mqtt.Wind10Min": {
           "name": "Wind10Min",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Wind10Min",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.Wind10Min"
@@ -501,6 +505,7 @@
         "DE.DWD.CDC.mqtt.Solar10Min": {
           "name": "Solar10Min",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Solar10Min",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.Solar10Min"
@@ -523,6 +528,7 @@
         "DE.DWD.CDC.mqtt.HourlyObservation": {
           "name": "HourlyObservation",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.HourlyObservation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.HourlyObservation"
@@ -545,6 +551,7 @@
         "DE.DWD.CDC.mqtt.ExtremeWind10Min": {
           "name": "ExtremeWind10Min",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeWind10Min",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.ExtremeWind10Min"
@@ -567,6 +574,7 @@
         "DE.DWD.CDC.mqtt.ExtremeTemperature10Min": {
           "name": "ExtremeTemperature10Min",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeTemperature10Min",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.ExtremeTemperature10Min"
@@ -594,6 +602,7 @@
         "DE.DWD.CDC.amqp.StationMetadata": {
           "name": "StationMetadata",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.StationMetadata",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.StationMetadata"
@@ -627,6 +636,7 @@
         "DE.DWD.CDC.amqp.AirTemperature10Min": {
           "name": "AirTemperature10Min",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.AirTemperature10Min",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.AirTemperature10Min"
@@ -660,6 +670,7 @@
         "DE.DWD.CDC.amqp.Precipitation10Min": {
           "name": "Precipitation10Min",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Precipitation10Min",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.Precipitation10Min"
@@ -693,6 +704,7 @@
         "DE.DWD.CDC.amqp.Wind10Min": {
           "name": "Wind10Min",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Wind10Min",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.Wind10Min"
@@ -726,6 +738,7 @@
         "DE.DWD.CDC.amqp.Solar10Min": {
           "name": "Solar10Min",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Solar10Min",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.Solar10Min"
@@ -759,6 +772,7 @@
         "DE.DWD.CDC.amqp.HourlyObservation": {
           "name": "HourlyObservation",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.HourlyObservation",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.HourlyObservation"
@@ -792,6 +806,7 @@
         "DE.DWD.CDC.amqp.ExtremeWind10Min": {
           "name": "ExtremeWind10Min",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeWind10Min",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.ExtremeWind10Min"
@@ -825,6 +840,7 @@
         "DE.DWD.CDC.amqp.ExtremeTemperature10Min": {
           "name": "ExtremeTemperature10Min",
           "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeTemperature10Min",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.ExtremeTemperature10Min"
@@ -863,6 +879,7 @@
         "DE.DWD.Weather.mqtt.Alert": {
           "name": "Alert",
           "basemessageurl": "/messagegroups/DE.DWD.Weather/messages/DE.DWD.Weather.Alert",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Weather.Alert"
@@ -890,6 +907,7 @@
         "DE.DWD.Weather.amqp.Alert": {
           "name": "Alert",
           "basemessageurl": "/messagegroups/DE.DWD.Weather/messages/DE.DWD.Weather.Alert",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Weather.Alert"
@@ -922,6 +940,7 @@
         "DE.DWD.Radar.mqtt.RadarProductCatalog": {
           "name": "RadarProductCatalog",
           "basemessageurl": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarProductCatalog",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Radar.RadarProductCatalog"
@@ -944,6 +963,7 @@
         "DE.DWD.Radar.mqtt.RadarFileProduct": {
           "name": "RadarFileProduct",
           "basemessageurl": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarFileProduct",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Radar.RadarFileProduct"
@@ -971,6 +991,7 @@
         "DE.DWD.Radar.amqp.RadarProductCatalog": {
           "name": "RadarProductCatalog",
           "basemessageurl": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarProductCatalog",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Radar.RadarProductCatalog"
@@ -998,6 +1019,7 @@
         "DE.DWD.Radar.amqp.RadarFileProduct": {
           "name": "RadarFileProduct",
           "basemessageurl": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarFileProduct",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Radar.RadarFileProduct"
@@ -1030,6 +1052,7 @@
         "DE.DWD.Forecast.mqtt.ForecastModelCatalog": {
           "name": "ForecastModelCatalog",
           "basemessageurl": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.ForecastModelCatalog",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Forecast.ForecastModelCatalog"
@@ -1052,6 +1075,7 @@
         "DE.DWD.Forecast.mqtt.IconD2ForecastFile": {
           "name": "IconD2ForecastFile",
           "basemessageurl": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.IconD2ForecastFile",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Forecast.IconD2ForecastFile"
@@ -1079,6 +1103,7 @@
         "DE.DWD.Forecast.amqp.ForecastModelCatalog": {
           "name": "ForecastModelCatalog",
           "basemessageurl": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.ForecastModelCatalog",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Forecast.ForecastModelCatalog"
@@ -1106,6 +1131,7 @@
         "DE.DWD.Forecast.amqp.IconD2ForecastFile": {
           "name": "IconD2ForecastFile",
           "basemessageurl": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.IconD2ForecastFile",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Forecast.IconD2ForecastFile"

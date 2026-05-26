@@ -117,6 +117,7 @@
         "DE.DWD.Pollenflug.mqtt.Region": {
           "name": "Region",
           "basemessageurl": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.Region",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Pollenflug.Region"
@@ -139,6 +140,7 @@
         "DE.DWD.Pollenflug.mqtt.PollenForecast": {
           "name": "PollenForecast",
           "basemessageurl": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Pollenflug.PollenForecast"
@@ -166,6 +168,7 @@
         "DE.DWD.Pollenflug.amqp.Region": {
           "name": "Region",
           "basemessageurl": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.Region",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Pollenflug.Region"
@@ -193,6 +196,7 @@
         "DE.DWD.Pollenflug.amqp.PollenForecast": {
           "name": "PollenForecast",
           "basemessageurl": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast",
+          "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Pollenflug.PollenForecast"
