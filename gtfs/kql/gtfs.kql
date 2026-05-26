@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [VehiclePosition] (
+.create-merge table ['GeneralTransitFeed.VehiclePosition'] (
    [trip]: dynamic,
    [vehicle]: dynamic,
    [position]: dynamic,
@@ -42,9 +42,9 @@
    [___subject]: string
 );
 
-.alter table [VehiclePosition] docstring "{\"description\": \"Realtime positioning information for a given vehicle.\"}";
+.alter table ['GeneralTransitFeed.VehiclePosition'] docstring "{\"description\": \"Realtime positioning information for a given vehicle.\"}";
 
-.alter table [VehiclePosition] column-docstrings (
+.alter table ['GeneralTransitFeed.VehiclePosition'] column-docstrings (
    [trip]: "{\"description\": \"The Trip that this vehicle is serving. Can be empty or partial if the vehicle can not be identified with a given trip instance.\"}",
    [vehicle]: "{\"description\": \"Additional information on the vehicle that is serving this trip.\"}",
    [position]: "{\"description\": \"Current position of this vehicle. The stop sequence index of the current stop. The meaning of\"}",
@@ -59,7 +59,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [VehiclePosition] ingestion json mapping "VehiclePosition_json_flat"
+.create-or-alter table ['GeneralTransitFeed.VehiclePosition'] ingestion json mapping "GeneralTransitFeed.VehiclePosition_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -79,7 +79,7 @@
 ]
 ```
 
-.create-or-alter table [VehiclePosition] ingestion json mapping "VehiclePosition_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.VehiclePosition'] ingestion json mapping "GeneralTransitFeed.VehiclePosition_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -99,13 +99,13 @@
 ]
 ```
 
-.drop materialized-view VehiclePositionLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.VehiclePositionLatest'] ifexists;
 
-.create materialized-view with (backfill=true) VehiclePositionLatest on table VehiclePosition {
-    VehiclePosition | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.VehiclePositionLatest'] on table ['GeneralTransitFeed.VehiclePosition'] {
+    ['GeneralTransitFeed.VehiclePosition'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [VehiclePosition] policy update
+.alter table ['GeneralTransitFeed.VehiclePosition'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -116,7 +116,7 @@
 }]
 ```
 
-.create-merge table [TripUpdate] (
+.create-merge table ['GeneralTransitFeed.TripUpdate'] (
    [trip]: dynamic,
    [vehicle]: dynamic,
    [stop_time_update]: dynamic,
@@ -129,9 +129,9 @@
    [___subject]: string
 );
 
-.alter table [TripUpdate] docstring "{\"description\": \"Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop o...\"}";
+.alter table ['GeneralTransitFeed.TripUpdate'] docstring "{\"description\": \"Entities used in the feed. Realtime update of the progress of a vehicle along a trip. Depending on the value of ScheduleRelationship, a TripUpdate can specify: - A trip that proceeds along the schedule. - A trip that proceeds along a route but has no fixed schedule. - A trip that have been added or removed with regard to schedule. The updates can be for future, predicted arrival/departure events, or for past events that already occurred. Normally, updates should get more precise and more certain (see uncertainty below) as the events gets closer to current time. Even if that is not possible, the information for past events should be precise and certain. In particular, if an update points to time in the past but its update's uncertainty is not 0, the client should conclude that the update is a (wrong) prediction and that the trip has not completed yet. Note that the update can describe a trip that is already completed. To this end, it is enough to provide an update for the last stop o...\"}";
 
-.alter table [TripUpdate] column-docstrings (
+.alter table ['GeneralTransitFeed.TripUpdate'] column-docstrings (
    [trip]: "{\"description\": \"The Trip that this message applies to. There can be at most one TripUpdate entity for each actual trip instance. If there is none, that means there is no prediction information available. It does *not* mean that the trip is progressing according to schedule.\"}",
    [vehicle]: "{\"description\": \"Additional information on the vehicle that is serving this trip.\"}",
    [stop_time_update]: "{\"description\": \"Updates to StopTimes for the trip (both future, i.e., predictions, and in some cases, past ones, i.e., those that already happened). The updates must be sorted by stop_sequence, and apply for all the following stops of the trip up to the next specified one. Example 1: For a trip with 20 stops, a StopTimeUpdate with arrival delay and departure delay of 0 for stop_sequence of the current stop means that the trip is exactly on time. Example 2: For the same trip instance, 3 StopTimeUpdates are provided: - delay of 5 min for stop_sequence 3 - delay of 1 min for stop_sequence 8 - delay of unspecified duration for stop_sequence 10 This will be interpreted as: - stop_sequences 3,4,5,6,7 have delay of 5 min. - stop_sequences 8,9 have delay of 1 min. - stop_sequences 10,... have unknown delay. Moment at which the vehicle's real-time progress was measured. In POSIX\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the JSON Structure schema for more details.\\\" }\"}",
@@ -144,7 +144,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [TripUpdate] ingestion json mapping "TripUpdate_json_flat"
+.create-or-alter table ['GeneralTransitFeed.TripUpdate'] ingestion json mapping "GeneralTransitFeed.TripUpdate_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -160,7 +160,7 @@
 ]
 ```
 
-.create-or-alter table [TripUpdate] ingestion json mapping "TripUpdate_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.TripUpdate'] ingestion json mapping "GeneralTransitFeed.TripUpdate_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -176,13 +176,13 @@
 ]
 ```
 
-.drop materialized-view TripUpdateLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.TripUpdateLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TripUpdateLatest on table TripUpdate {
-    TripUpdate | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.TripUpdateLatest'] on table ['GeneralTransitFeed.TripUpdate'] {
+    ['GeneralTransitFeed.TripUpdate'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [TripUpdate] policy update
+.alter table ['GeneralTransitFeed.TripUpdate'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -193,7 +193,7 @@
 }]
 ```
 
-.create-merge table [Alert] (
+.create-merge table ['GeneralTransitFeed.Alert'] (
    [active_period]: dynamic,
    [informed_entity]: dynamic,
    [cause]: string,
@@ -208,9 +208,9 @@
    [___subject]: string
 );
 
-.alter table [Alert] docstring "{\"description\": \"An alert, indicating some sort of incident in the public transit network.\"}";
+.alter table ['GeneralTransitFeed.Alert'] docstring "{\"description\": \"An alert, indicating some sort of incident in the public transit network.\"}";
 
-.alter table [Alert] column-docstrings (
+.alter table ['GeneralTransitFeed.Alert'] column-docstrings (
    [active_period]: "{\"description\": \"Time when the alert should be shown to the user. If missing, the alert will be shown as long as it appears in the feed. If multiple ranges are given, the alert will be shown during all of them.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/GeneralTransitFeedRealTime/Alert/TimeRange\"}, \"description\": \"Time when the alert should be shown to the user. If missing, the alert will be shown as long as it appears in the feed. If multiple ranges are given, the alert will be shown during all of them.\"}}",
    [informed_entity]: "{\"description\": \"Entities whose users we should notify of this alert.\", \"schema\": {\"type\": \"array\", \"items\": {\"$ref\": \"#/definitions/GeneralTransitFeedRealTime/Alert/EntitySelector\"}, \"description\": \"Entities whose users we should notify of this alert.\"}}",
    [url]: "{\"description\": \"The URL which provides additional information about the alert.\"}",
@@ -223,7 +223,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Alert] ingestion json mapping "Alert_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Alert'] ingestion json mapping "GeneralTransitFeed.Alert_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -241,7 +241,7 @@
 ]
 ```
 
-.create-or-alter table [Alert] ingestion json mapping "Alert_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Alert'] ingestion json mapping "GeneralTransitFeed.Alert_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -259,13 +259,13 @@
 ]
 ```
 
-.drop materialized-view AlertLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.AlertLatest'] ifexists;
 
-.create materialized-view with (backfill=true) AlertLatest on table Alert {
-    Alert | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.AlertLatest'] on table ['GeneralTransitFeed.Alert'] {
+    ['GeneralTransitFeed.Alert'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Alert] policy update
+.alter table ['GeneralTransitFeed.Alert'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -276,7 +276,7 @@
 }]
 ```
 
-.create-merge table [Agency] (
+.create-merge table ['GeneralTransitFeed.Agency'] (
    [agencyId]: string,
    [agencyName]: string,
    [agencyUrl]: string,
@@ -292,9 +292,9 @@
    [___subject]: string
 );
 
-.alter table [Agency] docstring "{\"description\": \"Information about the transit agencies.\"}";
+.alter table ['GeneralTransitFeed.Agency'] docstring "{\"description\": \"Information about the transit agencies.\"}";
 
-.alter table [Agency] column-docstrings (
+.alter table ['GeneralTransitFeed.Agency'] column-docstrings (
    [agencyId]: "{\"description\": \"Identifies a transit brand which is often synonymous with a transit agency.\"}",
    [agencyName]: "{\"description\": \"Full name of the transit agency.\"}",
    [agencyUrl]: "{\"description\": \"URL of the transit agency.\"}",
@@ -310,7 +310,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Agency] ingestion json mapping "Agency_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Agency'] ingestion json mapping "GeneralTransitFeed.Agency_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -329,7 +329,7 @@
 ]
 ```
 
-.create-or-alter table [Agency] ingestion json mapping "Agency_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Agency'] ingestion json mapping "GeneralTransitFeed.Agency_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -348,13 +348,13 @@
 ]
 ```
 
-.drop materialized-view AgencyLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.AgencyLatest'] ifexists;
 
-.create materialized-view with (backfill=true) AgencyLatest on table Agency {
-    Agency | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.AgencyLatest'] on table ['GeneralTransitFeed.Agency'] {
+    ['GeneralTransitFeed.Agency'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Agency] policy update
+.alter table ['GeneralTransitFeed.Agency'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -365,7 +365,7 @@
 }]
 ```
 
-.create-merge table [Areas] (
+.create-merge table ['GeneralTransitFeed.Areas'] (
    [areaId]: string,
    [areaName]: string,
    [areaDesc]: string,
@@ -377,9 +377,9 @@
    [___subject]: string
 );
 
-.alter table [Areas] docstring "{\"description\": \"Defines areas.\"}";
+.alter table ['GeneralTransitFeed.Areas'] docstring "{\"description\": \"Defines areas.\"}";
 
-.alter table [Areas] column-docstrings (
+.alter table ['GeneralTransitFeed.Areas'] column-docstrings (
    [areaId]: "{\"description\": \"Identifies an area.\"}",
    [areaName]: "{\"description\": \"Name of the area.\"}",
    [areaDesc]: "{\"description\": \"Description of the area.\"}",
@@ -391,7 +391,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Areas] ingestion json mapping "Areas_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Areas'] ingestion json mapping "GeneralTransitFeed.Areas_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -406,7 +406,7 @@
 ]
 ```
 
-.create-or-alter table [Areas] ingestion json mapping "Areas_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Areas'] ingestion json mapping "GeneralTransitFeed.Areas_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -421,13 +421,13 @@
 ]
 ```
 
-.drop materialized-view AreasLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.AreasLatest'] ifexists;
 
-.create materialized-view with (backfill=true) AreasLatest on table Areas {
-    Areas | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.AreasLatest'] on table ['GeneralTransitFeed.Areas'] {
+    ['GeneralTransitFeed.Areas'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Areas] policy update
+.alter table ['GeneralTransitFeed.Areas'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -438,7 +438,7 @@
 }]
 ```
 
-.create-merge table [Attributions] (
+.create-merge table ['GeneralTransitFeed.Attributions'] (
    [attributionId]: string,
    [agencyId]: string,
    [routeId]: string,
@@ -457,9 +457,9 @@
    [___subject]: string
 );
 
-.alter table [Attributions] docstring "{\"description\": \"Provides information about the attributions.\"}";
+.alter table ['GeneralTransitFeed.Attributions'] docstring "{\"description\": \"Provides information about the attributions.\"}";
 
-.alter table [Attributions] column-docstrings (
+.alter table ['GeneralTransitFeed.Attributions'] column-docstrings (
    [attributionId]: "{\"description\": \"Identifies an attribution for the dataset.\"}",
    [agencyId]: "{\"description\": \"Identifies the agency associated with the attribution.\"}",
    [routeId]: "{\"description\": \"Identifies the route associated with the attribution.\"}",
@@ -478,7 +478,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Attributions] ingestion json mapping "Attributions_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Attributions'] ingestion json mapping "GeneralTransitFeed.Attributions_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -500,7 +500,7 @@
 ]
 ```
 
-.create-or-alter table [Attributions] ingestion json mapping "Attributions_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Attributions'] ingestion json mapping "GeneralTransitFeed.Attributions_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -522,13 +522,13 @@
 ]
 ```
 
-.drop materialized-view AttributionsLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.AttributionsLatest'] ifexists;
 
-.create materialized-view with (backfill=true) AttributionsLatest on table Attributions {
-    Attributions | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.AttributionsLatest'] on table ['GeneralTransitFeed.Attributions'] {
+    ['GeneralTransitFeed.Attributions'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Attributions] policy update
+.alter table ['GeneralTransitFeed.Attributions'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -539,7 +539,7 @@
 }]
 ```
 
-.create-merge table [BookingRules] (
+.create-merge table ['GeneralTransitFeed.BookingRules'] (
    [bookingRuleId]: string,
    [bookingRuleName]: string,
    [bookingRuleDesc]: string,
@@ -551,9 +551,9 @@
    [___subject]: string
 );
 
-.alter table [BookingRules] docstring "{\"description\": \"Defines booking rules.\"}";
+.alter table ['GeneralTransitFeed.BookingRules'] docstring "{\"description\": \"Defines booking rules.\"}";
 
-.alter table [BookingRules] column-docstrings (
+.alter table ['GeneralTransitFeed.BookingRules'] column-docstrings (
    [bookingRuleId]: "{\"description\": \"Identifies a booking rule.\"}",
    [bookingRuleName]: "{\"description\": \"Name of the booking rule.\"}",
    [bookingRuleDesc]: "{\"description\": \"Description of the booking rule.\"}",
@@ -565,7 +565,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [BookingRules] ingestion json mapping "BookingRules_json_flat"
+.create-or-alter table ['GeneralTransitFeed.BookingRules'] ingestion json mapping "GeneralTransitFeed.BookingRules_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -580,7 +580,7 @@
 ]
 ```
 
-.create-or-alter table [BookingRules] ingestion json mapping "BookingRules_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.BookingRules'] ingestion json mapping "GeneralTransitFeed.BookingRules_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -595,13 +595,13 @@
 ]
 ```
 
-.drop materialized-view BookingRulesLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.BookingRulesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) BookingRulesLatest on table BookingRules {
-    BookingRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.BookingRulesLatest'] on table ['GeneralTransitFeed.BookingRules'] {
+    ['GeneralTransitFeed.BookingRules'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [BookingRules] policy update
+.alter table ['GeneralTransitFeed.BookingRules'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -612,7 +612,7 @@
 }]
 ```
 
-.create-merge table [FareAttributes] (
+.create-merge table ['GeneralTransitFeed.FareAttributes'] (
    [fareId]: string,
    [price]: real,
    [currencyType]: string,
@@ -627,9 +627,9 @@
    [___subject]: string
 );
 
-.alter table [FareAttributes] docstring "{\"description\": \"Defines fare attributes.\"}";
+.alter table ['GeneralTransitFeed.FareAttributes'] docstring "{\"description\": \"Defines fare attributes.\"}";
 
-.alter table [FareAttributes] column-docstrings (
+.alter table ['GeneralTransitFeed.FareAttributes'] column-docstrings (
    [fareId]: "{\"description\": \"Identifies a fare class.\"}",
    [price]: "{\"description\": \"Fare price, in the unit specified by currency_type.\"}",
    [currencyType]: "{\"description\": \"Currency type used to pay the fare.\"}",
@@ -644,7 +644,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [FareAttributes] ingestion json mapping "FareAttributes_json_flat"
+.create-or-alter table ['GeneralTransitFeed.FareAttributes'] ingestion json mapping "GeneralTransitFeed.FareAttributes_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -662,7 +662,7 @@
 ]
 ```
 
-.create-or-alter table [FareAttributes] ingestion json mapping "FareAttributes_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.FareAttributes'] ingestion json mapping "GeneralTransitFeed.FareAttributes_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -680,13 +680,13 @@
 ]
 ```
 
-.drop materialized-view FareAttributesLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.FareAttributesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) FareAttributesLatest on table FareAttributes {
-    FareAttributes | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.FareAttributesLatest'] on table ['GeneralTransitFeed.FareAttributes'] {
+    ['GeneralTransitFeed.FareAttributes'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [FareAttributes] policy update
+.alter table ['GeneralTransitFeed.FareAttributes'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -697,7 +697,7 @@
 }]
 ```
 
-.create-merge table [FareLegRules] (
+.create-merge table ['GeneralTransitFeed.FareLegRules'] (
    [fareLegRuleId]: string,
    [fareProductId]: string,
    [legGroupId]: string,
@@ -711,9 +711,9 @@
    [___subject]: string
 );
 
-.alter table [FareLegRules] docstring "{\"description\": \"Defines fare leg rules.\"}";
+.alter table ['GeneralTransitFeed.FareLegRules'] docstring "{\"description\": \"Defines fare leg rules.\"}";
 
-.alter table [FareLegRules] column-docstrings (
+.alter table ['GeneralTransitFeed.FareLegRules'] column-docstrings (
    [fareLegRuleId]: "{\"description\": \"Identifies a fare leg rule.\"}",
    [fareProductId]: "{\"description\": \"Identifies a fare product.\"}",
    [legGroupId]: "{\"description\": \"Identifies a group of legs.\"}",
@@ -727,7 +727,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [FareLegRules] ingestion json mapping "FareLegRules_json_flat"
+.create-or-alter table ['GeneralTransitFeed.FareLegRules'] ingestion json mapping "GeneralTransitFeed.FareLegRules_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -744,7 +744,7 @@
 ]
 ```
 
-.create-or-alter table [FareLegRules] ingestion json mapping "FareLegRules_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.FareLegRules'] ingestion json mapping "GeneralTransitFeed.FareLegRules_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -761,13 +761,13 @@
 ]
 ```
 
-.drop materialized-view FareLegRulesLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.FareLegRulesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) FareLegRulesLatest on table FareLegRules {
-    FareLegRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.FareLegRulesLatest'] on table ['GeneralTransitFeed.FareLegRules'] {
+    ['GeneralTransitFeed.FareLegRules'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [FareLegRules] policy update
+.alter table ['GeneralTransitFeed.FareLegRules'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -778,7 +778,7 @@
 }]
 ```
 
-.create-merge table [FareMedia] (
+.create-merge table ['GeneralTransitFeed.FareMedia'] (
    [fareMediaId]: string,
    [fareMediaName]: string,
    [fareMediaDesc]: string,
@@ -790,9 +790,9 @@
    [___subject]: string
 );
 
-.alter table [FareMedia] docstring "{\"description\": \"Defines fare media.\"}";
+.alter table ['GeneralTransitFeed.FareMedia'] docstring "{\"description\": \"Defines fare media.\"}";
 
-.alter table [FareMedia] column-docstrings (
+.alter table ['GeneralTransitFeed.FareMedia'] column-docstrings (
    [fareMediaId]: "{\"description\": \"Identifies a fare media.\"}",
    [fareMediaName]: "{\"description\": \"Name of the fare media.\"}",
    [fareMediaDesc]: "{\"description\": \"Description of the fare media.\"}",
@@ -804,7 +804,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [FareMedia] ingestion json mapping "FareMedia_json_flat"
+.create-or-alter table ['GeneralTransitFeed.FareMedia'] ingestion json mapping "GeneralTransitFeed.FareMedia_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -819,7 +819,7 @@
 ]
 ```
 
-.create-or-alter table [FareMedia] ingestion json mapping "FareMedia_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.FareMedia'] ingestion json mapping "GeneralTransitFeed.FareMedia_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -834,13 +834,13 @@
 ]
 ```
 
-.drop materialized-view FareMediaLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.FareMediaLatest'] ifexists;
 
-.create materialized-view with (backfill=true) FareMediaLatest on table FareMedia {
-    FareMedia | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.FareMediaLatest'] on table ['GeneralTransitFeed.FareMedia'] {
+    ['GeneralTransitFeed.FareMedia'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [FareMedia] policy update
+.alter table ['GeneralTransitFeed.FareMedia'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -851,7 +851,7 @@
 }]
 ```
 
-.create-merge table [FareProducts] (
+.create-merge table ['GeneralTransitFeed.FareProducts'] (
    [fareProductId]: string,
    [fareProductName]: string,
    [fareProductDesc]: string,
@@ -863,9 +863,9 @@
    [___subject]: string
 );
 
-.alter table [FareProducts] docstring "{\"description\": \"Defines fare products.\"}";
+.alter table ['GeneralTransitFeed.FareProducts'] docstring "{\"description\": \"Defines fare products.\"}";
 
-.alter table [FareProducts] column-docstrings (
+.alter table ['GeneralTransitFeed.FareProducts'] column-docstrings (
    [fareProductId]: "{\"description\": \"Identifies a fare product.\"}",
    [fareProductName]: "{\"description\": \"Name of the fare product.\"}",
    [fareProductDesc]: "{\"description\": \"Description of the fare product.\"}",
@@ -877,7 +877,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [FareProducts] ingestion json mapping "FareProducts_json_flat"
+.create-or-alter table ['GeneralTransitFeed.FareProducts'] ingestion json mapping "GeneralTransitFeed.FareProducts_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -892,7 +892,7 @@
 ]
 ```
 
-.create-or-alter table [FareProducts] ingestion json mapping "FareProducts_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.FareProducts'] ingestion json mapping "GeneralTransitFeed.FareProducts_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -907,13 +907,13 @@
 ]
 ```
 
-.drop materialized-view FareProductsLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.FareProductsLatest'] ifexists;
 
-.create materialized-view with (backfill=true) FareProductsLatest on table FareProducts {
-    FareProducts | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.FareProductsLatest'] on table ['GeneralTransitFeed.FareProducts'] {
+    ['GeneralTransitFeed.FareProducts'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [FareProducts] policy update
+.alter table ['GeneralTransitFeed.FareProducts'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -924,7 +924,7 @@
 }]
 ```
 
-.create-merge table [FareRules] (
+.create-merge table ['GeneralTransitFeed.FareRules'] (
    [fareId]: string,
    [routeId]: string,
    [originId]: string,
@@ -937,9 +937,9 @@
    [___subject]: string
 );
 
-.alter table [FareRules] docstring "{\"description\": \"Defines fare rules.\"}";
+.alter table ['GeneralTransitFeed.FareRules'] docstring "{\"description\": \"Defines fare rules.\"}";
 
-.alter table [FareRules] column-docstrings (
+.alter table ['GeneralTransitFeed.FareRules'] column-docstrings (
    [fareId]: "{\"description\": \"Identifies a fare class.\"}",
    [routeId]: "{\"description\": \"Identifies a route associated with the fare.\"}",
    [originId]: "{\"description\": \"Identifies the fare zone of the origin.\"}",
@@ -952,7 +952,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [FareRules] ingestion json mapping "FareRules_json_flat"
+.create-or-alter table ['GeneralTransitFeed.FareRules'] ingestion json mapping "GeneralTransitFeed.FareRules_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -968,7 +968,7 @@
 ]
 ```
 
-.create-or-alter table [FareRules] ingestion json mapping "FareRules_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.FareRules'] ingestion json mapping "GeneralTransitFeed.FareRules_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -984,13 +984,13 @@
 ]
 ```
 
-.drop materialized-view FareRulesLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.FareRulesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) FareRulesLatest on table FareRules {
-    FareRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.FareRulesLatest'] on table ['GeneralTransitFeed.FareRules'] {
+    ['GeneralTransitFeed.FareRules'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [FareRules] policy update
+.alter table ['GeneralTransitFeed.FareRules'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1001,7 +1001,7 @@
 }]
 ```
 
-.create-merge table [FareTransferRules] (
+.create-merge table ['GeneralTransitFeed.FareTransferRules'] (
    [fareTransferRuleId]: string,
    [fareProductId]: string,
    [transferCount]: int,
@@ -1016,9 +1016,9 @@
    [___subject]: string
 );
 
-.alter table [FareTransferRules] docstring "{\"description\": \"Defines fare transfer rules.\"}";
+.alter table ['GeneralTransitFeed.FareTransferRules'] docstring "{\"description\": \"Defines fare transfer rules.\"}";
 
-.alter table [FareTransferRules] column-docstrings (
+.alter table ['GeneralTransitFeed.FareTransferRules'] column-docstrings (
    [fareTransferRuleId]: "{\"description\": \"Identifies a fare transfer rule.\"}",
    [fareProductId]: "{\"description\": \"Identifies a fare product.\"}",
    [transferCount]: "{\"description\": \"Number of transfers permitted.\"}",
@@ -1033,7 +1033,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [FareTransferRules] ingestion json mapping "FareTransferRules_json_flat"
+.create-or-alter table ['GeneralTransitFeed.FareTransferRules'] ingestion json mapping "GeneralTransitFeed.FareTransferRules_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1051,7 +1051,7 @@
 ]
 ```
 
-.create-or-alter table [FareTransferRules] ingestion json mapping "FareTransferRules_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.FareTransferRules'] ingestion json mapping "GeneralTransitFeed.FareTransferRules_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1069,13 +1069,13 @@
 ]
 ```
 
-.drop materialized-view FareTransferRulesLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.FareTransferRulesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) FareTransferRulesLatest on table FareTransferRules {
-    FareTransferRules | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.FareTransferRulesLatest'] on table ['GeneralTransitFeed.FareTransferRules'] {
+    ['GeneralTransitFeed.FareTransferRules'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [FareTransferRules] policy update
+.alter table ['GeneralTransitFeed.FareTransferRules'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1086,7 +1086,7 @@
 }]
 ```
 
-.create-merge table [FeedInfo] (
+.create-merge table ['GeneralTransitFeed.FeedInfo'] (
    [feedPublisherName]: string,
    [feedPublisherUrl]: string,
    [feedLang]: string,
@@ -1103,9 +1103,9 @@
    [___subject]: string
 );
 
-.alter table [FeedInfo] docstring "{\"description\": \"Provides information about the GTFS feed itself.\"}";
+.alter table ['GeneralTransitFeed.FeedInfo'] docstring "{\"description\": \"Provides information about the GTFS feed itself.\"}";
 
-.alter table [FeedInfo] column-docstrings (
+.alter table ['GeneralTransitFeed.FeedInfo'] column-docstrings (
    [feedPublisherName]: "{\"description\": \"Full name of the organization that publishes the feed.\"}",
    [feedPublisherUrl]: "{\"description\": \"URL of the feed publishing organization's website.\"}",
    [feedLang]: "{\"description\": \"Default language for the text in this feed.\"}",
@@ -1122,7 +1122,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [FeedInfo] ingestion json mapping "FeedInfo_json_flat"
+.create-or-alter table ['GeneralTransitFeed.FeedInfo'] ingestion json mapping "GeneralTransitFeed.FeedInfo_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1142,7 +1142,7 @@
 ]
 ```
 
-.create-or-alter table [FeedInfo] ingestion json mapping "FeedInfo_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.FeedInfo'] ingestion json mapping "GeneralTransitFeed.FeedInfo_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1162,13 +1162,13 @@
 ]
 ```
 
-.drop materialized-view FeedInfoLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.FeedInfoLatest'] ifexists;
 
-.create materialized-view with (backfill=true) FeedInfoLatest on table FeedInfo {
-    FeedInfo | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.FeedInfoLatest'] on table ['GeneralTransitFeed.FeedInfo'] {
+    ['GeneralTransitFeed.FeedInfo'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [FeedInfo] policy update
+.alter table ['GeneralTransitFeed.FeedInfo'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1179,7 +1179,7 @@
 }]
 ```
 
-.create-merge table [Frequencies] (
+.create-merge table ['GeneralTransitFeed.Frequencies'] (
    [tripId]: string,
    [startTime]: string,
    [endTime]: string,
@@ -1192,9 +1192,9 @@
    [___subject]: string
 );
 
-.alter table [Frequencies] docstring "{\"description\": \"Defines frequencies.\"}";
+.alter table ['GeneralTransitFeed.Frequencies'] docstring "{\"description\": \"Defines frequencies.\"}";
 
-.alter table [Frequencies] column-docstrings (
+.alter table ['GeneralTransitFeed.Frequencies'] column-docstrings (
    [tripId]: "{\"description\": \"Identifies a trip.\"}",
    [startTime]: "{\"description\": \"Time at which service begins with the specified frequency.\"}",
    [endTime]: "{\"description\": \"Time at which service ends with the specified frequency.\"}",
@@ -1207,7 +1207,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Frequencies] ingestion json mapping "Frequencies_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Frequencies'] ingestion json mapping "GeneralTransitFeed.Frequencies_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1223,7 +1223,7 @@
 ]
 ```
 
-.create-or-alter table [Frequencies] ingestion json mapping "Frequencies_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Frequencies'] ingestion json mapping "GeneralTransitFeed.Frequencies_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1239,13 +1239,13 @@
 ]
 ```
 
-.drop materialized-view FrequenciesLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.FrequenciesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) FrequenciesLatest on table Frequencies {
-    Frequencies | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.FrequenciesLatest'] on table ['GeneralTransitFeed.Frequencies'] {
+    ['GeneralTransitFeed.Frequencies'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Frequencies] policy update
+.alter table ['GeneralTransitFeed.Frequencies'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1256,7 +1256,7 @@
 }]
 ```
 
-.create-merge table [Levels] (
+.create-merge table ['GeneralTransitFeed.Levels'] (
    [levelId]: string,
    [levelIndex]: real,
    [levelName]: string,
@@ -1267,9 +1267,9 @@
    [___subject]: string
 );
 
-.alter table [Levels] docstring "{\"description\": \"Defines levels.\"}";
+.alter table ['GeneralTransitFeed.Levels'] docstring "{\"description\": \"Defines levels.\"}";
 
-.alter table [Levels] column-docstrings (
+.alter table ['GeneralTransitFeed.Levels'] column-docstrings (
    [levelId]: "{\"description\": \"Identifies a level.\"}",
    [levelIndex]: "{\"description\": \"Numeric index of the level that indicates relative position of the level in relation to other levels.\"}",
    [levelName]: "{\"description\": \"Name of the level.\"}",
@@ -1280,7 +1280,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Levels] ingestion json mapping "Levels_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Levels'] ingestion json mapping "GeneralTransitFeed.Levels_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1294,7 +1294,7 @@
 ]
 ```
 
-.create-or-alter table [Levels] ingestion json mapping "Levels_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Levels'] ingestion json mapping "GeneralTransitFeed.Levels_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1308,13 +1308,13 @@
 ]
 ```
 
-.drop materialized-view LevelsLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.LevelsLatest'] ifexists;
 
-.create materialized-view with (backfill=true) LevelsLatest on table Levels {
-    Levels | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.LevelsLatest'] on table ['GeneralTransitFeed.Levels'] {
+    ['GeneralTransitFeed.Levels'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Levels] policy update
+.alter table ['GeneralTransitFeed.Levels'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1325,7 +1325,7 @@
 }]
 ```
 
-.create-merge table [LocationGeoJson] (
+.create-merge table ['GeneralTransitFeed.LocationGeoJson'] (
    [locationGeoJsonId]: string,
    [locationGeoJsonType]: string,
    [locationGeoJsonData]: string,
@@ -1336,9 +1336,9 @@
    [___subject]: string
 );
 
-.alter table [LocationGeoJson] docstring "{\"description\": \"Defines location GeoJSON data.\"}";
+.alter table ['GeneralTransitFeed.LocationGeoJson'] docstring "{\"description\": \"Defines location GeoJSON data.\"}";
 
-.alter table [LocationGeoJson] column-docstrings (
+.alter table ['GeneralTransitFeed.LocationGeoJson'] column-docstrings (
    [locationGeoJsonId]: "{\"description\": \"Identifies a location GeoJSON.\"}",
    [locationGeoJsonType]: "{\"description\": \"Type of the GeoJSON.\"}",
    [locationGeoJsonData]: "{\"description\": \"GeoJSON data.\"}",
@@ -1349,7 +1349,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [LocationGeoJson] ingestion json mapping "LocationGeoJson_json_flat"
+.create-or-alter table ['GeneralTransitFeed.LocationGeoJson'] ingestion json mapping "GeneralTransitFeed.LocationGeoJson_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1363,7 +1363,7 @@
 ]
 ```
 
-.create-or-alter table [LocationGeoJson] ingestion json mapping "LocationGeoJson_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.LocationGeoJson'] ingestion json mapping "GeneralTransitFeed.LocationGeoJson_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1377,13 +1377,13 @@
 ]
 ```
 
-.drop materialized-view LocationGeoJsonLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.LocationGeoJsonLatest'] ifexists;
 
-.create materialized-view with (backfill=true) LocationGeoJsonLatest on table LocationGeoJson {
-    LocationGeoJson | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.LocationGeoJsonLatest'] on table ['GeneralTransitFeed.LocationGeoJson'] {
+    ['GeneralTransitFeed.LocationGeoJson'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [LocationGeoJson] policy update
+.alter table ['GeneralTransitFeed.LocationGeoJson'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1394,7 +1394,7 @@
 }]
 ```
 
-.create-merge table [LocationGroups] (
+.create-merge table ['GeneralTransitFeed.LocationGroups'] (
    [locationGroupId]: string,
    [locationGroupName]: string,
    [locationGroupDesc]: string,
@@ -1406,9 +1406,9 @@
    [___subject]: string
 );
 
-.alter table [LocationGroups] docstring "{\"description\": \"Defines location groups.\"}";
+.alter table ['GeneralTransitFeed.LocationGroups'] docstring "{\"description\": \"Defines location groups.\"}";
 
-.alter table [LocationGroups] column-docstrings (
+.alter table ['GeneralTransitFeed.LocationGroups'] column-docstrings (
    [locationGroupId]: "{\"description\": \"Identifies a location group.\"}",
    [locationGroupName]: "{\"description\": \"Name of the location group.\"}",
    [locationGroupDesc]: "{\"description\": \"Description of the location group.\"}",
@@ -1420,7 +1420,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [LocationGroups] ingestion json mapping "LocationGroups_json_flat"
+.create-or-alter table ['GeneralTransitFeed.LocationGroups'] ingestion json mapping "GeneralTransitFeed.LocationGroups_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1435,7 +1435,7 @@
 ]
 ```
 
-.create-or-alter table [LocationGroups] ingestion json mapping "LocationGroups_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.LocationGroups'] ingestion json mapping "GeneralTransitFeed.LocationGroups_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1450,13 +1450,13 @@
 ]
 ```
 
-.drop materialized-view LocationGroupsLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.LocationGroupsLatest'] ifexists;
 
-.create materialized-view with (backfill=true) LocationGroupsLatest on table LocationGroups {
-    LocationGroups | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.LocationGroupsLatest'] on table ['GeneralTransitFeed.LocationGroups'] {
+    ['GeneralTransitFeed.LocationGroups'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [LocationGroups] policy update
+.alter table ['GeneralTransitFeed.LocationGroups'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1467,7 +1467,7 @@
 }]
 ```
 
-.create-merge table [LocationGroupStores] (
+.create-merge table ['GeneralTransitFeed.LocationGroupStores'] (
    [locationGroupStoreId]: string,
    [locationGroupId]: string,
    [storeId]: string,
@@ -1478,9 +1478,9 @@
    [___subject]: string
 );
 
-.alter table [LocationGroupStores] docstring "{\"description\": \"Defines location group stores.\"}";
+.alter table ['GeneralTransitFeed.LocationGroupStores'] docstring "{\"description\": \"Defines location group stores.\"}";
 
-.alter table [LocationGroupStores] column-docstrings (
+.alter table ['GeneralTransitFeed.LocationGroupStores'] column-docstrings (
    [locationGroupStoreId]: "{\"description\": \"Identifies a location group store.\"}",
    [locationGroupId]: "{\"description\": \"Identifies a location group.\"}",
    [storeId]: "{\"description\": \"Identifies a store.\"}",
@@ -1491,7 +1491,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [LocationGroupStores] ingestion json mapping "LocationGroupStores_json_flat"
+.create-or-alter table ['GeneralTransitFeed.LocationGroupStores'] ingestion json mapping "GeneralTransitFeed.LocationGroupStores_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1505,7 +1505,7 @@
 ]
 ```
 
-.create-or-alter table [LocationGroupStores] ingestion json mapping "LocationGroupStores_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.LocationGroupStores'] ingestion json mapping "GeneralTransitFeed.LocationGroupStores_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1519,13 +1519,13 @@
 ]
 ```
 
-.drop materialized-view LocationGroupStoresLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.LocationGroupStoresLatest'] ifexists;
 
-.create materialized-view with (backfill=true) LocationGroupStoresLatest on table LocationGroupStores {
-    LocationGroupStores | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.LocationGroupStoresLatest'] on table ['GeneralTransitFeed.LocationGroupStores'] {
+    ['GeneralTransitFeed.LocationGroupStores'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [LocationGroupStores] policy update
+.alter table ['GeneralTransitFeed.LocationGroupStores'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1536,7 +1536,7 @@
 }]
 ```
 
-.create-merge table [Networks] (
+.create-merge table ['GeneralTransitFeed.Networks'] (
    [networkId]: string,
    [networkName]: string,
    [networkDesc]: string,
@@ -1548,9 +1548,9 @@
    [___subject]: string
 );
 
-.alter table [Networks] docstring "{\"description\": \"Defines networks.\"}";
+.alter table ['GeneralTransitFeed.Networks'] docstring "{\"description\": \"Defines networks.\"}";
 
-.alter table [Networks] column-docstrings (
+.alter table ['GeneralTransitFeed.Networks'] column-docstrings (
    [networkId]: "{\"description\": \"Identifies a network.\"}",
    [networkName]: "{\"description\": \"Name of the network.\"}",
    [networkDesc]: "{\"description\": \"Description of the network.\"}",
@@ -1562,7 +1562,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Networks] ingestion json mapping "Networks_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Networks'] ingestion json mapping "GeneralTransitFeed.Networks_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1577,7 +1577,7 @@
 ]
 ```
 
-.create-or-alter table [Networks] ingestion json mapping "Networks_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Networks'] ingestion json mapping "GeneralTransitFeed.Networks_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1592,13 +1592,13 @@
 ]
 ```
 
-.drop materialized-view NetworksLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.NetworksLatest'] ifexists;
 
-.create materialized-view with (backfill=true) NetworksLatest on table Networks {
-    Networks | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.NetworksLatest'] on table ['GeneralTransitFeed.Networks'] {
+    ['GeneralTransitFeed.Networks'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Networks] policy update
+.alter table ['GeneralTransitFeed.Networks'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1609,7 +1609,7 @@
 }]
 ```
 
-.create-merge table [Pathways] (
+.create-merge table ['GeneralTransitFeed.Pathways'] (
    [pathwayId]: string,
    [fromStopId]: string,
    [toStopId]: string,
@@ -1629,9 +1629,9 @@
    [___subject]: string
 );
 
-.alter table [Pathways] docstring "{\"description\": \"Defines pathways.\"}";
+.alter table ['GeneralTransitFeed.Pathways'] docstring "{\"description\": \"Defines pathways.\"}";
 
-.alter table [Pathways] column-docstrings (
+.alter table ['GeneralTransitFeed.Pathways'] column-docstrings (
    [pathwayId]: "{\"description\": \"Identifies a pathway.\"}",
    [fromStopId]: "{\"description\": \"Identifies a stop or station where the pathway begins.\"}",
    [toStopId]: "{\"description\": \"Identifies a stop or station where the pathway ends.\"}",
@@ -1651,7 +1651,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Pathways] ingestion json mapping "Pathways_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Pathways'] ingestion json mapping "GeneralTransitFeed.Pathways_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1674,7 +1674,7 @@
 ]
 ```
 
-.create-or-alter table [Pathways] ingestion json mapping "Pathways_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Pathways'] ingestion json mapping "GeneralTransitFeed.Pathways_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1697,13 +1697,13 @@
 ]
 ```
 
-.drop materialized-view PathwaysLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.PathwaysLatest'] ifexists;
 
-.create materialized-view with (backfill=true) PathwaysLatest on table Pathways {
-    Pathways | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.PathwaysLatest'] on table ['GeneralTransitFeed.Pathways'] {
+    ['GeneralTransitFeed.Pathways'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Pathways] policy update
+.alter table ['GeneralTransitFeed.Pathways'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1714,7 +1714,7 @@
 }]
 ```
 
-.create-merge table [RouteNetworks] (
+.create-merge table ['GeneralTransitFeed.RouteNetworks'] (
    [routeNetworkId]: string,
    [routeId]: string,
    [networkId]: string,
@@ -1725,9 +1725,9 @@
    [___subject]: string
 );
 
-.alter table [RouteNetworks] docstring "{\"description\": \"Defines route networks.\"}";
+.alter table ['GeneralTransitFeed.RouteNetworks'] docstring "{\"description\": \"Defines route networks.\"}";
 
-.alter table [RouteNetworks] column-docstrings (
+.alter table ['GeneralTransitFeed.RouteNetworks'] column-docstrings (
    [routeNetworkId]: "{\"description\": \"Identifies a route network.\"}",
    [routeId]: "{\"description\": \"Identifies a route.\"}",
    [networkId]: "{\"description\": \"Identifies a network.\"}",
@@ -1738,7 +1738,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [RouteNetworks] ingestion json mapping "RouteNetworks_json_flat"
+.create-or-alter table ['GeneralTransitFeed.RouteNetworks'] ingestion json mapping "GeneralTransitFeed.RouteNetworks_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1752,7 +1752,7 @@
 ]
 ```
 
-.create-or-alter table [RouteNetworks] ingestion json mapping "RouteNetworks_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.RouteNetworks'] ingestion json mapping "GeneralTransitFeed.RouteNetworks_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1766,13 +1766,13 @@
 ]
 ```
 
-.drop materialized-view RouteNetworksLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.RouteNetworksLatest'] ifexists;
 
-.create materialized-view with (backfill=true) RouteNetworksLatest on table RouteNetworks {
-    RouteNetworks | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.RouteNetworksLatest'] on table ['GeneralTransitFeed.RouteNetworks'] {
+    ['GeneralTransitFeed.RouteNetworks'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [RouteNetworks] policy update
+.alter table ['GeneralTransitFeed.RouteNetworks'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1783,7 +1783,7 @@
 }]
 ```
 
-.create-merge table [Routes] (
+.create-merge table ['GeneralTransitFeed.Routes'] (
    [routeId]: string,
    [agencyId]: string,
    [routeShortName]: string,
@@ -1804,9 +1804,9 @@
    [___subject]: string
 );
 
-.alter table [Routes] docstring "{\"description\": \"Identifies a route.\"}";
+.alter table ['GeneralTransitFeed.Routes'] docstring "{\"description\": \"Identifies a route.\"}";
 
-.alter table [Routes] column-docstrings (
+.alter table ['GeneralTransitFeed.Routes'] column-docstrings (
    [routeId]: "{\"description\": \"Identifies a route.\"}",
    [agencyId]: "{\"description\": \"Agency for the specified route.\"}",
    [routeShortName]: "{\"description\": \"Short name of a route.\"}",
@@ -1827,7 +1827,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Routes] ingestion json mapping "Routes_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Routes'] ingestion json mapping "GeneralTransitFeed.Routes_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1851,7 +1851,7 @@
 ]
 ```
 
-.create-or-alter table [Routes] ingestion json mapping "Routes_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Routes'] ingestion json mapping "GeneralTransitFeed.Routes_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1875,13 +1875,13 @@
 ]
 ```
 
-.drop materialized-view RoutesLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.RoutesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) RoutesLatest on table Routes {
-    Routes | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.RoutesLatest'] on table ['GeneralTransitFeed.Routes'] {
+    ['GeneralTransitFeed.Routes'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Routes] policy update
+.alter table ['GeneralTransitFeed.Routes'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1892,7 +1892,7 @@
 }]
 ```
 
-.create-merge table [Shapes] (
+.create-merge table ['GeneralTransitFeed.Shapes'] (
    [shapeId]: string,
    [shapePtLat]: real,
    [shapePtLon]: real,
@@ -1905,9 +1905,9 @@
    [___subject]: string
 );
 
-.alter table [Shapes] docstring "{\"description\": \"Defines shapes.\"}";
+.alter table ['GeneralTransitFeed.Shapes'] docstring "{\"description\": \"Defines shapes.\"}";
 
-.alter table [Shapes] column-docstrings (
+.alter table ['GeneralTransitFeed.Shapes'] column-docstrings (
    [shapeId]: "{\"description\": \"Identifies a shape.\"}",
    [shapePtLat]: "{\"description\": \"Latitude of a shape point.\"}",
    [shapePtLon]: "{\"description\": \"Longitude of a shape point.\"}",
@@ -1920,7 +1920,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Shapes] ingestion json mapping "Shapes_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Shapes'] ingestion json mapping "GeneralTransitFeed.Shapes_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1936,7 +1936,7 @@
 ]
 ```
 
-.create-or-alter table [Shapes] ingestion json mapping "Shapes_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Shapes'] ingestion json mapping "GeneralTransitFeed.Shapes_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1952,13 +1952,13 @@
 ]
 ```
 
-.drop materialized-view ShapesLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.ShapesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ShapesLatest on table Shapes {
-    Shapes | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.ShapesLatest'] on table ['GeneralTransitFeed.Shapes'] {
+    ['GeneralTransitFeed.Shapes'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Shapes] policy update
+.alter table ['GeneralTransitFeed.Shapes'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -1969,7 +1969,7 @@
 }]
 ```
 
-.create-merge table [StopAreas] (
+.create-merge table ['GeneralTransitFeed.StopAreas'] (
    [stopAreaId]: string,
    [stopId]: string,
    [areaId]: string,
@@ -1980,9 +1980,9 @@
    [___subject]: string
 );
 
-.alter table [StopAreas] docstring "{\"description\": \"Defines stop areas.\"}";
+.alter table ['GeneralTransitFeed.StopAreas'] docstring "{\"description\": \"Defines stop areas.\"}";
 
-.alter table [StopAreas] column-docstrings (
+.alter table ['GeneralTransitFeed.StopAreas'] column-docstrings (
    [stopAreaId]: "{\"description\": \"Identifies a stop area.\"}",
    [stopId]: "{\"description\": \"Identifies a stop.\"}",
    [areaId]: "{\"description\": \"Identifies an area.\"}",
@@ -1993,7 +1993,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [StopAreas] ingestion json mapping "StopAreas_json_flat"
+.create-or-alter table ['GeneralTransitFeed.StopAreas'] ingestion json mapping "GeneralTransitFeed.StopAreas_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2007,7 +2007,7 @@
 ]
 ```
 
-.create-or-alter table [StopAreas] ingestion json mapping "StopAreas_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.StopAreas'] ingestion json mapping "GeneralTransitFeed.StopAreas_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2021,13 +2021,13 @@
 ]
 ```
 
-.drop materialized-view StopAreasLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.StopAreasLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StopAreasLatest on table StopAreas {
-    StopAreas | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.StopAreasLatest'] on table ['GeneralTransitFeed.StopAreas'] {
+    ['GeneralTransitFeed.StopAreas'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [StopAreas] policy update
+.alter table ['GeneralTransitFeed.StopAreas'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -2038,7 +2038,7 @@
 }]
 ```
 
-.create-merge table [Stops] (
+.create-merge table ['GeneralTransitFeed.Stops'] (
    [stopId]: string,
    [stopCode]: string,
    [stopName]: string,
@@ -2061,9 +2061,9 @@
    [___subject]: string
 );
 
-.alter table [Stops] docstring "{\"description\": \"Identifies locations such as stop/platform, station, entrance/exit, generic node or boarding area.\"}";
+.alter table ['GeneralTransitFeed.Stops'] docstring "{\"description\": \"Identifies locations such as stop/platform, station, entrance/exit, generic node or boarding area.\"}";
 
-.alter table [Stops] column-docstrings (
+.alter table ['GeneralTransitFeed.Stops'] column-docstrings (
    [stopId]: "{\"description\": \"Identifies a location: stop/platform, station, entrance/exit, generic node or boarding area.\"}",
    [stopCode]: "{\"description\": \"Short text or a number that identifies the location for riders.\"}",
    [stopName]: "{\"description\": \"Name of the location.\"}",
@@ -2086,7 +2086,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Stops] ingestion json mapping "Stops_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Stops'] ingestion json mapping "GeneralTransitFeed.Stops_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2112,7 +2112,7 @@
 ]
 ```
 
-.create-or-alter table [Stops] ingestion json mapping "Stops_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Stops'] ingestion json mapping "GeneralTransitFeed.Stops_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2138,13 +2138,13 @@
 ]
 ```
 
-.drop materialized-view StopsLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.StopsLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StopsLatest on table Stops {
-    Stops | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.StopsLatest'] on table ['GeneralTransitFeed.Stops'] {
+    ['GeneralTransitFeed.Stops'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Stops] policy update
+.alter table ['GeneralTransitFeed.Stops'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -2155,7 +2155,7 @@
 }]
 ```
 
-.create-merge table [StopTimes] (
+.create-merge table ['GeneralTransitFeed.StopTimes'] (
    [tripId]: string,
    [arrivalTime]: string,
    [departureTime]: string,
@@ -2175,9 +2175,9 @@
    [___subject]: string
 );
 
-.alter table [StopTimes] docstring "{\"description\": \"Represents times that a vehicle arrives at and departs from individual stops for each trip.\"}";
+.alter table ['GeneralTransitFeed.StopTimes'] docstring "{\"description\": \"Represents times that a vehicle arrives at and departs from individual stops for each trip.\"}";
 
-.alter table [StopTimes] column-docstrings (
+.alter table ['GeneralTransitFeed.StopTimes'] column-docstrings (
    [tripId]: "{\"description\": \"Identifies a trip.\"}",
    [arrivalTime]: "{\"description\": \"Arrival time at the stop for a specific trip.\"}",
    [departureTime]: "{\"description\": \"Departure time from the stop for a specific trip.\"}",
@@ -2197,7 +2197,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [StopTimes] ingestion json mapping "StopTimes_json_flat"
+.create-or-alter table ['GeneralTransitFeed.StopTimes'] ingestion json mapping "GeneralTransitFeed.StopTimes_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2220,7 +2220,7 @@
 ]
 ```
 
-.create-or-alter table [StopTimes] ingestion json mapping "StopTimes_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.StopTimes'] ingestion json mapping "GeneralTransitFeed.StopTimes_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2243,13 +2243,13 @@
 ]
 ```
 
-.drop materialized-view StopTimesLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.StopTimesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StopTimesLatest on table StopTimes {
-    StopTimes | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.StopTimesLatest'] on table ['GeneralTransitFeed.StopTimes'] {
+    ['GeneralTransitFeed.StopTimes'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [StopTimes] policy update
+.alter table ['GeneralTransitFeed.StopTimes'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -2260,7 +2260,7 @@
 }]
 ```
 
-.create-merge table [Timeframes] (
+.create-merge table ['GeneralTransitFeed.Timeframes'] (
    [timeframeGroupId]: string,
    [startTime]: string,
    [endTime]: string,
@@ -2272,9 +2272,9 @@
    [___subject]: string
 );
 
-.alter table [Timeframes] docstring "{\"description\": \"Used to describe fares that can vary based on the time of day, the day of the week, or a particular day in the year.\"}";
+.alter table ['GeneralTransitFeed.Timeframes'] docstring "{\"description\": \"Used to describe fares that can vary based on the time of day, the day of the week, or a particular day in the year.\"}";
 
-.alter table [Timeframes] column-docstrings (
+.alter table ['GeneralTransitFeed.Timeframes'] column-docstrings (
    [timeframeGroupId]: "{\"description\": \"Identifies a timeframe or set of timeframes.\"}",
    [startTime]: "{\"description\": \"Defines the beginning of a timeframe.\"}",
    [endTime]: "{\"description\": \"Defines the end of a timeframe.\"}",
@@ -2286,7 +2286,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Timeframes] ingestion json mapping "Timeframes_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Timeframes'] ingestion json mapping "GeneralTransitFeed.Timeframes_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2301,7 +2301,7 @@
 ]
 ```
 
-.create-or-alter table [Timeframes] ingestion json mapping "Timeframes_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Timeframes'] ingestion json mapping "GeneralTransitFeed.Timeframes_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2316,13 +2316,13 @@
 ]
 ```
 
-.drop materialized-view TimeframesLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.TimeframesLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TimeframesLatest on table Timeframes {
-    Timeframes | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.TimeframesLatest'] on table ['GeneralTransitFeed.Timeframes'] {
+    ['GeneralTransitFeed.Timeframes'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Timeframes] policy update
+.alter table ['GeneralTransitFeed.Timeframes'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -2333,7 +2333,7 @@
 }]
 ```
 
-.create-merge table [Transfers] (
+.create-merge table ['GeneralTransitFeed.Transfers'] (
    [fromStopId]: string,
    [toStopId]: string,
    [transferType]: int,
@@ -2345,9 +2345,9 @@
    [___subject]: string
 );
 
-.alter table [Transfers] docstring "{\"description\": \"Defines transfers.\"}";
+.alter table ['GeneralTransitFeed.Transfers'] docstring "{\"description\": \"Defines transfers.\"}";
 
-.alter table [Transfers] column-docstrings (
+.alter table ['GeneralTransitFeed.Transfers'] column-docstrings (
    [fromStopId]: "{\"description\": \"Identifies a stop or station where a connection between routes begins.\"}",
    [toStopId]: "{\"description\": \"Identifies a stop or station where a connection between routes ends.\"}",
    [transferType]: "{\"description\": \"Type of connection for the specified (from_stop_id, to_stop_id) pair.\"}",
@@ -2359,7 +2359,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Transfers] ingestion json mapping "Transfers_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Transfers'] ingestion json mapping "GeneralTransitFeed.Transfers_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2374,7 +2374,7 @@
 ]
 ```
 
-.create-or-alter table [Transfers] ingestion json mapping "Transfers_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Transfers'] ingestion json mapping "GeneralTransitFeed.Transfers_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2389,13 +2389,13 @@
 ]
 ```
 
-.drop materialized-view TransfersLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.TransfersLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TransfersLatest on table Transfers {
-    Transfers | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.TransfersLatest'] on table ['GeneralTransitFeed.Transfers'] {
+    ['GeneralTransitFeed.Transfers'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Transfers] policy update
+.alter table ['GeneralTransitFeed.Transfers'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -2406,7 +2406,7 @@
 }]
 ```
 
-.create-merge table [Translations] (
+.create-merge table ['GeneralTransitFeed.Translations'] (
    [tableName]: string,
    [fieldName]: string,
    [language]: string,
@@ -2418,9 +2418,9 @@
    [___subject]: string
 );
 
-.alter table [Translations] docstring "{\"description\": \"Defines translations.\"}";
+.alter table ['GeneralTransitFeed.Translations'] docstring "{\"description\": \"Defines translations.\"}";
 
-.alter table [Translations] column-docstrings (
+.alter table ['GeneralTransitFeed.Translations'] column-docstrings (
    [tableName]: "{\"description\": \"Name of the table containing the field to be translated.\"}",
    [fieldName]: "{\"description\": \"Name of the field to be translated.\"}",
    [language]: "{\"description\": \"Language of the translation.\"}",
@@ -2432,7 +2432,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Translations] ingestion json mapping "Translations_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Translations'] ingestion json mapping "GeneralTransitFeed.Translations_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2447,7 +2447,7 @@
 ]
 ```
 
-.create-or-alter table [Translations] ingestion json mapping "Translations_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Translations'] ingestion json mapping "GeneralTransitFeed.Translations_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2462,13 +2462,13 @@
 ]
 ```
 
-.drop materialized-view TranslationsLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.TranslationsLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TranslationsLatest on table Translations {
-    Translations | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.TranslationsLatest'] on table ['GeneralTransitFeed.Translations'] {
+    ['GeneralTransitFeed.Translations'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Translations] policy update
+.alter table ['GeneralTransitFeed.Translations'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -2479,7 +2479,7 @@
 }]
 ```
 
-.create-merge table [Trips] (
+.create-merge table ['GeneralTransitFeed.Trips'] (
    [routeId]: string,
    [serviceDates]: dynamic,
    [serviceExceptions]: dynamic,
@@ -2498,9 +2498,9 @@
    [___subject]: string
 );
 
-.alter table [Trips] docstring "{\"description\": \"Identifies a trip.\"}";
+.alter table ['GeneralTransitFeed.Trips'] docstring "{\"description\": \"Identifies a trip.\"}";
 
-.alter table [Trips] column-docstrings (
+.alter table ['GeneralTransitFeed.Trips'] column-docstrings (
    [routeId]: "{\"description\": \"Identifies a route.\"}",
    [tripId]: "{\"description\": \"Identifies a trip.\"}",
    [tripHeadsign]: "{\"description\": \"Text that appears on signage identifying the trip's destination to riders.\"}",
@@ -2517,7 +2517,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Trips] ingestion json mapping "Trips_json_flat"
+.create-or-alter table ['GeneralTransitFeed.Trips'] ingestion json mapping "GeneralTransitFeed.Trips_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2539,7 +2539,7 @@
 ]
 ```
 
-.create-or-alter table [Trips] ingestion json mapping "Trips_json_ce_structured"
+.create-or-alter table ['GeneralTransitFeed.Trips'] ingestion json mapping "GeneralTransitFeed.Trips_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -2561,13 +2561,13 @@
 ]
 ```
 
-.drop materialized-view TripsLatest ifexists;
+.drop materialized-view ['GeneralTransitFeed.TripsLatest'] ifexists;
 
-.create materialized-view with (backfill=true) TripsLatest on table Trips {
-    Trips | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['GeneralTransitFeed.TripsLatest'] on table ['GeneralTransitFeed.Trips'] {
+    ['GeneralTransitFeed.Trips'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Trips] policy update
+.alter table ['GeneralTransitFeed.Trips'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -2579,7 +2579,7 @@
 ```
 
 
-.create table VehiclePositionsFlat (
+.create table ['GeneralTransitFeed.VehiclePositionsFlat'] (
     trip_id:string,
     route_id:string,
     direction_id:int,
@@ -2605,21 +2605,24 @@
     ___id:string,
     ___time:datetime,
     ___subject:string
+)
 
-.alter table VehiclePositionsFlat policy update
-`
+
+.alter table ['GeneralTransitFeed.VehiclePositionsFlat'] policy update
+```
 [
   {
     "IsEnabled": true,
-    "Source": "VehiclePosition",
-    "Query": "VehiclePosition | extend trip_id = tostring(trip.trip_id), route_id = tostring(trip.route_id), direction_id = toint(trip.direction_id), start_time = tostring(trip.start_time), start_date = tostring(trip.start_date), schedule_relationship = tostring(trip.schedule_relationship), vehicle_id = tostring(vehicle.id), vehicle_label = tostring(vehicle.label), vehicle_license_plate = tostring(vehicle.license_plate), latitude = todouble(position.latitude), longitude = todouble(position.longitude), bearing = todouble(position.bearing), odometer = todouble(position.odometer), speed = todouble(position.speed) | extend timestamp = unixtime_seconds_todatetime(timestamp) | project trip_id, route_id, direction_id, start_time, start_date, schedule_relationship, vehicle_id, vehicle_label, vehicle_license_plate, latitude, longitude, bearing, odometer, speed, current_stop_sequence, stop_id, current_status, timestamp, congestion_level, occupancy_status, ___type, ___source, ___id, ___time, ___subject",
+    "Source": "GeneralTransitFeed.VehiclePosition",
+    "Query": "['GeneralTransitFeed.VehiclePosition'] | extend trip_id = tostring(trip.trip_id), route_id = tostring(trip.route_id), direction_id = toint(trip.direction_id), start_time = tostring(trip.start_time), start_date = tostring(trip.start_date), schedule_relationship = tostring(trip.schedule_relationship), vehicle_id = tostring(vehicle.id), vehicle_label = tostring(vehicle.label), vehicle_license_plate = tostring(vehicle.license_plate), latitude = todouble(position.latitude), longitude = todouble(position.longitude), bearing = todouble(position.bearing), odometer = todouble(position.odometer), speed = todouble(position.speed) | extend timestamp = unixtime_seconds_todatetime(timestamp) | project trip_id, route_id, direction_id, start_time, start_date, schedule_relationship, vehicle_id, vehicle_label, vehicle_license_plate, latitude, longitude, bearing, odometer, speed, current_stop_sequence, stop_id, current_status, timestamp, congestion_level, occupancy_status, ___type, ___source, ___id, ___time, ___subject",
     "IsTransactional": true,
     "PropagateIngestionProperties": true
   }
 ]
-`
+```
 
-.create-merge table TripUpdateFlattened (
+
+.create-merge table ['GeneralTransitFeed.TripUpdateFlattened'] (
     trip_id: string,
     route_id: string,
     direction_id: int,
@@ -2645,10 +2648,11 @@
     ___id: string,
     ___time: datetime,
     ___subject: string
-);
+)
+
 
 .create-or-alter function with (skipvalidation = "true") TripUpdateFlattenFunction() {
-    TripUpdate
+    ['GeneralTransitFeed.TripUpdate']
     | where isnotempty(stop_time_update)
     | mv-expand stop_time_update
     | extend
@@ -2703,10 +2707,17 @@
         ___subject
 }
 
-.alter table TripUpdateFlattened policy update @'[{
+
+.alter table ['GeneralTransitFeed.TripUpdateFlattened'] policy update
+```
+[
+  {
     "IsEnabled": true,
-    "Source": "TripUpdate",
+    "Source": "GeneralTransitFeed.TripUpdate",
     "Query": "TripUpdateFlattenFunction()",
     "IsTransactional": false,
     "PropagateIngestionProperties": false
-}]'
+  }
+]
+```
+
