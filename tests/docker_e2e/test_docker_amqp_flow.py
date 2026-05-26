@@ -600,3 +600,29 @@ class TestWaterinfoVmmAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {'BE.Vlaanderen.Waterinfo.VMM.Station', 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading'}
     expected_count = 2
 
+
+class TestNwsAlertsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "nws-alerts"
+    image = "nws-alerts-amqp"
+    env = {"NWS_ALERTS_AMQP_EMIT_MOCK_CORPUS": "true", "ONCE_MODE": "true"}
+    expected_types = {"NWS.WeatherAlert"}
+    expected_count = 5
+
+class TestNoaaGoesAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "noaa-goes"
+    image = "noaa-goes-amqp"
+    expected_types = {"Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux", "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert", "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare"}
+    expected_count = 6
+
+class TestNwsForecastsAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "nws-forecasts"
+    image = "nws-forecasts-amqp"
+    expected_types = {"Microsoft.OpenData.US.NOAA.NWS.ForecastZone", "Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast", "Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast"}
+    expected_count = 3
+
+class TestSingaporeNeaAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "singapore-nea"
+    image = "singapore-nea-amqp"
+    expected_types = {"SG.Gov.NEA.Weather.Station", "SG.Gov.NEA.Weather.WeatherObservation", "SG.Gov.NEA.AirQuality.PSIReading", "SG.Gov.NEA.AirQuality.PM25Reading"}
+    expected_count = 5
+

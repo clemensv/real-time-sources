@@ -355,7 +355,9 @@
     "key": false,
     "desc": "Global — space weather, solar wind, K-index",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "noaa-nws",
@@ -383,7 +385,9 @@
     "key": false,
     "desc": "United States — configurable land and marine forecast zones",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "singapore-nea",
@@ -392,7 +396,9 @@
     "key": false,
     "desc": "Singapore — 62 weather stations + 5 air-quality regions",
     "kql": true,
-    "notebook": true
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "smhi-weather",

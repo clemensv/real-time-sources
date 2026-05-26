@@ -127,3 +127,7 @@ throughput unit) and event hub. The connection string is automatically
 configured.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa-goes%2Fazure-template-with-eventhub.json)
+
+## MQTT and AMQP companion transports
+
+This source ships Kafka/Event Hubs, MQTT 5, and AMQP 1.0 containers. MQTT provides topic-filtered operational subscriptions; AMQP provides queue/topic delivery for enterprise brokers and Azure Service Bus. Deployment templates are available for BYO Kafka/Event Hubs, provisioned Event Hubs, BYO MQTT, Event Grid MQTT, and Service Bus AMQP.

@@ -1014,6 +1014,42 @@
       "image": "waterinfo-vmm-amqp",
       "file": "Dockerfile.amqp",
       "module": "waterinfo_vmm_amqp"
+    },
+    {
+      "dir": "noaa-goes",
+      "image": "noaa-goes-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "noaa_goes_mqtt"
+    },
+    {
+      "dir": "noaa-goes",
+      "image": "noaa-goes-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "noaa_goes_amqp"
+    },
+    {
+      "dir": "nws-forecasts",
+      "image": "nws-forecasts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "nws_forecasts_mqtt"
+    },
+    {
+      "dir": "nws-forecasts",
+      "image": "nws-forecasts-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "nws_forecasts_amqp"
+    },
+    {
+      "dir": "singapore-nea",
+      "image": "singapore-nea-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "singapore_nea_mqtt"
+    },
+    {
+      "dir": "singapore-nea",
+      "image": "singapore-nea-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "singapore_nea_amqp"
     }
   ],
   "flow": [
@@ -1191,10 +1227,6 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestSmhiHydroMqttDockerFlow"
-    },
-    {
-      "dir": "singapore-nea",
-      "test_class": "TestSingaporeNEAAirQualityDockerFlow"
     },
     {
       "dir": "uba-airdata",
@@ -2186,6 +2218,55 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestWaterinfoVmmAmqpDockerFlow"
+    },
+    {
+      "dir": "nws-alerts",
+      "image": "nws-alerts-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNwsAlertsAmqpDockerFlow"
+    },
+    {
+      "dir": "noaa-goes",
+      "image": "noaa-goes-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNoaaGoesMqttDockerFlow"
+    },
+    {
+      "dir": "noaa-goes",
+      "image": "noaa-goes-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNoaaGoesAmqpDockerFlow"
+    },
+    {
+      "dir": "nws-forecasts",
+      "image": "nws-forecasts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNwsForecastsMqttDockerFlow"
+    },
+    {
+      "dir": "nws-forecasts",
+      "image": "nws-forecasts-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNwsForecastsAmqpDockerFlow"
+    },
+    {
+      "dir": "singapore-nea",
+      "image": "singapore-nea-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestSingaporeNeaMqttDockerFlow"
+    },
+    {
+      "dir": "singapore-nea",
+      "image": "singapore-nea-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestSingaporeNeaAmqpDockerFlow"
     }
   ]
 }

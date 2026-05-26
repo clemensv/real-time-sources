@@ -1,0 +1,22 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "nws-forecasts-mqtt"
+version = "0.1.0"
+description = "MQTT feeder for nws-forecasts"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "nws_forecasts_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+nws_forecasts_mqtt_producer_data = { path = "../nws_forecasts_mqtt_producer/nws_forecasts_mqtt_producer_data" }
+nws_forecasts_mqtt_producer_mqtt_client = { path = "../nws_forecasts_mqtt_producer/nws_forecasts_mqtt_producer_mqtt_client" }
+
+[tool.poetry.scripts]
+nws-forecasts-mqtt = "nws_forecasts_mqtt.app:main"

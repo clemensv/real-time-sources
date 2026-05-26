@@ -1,30 +1,10 @@
 . (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
-
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$projectRoot = $scriptDir
-$xregFile = Join-Path $projectRoot "xreg\noaa_goes.xreg.json"
-$outputDir = Join-Path $projectRoot "noaa_goes_producer"
-
-Write-Host "Generating NOAA GOES/SWPC producer from xRegistry definitions..." -ForegroundColor Cyan
-Write-Host "  xRegistry file: $xregFile" -ForegroundColor Gray
-Write-Host "  Output directory: $outputDir" -ForegroundColor Gray
-
-if (Test-Path $outputDir) {
-    Write-Host "  Cleaning existing output directory..." -ForegroundColor Yellow
-    Remove-Item -Path $outputDir -Recurse -Force
-}
-
-Write-Host "  Generating Kafka producer code..." -ForegroundColor Cyan
-xrcg generate --style kafkaproducer --language py --projectname noaa-goes-producer --definitions $xregFile --output $outputDir
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "Producer generation completed successfully" -ForegroundColor Green
-    Write-Host ""
-    Write-Host "Next steps:" -ForegroundColor Cyan
-    Write-Host "  1. Run copy_generated_producer.ps1" -ForegroundColor Gray
-    Write-Host "  2. Run fix_imports.ps1" -ForegroundColor Gray
-} else {
-    Write-Host "Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
-    exit 1
-}
+$xregFile = Join-Path $scriptDir "xreg\noaa_goes.xreg.json"
+xrcg generate --style kafkaproducer --language py --definitions $xregFile --projectname noaa-goes-producer --output (Join-Path $scriptDir "noaa_goes_producer")
+if ($LASTEXITCODE -ne 0) { throw "Kafka producer generation failed" }
+xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint Microsoft.OpenData.US.NOAA.SWPC.GOES.Mqtt --projectname noaa_goes_mqtt_producer --output (Join-Path $scriptDir "noaa_goes_mqtt_producer")
+if ($LASTEXITCODE -ne 0) { throw "MQTT producer generation failed" }
+xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint Microsoft.OpenData.US.NOAA.SWPC.GOES.Amqp --projectname noaa_goes_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir "noaa_goes_amqp_producer")
+if ($LASTEXITCODE -ne 0) { throw "AMQP producer generation failed" }

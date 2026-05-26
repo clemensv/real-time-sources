@@ -37,6 +37,8 @@ from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASW
 from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCGOESParticleFluxEventProducer
 from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCGOESMagnetometerEventProducer
 from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCSolarFlaresEventProducer
+from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCGOESMqttEventProducer
+from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCGOESAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -180,6 +182,118 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'Microsoft.OpenData.US.NOAA.SWPC.XrayFlare' event to Kafka topic.
     await microsoft_open_data_usnoaaswpcsolar_flares_event_producer.send_microsoft_open_data_us_noaa_swpc_xray_flare(_satellite = 'TODO: replace me', _begin_time = 'TODO: replace me', data = _xray_flare)
     print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.XrayFlare' event: {_xray_flare.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        microsoft_open_data_usnoaaswpcgoesmqtt_event_producer = MicrosoftOpenDataUSNOAASWPCGOESMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        microsoft_open_data_usnoaaswpcgoesmqtt_event_producer = MicrosoftOpenDataUSNOAASWPCGOESMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.mqtt ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.mqtt event
+    _goes_xray_flux = GoesXrayFlux()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.mqtt' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesmqtt_event_producer.send_microsoft_open_data_us_noaa_swpc_goes_xray_flux_mqtt(_satellite = 'TODO: replace me', _energy = 'TODO: replace me', _time_tag = 'TODO: replace me', data = _goes_xray_flux)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.mqtt' event: {_goes_xray_flux.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.mqtt ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.mqtt event
+    _goes_proton_flux = GoesProtonFlux()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.mqtt' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesmqtt_event_producer.send_microsoft_open_data_us_noaa_swpc_goes_proton_flux_mqtt(_satellite = 'TODO: replace me', _energy = 'TODO: replace me', _time_tag = 'TODO: replace me', data = _goes_proton_flux)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.mqtt' event: {_goes_proton_flux.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.mqtt ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.mqtt event
+    _goes_electron_flux = GoesElectronFlux()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.mqtt' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesmqtt_event_producer.send_microsoft_open_data_us_noaa_swpc_goes_electron_flux_mqtt(_satellite = 'TODO: replace me', _energy = 'TODO: replace me', _time_tag = 'TODO: replace me', data = _goes_electron_flux)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.mqtt' event: {_goes_electron_flux.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.mqtt ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.mqtt event
+    _goes_magnetometer = GoesMagnetometer()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.mqtt' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesmqtt_event_producer.send_microsoft_open_data_us_noaa_swpc_goes_magnetometer_mqtt(_satellite = 'TODO: replace me', _time_tag = 'TODO: replace me', data = _goes_magnetometer)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.mqtt' event: {_goes_magnetometer.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt event
+    _space_weather_alert = SpaceWeatherAlert()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesmqtt_event_producer.send_microsoft_open_data_us_noaa_swpc_space_weather_alert_mqtt(_product_id = 'TODO: replace me', data = _space_weather_alert)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt' event: {_space_weather_alert.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.mqtt ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.mqtt event
+    _xray_flare = XrayFlare()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.mqtt' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesmqtt_event_producer.send_microsoft_open_data_us_noaa_swpc_xray_flare_mqtt(_satellite = 'TODO: replace me', _begin_time = 'TODO: replace me', data = _xray_flare)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.mqtt' event: {_xray_flare.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        microsoft_open_data_usnoaaswpcgoesamqp_event_producer = MicrosoftOpenDataUSNOAASWPCGOESAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        microsoft_open_data_usnoaaswpcgoesamqp_event_producer = MicrosoftOpenDataUSNOAASWPCGOESAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.amqp ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.amqp event
+    _goes_xray_flux = GoesXrayFlux()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.amqp' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesamqp_event_producer.send_microsoft_open_data_us_noaa_swpc_goes_xray_flux_amqp(_satellite = 'TODO: replace me', _energy = 'TODO: replace me', _time_tag = 'TODO: replace me', data = _goes_xray_flux)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.amqp' event: {_goes_xray_flux.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.amqp ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.amqp event
+    _goes_proton_flux = GoesProtonFlux()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.amqp' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesamqp_event_producer.send_microsoft_open_data_us_noaa_swpc_goes_proton_flux_amqp(_satellite = 'TODO: replace me', _energy = 'TODO: replace me', _time_tag = 'TODO: replace me', data = _goes_proton_flux)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.amqp' event: {_goes_proton_flux.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.amqp ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.amqp event
+    _goes_electron_flux = GoesElectronFlux()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.amqp' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesamqp_event_producer.send_microsoft_open_data_us_noaa_swpc_goes_electron_flux_amqp(_satellite = 'TODO: replace me', _energy = 'TODO: replace me', _time_tag = 'TODO: replace me', data = _goes_electron_flux)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.amqp' event: {_goes_electron_flux.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp event
+    _goes_magnetometer = GoesMagnetometer()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesamqp_event_producer.send_microsoft_open_data_us_noaa_swpc_goes_magnetometer_amqp(_satellite = 'TODO: replace me', _time_tag = 'TODO: replace me', data = _goes_magnetometer)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp' event: {_goes_magnetometer.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.amqp ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.amqp event
+    _space_weather_alert = SpaceWeatherAlert()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.amqp' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesamqp_event_producer.send_microsoft_open_data_us_noaa_swpc_space_weather_alert_amqp(_product_id = 'TODO: replace me', data = _space_weather_alert)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.amqp' event: {_space_weather_alert.to_json()}")
+
+    # ---- Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp ----
+    # TODO: Supply event data for the Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp event
+    _xray_flare = XrayFlare()
+
+    # sends the 'Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp' event to Kafka topic.
+    await microsoft_open_data_usnoaaswpcgoesamqp_event_producer.send_microsoft_open_data_us_noaa_swpc_xray_flare_amqp(_satellite = 'TODO: replace me', _begin_time = 'TODO: replace me', data = _xray_flare)
+    print(f"Sent 'Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp' event: {_xray_flare.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

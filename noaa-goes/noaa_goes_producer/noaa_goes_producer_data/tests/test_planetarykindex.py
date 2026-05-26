@@ -28,10 +28,10 @@ class Test_PlanetaryKIndex(unittest.TestCase):
         Create instance of PlanetaryKIndex for testing
         """
         instance = PlanetaryKIndex(
-            observation_time='jwqqkwsdzuiltamlnrqj',
-            kp=float(49.57935707276761),
-            a_running=float(53.833403000016546),
-            station_count=int(44)
+            observation_time='nmjkqqvfyopamapnoqoh',
+            kp=float(54.6318927796078),
+            a_running=float(67.029852582967),
+            station_count=int(33)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_PlanetaryKIndex(unittest.TestCase):
         """
         Test observation_time property
         """
-        test_value = 'jwqqkwsdzuiltamlnrqj'
+        test_value = 'nmjkqqvfyopamapnoqoh'
         self.instance.observation_time = test_value
         self.assertEqual(self.instance.observation_time, test_value)
     
@@ -48,7 +48,7 @@ class Test_PlanetaryKIndex(unittest.TestCase):
         """
         Test kp property
         """
-        test_value = float(49.57935707276761)
+        test_value = float(54.6318927796078)
         self.instance.kp = test_value
         self.assertEqual(self.instance.kp, test_value)
     
@@ -56,7 +56,7 @@ class Test_PlanetaryKIndex(unittest.TestCase):
         """
         Test a_running property
         """
-        test_value = float(53.833403000016546)
+        test_value = float(67.029852582967)
         self.instance.a_running = test_value
         self.assertEqual(self.instance.a_running, test_value)
     
@@ -64,10 +64,19 @@ class Test_PlanetaryKIndex(unittest.TestCase):
         """
         Test station_count property
         """
-        test_value = int(44)
+        test_value = int(33)
         self.instance.station_count = test_value
         self.assertEqual(self.instance.station_count, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = PlanetaryKIndex.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

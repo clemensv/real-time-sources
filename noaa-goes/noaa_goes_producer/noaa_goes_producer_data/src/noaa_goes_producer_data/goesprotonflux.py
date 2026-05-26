@@ -11,6 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+import avro.schema
+import avro.io
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -25,6 +27,10 @@ class GoesProtonFlux:
         flux (float)
         energy (str)
     """
+    
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
+        "{\"type\": \"record\", \"name\": \"GoesProtonFlux\", \"doc\": \"Five-minute resolution integral proton flux measurement from the GOES primary satellite SEISS/SGPS (Space Environment In-Situ Suite / Solar and Galactic Proton Sensor) instrument, as reported by the SWPC goes/primary/integral-protons-7-day endpoint. Four energy thresholds are reported. The >= 10 MeV channel is used for the official NOAA S-scale solar radiation storm classification (S1-S5).\", \"fields\": [{\"name\": \"time_tag\", \"type\": \"string\", \"doc\": \"UTC date-time of the proton flux measurement in ISO 8601 format.\"}, {\"name\": \"satellite\", \"type\": \"integer\", \"doc\": \"GOES satellite number providing the measurement (e.g., 19 for GOES-19).\"}, {\"name\": \"flux\", \"type\": \"double\", \"doc\": \"Integral proton flux above the specified energy threshold, in particle flux units (pfu = protons/cm\u00b2/sr/s). An S1 minor radiation storm is declared when >= 10 MeV flux exceeds 10 pfu. S5 extreme: >= 100,000 pfu.\"}, {\"name\": \"energy\", \"type\": \"string\", \"doc\": \"Proton energy threshold identifier: '>=10 MeV' (NOAA S-scale metric), '>=50 MeV', '>=100 MeV', or '>=500 MeV'. Higher thresholds indicate more energetic and penetrating radiation.\"}]}"
+    )
     
     
     time_tag: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time_tag"))
@@ -44,6 +50,31 @@ class GoesProtonFlux:
             The dataclass representation of the dataclass.
         """
         return cls(**data)
+    @classmethod
+    def from_avro_dict(cls, data: dict) -> 'GoesProtonFlux':
+        """
+        Converts a dictionary from Avro deserialization to a dataclass instance.
+        Handles conversion of string representations back to Python types for
+        extended logical types.
+        
+        Args:
+            data: The dictionary from Avro deserialization.
+        
+        Returns:
+            The dataclass representation.
+        """
+        # Convert string values back to Python types for Avro string-based logical types
+        converted = data.copy()
+        if 'time_tag' in converted and converted['time_tag'] is not None:
+            value = converted['time_tag']
+        if 'satellite' in converted and converted['satellite'] is not None:
+            value = converted['satellite']
+        if 'flux' in converted and converted['flux'] is not None:
+            value = converted['flux']
+        if 'energy' in converted and converted['energy'] is not None:
+            value = converted['energy']
+        
+        return cls(**converted)
 
     def to_serializer_dict(self) -> dict:
         """
@@ -67,6 +98,22 @@ class GoesProtonFlux:
             return k[:-1] if k.endswith('_') else k
         return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
 
+    def to_avro_dict(self) -> dict:
+        """
+        Converts the dataclass to a dictionary suitable for Avro serialization.
+        Handles conversion of Python types to Avro-compatible string representations
+        for extended logical types.
+
+        Returns:
+            The dictionary representation suitable for Avro serialization.
+        """
+        result = self.to_serializer_dict()
+        converted = result.copy()
+        
+        # Convert specific fields based on their source types
+        
+        return converted
+
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
@@ -75,6 +122,8 @@ class GoesProtonFlux:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
                     'application/json': Encodes the data to JSON format.
+                    'avro/binary': Encodes the data to Avro binary format.
+                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
@@ -86,6 +135,13 @@ class GoesProtonFlux:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+            # Convert to Avro binary format using the embedded schema
+            writer = avro.io.DatumWriter(self.AvroType)
+            with io.BytesIO() as stream:
+                encoder = avro.io.BinaryEncoder(stream)
+                writer.write(self.to_avro_dict(), encoder)
+                result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -115,6 +171,8 @@ class GoesProtonFlux:
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
+                    'avro/binary': Attempts to decode the data from Avro binary format.
+                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
         Returns:
@@ -139,6 +197,16 @@ class GoesProtonFlux:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+            if isinstance(data, bytes):
+                # Decode from Avro binary format using the embedded schema
+                reader = avro.io.DatumReader(cls.AvroType)
+                with io.BytesIO(data) as stream:
+                    decoder = avro.io.BinaryDecoder(stream)
+                    _record = reader.read(decoder)
+                    return GoesProtonFlux.from_avro_dict(_record)
+            else:
+                raise NotImplementedError('Data is not of a supported type for Avro deserialization')
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -157,8 +225,8 @@ class GoesProtonFlux:
             An instance of the dataclass.
         """
         return cls(
-            time_tag='lizreerjtmyvrlasdzbc',
-            satellite=int(75),
-            flux=float(35.63744142334965),
-            energy='vodyncfpexndgdcoctpv'
+            time_tag='mvwtahreuucoiahjpwga',
+            satellite=int(2),
+            flux=float(74.73632529496523),
+            energy='yofwkgvrotjugmubcclx'
         )

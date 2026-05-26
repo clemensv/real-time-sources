@@ -17,7 +17,7 @@ import json
 @dataclass
 class Region:
     """
-    Reference data for a Singapore NEA air quality monitoring region. NEA divides Singapore into five geographic regions for PSI and PM2.5 reporting.
+    A reference record published by Singapore's National Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.
     
     Attributes:
         region (str)
@@ -155,7 +155,7 @@ class Region:
             An instance of the dataclass.
         """
         return cls(
-            region='uzoxyzdfkulxwerfmxpt',
-            latitude=float(25.74407996137151),
-            longitude=float(70.34136165403032)
+            region='kpksvbdnocrkqdkbzmru',
+            latitude=float(48.31153056327523),
+            longitude=float(6.105899488176303)
         )

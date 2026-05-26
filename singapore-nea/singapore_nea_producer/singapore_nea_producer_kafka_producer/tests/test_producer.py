@@ -30,6 +30,10 @@ from singapore_nea_producer_data import PSIReading
 from test_singapore_nea_producer_data_psireading import Test_PSIReading
 from singapore_nea_producer_data import PM25Reading
 from test_singapore_nea_producer_data_pm25reading import Test_PM25Reading
+from singapore_nea_producer_kafka_producer.producer import SGGovNEAWeatherMqttEventProducer
+from singapore_nea_producer_kafka_producer.producer import SGGovNEAAirQualityMqttEventProducer
+from singapore_nea_producer_kafka_producer.producer import SGGovNEAWeatherAmqpEventProducer
+from singapore_nea_producer_kafka_producer.producer import SGGovNEAAirQualityAmqpEventProducer
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -375,6 +379,616 @@ def test_sg_gov_nea_airquality_sggovneaairqualitypm25reading(kafka_emulator):
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
         expected_key = "{region}".format(region=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_sg_gov_nea_weather_mqtt_sggovneaweatherstationmqtt(kafka_emulator):
+    """Test the SGGovNEAWeatherStationMqtt event from the SG.Gov.NEA.Weather.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_sg_gov_nea_weather_mqtt_sggovneaweatherstationmqtt',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "SG.Gov.NEA.Weather.Station.mqtt":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = SGGovNEAWeatherMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Station.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_sg_gov_nea_weather_station_mqtt(_station_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_sg_gov_nea_weather_mqtt_sggovneaweatherweatherobservationmqtt(kafka_emulator):
+    """Test the SGGovNEAWeatherWeatherObservationMqtt event from the SG.Gov.NEA.Weather.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_sg_gov_nea_weather_mqtt_sggovneaweatherweatherobservationmqtt',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "SG.Gov.NEA.Weather.WeatherObservation.mqtt":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = SGGovNEAWeatherMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_WeatherObservation.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_sg_gov_nea_weather_weather_observation_mqtt(_station_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_sg_gov_nea_airquality_mqtt_sggovneaairqualityregionmqtt(kafka_emulator):
+    """Test the SGGovNEAAirQualityRegionMqtt event from the SG.Gov.NEA.AirQuality.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_sg_gov_nea_airquality_mqtt_sggovneaairqualityregionmqtt',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.Region.mqtt":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = SGGovNEAAirQualityMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Region.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_sg_gov_nea_air_quality_region_mqtt(_region = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_sg_gov_nea_airquality_mqtt_sggovneaairqualitypsireadingmqtt(kafka_emulator):
+    """Test the SGGovNEAAirQualityPSIReadingMqtt event from the SG.Gov.NEA.AirQuality.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_sg_gov_nea_airquality_mqtt_sggovneaairqualitypsireadingmqtt',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.PSIReading.mqtt":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = SGGovNEAAirQualityMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_PSIReading.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_sg_gov_nea_air_quality_psireading_mqtt(_region = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_sg_gov_nea_airquality_mqtt_sggovneaairqualitypm25readingmqtt(kafka_emulator):
+    """Test the SGGovNEAAirQualityPM25ReadingMqtt event from the SG.Gov.NEA.AirQuality.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_sg_gov_nea_airquality_mqtt_sggovneaairqualitypm25readingmqtt',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.PM25Reading.mqtt":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = SGGovNEAAirQualityMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_PM25Reading.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_sg_gov_nea_air_quality_pm25_reading_mqtt(_region = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_sg_gov_nea_weather_amqp_sggovneaweatherstationamqp(kafka_emulator):
+    """Test the SGGovNEAWeatherStationAmqp event from the SG.Gov.NEA.Weather.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_sg_gov_nea_weather_amqp_sggovneaweatherstationamqp',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "SG.Gov.NEA.Weather.Station.amqp":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = SGGovNEAWeatherAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Station.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_sg_gov_nea_weather_station_amqp(_station_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_sg_gov_nea_weather_amqp_sggovneaweatherweatherobservationamqp(kafka_emulator):
+    """Test the SGGovNEAWeatherWeatherObservationAmqp event from the SG.Gov.NEA.Weather.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_sg_gov_nea_weather_amqp_sggovneaweatherweatherobservationamqp',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "SG.Gov.NEA.Weather.WeatherObservation.amqp":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = SGGovNEAWeatherAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_WeatherObservation.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_sg_gov_nea_weather_weather_observation_amqp(_station_id = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_sg_gov_nea_airquality_amqp_sggovneaairqualityregionamqp(kafka_emulator):
+    """Test the SGGovNEAAirQualityRegionAmqp event from the SG.Gov.NEA.AirQuality.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_sg_gov_nea_airquality_amqp_sggovneaairqualityregionamqp',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.Region.amqp":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = SGGovNEAAirQualityAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_Region.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_sg_gov_nea_air_quality_region_amqp(_region = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_sg_gov_nea_airquality_amqp_sggovneaairqualitypsireadingamqp(kafka_emulator):
+    """Test the SGGovNEAAirQualityPSIReadingAmqp event from the SG.Gov.NEA.AirQuality.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_sg_gov_nea_airquality_amqp_sggovneaairqualitypsireadingamqp',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.PSIReading.amqp":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = SGGovNEAAirQualityAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_PSIReading.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_sg_gov_nea_air_quality_psireading_amqp(_region = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_sg_gov_nea_airquality_amqp_sggovneaairqualitypm25readingamqp(kafka_emulator):
+    """Test the SGGovNEAAirQualityPM25ReadingAmqp event from the SG.Gov.NEA.AirQuality.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_sg_gov_nea_airquality_amqp_sggovneaairqualitypm25readingamqp',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.PM25Reading.amqp":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = SGGovNEAAirQualityAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_PM25Reading.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_sg_gov_nea_air_quality_pm25_reading_amqp(_region = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 

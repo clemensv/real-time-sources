@@ -28,18 +28,18 @@ class Test_XrayFlare(unittest.TestCase):
         Create instance of XrayFlare for testing
         """
         instance = XrayFlare(
-            time_tag='pflynkluyuctxtfiakhk',
-            begin_time='xnbrnsoloqyqzsxfczvd',
-            begin_class='bzurjomhwoateyhougtw',
-            max_time='scylairhvxdqmyvilwpe',
-            max_class='akkkaugdaudywkopoupp',
-            max_xrlong=float(22.144160546759984),
-            max_ratio=float(66.57445055449168),
-            max_ratio_time='oihcwmgrpmfmpdxhcaxt',
-            current_int_xrlong=float(71.09975348967642),
-            end_time='pdmovackguvevtuibryq',
-            end_class='slcygqcxjrtalcwveyud',
-            satellite=int(19)
+            time_tag='nizduevegkdyuxkhkneh',
+            begin_time='qorfzukmpfzzrvgyncxh',
+            begin_class='nqjfnuwhahurgdfkqxux',
+            max_time='itnendaxnkciasrzprhn',
+            max_class='dxxipxcdbzhcpmvugngr',
+            max_xrlong=float(11.261005527848145),
+            max_ratio=float(33.687905329914734),
+            max_ratio_time='xpsddxihpliljzqhzbjz',
+            current_int_xrlong=float(95.60404258842775),
+            end_time='nxdlbzvpkaqqmqtrhgll',
+            end_class='dsejdzxzjhwczncjpmut',
+            satellite=int(16)
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_XrayFlare(unittest.TestCase):
         """
         Test time_tag property
         """
-        test_value = 'pflynkluyuctxtfiakhk'
+        test_value = 'nizduevegkdyuxkhkneh'
         self.instance.time_tag = test_value
         self.assertEqual(self.instance.time_tag, test_value)
     
@@ -56,7 +56,7 @@ class Test_XrayFlare(unittest.TestCase):
         """
         Test begin_time property
         """
-        test_value = 'xnbrnsoloqyqzsxfczvd'
+        test_value = 'qorfzukmpfzzrvgyncxh'
         self.instance.begin_time = test_value
         self.assertEqual(self.instance.begin_time, test_value)
     
@@ -64,7 +64,7 @@ class Test_XrayFlare(unittest.TestCase):
         """
         Test begin_class property
         """
-        test_value = 'bzurjomhwoateyhougtw'
+        test_value = 'nqjfnuwhahurgdfkqxux'
         self.instance.begin_class = test_value
         self.assertEqual(self.instance.begin_class, test_value)
     
@@ -72,7 +72,7 @@ class Test_XrayFlare(unittest.TestCase):
         """
         Test max_time property
         """
-        test_value = 'scylairhvxdqmyvilwpe'
+        test_value = 'itnendaxnkciasrzprhn'
         self.instance.max_time = test_value
         self.assertEqual(self.instance.max_time, test_value)
     
@@ -80,7 +80,7 @@ class Test_XrayFlare(unittest.TestCase):
         """
         Test max_class property
         """
-        test_value = 'akkkaugdaudywkopoupp'
+        test_value = 'dxxipxcdbzhcpmvugngr'
         self.instance.max_class = test_value
         self.assertEqual(self.instance.max_class, test_value)
     
@@ -88,7 +88,7 @@ class Test_XrayFlare(unittest.TestCase):
         """
         Test max_xrlong property
         """
-        test_value = float(22.144160546759984)
+        test_value = float(11.261005527848145)
         self.instance.max_xrlong = test_value
         self.assertEqual(self.instance.max_xrlong, test_value)
     
@@ -96,7 +96,7 @@ class Test_XrayFlare(unittest.TestCase):
         """
         Test max_ratio property
         """
-        test_value = float(66.57445055449168)
+        test_value = float(33.687905329914734)
         self.instance.max_ratio = test_value
         self.assertEqual(self.instance.max_ratio, test_value)
     
@@ -104,7 +104,7 @@ class Test_XrayFlare(unittest.TestCase):
         """
         Test max_ratio_time property
         """
-        test_value = 'oihcwmgrpmfmpdxhcaxt'
+        test_value = 'xpsddxihpliljzqhzbjz'
         self.instance.max_ratio_time = test_value
         self.assertEqual(self.instance.max_ratio_time, test_value)
     
@@ -112,7 +112,7 @@ class Test_XrayFlare(unittest.TestCase):
         """
         Test current_int_xrlong property
         """
-        test_value = float(71.09975348967642)
+        test_value = float(95.60404258842775)
         self.instance.current_int_xrlong = test_value
         self.assertEqual(self.instance.current_int_xrlong, test_value)
     
@@ -120,7 +120,7 @@ class Test_XrayFlare(unittest.TestCase):
         """
         Test end_time property
         """
-        test_value = 'pdmovackguvevtuibryq'
+        test_value = 'nxdlbzvpkaqqmqtrhgll'
         self.instance.end_time = test_value
         self.assertEqual(self.instance.end_time, test_value)
     
@@ -128,7 +128,7 @@ class Test_XrayFlare(unittest.TestCase):
         """
         Test end_class property
         """
-        test_value = 'slcygqcxjrtalcwveyud'
+        test_value = 'dsejdzxzjhwczncjpmut'
         self.instance.end_class = test_value
         self.assertEqual(self.instance.end_class, test_value)
     
@@ -136,10 +136,19 @@ class Test_XrayFlare(unittest.TestCase):
         """
         Test satellite property
         """
-        test_value = int(19)
+        test_value = int(16)
         self.instance.satellite = test_value
         self.assertEqual(self.instance.satellite, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = XrayFlare.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

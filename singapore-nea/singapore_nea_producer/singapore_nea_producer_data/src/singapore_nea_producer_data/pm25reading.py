@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class PM25Reading:
     """
-    Hourly PM2.5 concentration reading for a Singapore NEA air quality region. Fine particulate matter with aerodynamic diameter less than or equal to 2.5 micrometres. Published hourly by NEA.
+    A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value.
     
     Attributes:
         region (str)
@@ -159,8 +159,8 @@ class PM25Reading:
             An instance of the dataclass.
         """
         return cls(
-            region='jdtmcokjzuodlfrhfdnc',
+            region='judsqngudtkgluhqxhxc',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
             update_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            pm25_one_hourly=int(7)
+            pm25_one_hourly=int(59)
         )

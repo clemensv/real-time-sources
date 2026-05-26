@@ -153,6 +153,6 @@ class MarineForecastPeriod:
             An instance of the dataclass.
         """
         return cls(
-            period_name='qbiaunnqcdgjbtyyfqxj',
-            forecast_text='stsuakyaovmqziixbbbf'
+            period_name='algdjgqyjmccepiyfiuf',
+            forecast_text='ehfttlpfqbgjahncdfzk'
         )

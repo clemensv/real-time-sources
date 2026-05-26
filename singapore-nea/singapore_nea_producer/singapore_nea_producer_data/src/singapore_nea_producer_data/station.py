@@ -17,7 +17,7 @@ import json
 @dataclass
 class Station:
     """
-    Reference data for a Singapore NEA weather observation station. Stations are identified by a stable device ID (e.g. S109) and include location coordinates. The data_types field indicates which parameters this station reports.
+    A reference record published by Singapore's National Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.
     
     Attributes:
         station_id (str)
@@ -161,10 +161,10 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='kjgffwssoebctiudqwdy',
-            device_id='jyozfipiqfyirndapxyf',
-            name='yiczltbceilhiqiwrnwd',
-            latitude=float(44.84493305263372),
-            longitude=float(24.761331183252246),
-            data_types='echahquovcrzqcgfapyi'
+            station_id='ldjyjatkxfiecbfkcdvm',
+            device_id='yuyplfbefgszgdpemheq',
+            name='cxfpzukijhduluanfktt',
+            latitude=float(38.26532283141086),
+            longitude=float(56.7097385142498),
+            data_types='ksgpiwsbcqpcdycbvdgg'
         )

@@ -20,6 +20,50 @@
       "messagegroups": [
         "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts"
       ]
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for nws-forecasts CloudEvents."
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/nws-forecasts"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for nws-forecasts CloudEvents."
     }
   },
   "messagegroups": {
@@ -78,6 +122,139 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts.jstruct/schemas/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts.mqtt": {
+      "description": "MQTT 5 variant of NWS forecast zone events with state, zone type, zone id, and event kind in the topic.",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.mqtt": {
+          "name": "ForecastZone",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/us/noaa/nws-forecasts/{state}/{zone_type}/{zone_id}/{event}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.mqtt": {
+          "name": "LandZoneForecast",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/us/noaa/nws-forecasts/{state}/{zone_type}/{zone_id}/{event}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.mqtt": {
+          "name": "MarineZoneForecast",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/us/noaa/nws-forecasts/{state}/{zone_type}/{zone_id}/{event}",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.NWS.Forecasts.amqp": {
+      "description": "AMQP 1.0 variant of NWS forecast zone events.",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone.amqp": {
+          "name": "ForecastZone",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.ForecastZone",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{zone_id}",
+                "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing property state copied from the event payload or derived routing context."
+              },
+              "zone_type": {
+                "type": "uritemplate",
+                "value": "{zone_type}",
+                "description": "Routing property zone_type copied from the event payload or derived routing context."
+              },
+              "event": {
+                "type": "uritemplate",
+                "value": "{event}",
+                "description": "Routing property event copied from the event payload or derived routing context."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast.amqp": {
+          "name": "LandZoneForecast",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{zone_id}",
+                "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing property state copied from the event payload or derived routing context."
+              },
+              "zone_type": {
+                "type": "uritemplate",
+                "value": "{zone_type}",
+                "description": "Routing property zone_type copied from the event payload or derived routing context."
+              },
+              "event": {
+                "type": "uritemplate",
+                "value": "{event}",
+                "description": "Routing property event copied from the event payload or derived routing context."
+              }
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast.amqp": {
+          "name": "MarineZoneForecast",
+          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Forecasts/messages/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{zone_id}",
+                "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "state": {
+                "type": "uritemplate",
+                "value": "{state}",
+                "description": "Routing property state copied from the event payload or derived routing context."
+              },
+              "zone_type": {
+                "type": "uritemplate",
+                "value": "{zone_type}",
+                "description": "Routing property zone_type copied from the event payload or derived routing context."
+              },
+              "event": {
+                "type": "uritemplate",
+                "value": "{event}",
+                "description": "Routing property event copied from the event payload or derived routing context."
+              }
+            }
+          }
         }
       }
     }

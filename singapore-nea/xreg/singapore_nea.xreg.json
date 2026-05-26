@@ -43,6 +43,52 @@
         "#/messagegroups/SG.Gov.NEA.AirQuality"
       ],
       "description": "Kafka producer endpoint for Singapore NEA Environment CloudEvents on the `singapore-nea-airquality` topic keyed by `{region}`."
+    },
+    "SG.Gov.NEA.Environment.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/SG.Gov.NEA.Weather.mqtt",
+        "#/messagegroups/SG.Gov.NEA.AirQuality.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for singapore-nea CloudEvents."
+    },
+    "SG.Gov.NEA.Environment.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/singapore-nea"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/SG.Gov.NEA.Weather.amqp",
+        "#/messagegroups/SG.Gov.NEA.AirQuality.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for singapore-nea CloudEvents."
     }
   },
   "messagegroups": {
@@ -150,6 +196,206 @@
         }
       },
       "description": "Events from Singapore NEA Environment covering Singapore weather and air-quality regions and stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "SG.Gov.NEA.Weather.mqtt": {
+      "description": "MQTT 5 variant of Singapore NEA weather station events.",
+      "messages": {
+        "SG.Gov.NEA.Weather.Station.mqtt": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/sg/nea/singapore-nea/{region}/{station_id}/{event}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "SG.Gov.NEA.Weather.WeatherObservation.mqtt": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.WeatherObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "weather/sg/nea/singapore-nea/{region}/{station_id}/{event}",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "SG.Gov.NEA.AirQuality.mqtt": {
+      "description": "MQTT 5 variant of Singapore NEA air-quality region events.",
+      "messages": {
+        "SG.Gov.NEA.AirQuality.Region.mqtt": {
+          "name": "Region",
+          "basemessageurl": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.Region",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/sg/nea/singapore-nea/{region}/{station_id}/{event}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PSIReading.mqtt": {
+          "name": "PSIReading",
+          "basemessageurl": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PSIReading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/sg/nea/singapore-nea/{region}/{station_id}/{event}",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PM25Reading.mqtt": {
+          "name": "PM25Reading",
+          "basemessageurl": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PM25Reading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/sg/nea/singapore-nea/{region}/{station_id}/{event}",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "SG.Gov.NEA.Weather.amqp": {
+      "description": "AMQP 1.0 variant of Singapore NEA weather events.",
+      "messages": {
+        "SG.Gov.NEA.Weather.Station.amqp": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property region copied from the event payload or derived routing context."
+              },
+              "event": {
+                "type": "uritemplate",
+                "value": "{event}",
+                "description": "Routing property event copied from the event payload or derived routing context."
+              }
+            }
+          }
+        },
+        "SG.Gov.NEA.Weather.WeatherObservation.amqp": {
+          "name": "WeatherObservation",
+          "basemessageurl": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.WeatherObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "region": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "Routing property region copied from the event payload or derived routing context."
+              },
+              "event": {
+                "type": "uritemplate",
+                "value": "{event}",
+                "description": "Routing property event copied from the event payload or derived routing context."
+              }
+            }
+          }
+        }
+      }
+    },
+    "SG.Gov.NEA.AirQuality.amqp": {
+      "description": "AMQP 1.0 variant of Singapore NEA air-quality events.",
+      "messages": {
+        "SG.Gov.NEA.AirQuality.Region.amqp": {
+          "name": "Region",
+          "basemessageurl": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.Region",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Routing property station_id copied from the event payload or derived routing context."
+              },
+              "event": {
+                "type": "uritemplate",
+                "value": "{event}",
+                "description": "Routing property event copied from the event payload or derived routing context."
+              }
+            }
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PSIReading.amqp": {
+          "name": "PSIReading",
+          "basemessageurl": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PSIReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Routing property station_id copied from the event payload or derived routing context."
+              },
+              "event": {
+                "type": "uritemplate",
+                "value": "{event}",
+                "description": "Routing property event copied from the event payload or derived routing context."
+              }
+            }
+          }
+        },
+        "SG.Gov.NEA.AirQuality.PM25Reading.amqp": {
+          "name": "PM25Reading",
+          "basemessageurl": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PM25Reading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{region}",
+                "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
+              }
+            },
+            "application_properties": {
+              "station_id": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Routing property station_id copied from the event payload or derived routing context."
+              },
+              "event": {
+                "type": "uritemplate",
+                "value": "{event}",
+                "description": "Routing property event copied from the event payload or derived routing context."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {

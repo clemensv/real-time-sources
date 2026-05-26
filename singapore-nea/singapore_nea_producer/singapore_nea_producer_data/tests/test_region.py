@@ -28,9 +28,9 @@ class Test_Region(unittest.TestCase):
         Create instance of Region for testing
         """
         instance = Region(
-            region='uzoxyzdfkulxwerfmxpt',
-            latitude=float(25.74407996137151),
-            longitude=float(70.34136165403032)
+            region='kpksvbdnocrkqdkbzmru',
+            latitude=float(48.31153056327523),
+            longitude=float(6.105899488176303)
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_Region(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'uzoxyzdfkulxwerfmxpt'
+        test_value = 'kpksvbdnocrkqdkbzmru'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -47,7 +47,7 @@ class Test_Region(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(25.74407996137151)
+        test_value = float(48.31153056327523)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -55,7 +55,7 @@ class Test_Region(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(70.34136165403032)
+        test_value = float(6.105899488176303)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

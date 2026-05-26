@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "nws-forecasts-amqp"
+version = "0.1.0"
+description = "AMQP feeder for nws-forecasts"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "nws_forecasts_amqp" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+python-qpid-proton = ">=0.40.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+nws_forecasts_amqp_producer_data = { path = "../nws_forecasts_amqp_producer/nws_forecasts_amqp_producer_data" }
+
+[tool.poetry.scripts]
+nws-forecasts-amqp = "nws_forecasts_amqp.app:main"

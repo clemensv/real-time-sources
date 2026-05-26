@@ -61,3 +61,7 @@ python -m nws_forecasts
 - `nws_forecasts_producer/` - generated producer code
 - `tests/` - unit and live API tests
 - `notebook/nws-forecasts-feed.ipynb` - Fabric notebook hosting option, deployed via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) for scheduled single-cycle (`--once`) runs against a Fabric Event Stream.
+
+## MQTT and AMQP companion transports
+
+This source ships Kafka/Event Hubs, MQTT 5, and AMQP 1.0 containers. MQTT provides topic-filtered operational subscriptions; AMQP provides queue/topic delivery for enterprise brokers and Azure Service Bus. Deployment templates are available for BYO Kafka/Event Hubs, provisioned Event Hubs, BYO MQTT, Event Grid MQTT, and Service Bus AMQP.

@@ -17,7 +17,15 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - SGGovNEAWeatherEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    SGGovNEAAirQualityEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    SGGovNEAAirQualityEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    SGGovNEAWeatherMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    SGGovNEAAirQualityMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    SGGovNEAWeatherAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    SGGovNEAAirQualityAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +53,22 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - SGGovNEAAirQualityProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- SGGovNEAWeatherMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- SGGovNEAAirQualityMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- SGGovNEAWeatherAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- SGGovNEAAirQualityAmqpProducersolution for event-driven applications.
 
 
 
@@ -153,7 +177,8 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `SG.Gov.NEA.Weather.Station`:
+Asynchronous handler hook for `SG.Gov.NEA.Weather.Station`: A reference record published by Singapore's National
+Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.
 
 ## Generated Producer Classes
 
@@ -233,6 +258,154 @@ sg_gov_nea_air_quality_dispatcher.sg_gov_nea_weather_station_async = sg_gov_nea_
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_weather_station_async = sg_gov_nea_weather_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_weather_station_async = sg_gov_nea_weather_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_weather_station_async = sg_gov_nea_weather_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_weather_station_async = sg_gov_nea_weather_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -252,7 +425,9 @@ WeatherObservation], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `SG.Gov.NEA.Weather.WeatherObservation`:
+Asynchronous handler hook for `SG.Gov.NEA.Weather.WeatherObservation`: A current environmental measurement from
+Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental
+indexes when the upstream feed reports a new or refreshed value.
 
 ## Generated Producer Classes
 
@@ -336,6 +511,162 @@ sg_gov_nea_weather_weather_observation_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_weather_weather_observation_async =
+sg_gov_nea_weather_weather_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_weather_weather_observation_async =
+sg_gov_nea_weather_weather_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_weather_weather_observation_async =
+sg_gov_nea_weather_weather_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_weather_weather_observation_async =
+sg_gov_nea_weather_weather_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -372,7 +703,8 @@ async def send_sg_gov_nea_weather_station(
 
 
 
-Send a single `SG.Gov.NEA.Weather.Station` message.Args:
+Send a single `SG.Gov.NEA.Weather.Station` message. A reference record published by Singapore's National Environment
+Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.Args:
 
 - `record`: The Kafka record.
 
@@ -475,7 +807,9 @@ async def send_sg_gov_nea_weather_weather_observation(
 
 
 
-Send a single `SG.Gov.NEA.Weather.WeatherObservation` message.Args:
+Send a single `SG.Gov.NEA.Weather.WeatherObservation` message. A current environmental measurement from Singapore's
+National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when
+the upstream feed reports a new or refreshed value.Args:
 
 - `record`: The Kafka record.
 
@@ -655,7 +989,8 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `SG.Gov.NEA.AirQuality.Region`:
+Asynchronous handler hook for `SG.Gov.NEA.AirQuality.Region`: A reference record published by Singapore's National
+Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.
 
 ## Generated Producer Classes
 
@@ -735,6 +1070,154 @@ sg_gov_nea_air_quality_dispatcher.sg_gov_nea_air_quality_region_async = sg_gov_n
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_air_quality_region_async = sg_gov_nea_air_quality_region_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_air_quality_region_async = sg_gov_nea_air_quality_region_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_air_quality_region_async = sg_gov_nea_air_quality_region_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_air_quality_region_async = sg_gov_nea_air_quality_region_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -754,7 +1237,9 @@ PSIReading], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `SG.Gov.NEA.AirQuality.PSIReading`:
+Asynchronous handler hook for `SG.Gov.NEA.AirQuality.PSIReading`: A current environmental measurement from Singapore's
+National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when
+the upstream feed reports a new or refreshed value.
 
 ## Generated Producer Classes
 
@@ -836,6 +1321,158 @@ sg_gov_nea_air_quality_dispatcher.sg_gov_nea_air_quality_psireading_async = sg_g
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PSIReading) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_air_quality_psireading_async = sg_gov_nea_air_quality_psireading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PSIReading) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_air_quality_psireading_async = sg_gov_nea_air_quality_psireading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PSIReading) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_air_quality_psireading_async = sg_gov_nea_air_quality_psireading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PSIReading) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_air_quality_psireading_async = sg_gov_nea_air_quality_psireading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -855,7 +1492,9 @@ PM25Reading], Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `SG.Gov.NEA.AirQuality.PM25Reading`:
+Asynchronous handler hook for `SG.Gov.NEA.AirQuality.PM25Reading`: A current environmental measurement from Singapore's
+National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when
+the upstream feed reports a new or refreshed value.
 
 ## Generated Producer Classes
 
@@ -937,6 +1576,160 @@ sg_gov_nea_air_quality_dispatcher.sg_gov_nea_air_quality_pm25_reading_async = sg
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PM25Reading)
+-> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_air_quality_pm25_reading_async = sg_gov_nea_air_quality_pm25_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PM25Reading)
+-> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_air_quality_pm25_reading_async =
+sg_gov_nea_air_quality_pm25_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PM25Reading)
+-> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_air_quality_pm25_reading_async = sg_gov_nea_air_quality_pm25_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PM25Reading)
+-> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_air_quality_pm25_reading_async =
+sg_gov_nea_air_quality_pm25_reading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -973,7 +1766,8 @@ async def send_sg_gov_nea_air_quality_region(
 
 
 
-Send a single `SG.Gov.NEA.AirQuality.Region` message.Args:
+Send a single `SG.Gov.NEA.AirQuality.Region` message. A reference record published by Singapore's National Environment
+Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.Args:
 
 - `record`: The Kafka record.
 
@@ -1076,7 +1870,9 @@ async def send_sg_gov_nea_air_quality_psireading(
 
 
 
-Send a single `SG.Gov.NEA.AirQuality.PSIReading` message.Args:
+Send a single `SG.Gov.NEA.AirQuality.PSIReading` message. A current environmental measurement from Singapore's National
+Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the
+upstream feed reports a new or refreshed value.Args:
 
 - `record`: The Kafka record.
 
@@ -1179,7 +1975,9 @@ async def send_sg_gov_nea_air_quality_pm25_reading(
 
 
 
-Send a single `SG.Gov.NEA.AirQuality.PM25Reading` message.Args:
+Send a single `SG.Gov.NEA.AirQuality.PM25Reading` message. A current environmental measurement from Singapore's National
+Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the
+upstream feed reports a new or refreshed value.Args:
 
 - `record`: The Kafka record.
 
@@ -1237,6 +2035,4002 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_sg_gov_nea_air_quality_pm25_reading_batch(```
+
+    messages=[
+
+        PM25Reading(...),Initializes the runner with a Kafka consumer.
+
+        PM25Reading(...),
+
+        PM25Reading(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### SGGovNEAWeatherMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`SGGovNEAWeatherMqttEventDispatcher` handles events for the SG.Gov.NEA.Weather.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from singapore_nea_producer import SGGovNEAWeatherProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = SGGovNEAWeatherProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_sg_gov_nea_weather_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The SGGovNEAWeatherMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = SGGovNEAWeatherProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `sg_gov_nea_weather_station_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'sg_gov_nea_weather_station_mqtt_async:  Callable[[ConsumerRecord, CloudEvent, Station],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `SG.Gov.NEA.Weather.Station.mqtt`: A reference record published by Singapore's National
+Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_dispatcher.sg_gov_nea_weather_station_mqtt_async = sg_gov_nea_weather_station_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_dispatcher.sg_gov_nea_weather_station_mqtt_async = sg_gov_nea_weather_station_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_weather_station_mqtt_async = sg_gov_nea_weather_station_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_weather_station_mqtt_async = sg_gov_nea_weather_station_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_weather_station_mqtt_async = sg_gov_nea_weather_station_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_weather_station_mqtt_async = sg_gov_nea_weather_station_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `sg_gov_nea_weather_weather_observation_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'sg_gov_nea_weather_weather_observation_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, WeatherObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `SG.Gov.NEA.Weather.WeatherObservation.mqtt`: A current environmental measurement from
+Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental
+indexes when the upstream feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_dispatcher.sg_gov_nea_weather_weather_observation_mqtt_async =
+sg_gov_nea_weather_weather_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_dispatcher.sg_gov_nea_weather_weather_observation_mqtt_async =
+sg_gov_nea_weather_weather_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_weather_weather_observation_mqtt_async =
+sg_gov_nea_weather_weather_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_weather_weather_observation_mqtt_async =
+sg_gov_nea_weather_weather_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_weather_weather_observation_mqtt_async =
+sg_gov_nea_weather_weather_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_weather_weather_observation_mqtt_async =
+sg_gov_nea_weather_weather_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_sg_gov_nea_weather_station_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_sg_gov_nea_weather_station_mqtt(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `SG.Gov.NEA.Weather.Station.mqtt` message. A reference record published by Singapore's National
+Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_sg_gov_nea_weather_station_mqtt(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `SG.Gov.NEA.Weather.Station.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_sg_gov_nea_weather_station_mqtt_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_sg_gov_nea_weather_weather_observation_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_sg_gov_nea_weather_weather_observation_mqtt(
+
+    self,##### `_process_event`
+
+    data: WeatherObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `SG.Gov.NEA.Weather.WeatherObservation.mqtt` message. A current environmental measurement from Singapore's
+National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when
+the upstream feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WeatherObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_sg_gov_nea_weather_weather_observation_mqtt(
+
+    data=WeatherObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `SG.Gov.NEA.Weather.WeatherObservation.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_sg_gov_nea_weather_weather_observation_mqtt_batch(```
+
+    messages=[
+
+        WeatherObservation(...),Initializes the runner with a Kafka consumer.
+
+        WeatherObservation(...),
+
+        WeatherObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### SGGovNEAAirQualityMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`SGGovNEAAirQualityMqttEventDispatcher` handles events for the SG.Gov.NEA.AirQuality.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from singapore_nea_producer import SGGovNEAWeatherProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = SGGovNEAWeatherProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_sg_gov_nea_weather_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The SGGovNEAAirQualityMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = SGGovNEAWeatherProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `sg_gov_nea_air_quality_region_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'sg_gov_nea_air_quality_region_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+Region], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `SG.Gov.NEA.AirQuality.Region.mqtt`: A reference record published by Singapore's National
+Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_dispatcher.sg_gov_nea_air_quality_region_mqtt_async = sg_gov_nea_air_quality_region_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_dispatcher.sg_gov_nea_air_quality_region_mqtt_async = sg_gov_nea_air_quality_region_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_air_quality_region_mqtt_async = sg_gov_nea_air_quality_region_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_air_quality_region_mqtt_async =
+sg_gov_nea_air_quality_region_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_air_quality_region_mqtt_async = sg_gov_nea_air_quality_region_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_air_quality_region_mqtt_async =
+sg_gov_nea_air_quality_region_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `sg_gov_nea_air_quality_psireading_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'sg_gov_nea_air_quality_psireading_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+PSIReading], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `SG.Gov.NEA.AirQuality.PSIReading.mqtt`: A current environmental measurement from
+Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental
+indexes when the upstream feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PSIReading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_dispatcher.sg_gov_nea_air_quality_psireading_mqtt_async =
+sg_gov_nea_air_quality_psireading_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PSIReading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_dispatcher.sg_gov_nea_air_quality_psireading_mqtt_async =
+sg_gov_nea_air_quality_psireading_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PSIReading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_air_quality_psireading_mqtt_async =
+sg_gov_nea_air_quality_psireading_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PSIReading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_air_quality_psireading_mqtt_async =
+sg_gov_nea_air_quality_psireading_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PSIReading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_air_quality_psireading_mqtt_async =
+sg_gov_nea_air_quality_psireading_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PSIReading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_air_quality_psireading_mqtt_async =
+sg_gov_nea_air_quality_psireading_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `sg_gov_nea_air_quality_pm25_reading_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'sg_gov_nea_air_quality_pm25_reading_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+PM25Reading], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `SG.Gov.NEA.AirQuality.PM25Reading.mqtt`: A current environmental measurement from
+Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental
+indexes when the upstream feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PM25Reading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_dispatcher.sg_gov_nea_air_quality_pm25_reading_mqtt_async =
+sg_gov_nea_air_quality_pm25_reading_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PM25Reading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_dispatcher.sg_gov_nea_air_quality_pm25_reading_mqtt_async =
+sg_gov_nea_air_quality_pm25_reading_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PM25Reading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_air_quality_pm25_reading_mqtt_async =
+sg_gov_nea_air_quality_pm25_reading_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PM25Reading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_air_quality_pm25_reading_mqtt_async =
+sg_gov_nea_air_quality_pm25_reading_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PM25Reading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_air_quality_pm25_reading_mqtt_async =
+sg_gov_nea_air_quality_pm25_reading_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PM25Reading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_air_quality_pm25_reading_mqtt_async =
+sg_gov_nea_air_quality_pm25_reading_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_sg_gov_nea_air_quality_region_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_sg_gov_nea_air_quality_region_mqtt(
+
+    self,##### `_process_event`
+
+    data: Region,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `SG.Gov.NEA.AirQuality.Region.mqtt` message. A reference record published by Singapore's National
+Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Region`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_sg_gov_nea_air_quality_region_mqtt(
+
+    data=Region(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `SG.Gov.NEA.AirQuality.Region.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_sg_gov_nea_air_quality_region_mqtt_batch(```
+
+    messages=[
+
+        Region(...),Initializes the runner with a Kafka consumer.
+
+        Region(...),
+
+        Region(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_sg_gov_nea_air_quality_psireading_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_sg_gov_nea_air_quality_psireading_mqtt(
+
+    self,##### `_process_event`
+
+    data: PSIReading,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `SG.Gov.NEA.AirQuality.PSIReading.mqtt` message. A current environmental measurement from Singapore's
+National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when
+the upstream feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PSIReading`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_sg_gov_nea_air_quality_psireading_mqtt(
+
+    data=PSIReading(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `SG.Gov.NEA.AirQuality.PSIReading.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_sg_gov_nea_air_quality_psireading_mqtt_batch(```
+
+    messages=[
+
+        PSIReading(...),Initializes the runner with a Kafka consumer.
+
+        PSIReading(...),
+
+        PSIReading(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_sg_gov_nea_air_quality_pm25_reading_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_sg_gov_nea_air_quality_pm25_reading_mqtt(
+
+    self,##### `_process_event`
+
+    data: PM25Reading,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `SG.Gov.NEA.AirQuality.PM25Reading.mqtt` message. A current environmental measurement from Singapore's
+National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when
+the upstream feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PM25Reading`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_sg_gov_nea_air_quality_pm25_reading_mqtt(
+
+    data=PM25Reading(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `SG.Gov.NEA.AirQuality.PM25Reading.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_sg_gov_nea_air_quality_pm25_reading_mqtt_batch(```
+
+    messages=[
+
+        PM25Reading(...),Initializes the runner with a Kafka consumer.
+
+        PM25Reading(...),
+
+        PM25Reading(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### SGGovNEAWeatherAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`SGGovNEAWeatherAmqpEventDispatcher` handles events for the SG.Gov.NEA.Weather.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from singapore_nea_producer import SGGovNEAWeatherProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = SGGovNEAWeatherProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_sg_gov_nea_weather_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The SGGovNEAWeatherAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = SGGovNEAWeatherProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `sg_gov_nea_weather_station_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'sg_gov_nea_weather_station_amqp_async:  Callable[[ConsumerRecord, CloudEvent, Station],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `SG.Gov.NEA.Weather.Station.amqp`: A reference record published by Singapore's National
+Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_dispatcher.sg_gov_nea_weather_station_amqp_async = sg_gov_nea_weather_station_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_dispatcher.sg_gov_nea_weather_station_amqp_async = sg_gov_nea_weather_station_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_weather_station_amqp_async = sg_gov_nea_weather_station_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_weather_station_amqp_async = sg_gov_nea_weather_station_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_weather_station_amqp_async = sg_gov_nea_weather_station_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.Station`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_station_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_weather_station_amqp_async = sg_gov_nea_weather_station_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `sg_gov_nea_weather_weather_observation_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'sg_gov_nea_weather_weather_observation_amqp_async:  Callable[[ConsumerRecord,
+CloudEvent, WeatherObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `SG.Gov.NEA.Weather.WeatherObservation.amqp`: A current environmental measurement from
+Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental
+indexes when the upstream feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_dispatcher.sg_gov_nea_weather_weather_observation_amqp_async =
+sg_gov_nea_weather_weather_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_dispatcher.sg_gov_nea_weather_weather_observation_amqp_async =
+sg_gov_nea_weather_weather_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_weather_weather_observation_amqp_async =
+sg_gov_nea_weather_weather_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_weather_weather_observation_amqp_async =
+sg_gov_nea_weather_weather_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_weather_weather_observation_amqp_async =
+sg_gov_nea_weather_weather_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.WeatherObservation`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_weather_weather_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+WeatherObservation) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_weather_weather_observation_amqp_async =
+sg_gov_nea_weather_weather_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_sg_gov_nea_weather_station_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_sg_gov_nea_weather_station_amqp(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `SG.Gov.NEA.Weather.Station.amqp` message. A reference record published by Singapore's National
+Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_sg_gov_nea_weather_station_amqp(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `SG.Gov.NEA.Weather.Station.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_sg_gov_nea_weather_station_amqp_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_sg_gov_nea_weather_weather_observation_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_sg_gov_nea_weather_weather_observation_amqp(
+
+    self,##### `_process_event`
+
+    data: WeatherObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `SG.Gov.NEA.Weather.WeatherObservation.amqp` message. A current environmental measurement from Singapore's
+National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when
+the upstream feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WeatherObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_sg_gov_nea_weather_weather_observation_amqp(
+
+    data=WeatherObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `SG.Gov.NEA.Weather.WeatherObservation.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_sg_gov_nea_weather_weather_observation_amqp_batch(```
+
+    messages=[
+
+        WeatherObservation(...),Initializes the runner with a Kafka consumer.
+
+        WeatherObservation(...),
+
+        WeatherObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### SGGovNEAAirQualityAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`SGGovNEAAirQualityAmqpEventDispatcher` handles events for the SG.Gov.NEA.AirQuality.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from singapore_nea_producer import SGGovNEAWeatherProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = SGGovNEAWeatherProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_sg_gov_nea_weather_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The SGGovNEAAirQualityAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = SGGovNEAWeatherProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `sg_gov_nea_air_quality_region_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'sg_gov_nea_air_quality_region_amqp_async:  Callable[[ConsumerRecord, CloudEvent,
+Region], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `SG.Gov.NEA.AirQuality.Region.amqp`: A reference record published by Singapore's National
+Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_dispatcher.sg_gov_nea_air_quality_region_amqp_async = sg_gov_nea_air_quality_region_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_dispatcher.sg_gov_nea_air_quality_region_amqp_async = sg_gov_nea_air_quality_region_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_air_quality_region_amqp_async = sg_gov_nea_air_quality_region_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_air_quality_region_amqp_async =
+sg_gov_nea_air_quality_region_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_air_quality_region_amqp_async = sg_gov_nea_air_quality_region_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.Region`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_region_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Region) ->
+None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_air_quality_region_amqp_async =
+sg_gov_nea_air_quality_region_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `sg_gov_nea_air_quality_psireading_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'sg_gov_nea_air_quality_psireading_amqp_async:  Callable[[ConsumerRecord, CloudEvent,
+PSIReading], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `SG.Gov.NEA.AirQuality.PSIReading.amqp`: A current environmental measurement from
+Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental
+indexes when the upstream feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PSIReading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_dispatcher.sg_gov_nea_air_quality_psireading_amqp_async =
+sg_gov_nea_air_quality_psireading_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PSIReading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_dispatcher.sg_gov_nea_air_quality_psireading_amqp_async =
+sg_gov_nea_air_quality_psireading_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PSIReading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_air_quality_psireading_amqp_async =
+sg_gov_nea_air_quality_psireading_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PSIReading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_air_quality_psireading_amqp_async =
+sg_gov_nea_air_quality_psireading_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PSIReading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_air_quality_psireading_amqp_async =
+sg_gov_nea_air_quality_psireading_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.PSIReading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_psireading_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PSIReading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_air_quality_psireading_amqp_async =
+sg_gov_nea_air_quality_psireading_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `sg_gov_nea_air_quality_pm25_reading_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'sg_gov_nea_air_quality_pm25_reading_amqp_async:  Callable[[ConsumerRecord, CloudEvent,
+PM25Reading], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `SG.Gov.NEA.AirQuality.PM25Reading.amqp`: A current environmental measurement from
+Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental
+indexes when the upstream feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PM25Reading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_dispatcher.sg_gov_nea_air_quality_pm25_reading_amqp_async =
+sg_gov_nea_air_quality_pm25_reading_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PM25Reading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_dispatcher.sg_gov_nea_air_quality_pm25_reading_amqp_async =
+sg_gov_nea_air_quality_pm25_reading_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherMqttProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PM25Reading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_mqtt_dispatcher.sg_gov_nea_air_quality_pm25_reading_amqp_async =
+sg_gov_nea_air_quality_pm25_reading_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityMqttProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PM25Reading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_mqtt_dispatcher.sg_gov_nea_air_quality_pm25_reading_amqp_async =
+sg_gov_nea_air_quality_pm25_reading_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAWeatherAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.Weather.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PM25Reading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAWeatherAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_weather_amqp_dispatcher.sg_gov_nea_air_quality_pm25_reading_amqp_async =
+sg_gov_nea_air_quality_pm25_reading_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### SGGovNEAAirQualityAmqpProducer- `data`: The event data of type `singapore_nea_producer_data.PM25Reading`.
+
+
+
+Producer for `SG.Gov.NEA.AirQuality.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def sg_gov_nea_air_quality_pm25_reading_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PM25Reading) -> None:
+
+```python    # Process the event data
+
+SGGovNEAAirQualityAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+sg_gov_nea_air_quality_amqp_dispatcher.sg_gov_nea_air_quality_pm25_reading_amqp_async =
+sg_gov_nea_air_quality_pm25_reading_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_sg_gov_nea_air_quality_region_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_sg_gov_nea_air_quality_region_amqp(
+
+    self,##### `_process_event`
+
+    data: Region,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `SG.Gov.NEA.AirQuality.Region.amqp` message. A reference record published by Singapore's National
+Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Region`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_sg_gov_nea_air_quality_region_amqp(
+
+    data=Region(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `SG.Gov.NEA.AirQuality.Region.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_sg_gov_nea_air_quality_region_amqp_batch(```
+
+    messages=[
+
+        Region(...),Initializes the runner with a Kafka consumer.
+
+        Region(...),
+
+        Region(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_sg_gov_nea_air_quality_psireading_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_sg_gov_nea_air_quality_psireading_amqp(
+
+    self,##### `_process_event`
+
+    data: PSIReading,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `SG.Gov.NEA.AirQuality.PSIReading.amqp` message. A current environmental measurement from Singapore's
+National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when
+the upstream feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PSIReading`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_sg_gov_nea_air_quality_psireading_amqp(
+
+    data=PSIReading(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `SG.Gov.NEA.AirQuality.PSIReading.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_sg_gov_nea_air_quality_psireading_amqp_batch(```
+
+    messages=[
+
+        PSIReading(...),Initializes the runner with a Kafka consumer.
+
+        PSIReading(...),
+
+        PSIReading(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_sg_gov_nea_air_quality_pm25_reading_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_sg_gov_nea_air_quality_pm25_reading_amqp(
+
+    self,##### `_process_event`
+
+    data: PM25Reading,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `SG.Gov.NEA.AirQuality.PM25Reading.amqp` message. A current environmental measurement from Singapore's
+National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when
+the upstream feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PM25Reading`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_sg_gov_nea_air_quality_pm25_reading_amqp(
+
+    data=PM25Reading(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `SG.Gov.NEA.AirQuality.PM25Reading.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_sg_gov_nea_air_quality_pm25_reading_amqp_batch(```
 
     messages=[
 

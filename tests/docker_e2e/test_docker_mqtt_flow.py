@@ -5248,3 +5248,62 @@ class TestWaterinfoVmmMqttDockerFlow:
     def test_emits_retained_uns_topics(self):
         _run_b1_mqtt_flow(12)
 
+
+class _B3SimpleMqttFlow:
+    source_dir = ''
+    image = ''
+    topic_filter = '#'
+    expected_prefix = []
+    expected_count = 1
+
+    def test_emits_expected_mqtt_topics(self):
+        client = docker.from_env()
+        broker, network, host_port = _generic_mosquitto(f'{self.image}-e2e', f'{self.image}-e2e-broker')
+        try:
+            image = build_image(self.source_dir, dockerfile='Dockerfile.mqtt', tag=f'test-{self.image}')
+            feeder = client.containers.run(
+                image.id,
+                detach=True,
+                remove=False,
+                network=network.name,
+                environment={'MQTT_BROKER_URL': f'mqtt://{self.image}-e2e-broker:1883', 'PYTHONUNBUFFERED': '1'},
+            )
+            result = feeder.wait(timeout=240)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            feeder.remove(force=True)
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            messages = _collect_messages_topic('127.0.0.1', host_port, self.topic_filter, timeout=15)
+            assert len(messages) >= self.expected_count, messages
+            topics = [m['topic'] for m in messages]
+            for prefix in self.expected_prefix:
+                assert any(t.startswith(prefix) for t in topics), (prefix, topics)
+            for msg in messages:
+                for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                    assert required in msg['user_properties'], msg
+        finally:
+            try: broker.kill()
+            except docker.errors.APIError: pass
+            try: network.remove()
+            except docker.errors.APIError: pass
+
+class TestNoaaGoesMqttDockerFlow(_B3SimpleMqttFlow):
+    source_dir = 'noaa-goes'
+    image = 'noaa-goes-mqtt'
+    topic_filter = 'space-weather/us/noaa/noaa-goes/#'
+    expected_count = 6
+    expected_prefix = ['space-weather/us/noaa/noaa-goes/goes-18/xrs/', 'space-weather/us/noaa/noaa-goes/alerts/', 'space-weather/us/noaa/noaa-goes/flares/']
+
+class TestNwsForecastsMqttDockerFlow(_B3SimpleMqttFlow):
+    source_dir = 'nws-forecasts'
+    image = 'nws-forecasts-mqtt'
+    topic_filter = 'weather/us/noaa/nws-forecasts/#'
+    expected_count = 3
+    expected_prefix = ['weather/us/noaa/nws-forecasts/wa/public/WAZ315/', 'weather/us/noaa/nws-forecasts/pz/marine/PZZ135/']
+
+class TestSingaporeNeaMqttDockerFlow(_B3SimpleMqttFlow):
+    source_dir = 'singapore-nea'
+    image = 'singapore-nea-mqtt'
+    topic_filter = '#'
+    expected_count = 5
+    expected_prefix = ['weather/sg/nea/singapore-nea/central/S109/', 'air-quality/sg/nea/singapore-nea/central/central/']
+
