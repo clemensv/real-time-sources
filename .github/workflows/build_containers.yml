@@ -22,13 +22,15 @@ jobs:
   find-dockerfiles:
     runs-on: ubuntu-latest
     outputs:
-      containers_base: ${{ steps.get-dockerfiles.outputs.containers_base }}
-      containers_transport: ${{ steps.get-dockerfiles.outputs.containers_transport }}
+      containers_base: ${{ steps.scope.outputs.containers_base }}
+      containers_transport: ${{ steps.scope.outputs.containers_transport }}
+      full_run: ${{ steps.scope.outputs.full_run }}
+      reason: ${{ steps.scope.outputs.reason }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Find all container projects
         id: get-dockerfiles
@@ -57,11 +59,52 @@ jobs:
                   )')
           BASE_JSON=$(echo "$ALL_JSON" | jq -c '[.[] | select(.variant == null or .variant == "")]')
           TRANSPORT_JSON=$(echo "$ALL_JSON" | jq -c '[.[] | select(.variant != null and .variant != "")]')
-          echo "containers_base=${BASE_JSON}" >> $GITHUB_OUTPUT
-          echo "containers_transport=${TRANSPORT_JSON}" >> $GITHUB_OUTPUT
+          echo "all_base<<EOF_BASE" >> $GITHUB_OUTPUT
+          echo "$BASE_JSON" >> $GITHUB_OUTPUT
+          echo "EOF_BASE" >> $GITHUB_OUTPUT
+          echo "all_transport<<EOF_TRANSPORT" >> $GITHUB_OUTPUT
+          echo "$TRANSPORT_JSON" >> $GITHUB_OUTPUT
+          echo "EOF_TRANSPORT" >> $GITHUB_OUTPUT
+
+      - name: Collect changed files
+        id: changed
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.event.after }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            git fetch origin "$PR_BASE_SHA" --depth=1 || true
+            files=$(git diff --name-only "$PR_BASE_SHA" "$PR_HEAD_SHA")
+          elif [ "$EVENT_NAME" = "push" ] && [ -n "${BEFORE_SHA:-}" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
+            files=$(git diff --name-only "$BEFORE_SHA" "$AFTER_SHA")
+          else
+            files=""
+          fi
+          {
+            echo "files<<EOF_FILES"
+            echo "$files"
+            echo "EOF_FILES"
+          } >> "$GITHUB_OUTPUT"
+          echo "[changed] $(echo "$files" | wc -l) file(s):"
+          echo "$files" | head -50 || true
+
+      - name: Scope container matrix
+        id: scope
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_TYPE: ${{ github.ref_type }}
+          CHANGED_FILES: ${{ steps.changed.outputs.files }}
+          ALL_BASE_JSON: ${{ steps.get-dockerfiles.outputs.all_base }}
+          ALL_TRANSPORT_JSON: ${{ steps.get-dockerfiles.outputs.all_transport }}
+        run: python3 tools/ci/discover_container_matrix.py
 
   build-base:
     needs: find-dockerfiles
+    if: ${{ needs.find-dockerfiles.outputs.containers_base != '' && needs.find-dockerfiles.outputs.containers_base != '[]' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -158,6 +201,7 @@ jobs:
 
   build-transport:
     needs: find-dockerfiles
+    if: ${{ needs.find-dockerfiles.outputs.containers_transport != '' && needs.find-dockerfiles.outputs.containers_transport != '[]' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
