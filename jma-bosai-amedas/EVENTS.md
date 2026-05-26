@@ -1,11 +1,11 @@
-# JMA Bosai AMeDAS Bridge Events
+# JMA Bosai AMeDAS feeder Events
 
-This source bridges the Japan Meteorological Agency (JMA / 気象庁) Bosai AMeDAS public data feed into Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams as CloudEvents.
+MQTT 5 variant of jma-bosai-amedas events with UNS topic routing.
 
 ## At a glance
 
-- **Event types:** 2 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `jp.jma.amedas/{station_code}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `weather/jp/jma/jma-bosai-amedas/+/+/+`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('weather/jp/jma/jma-bosai-amedas/+/+/+', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `jma-bosai-amedas`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/jma-bosai-amedas')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,10 +77,12 @@ Each event identifies the real-world resource with `jp.jma.amedas/{station_code}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `jma-bosai-amedas`, key `jp.jma.amedas/{station_code}` |
+| `MQTT/5.0` | topic `weather/jp/jma/jma-bosai-amedas/{prefecture}/{station_code}/{event}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-amedas`, message subject `jp.jma.amedas/{station_code}`; application properties prefecture `{prefecture}`, event `{event}` |
 
 #### Payload
 
-`Station` payloads are JSON object. Required fields: `station_code`, `kj_name`, `kana`, `en_name`, `latitude`, `longitude`, `altitude_m`, `station_type`, `elems_bitmask`, `enabled_measurements`.
+`Station` payloads are JSON object. Required fields: `station_code`, `kj_name`, `kana`, `en_name`, `latitude`, `longitude`, `altitude_m`, `station_type`, `elems_bitmask`, `enabled_measurements`, `prefecture`, `event`.
 
 - **`station_code`** (string, required): JMA AMeDAS five-digit station code used as the stable identifier in the Bosai AMeDAS station table and observation map. Constraints: pattern `^[0-9]{5}$`.
 - **`kj_name`** (string, required): Japanese kanji station name from the JMA AMeDAS station table (kjName), used by the Bosai web application for Japanese display labels.
@@ -64,11 +94,16 @@ Each event identifies the real-world resource with `jp.jma.amedas/{station_code}
 - **`station_type`** (enum, required): JMA AMeDAS station capability tier as published in the station table. The tier controls which measurements may be emitted for a station.
 - **`elems_bitmask`** (string, required): JMA Bosai AMeDAS element bitmask string from the station table. Each non-zero character indicates that the corresponding station capability is enabled in the Bosai web application.
 - **`enabled_measurements`** (array of string, required): Measurement capability names derived by the bridge from the JMA elems_bitmask. The values describe which observation families the station can emit, such as precipitation, wind, temperature, sunshine_duration, snow_depth, humidity, pressure, or visibility.
+- **`prefecture`** (string, required): ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
+- **`event`** (enum, required): Fixed topic event segment for Station messages.
 ##### `station_type` values
 
 - `A`: JMA AMeDAS capability tier A station, typically a major station with pressure and broader meteorological observations.
 - `B`: JMA AMeDAS capability tier B station.
 - `C`: JMA AMeDAS capability tier C station, commonly an automated regional station with a smaller measurement set.
+##### `event` values
+
+- `info`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -86,13 +121,15 @@ Synthetic example values are generated deterministically from the schema: consta
   "elems_bitmask": "string",
   "enabled_measurements": [
     "string"
-  ]
+  ],
+  "prefecture": "string",
+  "event": "info"
 }
 ```
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
 
 ### Observation
 
@@ -111,10 +148,12 @@ Each event identifies the real-world resource with `jp.jma.amedas/{station_code}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `jma-bosai-amedas`, key `jp.jma.amedas/{station_code}` |
+| `MQTT/5.0` | topic `weather/jp/jma/jma-bosai-amedas/{prefecture}/{station_code}/{event}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-amedas`, message subject `jp.jma.amedas/{station_code}`; application properties prefecture `{prefecture}`, event `{event}` |
 
 #### Payload
 
-`Observation` payloads are JSON object. Required fields: `station_code`, `observed_at`, `observed_at_local`, `temp`, `temp_qc_flag`, `humidity`, `humidity_qc_flag`, `pressure`, `pressure_qc_flag`, `normal_pressure`, `normal_pressure_qc_flag`, `wind_speed`, `wind_speed_qc_flag`, `wind_direction`, `wind_direction_qc_flag`, `wind_gust`, `wind_gust_qc_flag`, `wind_gust_direction`, `wind_gust_time`, `max_temp`, `max_temp_time`, `min_temp`, `min_temp_time`, `precipitation10m`, `precipitation10m_qc_flag`, `precipitation1h`, `precipitation1h_qc_flag`, `precipitation3h`, `precipitation3h_qc_flag`, `precipitation24h`, `precipitation24h_qc_flag`, `sun10m`, `sun10m_qc_flag`, `sun1h`, `sun1h_qc_flag`, `snow`, `snow_qc_flag`, `snow1h`, `snow1h_qc_flag`, `snow6h`, `snow6h_qc_flag`, `snow12h`, `snow12h_qc_flag`, `snow24h`, `snow24h_qc_flag`, `visibility`, `visibility_qc_flag`, `cloud`, `cloud_qc_flag`, `weather`, `weather_qc_flag`.
+`Observation` payloads are JSON object. Required fields: `station_code`, `observed_at`, `observed_at_local`, `temp`, `temp_qc_flag`, `humidity`, `humidity_qc_flag`, `pressure`, `pressure_qc_flag`, `normal_pressure`, `normal_pressure_qc_flag`, `wind_speed`, `wind_speed_qc_flag`, `wind_direction`, `wind_direction_qc_flag`, `wind_gust`, `wind_gust_qc_flag`, `wind_gust_direction`, `wind_gust_time`, `max_temp`, `max_temp_time`, `min_temp`, `min_temp_time`, `precipitation10m`, `precipitation10m_qc_flag`, `precipitation1h`, `precipitation1h_qc_flag`, `precipitation3h`, `precipitation3h_qc_flag`, `precipitation24h`, `precipitation24h_qc_flag`, `sun10m`, `sun10m_qc_flag`, `sun1h`, `sun1h_qc_flag`, `snow`, `snow_qc_flag`, `snow1h`, `snow1h_qc_flag`, `snow6h`, `snow6h_qc_flag`, `snow12h`, `snow12h_qc_flag`, `snow24h`, `snow24h_qc_flag`, `visibility`, `visibility_qc_flag`, `cloud`, `cloud_qc_flag`, `weather`, `weather_qc_flag`, `prefecture`, `event`.
 
 - **`station_code`** (string, required): JMA AMeDAS five-digit station code used as the stable identifier in the Bosai AMeDAS station table and observation map. Constraints: pattern `^[0-9]{5}$`.
 - **`observed_at`** (datetime, required): Observation snapshot timestamp converted from JMA latest_time.txt to UTC and serialized as RFC3339. AMeDAS map snapshots are published every ten minutes.
@@ -167,6 +206,11 @@ Each event identifies the real-world resource with `jp.jma.amedas/{station_code}
 - **`cloud_qc_flag`** (int32 or null, required): JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.
 - **`weather`** (double or null, required): Present weather code from JMA Bosai AMeDAS where available. The Bosai map exposes this as a numeric measurement tuple for stations that publish weather information.
 - **`weather_qc_flag`** (int32 or null, required): JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application.
+- **`prefecture`** (string, required): ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
+- **`event`** (enum, required): Fixed topic event segment for Observation messages.
+##### `event` values
+
+- `observation`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -223,7 +267,9 @@ Synthetic example values are generated deterministically from the schema: consta
   "cloud": 0,
   "cloud_qc_flag": 0,
   "weather": 0,
-  "weather_qc_flag": 0
+  "weather_qc_flag": 0,
+  "prefecture": "string",
+  "event": "observation"
 }
 ```
 
@@ -249,23 +295,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/jma-bosai-amedas.xreg.json`](xreg/jma-bosai-amedas.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-
-
-## MQTT and AMQP companion transports
-
-This source now ships separate Kafka, MQTT, and AMQP containers. MQTT publishes binary-mode CloudEvents to the UNS topic tree below; AMQP publishes the same CloudEvents to the configured AMQP address with subject and routing axes in message/application properties.
-
-Topic templates:
-- `weather/jp/jma/jma-bosai-amedas/{prefecture}/{station_code}/info`
-- `weather/jp/jma/jma-bosai-amedas/{prefecture}/{station_code}/observation`
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources-jma-bosai-amedas-mqtt:latest` (`Dockerfile.mqtt`)
-- AMQP image: `ghcr.io/clemensv/real-time-sources-jma-bosai-amedas-amqp:latest` (`Dockerfile.amqp`)
-- Azure templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`.

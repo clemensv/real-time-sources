@@ -1,4 +1,4 @@
-# BfS ODL — Ambient Gamma Dose Rate Monitoring Events
+# BfS ODL feeder Events
 
 MQTT/5.0 transport variants of the BfS ODL CloudEvents, mapping each message to a retained, QoS-1 Unified Namespace topic under radiation/de/bfs/bfs-odl/{state}/{station_id}/... The {state} placeholder is derived from the station's AGS-based Kennziffer (first two digits map to a German Bundesland) and normalized to lowercase kebab-case before publishing.
 
@@ -192,12 +192,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/bfs_odl.xreg.json`](xreg/bfs_odl.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- ![Deploy AMQP to Azure Service Bus: <https://aka.ms/deploytoazurebutton>

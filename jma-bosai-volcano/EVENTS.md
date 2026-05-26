@@ -1,11 +1,11 @@
-# JMA Bosai Volcanic Warnings and Eruptions Events
+# JMA Bosai Volcano feeder Events
 
 JMA Bosai Volcano publishes volcano warnings and eruption notices from the Japan Meteorological Agency for Japanese volcano warning areas. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
-- **Event types:** 3 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 3 documented event types (9 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 3 telemetry event types.
 - **Identity:** `jp.jma.volcano/{volcano_code}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `weather/jp/jma/jma-bosai-volcano/+/+/+`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('weather/jp/jma/jma-bosai-volcano/+/+/+', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `jma-bosai-volcano`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/jma-bosai-volcano')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,10 +77,12 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `jma-bosai-volcano`, key `jp.jma.volcano/{volcano_code}` |
+| `MQTT/5.0` | topic `weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/{event}`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-volcano`, message subject `jp.jma.volcano/{volcano_code}`; application properties prefecture `{prefecture}`, event `{event}` |
 
 #### Payload
 
-`Volcano` payloads are JSON object. Required fields: `volcano_code`, `name_jp`, `name_en`, `latitude`, `longitude`, `level_operation`.
+`Volcano` payloads are JSON object. Required fields: `volcano_code`, `name_jp`, `name_en`, `latitude`, `longitude`, `level_operation`, `prefecture`, `event`.
 
 - **`volcano_code`** (string, required): Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key. Constraints: pattern `^[0-9]{3}$`.
 - **`name_jp`** (string, required): Japanese volcano name from the JMA Bosai volcano catalog. This is a display label and is not used as the stable identity because JMA warning records key volcanoes by code.
@@ -61,6 +91,11 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 - **`longitude`** (double, required, degree (°)): Longitude of the volcano in WGS84 decimal degrees. The bridge converts JMA degree-and-minute coordinates when present, and otherwise forwards the Bosai catalog decimal longitude.
 - **`elevation_m`** (double or null, optional, meter (m)): Volcano summit elevation in metres when supplied by the JMA catalog. Some Bosai catalog entries omit elevation, so the field is null in emitted events when JMA does not provide the value.
 - **`level_operation`** (boolean, required): True when JMA marks the volcano as operating under the five-level eruption alert system. False means the volcano is represented by binary issued/not-issued volcanic warnings rather than a local five-level evacuation framework.
+- **`prefecture`** (string, required): ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
+- **`event`** (enum, required): Fixed topic event segment for Volcano messages.
+##### `event` values
+
+- `info`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -73,7 +108,9 @@ Synthetic example values are generated deterministically from the schema: consta
   "latitude": 0,
   "longitude": 0,
   "elevation_m": 0,
-  "level_operation": false
+  "level_operation": false,
+  "prefecture": "string",
+  "event": "info"
 }
 ```
 
@@ -98,10 +135,12 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `jma-bosai-volcano`, key `jp.jma.volcano/{volcano_code}` |
+| `MQTT/5.0` | topic `weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/{event}`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-volcano`, message subject `jp.jma.volcano/{volcano_code}`; application properties prefecture `{prefecture}`, event `{event}` |
 
 #### Payload
 
-`Volcanic Warning` payloads are JSON object. Required fields: `volcano_code`, `event_id`, `report_datetime`, `report_datetime_local`, `alert_level_code`, `alert_level_name`, `condition`, `info_type_jp`, `area_codes`.
+`Volcanic Warning` payloads are JSON object. Required fields: `volcano_code`, `event_id`, `report_datetime`, `report_datetime_local`, `alert_level_code`, `alert_level_name`, `condition`, `info_type_jp`, `area_codes`, `prefecture`, `event`.
 
 - **`volcano_code`** (string, required): Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key. Constraints: pattern `^[0-9]{3}$`.
 - **`event_id`** (string, required): JMA eventId from the Bosai warning record. The warning feed uses this identifier with reportDatetime to identify the active report for a target volcano.
@@ -113,6 +152,8 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 - **`condition`** (enum, required): Normalized lifecycle condition derived from the Japanese JMA condition text. 発表 is mapped to ISSUED, 引上げ to RAISED, 引下げ to LOWERED, 継続 to CONTINUED, 切替 to SWITCHED, and 解除 to CANCELLED so downstream consumers can compare reports without parsing Japanese status labels.
 - **`info_type_jp`** (string, required): Japanese volcanoInfos type label from the JMA feed. For emitted warning events the bridge uses the target-volcano section, normally 噴火警報・予報（対象火山）, because that section carries the stable volcano code identity.
 - **`area_codes`** (array of string, required): List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information.
+- **`prefecture`** (string, required): ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
+- **`event`** (enum, required): Fixed topic event segment for VolcanicWarning messages.
 ##### `alert_level_code` values
 
 - `CODE_02` — Crater-area warning: Provider value `CODE_02` for this coded alert field.
@@ -136,6 +177,9 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 - `CONTINUED`: Provider value `CONTINUED` for this coded alert field.
 - `SWITCHED`: Provider value `SWITCHED` for this coded alert field.
 - `CANCELLED`: Provider value `CANCELLED` for this coded alert field.
+##### `event` values
+
+- `warning`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -153,7 +197,9 @@ Synthetic example values are generated deterministically from the schema: consta
   "info_type_jp": "string",
   "area_codes": [
     "string"
-  ]
+  ],
+  "prefecture": "string",
+  "event": "warning"
 }
 ```
 
@@ -178,10 +224,12 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `jma-bosai-volcano`, key `jp.jma.volcano/{volcano_code}` |
+| `MQTT/5.0` | topic `weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/{event}`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-volcano`, message subject `jp.jma.volcano/{volcano_code}`; application properties prefecture `{prefecture}`, event `{event}` |
 
 #### Payload
 
-`Volcanic Eruption` payloads are JSON object. Required fields: `volcano_code`, `event_id`, `report_datetime`, `report_datetime_local`, `description`, `area_codes`.
+`Volcanic Eruption` payloads are JSON object. Required fields: `volcano_code`, `event_id`, `report_datetime`, `report_datetime_local`, `description`, `area_codes`, `prefecture`, `event`.
 
 - **`volcano_code`** (string, required): Three-digit JMA volcano identifier used in the Bosai volcanic warning feeds and the volcano catalog. This is the stable domain key for the volcano and is used in the CloudEvents subject and Kafka key. Constraints: pattern `^[0-9]{3}$`.
 - **`event_id`** (string, required): JMA eventId from the Bosai eruption record. The bridge combines this identifier with reportDatetime for deduplication of eruption observations.
@@ -201,6 +249,8 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 - **`description`** (string, required): Japanese free-text description assembled from the JMA eruption item fields such as description, text, name, title, or content. This preserves the official observational wording when the eruption feed carries discrete eruption observations.
 - **`info_type_jp`** (string or null, optional): Japanese volcanoInfos section type from eruption.json when supplied by JMA. It identifies the official section in which the eruption observation was published.
 - **`area_codes`** (array of string, required): List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information.
+- **`prefecture`** (string, required): ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
+- **`event`** (enum, required): Fixed topic event segment for VolcanicEruption messages.
 ##### `eruption_type` values
 
 - `ERUPTION`: Provider value `ERUPTION` for this coded alert field.
@@ -208,6 +258,9 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 - `CONTINUOUS_ERUPTION_CONTINUING`: Provider value `CONTINUOUS_ERUPTION_CONTINUING` for this coded alert field.
 - `CONTINUOUS_ERUPTION_STOPPED`: Provider value `CONTINUOUS_ERUPTION_STOPPED` for this coded alert field.
 - `UNKNOWN`: Provider value `UNKNOWN` for this coded alert field.
+##### `event` values
+
+- `eruption`
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -233,7 +286,9 @@ Synthetic example values are generated deterministically from the schema: consta
   "info_type_jp": "string",
   "area_codes": [
     "string"
-  ]
+  ],
+  "prefecture": "string",
+  "event": "eruption"
 }
 ```
 
@@ -265,17 +320,3 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/jma-bosai-volcano.xreg.json`](xreg/jma-bosai-volcano.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-
-
-## MQTT and AMQP companion transports
-
-This source now ships separate Kafka, MQTT, and AMQP containers. MQTT publishes binary-mode CloudEvents to the UNS topic tree below; AMQP publishes the same CloudEvents to the configured AMQP address with subject and routing axes in message/application properties.
-
-Topic templates:
-- `weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/info`
-- `weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/warning`
-- `weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/eruption`
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources-jma-bosai-volcano-mqtt:latest` (`Dockerfile.mqtt`)
-- AMQP image: `ghcr.io/clemensv/real-time-sources-jma-bosai-volcano-amqp:latest` (`Dockerfile.amqp`)
-- Azure templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-with-servicebus.json`.

@@ -1,155 +1,211 @@
-# Australian State Wildfires Bridge — Container
+# Australian Wildfires container images
 
-This container bridges live bushfire incident data from three Australian state
-emergency services — NSW Rural Fire Service, VicEmergency, and Queensland Fire
-Department — into Kafka endpoints as CloudEvents.
+This document covers the published OCI images for the Australian Wildfires source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
-All events are emitted as [CloudEvents](https://cloudevents.io/) in structured
-JSON content mode. See [EVENTS.md](EVENTS.md) for the full event catalog.
+## Why this container
 
-## Environment Variables
+Australian fire agencies publish incident updates independently across state services. This feeder normalizes those live feeds into one event contract so emergency analytics teams, insurers, infrastructure operators, and researchers can subscribe to a single stream instead of polling multiple APIs and reconciling shapes themselves.
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `CONNECTION_STRING` | Yes | Kafka or Event Hubs connection string |
-| `KAFKA_TOPIC` | No | Override the default topic (`australia-wildfires`) |
-| `POLLING_INTERVAL` | No | Polling interval in seconds (default: `300`) |
-| `STATE_FILE` | No | Path for dedup state persistence (default: `~/.australia_wildfires_state.json`) |
-| `KAFKA_ENABLE_TLS` | No | Enable TLS for Kafka connections (default: `true`) |
-| `MQTT_BROKER_URL` | MQTT only | MQTT broker URL such as `mqtt://broker:1883` or `mqtts://broker:8883` |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | MQTT only | Optional MQTT credentials |
-| `MQTT_CONTENT_MODE` | MQTT only | CloudEvents MQTT content mode (`binary`, default, or `structured`) |
-| `AUSTRALIA_WILDFIRES_SAMPLE_MODE` | MQTT test only | Publish one deterministic sample incident instead of polling live feeds |
+## What ships in the box
 
-## Connection Strings
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-australia-wildfires` | Kafka | JSON CloudEvents to one Kafka topic |
+| `ghcr.io/clemensv/real-time-sources-australia-wildfires-mqtt` | MQTT 5.0 | Binary CloudEvents into UNS topic tree from xRegistry |
+| `ghcr.io/clemensv/real-time-sources-australia-wildfires-amqp` | AMQP 1.0 | Binary CloudEvents to one AMQP address |
 
-### Plain Kafka
+## Image contract
 
-```
-BootstrapServer=myhost:9092;EntityPath=australia-wildfires
-```
+| Aspect | Value |
+| --- | --- |
+| Base image | Kafka: `python:3.10-slim`; MQTT: `python:3.10-slim`; AMQP: `python:3.10-slim` |
+| Default entry point | Kafka: `python -m australia_wildfires`; MQTT: `python -m australia_wildfires_mqtt feed`; AMQP: `python -m australia_wildfires_amqp feed` |
+| Exposed ports | none — outbound publisher only |
+| Persistent state vars | Kafka: `STATE_FILE`; MQTT: `STATE_FILE`; AMQP: `STATE_FILE` |
+| Image tags | `:latest`, `:sha-<git-sha>`, release tags |
 
-### Azure Event Hubs
-
-```
-Endpoint=sb://mynamespace.servicebus.windows.net/;SharedAccessKeyName=send;SharedAccessKey=...;EntityPath=australia-wildfires
-```
-
-### Microsoft Fabric Event Streams
-
-Use the Event Hubs–compatible connection string from your Fabric workspace.
-
-## Docker
-
-### Pull
+## Installing the container images
 
 ```bash
-docker pull ghcr.io/clemensv/real-time-sources/australia-wildfires:latest
+docker pull ghcr.io/clemensv/real-time-sources-australia-wildfires:latest
+docker pull ghcr.io/clemensv/real-time-sources-australia-wildfires-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-australia-wildfires-amqp:latest
 ```
 
-### Run
+## Using the Kafka image
+
+### With Azure Event Hubs / Fabric Event Streams
 
 ```bash
 docker run --rm \
-  -e CONNECTION_STRING="BootstrapServer=host.docker.internal:9092;EntityPath=australia-wildfires" \
-  ghcr.io/clemensv/real-time-sources/australia-wildfires:latest
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/australia-wildfires.json \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-australia-wildfires:latest
 ```
 
-### MQTT/UNS image
+### With a Kafka broker (SASL/PLAIN)
 
 ```bash
-docker build -f Dockerfile.mqtt -t australia-wildfires-mqtt .
 docker run --rm \
-  -e MQTT_BROKER_URL="mqtt://host.docker.internal:1883" \
-  ghcr.io/clemensv/real-time-sources/australia-wildfires-mqtt:latest
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/australia-wildfires.json \
+  -e KAFKA_BOOTSTRAP_SERVERS="<host:9093>" \
+  -e KAFKA_TOPIC="<topic>" \
+  -e SASL_USERNAME="<username>" \
+  -e SASL_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-australia-wildfires:latest
 ```
 
-The MQTT image publishes QoS 1, non-retained binary CloudEvents under
-`wildfire/au/{state}/{status}/{incident_id}/incident`.
+## Using the MQTT image
 
-## Azure Container Instance
-
-Deploy with the Azure CLI:
+### Generic MQTT 5 broker (username/password)
 
 ```bash
-az container create \
-  --resource-group myRG \
-  --name australia-wildfires \
-  --image ghcr.io/clemensv/real-time-sources/australia-wildfires:latest \
-  --environment-variables CONNECTION_STRING="<your-connection-string>" \
-  --restart-policy Always
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/australia-wildfires.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-australia-wildfires-mqtt:latest
 ```
 
-## Database Follow-On
+### Azure Event Grid MQTT broker (Entra JWT)
 
-Ingest the Kafka topic into Azure Data Explorer or Fabric KQL Database and
-query incidents with KQL:
-
-```kql
-['australia-wildfires']
-| extend data = parse_json(tostring(data))
-| project
-    incident_id = tostring(data.incident_id),
-    state = tostring(data.state),
-    title = tostring(data.title),
-    alert_level = tostring(data.alert_level),
-    latitude = todouble(data.latitude),
-    longitude = todouble(data.longitude),
-    size_hectares = todouble(data.size_hectares),
-    type = tostring(data.type),
-    updated = todatetime(data.updated)
-| order by updated desc
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/australia-wildfires.json \
+  -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883" \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID="<managed-identity-client-id>" \
+  -e MQTT_CLIENT_ID="<unique-client-id>" \
+  ghcr.io/clemensv/real-time-sources-australia-wildfires-mqtt:latest
 ```
+
+## Using the AMQP image
+
+### Generic AMQP 1.0 broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/australia-wildfires.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/australia-wildfires" \
+  ghcr.io/clemensv/real-time-sources-australia-wildfires-amqp:latest
+```
+
+### Azure Service Bus / Event Hubs (Entra ID via CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/australia-wildfires.json \
+  -e AMQP_HOST="<namespace>.servicebus.windows.net" \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS="australia-wildfires" \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_CLIENT_ID="<managed-identity-client-id>" \
+  ghcr.io/clemensv/real-time-sources-australia-wildfires-amqp:latest
+```
+
+### Service Bus emulator / SAS namespaces (SAS-token CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/australia-wildfires.json \
+  -e AMQP_HOST="servicebus-emulator" \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS="australia-wildfires" \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey" \
+  -e AMQP_SAS_KEY="<sas-key>" \
+  ghcr.io/clemensv/real-time-sources-australia-wildfires-amqp:latest
+```
+
+## Environment variables
+
+### Common source runtime variables
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to persisted checkpoint/dedupe state for the KAFKA bridge runtime. |
+| `POLLING_INTERVAL` | Polling interval in seconds. |
+| `AUSTRALIA_WILDFIRES_SAMPLE_MODE` | Optional sampling/test mode flag for development runs. |
+
+### Kafka image variables
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric custom endpoint style connection string. |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list (`host:port`). |
+| `KAFKA_TOPIC` | Destination Kafka topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` to disable TLS (default `true`). |
+
+### MQTT image variables
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL, e.g. `mqtt://host:1883` or `mqtts://host:8883`. |
+| `MQTT_HOST` / `MQTT_PORT` / `MQTT_TLS` | Component-level alternative to `MQTT_BROKER_URL`. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for Event Grid JWT auth. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for `MQTT_AUTH_MODE=password`. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | User-assigned managed identity client id (optional). |
+| `MQTT_CLIENT_ID` | MQTT client identifier (must be unique per broker). |
+| `MQTT_CONTENT_MODE` | CloudEvents mode: `binary` (default) or `structured`. |
+
+### AMQP image variables
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | URL form endpoint, e.g. `amqp://user:pw@host:5672/address`. |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component-level endpoint settings. |
+| `AMQP_ADDRESS` | Target AMQP address (queue/topic). |
+| `AMQP_AUTH_MODE` | `password` (default), `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | Credentials for `AMQP_AUTH_MODE=password`. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra auth settings for `AMQP_AUTH_MODE=entra`. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS policy/key pair for `AMQP_AUTH_MODE=sas`. |
+| `AMQP_CONTENT_MODE` | CloudEvents mode: `binary` (default) or `structured`. |
+
+## Deploying into Microsoft Fabric
+
+### Fabric Notebook feeder
+
+Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source australia-wildfires -WorkspaceId <id> -CapacityId <id>` to deploy the notebook in `notebook/`, bind Event Stream/Lakehouse/KQL assets, and schedule poll runs.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#australia-wildfires/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source australia-wildfires -WorkspaceId <id> -CapacityId <id>` for always-on container hosting that publishes to Fabric Event Streams.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#australia-wildfires/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### Kafka — bring your own Event Hub / Kafka
 
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+Deploys the Kafka image and uses a provided connection string.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Faustralia-wildfires%2Fazure-template.json)
 
-### Option 2: Deploy with a new Event Hub
+### Kafka — provision a new Event Hub
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploys Kafka plus a new Event Hubs namespace and hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Faustralia-wildfires%2Fazure-template-with-eventhub.json)
 
+## Related
 
-## AMQP 1.0 container
+- [README.md](README.md) — source overview, use cases, and quick-start guidance.
+- [EVENTS.md](EVENTS.md) — CloudEvents schemas and routing contract.
+- [`xreg/`](xreg/) — authoritative xRegistry manifest used to generate producers and event docs.
 
-The AMQP companion image publishes Australian Wildfires CloudEvents to a single broker address. It supports SASL PLAIN for generic AMQP 1.0 brokers and CBS token authentication for Azure Service Bus (`AMQP_AUTH_MODE=entra` for managed identity, `AMQP_AUTH_MODE=sas` for emulator/SAS-key scenarios).
+## Next steps
 
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-australia-wildfires-amqp:latest
-
-docker run --rm   -e AMQP_BROKER_URL=amqp://user:password@broker:5672/australia-wildfires   -e AUSTRALIA_WILDFIRES_SAMPLE_MODE=true ONCE_MODE=true   ghcr.io/clemensv/real-time-sources-australia-wildfires-amqp:latest
-```
-
-### AMQP environment variables
-
-| Variable | Description | Default |
-|---|---|---|
-| `AMQP_BROKER_URL` | Full `amqp://` or `amqps://` URL. Path overrides `AMQP_ADDRESS`. | empty |
-| `AMQP_HOST` / `AMQP_PORT` | Broker host and port when no URL is supplied. | `localhost` / 5672 or 5671 |
-| `AMQP_ADDRESS` | Queue, topic, or link target address. | `australia-wildfires` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for generic brokers. | empty |
-| `AMQP_TLS` | Force TLS for generic brokers. | `false` |
-| `AMQP_CONTENT_MODE` | CloudEvents AMQP binding mode: `binary` or `structured`. | `binary` |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
-| `AMQP_ENTRA_AUDIENCE` | Token scope for CBS/Entra authentication. | `https://servicebus.azure.net/.default` |
-| `AMQP_ENTRA_CLIENT_ID` | User-assigned managed identity client id. | empty |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS key credentials for Service Bus emulator/SAS CBS. | empty |
-
-### Deploy to Azure Service Bus
-
-This template creates a Service Bus namespace and queue, user-assigned managed identity, role assignment for Azure Service Bus Data Sender, Log Analytics workspace, storage file share for state, and an Azure Container Instance running the AMQP image.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Faustralia-wildfires%2Finfra%2Fazure-template-amqp.json)
+- Validate topics/subjects/schemas in [EVENTS.md](EVENTS.md).
+- Use the deployment buttons above for the transport and hosting shape you need.

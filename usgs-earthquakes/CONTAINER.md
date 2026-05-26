@@ -1,229 +1,219 @@
-# USGS Earthquake Hazards Program bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# USGS Earthquakes container images
 
-This container image provides a bridge between the [USGS Earthquake Hazards
-Program](https://earthquake.usgs.gov/) real-time GeoJSON feeds and Apache Kafka,
-Azure Event Hubs, and Fabric Event Streams. The bridge fetches earthquake events
-and forwards them to the configured Kafka endpoints.
+This document covers the published OCI images for the USGS Earthquakes source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
-## USGS Earthquake Hazards Program
+## Why this container
 
-The [USGS Earthquake Hazards Program](https://earthquake.usgs.gov/) provides
-real-time earthquake data via GeoJSON feeds. The feeds include data on
-earthquakes worldwide for the past hour, day, week, and month, updated every
-minute. The data includes location, magnitude, depth, felt reports, and
-alert levels.
+USGS earthquake feeds are a core public signal for seismic monitoring, civil-protection dashboards, and risk models. This feeder provides a transport-agnostic CloudEvents contract so downstream systems can subscribe once and fan out to analytics, alerting, and archival pipelines.
 
-## Functionality
+## What ships in the box
 
-The bridge polls the USGS Earthquake GeoJSON feeds at regular intervals and
-writes earthquake events to a Kafka topic as
-[CloudEvents](https://cloudevents.io/) in JSON format, documented in
-[EVENTS.md](EVENTS.md).
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-usgs-earthquakes` | Kafka | JSON CloudEvents to one Kafka topic |
+| `ghcr.io/clemensv/real-time-sources-usgs-earthquakes-mqtt` | MQTT 5.0 | Binary CloudEvents into UNS topic tree from xRegistry |
+| `ghcr.io/clemensv/real-time-sources-usgs-earthquakes-amqp` | AMQP 1.0 | Binary CloudEvents to one AMQP address |
 
-## Database Schemas and Handling
+## Image contract
 
-If you want to build a full data pipeline with all events ingested into a
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
+| Aspect | Value |
+| --- | --- |
+| Base image | Kafka: `python:3.11-slim`; MQTT: `python:3.10-slim`; AMQP: `python:3.10-slim` |
+| Default entry point | Kafka: `python -m usgs_earthquakes`; MQTT: `python -m usgs_earthquakes_mqtt feed`; AMQP: `python -m usgs_earthquakes_amqp feed` |
+| Exposed ports | none — outbound publisher only |
+| Persistent state vars | Kafka: `USGS_EQ_LAST_POLLED_FILE`; MQTT: `USGS_EARTHQUAKES_LAST_POLLED_FILE`; AMQP: `USGS_EARTHQUAKES_LAST_POLLED_FILE` |
+| Image tags | `:latest`, `:sha-<git-sha>`, release tags |
 
-## Installing the Container Image
-
-Pull the container image from the GitHub Container Registry:
-
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-usgs-earthquakes:latest
-```
-
-To use it as a base image in a Dockerfile:
-
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-usgs-earthquakes:latest
-```
-
-## Using the Container Image
-
-The container defines a command that starts the bridge, reading earthquake data
-from the USGS feeds and writing it to Kafka, Azure Event Hubs, or Fabric Event
-Streams.
-
-### With a Kafka Broker
-
-Ensure you have a Kafka broker configured with TLS and SASL PLAIN
-authentication. Run the container with the following command:
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-usgs-earthquakes:latest
-```
-
-### With Azure Event Hubs or Fabric Event Streams
-
-Use the connection string from Azure Event Hubs or Microsoft Fabric Event
-Streams:
-
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-usgs-earthquakes:latest
-```
-
-### Deploy to Azure
-
-You can deploy the container to Azure Container Instances using the provided ARM
-template:
-
-[![Deploy to
-Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-earthquakes%2Fazure-template.json)
-
-## Environment Variables
-
-### `CONNECTION_STRING`
-
-An Azure Event Hubs-style connection string used to connect to Azure Event Hubs
-or Fabric Event Streams. This replaces the need for `KAFKA_BOOTSTRAP_SERVERS`,
-`SASL_USERNAME`, and `SASL_PASSWORD`.
-
-### `KAFKA_BOOTSTRAP_SERVERS`
-
-The address of the Kafka broker. Provide a comma-separated list of host and port
-pairs (e.g., `broker1:9092,broker2:9092`). The client communicates with
-TLS-enabled Kafka brokers.
-
-### `KAFKA_TOPIC`
-
-The Kafka topic where messages will be produced.
-
-### `SASL_USERNAME`
-
-Username for SASL PLAIN authentication.
-
-### `SASL_PASSWORD`
-
-Password for SASL PLAIN authentication.
-
-### `LOG_LEVEL`
-
-The logging level. Default: `INFO`.
-
-### `USGS_EQ_LAST_POLLED_FILE`
-
-The file path where the bridge stores the IDs of previously processed events to
-avoid duplication after restarts. Default:
-`~/.usgs_earthquakes_last_polled.json`.
-
-## Deploying into Azure Container Instances
-
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-earthquakes%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-earthquakes%2Fazure-template-with-eventhub.json)
-
-## MQTT/Unified Namespace image
-
-A sibling MQTT container image, `ghcr.io/clemensv/real-time-sources-usgs-earthquakes-mqtt:latest`, publishes the same source events as MQTT 5.0 binary-mode CloudEvents. It uses the xRegistry MQTT messagegroup `USGS.Earthquakes.mqtt` and the source-specific Unified Namespace topic tree described in [EVENTS.md](EVENTS.md).
-
-### Run against a generic MQTT 5 broker
-
-```shell
-docker run --rm \
-    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \
-    -e MQTT_USERNAME='<username>' \
-    -e MQTT_PASSWORD='<password>' \
-    ghcr.io/clemensv/real-time-sources-usgs-earthquakes-mqtt:latest
-```
-
-### MQTT environment variables
-
-| Variable | Description |
-|---|---|
-| `MQTT_BROKER_URL` | Broker URL including host, port, and TLS scheme, for example `mqtt://host:1883` or `mqtts://host:8883`. |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional username/password credentials for brokers that require user authentication. Leave unset for anonymous brokers. |
-| `MQTT_CLIENT_ID` | Optional MQTT client identifier. Set it explicitly on shared brokers and Event Grid namespaces. |
-| `MQTT_CONTENT_MODE` | CloudEvents content mode, `binary` by default. Keep `binary` for MQTT 5 user-property metadata. |
-| `POLLING_INTERVAL` | Source polling interval in seconds, when supported by the feeder. |
-| `STATE_FILE` | Optional path for source dedupe/checkpoint state, when the feeder maintains local state. |
-| topic prefix | Fixed by the xRegistry contract, not an environment variable. Root: `seismic/intl/usgs/usgs-earthquakes`. |
-| retain default | Per message in xRegistry; see the topic table below. |
-| QoS default | Per message in xRegistry; MQTT messages in this source use QoS 1 unless noted otherwise. |
-
-### MQTT topic patterns
-
-| Topic pattern | Message type | Retained | QoS | Expiry seconds |
-|---|---|---|---|---|
-| `seismic/intl/usgs/usgs-earthquakes/{net}/{magnitude_bucket}/{code}/quake` | `USGS.Earthquakes.Event` | `false` | `1` | `` |
-
-### Subscription patterns
-
-```text
-# Everything from this source
-seismic/intl/usgs/usgs-earthquakes/#
-```
-
-### MQTT Azure deployment
-
-Deploy the MQTT container against an existing MQTT 5 broker:
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-earthquakes%2Fazure-template-mqtt.json)
-
-Deploy the MQTT container with a new Azure Event Grid namespace MQTT broker:
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-earthquakes%2Fazure-template-with-eventgrid-mqtt.json)
-
-## AMQP 1.0 container
-
-The AMQP companion image publishes the same `Usgs Earthquakes` CloudEvents to a generic AMQP 1.0 broker, Azure Service Bus with Entra ID CBS, or a SAS-token Service Bus-compatible endpoint.
+## Installing the container images
 
 ```bash
+docker pull ghcr.io/clemensv/real-time-sources-usgs-earthquakes:latest
+docker pull ghcr.io/clemensv/real-time-sources-usgs-earthquakes-mqtt:latest
 docker pull ghcr.io/clemensv/real-time-sources-usgs-earthquakes-amqp:latest
 ```
 
-### Generic AMQP broker (SASL PLAIN)
+## Using the Kafka image
+
+### With Azure Event Hubs / Fabric Event Streams
 
 ```bash
-docker run --rm   -e AMQP_BROKER_URL=amqp://broker:5672   -e AMQP_USERNAME=admin   -e AMQP_PASSWORD=admin   -e AMQP_ADDRESS=usgs-earthquakes   ghcr.io/clemensv/real-time-sources-usgs-earthquakes-amqp:latest
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_EQ_LAST_POLLED_FILE=/state/usgs-earthquakes.json \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-usgs-earthquakes:latest
 ```
 
-### Azure Service Bus (Entra ID)
+### With a Kafka broker (SASL/PLAIN)
 
 ```bash
-docker run --rm   -e AMQP_HOST=<namespace>.servicebus.windows.net   -e AMQP_PORT=5671   -e AMQP_TLS=true   -e AMQP_ADDRESS=usgs-earthquakes   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_AUDIENCE=https://servicebus.azure.net/.default   ghcr.io/clemensv/real-time-sources-usgs-earthquakes-amqp:latest
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_EQ_LAST_POLLED_FILE=/state/usgs-earthquakes.json \
+  -e KAFKA_BOOTSTRAP_SERVERS="<host:9093>" \
+  -e KAFKA_TOPIC="<topic>" \
+  -e SASL_USERNAME="<username>" \
+  -e SASL_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-usgs-earthquakes:latest
 ```
 
-### Service Bus emulator / SAS CBS
+## Using the MQTT image
+
+### Generic MQTT 5 broker (username/password)
 
 ```bash
-docker run --rm   -e AMQP_HOST=servicebus-emulator   -e AMQP_PORT=5672   -e AMQP_ADDRESS=usgs-earthquakes   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME=RootManageSharedAccessKey   -e AMQP_SAS_KEY=<base64-key>   ghcr.io/clemensv/real-time-sources-usgs-earthquakes-amqp:latest
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_EARTHQUAKES_LAST_POLLED_FILE=/state/usgs-earthquakes.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-usgs-earthquakes-mqtt:latest
 ```
 
-| Variable | Description | Default |
-|---|---|---|
-| `AMQP_BROKER_URL` | Optional AMQP URI for generic brokers. | unset |
-| `AMQP_HOST` / `AMQP_PORT` | Broker host and port when no URI is supplied. | `localhost` / `5672` |
-| `AMQP_ADDRESS` | Queue/topic/address to publish to. | `usgs-earthquakes` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `AMQP_AUTH_MODE=password`. | unset |
-| `AMQP_TLS` | Use TLS (`true`, `1`, or `yes`). | `false` |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
-| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra token scope and optional managed identity client ID. | Service Bus scope / unset |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS CBS credentials. | unset |
-| `AMQP_CONTENT_MODE` | CloudEvents content mode: `binary` or `structured`. | `binary` |
+### Azure Event Grid MQTT broker (Entra JWT)
 
-[![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-earthquakes%2Fazure-template-amqp.json)
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_EARTHQUAKES_LAST_POLLED_FILE=/state/usgs-earthquakes.json \
+  -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883" \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID="<managed-identity-client-id>" \
+  -e MQTT_CLIENT_ID="<unique-client-id>" \
+  ghcr.io/clemensv/real-time-sources-usgs-earthquakes-mqtt:latest
+```
 
+## Using the AMQP image
+
+### Generic AMQP 1.0 broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_EARTHQUAKES_LAST_POLLED_FILE=/state/usgs-earthquakes.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/usgs-earthquakes" \
+  ghcr.io/clemensv/real-time-sources-usgs-earthquakes-amqp:latest
+```
+
+### Azure Service Bus / Event Hubs (Entra ID via CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_EARTHQUAKES_LAST_POLLED_FILE=/state/usgs-earthquakes.json \
+  -e AMQP_HOST="<namespace>.servicebus.windows.net" \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS="usgs-earthquakes" \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_CLIENT_ID="<managed-identity-client-id>" \
+  ghcr.io/clemensv/real-time-sources-usgs-earthquakes-amqp:latest
+```
+
+### Service Bus emulator / SAS namespaces (SAS-token CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e USGS_EARTHQUAKES_LAST_POLLED_FILE=/state/usgs-earthquakes.json \
+  -e AMQP_HOST="servicebus-emulator" \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS="usgs-earthquakes" \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey" \
+  -e AMQP_SAS_KEY="<sas-key>" \
+  ghcr.io/clemensv/real-time-sources-usgs-earthquakes-amqp:latest
+```
+
+## Environment variables
+
+### Common source runtime variables
+
+| Variable | Description |
+|---|---|
+| `USGS_EQ_LAST_POLLED_FILE` | Path to persisted checkpoint/dedupe state for the KAFKA bridge runtime. |
+| `USGS_EARTHQUAKES_LAST_POLLED_FILE` | Path to persisted checkpoint/dedupe state for the MQTT bridge runtime. |
+| `USGS_EARTHQUAKES_FEED` | Feed selection (for example `all_hour`, `all_day`, `significant_month`). |
+| `USGS_EARTHQUAKES_MIN_MAGNITUDE` | Optional minimum magnitude filter. |
+| `POLLING_INTERVAL` | Polling interval in seconds. |
+
+### Kafka image variables
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric custom endpoint style connection string. |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list (`host:port`). |
+| `KAFKA_TOPIC` | Destination Kafka topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` to disable TLS (default `true`). |
+
+### MQTT image variables
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL, e.g. `mqtt://host:1883` or `mqtts://host:8883`. |
+| `MQTT_HOST` / `MQTT_PORT` / `MQTT_TLS` | Component-level alternative to `MQTT_BROKER_URL`. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for Event Grid JWT auth. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for `MQTT_AUTH_MODE=password`. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | User-assigned managed identity client id (optional). |
+| `MQTT_CLIENT_ID` | MQTT client identifier (must be unique per broker). |
+| `MQTT_CONTENT_MODE` | CloudEvents mode: `binary` (default) or `structured`. |
+
+### AMQP image variables
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | URL form endpoint, e.g. `amqp://user:pw@host:5672/address`. |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component-level endpoint settings. |
+| `AMQP_ADDRESS` | Target AMQP address (queue/topic). |
+| `AMQP_AUTH_MODE` | `password` (default), `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | Credentials for `AMQP_AUTH_MODE=password`. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra auth settings for `AMQP_AUTH_MODE=entra`. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS policy/key pair for `AMQP_AUTH_MODE=sas`. |
+| `AMQP_CONTENT_MODE` | CloudEvents mode: `binary` (default) or `structured`. |
+
+## Deploying into Microsoft Fabric
+
+### Fabric Notebook feeder
+
+Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source usgs-earthquakes -WorkspaceId <id> -CapacityId <id>` to deploy the notebook in `notebook/`, bind Event Stream/Lakehouse/KQL assets, and schedule poll runs.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#usgs-earthquakes/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source usgs-earthquakes -WorkspaceId <id> -CapacityId <id>` for always-on container hosting that publishes to Fabric Event Streams.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#usgs-earthquakes/fabric-aci)
+
+## Deploying into Azure Container Instances
+
+### Kafka — bring your own Event Hub / Kafka
+
+Deploys the Kafka image and uses a provided connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-earthquakes%2Fazure-template.json)
+
+### Kafka — provision a new Event Hub
+
+Deploys Kafka plus a new Event Hubs namespace and hub.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-earthquakes%2Fazure-template-with-eventhub.json)
+
+### AMQP — bring your own AMQP broker
+
+Deploys the AMQP image against a provided AMQP broker endpoint.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fusgs-earthquakes%2Fazure-template-amqp.json)
+
+## Related
+
+- [README.md](README.md) — source overview, use cases, and quick-start guidance.
+- [EVENTS.md](EVENTS.md) — CloudEvents schemas and routing contract.
+- [`xreg/`](xreg/) — authoritative xRegistry manifest used to generate producers and event docs.
+
+## Next steps
+
+- Validate topics/subjects/schemas in [EVENTS.md](EVENTS.md).
+- Use the deployment buttons above for the transport and hosting shape you need.
