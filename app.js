@@ -83,7 +83,7 @@ const SOURCES = [
 
   // ── Maritime and Vessel Tracking ──
   { id: "aisstream", name: "AISStream", cat: "Maritime", key: true, desc: "Global — AIS via WebSocket, ~200 km from shore", amqp: true, mqtt: true },
-  { id: "digitraffic-maritime", name: "Digitraffic Maritime", cat: "Maritime", key: false, desc: "Finland / Baltic Sea — AIS via MQTT" },
+  { id: "digitraffic-maritime", name: "Digitraffic Maritime", cat: "Maritime", key: false, desc: "Finland / Baltic Sea — AIS via MQTT", mqtt: true, amqp: true },
   { id: "kystverket-ais", name: "Kystverket AIS", cat: "Maritime", key: false, desc: "Norway / Svalbard — raw TCP AIS, ~34 msg/s", amqp: true, mqtt: true },
 
   // ── Aviation ──

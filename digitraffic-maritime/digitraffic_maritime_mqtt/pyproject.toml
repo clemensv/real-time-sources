@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "digitraffic-maritime-mqtt"
+version = "0.1.0"
+description = "Digitraffic Maritime MQTT feeder"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{include = "digitraffic_maritime_mqtt"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+requests = ">=2.32.3"
+digitraffic-maritime = {path = ".."}
+digitraffic_maritime_mqtt_producer_data = {path = "../digitraffic_maritime_mqtt_producer/digitraffic_maritime_mqtt_producer_data"}
+digitraffic_maritime_mqtt_producer_mqtt_client = {path = "../digitraffic_maritime_mqtt_producer/digitraffic_maritime_mqtt_producer_mqtt_client"}
+
+[tool.poetry.scripts]
+digitraffic-maritime-mqtt = "digitraffic_maritime_mqtt.app:main"

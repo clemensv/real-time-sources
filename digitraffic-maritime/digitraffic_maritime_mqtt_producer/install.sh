@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./digitraffic_maritime_mqtt_producer_data
+pip install ./digitraffic_maritime_mqtt_producer_mqtt_client

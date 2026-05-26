@@ -1,226 +1,88 @@
-# Digitraffic Marine Bridge Usage Guide
+# Digitraffic Maritime feeder
 
-## Overview
+> See also: [CONTAINER.md](CONTAINER.md) · [EVENTS.md](EVENTS.md)
 
-**Digitraffic Marine Bridge** connects to Finland's
-[Digitraffic](https://www.digitraffic.fi/) MQTT stream for real-time AIS
-vessel tracking and also polls Digitraffic's Port Call REST APIs for vessel
-visit and companion reference data. Both paths are forwarded to Kafka as
-[CloudEvents](https://cloudevents.io/) in JSON format.
+Digitraffic Maritime ingests Finland's open marine traffic feeds from Fintraffic and republishes them as CloudEvents.
 
-The bridge has two delivery modes:
+> Source: Fintraffic / digitraffic.fi, license CC 4.0 BY.
 
-- `stream` keeps an open MQTT WebSocket connection to `meri.digitraffic.fi`
-  and continuously forwards vessel position and metadata messages.
-- `port-calls` polls the Portnet-backed REST APIs and emits vessel details,
-  port locations, and port call visit updates.
+## Source scope
 
-## Key Features
+- **AIS stream** from `wss://meri.digitraffic.fi:443/mqtt` (vessel locations + metadata)
+- **Port call APIs** (`/port-calls`, `/vessel-details`, `/ports`) for visit telemetry plus companion reference data
 
-- **Real-time MQTT stream**: ~35 messages/second from Digitraffic's
-  government-operated AIS infrastructure
-- **Port Call polling**: Digitraffic REST polling for vessel visits and
-  companion reference data
-- **No authentication required**: Open data under Creative Commons 4.0 BY
-- **Baltic Sea coverage**: Finnish waters, Sweden, Estonia, Latvia,
-  Lithuania, Denmark, Germany, Poland, and transit traffic
-- **Five event types**: AIS vessel positions, AIS vessel metadata, port calls,
-  vessel details, and port locations
-- **MMSI filtering**: Subscribe to specific vessels via MQTT topic filters
-- **Auto-reconnect**: Exponential backoff on connection failures
-- **Reference data ahead of visits**: The `port-calls` command emits vessel
-  details and port locations before port call visit events in each cycle
-- **Kafka integration**: SASL PLAIN authentication for Event Hubs / Fabric
-  Event Streams
+The feeder preserves five event families:
 
-## Event Families
+- `fi.digitraffic.marine.ais.VesselLocation`
+- `fi.digitraffic.marine.ais.VesselMetadata`
+- `fi.digitraffic.marine.portcall.PortCall`
+- `fi.digitraffic.marine.portcall.VesselDetails`
+- `fi.digitraffic.marine.portcall.PortLocation`
 
-The bridge emits these CloudEvents families. Full field documentation lives in
-[EVENTS.md](EVENTS.md).
+## Transport variants
 
-| Event Type | Command | Identity |
-|------------|---------|----------|
-| `fi.digitraffic.marine.ais.VesselLocation` | `stream` | `{mmsi}` |
-| `fi.digitraffic.marine.ais.VesselMetadata` | `stream` | `{mmsi}` |
-| `fi.digitraffic.marine.portcall.PortCall` | `port-calls` | `{port_call_id}` |
-| `fi.digitraffic.marine.portcall.VesselDetails` | `port-calls` | `{vessel_id}` |
-| `fi.digitraffic.marine.portcall.PortLocation` | `port-calls` | `{locode}` |
+| Variant | Image | Transport | Default target |
+|---|---|---|---|
+| Kafka | `ghcr.io/clemensv/real-time-sources-digitraffic-maritime:latest` | Kafka protocol / Event Hubs compatible | Topic `digitraffic-maritime` |
+| MQTT | `ghcr.io/clemensv/real-time-sources-digitraffic-maritime-mqtt:latest` | MQTT 5.0, CloudEvents binary mode | UNS topics under `maritime/fi/fintraffic/digitraffic-maritime/...` |
+| AMQP | `ghcr.io/clemensv/real-time-sources-digitraffic-maritime-amqp:latest` | AMQP 1.0, CloudEvents binary mode | Address `digitraffic-maritime` |
 
-## Data Source
+## Repository layout
 
-[Digitraffic Marine](https://www.digitraffic.fi/en/marine-traffic/) is
-operated by [Fintraffic](https://www.fintraffic.fi) — Finland's
-state-owned transport infrastructure company. The AIS data is collected
-from VTS Finland's shore-based AIS receivers.
-
-- **MQTT endpoint**: `wss://meri.digitraffic.fi:443/mqtt`
-- **Protocol**: MQTT over WebSocket with TLS
-- **Authentication**: None
-- **Coverage**: Finnish territorial waters and Baltic Sea
-- **License**: Creative Commons 4.0 BY
-- **Throughput**: ~35 position updates/second, ~2,100/minute
-
-**Attribution (required by license):**
-
-> Source: Fintraffic / digitraffic.fi, license CC 4.0 BY
-
-## Installation
-
-Requires Python 3.10 or later.
-
-```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/digitraffic-maritime
-pip install .
+```text
+digitraffic-maritime/
+  digitraffic_maritime/                  # shared source integration (AIS + port-calls)
+  digitraffic_maritime_producer/         # generated Kafka producer
+  digitraffic_maritime_mqtt_producer/    # generated MQTT producer
+  digitraffic_maritime_amqp_producer/    # generated AMQP producer
+  digitraffic_maritime_mqtt/             # MQTT feeder app
+  digitraffic_maritime_amqp/             # AMQP feeder app
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+  xreg/digitraffic_maritime.xreg.json
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md)
-instructions.
+## Quick start
 
-## How to Use
-
-After installation, the tool can be run using the `digitraffic-maritime`
-command.
-
-The events sent to Kafka are formatted as CloudEvents, documented in
-[EVENTS.md](EVENTS.md).
-
-### Probe the Live Stream
-
-Test connectivity and see live vessel data:
+### Kafka image
 
 ```bash
-digitraffic-maritime probe
+docker run --rm \
+  -e CONNECTION_STRING='BootstrapServer=<host:9092>;EntityPath=digitraffic-maritime' \
+  ghcr.io/clemensv/real-time-sources-digitraffic-maritime:latest
 ```
 
-Probe only vessel positions (no metadata):
+### MQTT image
 
 ```bash
-digitraffic-maritime probe --subscribe location
+docker run --rm \
+  -e MQTT_BROKER_URL='mqtt://broker:1883' \
+  -e DIGITRAFFIC_MODE='port-calls' \
+  -e ONCE_MODE='true' \
+  ghcr.io/clemensv/real-time-sources-digitraffic-maritime-mqtt:latest
 ```
 
-Track a specific vessel:
+### AMQP image
 
 ```bash
-digitraffic-maritime probe --mmsi-filter 230629000
+docker run --rm \
+  -e AMQP_BROKER_URL='amqp://user:password@broker:5672/digitraffic-maritime' \
+  -e DIGITRAFFIC_MODE='port-calls' \
+  -e ONCE_MODE='true' \
+  ghcr.io/clemensv/real-time-sources-digitraffic-maritime-amqp:latest
 ```
 
-### Stream to Kafka
+## Azure deployment templates
 
-#### Using a Connection String (Event Hubs / Fabric Event Streams)
+- `azure-template.json` (Kafka, BYO Event Hub/Event Stream)
+- `azure-template-with-eventhub.json` (Kafka + new Event Hub)
+- `azure-template-mqtt.json` (MQTT, BYO broker)
+- `azure-template-with-eventgrid-mqtt.json` (MQTT + Event Grid namespace)
+- `azure-template-with-servicebus.json` (AMQP + Service Bus)
 
-```bash
-digitraffic-maritime stream \
-    --connection-string "<your_connection_string>"
-```
+## Related
 
-#### Using Kafka Parameters Directly
-
-```bash
-digitraffic-maritime stream \
-    --kafka-bootstrap-servers "<bootstrap_servers>" \
-    --kafka-topic "<topic_name>" \
-    --sasl-username "<username>" \
-    --sasl-password "<password>"
-```
-
-### Command-Line Arguments (stream)
-
-| Argument | Env Var | Description |
-|----------|---------|-------------|
-| `-c`, `--connection-string` | `CONNECTION_STRING` | Event Hubs / Fabric connection string |
-| `--kafka-bootstrap-servers` | `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers |
-| `--kafka-topic` | `KAFKA_TOPIC` | Kafka topic name |
-| `--sasl-username` | `SASL_USERNAME` | SASL PLAIN username |
-| `--sasl-password` | `SASL_PASSWORD` | SASL PLAIN password |
-| `--subscribe` | `DIGITRAFFIC_SUBSCRIBE` | Comma-separated: `location,metadata` (default: both) |
-| `--mmsi-filter` | `DIGITRAFFIC_FILTER_MMSI` | Comma-separated MMSIs to include (default: all) |
-| `--flush-interval` | `DIGITRAFFIC_FLUSH_INTERVAL` | Flush Kafka every N events (default: 1000) |
-
-### Examples
-
-#### Stream Position Updates Only
-
-```bash
-digitraffic-maritime stream \
-    -c "<conn_string>" \
-    --subscribe location
-```
-
-#### Track Specific Vessels
-
-```bash
-digitraffic-maritime stream \
-    -c "<conn_string>" \
-    --mmsi-filter "230629000,219598000"
-```
-
-### Poll Port Calls and Reference Data
-
-Poll the Portnet-backed REST APIs and emit vessel details, port locations, and
-port calls to Kafka:
-
-```bash
-digitraffic-maritime port-calls \
-  -c "<conn_string>"
-```
-
-### Command-Line Arguments (port-calls)
-
-| Argument | Env Var | Description |
-|----------|---------|-------------|
-| `-c`, `--connection-string` | `CONNECTION_STRING` | Event Hubs / Fabric connection string |
-| `--kafka-bootstrap-servers` | `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers |
-| `--kafka-topic` | `KAFKA_TOPIC` | Kafka topic name |
-| `--sasl-username` | `SASL_USERNAME` | SASL PLAIN username |
-| `--sasl-password` | `SASL_PASSWORD` | SASL PLAIN password |
-| `--poll-interval` | `DIGITRAFFIC_PORTCALL_POLL_INTERVAL` | Port call polling interval in seconds |
-| `--state-file` | `DIGITRAFFIC_PORTCALL_STATE_FILE` | JSON file used to persist last-seen reference and visit timestamps |
-
-## MQTT Topics
-
-The bridge subscribes to Digitraffic's MQTT topics:
-
-| Topic Pattern | Description |
-|--------------|-------------|
-| `vessels-v2/+/location` | All vessel position updates |
-| `vessels-v2/+/metadata` | All vessel metadata updates |
-| `vessels-v2/<mmsi>/location` | Single vessel positions (when MMSI filter active) |
-| `vessels-v2/<mmsi>/metadata` | Single vessel metadata (when MMSI filter active) |
-
-The MMSI is extracted from the MQTT topic path and used as the Kafka
-partition key.
-
-## Coverage Area
-
-The Digitraffic Marine AIS system covers the Baltic Sea region. Vessels
-observed include those registered in:
-
-- 🇫🇮 Finland, 🇸🇪 Sweden, 🇪🇪 Estonia, 🇱🇻 Latvia, 🇱🇹 Lithuania
-- 🇩🇰 Denmark, 🇩🇪 Germany, 🇵🇱 Poland, 🇷🇺 Russia (Baltic ports)
-- International vessels transiting the Baltic
-
-This complements the [Kystverket AIS bridge](../kystverket-ais/) which
-covers Norwegian waters. Between the two, the entire Nordic/Baltic
-maritime region is covered.
-
-## Deploying into Azure Container Instances
-
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-maritime%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-maritime%2Fazure-template-with-eventhub.json)
+- [Digitraffic Maritime portal](https://www.digitraffic.fi/en/marine-traffic/)
+- [Fintraffic](https://www.fintraffic.fi)
+- [Kystverket AIS feeder](../kystverket-ais/README.md)

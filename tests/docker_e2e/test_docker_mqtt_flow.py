@@ -4649,6 +4649,38 @@ class TestInpeDeterBrazilMqttDockerFlow:
 
 
 @pytest.fixture(scope='module')
+def digitraffic_maritime_mqtt_image():
+    return build_image('digitraffic-maritime', dockerfile='Dockerfile.mqtt', tag='test-digitraffic-maritime-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_digitraffic_maritime():
+    container, network, host_port = _generic_mosquitto('digitraffic-maritime-mqtt-e2e', 'digitraffic-maritime-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'digitraffic-maritime-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+class TestDigitrafficMaritimeMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_digitraffic_maritime, digitraffic_maritime_mqtt_image):
+        _run_mqtt_contract_flow(
+            'digitraffic-maritime',
+            digitraffic_maritime_mqtt_image,
+            mosquitto_digitraffic_maritime,
+            extra_env={'DIGITRAFFIC_MODE': 'port-calls'},
+            timeout=360,
+        )
+
+
+@pytest.fixture(scope='module')
 def usgs_iv_mqtt_image():
     return build_image('usgs-iv', dockerfile='Dockerfile.mqtt', tag='test-usgs-iv-mqtt')
 
@@ -5836,4 +5868,3 @@ def mosquitto_smhi_weather():
 class TestSmhiWeatherMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_smhi_weather, smhi_weather_mqtt_image):
         _run_mqtt_contract_flow('smhi-weather', smhi_weather_mqtt_image, mosquitto_smhi_weather, extra_env={'SMHI_WEATHER_MOCK': 'true'}, timeout=300)
-

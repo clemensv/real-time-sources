@@ -1374,6 +1374,24 @@
       "image": "smhi-weather-amqp",
       "file": "Dockerfile.amqp",
       "module": "smhi_weather_amqp"
+    },
+    {
+      "dir": "digitraffic-maritime",
+      "image": "digitraffic-maritime-kafka",
+      "file": "Dockerfile",
+      "module": "digitraffic_maritime"
+    },
+    {
+      "dir": "digitraffic-maritime",
+      "image": "digitraffic-maritime-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "digitraffic_maritime_mqtt"
+    },
+    {
+      "dir": "digitraffic-maritime",
+      "image": "digitraffic-maritime-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "digitraffic_maritime_amqp"
     }
   ],
   "flow": [
@@ -2912,6 +2930,27 @@
       "image": "smhi-weather-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestSmhiWeatherAmqpDockerFlow"
+    },
+    {
+      "dir": "digitraffic-maritime",
+      "image": "digitraffic-maritime-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestDigitrafficMaritimeDockerFlow"
+    },
+    {
+      "dir": "digitraffic-maritime",
+      "image": "digitraffic-maritime-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestDigitrafficMaritimeMqttDockerFlow"
+    },
+    {
+      "dir": "digitraffic-maritime",
+      "image": "digitraffic-maritime-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestDigitrafficMaritimeAmqpDockerFlow"
     }
   ]
 }

@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "digitraffic-maritime-amqp"
+version = "0.1.0"
+description = "Digitraffic Maritime AMQP feeder"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{include = "digitraffic_maritime_amqp"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+azure-identity = ">=1.17.0"
+digitraffic-maritime = {path = ".."}
+digitraffic_maritime_amqp_producer_data = {path = "../digitraffic_maritime_amqp_producer/digitraffic_maritime_amqp_producer_data"}
+digitraffic_maritime_amqp_producer_amqp_producer = {path = "../digitraffic_maritime_amqp_producer/digitraffic_maritime_amqp_producer_amqp_producer"}
+
+[tool.poetry.scripts]
+digitraffic-maritime-amqp = "digitraffic_maritime_amqp.app:main"

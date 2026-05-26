@@ -705,7 +705,9 @@
     "cat": "Maritime",
     "key": false,
     "desc": "Finland / Baltic Sea — AIS via MQTT",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "kystverket-ais",
