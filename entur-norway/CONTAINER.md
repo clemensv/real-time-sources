@@ -1,140 +1,97 @@
-# Entur Norway Container
+# Entur Norway SIRI container images
 
-## Overview
+Related docs:
 
-This container bridges the [Entur Norway](https://developer.entur.org/) SIRI
-real-time feeds to Apache Kafka endpoints. It polls the SIRI 2.0 REST API for
-Estimated Timetable (ET), Vehicle Monitoring (VM), and Situation Exchange (SX)
-data, emitting events as CloudEvents.
+- [README.md](README.md) — source context, quick-start flow, and deployment guidance.
+- [EVENTS.md](EVENTS.md) — event families, CloudEvents types, and payload schemas.
 
-The Entur API provides real-time information about Norwegian public transport
-across all operators and modes (bus, tram, rail, metro, ferry). Data is sourced
-from the national journey planner and covers the entire Norwegian network.
+> [!NOTE]
+> Entur data is published under NLOD. Keep attribution and license obligations in downstream use.
 
-For the full event catalog, see [EVENTS.md](EVENTS.md).
+## Why this container
 
-## Container Image
+These images package the Entur Norway SIRI bridge runtime so teams can run a production feeder with consistent event contracts across Kafka, MQTT, and AMQP transports.
 
-```bash
-docker pull ghcr.io/clemensv/real-time-sources/entur-norway:latest
-```
+## What ships in the box
 
-## Environment Variables
+| Image | Dockerfile | Purpose |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-entur-norway:latest` | `Dockerfile` | Kafka-compatible publishing path |
+| `ghcr.io/clemensv/real-time-sources-entur-norway-mqtt:latest` | `Dockerfile.mqtt` | MQTT 5.0 publishing path |
+| `ghcr.io/clemensv/real-time-sources-entur-norway-amqp:latest` | `Dockerfile.amqp` | AMQP 1.0 publishing path |
 
-| Variable | Required | Default | Description |
+## Image contract
+
+| Aspect | Kafka | MQTT | AMQP |
 |---|---|---|---|
-| `CONNECTION_STRING` | Yes | — | Kafka connection string (see below) |
-| `POLLING_INTERVAL` | No | `30` | Polling interval in seconds |
-| `MAX_SIZE` | No | `1000` | Maximum records per SIRI request |
-| `KAFKA_ENABLE_TLS` | No | `true` | Set to `false` for plain Kafka without TLS |
+| Base image | `python:3.10-slim` | `python:3.10-slim` | `python:3.10-slim` |
+| Default command | `CMD ["python", "-m", "entur_norway", "feed"]` | `CMD ["python", "-m", "entur_norway_mqtt", "feed"]` | `CMD ["python", "-m", "entur_norway_amqp", "feed"]` |
+| Delivery format | CloudEvents to Kafka topic | CloudEvents to MQTT topic tree | CloudEvents to AMQP address |
+| Shared contract | \- | Uses same xRegistry event model | Uses same xRegistry event model |
 
-## Running with Plain Kafka
-
-```bash
-docker run -d \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=entur-norway" \
-  -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources/entur-norway:latest
-```
-
-## Running with Azure Event Hubs
+## Kafka image quick start
 
 ```bash
-docker run -d \
-  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=entur-norway" \
-  ghcr.io/clemensv/real-time-sources/entur-norway:latest
+docker run --rm   -e CONNECTION_STRING="<connection-string>"   ghcr.io/clemensv/real-time-sources-entur-norway:latest
 ```
 
-## Running with Fabric Event Streams
+## MQTT image quick start
 
-Use the Kafka connection string from your Fabric Event Stream custom
-endpoint. The format is the same as Azure Event Hubs.
-
-## Behavior
-
-1. At startup, fetches all three SIRI feeds (ET, VM, SX) without a `requestorId`
-   to obtain the complete current dataset.
-2. From the initial ET snapshot, emits `no.entur.DatedServiceJourney` reference
-   events for each unique service journey, providing timetable context for
-   downstream consumers.
-3. Emits `no.entur.EstimatedVehicleJourney` events for all stop-level
-   predictions from the ET feed.
-4. Emits `no.entur.MonitoredVehicleJourney` events for all live vehicle
-   positions from the VM feed.
-5. Emits `no.entur.PtSituationElement` events for all active service disruptions
-   from the SX feed.
-6. Subsequent polling cycles use a persistent `requestorId` per feed to receive
-   only changed data since the last request (incremental delivery).
-7. Handles SIRI `MoreData: true` responses by paginating until all data is
-   received.
-
-## Kafka Topic
-
-All events are produced to a single Kafka topic (default: `entur-norway`).
-
-- `journeys` events use the key format `journeys/{operating_day}/{service_journey_id}`
-- `situations` events use the key format `situations/{situation_number}`
-
-## Data Source
-
-- API: <https://api.entur.io/realtime/v1/rest/>
-- Documentation: <https://developer.entur.org/pages-real-time-intro>
-- License: [NLOD (Norwegian Licence for Open Government Data)](https://data.norge.no/nlod/en/2.0)
-- Coverage: All Norwegian public transport operators and modes
-
-## MQTT/Unified Namespace image
-
-A sibling MQTT container image, `ghcr.io/clemensv/real-time-sources-entur-norway-mqtt:latest`, publishes the same source events as MQTT 5.0 binary-mode CloudEvents. It uses the xRegistry MQTT messagegroup `no.entur.mqtt` and the source-specific Unified Namespace topic tree described in [EVENTS.md](EVENTS.md).
-
-### Run against a generic MQTT 5 broker
-
-```shell
-docker run --rm \
-    -e MQTT_BROKER_URL='mqtts://broker.example.com:8883' \
-    -e MQTT_USERNAME='<username>' \
-    -e MQTT_PASSWORD='<password>' \
-    ghcr.io/clemensv/real-time-sources-entur-norway-mqtt:latest
+```bash
+docker run --rm   -e MQTT_BROKER_URL="mqtts://<broker>:8883" -e MQTT_USERNAME="<user>" -e MQTT_PASSWORD="<password>"   ghcr.io/clemensv/real-time-sources-entur-norway-mqtt:latest
 ```
 
-### MQTT environment variables
+## AMQP image quick start
 
-| Variable | Description |
+```bash
+docker run --rm   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/entur-norway"   ghcr.io/clemensv/real-time-sources-entur-norway-amqp:latest
+```
+
+## Environment variable matrix
+
+### Kafka image (`ghcr.io/clemensv/real-time-sources-entur-norway:latest`)
+
+| Variable | Purpose |
 |---|---|
-| `MQTT_BROKER_URL` | Broker URL including host, port, and TLS scheme, for example `mqtt://host:1883` or `mqtts://host:8883`. |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional username/password credentials for brokers that require user authentication. Leave unset for anonymous brokers. |
-| `MQTT_CLIENT_ID` | Optional MQTT client identifier. Set it explicitly on shared brokers and Event Grid namespaces. |
-| `MQTT_CONTENT_MODE` | CloudEvents content mode, `binary` by default. Keep `binary` for MQTT 5 user-property metadata. |
-| `POLLING_INTERVAL` | Source polling interval in seconds, when supported by the feeder. |
-| `STATE_FILE` | Optional path for source dedupe/checkpoint state, when the feeder maintains local state. |
-| topic prefix | Fixed by the xRegistry contract, not an environment variable. Root: `transit/no/entur/entur-norway/et`. |
-| retain default | Per message in xRegistry; see the topic table below. |
-| QoS default | Per message in xRegistry; MQTT messages in this source use QoS 1 unless noted otherwise. |
+| `CONNECTION_STRING` | Core configuration for this image variant. |
+| `KAFKA_ENABLE_TLS` | Core configuration for this image variant. |
+| `POLLING_INTERVAL` | Core configuration for this image variant. |
+| `STATE_FILE` | Core configuration for this image variant. |
+| `MAX_SIZE` | Core configuration for this image variant. |
 
-### MQTT topic patterns
+### MQTT image (`ghcr.io/clemensv/real-time-sources-entur-norway-mqtt:latest`)
 
-| Topic pattern | Message type | Retained | QoS | Expiry seconds |
-|---|---|---|---|---|
-| `transit/no/entur/entur-norway/et/{operator_ref}/{line_ref}/{service_journey_id}/estimated-vehicle-journey` | `no.entur.EstimatedVehicleJourney` | `false` | `1` | `` |
-| `transit/no/entur/entur-norway/vm/{operator_ref}/{line_ref}/{service_journey_id}/monitored-vehicle-journey` | `no.entur.MonitoredVehicleJourney` | `false` | `1` | `` |
-| `transit/no/entur/entur-norway/sx/{severity}/{situation_number}/situation` | `no.entur.PtSituationElement` | `false` | `1` | `` |
+| Variable | Purpose |
+|---|---|
+| `MQTT_BROKER_URL` | Core configuration for this image variant. |
+| `MQTT_USERNAME` | Core configuration for this image variant. |
+| `MQTT_PASSWORD` | Core configuration for this image variant. |
+| `MQTT_CLIENT_ID` | Core configuration for this image variant. |
+| `MQTT_CONTENT_MODE` | Core configuration for this image variant. |
 
-### Subscription patterns
+### AMQP image (`ghcr.io/clemensv/real-time-sources-entur-norway-amqp:latest`)
 
-```text
-# Everything from this source
-transit/no/entur/entur-norway/et/#
-```
+| Variable | Purpose |
+|---|---|
+| `AMQP_BROKER_URL` | Core configuration for this image variant. |
+| `AMQP_ADDRESS` | Core configuration for this image variant. |
+| `AMQP_AUTH_MODE` | Core configuration for this image variant. |
+| `AMQP_ENTRA_CLIENT_ID` | Core configuration for this image variant. |
+| `AMQP_SAS_KEY_NAME / AMQP_SAS_KEY` | Core configuration for this image variant. |
 
-### MQTT Azure deployment
+## Azure ARM deployments
 
-Deploy the MQTT container against an existing MQTT 5 broker:
+Only templates that exist in this source folder are listed below.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentur-norway%2Fazure-template-mqtt.json)
+- `azure-template-with-eventhub.json` — Kafka deployment plus Azure Event Hubs provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentur-norway%2Fazure-template-with-eventhub.json)
+- `azure-template-with-servicebus.json` — AMQP deployment plus Azure Service Bus provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentur-norway%2Fazure-template-with-servicebus.json)
+- `azure-template.json` — Kafka deployment targeting an existing Kafka/Event Hubs endpoint
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentur-norway%2Fazure-template.json)
 
-Deploy the MQTT container with a new Azure Event Grid namespace MQTT broker:
+## Related
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fentur-norway%2Fazure-template-with-eventgrid-mqtt.json)
-
-## AMQP 1.0 companion
-
-This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.
+- [README.md](README.md)
+- [EVENTS.md](EVENTS.md)
+- `xreg/`

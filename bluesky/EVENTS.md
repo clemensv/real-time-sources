@@ -1,4 +1,4 @@
-# Bluesky Firehose Producer Events
+# Bluesky Firehose feeder Events
 
 MQTT/5.0 non-retained firehose variants of the Bluesky CloudEvents. Each record family gets a dedicated topic with the kebab record name baked as the trailing segment so subscribers can wildcard per family. QoS 0, retain=false — there is no LKV slot for a firehose.
 

@@ -1,183 +1,124 @@
-# Bluesky Firehose Producer
+# Bluesky Firehose feeder
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — container images, runtime configuration, and ARM deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contracts, schemas, and routing metadata.
+
+## Why this bridge
+
+This bridge ingests **AT Protocol Bluesky firehose websocket** and republishes normalized CloudEvents so downstream systems subscribe instead of implementing and maintaining custom source clients.
+
+- Ingest social activity streams for trend and moderation analytics.
+- Power near-real-time content and graph observability pipelines.
+- Apply collection-level filters before data reaches downstream systems.
+- Publish high-volume stream data into Kafka/MQTT/AMQP from one bridge.
+- Use cursor-based resume behavior to reduce replay gaps after restarts.
 
 ## Overview
 
-**Bluesky Firehose Producer** connects to the Bluesky AT Protocol firehose and streams real-time events (posts, likes, reposts, follows, blocks, and profile updates) to Kafka topics or Microsoft Event Hubs. Events are formatted as CloudEvents for standardized event processing.
+| Variant | Dockerfile | Image | Default delivery shape |
+|---|---|---|---|
+| Kafka | `Dockerfile` | `ghcr.io/clemensv/real-time-sources-bluesky:latest` | CloudEvents to Kafka-compatible endpoints |
+| MQTT | `Dockerfile.mqtt` | `ghcr.io/clemensv/real-time-sources-bluesky-mqtt:latest` | CloudEvents over MQTT 5.0 topic hierarchy |
+| AMQP | `Dockerfile.amqp` | `ghcr.io/clemensv/real-time-sources-bluesky-amqp:latest` | CloudEvents over AMQP 1.0 address |
 
-## Key Features:
-- **Real-time Firehose**: Subscribe to the full Bluesky network activity stream
-- **Multiple Event Types**: Posts, likes, reposts, follows, blocks, and profile updates
-- **Kafka Integration**: Send events as CloudEvents to Kafka topics, supporting Microsoft Event Hubs and Microsoft Fabric Event Streams
-- **Selective Filtering**: Filter by collection types and apply sampling rates
-- **Cursor Management**: Resume from last processed event after restarts
-- **High Throughput**: Optimized for high-volume event processing
+All variants share:
 
-## Installation
+- The same upstream acquisition logic and normalization model.
+- The same xRegistry contract in `xreg/`.
+- The same event-family semantics documented in [EVENTS.md](EVENTS.md).
 
-The tool is written in Python and requires Python 3.10 or later (up to 3.12). You can download Python from [here](https://www.python.org/downloads/) or get it from the Microsoft Store if you are on Windows.
+## Key features
 
-> **Note**: This project uses `atproto` version 0.0.54, which provides full support for all firehose message types including #account messages, while maintaining Linux container compatibility. Version 0.0.54 (September 2024) is the last stable version before Pydantic compatibility issues appeared in version 0.0.55+.
+- Supports key AT Protocol collections (posts, likes, reposts, follows, blocks, profiles).
+- Streaming transport variants share one CloudEvents contract family.
+- Filter and sample controls for high-throughput scenarios.
+- Cursor persistence support on Kafka variant.
 
-### Installation Steps
+## Repository layout
 
-Once Python is installed, you can install the tool from the command line as follows:
+```text
+bluesky/
+  xreg/bluesky.xreg.json
+  bluesky/
+  bluesky_amqp/
+  bluesky_mqtt/
+  botfinder/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+  README.md
+  CONTAINER.md
+  EVENTS.md
+```
 
+## Prerequisites
+
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound connectivity to the upstream source endpoint(s).
+- Network access to your target messaging broker (Kafka, MQTT, or AMQP).
+
+## Quick start with Docker
+
+### Kafka
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=bluesky
+docker run --rm \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-bluesky:latest
 ```
 
-If you clone the repository, you can install the tool as follows:
-
+### MQTT
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/bluesky
-pip install .
+docker run --rm \
+  -e MQTT_BROKER_URL="mqtts://<broker>:8883" -e MQTT_USERNAME="<user>" -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-bluesky-mqtt:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
-
-## How to Use
-
-After installation, the tool can be run using the `bluesky_firehose` command.
-
-### **Stream Firehose (`stream`)**
-
-Connects to the Bluesky firehose and streams events to a Kafka topic. The events are formatted using CloudEvents structured JSON format and described in [EVENTS.md](EVENTS.md).
-
-- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
-- `--kafka-topic`: Kafka topic to send messages to.
-- `--sasl-username`: Username for SASL PLAIN authentication.
-- `--sasl-password`: Password for SASL PLAIN authentication.
-- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream [connection string](#connection-string-for-microsoft-event-hubs-or-fabric-event-streams) (overrides other Kafka parameters).
-- `--firehose-url`: Bluesky firehose WebSocket URL (default: wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos).
-- `--collections`: Comma-separated list of AT Protocol collections to process (default: app.bsky.feed.post,app.bsky.feed.like,app.bsky.feed.repost,app.bsky.graph.follow).
-- `--cursor-file`: Path to file for storing firehose cursor position (default: /tmp/bluesky_cursor).
-- `--sample-rate`: Sampling rate for high-volume events (0.0-1.0, default: 1.0 for no sampling).
-
-#### Example Usage:
-
+### AMQP
 ```bash
-bluesky_firehose stream --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-topic "<topic_name>" --sasl-username "<username>" --sasl-password "<password>"
+docker run --rm \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/bluesky" \
+  ghcr.io/clemensv/real-time-sources-bluesky-amqp:latest
 ```
 
-Alternatively, using a connection string for Microsoft Event Hubs or Microsoft Fabric Event Streams:
+## Configuration reference
 
-```bash
-bluesky_firehose stream --connection-string "<your_connection_string>"
+Use [CONTAINER.md](CONTAINER.md) for the full per-image variable matrix. Commonly used knobs:
+
+- **Kafka image:** `CONNECTION_STRING`, `BLUESKY_FIREHOSE_URL`, `BLUESKY_COLLECTIONS`, `BLUESKY_SAMPLE_RATE`, `BLUESKY_CURSOR_FILE`, `KAFKA_ENABLE_TLS`
+- **MQTT image:** `MQTT_BROKER_URL`, `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_CLIENT_ID`, `BLUESKY_COLLECTIONS`
+- **AMQP image:** `AMQP_BROKER_URL`, `AMQP_ADDRESS`, `AMQP_AUTH_MODE`, `AMQP_CONTENT_MODE`, `BLUESKY_COLLECTIONS`
+
+## Data model
+
+- `Bluesky.Feed.Post`, `Bluesky.Feed.Like`, `Bluesky.Feed.Repost` telemetry events.
+- `Bluesky.Graph.Follow`, `Bluesky.Graph.Block` relationship events.
+- `Bluesky.Actor.Profile` profile metadata updates.
+
+
+Primary message groups in xRegistry: `BlueskyFirehose`.
+
+## Deploying into Microsoft Fabric
+
+For this streaming-style bridge, deploy the container via the **Fabric ACI** path:
+
+```powershell
+tools/deploy-fabric/deploy-fabric-aci.ps1 -Source bluesky -WorkspaceId <id> -CapacityId <id>
 ```
-
-### Connection String for Microsoft Event Hubs or Fabric Event Streams
-
-The connection string format is as follows:
-
-```
-Endpoint=sb://<your-event-hubs-namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy-name>;SharedAccessKey=<access-key>;EntityPath=<event-hub-name>
-```
-
-When provided, the connection string is parsed to extract the Kafka configuration parameters:
-- **Bootstrap Servers**: Derived from the `Endpoint` value.
-- **Kafka Topic**: Derived from the `EntityPath` value.
-
-## Event Types
-
-The firehose produces the following CloudEvents types:
-
-- `Bluesky.Feed.Post`: New posts and replies
-- `Bluesky.Feed.Like`: Likes on posts
-- `Bluesky.Feed.Repost`: Reposts/shares of posts
-- `Bluesky.Graph.Follow`: Follow relationships
-- `Bluesky.Graph.Block`: Block relationships
-- `Bluesky.Actor.Profile`: Profile updates
-
-See [EVENTS.md](EVENTS.md) for detailed event schema documentation.
-
-## Configuration
-
-### Environment Variables
-
-The following environment variables can be used instead of command-line arguments:
-
-- `BLUESKY_FIREHOSE_URL`: Firehose WebSocket endpoint
-- `BLUESKY_COLLECTIONS`: Comma-separated list of collections to process
-- `BLUESKY_CURSOR_FILE`: Path to cursor persistence file
-- `KAFKA_BOOTSTRAP_SERVERS`: Kafka bootstrap servers
-- `KAFKA_TOPIC`: Target Kafka topic
-- `SASL_USERNAME`: SASL username
-- `SASL_PASSWORD`: SASL password
-- `EVENTHUB_CONNECTION_STRING`: Event Hubs connection string
-
-### Filtering and Sampling
-
-For high-volume deployments, you can filter collections and apply sampling:
-
-```bash
-# Only process posts
-bluesky_firehose stream --collections app.bsky.feed.post --connection-string "<conn>"
-
-# Sample 10% of likes
-bluesky_firehose stream --sample-rate 0.1 --collections app.bsky.feed.like --connection-string "<conn>"
-```
-
-## Deployment
-
-For production deployments, see:
-- [CONTAINER.md](CONTAINER.md) - Docker container instructions
-- Azure deployment templates in `azure-template.json`
-
-## Data Volume Considerations
-
-The Bluesky firehose delivers the entire network's activity. At current scale (November 2024), this represents:
-- ~50-100 posts per second
-- ~200-400 likes per second
-- ~50-100 follows per second
-
-Plan your infrastructure accordingly and use filtering/sampling for cost-effective deployment.
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+ARM templates currently present in this source folder:
 
-### Option 1: Bring your own Event Hub
+- `azure-template-with-eventhub.json` — Kafka deployment plus Azure Event Hubs provisioning
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbluesky%2Fazure-template-with-eventhub.json)
+- `azure-template.json` — Kafka deployment targeting an existing Kafka/Event Hubs endpoint
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbluesky%2Fazure-template.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+## Next steps
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbluesky%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbluesky%2Fazure-template-with-eventhub.json)
-
-
-## MQTT 5.0 / UNS feeder (pilot)
-
-In addition to the Kafka producer, a non-retained MQTT 5.0 feeder
-publishes the same firehose into a Unified-Namespace topic tree:
-
-```
-social/intl/bluesky/bluesky/{collection}/{lang}/{did}/{event}
-```
-
-`{event}` is one of `post`, `like`, `repost`, `follow`, `block`,
-`profile`. QoS 0, `retain=false`. CloudEvents binary mode; CE attributes
-ride as MQTT 5 user properties; `subject` equals the author DID.
-
-See `CONTAINER.md` for the container image and environment variables.
-
-## AMQP 1.0 feeder
-
-This source also ships an AMQP 1.0 companion container (`Dockerfile.amqp`, image `ghcr.io/clemensv/real-time-sources-bluesky-amqp:latest`). It publishes the same CloudEvents contract documented in [EVENTS.md](EVENTS.md) to a single AMQP address named `bluesky` by default. Use it for enterprise queue/topic consumers on ActiveMQ Artemis, RabbitMQ AMQP 1.0, Qpid Dispatch, or Azure Service Bus.
-
-```bash
-docker run --rm   -e AMQP_BROKER_URL=amqp://user:password@broker:5672/bluesky   -e BLUESKY_MOCK=true   ghcr.io/clemensv/real-time-sources-bluesky-amqp:latest
-```
-
-Azure Service Bus deployment (new namespace, queue, managed identity, and ACI):
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fbluesky%2Finfra%2Fazure-template-amqp.json)
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Select the transport image that matches your broker and auth model.
+- Use [CONTAINER.md](CONTAINER.md) for complete runtime and deployment options.
