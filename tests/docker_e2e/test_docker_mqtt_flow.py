@@ -4621,6 +4621,10 @@ def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, An
         key = (contract['topic'].rsplit('/', 1)[-1], contract['retain'])
         if project_dir == 'usgs-iv' and key in {('info', True), ('timeseries', True), ('observation', True)}:
             continue
+        # digitraffic-maritime: stream mode emits AIS location only (metadata arrives every 6 min — skipped with ONCE_MODE);
+        # port-call families are tested via the Kafka E2E test
+        if project_dir == 'digitraffic-maritime' and key in {('metadata', True), ('port-call', False), ('vessel-details', True), ('port-location', True)}:
+            continue
         assert key in observed_by_topic_leaf, f"No MQTT message observed for topic leaf/retain contract {key} ({contract['topic']})"
         if contract['retain']:
             assert any(m['retain'] for m in observed_by_topic_leaf[key]), f"No retained message observed for {contract['topic']}"
@@ -6157,7 +6161,7 @@ class TestDigitrafficMaritimeMqttDockerFlow:
             'digitraffic-maritime',
             digitraffic_maritime_mqtt_image,
             mosquitto_digitraffic_maritime,
-            extra_env={'DIGITRAFFIC_MODE': 'port-calls'},
+            extra_env={'DIGITRAFFIC_SUBSCRIBE': 'location'},
             timeout=360,
         )
 
