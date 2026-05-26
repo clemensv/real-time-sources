@@ -66,7 +66,9 @@ def _build_payload(schema: dict[str, Any], placeholders: Mapping[str, str]) -> d
     props = schema.get("properties", {})
     required = set(schema.get("required", []))
     for name, spec in props.items():
-        if name in placeholders:
+        if spec.get("enum"):
+            payload[name] = spec["enum"][0]
+        elif name in placeholders:
             payload[name] = placeholders[name]
         elif name in required:
             payload[name] = _sample_for_type(name, spec.get("type", "string"))
@@ -106,8 +108,9 @@ def _contracts(protocol_prefix: str) -> list[dict[str, Any]]:
                     "region_id":"11", "pollen_type":"hazel", "geohash5":"u0yjx", "geohash7":"u0yjx7p", "stroke_id":"123456789", "source_id":"4"
                 })
                 payload = _build_payload(schema, placeholders)
-                subject = _render(subj, {**payload, **placeholders})
-                out.append({"message": resolved, "schema": schema, "payload": payload, "topic": _render(topic, {**payload, **placeholders}) if topic else None,
+                context = {**placeholders, **payload}
+                subject = _render(subj, context)
+                out.append({"message": resolved, "schema": schema, "payload": payload, "topic": _render(topic, context) if topic else None,
                             "qos": int(opts.get("qos", props.get("qos", 1))), "retain": bool(opts.get("retain", props.get("retain", False))),
                             "type": meta.get("type", {}).get("value"), "source": meta.get("source", {}).get("value", "sample"), "subject": subject})
     return out
