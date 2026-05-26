@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "tepco-denkiyoho-amqp"
+version = "0.1.0"
+description = "tepco-denkiyoho AMQP companion feeder"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+python-qpid-proton = ">=0.39.0"
+azure-identity = ">=1.16.0"
+tepco_denkiyoho_amqp_producer_data = {path = "../tepco_denkiyoho_amqp_producer/tepco_denkiyoho_amqp_producer_data"}
+tepco_denkiyoho_amqp_producer_amqp_producer = {path = "../tepco_denkiyoho_amqp_producer/tepco_denkiyoho_amqp_producer_amqp_producer"}
+
+[tool.poetry.scripts]
+tepco-denkiyoho-amqp = "tepco_denkiyoho_amqp:main"

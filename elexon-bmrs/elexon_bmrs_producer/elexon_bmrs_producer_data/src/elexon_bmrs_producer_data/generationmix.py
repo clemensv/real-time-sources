@@ -20,7 +20,7 @@ import datetime
 class GenerationMix:
     """
     Half-hourly generation outturn summary for the GB electricity system from the Elexon BMRS API. Each record represents one settlement period and contains the generation output in megawatts (MW) broken down by fuel type, including domestic generation (biomass, CCGT, coal, nuclear, wind, OCGT, oil, hydro, pumped storage) and interconnector imports (France IFA, France IFA2, Netherlands BritNed, Belgium Nemo, Ireland EWIC, Norway NSL, Denmark Viking Link). Sourced from the BMRS /generation/outturn/summary endpoint.
-    
+
     Attributes:
         settlement_period (int)
         start_time (datetime.datetime)
@@ -42,8 +42,8 @@ class GenerationMix:
         intvkl_mw (typing.Optional[float])
         other_mw (typing.Optional[float])
     """
-    
-    
+
+
     settlement_period: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="settlement_period"))
     start_time: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start_time", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     biomass_mw: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="biomass_mw"))
@@ -68,10 +68,10 @@ class GenerationMix:
     def from_serializer_dict(cls, data: dict) -> 'GenerationMix':
         """
         Converts a dictionary to a dataclass instance.
-        
+
         Args:
             data: The dictionary to convert to a dataclass.
-        
+
         Returns:
             The dataclass representation of the dataclass.
         """
@@ -90,7 +90,7 @@ class GenerationMix:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """ 
+        """
         def _resolve_enum(v):
             if isinstance(v, enum.Enum):
                 return v.value
@@ -102,7 +102,7 @@ class GenerationMix:
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-        
+
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -111,11 +111,11 @@ class GenerationMix:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.        
+            The byte array representation of the dataclass.
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -141,10 +141,10 @@ class GenerationMix:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['GenerationMix']:
         """
         Converts the data to a dataclass based on the content type string.
-        
+
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to. 
+            content_type_string: The content type string to convert the data to.
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
@@ -168,7 +168,7 @@ class GenerationMix:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-        
+
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -184,28 +184,28 @@ class GenerationMix:
     def create_instance(cls) -> 'GenerationMix':
         """
         Creates an instance of the dataclass with test values.
-        
+
         Returns:
             An instance of the dataclass.
         """
         return cls(
-            settlement_period=int(31),
+            settlement_period=int(14),
             start_time=datetime.datetime.now(datetime.timezone.utc),
-            biomass_mw=float(79.43561814234602),
-            ccgt_mw=float(1.4818704234155655),
-            coal_mw=float(59.975912391983556),
-            nuclear_mw=float(30.076990053515395),
-            wind_mw=float(81.21237837669578),
-            ocgt_mw=float(8.79855711318972),
-            oil_mw=float(65.10373679706905),
-            npshyd_mw=float(44.962907729510235),
-            ps_mw=float(38.36207582912965),
-            intfr_mw=float(24.821551260137408),
-            intned_mw=float(82.10448056215003),
-            intnem_mw=float(92.25802257163124),
-            intelec_mw=float(70.51250959966026),
-            intifa2_mw=float(52.49877958605427),
-            intnsl_mw=float(98.43737759485803),
-            intvkl_mw=float(92.4311606785384),
-            other_mw=float(1.7401134392235673)
+            biomass_mw=float(53.78494758763971),
+            ccgt_mw=float(79.81621187467175),
+            coal_mw=float(13.267410372487198),
+            nuclear_mw=float(74.02248539911062),
+            wind_mw=float(3.571708556988229),
+            ocgt_mw=float(86.09882342288643),
+            oil_mw=float(68.1000452423494),
+            npshyd_mw=float(90.07973035743147),
+            ps_mw=float(33.208607768645315),
+            intfr_mw=float(49.190550338969096),
+            intned_mw=float(1.8617961448082587),
+            intnem_mw=float(9.969341523704278),
+            intelec_mw=float(13.026965619665198),
+            intifa2_mw=float(65.3553407589688),
+            intnsl_mw=float(52.60086479865818),
+            intvkl_mw=float(48.29394054329806),
+            other_mw=float(39.393538384722945)
         )

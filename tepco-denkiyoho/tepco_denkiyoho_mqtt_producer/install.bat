@@ -1,0 +1,2 @@
+pip install .\tepco_denkiyoho_mqtt_producer_data
+pip install .\tepco_denkiyoho_mqtt_producer_mqtt_client

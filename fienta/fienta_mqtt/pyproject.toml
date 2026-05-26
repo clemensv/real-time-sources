@@ -1,0 +1,20 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "fienta-mqtt"
+version = "0.1.0"
+description = "fienta MQTT companion feeder"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+paho-mqtt = ">=2.1.0"
+fienta_mqtt_producer_data = {path = "../fienta_mqtt_producer/fienta_mqtt_producer_data"}
+fienta_mqtt_producer_mqtt_client = {path = "../fienta_mqtt_producer/fienta_mqtt_producer_mqtt_client"}
+
+[tool.poetry.scripts]
+fienta-mqtt = "fienta_mqtt:main"

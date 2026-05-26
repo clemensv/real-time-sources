@@ -1,0 +1,2 @@
+pip install .\eurdep_radiation_mqtt_producer_data
+pip install .\eurdep_radiation_mqtt_producer_mqtt_client

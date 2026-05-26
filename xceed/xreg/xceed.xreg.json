@@ -41,6 +41,56 @@
       "messagegroups": [
         "#/messagegroups/xceed.admissions"
       ]
+    },
+    "xceed.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/xceed.mqtt",
+        "#/messagegroups/xceed.admissions.mqtt"
+      ],
+      "description": "MQTT 5.0 producer endpoint for xceed."
+    },
+    "xceed.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/xceed"
+          }
+        ],
+        "options": {
+          "content_mode": "binary",
+          "address": "xceed"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/xceed.amqp",
+        "#/messagegroups/xceed.admissions.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for xceed."
     }
   },
   "messagegroups": {
@@ -127,6 +177,88 @@
               "required": true,
               "value": "{event_id}/{admission_id}",
               "description": "Composite identifier consisting of the parent event UUID and the admission tier UUID, separated by a slash, matching the Kafka key"
+            }
+          }
+        }
+      }
+    },
+    "xceed.mqtt": {
+      "description": "MQTT 5.0 binary-mode CloudEvents variant of xceed.",
+      "messages": {
+        "xceed.mqtt.Event": {
+          "name": "Event",
+          "basemessageurl": "/messagegroups/xceed/messages/xceed.Event",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "civic-events/intl/xceed/xceed/{city}/{event_id}/event",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "xceed.amqp": {
+      "description": "AMQP 1.0 binary-mode CloudEvents variant of xceed.",
+      "messages": {
+        "xceed.amqp.Event": {
+          "name": "Event",
+          "basemessageurl": "/messagegroups/xceed/messages/xceed.Event",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{event_id}",
+                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{event_id}",
+                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        }
+      }
+    },
+    "xceed.admissions.mqtt": {
+      "description": "MQTT 5.0 binary-mode CloudEvents variant of xceed.admissions.",
+      "messages": {
+        "xceed.admissions.mqtt.EventAdmission": {
+          "name": "EventAdmission",
+          "basemessageurl": "/messagegroups/xceed.admissions/messages/xceed.EventAdmission",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "civic-events/intl/xceed/xceed/admissions/{event_id}/{admission_id}/admission",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "xceed.admissions.amqp": {
+      "description": "AMQP 1.0 binary-mode CloudEvents variant of xceed.admissions.",
+      "messages": {
+        "xceed.admissions.amqp.EventAdmission": {
+          "name": "EventAdmission",
+          "basemessageurl": "/messagegroups/xceed.admissions/messages/xceed.EventAdmission",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{event_id}/{admission_id}",
+                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{event_id}/{admission_id}",
+                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+              }
             }
           }
         }

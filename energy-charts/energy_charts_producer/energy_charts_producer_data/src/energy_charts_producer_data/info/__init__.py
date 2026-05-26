@@ -1,3 +1,3 @@
-from .energy_charts import SpotPrice, PublicPower, GridSignal
+from .energy_charts import PublicPower, SpotPrice, GridSignal
 
-__all__ = ["SpotPrice", "PublicPower", "GridSignal"]
+__all__ = ["PublicPower", "SpotPrice", "GridSignal"]

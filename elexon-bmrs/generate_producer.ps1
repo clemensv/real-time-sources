@@ -1,26 +1,15 @@
+# Regenerate Kafka, MQTT, and AMQP producers from the source xRegistry manifest.
 . (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
-
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$projectRoot = $scriptDir
-$xregFile = Join-Path $projectRoot "xreg\elexon_bmrs.xreg.json"
-$outputDir = Join-Path $projectRoot "elexon_bmrs_producer"
-
-Write-Host "Generating Elexon BMRS producer from xRegistry definitions..." -ForegroundColor Cyan
-Write-Host "  xRegistry file: $xregFile" -ForegroundColor Gray
-Write-Host "  Output directory: $outputDir" -ForegroundColor Gray
-
-if (Test-Path $outputDir) {
-    Write-Host "  Cleaning existing output directory..." -ForegroundColor Yellow
-    Remove-Item -Path $outputDir -Recurse -Force
+$xregFile = Join-Path $scriptDir "xreg\elexon_bmrs.xreg.json"
+foreach ($output in @("elexon_bmrs_producer", "elexon_bmrs_mqtt_producer", "elexon_bmrs_amqp_producer")) {
+  $outputDir = Join-Path $scriptDir $output
+  if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
 }
-
-Write-Host "  Generating Kafka producer code..." -ForegroundColor Cyan
-xrcg generate --style kafkaproducer --language py --projectname elexon-bmrs-producer --definitions $xregFile --output $outputDir
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "Producer generation completed successfully" -ForegroundColor Green
-} else {
-    Write-Host "Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
-    exit 1
-}
+xrcg generate --style kafkaproducer --language py --definitions $xregFile --projectname elexon_bmrs_producer --output (Join-Path $scriptDir "elexon_bmrs_producer")
+if ($LASTEXITCODE -ne 0) { throw "Kafka producer generation failed" }
+xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint UK.Co.Elexon.BMRS.Mqtt --projectname elexon_bmrs_mqtt_producer --output (Join-Path $scriptDir "elexon_bmrs_mqtt_producer")
+if ($LASTEXITCODE -ne 0) { throw "MQTT producer generation failed" }
+xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint UK.Co.Elexon.BMRS.Amqp --projectname elexon_bmrs_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir "elexon_bmrs_amqp_producer")
+if ($LASTEXITCODE -ne 0) { throw "AMQP producer generation failed" }

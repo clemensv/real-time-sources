@@ -1,0 +1,13 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/nifc-usa-wildfires"
+LABEL org.opencontainers.image.title="NIFC USA wildfires -> MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Publishes NIFC wildfire incident CloudEvents to MQTT 5.0 topics."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/nifc-usa-wildfires/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY . /app
+RUN pip install --no-cache-dir ./nifc_usa_wildfires_mqtt_producer/nifc_usa_wildfires_mqtt_producer_data && pip install --no-cache-dir ./nifc_usa_wildfires_mqtt_producer/nifc_usa_wildfires_mqtt_producer_mqtt_client && pip install --no-cache-dir ./nifc_usa_wildfires_producer/nifc_usa_wildfires_producer_data && pip install --no-cache-dir . && pip install --no-cache-dir ./nifc_usa_wildfires_mqtt
+ENV MQTT_BROKER_URL=""
+CMD ["python", "-m", "nifc_usa_wildfires_mqtt", "feed"]

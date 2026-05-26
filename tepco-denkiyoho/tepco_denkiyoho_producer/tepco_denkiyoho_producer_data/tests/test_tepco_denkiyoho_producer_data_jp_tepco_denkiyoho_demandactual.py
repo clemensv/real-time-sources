@@ -28,127 +28,127 @@ class Test_DemandActual(unittest.TestCase):
         Create instance of DemandActual for testing
         """
         instance = DemandActual(
-            date='gmznphdgiqsjimxlgtsf',
-            time='dmbqockdejhudzoirnzr',
-            datetime='nzqilacwqygnirywgrtv',
-            datetime_local='zxopynfqfifojlhrftug',
-            actual_demand_mw=float(74.86384916494359),
-            actual_demand_jp_unit_value=int(91),
-            solar_generation_mw=float(91.89992595421795),
-            solar_generation_jp_unit_value=int(87),
-            solar_share_pct=float(0.01745784543566442),
-            usage_pct=float(33.356908722629576),
-            supply_capacity_mw=float(97.29258210059014),
-            supply_capacity_jp_unit_value=int(95),
-            area_code='fawhgvlteexxodnyogjl'
+            date='jfibxaqvartgeuebvlxb',
+            time='anmueoflgfgjirctudph',
+            datetime='tonsiodoyctlnpblvqcn',
+            datetime_local='nuznrxokfhmfdonilezb',
+            actual_demand_mw=float(74.13787447963816),
+            actual_demand_jp_unit_value=int(58),
+            solar_generation_mw=float(22.8980771662745),
+            solar_generation_jp_unit_value=int(0),
+            solar_share_pct=float(45.4920667825047),
+            usage_pct=float(29.271525591985682),
+            supply_capacity_mw=float(93.28785719127187),
+            supply_capacity_jp_unit_value=int(19),
+            area_code='emqmuxmehgwffsjgdqon'
         )
         return instance
 
-    
+
     def test_date_property(self):
         """
         Test date property
         """
-        test_value = 'gmznphdgiqsjimxlgtsf'
+        test_value = 'jfibxaqvartgeuebvlxb'
         self.instance.date = test_value
         self.assertEqual(self.instance.date, test_value)
-    
+
     def test_time_property(self):
         """
         Test time property
         """
-        test_value = 'dmbqockdejhudzoirnzr'
+        test_value = 'anmueoflgfgjirctudph'
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
-    
+
     def test_datetime_property(self):
         """
         Test datetime property
         """
-        test_value = 'nzqilacwqygnirywgrtv'
+        test_value = 'tonsiodoyctlnpblvqcn'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
-    
+
     def test_datetime_local_property(self):
         """
         Test datetime_local property
         """
-        test_value = 'zxopynfqfifojlhrftug'
+        test_value = 'nuznrxokfhmfdonilezb'
         self.instance.datetime_local = test_value
         self.assertEqual(self.instance.datetime_local, test_value)
-    
+
     def test_actual_demand_mw_property(self):
         """
         Test actual_demand_mw property
         """
-        test_value = float(74.86384916494359)
+        test_value = float(74.13787447963816)
         self.instance.actual_demand_mw = test_value
         self.assertEqual(self.instance.actual_demand_mw, test_value)
-    
+
     def test_actual_demand_jp_unit_value_property(self):
         """
         Test actual_demand_jp_unit_value property
         """
-        test_value = int(91)
+        test_value = int(58)
         self.instance.actual_demand_jp_unit_value = test_value
         self.assertEqual(self.instance.actual_demand_jp_unit_value, test_value)
-    
+
     def test_solar_generation_mw_property(self):
         """
         Test solar_generation_mw property
         """
-        test_value = float(91.89992595421795)
+        test_value = float(22.8980771662745)
         self.instance.solar_generation_mw = test_value
         self.assertEqual(self.instance.solar_generation_mw, test_value)
-    
+
     def test_solar_generation_jp_unit_value_property(self):
         """
         Test solar_generation_jp_unit_value property
         """
-        test_value = int(87)
+        test_value = int(0)
         self.instance.solar_generation_jp_unit_value = test_value
         self.assertEqual(self.instance.solar_generation_jp_unit_value, test_value)
-    
+
     def test_solar_share_pct_property(self):
         """
         Test solar_share_pct property
         """
-        test_value = float(0.01745784543566442)
+        test_value = float(45.4920667825047)
         self.instance.solar_share_pct = test_value
         self.assertEqual(self.instance.solar_share_pct, test_value)
-    
+
     def test_usage_pct_property(self):
         """
         Test usage_pct property
         """
-        test_value = float(33.356908722629576)
+        test_value = float(29.271525591985682)
         self.instance.usage_pct = test_value
         self.assertEqual(self.instance.usage_pct, test_value)
-    
+
     def test_supply_capacity_mw_property(self):
         """
         Test supply_capacity_mw property
         """
-        test_value = float(97.29258210059014)
+        test_value = float(93.28785719127187)
         self.instance.supply_capacity_mw = test_value
         self.assertEqual(self.instance.supply_capacity_mw, test_value)
-    
+
     def test_supply_capacity_jp_unit_value_property(self):
         """
         Test supply_capacity_jp_unit_value property
         """
-        test_value = int(95)
+        test_value = int(19)
         self.instance.supply_capacity_jp_unit_value = test_value
         self.assertEqual(self.instance.supply_capacity_jp_unit_value, test_value)
-    
+
     def test_area_code_property(self):
         """
         Test area_code property
         """
-        test_value = 'fawhgvlteexxodnyogjl'
+        test_value = 'emqmuxmehgwffsjgdqon'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
-    
+
     def test_to_byte_array_avro(self):
         """
         Test to_byte_array method with avro media type

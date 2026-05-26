@@ -187,8 +187,8 @@ def get_default_topic_mappings_de_bfs_odl_mqtt() -> Dict[str, str]:
         Dictionary mapping message identifiers to their default topic patterns.
     """
     return {
-        "de.bfs.odl.mqtt.Station": "radiation/de/bfs/bfs-odl/{state}/{station_id}/info",
-        "de.bfs.odl.mqtt.DoseRateMeasurement": "radiation/de/bfs/bfs-odl/{state}/{station_id}/dose-rate",
+        "de.bfs.odl.mqtt.Station": "radiation/ch/bfs/bfs-odl/{canton}/{station_id}/info",
+        "de.bfs.odl.mqtt.DoseRateMeasurement": "radiation/ch/bfs/bfs-odl/{canton}/{station_id}/dose-rate",
     }
 
 
@@ -359,7 +359,7 @@ class DeBfsOdlMqttMqttClient(_ClientBase):
     async def publish_de_bfs_odl_mqtt_station(self,
         feedurl: str,
         station_id: str,
-        state: str,
+        canton: str,
         data: bfs_odl_mqtt_producer_data.Station,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -372,19 +372,19 @@ class DeBfsOdlMqttMqttClient(_ClientBase):
         
             feedurl: URI template variable for 'feedurl'
             station_id: URI template variable for 'station_id'
-            state: URI template variable for 'state'
+            canton: URI template variable for 'canton'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'radiation/de/bfs/bfs-odl/{state}/{station_id}/info'
+            topic: Optional topic override. If not provided, uses default topic 'radiation/ch/bfs/bfs-odl/{canton}/{station_id}/info'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "radiation/de/bfs/bfs-odl/{state}/{station_id}/info"
+        target_topic = topic if topic is not None else "radiation/ch/bfs/bfs-odl/{canton}/{station_id}/info"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "station_id": str(station_id),
-            "state": str(state),
+            "canton": str(canton),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
@@ -438,7 +438,7 @@ class DeBfsOdlMqttMqttClient(_ClientBase):
     async def publish_de_bfs_odl_mqtt_dose_rate_measurement(self,
         feedurl: str,
         station_id: str,
-        state: str,
+        canton: str,
         data: bfs_odl_mqtt_producer_data.DoseRateMeasurement,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -451,19 +451,19 @@ class DeBfsOdlMqttMqttClient(_ClientBase):
         
             feedurl: URI template variable for 'feedurl'
             station_id: URI template variable for 'station_id'
-            state: URI template variable for 'state'
+            canton: URI template variable for 'canton'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'radiation/de/bfs/bfs-odl/{state}/{station_id}/dose-rate'
+            topic: Optional topic override. If not provided, uses default topic 'radiation/ch/bfs/bfs-odl/{canton}/{station_id}/dose-rate'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "radiation/de/bfs/bfs-odl/{state}/{station_id}/dose-rate"
+        target_topic = topic if topic is not None else "radiation/ch/bfs/bfs-odl/{canton}/{station_id}/dose-rate"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "station_id": str(station_id),
-            "state": str(state),
+            "canton": str(canton),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
