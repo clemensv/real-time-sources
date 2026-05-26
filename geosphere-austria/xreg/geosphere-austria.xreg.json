@@ -137,7 +137,8 @@
             "topic_name": "weather/at/geosphere/geosphere-austria/{bundesland}/{station_id}/info",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "at.geosphere.tawes.mqtt.WeatherObservation": {
           "name": "WeatherObservation",
@@ -160,7 +161,8 @@
             "topic_name": "weather/at/geosphere/geosphere-austria/{bundesland}/{station_id}/observation",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -199,7 +201,8 @@
                 "description": "Routing value for bundesland."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "at.geosphere.tawes.amqp.WeatherObservation": {
           "name": "WeatherObservation",
@@ -233,7 +236,8 @@
                 "description": "Routing value for bundesland."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     }

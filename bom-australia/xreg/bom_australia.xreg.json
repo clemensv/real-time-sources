@@ -175,7 +175,8 @@
             "topic_name": "weather/au/bom/bom-australia/{state}/{station_wmo}/info",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "AU.Gov.BOM.Weather.mqtt.WeatherObservation": {
           "name": "WeatherObservation",
@@ -197,7 +198,8 @@
             "topic_name": "weather/au/bom/bom-australia/{state}/{station_wmo}/observation",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -235,7 +237,8 @@
                 "description": "Routing value for state."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "AU.Gov.BOM.Weather.amqp.WeatherObservation": {
           "name": "WeatherObservation",
@@ -268,7 +271,8 @@
                 "description": "Routing value for state."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -295,7 +299,8 @@
             "topic_name": "alerts/au/bom/bom-australia/{state}/{severity}/{warning_id}/warning",
             "qos": 1,
             "retain": false
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -327,7 +332,8 @@
               }
             },
             "application-properties": {}
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     }

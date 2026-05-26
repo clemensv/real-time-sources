@@ -111,7 +111,8 @@
               "qos": 0,
               "retain": false
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },

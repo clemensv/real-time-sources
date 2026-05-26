@@ -134,7 +134,8 @@
             "topic_name": "weather/be/kmi/kmi-belgium/{region}/{station_code}/info",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "BE.Gov.KMI.Weather.mqtt.WeatherObservation": {
           "name": "WeatherObservation",
@@ -156,7 +157,8 @@
             "topic_name": "weather/be/kmi/kmi-belgium/{region}/{station_code}/observation",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -194,7 +196,8 @@
                 "description": "Routing value for region."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "BE.Gov.KMI.Weather.amqp.WeatherObservation": {
           "name": "WeatherObservation",
@@ -227,7 +230,8 @@
                 "description": "Routing value for region."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     }

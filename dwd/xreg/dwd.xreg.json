@@ -430,7 +430,8 @@
             "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/info",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.mqtt.AirTemperature10Min": {
           "name": "AirTemperature10Min",
@@ -452,7 +453,8 @@
             "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/air-temperature-10min",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.mqtt.Precipitation10Min": {
           "name": "Precipitation10Min",
@@ -474,7 +476,8 @@
             "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/precipitation-10min",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.mqtt.Wind10Min": {
           "name": "Wind10Min",
@@ -496,7 +499,8 @@
             "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/wind-10min",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.mqtt.Solar10Min": {
           "name": "Solar10Min",
@@ -518,7 +522,8 @@
             "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/solar-10min",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.mqtt.HourlyObservation": {
           "name": "HourlyObservation",
@@ -540,7 +545,8 @@
             "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/hourly-observation",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.mqtt.ExtremeWind10Min": {
           "name": "ExtremeWind10Min",
@@ -562,7 +568,8 @@
             "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/extreme-wind-10min",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.mqtt.ExtremeTemperature10Min": {
           "name": "ExtremeTemperature10Min",
@@ -584,7 +591,8 @@
             "topic_name": "weather/de/dwd/dwd/{state}/{station_id}/extreme-temperature-10min",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -622,7 +630,8 @@
                 "description": "Routing value for state."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.amqp.AirTemperature10Min": {
           "name": "AirTemperature10Min",
@@ -655,7 +664,8 @@
                 "description": "Routing value for state."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.amqp.Precipitation10Min": {
           "name": "Precipitation10Min",
@@ -688,7 +698,8 @@
                 "description": "Routing value for state."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.amqp.Wind10Min": {
           "name": "Wind10Min",
@@ -721,7 +732,8 @@
                 "description": "Routing value for state."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.amqp.Solar10Min": {
           "name": "Solar10Min",
@@ -754,7 +766,8 @@
                 "description": "Routing value for state."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.amqp.HourlyObservation": {
           "name": "HourlyObservation",
@@ -787,7 +800,8 @@
                 "description": "Routing value for state."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.amqp.ExtremeWind10Min": {
           "name": "ExtremeWind10Min",
@@ -820,7 +834,8 @@
                 "description": "Routing value for state."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.CDC.amqp.ExtremeTemperature10Min": {
           "name": "ExtremeTemperature10Min",
@@ -853,7 +868,8 @@
                 "description": "Routing value for state."
               }
             }
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -880,7 +896,8 @@
             "topic_name": "alerts/de/dwd/dwd/{state}/{severity}/{identifier}/alert",
             "qos": 1,
             "retain": false
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -912,7 +929,8 @@
               }
             },
             "application-properties": {}
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -939,7 +957,8 @@
             "topic_name": "weather/de/dwd/dwd/catalogs/{kind}/catalog",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.Radar.mqtt.RadarFileProduct": {
           "name": "RadarFileProduct",
@@ -961,7 +980,8 @@
             "topic_name": "weather/de/dwd/dwd/products/radar/{product_type}/{file_id}/file",
             "qos": 1,
             "retain": false
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -993,7 +1013,8 @@
               }
             },
             "application-properties": {}
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.Radar.amqp.RadarFileProduct": {
           "name": "RadarFileProduct",
@@ -1020,7 +1041,8 @@
               }
             },
             "application-properties": {}
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -1047,7 +1069,8 @@
             "topic_name": "weather/de/dwd/dwd/catalogs/{kind}/catalog",
             "qos": 1,
             "retain": true
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.Forecast.mqtt.IconD2ForecastFile": {
           "name": "IconD2ForecastFile",
@@ -1069,7 +1092,8 @@
             "topic_name": "weather/de/dwd/dwd/products/icon-d2/{variable}/{file_id}/file",
             "qos": 1,
             "retain": false
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     },
@@ -1101,7 +1125,8 @@
               }
             },
             "application-properties": {}
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         },
         "DE.DWD.Forecast.amqp.IconD2ForecastFile": {
           "name": "IconD2ForecastFile",
@@ -1128,7 +1153,8 @@
               }
             },
             "application-properties": {}
-          }
+          },
+          "envelope": "CloudEvents/1.0"
         }
       }
     }
