@@ -1,124 +1,161 @@
-# DWD Pollenflug (German Pollen Forecast) Bridge
+# DWD Pollenflug feeder
+
+This feeder turns the upstream DWD Pollenflug weather data into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+## Why this bridge
+
+This source wraps the upstream DWD Pollenflug APIs into a contract-first event stream so consumers can subscribe instead of implementing custom polling, pagination, dedupe, retry, and schema handling in every downstream system.
+
+- **Operational dashboards** — subscribe to `dwd-pollenflug` events for near-real-time situational awareness and KPI tracking.
+- **Data engineering pipelines** — land validated CloudEvents in Eventhouse/ADX/lakehouse without polling the upstream API directly.
+- **Alerting and automation** — trigger workflow actions from fresh `DWD Pollenflug` observations and advisories.
+- **Cross-domain analytics** — correlate weather signals with transport, safety, energy, or hydrology feeders from this repository.
+- **Research and compliance archives** — keep a durable, replayable stream with stable subject/key identity (`{region_id}`).
 
 ## Overview
 
-**DWD Pollenflug Bridge** polls the Deutscher Wetterdienst (DWD) pollen forecast API for the latest daily pollen forecasts across Germany and sends them to a Kafka topic as CloudEvents. The tool tracks the `last_update` timestamp from the API to avoid sending duplicate forecasts.
+**DWD Pollenflug** is a poll-based bridge. The source ships in 3 transport variants from a shared upstream poller:
 
-## Data Source
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-dwd-pollenflug` | Apache Kafka 2.x compatible (incl. Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud) | One topic, JSON CloudEvents (binary mode), key = `{region_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-dwd-pollenflug-mqtt` | MQTT 5.0 broker (incl. Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric Real-Time Hub MQTT broker) | UNS topic template `(see xreg endpoint options)`, QoS 1 CloudEvents with MQTT 5 user properties |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-dwd-pollenflug-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs) | Single AMQP node `dwd-pollenflug`, binary CloudEvents, SASL PLAIN / Entra CBS / SAS CBS auth modes |
 
-The DWD publishes pollen forecasts via the open data portal at:
-- **API Endpoint**: `https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json`
-- **Update Frequency**: Daily on weekdays around 11:00 CET
-- **License**: Open data under the DWD Geodatenzugangsgesetz (free for all uses with attribution)
+All variants share:
 
-The forecast covers **8 pollen types** across **27 German forecast regions**:
+- The upstream polling runtime in this source folder.
+- The xRegistry contract at `xreg/dwd_pollenflug.xreg.json`.
+- The same CloudEvents event families and identity model.
 
-| German Name | English Name |
-|---|---|
-| Hasel | Hazel |
-| Erle | Alder |
-| Birke | Birch |
-| Esche | Ash |
-| Gräser (Graeser) | Grasses |
-| Roggen | Rye |
-| Beifuß (Beifuss) | Mugwort |
-| Ambrosia | Ragweed |
+## Key features
 
-Intensity values range from 0 (no load) to 3 (high load) with intermediate half-step values (0-1, 1-2, 2-3).
+- Contract-first CloudEvents output aligned with the xRegistry manifest.
+- Stateful poller with dedupe/resume support via `DWD_POLLENFLUG_LAST_POLLED_FILE`.
+- Transport parity across Kafka, MQTT, and AMQP with the same event semantics.
+- Ready for Azure Event Hubs / Fabric Event Streams connection strings.
 
-## Key Features
+## Repository layout
 
-- **Daily Pollen Forecast Polling**: Fetches pollen forecasts for all 27 German regions.
-- **Reference Data Emission**: Emits region metadata at startup so consumers can correlate forecasts.
-- **German→English Mapping**: Maps German pollen type names to English in the event schema.
-- **Deduplication**: Tracks the `last_update` timestamp to avoid reprocessing unchanged data.
-- **Kafka Integration**: Sends forecasts to a Kafka topic using SASL PLAIN authentication.
-- **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
-- **Fabric notebook hosting**: Can run as a scheduled Fabric notebook via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) (`--once` single-cycle execution).
-
-## Installation
-
-The tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/) or from the Microsoft Store if you are on Windows.
-
-### Installation Steps
-
-```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=dwd-pollenflug
+```text
+dwd-pollenflug/
+  xreg/
+  kql/
+  notebook/
+  tests/
+  Dockerfile
+  Dockerfile.amqp
+  Dockerfile.mqtt
+  azure-template-amqp.json
+  azure-template-mqtt.json
+  azure-template-with-eventgrid-mqtt.json
+  azure-template-with-eventhub.json
+  azure-template-with-servicebus.json
+  azure-template.json
+  dwd_pollenflug/
 ```
 
-If you clone the repository:
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound network access to the upstream DWD Pollenflug API endpoints.
+- Network access to your target broker(s).
+- A writable host directory mounted at `/state` to persist `DWD_POLLENFLUG_LAST_POLLED_FILE` across restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Always mount a volume for `DWD_POLLENFLUG_LAST_POLLED_FILE`. Without a persisted state file, the poller restarts cold and may republish already-seen records.
+
+### Kafka
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/dwd-pollenflug
-pip install .
+docker run --rm   -v "$PWD/state:/state"   -e DWD_POLLENFLUG_LAST_POLLED_FILE=/state/dwd-pollenflug.json   -e CONNECTION_STRING="<event-hubs-connection-string>"   ghcr.io/clemensv/real-time-sources-dwd-pollenflug:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
-
-## How to Use
-
-After installation, the tool can be run using `python -m dwd_pollenflug`. It supports several arguments for configuring the polling process and sending data to Kafka.
-
-### Command-Line Arguments
-
-- `--last-polled-file`: Path to the state file where the last seen update timestamp is stored. Defaults to `~/.dwd_pollenflug_last_polled.json`.
-- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
-- `--kafka-topic`: The Kafka topic to send messages to.
-- `--sasl-username`: Username for SASL PLAIN authentication.
-- `--sasl-password`: Password for SASL PLAIN authentication.
-- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string (overrides other Kafka parameters).
-
-### Example Usage
-
-#### Using a Connection String
+### MQTT (Unified Namespace)
 
 ```bash
-python -m dwd_pollenflug --connection-string "BootstrapServer=mybroker:9092;EntityPath=dwd-pollenflug"
+docker run --rm   -v "$PWD/state:/state"   -e DWD_POLLENFLUG_LAST_POLLED_FILE=/state/dwd-pollenflug.json   -e MQTT_BROKER_URL=mqtts://<broker-host>:8883   -e MQTT_USERNAME=<username>   -e MQTT_PASSWORD=<password>   ghcr.io/clemensv/real-time-sources-dwd-pollenflug-mqtt:latest
 ```
 
-#### Using Explicit Kafka Parameters
+Topic template:
+
+```text
+(see xreg endpoint options)
+```
+
+### AMQP 1.0
 
 ```bash
-python -m dwd_pollenflug \
-    --kafka-bootstrap-servers mybroker:9092 \
-    --kafka-topic dwd-pollenflug
+docker run --rm   -v "$PWD/state:/state"   -e DWD_POLLENFLUG_LAST_POLLED_FILE=/state/dwd-pollenflug.json   -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/dwd-pollenflug'   ghcr.io/clemensv/real-time-sources-dwd-pollenflug-amqp:latest
 ```
 
-## Environment Variables
+For full authentication matrices (Kafka SASL/Event Hubs, MQTT password/Entra, AMQP password/Entra/SAS), see [CONTAINER.md](CONTAINER.md).
 
-| Variable | Description |
-|---|---|
-| `CONNECTION_STRING` | Kafka/Event Hubs/Fabric connection string |
-| `KAFKA_ENABLE_TLS` | Set to `false` to disable TLS (default: `true`) |
-| `DWD_POLLENFLUG_LAST_POLLED_FILE` | Path to the state file |
+## Configuration reference
+
+The complete environment-variable matrix for all images is documented in [CONTAINER.md](CONTAINER.md). Docker entrypoints are taken from image `CMD` values (`["python", "-m", "dwd_pollenflug"]`, `["python", "-m", "dwd_pollenflug_mqtt", "feed"]`, `["python", "-m", "dwd_pollenflug_amqp", "feed"]`).
+
+## Data model
+
+This feeder emits the following event families:
+
+- **`Region`**
+- **`PollenForecast`**
+
+Identity follows the xRegistry key/subject model (`{region_id}`) and is consistent across transports.
+
+## Deploying into Microsoft Fabric
+
+DWD Pollenflug supports Fabric end-to-end: events flow into a Fabric Event Stream custom endpoint, and the source KQL script in `kql/` materializes typed tables and update policies in Eventhouse.
+
+Two hosting models are supported using the deploy buttons on the [project portal](https://clemensv.github.io/real-time-sources/#dwd-pollenflug).
+
+### Fabric Notebook feeder
+
+A scheduled notebook in [`notebook/`](notebook/) runs the poller inside the Fabric workspace using the per-source Fabric Environment produced by `tools/deploy-fabric/deploy-feeder-notebook.ps1`. Runtime diagnostics and persisted state are written to OneLake.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#dwd-pollenflug/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source dwd-pollenflug` to run the container continuously in Azure Container Instances while targeting a Fabric Event Stream custom endpoint.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#dwd-pollenflug/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### AMQP — bring your own AMQP broker
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdwd-pollenflug%2Fazure-template-amqp.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — bring your own broker
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdwd-pollenflug%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdwd-pollenflug%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdwd-pollenflug%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdwd-pollenflug%2Fazure-template-with-eventhub.json)
 
-## MQTT and AMQP companion transports
+### AMQP — provision a new Azure Service Bus namespace
 
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`dwd-pollenflug`). Docker E2E mock mode is available through `DWD_POLLENFLUG_MOCK=true`.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdwd-pollenflug%2Fazure-template-with-servicebus.json)
 
-- MQTT image: `ghcr.io/clemensv/real-time-sources/dwd-pollenflug-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/dwd-pollenflug-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdwd-pollenflug%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full environment-variable and authentication details.
+- Validate deployment choices (Notebook vs ACI vs direct Azure templates) against your latency and operations requirements.

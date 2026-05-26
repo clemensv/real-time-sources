@@ -1,11 +1,11 @@
-# KMI Belgium Weather Observation Bridge Events
+# KMI Belgium feeder Events
 
 KMI Belgium Weather publishes weather observations from the Royal Meteorological Institute of Belgium (KMI/IRM) for Belgian weather stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 2 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 2 telemetry event types.
 - **Identity:** `{station_code}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `weather/be/kmi/kmi-belgium/+/+/info`, `weather/be/kmi/kmi-belgium/+/+/observation`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('weather/be/kmi/kmi-belgium/+/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `kmi-belgium`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/kmi-belgium')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,6 +77,8 @@ Each event identifies the real-world resource with `{station_code}`. `{station_c
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `kmi-belgium`, key `{station_code}` |
+| `MQTT/5.0` | topic `weather/be/kmi/kmi-belgium/{region}/{station_code}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/kmi-belgium`, message subject `{station_code}`; application properties region `{region}` |
 
 #### Payload
 
@@ -57,6 +87,7 @@ Each event identifies the real-world resource with `{station_code}`. `{station_c
 - **`station_code`** (string, required): KMI/RMI automatic weather station code from the GeoJSON feature property `code`, unique within the Belgian AWS network.
 - **`latitude`** (double, required, degree (°)): Geographic latitude of the station in decimal degrees (WGS 84), derived from the second value of the GeoJSON `geometry.coordinates` array.
 - **`longitude`** (double, required, degree (°)): Geographic longitude of the station in decimal degrees (WGS 84), derived from the first value of the GeoJSON `geometry.coordinates` array.
+- **`region`** (string, optional): Normalized routing field 'region' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -65,7 +96,8 @@ Synthetic example values are generated deterministically from the schema: consta
 {
   "station_code": "string",
   "latitude": 0,
-  "longitude": 0
+  "longitude": 0,
+  "region": "string"
 }
 ```
 
@@ -90,6 +122,8 @@ Each event identifies the real-world resource with `{station_code}`. `{station_c
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `kmi-belgium`, key `{station_code}` |
+| `MQTT/5.0` | topic `weather/be/kmi/kmi-belgium/{region}/{station_code}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/kmi-belgium`, message subject `{station_code}`; application properties region `{region}` |
 
 #### Payload
 
@@ -114,6 +148,7 @@ Each event identifies the real-world resource with `{station_code}`. `{station_c
 - **`sun_duration`** (double or null, optional, min): Sunshine duration accumulated during the 10-minute observation period.
 - **`short_wave_from_sky_avg`** (double or null, optional, W/m2 (W/m²)): Average downward shortwave radiation from the sky during the observation period.
 - **`sun_int_avg`** (double or null, optional, W/m2 (W/m²)): Average direct sunshine intensity during the observation period.
+- **`region`** (string, optional): Normalized routing field 'region' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -138,7 +173,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "pressure": 0,
   "sun_duration": 0,
   "short_wave_from_sky_avg": 0,
-  "sun_int_avg": 0
+  "sun_int_avg": 0,
+  "region": "string"
 }
 ```
 
@@ -164,20 +200,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/kmi_belgium.xreg.json`](xreg/kmi_belgium.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- KMI/RMI open data AWS service: <https://opendata.meteo.be/service/aws/ows>
-
-## MQTT and AMQP companion transports
-
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`kmi-belgium`). Docker E2E mock mode is available through `KMI_BELGIUM_MOCK=true`.
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources/kmi-belgium-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/kmi-belgium-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

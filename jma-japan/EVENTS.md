@@ -1,11 +1,11 @@
-# JMA Japan Weather Bulletins Poller Events
+# JMA Japan feeder Events
 
 JMA Japan Bulletins publishes official bulletin messages from the Japan Meteorological Agency for Japanese bulletin feeds. These events help consumers monitor hazards, route notifications, and correlate public-warning updates without polling the upstream source directly.
 
 ## At a glance
 
-- **Event types:** 1 documented event type.
-- **Transports:** KAFKA
+- **Event types:** 1 documented event type (3 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 1 telemetry event type.
 - **Identity:** `{bulletin_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `weather/jp/jma/jma-japan/+/+/bulletin`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('weather/jp/jma/jma-japan/+/+/bulletin', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `jma-japan`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/jma-japan')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,6 +77,8 @@ Each event identifies the real-world resource with `{bulletin_id}`. `{bulletin_i
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `jma-japan`, key `{bulletin_id}` |
+| `MQTT/5.0` | topic `weather/jp/jma/jma-japan/{office}/{bulletin_id}/bulletin`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/jma-japan`, message subject `{office}/{bulletin_id}` |
 
 #### Payload
 
@@ -61,6 +91,7 @@ Each event identifies the real-world resource with `{bulletin_id}`. `{bulletin_i
 - **`link`** (string or null, optional): URL to the full XML document for this bulletin on the JMA data server.
 - **`content`** (string or null, optional): Brief text summary of the bulletin content in Japanese.
 - **`feed_type`** (enum, optional): Which JMA Atom feed this bulletin originated from.
+- **`office`** (string, optional): Normalized routing field 'office' added for MQTT/AMQP subscriber filtering.
 ##### `feed_type` values
 
 - `regular`: Provider value `regular` for this coded alert field.
@@ -77,7 +108,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "updated": "2024-01-01T00:00:00Z",
   "link": "string",
   "content": "string",
-  "feed_type": "regular"
+  "feed_type": "regular",
+  "office": "string"
 }
 ```
 
@@ -109,12 +141,3 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/jma_japan.xreg.json`](xreg/jma_japan.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-
-## MQTT and AMQP companion transports
-
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`jma-japan`). Docker E2E mock mode is available through `JMA_JAPAN_MOCK=true`.
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources/jma-japan-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/jma-japan-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

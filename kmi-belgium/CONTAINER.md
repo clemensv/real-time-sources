@@ -1,67 +1,161 @@
-# KMI Belgium Weather Observation Bridge — Container Deployment
+# KMI Belgium container images
 
-## Upstream Source
+This document covers the published OCI container images for the KMI Belgium feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
+## Why this container
 
-The [KMI/RMI open data AWS service](https://opendata.meteo.be/service/aws/ows) provides free ten-minute automatic weather station observations for Belgium through an OGC WFS 2.0 endpoint. The bridge polls the `aws:aws_10min` feature type, extracts active stations from the latest observations, and emits CloudEvents into Kafka.
+These images package the poller, contract-generated producers, and transport adapters so you can run KMI Belgium ingestion as a containerized workload without writing custom bridge code.
 
-## Docker Pull
+## What ships in the box
 
-```bash
-docker pull ghcr.io/clemensv/real-time-sources/kmi-belgium:latest
-```
-
-## Environment Variables
-
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `CONNECTION_STRING` | Yes | — | Kafka or Event Hubs connection string |
-| `KAFKA_TOPIC` | No | `kmi-belgium` | Target Kafka topic |
-| `POLLING_INTERVAL` | No | `600` | Seconds between polling cycles |
-| `STATE_FILE` | No | `~/.kmi_belgium_state.json` | Deduplication state file path |
-| `KAFKA_ENABLE_TLS` | No | `true` | Set to `false` to disable TLS |
-
-## Docker Run (Plain Kafka)
-
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=kmi-belgium" \
-  -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources/kmi-belgium:latest
-```
-
-## Docker Run (Azure Event Hubs)
-
-```bash
-docker run --rm \
-  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<name>;SharedAccessKey=<key>;EntityPath=kmi-belgium" \
-  ghcr.io/clemensv/real-time-sources/kmi-belgium:latest
-```
-
-## Kafka Topics and Keys
-
-| Topic | Key | Event Types |
+| Image | Transport | Default behavior |
 |---|---|---|
-| `kmi-belgium` | `{station_code}` | `BE.Gov.KMI.Weather.Station`, `BE.Gov.KMI.Weather.WeatherObservation` |
+| `ghcr.io/clemensv/real-time-sources-kmi-belgium` | Apache Kafka 2.x | JSON CloudEvents (binary mode), key = `{station_code}` |
+| `ghcr.io/clemensv/real-time-sources-kmi-belgium-mqtt` | MQTT 5.0 | Topic template `(see xreg endpoint options)`, QoS 1, CloudEvent attrs as MQTT properties |
+| `ghcr.io/clemensv/real-time-sources-kmi-belgium-amqp` | AMQP 1.0 | AMQP node `kmi-belgium`, binary CloudEvents, password/Entra/SAS auth |
 
-## Azure Container Instance
+Event families emitted by these images:
 
-Deploy using the Azure CLI:
+- **`Station`**
+- **`WeatherObservation`**
+
+## Image contract
+
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.12-slim` (multi-arch `linux/amd64`, `linux/arm64`) |
+| Default entry point | Kafka `["python", "-m", "kmi_belgium", "feed"]`; MQTT `["python", "-m", "kmi_belgium_mqtt", "feed"]`; AMQP `["python", "-m", "kmi_belgium_amqp", "feed"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | graceful shutdown on `SIGTERM` |
+| Persistent state | `STATE_FILE` (mount `/state` to persist dedupe/resume) |
+| Image tags | `:latest`, `:v<semver>`, and `:sha-<git-sha>` |
+
+## Installing the container images
 
 ```bash
-az container create \
-  --resource-group <rg> \
-  --name kmi-belgium \
-  --image ghcr.io/clemensv/real-time-sources/kmi-belgium:latest \
-  --environment-variables \
-    CONNECTION_STRING="<connection-string>" \
-  --restart-policy Always
+docker pull ghcr.io/clemensv/real-time-sources-kmi-belgium:latest
+docker pull ghcr.io/clemensv/real-time-sources-kmi-belgium-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-kmi-belgium-amqp:latest
 ```
 
-## MQTT and AMQP companion transports
+## Using the Kafka image
 
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`kmi-belgium`). Docker E2E mock mode is available through `KMI_BELGIUM_MOCK=true`.
+### With a Kafka broker
 
-- MQTT image: `ghcr.io/clemensv/real-time-sources/kmi-belgium-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/kmi-belgium-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/kmi-belgium.json   -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>'   -e KAFKA_TOPIC='<kafka-topic>'   -e SASL_USERNAME='<sasl-username>'   -e SASL_PASSWORD='<sasl-password>'   ghcr.io/clemensv/real-time-sources-kmi-belgium:latest
+```
+
+### With Azure Event Hubs or Fabric Event Streams
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/kmi-belgium.json   -e CONNECTION_STRING='<connection-string>'   ghcr.io/clemensv/real-time-sources-kmi-belgium:latest
+```
+
+## Using the MQTT image
+
+### With a generic MQTT 5 broker (username/password)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/kmi-belgium.json   -e MQTT_BROKER_URL='mqtts://<broker-host>:8883'   -e MQTT_USERNAME='<username>'   -e MQTT_PASSWORD='<password>'   ghcr.io/clemensv/real-time-sources-kmi-belgium-mqtt:latest
+```
+
+### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/kmi-belgium.json   -e MQTT_BROKER_URL='mqtts://<ns>.<region>-1.ts.eventgrid.azure.net:8883'   -e MQTT_AUTH_MODE=entra   -e MQTT_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>'   -e MQTT_CLIENT_ID='<unique-client-id>'   ghcr.io/clemensv/real-time-sources-kmi-belgium-mqtt:latest
+```
+
+## Using the AMQP image
+
+### Generic AMQP 1.0 brokers (SASL PLAIN)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/kmi-belgium.json   -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/kmi-belgium'   ghcr.io/clemensv/real-time-sources-kmi-belgium-amqp:latest
+```
+
+### Azure Service Bus / Event Hubs (Microsoft Entra ID via CBS)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/kmi-belgium.json   -e AMQP_HOST='<namespace>.servicebus.windows.net'   -e AMQP_PORT=5671 -e AMQP_TLS=true   -e AMQP_ADDRESS='kmi-belgium'   -e AMQP_AUTH_MODE=entra   -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default'   -e AMQP_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>'   ghcr.io/clemensv/real-time-sources-kmi-belgium-amqp:latest
+```
+
+### Azure Service Bus emulator / SAS-only namespaces (SAS-token CBS)
+
+```bash
+docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/kmi-belgium.json   -e AMQP_HOST='servicebus-emulator'   -e AMQP_PORT=5672   -e AMQP_ADDRESS='kmi-belgium'   -e AMQP_AUTH_MODE=sas   -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey'   -e AMQP_SAS_KEY='<sas-key>'   ghcr.io/clemensv/real-time-sources-kmi-belgium-amqp:latest
+```
+
+## Environment variables
+
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to the dedupe/resume state file. Mount `/state` so it survives restarts. |
+| `POLLING_INTERVAL` | Seconds between polling cycles. |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric Event Stream connection string (overrides bootstrap settings). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka broker list when not using `CONNECTION_STRING`. |
+| `KAFKA_TOPIC` | Target topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | `false` disables TLS (default `true`). |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL (e.g. `mqtts://host:8883`). |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for password mode. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed identity client id. |
+| `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured`. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Full broker URL (`amqp://` / `amqps://`). |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Host-style configuration when not using URL. |
+| `AMQP_ADDRESS` | Target AMQP node (queue/topic/address). |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for `password` mode. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra ID token settings for `entra` mode. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token inputs for `sas` mode. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured`. |
+
+## Deploying into Azure Container Instances
+
+### AMQP — bring your own AMQP broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkmi-belgium%2Fazure-template-amqp.json)
+
+### MQTT — bring your own broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkmi-belgium%2Fazure-template-mqtt.json)
+
+### MQTT — provision a new Event Grid namespace MQTT broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkmi-belgium%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkmi-belgium%2Fazure-template-with-eventhub.json)
+
+### AMQP — provision a new Azure Service Bus namespace
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkmi-belgium%2Fazure-template-with-servicebus.json)
+
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fkmi-belgium%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md) — project overview, use cases, and quick-start paths.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing metadata.
+- [`xreg/kmi_belgium.xreg.json`](xreg/kmi_belgium.xreg.json) — source contract used for generated producers and EVENTS.md.

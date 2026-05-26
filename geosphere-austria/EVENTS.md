@@ -1,11 +1,11 @@
-# GeoSphere Austria — TAWES Weather Observations Events
+# GeoSphere Austria feeder Events
 
 GeoSphere Austria Weather publishes weather observations from GeoSphere Austria for Austrian weather stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 2 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 2 documented event types (6 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `{station_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `weather/at/geosphere/geosphere-austria/+/+/info`, `weather/at/geosphere/geosphere-austria/+/+/observation`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('weather/at/geosphere/geosphere-austria/+/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `geosphere-austria`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/geosphere-austria')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,6 +77,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `geosphere-austria-tawes`, key `{station_id}` |
+| `MQTT/5.0` | topic `weather/at/geosphere/geosphere-austria/{bundesland}/{station_id}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/geosphere-austria`, message subject `{station_id}`; application properties bundesland `{bundesland}` |
 
 #### Payload
 
@@ -60,6 +90,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`longitude`** (double, required, degree (°)): WGS84 longitude of the station in decimal degrees, sourced from the GeoSphere metadata 'lon' field.
 - **`altitude`** (double, required, meter (m)): Station altitude above sea level in meters, sourced from the GeoSphere metadata 'altitude' field.
 - **`state`** (string or null, required): Austrian federal state (Bundesland) where the station is located, for example 'Wien', 'Tirol', 'Steiermark'. Sourced from the GeoSphere metadata 'state' field. Null when the metadata does not include a state.
+- **`bundesland`** (string, optional): Normalized routing field 'bundesland' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -71,13 +102,14 @@ Synthetic example values are generated deterministically from the schema: consta
   "latitude": 0,
   "longitude": 0,
   "altitude": 0,
-  "state": "string"
+  "state": "string",
+  "bundesland": "string"
 }
 ```
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
 
 ### Weather Observation
 
@@ -96,6 +128,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `geosphere-austria-tawes`, key `{station_id}` |
+| `MQTT/5.0` | topic `weather/at/geosphere/geosphere-austria/{bundesland}/{station_id}/observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/geosphere-austria`, message subject `{station_id}`; application properties bundesland `{bundesland}` |
 
 #### Payload
 
@@ -111,6 +145,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`pressure`** (double or null, required, hectopascal (hPa)): Atmospheric pressure (Luftdruck) in hectopascals at station level over the 10-minute interval, from the GeoSphere P parameter. Null when not reported.
 - **`sunshine_duration`** (double or null, required, second (s)): Sunshine duration (Sonnenscheindauer) in seconds during the 10-minute interval, from the GeoSphere SO parameter. Null when the station does not have a sunshine sensor (has_sunshine=false) or the value is missing.
 - **`global_radiation`** (double or null, required, watt per square meter (W/m²)): Global radiation (Globalstrahlung) in watts per square meter during the 10-minute interval, from the GeoSphere GLOW parameter. Null when the station does not have a radiation sensor (has_global_radiation=false) or the value is missing.
+- **`bundesland`** (string, optional): Normalized routing field 'bundesland' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -126,7 +161,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "wind_speed": 0,
   "pressure": 0,
   "sunshine_duration": 0,
-  "global_radiation": 0
+  "global_radiation": 0,
+  "bundesland": "string"
 }
 ```
 
@@ -152,19 +188,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/geosphere-austria.xreg.json`](xreg/geosphere-austria.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-
-## MQTT and AMQP companion transports
-
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`geosphere-austria`). Docker E2E mock mode is available through `GEOSPHERE_AUSTRIA_MOCK=true`.
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources/geosphere-austria-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/geosphere-austria-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`

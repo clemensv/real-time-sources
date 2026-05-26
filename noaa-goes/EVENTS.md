@@ -1,4 +1,4 @@
-# NOAA SWPC Space Weather Poller Events
+# NOAA GOES / SWPC feeder Events
 
 MQTT 5 variant of NOAA GOES space-weather telemetry, alerts, and flares.
 

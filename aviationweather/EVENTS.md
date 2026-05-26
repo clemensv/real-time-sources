@@ -1,11 +1,11 @@
-# AviationWeather.gov Bridge Events
+# AviationWeather.gov feeder Events
 
-**AviationWeather.gov Bridge** polls the NOAA Aviation Weather Center API for METAR observations, SIGMET advisories, and station reference data, then sends them to a Kafka topic as CloudEvents. The tool tracks previously seen observations to avoid sending duplicates.
+MQTT 5 companion message group for gov.noaa.aviationweather.
 
 ## At a glance
 
-- **Event types:** 3 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 3 documented event types (9 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 2 telemetry event types.
 - **Identity:** `{icao_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `aviation/intl/noaa/aviationweather/+/info`, `aviation/intl/noaa/aviationweather/+/metar`, `aviation/intl/noaa/aviationweather/sigmets/+/+/sigmet`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('aviation/intl/noaa/aviationweather/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `aviationweather`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/aviationweather')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,6 +77,8 @@ Each event identifies the real-world resource with `{icao_id}`. `{icao_id}` is I
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aviationweather`, key `{icao_id}` |
+| `MQTT/5.0` | topic `aviation/intl/noaa/aviationweather/{icao_id}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aviationweather`, message subject `{icao_id}` |
 
 #### Payload
 
@@ -87,7 +117,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
 
 ### Metar
 
@@ -106,6 +136,8 @@ Each event identifies the real-world resource with `{icao_id}`. `{icao_id}` is I
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aviationweather`, key `{icao_id}` |
+| `MQTT/5.0` | topic `aviation/intl/noaa/aviationweather/{icao_id}/metar`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aviationweather`, message subject `{icao_id}` |
 
 #### Payload
 
@@ -183,6 +215,8 @@ Each event identifies the real-world resource with `{icao_id}`. `{icao_id}` is I
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `aviationweather`, key `{icao_id}` |
+| `MQTT/5.0` | topic `aviation/intl/noaa/aviationweather/sigmets/{region}/{sigmet_id}/sigmet`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aviationweather`, message subject `{region}/{sigmet_id}` |
 
 #### Payload
 
@@ -199,9 +233,11 @@ Each event identifies the real-world resource with `{icao_id}`. `{icao_id}` is I
 - **`altitude_low`** (int32 or null, optional, [ft_i] (ft)): Lower altitude limit of the hazard area in feet. From altitudeLow1 for US SIGMETs or base for international SIGMETs.
 - **`movement_dir`** (string or null, optional): Direction of movement of the weather phenomenon. Numeric degrees for US SIGMETs, cardinal direction string (e.g. 'NE') for international.
 - **`movement_spd`** (string or null, optional): Speed of movement of the weather phenomenon. Numeric knots for US SIGMETs, knots string for international.
-- **`severity`** (int32 or null, optional): Severity level indicator from the severity field in the US SIGMET response. Higher values indicate greater severity.
+- **`severity`** (string or null, optional): Severity level indicator from the severity field in the US SIGMET response. Higher values indicate greater severity.
 - **`raw_sigmet`** (string or null, optional): Full raw SIGMET text as received from the upstream source.
 - **`coords`** (string or null, optional): JSON-encoded array of coordinate objects defining the hazard area polygon. Each object has 'lat' (number) and 'lon' (number). Example: '[{"lat":41.88,"lon":-123.70},{"lat":40.00,"lon":-124.23}]'.
+- **`sigmet_id`** (string, optional): Normalized routing field 'sigmet_id' added for MQTT/AMQP subscriber filtering.
+- **`region`** (string, optional): Normalized routing field 'region' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -219,9 +255,11 @@ Synthetic example values are generated deterministically from the schema: consta
   "altitude_low": 0,
   "movement_dir": "string",
   "movement_spd": "string",
-  "severity": 0,
+  "severity": "string",
   "raw_sigmet": "string",
-  "coords": "string"
+  "coords": "string",
+  "sigmet_id": "string",
+  "region": "string"
 }
 ```
 
@@ -247,19 +285,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/aviationweather.xreg.json`](xreg/aviationweather.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-
-## MQTT and AMQP companion transports
-
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`aviationweather`). Docker E2E mock mode is available through `AVIATIONWEATHER_MOCK=true`.
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources/aviationweather-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/aviationweather-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`
