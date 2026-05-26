@@ -6167,7 +6167,7 @@ class TestDigitrafficMaritimeMqttDockerFlow:
 
 
 
-@pytest.fixture(scope='module')
+pytest.fixture(scope='module')
 def digitraffic_road_mqtt_image():
     return build_image('digitraffic-road', dockerfile='Dockerfile.mqtt', tag='test-digitraffic-road-mqtt')
 
@@ -6182,7 +6182,6 @@ def mosquitto_digitraffic_road():
         except docker.errors.APIError: pass
         try: network.remove()
         except docker.errors.APIError: pass
-
 
 class TestDigitrafficRoadMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_digitraffic_road, digitraffic_road_mqtt_image):

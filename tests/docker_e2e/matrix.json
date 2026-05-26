@@ -1413,6 +1413,8 @@
     },
     {
       "dir": "digitraffic-road",
+      "image": "digitraffic-road-kafka",
+      "file": "Dockerfile",
       "module": "digitraffic_road"
     },
     {
@@ -3008,6 +3010,8 @@
     },
     {
       "dir": "digitraffic-road",
+      "image": "digitraffic-road-kafka",
+      "file": "Dockerfile",
       "test_class": "TestDigitrafficRoadDockerFlow"
     },
     {
