@@ -202,7 +202,7 @@ function filteredSources() {
     if (activeCat && s.cat !== activeCat) return false;
     if (q && !s.name.toLowerCase().includes(q) && !s.desc.toLowerCase().includes(q) && !s.id.includes(q)) return false;
     return true;
-  });
+  }).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }));
 }
 
 function renderList() {
