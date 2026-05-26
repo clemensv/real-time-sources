@@ -1,274 +1,236 @@
-# DWD Open Data Bridge Usage Guide
+# DWD Open Data feeder
+
+This feeder turns the public [Deutscher Wetterdienst (DWD) open-data file server](https://opendata.dwd.de/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+[DWD Open Data](https://opendata.dwd.de/) publishes near-real-time weather observations, station metadata, CAP alerts, radar product listings, and ICON-D2 forecast file metadata from roughly 1,450 stations and multiple national product feeds across Germany. The source is richly structured but operationally awkward: consumers otherwise have to watch directory listings, unpack ZIP bundles, parse CAP feeds, track state per station and per file tree, and correlate reference metadata with telemetry.
+
+This bridge turns that file-server estate into a first-class real-time event stream so consumers can stop polling DWD directly and start subscribing to a topic:
+
+- **National weather operations** — drive station dashboards, state-level weather views, and warning consoles from one normalized stream.
+- **Critical infrastructure and utilities** — combine observations, alerts, and radar file updates for grid, rail, airport, and road-weather operations.
+- **Hydrology and agriculture analytics** — ingest temperature, precipitation, wind, and solar observations alongside weather alerts for downstream models.
+- **Radar and forecast processing pipelines** — use file-metadata events to trigger fetch-and-decode jobs for HDF5, BUFR, and GRIB2 assets only when new files arrive.
+- **Research and public-sector data platforms** — land DWD observations and alerts into Microsoft Fabric Eventhouse / Azure Data Explorer without rebuilding polling and dedupe logic.
+
+The bridge does the boring work — module selection, checkpoint state, per-station watermarks, CAP dedupe, directory listing diffs, reference-data emission, JSON-Structure–validated CloudEvents, and identity plumbing — so the consumer just subscribes.
 
 ## Overview
 
-**DWD Open Data Bridge** polls the [Deutscher Wetterdienst (DWD) Climate Data
-Center](https://opendata.dwd.de/) open-data file server for weather
-observations, station metadata, and weather alerts from ~1,450 stations across
-Germany. The data is forwarded to a Kafka topic as
-[CloudEvents](https://cloudevents.io/) in JSON format.
+**DWD Open Data** is a poll-based bridge that combines several upstream channel families into one operational source. The source ships in three transport variants from the same modular poller contract:
 
-## Key Features
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-dwd` | Apache Kafka 2.x compatible (incl. Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud) | Four message-family topics (CDC, Weather, Radar, Forecast), JSON CloudEvents (binary mode), key = `{station_id}`, `{identifier}`, or `{file_url}` depending on family |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-dwd-mqtt` | MQTT 5.0 broker (incl. Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic branches under `weather/de/dwd/dwd/...` and `alerts/de/dwd/dwd/...`, JSON body, CloudEvent attributes as MQTT 5 user properties, QoS 1 with retain behavior depending on family |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-dwd-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs, Azure Service Bus emulator) | Single AMQP node (queue/topic), binary CloudEvents, SASL PLAIN for generic brokers, Microsoft Entra ID via AMQP CBS for Service Bus / Event Hubs, or SAS-token CBS for the emulator and SAS-only namespaces |
 
-- **10-Minute Observations**: Air temperature, precipitation, wind, and solar
-  radiation updated every 10 minutes from the DWD "now" dataset.
-- **10-Minute Extremes** (optional): Extreme wind and extreme temperature
-  datasets from the DWD 10-minute "now" directories.
-- **Station Metadata**: Station list with coordinates, elevation, and state for
-  all reporting stations.
-- **Weather Alerts**: CAP (Common Alerting Protocol) weather alerts from the DWD
-  warning system.
-- **Hourly Observations** (optional): Recent hourly data including cloud cover.
-- **Radar Product Feed** (optional): Radar product file metadata from
-  `weather/radar/composite/`.
-- **ICON-D2 Forecast Feed** (optional): ICON-D2 forecast file metadata from
-  `weather/nwp/icon-d2/grib/`.
-- **Modular Architecture**: Enable or disable individual data modules.
-- **Kafka Integration**: Send data to Apache Kafka, Azure Event Hubs, or
-  Microsoft Fabric Event Streams using SASL PLAIN authentication.
+All three variants share:
 
-## Installation
+* The modular DWD poller (`station_metadata`, `station_obs_10min`, `station_obs_10min_extremes`, `station_obs_hourly`, `weather_alerts`, `radar_products`, `icon_d2_forecast`).
+* The xRegistry contract (`xreg/dwd.xreg.json`).
+* Four message families with 13 total event types: CDC observations, Weather alerts, Radar catalogs/files, and Forecast catalogs/files.
 
-The tool is written in Python and requires Python 3.10 or later. You can
-download Python from [here](https://www.python.org/downloads/) or from the
-Microsoft Store if you are on Windows.
+## Key features
 
-### Installation Steps
+- **13 DWD event types** grouped into four message families with stable identity models.
+- **Mixed source coverage** — station metadata, 10-minute and hourly observations, CAP alerts, radar product metadata, and ICON-D2 forecast file metadata.
+- **Configurable modules** — enable only the families you need with `DWD_MODULES` / `DWD_MODULES_DISABLED`.
+- **Checkpointed polling state** via `STATE_FILE` for station timestamps, seen alerts, and watched directory listings.
+- **Reference data first** — station metadata, radar catalogs, and forecast model catalogs are emitted as first-class event types.
+- **Three transport binaries** sharing the same upstream scope and event contracts — switch transport without redesigning consumers.
+- **Retained MQTT branches where Last Known Value makes sense** (station and observation/catalog topics) and live-only branches where it does not (alerts and file notifications).
+- **Azure Event Hubs / Microsoft Fabric Event Streams** ready via standard connection strings (Kafka variant).
+- **Azure Service Bus / Event Hubs over AMQP 1.0 with Microsoft Entra ID** (no SAS-key rotation) via CBS put-token, plus SAS-token CBS for emulator / SAS-only namespaces.
+
+## Repository layout
+
+```text
+dwd/
+  xreg/dwd.xreg.json              # shared xRegistry contract
+  dwd/                            # modular poller + Kafka feeder application
+  dwd_mqtt/                       # MQTT/UNS feeder application
+  dwd_amqp/                       # AMQP 1.0 feeder application
+  dwd_producer/                   # xRegistry-generated Kafka producer
+  dwd_mqtt_producer/              # xRegistry-generated MQTT producer
+  dwd_amqp_producer/              # xRegistry-generated AMQP producer
+  Dockerfile                      # builds the Kafka feeder image
+  Dockerfile.mqtt                 # builds the MQTT feeder image
+  Dockerfile.amqp                 # builds the AMQP feeder image
+  kql/dwd.kql                     # Eventhouse / KQL schema and update policies
+  kql/icond2.kql                  # optional KQL helpers for forecast-file workloads
+  tests/                          # unit + integration tests
+```
+
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS access to `opendata.dwd.de`.
+- Network access to your target Kafka broker, MQTT broker, or AMQP 1.0 peer.
+
+This feeder is a poller, not a websocket source. It can run stateless for evaluation, but if you want restart continuity you should persist `STATE_FILE` outside the container in your real deployment.
+
+## Quick start with Docker
+
+### Kafka
 
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=dwd
+docker run --rm \
+  -e CONNECTION_STRING="<event-hubs-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-dwd:latest
 ```
 
-If you clone the repository:
+Replace `<event-hubs-connection-string>` with a connection string from your Azure Event Hubs namespace, Microsoft Fabric Event Stream custom endpoint, or any Kafka 2.x broker that accepts the same SASL-PLAIN-over-TLS shape.
+
+### MQTT (Unified Namespace)
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/dwd
-pip install .
+docker run --rm \
+  -e MQTT_BROKER_URL=mqtts://<broker-host>:8883 \
+  -e MQTT_USERNAME=<username> \
+  -e MQTT_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-dwd-mqtt:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
+Topics published include retained station / observation branches and live-only alert / file-notification branches, for example:
 
-## How to Use
+```text
+weather/de/dwd/dwd/{state}/{station_id}/info
+alerts/de/dwd/dwd/{state}/{severity}/{identifier}/alert
+weather/de/dwd/dwd/products/radar/{product_type}/{file_id}/file
+weather/de/dwd/dwd/catalogs/{kind}/catalog
+```
 
-After installation, the tool can be run using the `dwd` command. It supports
-several subcommands.
-
-The events sent to Kafka are formatted as CloudEvents, documented in
-[EVENTS.md](EVENTS.md).
-
-### List Available Modules
+### AMQP 1.0
 
 ```bash
-dwd list-modules
+docker run --rm \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/dwd' \
+  ghcr.io/clemensv/real-time-sources-dwd-amqp:latest
 ```
 
-Output:
+For Azure Service Bus or Event Hubs with Microsoft Entra ID, the Service Bus emulator, or SAS-only namespaces, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image) for the full environment-variable matrix.
 
-```
-  station_metadata          ON   poll=86400s
-  station_obs_10min         ON   poll=600s
-  station_obs_10min_extremes OFF poll=600s
-  station_obs_hourly        OFF  poll=3600s
-  weather_alerts            ON   poll=300s
-  radar_products            OFF  poll=300s
-  icon_d2_forecast          OFF  poll=300s
-```
+## Configuration reference
 
-### Start the Feed
+The complete list of environment variables for every variant (Kafka, MQTT, AMQP), every authentication mode (SASL PLAIN, Microsoft Entra ID via CBS, SAS-token CBS), and every Azure deployment shape lives in [CONTAINER.md](CONTAINER.md). The runtime entry point for the images is `python -m dwd feed`, `python -m dwd_mqtt feed`, or `python -m dwd_amqp feed`; the image default `CMD` invokes it for you.
 
-#### Using a Connection String (Event Hubs / Fabric Event Streams)
+## Data model
 
-```bash
-dwd feed --connection-string "<your_connection_string>"
-```
+DWD is a multi-family source. It emits four message groups with distinct key models and routing shapes.
 
-#### Using Kafka Parameters Directly
+### `DE.DWD.CDC` — station observations and metadata
 
-```bash
-dwd feed \
-    --kafka-bootstrap-servers "<bootstrap_servers>" \
-    --kafka-topic "<topic_name>" \
-    --sasl-username "<username>" \
-    --sasl-password "<password>"
-```
+Key model: `{station_id}`
 
-### Command-Line Arguments (feed)
+| Event type | Description |
+|---|---|
+| `DE.DWD.CDC.StationMetadata` | Reference metadata for each weather station: identity, coordinates, elevation, state, and validity dates. |
+| `DE.DWD.CDC.AirTemperature10Min` | 10-minute air-temperature observations. |
+| `DE.DWD.CDC.Precipitation10Min` | 10-minute precipitation observations. |
+| `DE.DWD.CDC.Wind10Min` | 10-minute wind observations. |
+| `DE.DWD.CDC.Solar10Min` | 10-minute solar-radiation observations. |
+| `DE.DWD.CDC.HourlyObservation` | Hourly observation bundle for lower-frequency recent datasets. |
+| `DE.DWD.CDC.ExtremeWind10Min` | 10-minute extreme wind observations. |
+| `DE.DWD.CDC.ExtremeTemperature10Min` | 10-minute extreme temperature observations. |
 
-| Argument | Env Var | Description |
-|----------|---------|-------------|
-| `-c`, `--connection-string` | `CONNECTION_STRING` | Event Hubs / Fabric Event Stream connection string |
-| `--kafka-bootstrap-servers` | `KAFKA_BOOTSTRAP_SERVERS` | Comma-separated Kafka bootstrap servers |
-| `--kafka-topic` | `KAFKA_TOPIC` | Kafka topic name |
-| `--sasl-username` | `SASL_USERNAME` | SASL PLAIN username |
-| `--sasl-password` | `SASL_PASSWORD` | SASL PLAIN password |
-| `-i`, `--polling-interval` | `POLLING_INTERVAL` | Global poll interval override (seconds) |
-| `--state-file` | `STATE_FILE` | Path to state checkpoint file (default: `~/.dwd_state.json`) |
-| `--modules` | `DWD_MODULES` | Comma-separated list of modules to enable |
-| `--modules-disabled` | `DWD_MODULES_DISABLED` | Comma-separated list of modules to disable |
-| `--10min-params` | `DWD_10MIN_PARAMS` | Comma-separated 10-min categories (default: air_temperature,precipitation,wind,solar) |
-| `--stations` | `DWD_STATIONS` | Comma-separated station IDs to include (default: all) |
-| `--base-url` | `DWD_BASE_URL` | DWD server base URL (default: `https://opendata.dwd.de`) |
+This family is the operational weather-station core of the source. Station metadata is reference data; the other event types are telemetry updated on the cadence of the underlying DWD datasets.
 
-### Examples
+### `DE.DWD.Weather` — CAP weather alerts
 
-#### Poll Only Weather Alerts
+Key model: `{identifier}`
 
-```bash
-dwd feed -c "<conn_string>" --modules weather_alerts
-```
+| Event type | Description |
+|---|---|
+| `DE.DWD.Weather.Alert` | One DWD CAP alert, including severity, urgency, event classification, affected areas, and validity windows. |
 
-#### Poll Only Air Temperature for Specific Stations
+Alerts are live notifications rather than Last Known Value measurements, so the MQTT alert branch is intentionally non-retained.
 
-```bash
-dwd feed -c "<conn_string>" --modules station_obs_10min --10min-params air_temperature --stations 44,73,433
-```
+### `DE.DWD.Radar` — radar product catalogs and file notifications
 
-## Modules
+Key model: `{file_url}` for file events
 
-### station_metadata (default: ON, poll: 3600s)
+| Event type | Description |
+|---|---|
+| `DE.DWD.Radar.RadarProductCatalog` | Reference metadata for a radar product family / directory. |
+| `DE.DWD.Radar.RadarFileProduct` | Metadata for a newly discovered or updated radar file, including a fetchable HTTPS URL. |
 
-Fetches station lists from the DWD CDC station description files, merges them,
-and emits a `StationMetadata` event for each station when changes are detected.
-Covers ~1,450 stations across all 16 German states.
+The bridge emits **file metadata, not the binary radar payload itself**. Consumers fetch the referenced DWD file on demand — typically HDF5, BUFR, or RADOLAN-style binary products depending on the radar branch.
 
-### station_obs_10min (default: ON, poll: 600s)
+### `DE.DWD.Forecast` — forecast model catalogs and ICON-D2 file notifications
 
-Polls the DWD 10-minute "now" datasets. Downloads ZIP archives containing
-semicolon-delimited CSV files with recent observations. Tracks the latest
-timestamp per station per category to emit only new measurements.
+Key model: `{file_url}` for file events
 
-Categories: `air_temperature`, `precipitation`, `wind`, `solar`,
-`extreme_wind`, `extreme_temperature`.
+| Event type | Description |
+|---|---|
+| `DE.DWD.Forecast.ForecastModelCatalog` | Reference metadata for the forecast model family (for example `icon-d2`). |
+| `DE.DWD.Forecast.IconD2ForecastFile` | Metadata for a newly discovered or updated ICON-D2 forecast file, including a fetchable HTTPS URL and parsed run/lead information when available. |
 
-### station_obs_10min_extremes (default: OFF, poll: 600s)
+As with radar, the bridge emits **metadata about forecast files** rather than embedding GRIB2 content in the event payload. The file event is the trigger to fetch and decode the referenced DWD asset downstream.
 
-Polls only the 10-minute extreme datasets and emits:
+## Deploying into Microsoft Fabric
 
-- `ExtremeWind10Min` (fields from `FX_10`, `FNX_10`, `DX_10`)
-- `ExtremeTemperature10Min` (fields from `TX_10`, `TN_10`)
+DWD targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), and an attached Eventhouse / KQL database materializes the contract from [`kql/dwd.kql`](kql/dwd.kql) (with optional forecast-specific helpers in [`kql/icond2.kql`](kql/icond2.kql)).
 
-### station_obs_hourly (default: OFF, poll: 3600s)
+This source's catalog entry is container-only (`notebook: false`), so the supported Fabric hosting model is the always-on **Fabric ACI feeder**. The scheduled Fabric Notebook deployment path used by notebook-enabled pollers is intentionally out of scope for this source.
 
-Polls hourly "recent" datasets. Disabled by default because the data only
-updates once per day and is not truly real-time.
+### Fabric ACI feeder
 
-### weather_alerts (default: ON, poll: 300s)
+A long-running Azure Container Instance hosts one of the three container images and writes into a Fabric Event Stream custom endpoint. Use this whenever the destination is a Fabric workspace.
 
-Downloads the LATEST CAP alert bundle from DWD, extracts individual XML alert
-files, and emits new alerts. Tracks seen alert identifiers to avoid duplicates.
+Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source dwd -WorkspaceId <id> -CapacityId <id>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with [`kql/dwd.kql`](kql/dwd.kql), the Event Stream with a custom endpoint, and the ACI with the connection string wired in.
 
-### radar_products (default: OFF, poll: 300s)
-
-Polls DWD radar composite directories and emits:
-
-- `RadarProductCatalog` (reference metadata per radar product directory)
-- `RadarFileProduct` (metadata for new/updated radar files, including URL and
-  last-modified timestamp)
-
-### icon_d2_forecast (default: OFF, poll: 300s)
-
-Polls DWD ICON-D2 forecast GRIB directories and emits:
-
-- `ForecastModelCatalog` (reference metadata for the `icon-d2` model)
-- `IconD2ForecastFile` (metadata for new/updated forecast files, including URL
-  and parsed run/lead-time when available)
-
-## Upstream Channel Inventory and Scope Decisions
-
-The current extension pass audited the major DWD Open Data channel families and
-applies the following keep/drop decisions:
-
-| Family | Transport / Path | Identity | Cadence | Decision | Rationale |
-|---|---|---|---|---|---|
-| CDC station metadata | REST file (`.../10_minutes/*/now/*_Beschreibung_Stationen.txt`) | `station_id` | low-frequency updates | Keep (implemented) | Required reference data for station telemetry. |
-| CDC 10-minute observations | REST file ZIP (`.../10_minutes/{air_temperature,precipitation,wind,solar}/now/`) | `station_id` | ~10 min | Keep (implemented) | Core near-real-time weather telemetry. |
-| CDC 10-minute extremes | REST file ZIP (`.../10_minutes/{extreme_wind,extreme_temperature}/now/`) | `station_id` | ~10 min | Keep (implemented in this pass) | High-value near-real-time extremes. |
-| CDC hourly observations | REST file ZIP (`.../hourly/*/recent/`) | `station_id` + parameter | hourly/daily refresh | Keep (optional module) | Useful enrichment; lower freshness so disabled by default. |
-| Weather alerts (CAP) | REST ZIP (`weather/alerts/cap/.../LATEST...zip`) | `identifier` | minutes | Keep (implemented) | Operational severe-weather alerts. |
-| ICON-D2 forecasts | REST file products (`weather/nwp/icon-d2/grib/`) | `file_url` | rolling | Keep (implemented, optional module) | Emits forecast file metadata events keyed by the file's absolute HTTPS URL. |
-| Radar products | REST file products (`weather/radar/composite/`) | `file_url` | minutes | Keep (implemented, optional module) | Emits radar file metadata events keyed by the file's absolute HTTPS URL. |
-| Satellite products | REST file products (`weather/satellite/`) | product + tile/area + validity time | minutes | Keep (next phase) | Distinct image/raster model and ingestion pattern. |
-
-## Data Source
-
-All data originates from the [DWD Open Data Server](https://opendata.dwd.de/)
-which provides free access to weather and climate data under the
-[GeoNutzV](https://www.gesetze-im-internet.de/geonutzv/) license.
-
-## Fetching Referenced Files
-
-Events from the `radar_products` and `icon_d2_forecast` modules carry a
-`file_url` field that points at a file on `https://opendata.dwd.de/`. Every
-such URL is publicly fetchable with an **unauthenticated HTTPS `GET`** — no
-API key, token, signed URL, referer check, or cookie is required. The server
-(nginx fronting an Apache autoindex) honours `Range` and
-`If-Modified-Since`/`ETag`, so handlers can do conditional or partial fetches.
-A typical consumer dereferences an event by issuing a plain `GET file_url`
-and decoding the payload using the format conventions below.
-
-### File payload formats
-
-| Channel | URL pattern | Container | Payload format | What's inside |
-|---|---|---|---|---|
-| 10-minute observations | `…/10_minutes/{cat}/now/10minutenwerte_*_now.zip` | ZIP (single `.txt`) | Semicolon-delimited CSV, latin-1 | One row per 10-minute slot (last ~24 h) for one station. Header: `STATIONS_ID;MESS_DATUM;QN;…;eor`. Per-category columns: `air_temperature` → `PP_10,TT_10,TM5_10,RF_10,TD_10`; `precipitation` → `RWS_DAU_10,RWS_10,RWS_IND_10`; `wind` → `FF_10,DD_10`; `solar` → `DS_10,GS_10,SD_10,LS_10`; `extreme_wind` → `FX_10,FNX_10,DX_10`; `extreme_temperature` → `TX_10,TN_10,TX5_10,TN5_10`. `MESS_DATUM` is UTC `YYYYMMDDHHMM`; `-999` denotes missing. |
-| Station description | `…/10_minutes/{cat}/now/zehn_now_{tu,rr,ff,st}_Beschreibung_Stationen.txt` | Plain text, latin-1 | Fixed-width table | One row per station: `Stations_id, von_datum, bis_datum, Stationshoehe (m), geoBreite, geoLaenge, Stationsname, Bundesland, Abgabe`. ~1,450 stations across all 16 German states. |
-| CAP weather alerts | `weather/alerts/cap/COMMUNEUNION_DWD_STAT/Z_CAP_C_EDZW_*_PVW_STATUS_PREMIUMDWD_COMMUNEUNION_*.zip` | ZIP of XML | CAP 1.2 (`urn:oasis:names:tc:emergency:cap:1.2`) | One XML per alert. Each carries `identifier, sender (opendata@dwd.de), sent, status, msgType, references` plus one or more `<info>` blocks with `category=Met, event (e.g. BÖEN, GEWITTER), urgency, severity, certainty, effective/onset/expires, headline, description, instruction`, DWD `eventCode` extensions (`PROFILE_VERSION, LICENSE, II, GROUP, AREA_COLOR`) and `<area>` polygons in WGS84. The `…_LATEST_…_DE.zip` is a near-empty (~22 B) sentinel when no alerts are active; rolling timestamped bundles carry the actual content when alerts exist. |
-| Radar composite (HDF5) | `weather/radar/composite/{dmax,hx,hymecng,rs,rv,vii,wn}/composite_*-hd5` | ODIM-H5 (HDF5, magic `\x89HDF\r\n\x1a\n`) | Gridded reflectivity / precipitation | OPERA ODIM_H5 layout: `/what` (object, version, source, date, time), `/where` (projection, LL/UR corners, xscale/yscale, xsize/ysize ≈ 1100×900 for the national composite), `/how`, and `/datasetN/data1/{data, what}` arrays (typically scaled int16 with `gain/offset/nodata/undetect`). Read with `h5py` or `wradlib`. |
-| Radar composite (BUFR) | `weather/radar/composite/pg/PAAH21EDZW*.buf` | WMO BUFR (magic `BUFR`) | Binary BUFR message | DWD point/grid radar precipitation product. Decode with `eccodes`/`pdbufr`. Typically 30–40 KB. |
-| Radar composite (binary) | `weather/radar/composite/hg/HG*.bz2` | bzip2-wrapped binary | DWD RADOLAN/HG grid | Decompress with `bz2`, then parse as DWD radar grid (header + scaled values). |
-| ICON-D2 forecast | `weather/nwp/icon-d2/grib/<HH>/<param>/icon-d2_germany_<grid>_<level_type>_<run>_<lead>_<level>_<param>.grib2.bz2` | bzip2-wrapped GRIB2 (magic `GRIB`) | Single GRIB2 message | One parameter × one vertical level × one forecast lead hour for the ICON-D2 domain (~2 km, Germany + surroundings, ~650×750 grid). Section 1 reports WMO centre 78 (Offenbach) and the run reference time (e.g. `2026-05-17T00:00:00Z`). The file name carries all selectors: `run=YYYYMMDDHH`, `lead=000..048`, `level_type ∈ {single-level, model-level, pressure-level, time-invariant}`, `level` (model-level index, hPa, or surface tag), `parameter` (e.g. `t`, `u`, `v`, `qv`, `clc`, `tot_prec`, `clct`, `alb_rad`). Decompress with `bz2` and decode with `eccodes`/`pygrib`/`cfgrib`. |
-
-Per-file sizes are typically well under 1 MB except for the larger HDF5 radar
-composites (a few MB up to ~10 MB) and the per-directory `content.log.bz2`
-catalog logs (multi-MB, not a payload — filter out if you walk directories
-yourself rather than following `file_url` from events).
-
-## Microsoft Fabric Integration
-
-For a recommended end-to-end flow that lands the bridge's events into a
-**Fabric Lakehouse** (bronze raw bytes + silver Delta) and renders the
-results as **Fabric Maps** vector and imagery layers (including Cloud
-Optimized GeoTIFFs from ICON‑D2 GRIB2 and radar composites), see
-[FABRIC.md](FABRIC.md). It covers the Eventstream → Spark Notebook
-destination (preview) wiring, per‑channel pipelines, idempotency,
-scale, and ready‑to‑use Eventhouse KQL functions for map layers.
-
-## Data Management
-
-The bridge maintains a state file (default `~/.dwd_state.json`) to track:
-- Last-seen timestamps per station per category (for deduplication)
-- Seen alert identifiers (to avoid re-emitting active alerts)
-- Directory listing timestamps (to skip unchanged directories)
-
-This ensures the bridge only emits new data on each poll cycle.
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#dwd/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Six one-click deployment templates are available — covering Kafka, MQTT, and both AMQP deployment shapes checked into this source.
 
-### Option 1: Bring your own Event Hub
+### Kafka — bring your own Event Hub / Kafka
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+Deploy the Kafka container with your own Azure Event Hubs or Fabric Event Stream connection string.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdwd%2Fazure-template.json)
 
-### Option 2: Deploy with a new Event Hub
+### Kafka — provision a new Event Hub
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploy the Kafka container together with a new Event Hubs namespace (Standard SKU, 1 throughput unit) and event hub. The connection string is wired automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdwd%2Fazure-template-with-eventhub.json)
 
-## MQTT and AMQP companion transports
+### MQTT — bring your own broker
 
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`dwd`). Docker E2E mock mode is available through `DWD_MOCK=true`.
+Deploy the MQTT container with your own MQTT 5 broker and DWD topic tree.
 
-- MQTT image: `ghcr.io/clemensv/real-time-sources/dwd-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/dwd-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdwd%2Fazure-template-mqtt.json)
+
+### MQTT — provision Azure Event Grid namespace MQTT
+
+Deploy the MQTT container together with a new Azure Event Grid namespace configured for MQTT publishing.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdwd%2Fazure-template-with-eventgrid-mqtt.json)
+
+### AMQP 1.0 — bring your own broker
+
+Deploy the AMQP container with your own AMQP 1.0 broker and DWD address.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdwd%2Fazure-template-amqp.json)
+
+### AMQP 1.0 — provision a new Azure Service Bus namespace
+
+Deploy the AMQP container together with a new [Azure Service Bus Standard namespace](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview) with an address named `dwd`, a user-assigned managed identity, and the **Azure Service Bus Data Sender** role assignment. The feeder authenticates via AMQP CBS put-token with Microsoft Entra ID — no SAS key rotation required.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdwd%2Fazure-template-with-servicebus.json)
+
+## Next steps
+
+- Pick a hosting model: a [Fabric ACI feeder](#deploying-into-microsoft-fabric) if your destination is a Fabric workspace; a [direct Azure deployment](#deploying-into-azure-container-instances) if you target Event Hubs, MQTT, or Service Bus without Fabric.
+- Review the [event contract and schemas](EVENTS.md) before writing a consumer.
+- Look up authentication modes and the full environment-variable matrix in [CONTAINER.md](CONTAINER.md).
+- Browse the upstream DWD open-data server at [opendata.dwd.de](https://opendata.dwd.de/) for product-family specifics and downstream file-decoding requirements.
