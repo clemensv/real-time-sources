@@ -1,114 +1,164 @@
-# US CBP Border Wait Times
+# US CBP Border Wait feeder
 
-This bridge fetches real-time wait times at US land border crossings from the
-US Customs and Border Protection (CBP) Border Wait Time API and publishes
-them as CloudEvents into Apache Kafka.
+This feeder turns US CBP Border Wait Time API into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-## Data Source
+Companion docs:
 
-The CBP publishes wait times at approximately 81 land border ports of entry
-along the US-Canada and US-Mexico borders. Data includes delay in minutes
-and number of open lanes for passenger vehicles, pedestrians, and commercial
-vehicles, broken down by lane type (standard, SENTRI/NEXUS, Ready Lane, FAST).
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-- **API**: `https://bwt.cbp.gov/api/bwtnew`
-- **Format**: JSON
-- **Auth**: None (US Government public domain)
-- **Update Frequency**: Approximately hourly
-- **Coverage**: ~81 ports across Canadian and Mexican borders
-- **Documentation**: https://bwt.cbp.gov/
+## Why this bridge
 
-## Event Types
+Cross-border logistics operators, customs-broker tools, travel apps, and public-sector planning teams use border wait telemetry for routing, staffing, and delay forecasting. This bridge standardizes polling, normalization, dedupe, CloudEvents shaping, and transport delivery so consumers subscribe once and reuse the same contract across platforms.
 
-| CloudEvents Type | Description |
-|---|---|
-| `gov.cbp.borderwait.Port` | Port of entry metadata (reference data) — name, border, crossing, hours, max lanes |
-| `gov.cbp.borderwait.WaitTime` | Current wait times — delay in minutes, lanes open, operational status per lane type |
+- **Traffic and mobility operations** — live dashboards and operational control-room views.
+- **Route and dispatch optimization** — dynamic rerouting and ETA management under disruptions.
+- **Analytics and planning** — long-running ingestion into Fabric Eventhouse / ADX / lakes.
+- **Compliance and reporting** — auditable event history for public-sector and regulated workflows.
+- **Cross-domain correlation** — fuse mobility events with weather, safety, and infrastructure feeds.
 
-## Data Model
+## Overview
 
-### Port (Reference)
+**US CBP Border Wait** is a poll-based bridge that ingests upstream data from [US CBP Border Wait Time API](https://bwt.cbp.gov/) and re-emits normalized CloudEvents.
 
-Each port record includes:
-- **port_number**: Six-digit CBP port code (stable key)
-- **port_name**: City or locality name
-- **border**: 'Canadian Border' or 'Mexican Border'
-- **crossing_name**: Specific crossing facility name
-- **hours**: Operating hours
-- **passenger_vehicle_max_lanes / commercial_vehicle_max_lanes / pedestrian_max_lanes**: Maximum lane counts
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-cbp-border-wait` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents (binary mode), key templates `{port_number}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-cbp-border-wait-mqtt` | MQTT 5.0 broker (incl. Azure Event Grid MQTT) | Unified-Namespace topic tree rooted under `mobility/us/cbp/border-wait/...` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-cbp-border-wait-amqp` | AMQP 1.0 brokers incl. Azure Service Bus / Event Hubs | Binary CloudEvents to AMQP address `cbp-border-wait` |
 
-### WaitTime (Telemetry)
+All variants share:
 
-Each wait time report includes flattened lane-level data:
-- **Passenger Vehicles**: standard, NEXUS/SENTRI, Ready Lane — delay, lanes open, status
-- **Pedestrians**: standard, Ready Lane — delay, lanes open, status
-- **Commercial Vehicles**: standard, FAST — delay, lanes open, status
-- **port_status**: Overall port status (typically 'Open')
-- **construction_notice**: Active construction or closure notices
+- The same xRegistry contract (`xreg/cbp_border_wait.xreg.json`).
+- The same event-family model and schema set.
+- Poll-based acquisition logic with periodic refresh cycles.
 
-Operational status values: `no delay`, `delay`, `N/A`, `Lanes Closed`, `Update Pending`.
+## Key features
 
-## Kafka Key
+- Poll-based bridge with CloudEvents-first contract design.
+- Shared event contract across Kafka, MQTT, and AMQP transports.
+- Fabric-ready deployment path (Notebook and ACI hosting options).
+- ARM templates for direct Azure Container Instance deployment targets.
+- Source-specific event families and stable domain key templates.
 
-All events are keyed by `{port_number}` (the six-digit CBP port code), so
-both port metadata and wait time readings for the same crossing share the
-same partition.
+## Repository layout
 
-## Upstream Links
+```text
+cbp-border-wait/
+  xreg/cbp_border_wait.xreg.json
+  cbp_border_wait/
+  cbp_border_wait_mqtt/
+  cbp_border_wait_amqp/
+  cbp_border_wait_producer/
+  cbp_border_wait_mqtt_producer/
+  cbp_border_wait_amqp_producer/
+  kql/
+  notebook/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+```
 
-- CBP Border Wait Times: https://bwt.cbp.gov/
-- API endpoint: https://bwt.cbp.gov/api/bwtnew
-- License: US Public Domain
+## Prerequisites
 
-## Fabric notebook hosting
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS connectivity to the upstream API at `https://bwt.cbp.gov/`.
+- Network access to your target Kafka broker, MQTT broker, or AMQP 1.0 peer.
+- A writable host directory mounted at `/state` for persistent polling/dedupe state.
 
-This source ships an optional Fabric notebook (`notebook/cbp-border-wait-feed.ipynb`) that runs one polling cycle per scheduled execution and is deployed via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+## Quick start with Docker
+
+> [!IMPORTANT]
+> This source is poll-based. Mount a host volume and set `STATE_FILE` so state survives container restarts.
+
+### Kafka
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/cbp-border-wait.json \
+  -e CONNECTION_STRING="<event-hubs-or-kafka-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-cbp-border-wait:latest
+```
+
+### MQTT (Unified Namespace)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/cbp-border-wait.json \
+  -e MQTT_BROKER_URL=mqtts://<broker-host>:8883 \
+  -e MQTT_USERNAME=<username> \
+  -e MQTT_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-cbp-border-wait-mqtt:latest
+```
+
+### AMQP 1.0
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/cbp-border-wait.json \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/cbp-border-wait' \
+  ghcr.io/clemensv/real-time-sources-cbp-border-wait-amqp:latest
+```
+
+## Configuration reference
+
+The complete environment-variable matrix for Kafka, MQTT, and AMQP images (including authentication-mode differences and Azure deployment assumptions) is documented in [CONTAINER.md](CONTAINER.md).
+
+## Data model
+
+This source emits the following event families (see [EVENTS.md](EVENTS.md) for full schema-level detail):
+
+- **gov.cbp.borderwait** — 2 event type(s): gov.cbp.borderwait.Port, gov.cbp.borderwait.WaitTime.
+
+## Deploying into Microsoft Fabric
+
+US CBP Border Wait supports both Fabric hosting models via the source card on the [project portal](https://clemensv.github.io/real-time-sources/#cbp-border-wait).
+
+### Fabric Notebook feeder
+
+Because this source is poll-based and ships a notebook asset (`notebook/`), you can run scheduled ingestion in-Fabric with:
+
+`tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source cbp-border-wait -WorkspaceId <id> -CapacityId <id>`
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#cbp-border-wait/fabric-notebook)
+
+### Fabric ACI feeder
+
+For always-on execution, deploy a long-running Azure Container Instance feeder with:
+
+`tools/deploy-fabric/deploy-fabric-aci.ps1 -Source cbp-border-wait -WorkspaceId <id> -CapacityId <id>`
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#cbp-border-wait/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+The following ARM templates exist in this source directory and have matching deploy buttons:
 
-### Option 1: Bring your own Event Hub
+### Kafka — provision a new Event Hub
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcbp-border-wait%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploy Kafka plus a new Event Hubs namespace and event hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcbp-border-wait%2Fazure-template-with-eventhub.json)
 
-## Transports
+### AMQP — provision a new Azure Service Bus namespace
 
-This source now ships separate Kafka and MQTT containers over the same xRegistry contract. The Kafka image is the best fit when consumers need replay, batch catch-up, or a single ordered stream. The MQTT image (`ghcr.io/clemensv/real-time-sources-cbp-border-wait-mqtt:latest`) is the better fit for operational dashboards and Unified Namespace subscribers that want to subscribe directly to the current state or live event slice for this source.
+Deploy AMQP plus Service Bus and managed-identity sender permissions.
 
-The MQTT contract is source-specific: MQTT/5.0 transport variants for US CBP border wait-time state. Topics are retained QoS-1 leaves under traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/{event}. The border_slug axis is lowercase kebab-case from the CBP border field (canadian-border or mexican-border); port_number preserves the Kafka key and CloudEvents subject. Wait-time snapshots use message expiry so stale retained state ages out if polling stops.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcbp-border-wait%2Fazure-template-with-servicebus.json)
 
-MQTT publishes binary-mode CloudEvents with JSON payloads and CloudEvent attributes in MQTT 5 user properties. Topic patterns from `xreg/cbp_border_wait.xreg.json`:
+### Kafka — bring your own Event Hub / Kafka
 
-| Topic pattern | Message type | Delivery |
-|---|---|---|
-| `traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/info` | `gov.cbp.borderwait.Port` | QoS 1, retain=true |
-| `traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/wait-time` | `gov.cbp.borderwait.WaitTime` | QoS 1, retain=true, expiry=7200s |
+Deploy the Kafka container with your own Event Hubs/Fabric/Event Stream connection string.
 
-Four Azure Container Instance deployment shapes are documented for this source:
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fcbp-border-wait%2Fazure-template.json)
 
-| Transport | Template |
-|---|---|
-| Kafka, bring your own Event Hub or compatible broker | `azure-template.json` |
-| Kafka, create an Event Hubs namespace and hub | `azure-template-with-eventhub.json` |
-| MQTT, bring your own MQTT 5 broker | `azure-template-mqtt.json` |
-| MQTT, create an Azure Event Grid namespace MQTT broker | `azure-template-with-eventgrid-mqtt.json` |
+## Next steps
 
-See [CONTAINER.md](CONTAINER.md) for runtime environment variables and deployment badges, and [EVENTS.md](EVENTS.md) for the full CloudEvents and MQTT topic contract.
-
-## AMQP 1.0 companion
-
-This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full auth-mode and environment-variable details.
+- Validate transport-specific routing and key templates against your downstream topology.
+- Review upstream usage guidance at [US CBP Border Wait Time API](https://bwt.cbp.gov/).

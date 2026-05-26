@@ -1,4 +1,4 @@
-# Madrid Real-Time Traffic (Informo) Events
+# Madrid Traffic feeder Events
 
 Madrid Traffic publishes traffic intensity and occupancy measurements from Madrid open traffic sensor feeds for Madrid traffic sensors. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 

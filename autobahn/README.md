@@ -1,135 +1,176 @@
-# German Autobahn Traffic Bridge
+# Autobahn feeder
 
-This bridge polls the German Autobahn API at
-`https://verkehr.autobahn.de/o/autobahn` and forwards current roadworks,
-traffic warnings, closures, entry and exit closures, weight-limit
-restrictions, lorry parking metadata, electric charging station metadata, and
-webcams to Apache Kafka, Azure Event Hubs, or Microsoft Fabric Event Streams
-as CloudEvents.
+This feeder turns German Autobahn APIs into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-The API exposes current state rather than a change feed. The bridge therefore
-polls the configured roads and resources, reuses ETags for conditional GETs,
-and diffs the latest snapshot against its local state file to emit `appeared`,
-`updated`, and `resolved` events.
+Companion docs:
 
-## Data Source
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-- API endpoint: `https://verkehr.autobahn.de/o/autobahn`
-- Format: JSON over HTTPS
-- Authentication: none
-- Update model: current-state snapshots with ETag support
-- Coverage: all German Autobahns returned by the roads index
+## Why this bridge
 
-## Events
+German motorway operations teams, logistics platforms, emergency planners, navigation systems, and insurers use Autobahn status data for closures, incidents, and restrictions. This bridge standardizes polling, normalization, dedupe, CloudEvents shaping, and transport delivery so consumers subscribe once and reuse the same contract across platforms.
 
-See [EVENTS.md](EVENTS.md) for the CloudEvents contract.
+- **Traffic and mobility operations** — live dashboards and operational control-room views.
+- **Route and dispatch optimization** — dynamic rerouting and ETA management under disruptions.
+- **Analytics and planning** — long-running ingestion into Fabric Eventhouse / ADX / lakes.
+- **Compliance and reporting** — auditable event history for public-sector and regulated workflows.
+- **Cross-domain correlation** — fuse mobility events with weather, safety, and infrastructure feeds.
 
-- MQTT/UNS feeder: `autobahn_mqtt` publishes binary-mode CloudEvents under `traffic/de/autobahn/autobahn/{road}/{kind}/{identifier}/{state}` with QoS 1 and per-family retain policy.
+## Overview
 
-## Usage
+**Autobahn** is a poll-based bridge that ingests upstream data from [German Autobahn APIs](https://verkehr.autobahn.de/o/autobahn) and re-emits normalized CloudEvents.
 
-List the available Autobahns:
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-autobahn` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents (binary mode), key templates `{identifier}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-autobahn-mqtt` | MQTT 5.0 broker (incl. Azure Event Grid MQTT) | Unified-Namespace topic tree rooted under `traffic/de/autobahn/...` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-autobahn-amqp` | AMQP 1.0 brokers incl. Azure Service Bus / Event Hubs | Binary CloudEvents to AMQP address `autobahn` |
 
-```bash
-python -m autobahn roads
+All variants share:
+
+- The same xRegistry contract (`xreg/autobahn.xreg.json`).
+- The same event-family model and schema set.
+- Poll-based acquisition logic with periodic refresh cycles.
+
+## Key features
+
+- Poll-based bridge with CloudEvents-first contract design.
+- Shared event contract across Kafka, MQTT, and AMQP transports.
+- Fabric-ready deployment path (Notebook and ACI hosting options).
+- ARM templates for direct Azure Container Instance deployment targets.
+- Source-specific event families and stable domain key templates.
+
+## Repository layout
+
+```text
+autobahn/
+  xreg/autobahn.xreg.json
+  autobahn/
+  autobahn_mqtt/
+  autobahn_amqp/
+  autobahn_producer/
+  autobahn_mqtt_producer/
+  autobahn_amqp_producer/
+  kql/
+  notebook/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
 ```
 
-Start the bridge and publish events to Kafka:
+## Prerequisites
+
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Outbound HTTPS connectivity to the upstream API at `https://verkehr.autobahn.de/o/autobahn`.
+- Network access to your target Kafka broker, MQTT broker, or AMQP 1.0 peer.
+- A writable host directory mounted at `/state` for persistent polling/dedupe state.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> This source is poll-based. Mount a host volume and set `AUTOBAHN_STATE_FILE` so state survives container restarts.
+
+### Kafka
 
 ```bash
-python -m autobahn feed \
-  --kafka-bootstrap-servers "localhost:9092" \
-  --kafka-topic "autobahn" \
-  --poll-interval 300
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AUTOBAHN_STATE_FILE=/state/autobahn.json \
+  -e CONNECTION_STRING="<event-hubs-or-kafka-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-autobahn:latest
 ```
 
-Or use an Event Hubs or Fabric Event Streams connection string:
+### MQTT (Unified Namespace)
 
 ```bash
-python -m autobahn feed --connection-string "<connection-string>"
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AUTOBAHN_STATE_FILE=/state/autobahn.json \
+  -e MQTT_BROKER_URL=mqtts://<broker-host>:8883 \
+  -e MQTT_USERNAME=<username> \
+  -e MQTT_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-autobahn-mqtt:latest
 ```
 
-Limit the scan to selected roads and resources:
+### AMQP 1.0
 
 ```bash
-python -m autobahn feed \
-  --connection-string "<connection-string>" \
-  --roads A1,A3,A7 \
-  --resources roadworks,warning,closure
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e AUTOBAHN_STATE_FILE=/state/autobahn.json \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/autobahn' \
+  ghcr.io/clemensv/real-time-sources-autobahn-amqp:latest
 ```
 
-- Fabric notebook hosting: deploy a single-cycle scheduled feeder via
-  [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
-  (uses `autobahn/notebook/autobahn-feed.ipynb`).
+## Configuration reference
 
-## Environment Variables
+The complete environment-variable matrix for Kafka, MQTT, and AMQP images (including authentication-mode differences and Azure deployment assumptions) is documented in [CONTAINER.md](CONTAINER.md).
 
-The bridge accepts these environment variables when the corresponding command
-line options are not supplied:
+## Data model
 
-| Variable | Description | Default |
-|---|---|---|
-| `CONNECTION_STRING` | Event Hubs or Fabric Event Streams connection string | none |
-| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap servers | none |
-| `KAFKA_TOPIC` | Kafka topic | `autobahn` |
-| `SASL_USERNAME` | SASL/PLAIN username | none |
-| `SASL_PASSWORD` | SASL/PLAIN password | none |
-| `KAFKA_ENABLE_TLS` | Use TLS when not using SASL | `true` |
-| `AUTOBAHN_STATE_FILE` | State file for ETags and last-seen snapshots | `~/.autobahn_state.json` |
-| `AUTOBAHN_POLL_INTERVAL` | Poll interval in seconds | `300` |
-| `AUTOBAHN_RESOURCES` | Comma-separated resource list or `*` | all six resources |
-| `AUTOBAHN_ROADS` | Comma-separated road list or `*` | all roads |
-| `AUTOBAHN_REQUEST_CONCURRENCY` | Maximum concurrent Autobahn API requests | `16` |
-| `LOG_LEVEL` | Logging level | `INFO` |
+This source emits the following event families (see [EVENTS.md](EVENTS.md) for full schema-level detail):
 
-## Modeling Notes
+- **DE.Autobahn** — 30 event type(s): DE.Autobahn.RoadworkAppeared, DE.Autobahn.RoadworkUpdated, DE.Autobahn.RoadworkResolved, DE.Autobahn.ShortTermRoadworkAppeared….
 
-The upstream API uses resource-specific schemas and semantic `display_type`
-values. The bridge preserves that split instead of flattening everything into a
-single item type:
+## Deploying into Microsoft Fabric
 
-- Road-event payloads: roadworks, short-term roadworks, closures, entry/exit closures, weight-limit restrictions.
-- Warning payloads: traffic warnings with delay, speed, and abnormal-traffic metadata.
-- Parking payloads: lorry parking sites with parsed amenity and capacity fields.
-- Charging payloads: charging stations with parsed charging-point details.
-- Webcam payloads: camera metadata and media links.
+Autobahn supports both Fabric hosting models via the source card on the [project portal](https://clemensv.github.io/real-time-sources/#autobahn).
 
-CloudEvents `subject` and the Kafka key use the upstream `identifier`, which is
-stable across the live network within each resource family.
+### Fabric Notebook feeder
 
-## Testing
+Because this source is poll-based and ships a notebook asset (`notebook/`), you can run scheduled ingestion in-Fabric with:
 
-```bash
-pytest tests/test_autobahn_unit.py
-```
+`tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source autobahn -WorkspaceId <id> -CapacityId <id>`
 
-The repo-wide Docker Kafka flow test can also be run from the workspace root:
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#autobahn/fabric-notebook)
 
-```bash
-pytest tests/docker_e2e/test_docker_kafka_flow.py -v -k Autobahn
-```
+### Fabric ACI feeder
+
+For always-on execution, deploy a long-running Azure Container Instance feeder with:
+
+`tools/deploy-fabric/deploy-fabric-aci.ps1 -Source autobahn -WorkspaceId <id> -CapacityId <id>`
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#autobahn/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+The following ARM templates exist in this source directory and have matching deploy buttons:
 
-### Option 1: Bring your own Event Hub
+### MQTT — bring your own broker
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+Deploy MQTT against an existing MQTT 5.0 broker endpoint.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fautobahn%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fautobahn%2Fazure-template-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
+### MQTT — provision a new Event Grid MQTT broker
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+Deploy MQTT plus an Event Grid namespace broker and managed-identity role assignment.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fautobahn%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
+
+Deploy Kafka plus a new Event Hubs namespace and event hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fautobahn%2Fazure-template-with-eventhub.json)
 
-## AMQP 1.0 companion
+### AMQP — provision a new Azure Service Bus namespace
 
-This source also ships an AMQP 1.0 companion feeder (`Dockerfile.amqp`) alongside the Kafka and MQTT variants. It publishes the same CloudEvents to a single AMQP address named after the source, with CloudEvent `subject` and AMQP application properties mirroring the Kafka key/MQTT topic axes for broker-side filtering. Use `azure-template-with-servicebus.json` to deploy the AMQP feeder to Azure Service Bus with Entra ID/CBS authentication, or set `AMQP_BROKER_URL` for a generic AMQP 1.0 broker.
+Deploy AMQP plus Service Bus and managed-identity sender permissions.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fautobahn%2Fazure-template-with-servicebus.json)
+
+### Kafka — bring your own Event Hub / Kafka
+
+Deploy the Kafka container with your own Event Hubs/Fabric/Event Stream connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fautobahn%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before implementing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full auth-mode and environment-variable details.
+- Validate transport-specific routing and key templates against your downstream topology.
+- Review upstream usage guidance at [German Autobahn APIs](https://verkehr.autobahn.de/o/autobahn).

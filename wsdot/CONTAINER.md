@@ -1,143 +1,209 @@
-# WSDOT Container
+# WSDOT Traveler Information container images
 
-## Overview
+This document covers the published OCI container images for the WSDOT Traveler Information feeder, their environment-variable contract, authentication modes, and one-click Azure deployments.
 
-This container bridges the WSDOT Traveler Information API and Washington
-State Ferries API to Apache Kafka endpoints. It polls eight data channels
-covering traffic flow, travel times, mountain pass conditions, road weather,
-toll rates, commercial vehicle restrictions, US-Canada border crossing wait
-times, and ferry vessel locations, emitting all data as CloudEvents.
+Companion docs:
 
-For the full event catalog, see [EVENTS.md](EVENTS.md).
+- [README.md](README.md) — source overview, value framing, and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing details.
 
-## Container Image
+## Why this container
 
-```bash
-docker pull ghcr.io/clemensv/real-time-sources/wsdot:latest
-```
+State traffic centers, ferry operations, logistics planners, and public traveler-information systems use WSDOT feeds for live network status and incident-aware routing. These containers package polling, event normalization, dedupe, and transport-specific publishing so teams can run production ingestion without custom bridge code.
 
-## Environment Variables
+## What ships in the box
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `CONNECTION_STRING` | Yes | — | Kafka connection string (see below) |
-| `WSDOT_ACCESS_CODE` | Yes | — | WSDOT API access code ([register free](https://www.wsdot.wa.gov/traffic/api/)) |
-| `POLLING_INTERVAL` | No | `120` | Polling interval in seconds |
-| `KAFKA_ENABLE_TLS` | No | `true` | Set to `false` for plain Kafka without TLS |
-| `REGION_FILTER` | No | — | Comma-separated region names for traffic flow (default: all) |
+| Image | Transport | Runtime entrypoint |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-wsdot` | Kafka | `python -m wsdot feed` |
+| `ghcr.io/clemensv/real-time-sources-wsdot-mqtt` | MQTT | `python -m wsdot_mqtt feed` |
+| `ghcr.io/clemensv/real-time-sources-wsdot-amqp` | AMQP | `python -m wsdot_amqp feed` |
 
-## Running with Plain Kafka
+The image set shares a single xRegistry contract and publishes the same event families listed in [EVENTS.md](EVENTS.md).
 
-```bash
-docker run -d \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=wsdot" \
-  -e WSDOT_ACCESS_CODE="your-access-code" \
-  -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources/wsdot:latest
-```
+## Image contract
 
-## Running with Azure Event Hubs
+| Aspect | Value |
+|---|---|
+| Base image | Source Dockerfiles (`Dockerfile*`) currently use Python slim bases (Kafka may differ from MQTT/AMQP in some sources). |
+| Entry point | `python -m <source>{,_mqtt,_amqp} feed` per image. |
+| Exposed ports | None (outbound publisher only). |
+| Signals | Graceful process termination on `SIGTERM`. |
+| Persistent state | `STATE_FILE` (mount `/state` volume for restart-safe dedupe). |
+| Tags | `latest`, plus immutable release/sha tags from GHCR publishing workflows. |
+
+## Installing the container images
 
 ```bash
-docker run -d \
-  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=wsdot" \
-  -e WSDOT_ACCESS_CODE="your-access-code" \
-  ghcr.io/clemensv/real-time-sources/wsdot:latest
+docker pull ghcr.io/clemensv/real-time-sources-wsdot:latest
+docker pull ghcr.io/clemensv/real-time-sources-wsdot-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-wsdot-amqp:latest
 ```
 
-## Running with Fabric Event Streams
+## Using the Kafka image
 
-Use the Kafka connection string from your Fabric Event Stream custom
-endpoint. The format is the same as Azure Event Hubs.
-
-## Behavior
-
-1. At startup, fetches all data from every API channel and emits reference
-   events (TrafficFlowStation, WeatherStation) and initial telemetry for all
-   channels.
-2. Enters a polling loop, re-fetching all channels every `POLLING_INTERVAL`
-   seconds and emitting updated events.
-3. Reference data (stations, CV restrictions) is refreshed every 6 hours.
-4. Each channel uses its own Kafka key (see Data Model below).
-
-## Data Channels
-
-| Channel | Events/Poll | Key |
-|---------|-------------|-----|
-| Traffic Flow | ~1,400 | `{flow_data_id}` |
-| Travel Times | ~163 | `{travel_time_id}` |
-| Mountain Passes | 16 | `{mountain_pass_id}` |
-| Road Weather | ~134 | `{station_id}` |
-| Toll Rates | ~84 | `{trip_name}` |
-| CV Restrictions | ~354 (ref only) | `{state_route_id}/{bridge_number}` |
-| Border Crossings | 11 | `{crossing_name}` |
-| Ferry Vessels | ~21 | `{vessel_id}` |
-
-## Region Filter
-
-To reduce traffic flow volume, set `REGION_FILTER` to a comma-separated
-list of region names:
+### With a Kafka broker (SASL PLAIN)
 
 ```bash
--e REGION_FILTER="Northwest,Olympic"
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/wsdot.json \
+  -e KAFKA_BOOTSTRAP_SERVERS=<host:port> \
+  -e KAFKA_TOPIC=wsdot \
+  -e SASL_USERNAME=<username> \
+  -e SASL_PASSWORD=<password> \
+  ghcr.io/clemensv/real-time-sources-wsdot:latest
 ```
 
-Valid regions: `Eastern`, `Northwest`, `Olympic`, `Southwest`.
+### With Azure Event Hubs / Fabric Event Stream connection string
 
-The filter applies only to traffic flow data; all other channels are always
-fetched in full.
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/wsdot.json \
+  -e CONNECTION_STRING='<connection-string>' \
+  ghcr.io/clemensv/real-time-sources-wsdot:latest
+```
 
-## Upstream Sources
+## Using the MQTT image
 
-- WSDOT Traveler Information API: https://www.wsdot.wa.gov/traffic/api/
-- Washington State Ferries API: https://www.wsdot.wa.gov/ferries/api/vessels/rest/
-- License: Public domain (Washington State government data)
+### Generic MQTT 5 broker (username/password)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/wsdot.json \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-wsdot-mqtt:latest
+```
+
+### Azure Event Grid namespace MQTT broker (Entra OAUTH2-JWT)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/wsdot.json \
+  -e MQTT_BROKER_URL='mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883' \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+  -e MQTT_CLIENT_ID='<unique-client-id>' \
+  ghcr.io/clemensv/real-time-sources-wsdot-mqtt:latest
+```
+
+## Using the AMQP image
+
+### Generic AMQP 1.0 broker (SASL PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/wsdot.json \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/wsdot' \
+  ghcr.io/clemensv/real-time-sources-wsdot-amqp:latest
+```
+
+### Azure Service Bus / Event Hubs (Entra CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/wsdot.json \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='wsdot' \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default' \
+  -e AMQP_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+  ghcr.io/clemensv/real-time-sources-wsdot-amqp:latest
+```
+
+### Azure Service Bus emulator / SAS namespaces (SAS CBS)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/wsdot.json \
+  -e AMQP_HOST='servicebus-emulator' \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS='wsdot' \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+  -e AMQP_SAS_KEY='<sas-key>' \
+  ghcr.io/clemensv/real-time-sources-wsdot-amqp:latest
+```
+
+## Environment variables
+
+### Common
+
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to persisted poll/dedupe state file. |
+| `POLLING_INTERVAL` | Polling interval in seconds (where supported by the runtime variant). |
+| `ONCE_MODE` | Run one poll cycle and exit (used by notebook scheduling). |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Event Hubs / Fabric style connection string (overrides bootstrap/SASL fields). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka broker list. |
+| `KAFKA_TOPIC` | Kafka topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka links. |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` or `MQTT_HOST`/`MQTT_PORT` | MQTT broker endpoint. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Password auth for generic brokers. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` / `MQTT_ENTRA_AUDIENCE` | Entra token configuration for Event Grid MQTT. |
+| `MQTT_CLIENT_ID` | MQTT client identifier. |
+| `MQTT_CONTENT_MODE` | `binary` or `structured` CloudEvents payload mode. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` or `AMQP_HOST`/`AMQP_PORT`/`AMQP_TLS` | AMQP broker endpoint. |
+| `AMQP_ADDRESS` | Queue/topic/address target. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials (`password` mode). |
+| `AMQP_ENTRA_CLIENT_ID` / `AMQP_ENTRA_AUDIENCE` | Entra CBS token configuration. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS token material for emulator/SAS namespaces. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### MQTT — bring your own broker
 
-### Option 1: Bring your own Event Hub
+Deploy MQTT against an existing MQTT 5.0 broker endpoint.
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwsdot%2Fazure-template-mqtt.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwsdot%2Fazure-template.json)
+### MQTT — provision a new Event Grid MQTT broker
 
-### Option 2: Deploy with a new Event Hub
+Deploy MQTT plus an Event Grid namespace broker and managed-identity role assignment.
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwsdot%2Fazure-template-with-eventgrid-mqtt.json)
+
+### Kafka — provision a new Event Hub
+
+Deploy Kafka plus a new Event Hubs namespace and event hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwsdot%2Fazure-template-with-eventhub.json)
 
+### Kafka — bring your own Event Hub / Kafka
 
-## MQTT 5.0 / Unified Namespace
+Deploy the Kafka container with your own Event Hubs/Fabric/Event Stream connection string.
 
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-wsdot-mqtt:latest
-docker run --rm -e MQTT_BROKER_URL=mqtt://broker:1883 ghcr.io/clemensv/real-time-sources-wsdot-mqtt:latest
-```
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwsdot%2Fazure-template.json)
 
-| Variable | Required | Default | Description |
-|---|---:|---|---|
-| `MQTT_BROKER_URL` | No | `mqtt://localhost:1883` | MQTT broker URL. |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | No | — | Optional username/password auth. |
-| `MQTT_TLS` | No | `false` | Enable TLS for broker connections. |
+## Related
 
-## AMQP 1.0
-
-```bash
-docker pull ghcr.io/clemensv/real-time-sources-wsdot-amqp:latest
-docker run --rm -e AMQP_HOST=broker -e AMQP_ADDRESS=wsdot ghcr.io/clemensv/real-time-sources-wsdot-amqp:latest
-```
-
-| Variable | Required | Default | Description |
-|---|---:|---|---|
-| `AMQP_HOST` | No | `localhost` | AMQP 1.0 broker host. |
-| `AMQP_PORT` | No | `5672` | AMQP 1.0 broker port. |
-| `AMQP_ADDRESS` | No | `wsdot` | Queue/topic/address to send to. |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | No | — | Optional SASL PLAIN credentials. |
+- [README.md](README.md) — project overview and hosting options.
+- [EVENTS.md](EVENTS.md) — event contract and schema details.
+- [`xreg/wsdot.xreg.json`](xreg/wsdot.xreg.json) — authoritative contract source.

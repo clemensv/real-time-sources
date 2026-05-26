@@ -1,4 +1,4 @@
-# NDW Netherlands Road Traffic Bridge Events
+# NDL Netherlands feeder Events
 
 NDL Netherlands publishes road traffic measurements and situation updates from Dutch road-traffic open data feeds for Dutch road network sites and traffic situations. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
