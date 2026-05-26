@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import argparse
 import glob
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -40,6 +41,209 @@ from pathlib import Path
 COLLECTION_KEYS = ("endpoints", "messagegroups", "schemagroups")
 
 DEFAULT_PATTERN = "*/xreg/*.xreg.json"
+
+_MAX_ID_LEN = 63  # xrserver silently truncates collection keys to 64 chars
+
+
+def _shorten_id(full_id: str) -> str:
+    """Return *full_id* unchanged if ≤ _MAX_ID_LEN chars.
+
+    Otherwise produce a deterministic short form:
+    ``<first 56 chars>~<6-char hex SHA256 prefix>``
+    which is exactly 63 chars and collision-resistant.
+    """
+    if len(full_id) <= _MAX_ID_LEN:
+        return full_id
+    digest = hashlib.sha256(full_id.encode()).hexdigest()[:6]
+    return full_id[:56] + "~" + digest
+
+
+def _apply_id_limits(messagegroups: dict) -> dict:
+    """Shorten message IDs that exceed _MAX_ID_LEN to avoid xrserver truncation.
+
+    xrserver has a bug where collection-listing map keys are silently truncated
+    to 64 characters, but entity lookup requires the full ID — causing 404s
+    during ``xr download``.  The fix is to ensure all IDs are ≤ 63 chars
+    before import so the server never needs to truncate.
+
+    Also rewrites all ``basemessageuri`` references to use the shortened IDs.
+    """
+    # Build old→new rename map
+    renames: dict[str, str] = {}
+    for mg in messagegroups.values():
+        messages = mg.get("messages", {})
+        for old_id in list(messages.keys()):
+            new_id = _shorten_id(old_id)
+            if new_id != old_id:
+                renames[old_id] = new_id
+                msg = messages.pop(old_id)
+                msg["messageid"] = new_id
+                messages[new_id] = msg
+
+    if not renames:
+        return messagegroups
+
+    # Rewrite basemessageuri references (/messagegroups/<mg>/messages/<old_id>)
+    for mg in messagegroups.values():
+        for msg in mg.get("messages", {}).values():
+            uri = msg.get("basemessageuri", "")
+            if isinstance(uri, str):
+                for old, new in renames.items():
+                    uri = uri.replace(f"/messages/{old}", f"/messages/{new}")
+                msg["basemessageuri"] = uri
+
+    return messagegroups
+
+
+def _normalize_refs(obj: object) -> object:
+    """Recursively replace '#/'-prefixed XID references with absolute '/' XIDs.
+
+    The xreg document format uses JSON-Pointer-style '#/collection/id' as
+    local references within a single file.  When importing into xrserver the
+    registry becomes the root context, so '#/messagegroups/foo' must become
+    the absolute XID '/messagegroups/foo'.  xrserver rejects the '#/' form.
+    """
+    if isinstance(obj, str):
+        return obj[1:] if obj.startswith("#/") else obj
+    if isinstance(obj, list):
+        return [_normalize_refs(v) for v in obj]
+    if isinstance(obj, dict):
+        return {k: _normalize_refs(v) for k, v in obj.items()}
+    return obj
+
+
+# Maps old/deprecated attribute names → current spec attribute names at the
+# message-definition level.  These renames happened in the spec after
+# xrcg 0.10.x was released; xrserver now only accepts the new names.
+_MESSAGE_ATTR_RENAMES: dict[str, str] = {
+    "basemessageurl": "basemessageuri",
+    "basemessage": "basemessageuri",
+    "protocolmetadata": "protocoloptions",
+}
+
+# AMQP protocoloptions keys use hyphens in the spec model but were emitted
+# with underscores by older xrcg versions.
+_AMQP_PO_RENAMES: dict[str, str] = {
+    "application_properties": "application-properties",
+    "message_annotations": "message-annotations",
+    "delivery_annotations": "delivery-annotations",
+}
+
+# MQTT protocoloptions may carry a legacy 'options' sub-object whose keys
+# map to the top-level protocoloptions attributes required by the spec model.
+_MQTT_OPTIONS_MAP: dict[str, str] = {
+    "topic": "topic_name",
+    "qos": "qos",
+    "retain": "retain",
+}
+
+# The spec model's envelopemetadata tightly constrains the 'type' value for
+# certain CloudEvents attributes.  xrcg sometimes emits incorrect types; these
+# overrides force the correct values regardless of what xrcg generated.
+_EM_TYPE_OVERRIDES: dict[str, str] = {
+    "time": "timestamp",        # RFC3339 timestamp — the ONLY allowed type
+    "dataschema": "uritemplate",  # URI template — the ONLY allowed type
+}
+
+# Sub-attributes inside envelopemetadata entries that are not defined in the
+# spec model and must be stripped before import.
+_EM_INVALID_SUBATTRS: frozenset[str] = frozenset({"name"})
+
+
+import re as _re
+
+_CAMEL_RE = _re.compile(r"(?<=[a-z0-9])([A-Z])")
+
+
+def _camel_to_kebab(name: str) -> str:
+    """Convert camelCase or PascalCase to kebab-case (all lowercase)."""
+    return _CAMEL_RE.sub(r"-\1", name).lower()
+
+
+def _normalize_protocol_options(msg: dict) -> None:
+    """Fix protocol-specific keys inside ``protocoloptions`` in-place."""
+    po = msg.get("protocoloptions")
+    if not isinstance(po, dict):
+        return
+    protocol = msg.get("protocol", "")
+
+    if protocol == "AMQP/1.0":
+        for old, new in _AMQP_PO_RENAMES.items():
+            if old in po:
+                po[new] = po.pop(old)
+        # AMQP application-properties map keys must match namecharset=extended
+        # (^[a-z0-9][a-z0-9_.:\-]{0,62}$).  Convert camelCase → kebab-case.
+        ap = po.get("application-properties")
+        if isinstance(ap, dict):
+            fixed: dict = {}
+            for k, v in ap.items():
+                normalized_k = _camel_to_kebab(k)
+                fixed[normalized_k] = v
+            po["application-properties"] = fixed
+
+    elif protocol == "KAFKA":
+        # Older xrcg wrapped scalar protocoloptions values as objects with
+        # {type, value, description}.  The spec model expects direct scalar values.
+        for scalar_key in ("key", "key_base64", "topic", "partition"):
+            val = po.get(scalar_key)
+            if isinstance(val, dict) and "value" in val:
+                po[scalar_key] = val["value"]
+
+    elif protocol.startswith("MQTT/"):
+        # Flatten legacy 'options' wrapper into the parent dict
+        inner = po.pop("options", None)
+        if isinstance(inner, dict):
+            for inner_key, outer_key in _MQTT_OPTIONS_MAP.items():
+                if inner_key in inner and outer_key not in po:
+                    po[outer_key] = inner[inner_key]
+            # Preserve unmapped keys that are already valid spec names
+            for k, v in inner.items():
+                if k not in _MQTT_OPTIONS_MAP and k not in po:
+                    po[k] = v
+
+
+def _normalize_message_attrs(messagegroups: dict) -> dict:
+    """Rename deprecated attributes inside every message definition.
+
+    Applies :data:`_MESSAGE_ATTR_RENAMES` at the message-definition level,
+    normalises the bare ``id`` field to ``messageid``, and fixes
+    protocol-specific ``protocoloptions`` key names.
+    """
+    for mg in messagegroups.values():
+        for msg_id, msg in mg.get("messages", {}).items():
+            # Rename deprecated top-level message attributes
+            for old, new in _MESSAGE_ATTR_RENAMES.items():
+                if old in msg:
+                    msg[new] = msg.pop(old)
+            # Normalise bare 'id' → 'messageid'; also ensure messageid always
+            # matches the message's own map key (xrserver requires this).
+            if "id" in msg and "messageid" not in msg:
+                msg["messageid"] = msg.pop("id")
+            msg["messageid"] = msg_id
+            # Fix protocol-specific protocoloptions keys
+            _normalize_protocol_options(msg)
+            # Fix invalid envelopemetadata attribute type values.
+            # The spec model constrains which types are valid per CloudEvents
+            # attribute; xrcg sometimes emits wrong types (e.g. 'uritemplate'
+            # for 'time' which must always be 'timestamp').
+            em = msg.get("envelopemetadata")
+            if isinstance(em, dict):
+                for attr, forced_type in _EM_TYPE_OVERRIDES.items():
+                    if attr in em and isinstance(em[attr], dict):
+                        em[attr]["type"] = forced_type
+                # Strip sub-attributes that are not in the spec model
+                # (valid sub-attrs: description, required, type, value)
+                for ce_attr, ce_val in em.items():
+                    if isinstance(ce_val, dict):
+                        for invalid_key in _EM_INVALID_SUBATTRS:
+                            ce_val.pop(invalid_key, None)
+            # 'envelopemetadata'/'envelopeoptions' are only valid sibling
+            # attributes of envelope="CloudEvents/1.0"; transport-variant
+            # messages that reference a base via basemessageuri may omit
+            # envelope, causing xrserver to reject the attribute.
+            if ("envelopemetadata" in msg or "envelopeoptions" in msg) and "envelope" not in msg:
+                msg["envelope"] = "CloudEvents/1.0"
+    return messagegroups
 
 
 def merge(pattern: str, repo_root: Path) -> dict:
@@ -58,15 +262,21 @@ def merge(pattern: str, repo_root: Path) -> dict:
         for key in COLLECTION_KEYS:
             if key not in doc:
                 continue
-            overlap = set(doc[key]) & set(combined[key])
+            normalized = _normalize_refs(doc[key])
+            overlap = set(normalized) & set(combined[key])
             if overlap:
                 sys.exit(
                     f"ID collision in '{key}' when merging {path}: "
                     f"duplicate IDs {sorted(overlap)}"
                 )
-            combined[key].update(doc[key])
+            combined[key].update(normalized)
 
         print(f"  merged: {path.relative_to(repo_root)}", file=sys.stderr)
+
+    # Fix deprecated / renamed attributes before returning
+    if "messagegroups" in combined:
+        _normalize_message_attrs(combined["messagegroups"])
+        _apply_id_limits(combined["messagegroups"])
 
     # Drop empty collections so the import body is clean
     return {k: v for k, v in combined.items() if v}

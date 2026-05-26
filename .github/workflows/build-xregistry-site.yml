@@ -31,7 +31,7 @@ jobs:
     steps:
       # ── 1. Checkout main ─────────────────────────────────────────────────
       - name: Checkout main
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           ref: main
           path: main
@@ -47,10 +47,10 @@ jobs:
       - name: Start xrserver-all
         run: |
           docker run -d --name xreg -p 8080:8080 \
-            ghcr.io/xregistry/xrserver-all \
-            --recreatedb --port 8080
+            ghcr.io/xregistry/xrserver-all:latest \
+            --recreatedb
 
-      # ── 4. Wait for readiness (MySQL needs up to 15 s) ───────────────────
+      # ── 4. Wait for readiness (MySQL needs up to 30 s) ───────────────────
       - name: Wait for xrserver readiness
         run: |
           for i in $(seq 1 30); do
@@ -67,40 +67,66 @@ jobs:
       # ── 5. Load the pinned CloudEvents model ─────────────────────────────
       # cloudevents/model.json is the composite model covering endpoints,
       # messagegroups, and schemagroups — required for all three group types.
+      # The /xr binary lives at /xr inside the container (not on $PATH).
       - name: Load CloudEvents model
         run: |
-          docker exec xreg xr -s localhost:8080 model update \
-            -d @https://raw.githubusercontent.com/xregistry/spec/${SPEC_SHA}/cloudevents/model.json
+          docker exec xreg /xr -s localhost:8080 model update \
+            -d "@https://raw.githubusercontent.com/xregistry/spec/${SPEC_SHA}/cloudevents/model.json"
 
-      # ── 6. Import the merged registry ────────────────────────────────────
+      # ── 6. Disable schema format validation ──────────────────────────────
+      # The Avro schemas in this repo use cross-file type references that
+      # xrserver cannot resolve in isolation; disable format/compat checks so
+      # they import without errors.  The registry is used for discovery, not
+      # as a schema-validation service.
+      - name: Disable schema validation in model
+        run: |
+          python3 - <<'PYEOF'
+          import json, urllib.request
+          url = "http://localhost:8080/modelsource"
+          ms = json.loads(urllib.request.urlopen(url).read())
+          schemas = ms['groups']['schemagroups']['resources']['schemas']
+          schemas['validateformat'] = False
+          schemas['validatecompatibility'] = False
+          req = urllib.request.Request(
+              url, method='PUT',
+              headers={'Content-Type': 'application/json'},
+              data=json.dumps(ms).encode())
+          urllib.request.urlopen(req)
+          print("Schema validation disabled")
+          PYEOF
+
+      # ── 7. Import the merged registry ────────────────────────────────────
       - name: Import registry
         run: |
           docker cp /tmp/combined.json xreg:/tmp/combined.json
-          docker exec xreg xr -s localhost:8080 import -d @/tmp/combined.json
+          docker exec xreg /xr -s localhost:8080 import -d "@/tmp/combined.json"
 
-      # ── 7. Export as static file tree ────────────────────────────────────
+      # ── 8. Export as static file tree ────────────────────────────────────
       # --index index.html  → GitHub Pages serves index.html as directory default
       # --capabilities      → marks the registry as read-only / static
       # -p 5                → conservative parallelism for embedded MySQL
       - name: Download static registry
         run: |
           docker exec xreg /bin/sh -c \
-            "xr download /tmp/out \
+            "mkdir -p /tmp/out && /xr download /tmp/out \
                -s localhost:8080 \
-               -u \"${REGISTRY_BASE_URL}\" \
+               -u '${REGISTRY_BASE_URL}' \
                --index index.html \
                --capabilities \
-               -p 5"
-          docker cp xreg:/tmp/out /tmp/registry-out
+               -p 5 \
+             && tar czf /tmp/out.tar.gz -C /tmp/out ."
+          docker cp xreg:/tmp/out.tar.gz /tmp/out.tar.gz
+          mkdir -p /tmp/registry-out
+          tar xzf /tmp/out.tar.gz -C /tmp/registry-out
 
-      # ── 8. Stop xrserver ─────────────────────────────────────────────────
+      # ── 9. Stop xrserver ─────────────────────────────────────────────────
       - name: Stop xrserver
         if: always()
         run: docker rm -f xreg || true
 
-      # ── 9. Push to ghpages ───────────────────────────────────────────────
+      # ── 10. Push to ghpages ──────────────────────────────────────────────
       - name: Checkout ghpages
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           ref: ghpages
           path: ghpages
@@ -116,8 +142,8 @@ jobs:
         id: diff
         working-directory: ghpages
         run: |
-          if git diff --quiet && git diff --cached --quiet && \
-             [ -z "$(git status --porcelain registry/)" ]; then
+          git add registry/ 2>/dev/null || true
+          if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -129,6 +155,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add registry/
           git commit -m "Update xRegistry static export [$(date -u +%Y-%m-%dT%H:%M:%SZ)]"
           git push origin ghpages
+
