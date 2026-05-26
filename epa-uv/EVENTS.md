@@ -1,4 +1,4 @@
-# EPA UV Bridge Events
+# EPA UV Index feeder Events
 
 MQTT/5.0 transport variants for EPA UV Index forecasts. Topics are retained QoS-1 UV forecast leaves under uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/..., where {state} is lowercase US state, {city_slug} is lowercase kebab-case city, and {location_id} preserves the existing Kafka/CloudEvents entity id intentionally for subject/key compatibility even though it is derivable from state+city. Hourly slots use topic-safe {forecast_hour}=YYYYMMDDTHH; daily slots use {forecast_date}=YYYY-MM-DD. Message expiry bounds retained forecast slots so stale forecasts age out.
 
@@ -180,7 +180,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
 ## References
 

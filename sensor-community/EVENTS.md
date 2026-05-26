@@ -1,4 +1,4 @@
-# Sensor.Community Events
+# Sensor.Community feeder Events
 
 MQTT 5 variant of io.sensor.community events with subscriber-friendly UNS topics.
 
@@ -208,4 +208,3 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/sensor-community.xreg.json`](xreg/sensor-community.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- ![Deploy AMQP Service Bus: <https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078D4?logo=microsoftazure&logoColor=white>
