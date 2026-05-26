@@ -4843,7 +4843,7 @@ def mosquitto_jma_bosai_warning():
 
 class TestJmaBosaiWarningMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_jma_bosai_warning, jma_bosai_warning_mqtt_image):
-        _run_mqtt_contract_flow('jma-bosai-warning', jma_bosai_warning_mqtt_image, mosquitto_jma_bosai_warning, timeout=900)
+        _run_mqtt_contract_flow('jma-bosai-warning', jma_bosai_warning_mqtt_image, mosquitto_jma_bosai_warning, extra_env={'JMA_BOSAI_WARNING_MOCK': 'true'}, timeout=900)
 
 
 @pytest.fixture(scope='module')
