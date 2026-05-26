@@ -1,208 +1,171 @@
-# SYKE Hydrology Bridge Usage Guide
+# SYKE Hydro feeder
+
+This feeder turns the upstream SYKE Hydro hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+This bridge publishes the SYKE Hydro source as a transport-agnostic event stream so downstream systems subscribe once and avoid re-implementing poll scheduling, retry handling, dedupe state, CloudEvents mapping, and schema lifecycle management.
+
+- **Flood and water-risk operations** — power near-real-time threshold monitoring and alert pipelines.
+- **Infrastructure operations** — feed lock/port/river-management dashboards and operations centers.
+- **Environmental analytics** — ingest standardized events into Fabric Eventhouse, ADX, or lakehouse systems.
+- **Insurance and resilience workflows** — drive trigger-based monitoring and post-event replay analysis.
+- **Research and public-data products** — maintain reproducible timelines without source-specific ETL glue.
 
 ## Overview
 
-**SYKE Hydrology Bridge** connects to the Finnish Environment Institute's (SYKE)
-hydrological monitoring network — via the
-[Hydrology OData API](https://rajapinnat.ymparisto.fi/api/Hydrologiarajapinta/1.1/odata)
-— and forwards water level and discharge observations to a Kafka topic as
-[CloudEvents](https://cloudevents.io/) in JSON format.
+**SYKE Hydro** is a poll-based bridge that emits CloudEvents across available transport variants:
 
-This is a **polling** bridge. The upstream API exposes real-time readings from
-SYKE's network of river and lake gauging stations across Finland. The bridge
-polls for the latest measurements, de-duplicates them against local state, and
-emits only new or changed readings.
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-syke-hydro` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents on one topic, key = `{station_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-syke-hydro-mqtt` | MQTT 5.0 broker (incl. Event Grid MQTT and Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic template `(see EVENTS.md)` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-syke-hydro-amqp` | AMQP 1.0 (incl. Service Bus and Event Hubs via CBS auth) | Binary CloudEvents to AMQP node `syke-hydro` |
 
-## Key Features
+All variants share:
 
-- **Finnish national coverage**: Active hydrological monitoring stations on
-  rivers and lakes throughout Finland
-- **Two measurement parameters**: Water level (cm) and discharge (m³/s)
-- **Two event types**: Station reference data and water level observations
-- **Delta-only emission**: De-duplicates against a local state file — only new
-  readings are forwarded
-- **OData pagination**: Automatically pages through large result sets from the
-  upstream API
-- **Configurable polling interval**: Default 3600 seconds (1 hour), matching the
-  upstream update cadence
-- **Kafka integration**: SASL PLAIN authentication for Event Hubs / Fabric Event
-  Streams
+- The same upstream polling logic and dedupe state model.
+- The same xRegistry contract (`xreg/syke_hydro.xreg.json`).
+- The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
 
-## Data Source
+## Key features
 
-The bridge reads from the [SYKE Open Data Hydrology
-API](https://rajapinnat.ymparisto.fi/api/Hydrologiarajapinta/1.1/odata),
-provided by the Finnish Environment Institute (Suomen ympäristökeskus).
+- Poll-based ingestion with restart-safe dedupe/checkpoint persistence via `STATE_FILE`.
+- Consistent CloudEvents identities and schemas across transport variants.
+- Contract-first event modeling from the checked-in xRegistry manifest.
+- Deployment options for local Docker, Microsoft Fabric, and Azure Container Instances.
+- Reference and telemetry event families aligned for downstream joins and enrichment.
 
-- **API base URL**:
-  `https://rajapinnat.ymparisto.fi/api/Hydrologiarajapinta/1.1/odata`
-- **Endpoints used**: `Paikka` (station metadata), `Vedenkorkeus` (water
-  levels), and `Virtaama` (discharge)
-- **Authentication**: None required
-- **Update frequency**: ~1 hour
-- **License**: Finnish Open Data
+## Repository layout
 
-## Installation
+```text
+syke-hydro/
+  xreg/syke_hydro.xreg.json                 # shared xRegistry contract
+  syke_hydro/
+  syke_hydro_amqp/
+  syke_hydro_amqp_producer/
+  syke_hydro_mqtt/
+  syke_hydro_mqtt_producer/
+  syke_hydro_producer/
+  Dockerfile                         # Kafka feeder image
+  Dockerfile.mqtt                    # MQTT feeder image
+  Dockerfile.amqp                    # AMQP feeder image
+  kql/                               # KQL/Eventhouse schema
+  notebook/                          # Fabric notebook feeder
+  tests/                             # unit + integration tests
+```
 
-Requires Python 3.10 or later.
+## Prerequisites
+
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound HTTPS access to the upstream source API.
+- Network access to your Kafka broker / MQTT broker / AMQP 1.0 endpoint.
+- A writable host directory mounted to persist `STATE_FILE` across container restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `STATE_FILE` so dedupe/checkpoint state survives restarts.
+
+### Kafka
 
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=syke-hydro
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/syke-hydro.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-syke-hydro:latest
 ```
 
-If you clone the repository:
+### MQTT (Unified Namespace)
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/syke-hydro
-pip install .
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/syke-hydro.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-syke-hydro-mqtt:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md)
-instructions.
+Topic template:
 
-## Fabric notebook hosting
+```text
+(see EVENTS.md)
+```
 
-This source can also run as a scheduled Microsoft Fabric notebook via
-[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
-using the notebook at [`notebook/syke-hydro-feed.ipynb`](notebook/syke-hydro-feed.ipynb).
-
-## How to Use
-
-After installation, the tool can be run using `python -m syke_hydro`. It
-supports two subcommands:
-
-- **List Stations (`list`)**: Fetch and display all available monitoring
-  stations.
-- **Feed to Kafka (`feed`)**: Continuously poll the API and send water level
-  updates to a Kafka topic.
-
-The events sent to Kafka are formatted as CloudEvents, documented in
-[EVENTS.md](EVENTS.md).
-
-### List Stations
-
-Fetches and displays all available monitoring stations:
+### AMQP 1.0
 
 ```bash
-python -m syke_hydro list
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/syke-hydro.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/syke-hydro" \
+  ghcr.io/clemensv/real-time-sources-syke-hydro-amqp:latest
 ```
 
-Output shows station ID, name, main water area, and coordinates.
+For Entra-ID and SAS-CBS AMQP authentication variants, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image).
 
-### Feed to Kafka
+## Configuration reference
 
-#### Using a Connection String (Event Hubs / Fabric Event Streams)
+The complete environment-variable matrix for each image is documented in [CONTAINER.md](CONTAINER.md). Runtime entry points come from image `CMD`: Kafka ["python", "-m", "syke_hydro", "feed"] MQTT ["python", "-m", "syke_hydro_mqtt", "feed"] AMQP ["python", "-m", "syke_hydro_amqp", "feed"].
 
-```bash
-python -m syke_hydro feed --connection-string "<your_connection_string>"
-```
+## Data model
 
-#### Using Kafka Parameters Directly
+This feeder emits the following event families:
 
-```bash
-python -m syke_hydro feed \
-    --connection-string "BootstrapServer=<bootstrap_servers>;EntityPath=<topic>"
-```
+- **FI.SYKE.Hydrology** — `Station`, `WaterLevelObservation`.
 
-Or via environment variables:
+Event field descriptions, schema references, and routing details are documented in [EVENTS.md](EVENTS.md).
 
-```bash
-export KAFKA_BROKER="<bootstrap_servers>"
-export KAFKA_TOPIC="<topic_name>"
-python -m syke_hydro feed
-```
+## Deploying into Microsoft Fabric
 
-### Command-Line Arguments (feed)
+SYKE Hydro supports both Fabric hosting patterns used in this repository.
 
-| Argument | Env Var | Description |
-|----------|---------|-------------|
-| `--connection-string` | `CONNECTION_STRING` or `KAFKA_CONNECTION_STRING` | Event Hubs / Fabric Event Stream connection string |
-| `--topic` | `KAFKA_TOPIC` | Kafka topic name (default: `syke-hydro`) |
-| `--polling-interval` | `POLLING_INTERVAL` | Polling interval in seconds (default: `3600`) |
-| `--state-file` | `STATE_FILE` | Path to the de-duplication state file (default: `~/.syke_hydro_state.json`) |
+### Fabric Notebook feeder
 
-## Event Types
+This source includes a notebook feeder under [`notebook/`](notebook/) and `catalog.json` marks `notebook: true`.
 
-| CloudEvents `type` | Description |
-|---------------------|-------------|
-| `FI.SYKE.Hydrology.Station` | Station reference data: ID, name, water area, municipality, coordinates |
-| `FI.SYKE.Hydrology.WaterLevelObservation` | Observation: water level and discharge with timestamps |
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#syke-hydro/fabric-notebook)
 
-All events use `{station_id}` as the Kafka key and CloudEvents `subject`.
+### Fabric ACI feeder
 
-### Station
+Use the ACI deployment flow for always-on container execution into a Fabric Event Stream custom endpoint.
 
-Emitted once at startup for each monitoring station.
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `station_id` | string | SYKE station identifier (Paikka_Id) |
-| `name` | string | Station name |
-| `river_name` | string | Main water area name |
-| `water_area_name` | string | Water area name |
-| `municipality` | string | Municipality name |
-| `latitude` | double | WGS84 latitude |
-| `longitude` | double | WGS84 longitude |
-
-### WaterLevelObservation
-
-Emitted on each polling cycle for stations with new readings.
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `station_id` | string | SYKE station identifier (Paikka_Id) |
-| `water_level` | double | Water level reading |
-| `water_level_unit` | string | Unit of measurement (`cm`) |
-| `water_level_timestamp` | datetime | Timestamp of the water level reading |
-| `discharge` | double | Water discharge reading |
-| `discharge_unit` | string | Unit of measurement (`m3/s`) |
-| `discharge_timestamp` | datetime | Timestamp of the discharge reading |
-
-## State Management
-
-The bridge maintains a JSON state file (default: `~/.syke_hydro_state.json`)
-that tracks which readings have already been forwarded. This ensures that only
-new observations are emitted after restarts. The state file is automatically
-pruned to the most recent 50,000 entries to prevent unbounded growth.
-
-## Connection String Format
-
-The connection string format for Azure Event Hubs or Fabric Event Streams:
-
-```
-Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=<hub>
-```
-
-When provided, the connection string is parsed to extract:
-- **Bootstrap Servers**: Derived from the `Endpoint` value
-- **Kafka Topic**: Derived from the `EntityPath` value
-- **SASL credentials**: Configured automatically for SASL_SSL/PLAIN
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#syke-hydro/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Azure templates shipped with this source:
 
-### Option 1: Bring your own Event Hub
+### MQTT — bring your own broker
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsyke-hydro%2Fazure-template-mqtt.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsyke-hydro%2Fazure-template.json)
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-### Option 2: Deploy with a new Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsyke-hydro%2Fazure-template-with-eventgrid-mqtt.json)
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsyke-hydro%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace
 
-## MQTT and AMQP companion feeders
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsyke-hydro%2Fazure-template-with-servicebus.json)
 
-This source now ships transport-split Kafka, MQTT, and AMQP containers. The MQTT image (`ghcr.io/clemensv/real-time-sources-syke-hydro-mqtt:latest`) publishes retained MQTT 5 binary-mode CloudEvents on `hydro/fi/syke/syke-hydro/...`. The AMQP image (`ghcr.io/clemensv/real-time-sources-syke-hydro-amqp:latest`) publishes the same CloudEvents to a broker address or Azure Service Bus queue.
+### Kafka — bring your own Event Hub / Kafka
 
-Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, and `azure-template-with-servicebus.json`.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fsyke-hydro%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before onboarding consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full per-image auth and environment settings.
+- Select Fabric Notebook/Fabric ACI/Azure ACI based on your runtime and operational requirements.

@@ -1,117 +1,181 @@
-# King County Marine Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# King County Marine container images
 
-This container polls current King County marine buoy and mooring raw-data datasets and emits station reference events plus normalized water-quality readings as CloudEvents JSON.
+This document covers the published OCI container images for the King County Marine feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
-## Upstream
+## Why this container
 
-- **Publisher:** King County Water and Land Resources Division
-- **Platform:** Socrata datasets on `data.kingcounty.gov`
-- **Cadence:** 15-minute telemetry for current buoy/mooring datasets
-- **Auth:** None
-- **License:** Public Domain
+The King County Marine source is exposed as a polling API upstream. These container images package polling cadence control, stateful dedupe, CloudEvents production, and transport/auth wiring so operators can deploy a ready-to-run feeder instead of building source-specific integration code.
 
-## Behavior
+## What ships in the box
 
-At startup the bridge discovers active raw buoy/mooring datasets from the King County Socrata catalog, fetches dataset metadata, and emits station reference events. It then polls the current datasets and emits normalized water-quality readings keyed by `station_id`.
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-king-county-marine` | Apache Kafka 2.x | JSON CloudEvents on one topic; key template `{station_id}` |
+| `ghcr.io/clemensv/real-time-sources/king-county-marine-mqtt` | MQTT 5.0 | Unified-Namespace topic template `(see EVENTS.md)` |
+| `ghcr.io/clemensv/real-time-sources-king-county-marine-amqp` | AMQP 1.0 | Binary CloudEvents to AMQP node `king-county-marine` |
 
-Historical-only raw-output datasets and periodic non-buoy monitoring programs are intentionally excluded from this source.
+Event families in this source:
 
-## Running the Container
+- **US.WA.KingCounty.Marine** — `Station`, `WaterQualityReading`.
 
-### Kafka
+## Image contract
+
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.10-slim` (source Dockerfiles) |
+| Default entry point | Kafka `["python", "-m", "king_county_marine"]`; MQTT `["python", "-m", "king_county_marine_mqtt", "feed"]`; AMQP `["python", "-m", "king_county_marine_amqp", "feed"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | process exits cleanly on `SIGTERM` |
+| Persistent state | `KING_COUNTY_MARINE_STATE_FILE`; mount a host volume for restart-safe dedupe/checkpoint behavior |
+| Image tags | `:latest` and immutable release/sha tags published from repository CI |
+
+## Installing the container images
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-king-county-marine:latest
+docker pull ghcr.io/clemensv/real-time-sources/king-county-marine-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-king-county-marine-amqp:latest
+```
+
+## Using the Kafka image
+
+### With a Kafka broker (SASL/PLAIN)
 
 ```bash
 docker run --rm \
-  -e CONNECTION_STRING="BootstrapServer=localhost:9092;EntityPath=king-county-marine" \
-  -e KAFKA_ENABLE_TLS=false \
+  -v "$PWD/state:/state" \
+  -e KING_COUNTY_MARINE_STATE_FILE=/state/king-county-marine.json \
+  -e KAFKA_BOOTSTRAP_SERVERS="<host:port>" \
+  -e KAFKA_TOPIC="<topic>" \
+  -e SASL_USERNAME="<username>" \
+  -e SASL_PASSWORD="<password>" \
   ghcr.io/clemensv/real-time-sources-king-county-marine:latest
 ```
 
-### Azure Event Hubs
+### With Azure Event Hubs / Fabric Event Streams
 
 ```bash
 docker run --rm \
-  -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=king-county-marine" \
+  -v "$PWD/state:/state" \
+  -e KING_COUNTY_MARINE_STATE_FILE=/state/king-county-marine.json \
+  -e CONNECTION_STRING="<connection-string>" \
   ghcr.io/clemensv/real-time-sources-king-county-marine:latest
 ```
 
-### MQTT/UNS image
+## Using the MQTT image
+
+### With a generic MQTT 5 broker (username/password)
 
 ```bash
-docker build -f Dockerfile.mqtt -t king-county-marine-mqtt .
 docker run --rm \
-  -e MQTT_BROKER_URL="mqtt://host.docker.internal:1883" \
+  -v "$PWD/state:/state" \
+  -e KING_COUNTY_MARINE_STATE_FILE=/state/king-county-marine.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
   ghcr.io/clemensv/real-time-sources/king-county-marine-mqtt:latest
 ```
 
-The MQTT image publishes retained QoS 1 binary CloudEvents under
-`maritime/us/wa/king-county/king-county-marine/{station_id}/{event}`. Mount
-`/var/lib/king-county-marine` to persist de-duplication state across restarts.
-
-## Environment Variables
-
-| Variable | Required | Description |
-|---|---|---|
-| `CONNECTION_STRING` | Yes | Kafka/Event Hubs/Fabric connection string |
-| `KAFKA_ENABLE_TLS` | No | Set `false` for plain Kafka in local and Docker E2E runs |
-| `KING_COUNTY_MARINE_STATE_FILE` | No | Path to dedupe state; default `/mnt/fileshare/king_county_marine_state.json` for Kafka and `/var/lib/king-county-marine/state.json` for MQTT |
-| `MQTT_BROKER_URL` | MQTT only | MQTT broker URL such as `mqtt://broker:1883` or `mqtts://broker:8883` |
-| `MQTT_USERNAME` / `MQTT_PASSWORD` | MQTT only | Optional MQTT credentials |
-| `MQTT_CONTENT_MODE` | MQTT only | CloudEvents MQTT content mode (`binary`, default, or `structured`) |
-| `KING_COUNTY_MARINE_SAMPLE_MODE` | MQTT test only | Publish one deterministic sample station and reading instead of polling live Socrata feeds |
-
-## Deploying into Azure Container Instances
-
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
-
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fking-county-marine%2Fazure-template.json)
-
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fking-county-marine%2Fazure-template-with-eventhub.json)
-
-
-## AMQP 1.0 companion feeder
-
-Pull and run the AMQP image:
+### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
 
 ```bash
-docker pull ghcr.io/clemensv/real-time-sources-king-county-marine-amqp:latest
 docker run --rm \
-  -e AMQP_HOST=broker \
-  -e AMQP_PORT=5672 \
-  -e AMQP_ADDRESS=king-county-marine \
-  -e AMQP_USERNAME=user \
-  -e AMQP_PASSWORD=secret \
-  -e AMQP_AUTH_MODE=password \
-  -e KING_COUNTY_MARINE_SAMPLE_MODE=true \
+  -v "$PWD/state:/state" \
+  -e KING_COUNTY_MARINE_STATE_FILE=/state/king-county-marine.json \
+  -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883" \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
+  -e MQTT_CLIENT_ID="<unique-client-id>" \
+  ghcr.io/clemensv/real-time-sources/king-county-marine-mqtt:latest
+```
+
+## Using the AMQP image
+
+### With AMQP 1.0 and Microsoft Entra ID (CBS put-token)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e KING_COUNTY_MARINE_STATE_FILE=/state/king-county-marine.json \
+  -e AMQP_HOST="<namespace>.servicebus.windows.net" \
+  -e AMQP_PORT=5671 \
+  -e AMQP_TLS=true \
+  -e AMQP_ADDRESS="king-county-marine" \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE="https://servicebus.azure.net/.default" \
+  -e AMQP_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
   ghcr.io/clemensv/real-time-sources-king-county-marine-amqp:latest
 ```
 
-For Azure Service Bus, set `AMQP_AUTH_MODE=entra`, `AMQP_HOST=<namespace>.servicebus.windows.net`, `AMQP_PORT=5671`, `AMQP_TLS=true`, and optionally `AMQP_ENTRA_CLIENT_ID` for a user-assigned managed identity. For the Service Bus emulator or SAS-only namespaces, use `AMQP_AUTH_MODE=sas` with `AMQP_SAS_KEY_NAME` and `AMQP_SAS_KEY`.
+### With AMQP 1.0 and SAS-token CBS
 
-| Variable | Description | Default |
-|---|---|---|
-| `AMQP_BROKER_URL` | Optional full AMQP URL; path overrides `AMQP_ADDRESS`. | empty |
-| `AMQP_HOST` / `AMQP_PORT` | Broker host and port. | localhost / 5672 |
-| `AMQP_ADDRESS` | Queue/topic/event-hub name. | `king-county-marine` |
-| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials for generic brokers. | empty |
-| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. | `password` |
-| `AMQP_TLS` | Enable TLS for AMQP. | false (`entra` implies TLS) |
-| `AMQP_CONTENT_MODE` | CloudEvents content mode. | `binary` |
-| `AMQP_ENTRA_AUDIENCE` | Token audience for CBS. | `https://servicebus.azure.net/.default` |
-| `AMQP_ENTRA_CLIENT_ID` | User-assigned managed identity client id. | empty |
-| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS CBS credentials. | empty |
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e KING_COUNTY_MARINE_STATE_FILE=/state/king-county-marine.json \
+  -e AMQP_HOST="servicebus-emulator" \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS="king-county-marine" \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey" \
+  -e AMQP_SAS_KEY="<sas-key>" \
+  ghcr.io/clemensv/real-time-sources-king-county-marine-amqp:latest
+```
 
-Deploy a new Service Bus queue plus managed identity with [`azure-template-with-servicebus.json`](azure-template-with-servicebus.json) or [`infra/azure-template-amqp.json`](infra/azure-template-amqp.json).
+## Environment variables
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `KING_COUNTY_MARINE_STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `CONNECTION_STRING` | Event Hubs/Fabric-style connection string (optional alternative to explicit Kafka variables). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list. |
+| `KAFKA_TOPIC` | Kafka destination topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials for Kafka. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `KING_COUNTY_MARINE_STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for `MQTT_AUTH_MODE=password`. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID. |
+| `MQTT_CLIENT_ID` | MQTT client ID (must be unique per broker). |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `KING_COUNTY_MARINE_STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `AMQP_BROKER_URL` | Full AMQP URL form (`amqp://` or `amqps://`). |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component endpoint settings when URL form is not used. |
+| `AMQP_ADDRESS` | AMQP node/address name. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra-ID CBS settings. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token CBS settings. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
+
+## Deploying into Azure Container Instances
+
+### Kafka — provision a new Event Hub
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fking-county-marine%2Fazure-template-with-eventhub.json)
+
+### AMQP — provision a new Azure Service Bus namespace
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fking-county-marine%2Fazure-template-with-servicebus.json)
+
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fking-county-marine%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md) — project overview and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
+- [`xreg/king_county_marine.xreg.json`](xreg/king_county_marine.xreg.json) — source contract used to generate producer bindings.

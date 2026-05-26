@@ -1,4 +1,4 @@
-# NVE Hydrology Bridge Usage Guide Events
+# NVE Hydro feeder Events
 
 NVE Hydrology publishes water level and discharge observations from the Norwegian Water Resources and Energy Directorate (NVE) for Norwegian hydrological monitoring stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -8,7 +8,7 @@ NVE Hydrology publishes water level and discharge observations from the Norwegia
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 1 telemetry event type.
 - **Identity:** `{station_id}` identifies the resource each event is about.
-- **Operations:** The checked-in guide documents a default polling interval of 600 seconds.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -185,14 +185,10 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- The checked-in guide documents a default polling interval of 600 seconds.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/nve_hydro.xreg.json`](xreg/nve_hydro.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- HydAPI: <https://hydapi.nve.no>
-- NVE HydAPI: <https://hydapi.nve.no/>
-- hydapi.nve.no: <https://hydapi.nve.no/UserDocumentation/>

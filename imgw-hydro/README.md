@@ -1,116 +1,171 @@
-# IMGW-PIB Hydrological Data Bridge
+# IMGW Hydro feeder
 
-This bridge fetches real-time hydrological data from the Polish Institute of
-Meteorology and Water Management (IMGW-PIB) public API and forwards it to
-Apache Kafka or Microsoft Azure Event Hubs as CloudEvents.
+This feeder turns the upstream IMGW Hydro hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-The IMGW-PIB provides real-time water level, water temperature, and discharge
-data for hundreds of hydrological stations across Poland.
+Companion docs:
 
-## Data Source
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-- **API Endpoint**: https://danepubliczne.imgw.pl/api/data/hydro
-- **Data Format**: JSON
-- **Update Frequency**: Approximately every hour
-- **Authentication**: None required (open data)
-- **License**: Public data from IMGW-PIB (Instytut Meteorologii i Gospodarki
-  Wodnej – Państwowy Instytut Badawczy)
+## Why this bridge
 
-## Data Attribution
+This bridge publishes the IMGW Hydro source as a transport-agnostic event stream so downstream systems subscribe once and avoid re-implementing poll scheduling, retry handling, dedupe state, CloudEvents mapping, and schema lifecycle management.
 
-Źródłem pochodzenia danych jest Instytut Meteorologii i Gospodarki Wodnej –
-Państwowy Instytut Badawczy (IMGW-PIB). The data source is the Institute of
-Meteorology and Water Management – National Research Institute.
+- **Flood and water-risk operations** — power near-real-time threshold monitoring and alert pipelines.
+- **Infrastructure operations** — feed lock/port/river-management dashboards and operations centers.
+- **Environmental analytics** — ingest standardized events into Fabric Eventhouse, ADX, or lakehouse systems.
+- **Insurance and resilience workflows** — drive trigger-based monitoring and post-event replay analysis.
+- **Research and public-data products** — maintain reproducible timelines without source-specific ETL glue.
 
-## Events
+## Overview
 
-See [EVENTS.md](EVENTS.md) for details on the CloudEvents produced by this
-bridge.
+**IMGW Hydro** is a poll-based bridge that emits CloudEvents across available transport variants:
 
-## Deployment
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-imgw-hydro` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents on one topic, key = `{station_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-imgw-hydro-mqtt` | MQTT 5.0 broker (incl. Event Grid MQTT and Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic template `(see EVENTS.md)` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-imgw-hydro-amqp` | AMQP 1.0 (incl. Service Bus and Event Hubs via CBS auth) | Binary CloudEvents to AMQP node `imgw-hydro` |
 
-See [CONTAINER.md](CONTAINER.md) for container deployment instructions.
+All variants share:
 
-Fabric notebook hosting: this source ships a Fabric notebook
-(`notebook/imgw-hydro-feed.ipynb`) deployable via
-[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1).
+- The same upstream polling logic and dedupe state model.
+- The same xRegistry contract (`xreg/imgw_hydro.xreg.json`).
+- The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
 
-## Usage
+## Key features
 
-### List all stations
+- Poll-based ingestion with restart-safe dedupe/checkpoint persistence via `STATE_FILE`.
+- Consistent CloudEvents identities and schemas across transport variants.
+- Contract-first event modeling from the checked-in xRegistry manifest.
+- Deployment options for local Docker, Microsoft Fabric, and Azure Container Instances.
+- Reference and telemetry event families aligned for downstream joins and enrichment.
 
-```bash
-python -m imgw_hydro list
+## Repository layout
+
+```text
+imgw-hydro/
+  xreg/imgw_hydro.xreg.json                 # shared xRegistry contract
+  imgw_hydro/
+  imgw_hydro_amqp/
+  imgw_hydro_amqp_producer/
+  imgw_hydro_mqtt/
+  imgw_hydro_mqtt_producer/
+  imgw_hydro_producer/
+  Dockerfile                         # Kafka feeder image
+  Dockerfile.mqtt                    # MQTT feeder image
+  Dockerfile.amqp                    # AMQP feeder image
+  kql/                               # KQL/Eventhouse schema
+  notebook/                          # Fabric notebook feeder
+  tests/                             # unit + integration tests
 ```
 
-### Get water level for a specific station
+## Prerequisites
+
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound HTTPS access to the upstream source API.
+- Network access to your Kafka broker / MQTT broker / AMQP 1.0 endpoint.
+- A writable host directory mounted to persist `STATE_FILE` across container restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `STATE_FILE` so dedupe/checkpoint state survives restarts.
+
+### Kafka
 
 ```bash
-python -m imgw_hydro level <station_id>
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/imgw-hydro.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-imgw-hydro:latest
 ```
 
-### Feed data to Kafka
+### MQTT (Unified Namespace)
 
 ```bash
-python -m imgw_hydro feed --connection-string "<connection_string>" --topic imgw-hydro
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/imgw-hydro.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-imgw-hydro-mqtt:latest
 ```
 
-Or using environment variables:
+Topic template:
+
+```text
+(see EVENTS.md)
+```
+
+### AMQP 1.0
 
 ```bash
-export KAFKA_BROKER=localhost:9092
-export KAFKA_TOPIC=imgw-hydro
-python -m imgw_hydro feed
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/imgw-hydro.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/imgw-hydro" \
+  ghcr.io/clemensv/real-time-sources-imgw-hydro-amqp:latest
 ```
 
-## Configuration
+For Entra-ID and SAS-CBS AMQP authentication variants, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image).
 
-| Environment Variable | Description | Default |
-|---|---|---|
-| `KAFKA_CONNECTION_STRING` or `CONNECTION_STRING` | Kafka/Event Hubs connection string | None |
-| `KAFKA_BROKER` | Kafka bootstrap server | None |
-| `KAFKA_TOPIC` | Kafka topic name | `imgw-hydro` |
-| `POLLING_INTERVAL` | Polling interval in seconds | `600` |
+## Configuration reference
 
-## Setup
+The complete environment-variable matrix for each image is documented in [CONTAINER.md](CONTAINER.md). Runtime entry points come from image `CMD`: Kafka ["python", "-m", "imgw_hydro", "feed"] MQTT ["python", "-m", "imgw_hydro_mqtt", "feed"] AMQP ["python", "-m", "imgw_hydro_amqp", "feed"].
 
-```bash
-pip install -r requirements.txt
-pip install -e .
-```
+## Data model
 
-## Testing
+This feeder emits the following event families:
 
-```bash
-pytest tests/test_imgw_hydro_unit.py      # Unit tests (no network)
-pytest tests/test_imgw_hydro_e2e.py        # End-to-end tests (hits real API)
-pytest tests/test_imgw_hydro_container.py  # Container tests (requires Docker)
-```
+- **PL.Gov.IMGW.Hydro** — `Station`, `WaterLevelObservation`.
+
+Event field descriptions, schema references, and routing details are documented in [EVENTS.md](EVENTS.md).
+
+## Deploying into Microsoft Fabric
+
+IMGW Hydro supports both Fabric hosting patterns used in this repository.
+
+### Fabric Notebook feeder
+
+This source includes a notebook feeder under [`notebook/`](notebook/) and `catalog.json` marks `notebook: true`.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#imgw-hydro/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use the ACI deployment flow for always-on container execution into a Fabric Event Stream custom endpoint.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#imgw-hydro/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Azure templates shipped with this source:
 
-### Option 1: Bring your own Event Hub
+### MQTT — bring your own broker
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fimgw-hydro%2Fazure-template-mqtt.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fimgw-hydro%2Fazure-template.json)
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-### Option 2: Deploy with a new Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fimgw-hydro%2Fazure-template-with-eventgrid-mqtt.json)
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fimgw-hydro%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace
 
-## MQTT and AMQP companion feeders
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fimgw-hydro%2Fazure-template-with-servicebus.json)
 
-This source now ships transport-split Kafka, MQTT, and AMQP containers. The MQTT image (`ghcr.io/clemensv/real-time-sources-imgw-hydro-mqtt:latest`) publishes retained MQTT 5 binary-mode CloudEvents on `hydro/pl/imgw/imgw-hydro/...`. The AMQP image (`ghcr.io/clemensv/real-time-sources-imgw-hydro-amqp:latest`) publishes the same CloudEvents to a broker address or Azure Service Bus queue.
+### Kafka — bring your own Event Hub / Kafka
 
-Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, and `azure-template-with-servicebus.json`.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fimgw-hydro%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before onboarding consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full per-image auth and environment settings.
+- Select Fabric Notebook/Fabric ACI/Azure ACI based on your runtime and operational requirements.

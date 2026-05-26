@@ -1,128 +1,171 @@
-# NOAA NDBC Buoy Observations Poller
+# NOAA NDBC feeder
+
+This feeder turns the upstream NOAA NDBC hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
+
+Companion docs:
+
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+
+## Why this bridge
+
+This bridge publishes the NOAA NDBC source as a transport-agnostic event stream so downstream systems subscribe once and avoid re-implementing poll scheduling, retry handling, dedupe state, CloudEvents mapping, and schema lifecycle management.
+
+- **Flood and water-risk operations** — power near-real-time threshold monitoring and alert pipelines.
+- **Infrastructure operations** — feed lock/port/river-management dashboards and operations centers.
+- **Environmental analytics** — ingest standardized events into Fabric Eventhouse, ADX, or lakehouse systems.
+- **Insurance and resilience workflows** — drive trigger-based monitoring and post-event replay analysis.
+- **Research and public-data products** — maintain reproducible timelines without source-specific ETL glue.
 
 ## Overview
 
-**NOAA NDBC Buoy Observations Poller** polls the National Data Buoy Center (NDBC) station table, the composite `latest_obs.txt` feed, and selected `realtime2` family files, then sends them to a Kafka topic as CloudEvents. The bridge emits station reference data first and tracks previously seen timestamps per station and feed family to avoid sending duplicates.
+**NOAA NDBC** is a poll-based bridge that emits CloudEvents across available transport variants:
 
-## Key Features
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-noaa-ndbc` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents on one topic, key = `{station_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-noaa-ndbc-mqtt` | MQTT 5.0 broker (incl. Event Grid MQTT and Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic template `(see EVENTS.md)` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-noaa-ndbc-amqp` | AMQP 1.0 (incl. Service Bus and Event Hubs via CBS auth) | Binary CloudEvents to AMQP node `noaa-ndbc` |
 
-- **Reference Data First**: Emits `BuoyStation` reference events from the NDBC station table before telemetry polling begins.
-- **Composite Latest Observations**: Fetches the standard buoy observation feed from `https://www.ndbc.noaa.gov/data/latest_obs/latest_obs.txt`.
-- **Realtime2 Coverage**: Polls the `srad`, `ocean`, `dart`, `cwind`, `supl`, `spec`, and `rain` realtime2 families when available for a station.
-- **Family-Aware Deduplication**: Tracks last seen observation timestamps per station and feed family in a state file to avoid reprocessing.
-- **Kafka Integration**: Send buoy observations to a Kafka topic using SASL PLAIN authentication.
-- **CloudEvents**: All events are formatted as CloudEvents, documented in [EVENTS.md](EVENTS.md).
-- **Fabric notebook hosting**: A Fabric notebook variant lives under `notebook/noaa-ndbc-feed.ipynb` and is deployable via [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1) for serverless, scheduled execution.
+All variants share:
 
-## Installation
+- The same upstream polling logic and dedupe state model.
+- The same xRegistry contract (`xreg/noaa_ndbc.xreg.json`).
+- The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
 
-The tool is written in Python and requires Python 3.10 or later. You can download Python from [here](https://www.python.org/downloads/) or from the Microsoft Store if you are on Windows.
+## Key features
 
-### Installation Steps
+- Poll-based ingestion with restart-safe dedupe/checkpoint persistence via `NDBC_LAST_POLLED_FILE`.
+- Consistent CloudEvents identities and schemas across transport variants.
+- Contract-first event modeling from the checked-in xRegistry manifest.
+- Deployment options for local Docker, Microsoft Fabric, and Azure Container Instances.
+- Reference and telemetry event families aligned for downstream joins and enrichment.
+
+## Repository layout
+
+```text
+noaa-ndbc/
+  xreg/noaa_ndbc.xreg.json                 # shared xRegistry contract
+  noaa_ndbc/
+  noaa_ndbc_amqp/
+  noaa_ndbc_amqp_producer/
+  noaa_ndbc_mqtt/
+  noaa_ndbc_mqtt_producer/
+  noaa_ndbc_producer/
+  Dockerfile                         # Kafka feeder image
+  Dockerfile.mqtt                    # MQTT feeder image
+  Dockerfile.amqp                    # AMQP feeder image
+  kql/                               # KQL/Eventhouse schema
+  notebook/                          # Fabric notebook feeder
+  tests/                             # unit + integration tests
+```
+
+## Prerequisites
+
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound HTTPS access to the upstream source API.
+- Network access to your Kafka broker / MQTT broker / AMQP 1.0 endpoint.
+- A writable host directory mounted to persist `NDBC_LAST_POLLED_FILE` across container restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `NDBC_LAST_POLLED_FILE` so dedupe/checkpoint state survives restarts.
+
+### Kafka
 
 ```bash
-pip install git+https://github.com/clemensv/real-time-sources#subdirectory=noaa-ndbc
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e NDBC_LAST_POLLED_FILE=/state/noaa-ndbc.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-noaa-ndbc:latest
 ```
 
-If you clone the repository:
+### MQTT (Unified Namespace)
 
 ```bash
-git clone https://github.com/clemensv/real-time-sources.git
-cd real-time-sources/noaa-ndbc
-pip install .
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e NDBC_LAST_POLLED_FILE=/state/noaa-ndbc.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-noaa-ndbc-mqtt:latest
 ```
 
-For a packaged install, consider using the [CONTAINER.md](CONTAINER.md) instructions.
+Topic template:
 
-## How to Use
+```text
+(see EVENTS.md)
+```
 
-After installation, the tool can be run using `python -m noaa_ndbc`. It supports several arguments for configuring the polling process and sending data to Kafka.
-
-### Command-Line Arguments
-
-- `--last-polled-file`: Path to the file where last seen timestamps per station are stored. Defaults to `~/.ndbc_last_polled.json`.
-- `--kafka-bootstrap-servers`: Comma-separated list of Kafka bootstrap servers.
-- `--kafka-topic`: The Kafka topic to send messages to.
-- `--sasl-username`: Username for SASL PLAIN authentication.
-- `--sasl-password`: Password for SASL PLAIN authentication.
-- `--connection-string`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string (overrides other Kafka parameters).
-
-### Example Usage
-
-#### Using a Connection String
+### AMQP 1.0
 
 ```bash
-python -m noaa_ndbc --connection-string "<your_connection_string>"
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e NDBC_LAST_POLLED_FILE=/state/noaa-ndbc.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/noaa-ndbc" \
+  ghcr.io/clemensv/real-time-sources-noaa-ndbc-amqp:latest
 ```
 
-#### Using Kafka Parameters Directly
+For Entra-ID and SAS-CBS AMQP authentication variants, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image).
 
-```bash
-python -m noaa_ndbc --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-topic "<topic_name>" --sasl-username "<username>" --sasl-password "<password>"
-```
+## Configuration reference
 
-### Connection String Format
+The complete environment-variable matrix for each image is documented in [CONTAINER.md](CONTAINER.md). Runtime entry points come from image `CMD`: Kafka ["python", "-m", "noaa_ndbc"] MQTT ["python", "-m", "noaa_ndbc_mqtt", "feed"] AMQP ["python", "-m", "noaa_ndbc_amqp", "feed"].
 
-```
-Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=<hub>
-```
+## Data model
 
-### Environment Variables
+This feeder emits the following event families:
 
-- `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
-- `NDBC_LAST_POLLED_FILE`: File to store last seen timestamps per station for deduplication.
+- **Microsoft.OpenData.US.NOAA.NDBC** — `BuoyObservation`, `BuoyStation`, `BuoySolarRadiationObservation`, `BuoyOceanographicObservation`, `BuoyDartMeasurement`, `BuoyContinuousWindObservation`, `BuoySupplementalMeasurement`, `BuoyDetailedWaveSummary`, `BuoyHourlyRainMeasurement`.
 
-## Event Families
+Event field descriptions, schema references, and routing details are documented in [EVENTS.md](EVENTS.md).
 
-All events are keyed by `station_id`. Full CloudEvents and field documentation lives in [EVENTS.md](EVENTS.md).
+## Deploying into Microsoft Fabric
 
-| Event Type | Upstream Source | Description |
-|------------|-----------------|-------------|
-| `Microsoft.OpenData.US.NOAA.NDBC.BuoyStation` | NDBC station table | Reference metadata for the observing platform |
-| `Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation` | `latest_obs.txt` | Standard meteorological and oceanographic snapshot |
-| `Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation` | `realtime2/*.srad` | Shortwave and longwave radiation telemetry |
-| `Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation` | `realtime2/*.ocean` | Depth-tagged ocean chemistry and physical measurements |
-| `Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement` | `realtime2/*.dart` | DART tsunami buoy water-column measurements |
-| `Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation` | `realtime2/*.cwind` | Ten-minute wind averages plus hourly gust extrema |
-| `Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement` | `realtime2/*.supl` | Hourly pressure minima and one-minute wind maxima |
-| `Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary` | `realtime2/*.spec` | Swell, wind-wave, and wave-steepness summary values |
-| `Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement` | `realtime2/*.rain` | One-hour precipitation accumulation |
+NOAA NDBC supports both Fabric hosting patterns used in this repository.
 
-## Data Source
+### Fabric Notebook feeder
 
-The NOAA National Data Buoy Center (NDBC) maintains a network of approximately 1,300 buoys and coastal stations that measure meteorological and oceanographic conditions. The bridge covers the standard observation composite feed plus selected realtime2 channel families for radiation, ocean chemistry, DART, wind extrema, wave summaries, and rainfall. Data is updated approximately every 5 minutes for the composite feed, with station-specific realtime2 products published on their own cadences.
+This source includes a notebook feeder under [`notebook/`](notebook/) and `catalog.json` marks `notebook: true`.
 
-- **Latest observations**: `https://www.ndbc.noaa.gov/data/latest_obs/latest_obs.txt`
-- **NDBC home page**: `https://www.ndbc.noaa.gov/`
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#noaa-ndbc/fabric-notebook)
 
-## License
+### Fabric ACI feeder
 
-[MIT](../LICENSE.md)
+Use the ACI deployment flow for always-on container execution into a Fabric Event Stream custom endpoint.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#noaa-ndbc/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Azure templates shipped with this source:
 
-### Option 1: Bring your own Event Hub
+### MQTT — bring your own broker
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa-ndbc%2Fazure-template-mqtt.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa-ndbc%2Fazure-template.json)
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-### Option 2: Deploy with a new Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa-ndbc%2Fazure-template-with-eventgrid-mqtt.json)
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa-ndbc%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace
 
-## MQTT and AMQP companion feeders
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa-ndbc%2Fazure-template-with-servicebus.json)
 
-This source now ships transport-split Kafka, MQTT, and AMQP containers. The MQTT image (`ghcr.io/clemensv/real-time-sources-noaa-ndbc-mqtt:latest`) publishes retained MQTT 5 binary-mode CloudEvents on `maritime/us/noaa/noaa-ndbc/...`. The AMQP image (`ghcr.io/clemensv/real-time-sources-noaa-ndbc-amqp:latest`) publishes the same CloudEvents to a broker address or Azure Service Bus queue.
+### Kafka — bring your own Event Hub / Kafka
 
-Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, and `azure-template-with-servicebus.json`.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnoaa-ndbc%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before onboarding consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full per-image auth and environment settings.
+- Select Fabric Notebook/Fabric ACI/Azure ACI based on your runtime and operational requirements.

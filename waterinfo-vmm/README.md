@@ -1,111 +1,171 @@
-# Waterinfo VMM (Belgium/Flanders) Water Level Bridge
+# Waterinfo VMM feeder
 
-This project bridges water level data from the Belgian
-[Waterinfo.be](https://waterinfo.vlaanderen.be/) KIWIS API (VMM provider) to
-Apache Kafka, emitting CloudEvents.
+This feeder turns the upstream Waterinfo VMM hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
-**Waterinfo.be** is managed by the Flanders Environment Agency (VMM) and
-Flanders Hydraulics Research. It provides real-time water and weather data for
-Flanders (Belgium), including water level, discharge, rainfall, and more.
+Companion docs:
 
-## Data
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-- **Stations**: ~1,785 monitoring stations across Flanders and Belgium
-- **Water Level (15-min)**: ~1,109 time series measuring water level (H) in meters (15-minute intervals)
-- **Polling interval**: 15 minutes
+## Why this bridge
 
-The API uses the KISTERS KIWIS protocol with VMM as the data source.
+This bridge publishes the Waterinfo VMM source as a transport-agnostic event stream so downstream systems subscribe once and avoid re-implementing poll scheduling, retry handling, dedupe state, CloudEvents mapping, and schema lifecycle management.
 
-## Usage
+- **Flood and water-risk operations** — power near-real-time threshold monitoring and alert pipelines.
+- **Infrastructure operations** — feed lock/port/river-management dashboards and operations centers.
+- **Environmental analytics** — ingest standardized events into Fabric Eventhouse, ADX, or lakehouse systems.
+- **Insurance and resilience workflows** — drive trigger-based monitoring and post-event replay analysis.
+- **Research and public-data products** — maintain reproducible timelines without source-specific ETL glue.
 
-### List stations
+## Overview
 
-```bash
-python -m waterinfo_vmm list
+**Waterinfo VMM** is a poll-based bridge that emits CloudEvents across available transport variants:
+
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-waterinfo-vmm` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents on one topic, key = `{station_no}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-waterinfo-vmm-mqtt` | MQTT 5.0 broker (incl. Event Grid MQTT and Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic template `(see EVENTS.md)` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-waterinfo-vmm-amqp` | AMQP 1.0 (incl. Service Bus and Event Hubs via CBS auth) | Binary CloudEvents to AMQP node `waterinfo-vmm` |
+
+All variants share:
+
+- The same upstream polling logic and dedupe state model.
+- The same xRegistry contract (`xreg/waterinfo_vmm.xreg.json`).
+- The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
+
+## Key features
+
+- Poll-based ingestion with restart-safe dedupe/checkpoint persistence via `STATE_FILE`.
+- Consistent CloudEvents identities and schemas across transport variants.
+- Contract-first event modeling from the checked-in xRegistry manifest.
+- Deployment options for local Docker, Microsoft Fabric, and Azure Container Instances.
+- Reference and telemetry event families aligned for downstream joins and enrichment.
+
+## Repository layout
+
+```text
+waterinfo-vmm/
+  xreg/waterinfo_vmm.xreg.json                 # shared xRegistry contract
+  waterinfo_vmm/
+  waterinfo_vmm_amqp/
+  waterinfo_vmm_amqp_producer/
+  waterinfo_vmm_mqtt/
+  waterinfo_vmm_mqtt_producer/
+  waterinfo_vmm_producer/
+  Dockerfile                         # Kafka feeder image
+  Dockerfile.mqtt                    # MQTT feeder image
+  Dockerfile.amqp                    # AMQP feeder image
+  kql/                               # KQL/Eventhouse schema
+  notebook/                          # Fabric notebook feeder
+  tests/                             # unit + integration tests
 ```
 
-### Get latest water level for a station
+## Prerequisites
+
+- Docker 20.10+ (or compatible OCI runtime).
+- Outbound HTTPS access to the upstream source API.
+- Network access to your Kafka broker / MQTT broker / AMQP 1.0 endpoint.
+- A writable host directory mounted to persist `STATE_FILE` across container restarts.
+
+## Quick start with Docker
+
+> [!IMPORTANT]
+> Mount a host volume for `STATE_FILE` so dedupe/checkpoint state survives restarts.
+
+### Kafka
 
 ```bash
-python -m waterinfo_vmm level L04_007
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/waterinfo-vmm.json \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-waterinfo-vmm:latest
 ```
 
-### Feed to Kafka
-
-Using a connection string (Azure Event Hubs):
+### MQTT (Unified Namespace)
 
 ```bash
-python -m waterinfo_vmm feed -c "Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=..."
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/waterinfo-vmm.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-waterinfo-vmm-mqtt:latest
 ```
 
-Using explicit Kafka configuration:
+Topic template:
+
+```text
+(see EVENTS.md)
+```
+
+### AMQP 1.0
 
 ```bash
-python -m waterinfo_vmm feed \
-    --kafka-bootstrap-servers your-server:9093 \
-    --kafka-topic waterinfo-vmm \
-    --sasl-username '$ConnectionString' \
-    --sasl-password 'your-connection-string'
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/waterinfo-vmm.json \
+  -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/waterinfo-vmm" \
+  ghcr.io/clemensv/real-time-sources-waterinfo-vmm-amqp:latest
 ```
 
-## Events
+For Entra-ID and SAS-CBS AMQP authentication variants, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image).
 
-See [EVENTS.md](EVENTS.md) for the CloudEvents message definitions.
+## Configuration reference
 
-## Container
+The complete environment-variable matrix for each image is documented in [CONTAINER.md](CONTAINER.md). Runtime entry points come from image `CMD`: Kafka ["python", "-m", "waterinfo_vmm", "feed"] MQTT ["python", "-m", "waterinfo_vmm_mqtt", "feed"] AMQP ["python", "-m", "waterinfo_vmm_amqp", "feed"].
 
-See [CONTAINER.md](CONTAINER.md) for Docker container deployment info.
+## Data model
 
-## Fabric notebook hosting
+This feeder emits the following event families:
 
-This source can also be hosted as a scheduled Fabric notebook (per-cycle
-single execution against a bound Lakehouse + Event Stream). See
-[`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1)
-and the bundled notebook at [`notebook/waterinfo-vmm-feed.ipynb`](notebook/waterinfo-vmm-feed.ipynb).
+- **BE.Vlaanderen.Waterinfo.VMM** — `Station`, `WaterLevelReading`.
 
-## API Reference
+Event field descriptions, schema references, and routing details are documented in [EVENTS.md](EVENTS.md).
 
-- **Base URL**: `https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS`
-- **Protocol**: KISTERS KIWIS QueryServices
-- **Provider**: VMM (Flanders Environment Agency), datasource=1
-- **Key endpoints**:
-  - `getStationList` — list all monitoring stations
-  - `getTimeseriesValueLayer` — latest values for a timeseries group
-  - `getTimeseriesValues` — historical time series data
-  - `getGroupList` — list timeseries groups
-- **Documentation**: [KIWIS API docs](https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo)
-- **No authentication required** for limited downloads; token available for heavy use
+## Deploying into Microsoft Fabric
 
-## Daily Volume Estimate
+Waterinfo VMM supports both Fabric hosting patterns used in this repository.
 
-- ~1,109 water level stations × 96 readings/day (15 min) = ~106,000 readings/day
-- Each CloudEvent ≈ 500 bytes → ~53 MB/day
-- Plus ~1,785 station reference events at startup
+### Fabric Notebook feeder
+
+This source includes a notebook feeder under [`notebook/`](notebook/) and `catalog.json` marks `notebook: true`.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#waterinfo-vmm/fabric-notebook)
+
+### Fabric ACI feeder
+
+Use the ACI deployment flow for always-on container execution into a Fabric Event Stream custom endpoint.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#waterinfo-vmm/fabric-aci)
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Azure templates shipped with this source:
 
-### Option 1: Bring your own Event Hub
+### MQTT — bring your own broker
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwaterinfo-vmm%2Fazure-template-mqtt.json)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwaterinfo-vmm%2Fazure-template.json)
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-### Option 2: Deploy with a new Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwaterinfo-vmm%2Fazure-template-with-eventgrid-mqtt.json)
 
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwaterinfo-vmm%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace
 
-## MQTT and AMQP companion feeders
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwaterinfo-vmm%2Fazure-template-with-servicebus.json)
 
-This source now ships transport-split Kafka, MQTT, and AMQP containers. The MQTT image (`ghcr.io/clemensv/real-time-sources-waterinfo-vmm-mqtt:latest`) publishes retained MQTT 5 binary-mode CloudEvents on `hydro/be/vmm/waterinfo-vmm/...`. The AMQP image (`ghcr.io/clemensv/real-time-sources-waterinfo-vmm-amqp:latest`) publishes the same CloudEvents to a broker address or Azure Service Bus queue.
+### Kafka — bring your own Event Hub / Kafka
 
-Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, and `azure-template-with-servicebus.json`.
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fwaterinfo-vmm%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before onboarding consumers.
+- Use [CONTAINER.md](CONTAINER.md) for full per-image auth and environment settings.
+- Select Fabric Notebook/Fabric ACI/Azure ACI based on your runtime and operational requirements.

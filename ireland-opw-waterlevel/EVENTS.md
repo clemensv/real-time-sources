@@ -1,4 +1,4 @@
-# Ireland OPW waterlevel.ie Bridge Events
+# Ireland OPW Water Level feeder Events
 
 Ireland OPW waterlevel.ie publishes water level, temperature, and sensor voltage observations from Ireland's Office of Public Works (OPW) for Irish hydrometric stations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -178,7 +178,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 

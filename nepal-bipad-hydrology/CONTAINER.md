@@ -1,131 +1,189 @@
-# Nepal BIPAD Portal River Monitoring Bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Nepal BIPAD Hydrology container images
 
-This container image provides a bridge between the Nepal BIPAD Portal
-river-stations API and Apache Kafka, Azure Event Hubs, and Fabric Event
-Streams. The bridge reads real-time water level data from Nepal's Himalayan
-river monitoring stations and writes it to a Kafka topic.
+This document covers the published OCI container images for the Nepal BIPAD Hydrology feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 
-## Nepal BIPAD Portal
+## Why this container
 
-The [BIPAD Portal](https://bipadportal.gov.np/) (Building Information Platform
-Against Disaster) is operated by the Government of Nepal. It provides real-time
-river monitoring data from stations across Nepal's major river basins including
-Bagmati, Narayani, Koshi, Karnali, Mahakali, and Babai. Data originates from
-the Nepal Department of Hydrology and Meteorology (hydrology.gov.np).
+The Nepal BIPAD Hydrology source is exposed as a polling API upstream. These container images package polling cadence control, stateful dedupe, CloudEvents production, and transport/auth wiring so operators can deploy a ready-to-run feeder instead of building source-specific integration code.
 
-## Functionality
+## What ships in the box
 
-The bridge fetches river station data from the BIPAD Portal API and writes it
-to a Kafka topic as structured JSON [CloudEvents](https://cloudevents.io/) in
-a format documented in [EVENTS.md](EVENTS.md).
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology` | Apache Kafka 2.x | JSON CloudEvents on one topic; key template `{station_id}` |
+| `ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology-mqtt` | MQTT 5.0 | Unified-Namespace topic template `(see EVENTS.md)` |
+| `ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology-amqp` | AMQP 1.0 | Binary CloudEvents to AMQP node `nepal-bipad-hydrology` |
 
-The bridge emits two event types:
-- **RiverStation** — Reference data for each monitoring station (location,
-  basin, thresholds, administrative codes). Emitted at startup and refreshed
-  every 6 hours.
-- **WaterLevelReading** — Telemetry with current water level, alert status
-  (BELOW WARNING LEVEL / WARNING / DANGER), and trend (STEADY / RISING /
-  FALLING). Emitted every polling cycle with deduplication by station and
-  timestamp.
+Event families in this source:
 
-## Database Schemas and Handling
+- **np.gov.bipad.hydrology** — `RiverStation`, `WaterLevelReading`.
 
-If you want to build a full data pipeline with all events ingested into a
-database, the integration with Fabric Eventhouse and Azure Data Explorer is
-described in [DATABASE.md](../DATABASE.md).
+## Image contract
 
-## Installing the Container Image
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.10-slim` (source Dockerfiles) |
+| Default entry point | Kafka `["python", "-m", "nepal_bipad_hydrology", "feed"]`; MQTT `["python", "-m", "nepal_bipad_hydrology_mqtt", "feed"]`; AMQP `["python", "-m", "nepal_bipad_hydrology_amqp", "feed"]` |
+| Exposed ports | none — outbound publisher only |
+| Signals | process exits cleanly on `SIGTERM` |
+| Persistent state | `STATE_FILE`; mount a host volume for restart-safe dedupe/checkpoint behavior |
+| Image tags | `:latest` and immutable release/sha tags published from repository CI |
 
-Pull the container image from the GitHub Container Registry:
+## Installing the container images
 
-```shell
-$ docker pull ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology:latest
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology:latest
+docker pull ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology-amqp:latest
 ```
 
-To use it as a base image in a Dockerfile:
+## Using the Kafka image
 
-```dockerfile
-FROM ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology:latest
+### With a Kafka broker (SASL/PLAIN)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/nepal-bipad-hydrology.json \
+  -e KAFKA_BOOTSTRAP_SERVERS="<host:port>" \
+  -e KAFKA_TOPIC="<topic>" \
+  -e SASL_USERNAME="<username>" \
+  -e SASL_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology:latest
 ```
 
-## Using the Container Image
+### With Azure Event Hubs / Fabric Event Streams
 
-### With a Kafka Broker
-
-```shell
-$ docker run --rm \
-    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
-    -e KAFKA_TOPIC='<kafka-topic>' \
-    -e SASL_USERNAME='<sasl-username>' \
-    -e SASL_PASSWORD='<sasl-password>' \
-    ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology:latest
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/nepal-bipad-hydrology.json \
+  -e CONNECTION_STRING="<connection-string>" \
+  ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology:latest
 ```
 
-### With Azure Event Hubs or Fabric Event Streams
+## Using the MQTT image
 
-```shell
-$ docker run --rm \
-    -e CONNECTION_STRING='<connection-string>' \
-    ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology:latest
+### With a generic MQTT 5 broker (username/password)
+
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/nepal-bipad-hydrology.json \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology-mqtt:latest
 ```
 
-## Environment Variables
+### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
 
-### `CONNECTION_STRING`
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/nepal-bipad-hydrology.json \
+  -e MQTT_BROKER_URL="mqtts://<namespace>.<region>-1.ts.eventgrid.azure.net:8883" \
+  -e MQTT_AUTH_MODE=entra \
+  -e MQTT_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
+  -e MQTT_CLIENT_ID="<unique-client-id>" \
+  ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology-mqtt:latest
+```
 
-An Azure Event Hubs-style connection string used to establish a connection to
-Azure Event Hubs or Fabric Event Streams. This replaces the need for
-`KAFKA_BOOTSTRAP_SERVERS`, `SASL_USERNAME`, and `SASL_PASSWORD`.
+## Using the AMQP image
 
-### `KAFKA_BOOTSTRAP_SERVERS`
+### With AMQP 1.0 and Microsoft Entra ID (CBS put-token)
 
-The address of the Kafka broker. Provide a comma-separated list of host and port
-pairs (e.g., `broker1:9092,broker2:9092`).
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/nepal-bipad-hydrology.json \
+  -e AMQP_HOST="<namespace>.servicebus.windows.net" \
+  -e AMQP_PORT=5671 \
+  -e AMQP_TLS=true \
+  -e AMQP_ADDRESS="nepal-bipad-hydrology" \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_AUDIENCE="https://servicebus.azure.net/.default" \
+  -e AMQP_ENTRA_CLIENT_ID="<user-assigned-managed-identity-client-id>" \
+  ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology-amqp:latest
+```
 
-### `KAFKA_TOPIC`
+### With AMQP 1.0 and SAS-token CBS
 
-The Kafka topic where messages will be produced.
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/nepal-bipad-hydrology.json \
+  -e AMQP_HOST="servicebus-emulator" \
+  -e AMQP_PORT=5672 \
+  -e AMQP_ADDRESS="nepal-bipad-hydrology" \
+  -e AMQP_AUTH_MODE=sas \
+  -e AMQP_SAS_KEY_NAME="RootManageSharedAccessKey" \
+  -e AMQP_SAS_KEY="<sas-key>" \
+  ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology-amqp:latest
+```
 
-### `SASL_USERNAME`
+## Environment variables
 
-Username for SASL PLAIN authentication.
+### Kafka image
 
-### `SASL_PASSWORD`
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `CONNECTION_STRING` | Event Hubs/Fabric-style connection string (optional alternative to explicit Kafka variables). |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list. |
+| `KAFKA_TOPIC` | Kafka destination topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL/PLAIN credentials for Kafka. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
-Password for SASL PLAIN authentication.
+### MQTT image
 
-### `POLLING_INTERVAL`
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for `MQTT_AUTH_MODE=password`. |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client ID. |
+| `MQTT_CLIENT_ID` | MQTT client ID (must be unique per broker). |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
-Polling interval in seconds (default: 900 = 15 minutes).
+### AMQP image
 
-### `KAFKA_ENABLE_TLS`
-
-Set to `false` to disable TLS for the Kafka connection (default: `true`).
+| Variable | Description |
+|---|---|
+| `STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `AMQP_BROKER_URL` | Full AMQP URL form (`amqp://` or `amqps://`). |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component endpoint settings when URL form is not used. |
+| `AMQP_ADDRESS` | AMQP node/address name. |
+| `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
+| `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra-ID CBS settings. |
+| `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token CBS settings. |
+| `POLLING_INTERVAL` | Poll interval in seconds. |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+### MQTT — bring your own broker
 
-### Option 1: Bring your own Event Hub
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnepal-bipad-hydrology%2Fazure-template-mqtt.json)
 
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### MQTT — provision a new Event Grid namespace MQTT broker
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnepal-bipad-hydrology%2Fazure-template.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnepal-bipad-hydrology%2Fazure-template-with-eventgrid-mqtt.json)
 
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnepal-bipad-hydrology%2Fazure-template-with-eventhub.json)
 
+### AMQP — provision a new Azure Service Bus namespace
 
-## MQTT / AMQP transport variants
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnepal-bipad-hydrology%2Fazure-template-with-servicebus.json)
 
-* MQTT image: `docker pull ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology-mqtt:latest`; configure `MQTT_BROKER_URL`, optional `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_TLS`, `MQTT_CLIENT_ID`, and `ONCE_MODE`.
-* AMQP image: `docker pull ghcr.io/clemensv/real-time-sources-nepal-bipad-hydrology-amqp:latest`; configure `AMQP_HOST`/`AMQP_BROKER_URL`, `AMQP_ADDRESS`, `AMQP_AUTH_MODE` (`password`, `entra`, or `sas`), credentials, `AMQP_TLS`, and `ONCE_MODE`.
-* Azure templates: MQTT BYO broker (`azure-template-mqtt.json`), MQTT with Event Grid (`azure-template-with-eventgrid-mqtt.json`), and AMQP with Service Bus (`azure-template-with-servicebus.json`).
+### Kafka — bring your own Event Hub / Kafka
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fnepal-bipad-hydrology%2Fazure-template.json)
+
+## Related
+
+- [README.md](README.md) — project overview and deployment options.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
+- [`xreg/nepal_bipad_hydrology.xreg.json`](xreg/nepal_bipad_hydrology.xreg.json) — source contract used to generate producer bindings.

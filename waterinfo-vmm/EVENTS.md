@@ -1,4 +1,4 @@
-# Waterinfo VMM (Belgium/Flanders) Water Level Bridge Events
+# Waterinfo VMM feeder Events
 
 Waterinfo VMM publishes water level observations from Waterinfo.be and the Flemish Environment Agency (VMM) for Flemish water monitoring locations. These events let consumers build real-time monitoring, alerting, and operational dashboards without polling the upstream API directly.
 
@@ -188,11 +188,9 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 ## Operational notes
 
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
 
 ## References
 
 - xRegistry manifest: [`xreg/waterinfo_vmm.xreg.json`](xreg/waterinfo_vmm.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- KIWIS API docs: <https://download.waterinfo.be/tsmdownload/KiWIS/KiWIS?service=kisters&type=QueryServices&format=html&request=getrequestinfo>
