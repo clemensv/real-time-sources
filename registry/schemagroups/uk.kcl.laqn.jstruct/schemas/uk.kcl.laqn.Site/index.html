@@ -1,0 +1,129 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/schemas/uk/kcl/laqn/Site",
+  "$root": "/definitions/uk/kcl/laqn/Site",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "uk": {
+      "kcl": {
+        "laqn": {
+          "Site": {
+            "description": "LAQN monitoring site reference data, including stable site identity, operator information, and WGS84 coordinates.",
+            "name": "Site",
+            "properties": {
+              "data_manager": {
+                "altnames": [
+                  "@DataManager"
+                ],
+                "description": "Organisation listed by LAQN as the manager of the monitoring site data.",
+                "type": "string"
+              },
+              "data_owner": {
+                "altnames": [
+                  "@DataOwner"
+                ],
+                "description": "Organisation listed by LAQN as the owner of the site's data.",
+                "type": "string"
+              },
+              "date_closed": {
+                "altnames": [
+                  "@DateClosed"
+                ],
+                "description": "Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "date_opened": {
+                "altnames": [
+                  "@DateOpened"
+                ],
+                "description": "Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format.",
+                "type": "string"
+              },
+              "latitude": {
+                "altnames": [
+                  "@Latitude"
+                ],
+                "description": "WGS84 latitude of the monitoring site in decimal degrees. This bridge uses the decimal latitude field, not the projected WGS84 metre coordinate, or null when the upstream site record leaves the coordinate blank.",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              },
+              "local_authority_code": {
+                "altnames": [
+                  "@LocalAuthorityCode"
+                ],
+                "description": "Stable local authority code associated with the site in the LAQN reference data.",
+                "type": "string"
+              },
+              "local_authority_name": {
+                "altnames": [
+                  "@LocalAuthorityName"
+                ],
+                "description": "Human-readable local authority name associated with the site in the LAQN reference data.",
+                "type": "string"
+              },
+              "longitude": {
+                "altnames": [
+                  "@Longitude"
+                ],
+                "description": "WGS84 longitude of the monitoring site in decimal degrees. This bridge uses the decimal longitude field, not the projected WGS84 metre coordinate, or null when the upstream site record leaves the coordinate blank.",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              },
+              "site_code": {
+                "altnames": [
+                  "@SiteCode"
+                ],
+                "description": "Stable LAQN site code that identifies the monitoring site, such as BX1.",
+                "type": "string"
+              },
+              "site_name": {
+                "altnames": [
+                  "@SiteName"
+                ],
+                "description": "Human-readable LAQN site name published for the monitoring site.",
+                "type": "string"
+              },
+              "site_type": {
+                "altnames": [
+                  "@SiteType"
+                ],
+                "description": "Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other.",
+                "enum": [
+                  "Suburban",
+                  "Kerbside",
+                  "Roadside",
+                  "Urban Background",
+                  "Industrial",
+                  "Rural",
+                  "other"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "site_code",
+              "site_name",
+              "site_type",
+              "local_authority_code",
+              "local_authority_name",
+              "latitude",
+              "longitude",
+              "date_opened",
+              "date_closed",
+              "data_owner",
+              "data_manager"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "Site"
+}

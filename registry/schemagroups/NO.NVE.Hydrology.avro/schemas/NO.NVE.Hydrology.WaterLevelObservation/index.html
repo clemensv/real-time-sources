@@ -1,0 +1,72 @@
+{
+  "description": "Measurement payload for observations in the NVE Hydrology source.",
+  "doc": "Measurement payload for observations in the NVE Hydrology source.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "Name of the river the station observes (NVE HydAPI 'riverName' / Norwegian 'Vassdrag'). Sourced from the station catalog and propagated to telemetry so consumers can route by river without a separate catalog join.",
+      "name": "river_name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "water_level",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_level_unit",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_level_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge_unit",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "name": "WaterLevelObservation",
+  "namespace": "NO.NVE.Hydrology",
+  "type": "record"
+}

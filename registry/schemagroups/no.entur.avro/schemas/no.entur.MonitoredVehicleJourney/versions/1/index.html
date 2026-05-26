@@ -1,0 +1,147 @@
+{
+  "description": "A vehicle or vessel update from Entur public transport feeds. It reports the latest position, movement, identity, or voyage information available from the upstream feed.",
+  "doc": "Real-time vehicle monitoring update from the Entur SIRI-VM feed.",
+  "fields": [
+    {
+      "doc": "NeTEx ServiceJourney identifier from FramedVehicleJourneyRef/DatedVehicleJourneyRef.",
+      "name": "service_journey_id",
+      "type": "string"
+    },
+    {
+      "doc": "ISO 8601 date string from FramedVehicleJourneyRef/DataFrameRef.",
+      "name": "operating_day",
+      "type": "string"
+    },
+    {
+      "doc": "ISO 8601 UTC timestamp from VehicleActivity/RecordedAtTime.",
+      "name": "recorded_at_time",
+      "type": "string"
+    },
+    {
+      "doc": "NeTEx Line reference.",
+      "name": "line_ref",
+      "type": "string"
+    },
+    {
+      "doc": "Operator codespace.",
+      "name": "operator_ref",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Direction reference.",
+      "name": "direction_ref",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Transport mode.",
+      "name": "vehicle_mode",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Public-facing line name.",
+      "name": "published_line_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Origin stop name.",
+      "name": "origin_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Destination stop name.",
+      "name": "destination_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "VehicleRef identifier. This is payload data, not the Kafka key.",
+      "name": "vehicle_ref",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "WGS84 latitude from VehicleLocation.",
+      "name": "latitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "WGS84 longitude from VehicleLocation.",
+      "name": "longitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Compass bearing in degrees (0-360).",
+      "name": "bearing",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Current delay in seconds, parsed from SIRI Delay ISO 8601 duration.",
+      "name": "delay_seconds",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "OccupancyStatus: full, standingRoomOnly, seatsAvailable, empty, etc.",
+      "name": "occupancy_status",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "ProgressStatus: inProgress, notExpected, notRun, cancelled.",
+      "name": "progress_status",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "True if this journey is actively monitored by an AVL system.",
+      "name": "monitored",
+      "type": "boolean"
+    }
+  ],
+  "name": "MonitoredVehicleJourney",
+  "namespace": "no.entur",
+  "type": "record"
+}

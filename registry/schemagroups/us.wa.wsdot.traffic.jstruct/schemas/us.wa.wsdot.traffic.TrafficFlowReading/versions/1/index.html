@@ -1,0 +1,86 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/traffic/TrafficFlowReading",
+  "$root": "/definitions/us/wa/wsdot/traffic/TrafficFlowReading",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "us": {
+      "wa": {
+        "wsdot": {
+          "traffic": {
+            "TrafficFlowReading": {
+              "description": "A traffic flow reading from a WSDOT sensor station. Updated approximately every 90 seconds, each reading reports the current Level of Service.",
+              "name": "TrafficFlowReading",
+              "properties": {
+                "flow_data_id": {
+                  "altnames": {
+                    "json": "FlowDataID"
+                  },
+                  "description": "Sensor station identifier, stringified from upstream FlowDataID.",
+                  "type": "string"
+                },
+                "flow_reading": {
+                  "altenums": {
+                    "upstream_byte": {
+                      "Heavy": "3",
+                      "Moderate": "2",
+                      "NoData": "5",
+                      "StopAndGo": "4",
+                      "Unknown": "0",
+                      "WideOpen": "1"
+                    }
+                  },
+                  "description": "Current traffic Level of Service. Converted from upstream FlowReadingValue byte.",
+                  "enum": [
+                    "Unknown",
+                    "WideOpen",
+                    "Moderate",
+                    "Heavy",
+                    "StopAndGo",
+                    "NoData"
+                  ],
+                  "type": "string"
+                },
+                "reading_time": {
+                  "altnames": {
+                    "json": "Time"
+                  },
+                  "description": "ISO 8601 UTC timestamp of the reading.",
+                  "type": "string"
+                },
+                "region": {
+                  "altnames": {
+                    "json": "Region"
+                  },
+                  "description": "WSDOT region.",
+                  "enum": [
+                    "Eastern",
+                    "Northwest",
+                    "Olympic",
+                    "Southwest"
+                  ],
+                  "type": "string"
+                },
+                "station_name": {
+                  "altnames": {
+                    "json": "StationName"
+                  },
+                  "description": "Station name.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "flow_data_id",
+                "station_name",
+                "region",
+                "flow_reading",
+                "reading_time"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "TrafficFlowReading"
+}

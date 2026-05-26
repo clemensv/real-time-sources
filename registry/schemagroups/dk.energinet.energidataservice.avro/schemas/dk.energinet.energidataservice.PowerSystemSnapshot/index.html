@@ -1,0 +1,199 @@
+{
+  "doc": "Minute-by-minute snapshot of the Danish power system from Energi Data Service (Energinet). Published by the PowerSystemRightNow dataset at approximately 1-minute intervals.",
+  "fields": [
+    {
+      "doc": "UTC timestamp of the snapshot rounded to the nearest minute, in ISO 8601 format.",
+      "name": "minutes1_utc",
+      "type": "string"
+    },
+    {
+      "doc": "Danish local-time timestamp of the snapshot rounded to the nearest minute, in ISO 8601 format.",
+      "name": "minutes1_dk",
+      "type": "string"
+    },
+    {
+      "doc": "Price area code. Set to 'DK' for system-wide power system snapshots.",
+      "name": "price_area",
+      "type": "string"
+    },
+    {
+      "doc": "CO2 emission intensity in g/kWh.",
+      "name": "co2_emission",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Production from plants \u003e= 100 MW in MW.",
+      "name": "production_ge_100mw",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Production from plants \u003c 100 MW in MW.",
+      "name": "production_lt_100mw",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Solar PV production in MW.",
+      "name": "solar_power",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Offshore wind production in MW.",
+      "name": "offshore_wind_power",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Onshore wind production in MW.",
+      "name": "onshore_wind_power",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Net total cross-border exchange in MW.",
+      "name": "exchange_sum",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "DK1-Germany exchange in MW.",
+      "name": "exchange_dk1_de",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "DK1-Netherlands exchange in MW.",
+      "name": "exchange_dk1_nl",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "DK1-Great Britain exchange in MW.",
+      "name": "exchange_dk1_gb",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "DK1-Norway exchange in MW.",
+      "name": "exchange_dk1_no",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "DK1-Sweden exchange in MW.",
+      "name": "exchange_dk1_se",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "DK1-DK2 (Great Belt) exchange in MW.",
+      "name": "exchange_dk1_dk2",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "DK2-Germany exchange in MW.",
+      "name": "exchange_dk2_de",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "DK2-Sweden exchange in MW.",
+      "name": "exchange_dk2_se",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Bornholm-Sweden exchange in MW.",
+      "name": "exchange_bornholm_se",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "aFRR activated in DK1 in MW.",
+      "name": "afrr_activated_dk1",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "aFRR activated in DK2 in MW.",
+      "name": "afrr_activated_dk2",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "mFRR activated in DK1 in MW.",
+      "name": "mfrr_activated_dk1",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "mFRR activated in DK2 in MW.",
+      "name": "mfrr_activated_dk2",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Grid imbalance in DK1 in MW.",
+      "name": "imbalance_dk1",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Grid imbalance in DK2 in MW.",
+      "name": "imbalance_dk2",
+      "type": [
+        "double",
+        "null"
+      ]
+    }
+  ],
+  "name": "PowerSystemSnapshot",
+  "namespace": "dk.energinet.energidataservice",
+  "type": "record"
+}

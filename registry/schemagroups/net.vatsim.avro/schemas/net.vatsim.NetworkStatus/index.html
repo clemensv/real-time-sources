@@ -1,0 +1,43 @@
+{
+  "doc": "Aggregate VATSIM network status snapshot emitted once per poll cycle.",
+  "fields": [
+    {
+      "doc": "Constant key value 'status'.",
+      "name": "callsign",
+      "type": "string"
+    },
+    {
+      "doc": "UNS facility identifier for this aggregate VATSIM network status snapshot. The bridge emits 'network'.",
+      "name": "facility",
+      "type": "string"
+    },
+    {
+      "doc": "UTC timestamp of the VATSIM data snapshot.",
+      "name": "update_timestamp",
+      "type": "string"
+    },
+    {
+      "doc": "Total connected clients.",
+      "name": "connected_clients",
+      "type": "int"
+    },
+    {
+      "doc": "Unique connected user IDs.",
+      "name": "unique_users",
+      "type": "int"
+    },
+    {
+      "doc": "Number of pilots currently flying.",
+      "name": "pilot_count",
+      "type": "int"
+    },
+    {
+      "doc": "Number of controllers connected.",
+      "name": "controller_count",
+      "type": "int"
+    }
+  ],
+  "name": "NetworkStatus",
+  "namespace": "net.vatsim",
+  "type": "record"
+}

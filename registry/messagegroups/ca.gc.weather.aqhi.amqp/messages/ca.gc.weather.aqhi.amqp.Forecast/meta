@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/ca.gc.weather.aqhi.amqp/messages/ca.gc.weather.aqhi.amqp.Forecast/versions/1",
+  "epoch": 1,
+  "messageid": "ca.gc.weather.aqhi.amqp.Forecast",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/ca.gc.weather.aqhi.amqp/messages/ca.gc.weather.aqhi.amqp.Forecast/meta",
+  "xid": "/messagegroups/ca.gc.weather.aqhi.amqp/messages/ca.gc.weather.aqhi.amqp.Forecast/meta"
+}

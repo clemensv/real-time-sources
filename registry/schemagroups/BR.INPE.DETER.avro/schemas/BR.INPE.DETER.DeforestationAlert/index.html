@@ -1,0 +1,98 @@
+{
+  "description": "Payload for an official alert or bulletin from Brazil's National Institute for Space Research (INPE). It carries DETER deforestation alerts for the affected area and validity period published by the upstream source.",
+  "doc": "INPE DETER deforestation alert for Amazon and Cerrado biomes.",
+  "fields": [
+    {
+      "doc": "Stable reference ID from INPE (gid).",
+      "name": "alert_id",
+      "type": "string"
+    },
+    {
+      "doc": "Biome of the alert: amazon or cerrado.",
+      "name": "biome",
+      "type": "string"
+    },
+    {
+      "doc": "Deforestation class: DESMATAMENTO_CR, DEGRADACAO, MINERACAO, CS_DESORDENADO, etc.",
+      "name": "classname",
+      "type": "string"
+    },
+    {
+      "doc": "Observation date in YYYY-MM-DD format.",
+      "name": "view_date",
+      "type": "string"
+    },
+    {
+      "doc": "Satellite name (CBERS-4, Amazonia-1, etc.).",
+      "name": "satellite",
+      "type": "string"
+    },
+    {
+      "doc": "Sensor name (AWFI, WFI, MSI).",
+      "name": "sensor",
+      "type": "string"
+    },
+    {
+      "doc": "Area of the deforestation polygon in square kilometers.",
+      "name": "area_km2",
+      "type": "double"
+    },
+    {
+      "doc": "Municipality name.",
+      "name": "municipality",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Brazilian state code (UF), e.g. PA, MT, when provided by INPE; null when omitted. The topic-safe state_slug field is used for MQTT routing.",
+      "name": "state_code",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "default": "unknown",
+      "doc": "Lowercased Brazilian state code (UF), e.g. pa, mt, used as a topic-safe MQTT routing axis; unknown when INPE omits or publishes an unsupported UF.",
+      "name": "state_slug",
+      "type": "string"
+    },
+    {
+      "default": "unknown",
+      "doc": "Lowercase-kebab normalized DETER class used as a topic-safe MQTT routing axis; unknown when the class is omitted or outside the supported DETER vocabulary.",
+      "name": "class_slug",
+      "type": "string"
+    },
+    {
+      "doc": "Satellite path/row identifier.",
+      "name": "path_row",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Publication month in YYYY-MM-DD format.",
+      "name": "publish_month",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Latitude of the polygon centroid in decimal degrees.",
+      "name": "centroid_latitude",
+      "type": "double"
+    },
+    {
+      "doc": "Longitude of the polygon centroid in decimal degrees.",
+      "name": "centroid_longitude",
+      "type": "double"
+    }
+  ],
+  "name": "DeforestationAlert",
+  "namespace": "BR.INPE.DETER",
+  "type": "record"
+}

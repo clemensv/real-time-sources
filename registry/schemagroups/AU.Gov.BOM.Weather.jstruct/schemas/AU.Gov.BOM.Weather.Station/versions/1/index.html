@@ -1,0 +1,47 @@
+{
+  "$id": "https://bom.gov.au/schemas/AU/Gov/BOM/Weather/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference metadata for a BOM weather observation station identified by its WMO station number. Stations report half-hourly surface observations covering temperature, wind, pressure, rainfall, humidity, cloud, and visibility.",
+  "name": "Station",
+  "properties": {
+    "latitude": {
+      "description": "Geographic latitude of the station in decimal degrees (negative for Southern Hemisphere).",
+      "symbol": "°",
+      "type": "double",
+      "unit": "degree"
+    },
+    "longitude": {
+      "description": "Geographic longitude of the station in decimal degrees.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "degree"
+    },
+    "name": {
+      "description": "Human-readable station name as assigned by the Bureau of Meteorology, e.g. 'Sydney Airport' or 'Melbourne Airport'.",
+      "type": "string"
+    },
+    "product_id": {
+      "description": "BOM product code identifying the observation product this station belongs to, e.g. 'IDN60901' for NSW capital city observations.",
+      "type": "string"
+    },
+    "state": {
+      "description": "Australian state or territory the station is located in, as reported by BOM, e.g. 'New South Wales', 'Victoria'.",
+      "type": "string"
+    },
+    "station_wmo": {
+      "description": "WMO station number assigned by the World Meteorological Organization, used as the stable identity for this station across all BOM products.",
+      "type": "string"
+    },
+    "time_zone": {
+      "description": "Abbreviation of the local time zone for the station, e.g. 'EST' for Eastern Standard Time, 'CST' for Central Standard Time.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_wmo",
+    "name",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

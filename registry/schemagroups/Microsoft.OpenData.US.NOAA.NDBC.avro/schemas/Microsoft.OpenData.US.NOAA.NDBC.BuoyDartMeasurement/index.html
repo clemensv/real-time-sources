@@ -1,0 +1,27 @@
+{
+  "doc": "Realtime DART tsunameter measurement from the NDBC .dart product.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "name": "measurement_type_code",
+      "type": "int"
+    },
+    {
+      "name": "water_column_height",
+      "type": "double"
+    }
+  ],
+  "name": "BuoyDartMeasurement",
+  "namespace": "Microsoft.OpenData.US.NOAA.NDBC",
+  "type": "record"
+}

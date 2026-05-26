@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1.0",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.WaterQuality.Sites.jstruct/schemas/USGS.WaterQuality.Sites.MonitoringSite/versions/1.0",
+  "epoch": 1,
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "schemaid": "USGS.WaterQuality.Sites.MonitoringSite",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.WaterQuality.Sites.jstruct/schemas/USGS.WaterQuality.Sites.MonitoringSite/meta",
+  "xid": "/schemagroups/USGS.WaterQuality.Sites.jstruct/schemas/USGS.WaterQuality.Sites.MonitoringSite/meta"
+}

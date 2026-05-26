@@ -1,0 +1,170 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/schemas/io/sensor/community/SensorReading",
+  "$root": "/definitions/io/sensor/community/SensorReading",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "io": {
+      "sensor": {
+        "community": {
+          "SensorReading": {
+            "description": "Schema for the latest normalized Sensor.Community telemetry reading for a single sensor and timestamp, covering particulate matter, temperature, humidity, pressure, and supported noise measurements.",
+            "name": "SensorReading",
+            "properties": {
+              "humidity_percent": {
+                "altnames": [
+                  "humidity"
+                ],
+                "description": "Relative humidity in percent when the upstream feed publishes value type humidity.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "%"
+              },
+              "noise_la_max_db": {
+                "altnames": [
+                  "noise_LA_max"
+                ],
+                "description": "Maximum A-weighted sound level in decibels when the upstream feed publishes value type noise_LA_max.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "dB(A)"
+              },
+              "noise_la_min_db": {
+                "altnames": [
+                  "noise_LA_min"
+                ],
+                "description": "Minimum A-weighted sound level in decibels when the upstream feed publishes value type noise_LA_min.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "dB(A)"
+              },
+              "noise_laeq_db": {
+                "altnames": [
+                  "noise_LAeq"
+                ],
+                "description": "Equivalent continuous sound level in A-weighted decibels when the upstream feed publishes value type noise_LAeq.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "dB(A)"
+              },
+              "pm10_ug_m3": {
+                "altnames": [
+                  "P1"
+                ],
+                "description": "Particulate matter mass concentration for PM10 in micrograms per cubic meter when the upstream feed publishes value type P1.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "µg/m³"
+              },
+              "pm1_0_ug_m3": {
+                "altnames": [
+                  "P0"
+                ],
+                "description": "Particulate matter mass concentration for PM1.0 in micrograms per cubic meter when the upstream feed publishes value type P0, typically for SPS30-family sensors.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "µg/m³"
+              },
+              "pm2_5_ug_m3": {
+                "altnames": [
+                  "P2"
+                ],
+                "description": "Particulate matter mass concentration for PM2.5 in micrograms per cubic meter when the upstream feed publishes value type P2.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "µg/m³"
+              },
+              "pm4_0_ug_m3": {
+                "altnames": [
+                  "P4"
+                ],
+                "description": "Particulate matter mass concentration for PM4.0 in micrograms per cubic meter when the upstream feed publishes value type P4, typically for SPS30-family sensors.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "µg/m³"
+              },
+              "pressure_pa": {
+                "altnames": [
+                  "pressure"
+                ],
+                "description": "Atmospheric pressure in pascals when the upstream feed publishes value type pressure.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "Pa"
+              },
+              "pressure_sealevel_pa": {
+                "altnames": [
+                  "pressure_at_sealevel"
+                ],
+                "description": "Atmospheric pressure reduced to sea level in pascals when the upstream feed publishes value type pressure_at_sealevel.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "Pa"
+              },
+              "sensor_id": {
+                "description": "Stable integer identifier of the Sensor.Community sensor device. This value is used as the CloudEvents subject and Kafka key.",
+                "type": "integer"
+              },
+              "sensor_type_name": {
+                "description": "Upstream sensor hardware type name published under sensor.sensor_type.name for the device that emitted the reading.",
+                "type": "string"
+              },
+              "temperature_celsius": {
+                "altnames": [
+                  "temperature"
+                ],
+                "description": "Ambient temperature measurement in degrees Celsius when the upstream feed publishes value type temperature.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "°C"
+              },
+              "timestamp": {
+                "description": "UTC timestamp published by Sensor.Community for the reading in the format YYYY-MM-DD HH:mm:ss.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "sensor_id",
+              "timestamp",
+              "sensor_type_name",
+              "pm10_ug_m3",
+              "pm2_5_ug_m3",
+              "pm1_0_ug_m3",
+              "pm4_0_ug_m3",
+              "temperature_celsius",
+              "humidity_percent",
+              "pressure_pa",
+              "pressure_sealevel_pa",
+              "noise_laeq_db",
+              "noise_la_min_db",
+              "noise_la_max_db"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "SensorReading"
+}

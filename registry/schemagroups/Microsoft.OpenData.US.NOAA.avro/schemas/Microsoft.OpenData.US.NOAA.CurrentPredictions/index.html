@@ -1,0 +1,50 @@
+{
+  "altnames": {
+    "kql": "CurrentPredictions"
+  },
+  "fields": [
+    {
+      "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timestamp of the current prediction\"}",
+      "logicalType": "timestamp-millis",
+      "name": "timestamp",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Major axis velocity\"}",
+      "name": "velocity_major",
+      "type": "double",
+      "unit": "cm/s"
+    },
+    {
+      "doc": "{\"description\": \"Mean flood direction in degrees\"}",
+      "name": "mean_flood_dir",
+      "type": "double",
+      "unit": "degrees"
+    },
+    {
+      "doc": "{\"description\": \"Mean ebb direction in degrees\"}",
+      "name": "mean_ebb_dir",
+      "type": "double",
+      "unit": "degrees"
+    },
+    {
+      "doc": "{\"description\": \"Depth of measurement\"}",
+      "name": "depth",
+      "type": "double",
+      "unit": "meters"
+    },
+    {
+      "doc": "{\"description\": \"Bin number\"}",
+      "name": "bin",
+      "type": "string"
+    }
+  ],
+  "name": "CurrentPredictions",
+  "namespace": "Microsoft.OpenData.US.NOAA",
+  "type": "record"
+}

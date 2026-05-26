@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/ie.gov.opw.waterlevel.jstruct/schemas/ie.gov.opw.waterlevel.WaterLevelReading",
+  "description": "A current measurement from Ireland's Office of Public Works (OPW) for one monitoring site. It carries water level, temperature, and sensor voltage observations when the upstream feed reports a new or refreshed value.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{feedurl}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_ref}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "ie.gov.opw.waterlevel.WaterLevelReading"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "ie.gov.opw.waterlevel.WaterLevelReading",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.WaterLevelReading/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WaterLevelReading",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.WaterLevelReading",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.WaterLevelReading/versions",
+  "xid": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.WaterLevelReading"
+}

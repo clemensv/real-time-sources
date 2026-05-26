@@ -1,0 +1,101 @@
+{
+  "description": "A transport update from Entur public transport feeds. It carries transit realtime updates for Norwegian public-transport stops, lines, and journeys.",
+  "doc": "Reference data for a dated service journey in the Norwegian public transport network.",
+  "fields": [
+    {
+      "doc": "NeTEx ServiceJourney identifier from DatedVehicleJourneyRef. Example: RUT:ServiceJourney:1-1234.",
+      "name": "service_journey_id",
+      "type": "string"
+    },
+    {
+      "doc": "ISO 8601 date string for the operating day from DataFrameRef. Example: 2024-01-01.",
+      "name": "operating_day",
+      "type": "string"
+    },
+    {
+      "doc": "NeTEx Line reference. Example: RUT:Line:1.",
+      "name": "line_ref",
+      "type": "string"
+    },
+    {
+      "doc": "NeTEx Operator or codespace reference. Example: RUT.",
+      "name": "operator_ref",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Direction reference, e.g. Outbound or Inbound.",
+      "name": "direction_ref",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "SIRI VehicleMode: bus, tram, rail, ferry, metro, water, air, coach, taxi.",
+      "name": "vehicle_mode",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "NeTEx Route reference.",
+      "name": "route_ref",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Public-facing line number or name displayed to passengers.",
+      "name": "published_line_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "External line reference.",
+      "name": "external_line_ref",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Origin stop or place name for this journey.",
+      "name": "origin_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Destination stop or place name for this journey.",
+      "name": "destination_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Operator codespace originating this data record.",
+      "name": "data_source",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "DatedServiceJourney",
+  "namespace": "no.entur",
+  "type": "record"
+}

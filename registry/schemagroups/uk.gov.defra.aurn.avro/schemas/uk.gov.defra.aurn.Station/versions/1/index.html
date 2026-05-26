@@ -1,0 +1,33 @@
+{
+  "description": "Reference details for one station, monitoring site, or forecast area in the DEFRA AURN source.",
+  "doc": "Metadata for a Defra AURN monitoring station as returned by GET /stations.",
+  "fields": [
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the DEFRA AURN source.",
+      "doc": "Stable numeric monitoring station identifier from properties.id.",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Upstream station label from properties.label.",
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "WGS84 latitude in decimal degrees from geometry.coordinates[0].",
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "WGS84 longitude in decimal degrees from geometry.coordinates[1].",
+      "name": "longitude",
+      "type": "double"
+    }
+  ],
+  "name": "Station",
+  "namespace": "uk.gov.defra.aurn",
+  "type": "record"
+}

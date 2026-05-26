@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "AMQP 1.0 producer endpoint for singapore-nea CloudEvents.",
+  "endpointid": "SG.Gov.NEA.Environment.Amqp",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "mode": "binary"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/SG.Gov.NEA.Weather.amqp",
+    "/messagegroups/SG.Gov.NEA.AirQuality.amqp"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/SG.Gov.NEA.Environment.Amqp/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "deployed": false,
+    "distribution-mode": "move",
+    "durable": false,
+    "endpoints": [
+      {
+        "uri": "amqps://localhost:5671/singapore-nea"
+      }
+    ]
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/SG.Gov.NEA.Environment.Amqp",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/SG.Gov.NEA.Environment.Amqp"
+}

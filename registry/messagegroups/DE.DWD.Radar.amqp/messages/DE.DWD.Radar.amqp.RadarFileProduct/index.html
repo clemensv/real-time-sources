@@ -1,0 +1,46 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarFileProduct",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://opendata.dwd.de/weather/radar"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{product_type}/{file_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "DE.DWD.Radar.RadarFileProduct"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "DE.DWD.Radar.amqp.RadarFileProduct",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.DWD.Radar.amqp/messages/DE.DWD.Radar.amqp.RadarFileProduct/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "RadarFileProduct",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {},
+    "properties": {
+      "subject": {
+        "description": "AMQP subject matching the CloudEvents subject for this transport variant.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{product_type}/{file_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.DWD.Radar.amqp/messages/DE.DWD.Radar.amqp.RadarFileProduct",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.DWD.Radar.amqp/messages/DE.DWD.Radar.amqp.RadarFileProduct/versions",
+  "xid": "/messagegroups/DE.DWD.Radar.amqp/messages/DE.DWD.Radar.amqp.RadarFileProduct"
+}

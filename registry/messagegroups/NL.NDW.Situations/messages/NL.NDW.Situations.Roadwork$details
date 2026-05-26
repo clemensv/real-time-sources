@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.Situations.Roadwork",
+  "description": "Road construction or maintenance work event from the Dutch NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on the Dutch national road network.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://opendata.ndw.nu/planningsfeed_wegwerkzaamheden_en_evenementen.xml.gz"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "situations/{situation_record_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "NL.NDW.Situations.Roadwork"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "NL.NDW.Situations.Roadwork",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Roadwork",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork/versions",
+  "xid": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork"
+}

@@ -1,0 +1,38 @@
+{
+  "AU.Gov.Emergency.Wildfires.FireIncident": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/AU.Gov.Emergency.Wildfires.jstruct/schemas/AU.Gov.Emergency.Wildfires.FireIncident",
+    "description": "An incident update from Australian emergency-services incident feeds. It reports the current status, location, and classification for a wildfire or emergency incident.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://github.com/clemensv/real-time-sources/tree/main/australia-wildfires"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{state}/{incident_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "AU.Gov.Emergency.Wildfires.FireIncident"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "AU.Gov.Emergency.Wildfires.FireIncident",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.Emergency.Wildfires/messages/AU.Gov.Emergency.Wildfires.FireIncident/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "FireIncident",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.Emergency.Wildfires/messages/AU.Gov.Emergency.Wildfires.FireIncident",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.Emergency.Wildfires/messages/AU.Gov.Emergency.Wildfires.FireIncident/versions",
+    "xid": "/messagegroups/AU.Gov.Emergency.Wildfires/messages/AU.Gov.Emergency.Wildfires.FireIncident"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/nextbus/messages/nextbus.Schedule",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "nextbus.Schedule.amqp",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Schedule",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Partition key mirrors the CloudEvents subject.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP subject mirrors the CloudEvents subject.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nextbus.amqp/messages/nextbus.Schedule.amqp/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/nextbus.amqp/messages/nextbus.Schedule.amqp/versions/1"
+  }
+}

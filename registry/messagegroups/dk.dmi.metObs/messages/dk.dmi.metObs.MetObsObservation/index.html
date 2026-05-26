@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.metObs.MetObsObservation",
+  "description": "A single meteorological observation value reported by a station for one parameter at a specific observed time. Cadence depends on parameter (10-minute or hourly).",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{feedurl}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}/{parameter_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "dk.dmi.metObs.MetObsObservation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "dk.dmi.metObs.MetObsObservation",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Observation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation/versions",
+  "xid": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation"
+}

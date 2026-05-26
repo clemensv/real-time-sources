@@ -1,0 +1,110 @@
+{
+  "no.entur.DatedServiceJourney": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/no.entur.jstruct/schemas/no.entur.DatedServiceJourney",
+    "description": "Reference data for a dated service journey in the Norwegian public transport network. A DatedServiceJourney is a specific vehicle journey operating on a particular operating day, identified by its NeTEx ServiceJourney reference and operating day. This reference event is emitted at bridge startup from the SIRI-ET feed and refreshed periodically to provide downstream consumers with the timetable context for subsequent telemetry events.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://api.entur.io/realtime/v1/rest/et"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "journeys/{operating_day}/{service_journey_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "no.entur.DatedServiceJourney"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "no.entur.DatedServiceJourney",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.journeys/messages/no.entur.DatedServiceJourney/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "DatedServiceJourney",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.journeys/messages/no.entur.DatedServiceJourney",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.journeys/messages/no.entur.DatedServiceJourney/versions",
+    "xid": "/messagegroups/no.entur.journeys/messages/no.entur.DatedServiceJourney"
+  },
+  "no.entur.EstimatedVehicleJourney": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/no.entur.jstruct/schemas/no.entur.EstimatedVehicleJourney",
+    "description": "Real-time estimated timetable update for a vehicle journey from the Entur SIRI-ET feed (GET /realtime/v1/rest/et). Contains updated arrival and departure times for each stop along the journey, cancellation flags, and extra journey markers. Uses incremental requestorId polling to receive only changed journeys since the last poll.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://api.entur.io/realtime/v1/rest/et"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "journeys/{operating_day}/{service_journey_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "no.entur.EstimatedVehicleJourney"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "no.entur.EstimatedVehicleJourney",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "EstimatedVehicleJourney",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney/versions",
+    "xid": "/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney"
+  },
+  "no.entur.MonitoredVehicleJourney": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/no.entur.jstruct/schemas/no.entur.MonitoredVehicleJourney",
+    "description": "Real-time vehicle monitoring update from the Entur SIRI-VM feed (GET /realtime/v1/rest/vm). Contains the current geographic position of a vehicle, its bearing, delay, occupancy status, and the next monitored call. Uses incremental requestorId polling for efficient change delivery.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://api.entur.io/realtime/v1/rest/vm"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "journeys/{operating_day}/{service_journey_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "no.entur.MonitoredVehicleJourney"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "no.entur.MonitoredVehicleJourney",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "MonitoredVehicleJourney",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney/versions",
+    "xid": "/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney"
+  }
+}

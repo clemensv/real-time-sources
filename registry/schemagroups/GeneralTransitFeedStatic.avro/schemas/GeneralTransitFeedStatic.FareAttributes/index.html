@@ -1,0 +1,55 @@
+{
+  "doc": "Defines fare attributes.",
+  "fields": [
+    {
+      "doc": "Identifies a fare class.",
+      "name": "fareId",
+      "type": "string"
+    },
+    {
+      "doc": "Fare price, in the unit specified by currency_type.",
+      "name": "price",
+      "type": "double"
+    },
+    {
+      "doc": "Currency type used to pay the fare.",
+      "name": "currencyType",
+      "type": "string"
+    },
+    {
+      "doc": "When 0, fare must be paid on board. When 1, fare must be paid before boarding.",
+      "name": "paymentMethod",
+      "type": "int"
+    },
+    {
+      "default": null,
+      "doc": "Specifies the number of transfers permitted on this fare.",
+      "name": "transfers",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Identifies the agency for the specified fare.",
+      "name": "agencyId",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Length of time in seconds before a transfer expires.",
+      "name": "transferDuration",
+      "type": [
+        "null",
+        "long"
+      ]
+    }
+  ],
+  "name": "FareAttributes",
+  "namespace": "GeneralTransitFeedStatic",
+  "type": "record"
+}

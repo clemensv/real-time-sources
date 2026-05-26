@@ -1,0 +1,29 @@
+{
+  "description": "A current transport measurement or status update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates when the upstream feed reports a new or refreshed value.",
+  "doc": "Traffic flow reading.",
+  "fields": [
+    {
+      "name": "flow_data_id",
+      "type": "string"
+    },
+    {
+      "name": "station_name",
+      "type": "string"
+    },
+    {
+      "name": "region",
+      "type": "string"
+    },
+    {
+      "name": "flow_reading",
+      "type": "string"
+    },
+    {
+      "name": "reading_time",
+      "type": "string"
+    }
+  ],
+  "name": "TrafficFlowReading",
+  "namespace": "us.wa.wsdot.traffic",
+  "type": "record"
+}

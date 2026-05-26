@@ -1,0 +1,120 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/Stops",
+  "$root": "/definitions/GeneralTransitFeedStatic/Stops",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "LocationType": {
+        "description": "Location type. Symbols: STOP - Stop or platform; STATION - Physical structure or area that contains one or more platforms; ENTRANCE_EXIT - Location where passengers can enter or exit a station; GENERIC_NODE - Location within a station used to link pathways; BOARDING_AREA - Specific location on a platform where passengers can board and/or alight vehicles.",
+        "enum": [
+          "STOP",
+          "STATION",
+          "ENTRANCE_EXIT",
+          "GENERIC_NODE",
+          "BOARDING_AREA"
+        ],
+        "name": "LocationType",
+        "type": "string"
+      },
+      "Stops": {
+        "description": "Identifies locations such as stop/platform, station, entrance/exit, generic node or boarding area.",
+        "name": "Stops",
+        "properties": {
+          "levelId": {
+            "default": null,
+            "description": "Level of the location.",
+            "type": "string"
+          },
+          "locationType": {
+            "description": "Location type.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/LocationType"
+            }
+          },
+          "parentStation": {
+            "default": null,
+            "description": "Defines hierarchy between the different locations.",
+            "type": "string"
+          },
+          "platformCode": {
+            "default": null,
+            "description": "Platform identifier for a platform stop.",
+            "type": "string"
+          },
+          "stopCode": {
+            "default": null,
+            "description": "Short text or a number that identifies the location for riders.",
+            "type": "string"
+          },
+          "stopDesc": {
+            "default": null,
+            "description": "Description of the location that provides useful, quality information.",
+            "type": "string"
+          },
+          "stopId": {
+            "description": "Identifies a location: stop/platform, station, entrance/exit, generic node or boarding area.",
+            "type": "string"
+          },
+          "stopLat": {
+            "default": null,
+            "description": "Latitude of the location.",
+            "type": "double"
+          },
+          "stopLon": {
+            "default": null,
+            "description": "Longitude of the location.",
+            "type": "double"
+          },
+          "stopName": {
+            "default": null,
+            "description": "Name of the location.",
+            "type": "string"
+          },
+          "stopTimezone": {
+            "default": null,
+            "description": "Timezone of the location.",
+            "type": "string"
+          },
+          "stopUrl": {
+            "default": null,
+            "description": "URL of a web page about the location.",
+            "type": "string"
+          },
+          "ttsStopName": {
+            "default": null,
+            "description": "Readable version of the stop_name.",
+            "type": "string"
+          },
+          "wheelchairBoarding": {
+            "description": "Indicates whether wheelchair boardings are possible from the location.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/WheelchairBoarding"
+            }
+          },
+          "zoneId": {
+            "default": null,
+            "description": "Identifies the fare zone for a stop.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "stopId",
+          "locationType",
+          "wheelchairBoarding"
+        ],
+        "type": "object"
+      },
+      "WheelchairBoarding": {
+        "description": "Indicates whether wheelchair boardings are possible from the location. Symbols: NO_INFO - No accessibility information; SOME_VEHICLES - Some vehicles at this stop can be boarded by a rider in a wheelchair; NOT_POSSIBLE - Wheelchair boarding is not possible at this stop.",
+        "enum": [
+          "NO_INFO",
+          "SOME_VEHICLES",
+          "NOT_POSSIBLE"
+        ],
+        "name": "WheelchairBoarding",
+        "type": "string"
+      }
+    }
+  },
+  "name": "Stops"
+}

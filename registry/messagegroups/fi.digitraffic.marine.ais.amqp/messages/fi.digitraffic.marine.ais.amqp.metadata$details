@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselMetadata",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "AMQP transport projection of metadata using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "fi.digitraffic.marine.ais.amqp.metadata",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.marine.ais.amqp/messages/fi.digitraffic.marine.ais.amqp.metadata/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "metadata",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Partition key aligned with CloudEvent subject and Kafka key.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject — stable entity identifier matching CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.marine.ais.amqp/messages/fi.digitraffic.marine.ais.amqp.metadata",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.marine.ais.amqp/messages/fi.digitraffic.marine.ais.amqp.metadata/versions",
+  "xid": "/messagegroups/fi.digitraffic.marine.ais.amqp/messages/fi.digitraffic.marine.ais.amqp.metadata"
+}

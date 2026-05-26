@@ -1,0 +1,35 @@
+{
+  "$id": "https://opendata.dwd.de/schemas/DE/DWD/Pollenflug/Region",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events.",
+  "name": "Region",
+  "properties": {
+    "partregion_id": {
+      "description": "Numeric identifier of the sub-region within the parent region. Set to -1 by DWD when the region has no sub-divisions; the bridge emits null in that case. Sourced from the 'partregion_id' field in the DWD API response.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "partregion_name": {
+      "description": "Name of the sub-region (e.g. 'Inseln und Marschen', 'Geest,Schleswig-Holstein und Hamburg'). Empty string in the DWD response when the region has no sub-divisions; the bridge emits null in that case. Sourced from the 'partregion_name' field in the DWD API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "region_id": {
+      "description": "Unique numeric identifier for the forecast area. For regions without sub-regions this is the main region_id (e.g. 20 for Mecklenburg-Vorpommern). For sub-regions it is the partregion_id (e.g. 11 for 'Inseln und Marschen' within Schleswig-Holstein). Derived from the DWD JSON fields region_id and partregion_id.",
+      "type": "string"
+    },
+    "region_name": {
+      "description": "Name of the main geographic region as published by DWD (e.g. 'Schleswig-Holstein und Hamburg', 'Bayern'). Sourced from the 'region_name' field in the DWD API response.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "region_id",
+    "region_name"
+  ],
+  "type": "object"
+}

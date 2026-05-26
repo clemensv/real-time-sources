@@ -1,0 +1,54 @@
+{
+  "description": "Payload record for gate opening events in the USGS Instantaneous Values source.",
+  "doc": "USGS gate opening data. Parameter code 45592.",
+  "fields": [
+    {
+      "doc": "{\"description\": \"USGS site number.\"}",
+      "name": "site_no",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}",
+      "name": "datetime",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Gate opening value.\"}",
+      "name": "value",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "feet"
+    },
+    {
+      "doc": "{\"description\": \"Exception code when the value is unavailable.\"}",
+      "name": "exception",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "{\"description\": \"Qualifiers for the measurement.\"}",
+      "name": "qualifiers",
+      "type": {
+        "items": "string",
+        "type": "array"
+      }
+    },
+    {
+      "doc": "{\"description\": \"Parameter code.\"}",
+      "name": "parameter_cd",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timeseries code.\"}",
+      "name": "timeseries_cd",
+      "type": "string"
+    }
+  ],
+  "name": "GateOpening",
+  "namespace": "USGS.InstantaneousValues",
+  "type": "record"
+}

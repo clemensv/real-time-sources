@@ -1,0 +1,112 @@
+{
+  "$id": "https://bipadportal.gov.np/schemas/np/gov/bipad/hydrology/RiverStation",
+  "$root": "/definitions/np/gov/bipad/hydrology/RiverStation",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "np": {
+      "gov": {
+        "bipad": {
+          "hydrology": {
+            "RiverStation": {
+              "description": "Reference data for a BIPAD river monitoring station in Nepal, including location, river basin, administrative boundaries, and configured danger/warning thresholds.",
+              "name": "RiverStation",
+              "properties": {
+                "basin": {
+                  "description": "Name of the river basin the station belongs to (e.g. 'Bagmati', 'Narayani', 'Koshi', 'Karnali', 'Mahakali', 'Babai').",
+                  "type": "string"
+                },
+                "danger_level": {
+                  "description": "Configured danger water level threshold in meters for the station. Water levels above this indicate a danger condition. Null when not configured.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                },
+                "data_source": {
+                  "description": "Origin system providing the station data, typically 'hydrology.gov.np' for Nepal Department of Hydrology and Meteorology stations.",
+                  "type": "string"
+                },
+                "description": {
+                  "description": "Free-text description of the station, may include historical notes, relocation history, or elevation corrections. Null when not provided.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "district": {
+                  "description": "Nepal district administrative code for the station location. Null when not assigned.",
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "elevation": {
+                  "description": "Elevation of the station in meters above sea level, as reported by the BIPAD portal. Null when not available.",
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "latitude": {
+                  "description": "Latitude coordinate of the station in WGS84 decimal degrees, extracted from the GeoJSON point geometry.",
+                  "type": "double"
+                },
+                "longitude": {
+                  "description": "Longitude coordinate of the station in WGS84 decimal degrees, extracted from the GeoJSON point geometry.",
+                  "type": "double"
+                },
+                "municipality": {
+                  "description": "Nepal municipality or rural municipality administrative code for the station location. Null when not assigned.",
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "province": {
+                  "description": "Nepal province administrative code for the station location. Null when not assigned.",
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "station_id": {
+                  "description": "Unique integer identifier of the river station assigned by the BIPAD portal, transmitted as a string for key compatibility.",
+                  "type": "string"
+                },
+                "title": {
+                  "description": "Human-readable name of the river station, typically in the format 'River at Location' (e.g. 'Babai at Chepang').",
+                  "type": "string"
+                },
+                "ward": {
+                  "description": "Nepal ward-level administrative code for the station location. Null when not assigned.",
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "warning_level": {
+                  "description": "Configured warning water level threshold in meters for the station. Water levels above this indicate a warning condition. Null when not configured.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "station_id",
+                "title",
+                "basin",
+                "latitude",
+                "longitude",
+                "data_source"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "description": "Reference details for one monitoring station or site in the Nepal BIPAD River Monitoring source.",
+  "name": "RiverStation"
+}

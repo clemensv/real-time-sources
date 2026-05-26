@@ -1,0 +1,49 @@
+{
+  "$id": "https://example.com/schemas/USGS/InstantaneousValues/EquipmentStatus",
+  "$root": "/definitions/USGS/InstantaneousValues/EquipmentStatus",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "USGS": {
+      "InstantaneousValues": {
+        "EquipmentStatus": {
+          "description": "USGS equipment alarm status data. Parameter code 99235.",
+          "name": "EquipmentStatus",
+          "properties": {
+            "datetime": {
+              "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}",
+              "type": "string"
+            },
+            "parameter_cd": {
+              "description": "{\"description\": \"Parameter code.\"}",
+              "type": "string"
+            },
+            "site_no": {
+              "description": "{\"description\": \"USGS site number.\"}",
+              "type": "string"
+            },
+            "status": {
+              "description": "{\"description\": \"Status of equipment alarm as codes.\"}",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "timeseries_cd": {
+              "description": "{\"description\": \"Timeseries code.\"}",
+              "type": "string"
+            }
+          },
+          "required": [
+            "site_no",
+            "datetime",
+            "parameter_cd",
+            "timeseries_cd"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "description": "Payload record for equipment status events in the USGS Instantaneous Values source.",
+  "name": "EquipmentStatus"
+}

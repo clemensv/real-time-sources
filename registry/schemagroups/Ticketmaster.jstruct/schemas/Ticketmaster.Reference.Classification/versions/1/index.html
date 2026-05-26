@@ -1,0 +1,66 @@
+{
+  "$id": "https://raw.githubusercontent.com/clemensv/real-time-sources/main/ticketmaster/xreg/schemas/Ticketmaster.Reference.Classification",
+  "$root": "/definitions/Ticketmaster/Reference/Classification",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Ticketmaster": {
+      "Reference": {
+        "Classification": {
+          "description": "Reference data for a Ticketmaster classification segment, which represents the top level of the event classification hierarchy (Music, Sports, Arts \u0026 Theatre, Film, Miscellaneous, etc.). Emitted at bridge startup from the Discovery API v2 /classifications endpoint.",
+          "name": "Classification",
+          "properties": {
+            "entity_id": {
+              "description": "Stable Ticketmaster segment identifier (e.g. 'KZFzniwnSyZfZ7v7nJ'). Used as both the Kafka message key and the CloudEvents subject. Matches segment_id in Event and Attraction records.",
+              "type": "string"
+            },
+            "name": {
+              "description": "Human-readable name of the classification segment (e.g. 'Music', 'Sports', 'Arts \u0026 Theatre', 'Film', 'Miscellaneous').",
+              "type": "string"
+            },
+            "primary_genre_id": {
+              "description": "Stable identifier for the primary or most prominent genre within this segment. Provided when the API returns a primary_genre sub-object.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "primary_genre_name": {
+              "description": "Human-readable name of the primary genre (e.g. 'Rock', 'Pop', 'Basketball').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "primary_subgenre_id": {
+              "description": "Stable identifier for the primary subgenre under the primary genre.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "primary_subgenre_name": {
+              "description": "Human-readable name of the primary subgenre.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "description": "Ticketmaster resource type discriminator for this classification entry. Usually 'segment'.",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "entity_id",
+            "name"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "Classification"
+}

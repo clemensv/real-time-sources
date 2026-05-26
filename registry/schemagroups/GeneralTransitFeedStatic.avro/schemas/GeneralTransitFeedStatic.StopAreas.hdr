@@ -1,0 +1,17 @@
+content-disposition:GeneralTransitFeedStatic.StopAreas
+content-length:433
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.StopAreas/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2024-10-18T13:49:27.526738Z
+xregistry-epoch:1
+xregistry-format:Avro
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.StopAreas/meta
+xregistry-modifiedat:2024-10-18T13:49:27.526738Z
+xregistry-schemaid:GeneralTransitFeedStatic.StopAreas
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.StopAreas
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.StopAreas/versions
+xregistry-xid:/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.StopAreas

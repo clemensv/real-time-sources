@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for Entur Norway CloudEvents on the `entur-norway` topic keyed by `situations/{situation_number}`.",
+  "endpointid": "no.entur.situations.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/no.entur.situations"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/no.entur.situations.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "situations/{situation_number}",
+      "topic": "entur-norway"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/no.entur.situations.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/no.entur.situations.Kafka"
+}

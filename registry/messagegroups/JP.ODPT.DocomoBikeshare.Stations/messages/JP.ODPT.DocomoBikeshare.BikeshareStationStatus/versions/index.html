@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/JP.ODPT.DocomoBikeshare.jstruct/schemas/JP.ODPT.DocomoBikeshare.BikeshareStationStatus",
+    "description": "A reference record from Docomo Bike Share open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{system_id}/{station_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "JP.ODPT.DocomoBikeshare.BikeshareStationStatus"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "JP.ODPT.DocomoBikeshare.BikeshareStationStatus",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "BikeshareStationStatus",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStationStatus/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/JP.ODPT.DocomoBikeshare.Stations/messages/JP.ODPT.DocomoBikeshare.BikeshareStationStatus/versions/1"
+  }
+}

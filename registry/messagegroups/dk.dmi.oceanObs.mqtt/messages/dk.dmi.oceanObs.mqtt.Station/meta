@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs.mqtt/messages/dk.dmi.oceanObs.mqtt.Station/versions/1",
+  "epoch": 1,
+  "messageid": "dk.dmi.oceanObs.mqtt.Station",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs.mqtt/messages/dk.dmi.oceanObs.mqtt.Station/meta",
+  "xid": "/messagegroups/dk.dmi.oceanObs.mqtt/messages/dk.dmi.oceanObs.mqtt.Station/meta"
+}

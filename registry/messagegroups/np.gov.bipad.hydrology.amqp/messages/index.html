@@ -1,0 +1,88 @@
+{
+  "np.gov.bipad.hydrology.amqp.RiverStation": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.RiverStation",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "np.gov.bipad.hydrology.amqp.RiverStation",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/np.gov.bipad.hydrology.amqp/messages/np.gov.bipad.hydrology.amqp.RiverStation/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "RiverStation",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "basin": {
+          "description": "Routing property for AMQP subscription filters (basin).",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{basin}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/np.gov.bipad.hydrology.amqp/messages/np.gov.bipad.hydrology.amqp.RiverStation",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/np.gov.bipad.hydrology.amqp/messages/np.gov.bipad.hydrology.amqp.RiverStation/versions",
+    "xid": "/messagegroups/np.gov.bipad.hydrology.amqp/messages/np.gov.bipad.hydrology.amqp.RiverStation"
+  },
+  "np.gov.bipad.hydrology.amqp.WaterLevelReading": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.WaterLevelReading",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "np.gov.bipad.hydrology.amqp.WaterLevelReading",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/np.gov.bipad.hydrology.amqp/messages/np.gov.bipad.hydrology.amqp.WaterLevelReading/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WaterLevelReading",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "basin": {
+          "description": "Routing property for AMQP subscription filters (basin).",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{basin}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/np.gov.bipad.hydrology.amqp/messages/np.gov.bipad.hydrology.amqp.WaterLevelReading",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/np.gov.bipad.hydrology.amqp/messages/np.gov.bipad.hydrology.amqp.WaterLevelReading/versions",
+    "xid": "/messagegroups/np.gov.bipad.hydrology.amqp/messages/np.gov.bipad.hydrology.amqp.WaterLevelReading"
+  }
+}

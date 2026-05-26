@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/at.geosphere.tawes.jstruct/schemas/at.geosphere.tawes.WeatherStation",
+  "description": "Reference data for a GeoSphere Austria TAWES automatic weather station, including location, elevation, and federal state.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min/metadata"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "at.geosphere.tawes.WeatherStation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "at.geosphere.tawes.WeatherStation",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WeatherStation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation/versions",
+  "xid": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation"
+}

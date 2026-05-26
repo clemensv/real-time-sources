@@ -1,0 +1,268 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/cvrestrictions/CommercialVehicleRestriction",
+  "$root": "/definitions/us/wa/wsdot/cvrestrictions/CommercialVehicleRestriction",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "us": {
+      "wa": {
+        "wsdot": {
+          "cvrestrictions": {
+            "CommercialVehicleRestriction": {
+              "description": "A commercial vehicle restriction on a Washington State highway bridge or road segment. Restrictions limit vehicle weight, height, length, or width.",
+              "name": "CommercialVehicleRestriction",
+              "properties": {
+                "bridge_name": {
+                  "altnames": {
+                    "json": "BridgeName"
+                  },
+                  "description": "Bridge or structure name.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "bridge_number": {
+                  "altnames": {
+                    "json": "BridgeNumber"
+                  },
+                  "description": "Bridge or structure number, second part of composite key.",
+                  "type": "string"
+                },
+                "date_effective": {
+                  "altnames": {
+                    "json": "DateEffective"
+                  },
+                  "description": "ISO 8601 UTC date effective.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "date_expires": {
+                  "altnames": {
+                    "json": "DateExpires"
+                  },
+                  "description": "ISO 8601 UTC date expires.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "date_posted": {
+                  "altnames": {
+                    "json": "DatePosted"
+                  },
+                  "description": "ISO 8601 UTC date posted.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "is_detour_available": {
+                  "altnames": {
+                    "json": "IsDetourAvailable"
+                  },
+                  "description": "True if detour exists.",
+                  "type": "boolean"
+                },
+                "is_exceptions_allowed": {
+                  "altnames": {
+                    "json": "IsExceptionsAllowed"
+                  },
+                  "description": "True if permits available.",
+                  "type": "boolean"
+                },
+                "is_permanent_restriction": {
+                  "altnames": {
+                    "json": "IsPermanentRestriction"
+                  },
+                  "description": "True if permanent.",
+                  "type": "boolean"
+                },
+                "is_warning": {
+                  "altnames": {
+                    "json": "IsWarning"
+                  },
+                  "description": "True if warning only.",
+                  "type": "boolean"
+                },
+                "latitude": {
+                  "altnames": {
+                    "json": "Latitude"
+                  },
+                  "description": "Latitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "location_description": {
+                  "altnames": {
+                    "json": "LocationDescription"
+                  },
+                  "description": "Detailed location description.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "location_name": {
+                  "altnames": {
+                    "json": "LocationName"
+                  },
+                  "description": "Location relative to landmarks.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "longitude": {
+                  "altnames": {
+                    "json": "Longitude"
+                  },
+                  "description": "Longitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "maximum_gross_vehicle_weight_in_pounds": {
+                  "altnames": {
+                    "json": "MaximumGrossVehicleWeightInPounds"
+                  },
+                  "description": "GVW limit in pounds.",
+                  "symbol": "lbs",
+                  "type": [
+                    "int32",
+                    "null"
+                  ],
+                  "unit": "lb"
+                },
+                "restriction_comment": {
+                  "altnames": {
+                    "json": "RestrictionComment"
+                  },
+                  "description": "Additional details.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "restriction_height_in_inches": {
+                  "altnames": {
+                    "json": "RestrictionHeightInInches"
+                  },
+                  "description": "Height limit in inches.",
+                  "symbol": "in",
+                  "type": [
+                    "int32",
+                    "null"
+                  ],
+                  "unit": "in"
+                },
+                "restriction_length_in_inches": {
+                  "altnames": {
+                    "json": "RestrictionLengthInInches"
+                  },
+                  "description": "Length limit in inches.",
+                  "symbol": "in",
+                  "type": [
+                    "int32",
+                    "null"
+                  ],
+                  "unit": "in"
+                },
+                "restriction_type": {
+                  "altnames": {
+                    "json": "RestrictionType"
+                  },
+                  "description": "Type: BridgeRestriction, RoadRestriction.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "restriction_weight_in_pounds": {
+                  "altnames": {
+                    "json": "RestrictionWeightInPounds"
+                  },
+                  "description": "Axle weight limit in pounds.",
+                  "symbol": "lbs",
+                  "type": [
+                    "int32",
+                    "null"
+                  ],
+                  "unit": "lb"
+                },
+                "restriction_width_in_inches": {
+                  "altnames": {
+                    "json": "RestrictionWidthInInches"
+                  },
+                  "description": "Width limit in inches.",
+                  "symbol": "in",
+                  "type": [
+                    "int32",
+                    "null"
+                  ],
+                  "unit": "in"
+                },
+                "state": {
+                  "altnames": {
+                    "json": "State"
+                  },
+                  "description": "State abbreviation, typically WA.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "state_route_id": {
+                  "altnames": {
+                    "json": "StateRouteID"
+                  },
+                  "description": "State route identifier, first part of composite key.",
+                  "type": "string"
+                },
+                "vehicle_type": {
+                  "altnames": {
+                    "json": "VehicleType"
+                  },
+                  "description": "Affected vehicle type.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "state_route_id",
+                "bridge_number",
+                "bridge_name",
+                "location_name",
+                "location_description",
+                "latitude",
+                "longitude",
+                "state",
+                "restriction_type",
+                "vehicle_type",
+                "restriction_weight_in_pounds",
+                "maximum_gross_vehicle_weight_in_pounds",
+                "restriction_height_in_inches",
+                "restriction_width_in_inches",
+                "restriction_length_in_inches",
+                "is_permanent_restriction",
+                "is_warning",
+                "is_detour_available",
+                "is_exceptions_allowed",
+                "restriction_comment",
+                "date_posted",
+                "date_effective",
+                "date_expires"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "CommercialVehicleRestriction"
+}

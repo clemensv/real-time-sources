@@ -1,0 +1,51 @@
+{
+  "$id": "https://example.com/schemas/NO/NVE/Hydrology/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference details for one monitoring station or site in the NVE Hydrology source.",
+  "name": "Station",
+  "properties": {
+    "council_name": {
+      "description": "Human-readable name of the council.",
+      "type": "string"
+    },
+    "county_name": {
+      "description": "Human-readable name of the county.",
+      "type": "string"
+    },
+    "drainage_basin_area": {
+      "description": "Provider-supplied drainage basin area value for this record.",
+      "type": "double"
+    },
+    "latitude": {
+      "description": "Latitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "longitude": {
+      "description": "Longitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "masl": {
+      "description": "Provider-supplied masl value for this record.",
+      "type": "double"
+    },
+    "river_name": {
+      "description": "Name of the river or watercourse observed at the station.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Human-readable name of the monitoring station.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

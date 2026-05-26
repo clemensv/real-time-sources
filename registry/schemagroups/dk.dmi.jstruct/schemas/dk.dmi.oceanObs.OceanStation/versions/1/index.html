@@ -1,0 +1,140 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/dmi/schemas/dk/dmi/oceanObs/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "An oceanographic observation station (typically a tide gauge). Owners include DMI and Kystdirektoratet (Danish Coastal Authority). See https://opendatadocs.dmi.govcloud.dk/en/Data/Oceanographic_Observation_Data.",
+  "name": "OceanStation",
+  "properties": {
+    "country": {
+      "altenums": {
+        "lang:en": {
+          "DNK": "Denmark",
+          "FRO": "Faroe Islands",
+          "GRL": "Greenland"
+        }
+      },
+      "description": "ISO 3166-1 alpha-3 country code (DNK, GRL, FRO).",
+      "enum": [
+        "DNK",
+        "GRL",
+        "FRO"
+      ],
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created": {
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "latitude": {
+      "description": "Station latitude (decimal degrees, WGS84).",
+      "maximum": 90,
+      "minimum": -90,
+      "type": "double",
+      "unit": "deg"
+    },
+    "longitude": {
+      "description": "Station longitude (decimal degrees, WGS84).",
+      "maximum": 180,
+      "minimum": -180,
+      "type": "double",
+      "unit": "deg"
+    },
+    "name": {
+      "description": "Human-readable station name.",
+      "type": "string"
+    },
+    "operation_from": {
+      "altnames": {
+        "json": "operationFrom"
+      },
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "operation_to": {
+      "altnames": {
+        "json": "operationTo"
+      },
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "owner": {
+      "description": "Operating agency (e.g. 'DMI', 'Kystdirektoratet').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parameter_id": {
+      "altnames": {
+        "json": "parameterId"
+      },
+      "description": "Parameter IDs supported by this station (subset of {sealev_dvr, sealev_ln, sea_reg, tw}).",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "station_id": {
+      "altnames": {
+        "json": "stationId"
+      },
+      "description": "Stable DMI ocean station identifier.",
+      "type": "string"
+    },
+    "status": {
+      "description": "Operational status.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "type": {
+      "description": "Station type (e.g. 'Tide-gauge-primary').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "updated": {
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "valid_from": {
+      "altnames": {
+        "json": "validFrom"
+      },
+      "description": "Metadata-validity start.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "valid_to": {
+      "altnames": {
+        "json": "validTo"
+      },
+      "description": "Metadata-validity end.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "station_id",
+    "name",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

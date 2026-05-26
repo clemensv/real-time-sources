@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/CZ.Gov.CHMI.Hydro.jstruct/schemas/CZ.Gov.CHMI.Hydro.Station",
+  "description": "A reference record for one Czech hydrological monitoring station published by the Czech Hydrometeorological Institute (ČHMÚ). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://opendata.chmi.cz"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "CZ.Gov.CHMI.Hydro.Station"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "CZ.Gov.CHMI.Hydro.Station",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Station",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.Station/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.Station/versions/1"
+}

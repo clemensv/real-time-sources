@@ -1,0 +1,107 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/schemas/NO/Kystverket/AIS/ShipStatic",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.",
+  "name": "ShipStatic",
+  "properties": {
+    "ais_msg_type": {
+      "description": "Original ITU-R M.1371 message ID (5 or 24).",
+      "type": "int32"
+    },
+    "callsign": {
+      "description": "Radio call sign as broadcast (max 7 chars).",
+      "type": "string"
+    },
+    "destination": {
+      "description": "Voyage destination string (max 20 chars). Empty for Type 24.",
+      "type": "string"
+    },
+    "dim_to_bow": {
+      "description": "Distance from reference point to bow in metres.",
+      "type": "int32"
+    },
+    "dim_to_port": {
+      "description": "Distance from reference point to port side in metres.",
+      "type": "int32"
+    },
+    "dim_to_starboard": {
+      "description": "Distance from reference point to starboard side in metres.",
+      "type": "int32"
+    },
+    "dim_to_stern": {
+      "description": "Distance from reference point to stern in metres.",
+      "type": "int32"
+    },
+    "draught": {
+      "description": "Maximum present static draught in metres. 0.0 if absent.",
+      "type": "double"
+    },
+    "eta": {
+      "description": "Voyage ETA as ISO-8601 string. Empty if absent (Type 24).",
+      "type": "string"
+    },
+    "flag": {
+      "description": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country.",
+      "pattern": "^[a-z]{2}$|^xx$",
+      "type": "string"
+    },
+    "geohash5": {
+      "description": "5-character geohash of the reported (latitude, longitude). Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position, filled from the most recently observed position for the MMSI, falling back to '00000'.",
+      "pattern": "^[0-9b-hjkmnp-z]{5}$",
+      "type": "string"
+    },
+    "imo_number": {
+      "description": "IMO number (7-digit). 0 if not assigned or for Class-B.",
+      "type": "int32"
+    },
+    "mmsi": {
+      "description": "Source MMSI as a 9-digit ASCII string (padded with leading zeros). Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject.",
+      "pattern": "^[0-9]{9}$",
+      "type": "string"
+    },
+    "msg_type": {
+      "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.",
+      "descriptions": {
+        "aid-to-navigation": "Provider coded value `aid-to-navigation` for this field.",
+        "position-report": "Provider coded value `position-report` for this field.",
+        "static": "Provider coded value `static` for this field."
+      },
+      "enum": [
+        "position-report",
+        "static",
+        "aid-to-navigation"
+      ],
+      "type": "string"
+    },
+    "ship_name": {
+      "description": "Vessel name as broadcast (max 20 chars, trimmed).",
+      "type": "string"
+    },
+    "ship_type": {
+      "description": "Kebab-case ship-type bucket derived from the ITU-R M.1371 ShipType code. For static reports it is derived from the broadcast Type-5/24 ShipType field; for position reports it is looked up from an in-process ship-type cache keyed by MMSI. 'unknown' if no static report has been observed yet.",
+      "type": "string"
+    },
+    "ship_type_code": {
+      "description": "Raw ITU-R M.1371 ship type code (0..99).",
+      "type": "int32"
+    },
+    "station_id": {
+      "description": "Kystverket base-station identifier.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "ISO-8601 receive time as supplied by the upstream NMEA tag.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "mmsi",
+    "flag",
+    "ship_type",
+    "geohash5",
+    "msg_type",
+    "ship_type_code",
+    "ais_msg_type"
+  ],
+  "type": "object"
+}

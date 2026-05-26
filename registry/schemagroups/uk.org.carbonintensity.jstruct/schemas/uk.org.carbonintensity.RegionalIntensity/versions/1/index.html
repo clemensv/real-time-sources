@@ -1,0 +1,141 @@
+{
+  "$id": "uk.org.carbonintensity.RegionalIntensity",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Half-hourly carbon intensity and generation mix for one of the 17 GB Distribution Network Operator (DNO) regions, published by National Grid ESO. Each record covers a specific DNO region identified by its numeric region ID.",
+  "name": "RegionalIntensity",
+  "properties": {
+    "biomass_pct": {
+      "description": "Percentage of electricity generated from biomass in this region during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "ce_id": {
+      "description": "Deterministic CloudEvents id for subscriber deduplication, composed from settlement period, DNO region_id, and regional-intensity leaf.",
+      "type": "string"
+    },
+    "coal_pct": {
+      "description": "Percentage of electricity generated from coal in this region during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "dnoregion": {
+      "description": "Full name of the Distribution Network Operator region (e.g. 'Scottish Hydro Electric Power Distribution').",
+      "type": "string"
+    },
+    "forecast": {
+      "description": "Forecast carbon intensity for this region and settlement period in grams of CO2 per kilowatt-hour (gCO2/kWh).",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "gCO2/kWh"
+    },
+    "gas_pct": {
+      "description": "Percentage of electricity generated from natural gas in this region during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "hydro_pct": {
+      "description": "Percentage of electricity generated from hydroelectric power in this region during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "imports_pct": {
+      "description": "Percentage of electricity supplied via interconnector imports in this region during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "index": {
+      "description": "Qualitative index band for the regional carbon intensity: one of 'very low', 'low', 'moderate', 'high', or 'very high'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "nuclear_pct": {
+      "description": "Percentage of electricity generated from nuclear power in this region during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "oil_pct": {
+      "description": "Percentage of electricity generated from oil in this region during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "other_pct": {
+      "description": "Percentage of electricity generated from other or unclassified fuel sources in this region during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "period_from": {
+      "description": "ISO 8601 UTC timestamp marking the start of the half-hour settlement period.",
+      "type": "datetime"
+    },
+    "period_to": {
+      "description": "ISO 8601 UTC timestamp marking the end of the half-hour settlement period.",
+      "type": "datetime"
+    },
+    "region": {
+      "description": "Stable topic-safe MQTT/UNS region segment from the version-pinned DNO region_id lookup table, for example north-scotland for region_id 1. Falls back to region-{region_id} if an unknown future id appears.",
+      "type": "string"
+    },
+    "region_id": {
+      "description": "Numeric identifier for the DNO region as assigned by the Carbon Intensity API (1-17).",
+      "type": "int32"
+    },
+    "shortname": {
+      "description": "Short display name for the DNO region (e.g. 'North Scotland').",
+      "type": "string"
+    },
+    "solar_pct": {
+      "description": "Percentage of electricity generated from solar photovoltaic installations in this region during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "wind_pct": {
+      "description": "Percentage of electricity generated from wind turbines in this region during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    }
+  },
+  "required": [
+    "ce_id",
+    "region_id",
+    "dnoregion",
+    "shortname",
+    "region",
+    "period_from",
+    "period_to"
+  ],
+  "type": "object"
+}

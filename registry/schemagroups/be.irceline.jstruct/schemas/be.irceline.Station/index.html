@@ -1,0 +1,49 @@
+{
+  "$id": "https://geo.irceline.be/schemas/be/irceline/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "additionalProperties": false,
+  "description": "A reference record published by Belgium's IRCELINE interregional environment agency. It lets consumers label, group, and route the live measurement or forecast events.",
+  "name": "Station",
+  "properties": {
+    "label": {
+      "altnames": {
+        "irceline": "properties.label"
+      },
+      "description": "Human-readable station label from station.properties.label, typically formatted as '{station code} - {municipality}' such as '40AL02 - Beveren'. This is the display name published by IRCELINE for the monitoring site.",
+      "type": "string"
+    },
+    "latitude": {
+      "altnames": {
+        "irceline": "geometry.coordinates[1]"
+      },
+      "description": "Station latitude in decimal degrees north, derived from the second element of station.geometry.coordinates in the upstream GeoJSON Point geometry. The upstream array follows GeoJSON order [longitude, latitude, elevation].",
+      "symbol": "°",
+      "type": "double",
+      "unit": "deg"
+    },
+    "longitude": {
+      "altnames": {
+        "irceline": "geometry.coordinates[0]"
+      },
+      "description": "Station longitude in decimal degrees east, derived from the first element of station.geometry.coordinates in the upstream GeoJSON Point geometry. The third element is the literal string 'NaN' in live payloads and is ignored.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "deg"
+    },
+    "station_id": {
+      "altnames": {
+        "irceline": "properties.id"
+      },
+      "description": "Stable numeric station identifier from station.properties.id in the IRCELINE stations GeoJSON feed. The bridge converts the upstream integer identifier to a string because this value is also used as the CloudEvents subject and Kafka key.",
+      "pattern": "^[0-9]+$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "label",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,82 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/schemas/Mode_S/Record",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "description": "Single Mode-S record published on the MQTT firehose. Carries the topic axes (icao24, receiver_id, msg_type) and the decoded record fields.",
+  "name": "Record",
+  "namespace": "Mode_S",
+  "properties": {
+    "alt": {
+      "description": "Barometric altitude (ft).",
+      "type": "int32"
+    },
+    "ang": {
+      "description": "Heading angle (deg).",
+      "type": "float"
+    },
+    "bcode": {
+      "description": "BDS code (Comm-B only).",
+      "type": "string"
+    },
+    "cs": {
+      "description": "Aircraft callsign.",
+      "type": "string"
+    },
+    "df": {
+      "description": "Downlink Format value.",
+      "type": "int32"
+    },
+    "icao24": {
+      "description": "ICAO 24-bit address (lowercase hex).",
+      "type": "string"
+    },
+    "lat": {
+      "description": "Latitude (deg).",
+      "type": "double"
+    },
+    "lon": {
+      "description": "Longitude (deg).",
+      "type": "double"
+    },
+    "msg_type": {
+      "description": "Kebab-case Mode-S downlink-format family literal (df17-adsb, df4-altitude, df5-identity, df11-acquisition, df20-comm-b, df21-comm-b).",
+      "type": "string"
+    },
+    "receiver_id": {
+      "description": "Stable identifier of the receiver/station that decoded this message.",
+      "type": "string"
+    },
+    "rssi": {
+      "description": "RSSI (dBFS).",
+      "type": "float"
+    },
+    "spd": {
+      "description": "Speed (kn).",
+      "type": "float"
+    },
+    "sq": {
+      "description": "Squawk code.",
+      "type": "string"
+    },
+    "tc": {
+      "description": "Type Code (ADS-B only).",
+      "type": "int32"
+    },
+    "ts": {
+      "description": "Reception timestamp (epoch millis).",
+      "logicalType": "timestampMillis",
+      "type": "int64"
+    },
+    "vr": {
+      "description": "Vertical rate (ft/min).",
+      "type": "int32"
+    }
+  },
+  "required": [
+    "icao24",
+    "receiver_id",
+    "msg_type",
+    "ts",
+    "df"
+  ],
+  "type": "object"
+}

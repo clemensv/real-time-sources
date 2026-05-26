@@ -1,0 +1,16 @@
+content-disposition:us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/us.wa.wsdot.cvrestrictions.avro/schemas/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:Avro/1.11.3
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/us.wa.wsdot.cvrestrictions.avro/schemas/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/us.wa.wsdot.cvrestrictions.avro/schemas/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/us.wa.wsdot.cvrestrictions.avro/schemas/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction/versions
+xregistry-xid:/schemagroups/us.wa.wsdot.cvrestrictions.avro/schemas/us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction

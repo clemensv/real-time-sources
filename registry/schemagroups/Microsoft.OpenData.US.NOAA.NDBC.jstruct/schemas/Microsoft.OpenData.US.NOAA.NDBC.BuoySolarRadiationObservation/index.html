@@ -1,0 +1,52 @@
+{
+  "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoySolarRadiationObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Hourly solar radiation observation from the NDBC .srad realtime2 product. The file reports LI-COR shortwave radiation, Eppley shortwave radiation, and downwelling longwave radiation when those sensors are installed on a station.",
+  "name": "BuoySolarRadiationObservation",
+  "properties": {
+    "longwave_radiation": {
+      "description": "Average downwelling longwave radiation over the preceding hour from an Eppley PIR Precision Infrared Radiometer when the LWRAD column is present. Unit: watts per square meter.",
+      "symbol": "W/m2",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "W/m2"
+    },
+    "region": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.",
+      "type": "string"
+    },
+    "shortwave_radiation_eppley": {
+      "description": "Average shortwave radiation over the preceding hour from an Eppley PSP Precision Spectral Pyranometer when the SWRAD column is present. Unit: watts per square meter.",
+      "symbol": "W/m2",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "W/m2"
+    },
+    "shortwave_radiation_licor": {
+      "description": "Average shortwave radiation over the preceding hour from a LI-COR LI-200 pyranometer when the SRAD1 column is present. Unit: watts per square meter.",
+      "symbol": "W/m2",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "W/m2"
+    },
+    "station_id": {
+      "description": "NDBC station identifier. The .srad realtime2 file is published per station and keyed by this identifier.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .srad realtime2 file.",
+      "type": "datetime"
+    }
+  },
+  "required": [
+    "station_id",
+    "timestamp"
+  ],
+  "type": "object"
+}

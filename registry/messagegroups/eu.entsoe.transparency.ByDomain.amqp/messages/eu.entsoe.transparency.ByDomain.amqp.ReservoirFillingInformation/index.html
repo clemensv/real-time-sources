@@ -1,0 +1,75 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ReservoirFillingInformation",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.ReservoirFillingInformation",
+  "description": "AMQP 1.0 binary CloudEvents variant for ReservoirFillingInformation, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "datacontenttype": {
+      "required": false,
+      "type": "string",
+      "value": "application/json"
+    },
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://transparency.entsoe.eu/api"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{inDomain}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "eu.entsoe.transparency.ReservoirFillingInformation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "ReservoirFillingInformation",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "event-type": {
+        "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix.",
+        "required": false,
+        "type": "string",
+        "value": "ReservoirFillingInformation"
+      },
+      "in-domain": {
+        "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{inDomain}"
+      }
+    },
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Azure Service Bus / Event Hubs partition key; broker-specific annotation that mirrors the CloudEvent subject and Kafka key to preserve per-identity ordering.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{inDomain}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{inDomain}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation/versions",
+  "xid": "/messagegroups/eu.entsoe.transparency.ByDomain.amqp/messages/eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation"
+}

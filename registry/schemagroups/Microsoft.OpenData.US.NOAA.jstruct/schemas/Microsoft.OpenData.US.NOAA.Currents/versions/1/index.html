@@ -1,0 +1,53 @@
+{
+  "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/Currents",
+  "$root": "/definitions/Microsoft/OpenData/US/NOAA/Currents",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Microsoft": {
+      "OpenData": {
+        "US": {
+          "NOAA": {
+            "Currents": {
+              "name": "Currents",
+              "properties": {
+                "bin": {
+                  "description": "{\"description\": \"Bin number\"}",
+                  "type": "string"
+                },
+                "direction_degrees": {
+                  "description": "{\"description\": \"Current direction in degrees\"}",
+                  "type": "double"
+                },
+                "region": {
+                  "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa.",
+                  "type": "string"
+                },
+                "speed": {
+                  "description": "{\"description\": \"Current speed\"}",
+                  "type": "double"
+                },
+                "station_id": {
+                  "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+                  "type": "string"
+                },
+                "timestamp": {
+                  "description": "{\"description\": \"Timestamp of the currents measurement\"}",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "station_id",
+                "timestamp",
+                "speed",
+                "direction_degrees",
+                "bin"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "Currents"
+}

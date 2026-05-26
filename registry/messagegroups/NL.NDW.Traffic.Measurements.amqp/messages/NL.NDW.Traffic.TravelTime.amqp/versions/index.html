@@ -1,0 +1,34 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/NL.NDW.Traffic.Measurements/messages/NL.NDW.Traffic.TravelTime",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "NL.NDW.Traffic.TravelTime.amqp",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "TravelTime",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Partition key mirrors the CloudEvents subject.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{site_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP subject mirrors the CloudEvents subject.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{site_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Traffic.Measurements.amqp/messages/NL.NDW.Traffic.TravelTime.amqp/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/NL.NDW.Traffic.Measurements.amqp/messages/NL.NDW.Traffic.TravelTime.amqp/versions/1"
+  }
+}

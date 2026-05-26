@@ -1,0 +1,38 @@
+{
+  "uk.gov.tfl.road.RoadDisruption": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/uk.gov.tfl.road.jstruct/schemas/uk.gov.tfl.road.RoadDisruption",
+    "description": "Real-time road disruption event on the TfL road network fetched from GET /Road/all/Disruption.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://api.tfl.gov.uk/Road/all/Disruption"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "disruptions/{road_id}/{severity}/{disruption_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "uk.gov.tfl.road.RoadDisruption"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "uk.gov.tfl.road.RoadDisruption",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "RoadDisruption",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption/versions",
+    "xid": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption"
+  }
+}

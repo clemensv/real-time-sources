@@ -1,0 +1,79 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/Pathways",
+  "$root": "/definitions/GeneralTransitFeedStatic/Pathways",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "Pathways": {
+        "description": "Defines pathways.",
+        "name": "Pathways",
+        "properties": {
+          "fromStopId": {
+            "description": "Identifies a stop or station where the pathway begins.",
+            "type": "string"
+          },
+          "isBidirectional": {
+            "description": "When 1, the pathway can be used in both directions. When 0, the pathway can only be used from (from_stop_id) to (to_stop_id).",
+            "type": "int32"
+          },
+          "length": {
+            "default": null,
+            "description": "Length of the pathway, in meters.",
+            "type": "double"
+          },
+          "maxSlope": {
+            "default": null,
+            "description": "Maximum slope of the pathway, in percent.",
+            "type": "double"
+          },
+          "minWidth": {
+            "default": null,
+            "description": "Minimum width of the pathway, in meters.",
+            "type": "double"
+          },
+          "pathwayId": {
+            "description": "Identifies a pathway.",
+            "type": "string"
+          },
+          "pathwayMode": {
+            "description": "Type of pathway between the specified (from_stop_id, to_stop_id) pair.",
+            "type": "int32"
+          },
+          "reversedSignpostedAs": {
+            "default": null,
+            "description": "Reversed signposting information for the pathway.",
+            "type": "string"
+          },
+          "signpostedAs": {
+            "default": null,
+            "description": "Signposting information for the pathway.",
+            "type": "string"
+          },
+          "stairCount": {
+            "default": null,
+            "description": "Number of stairs of the pathway.",
+            "type": "int32"
+          },
+          "toStopId": {
+            "description": "Identifies a stop or station where the pathway ends.",
+            "type": "string"
+          },
+          "traversalTime": {
+            "default": null,
+            "description": "Average time, in seconds, needed to walk through the pathway.",
+            "type": "int32"
+          }
+        },
+        "required": [
+          "pathwayId",
+          "fromStopId",
+          "toStopId",
+          "pathwayMode",
+          "isBidirectional"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "Pathways"
+}

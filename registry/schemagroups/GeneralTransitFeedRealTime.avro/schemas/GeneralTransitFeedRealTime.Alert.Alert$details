@@ -1,0 +1,16 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2024-10-18T13:48:05.926645Z",
+  "epoch": 1,
+  "format": "Avro",
+  "isdefault": true,
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Alert.Alert/meta",
+  "modifiedat": "2024-10-18T13:48:05.926645Z",
+  "schemaid": "GeneralTransitFeedRealTime.Alert.Alert",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Alert.Alert",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Alert.Alert/versions",
+  "xid": "/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Alert.Alert"
+}

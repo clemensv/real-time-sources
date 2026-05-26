@@ -1,0 +1,251 @@
+{
+  "$id": "https://bom.gov.au/schemas/AU/Gov/BOM/Weather/WeatherObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Half-hourly surface weather observation from a BOM automatic weather station. Each record contains temperature, wind, pressure, humidity, rainfall, cloud, and visibility measurements as reported in the station's 72-hour observation product.",
+  "name": "WeatherObservation",
+  "properties": {
+    "air_temp": {
+      "description": "Air temperature measured at the station.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "apparent_temp": {
+      "description": "Apparent (feels-like) temperature combining air temperature, humidity, and wind chill effects.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "cloud": {
+      "description": "Textual cloud cover description, e.g. 'Partly cloudy', 'Clear', 'Overcast'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cloud_base_m": {
+      "description": "Height of the lowest cloud base above ground level.",
+      "symbol": "m",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "cloud_oktas": {
+      "description": "Cloud cover in oktas (eighths of sky covered), ranging from 0 (clear) to 8 (overcast).",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "cloud_type": {
+      "description": "Cloud type classification as reported by the station, e.g. 'Cu', 'Cb', 'St'. May be '-' when not reported.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "delta_t": {
+      "description": "Wet bulb depression (difference between dry and wet bulb temperatures), used for bushfire danger calculations.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "dewpt": {
+      "description": "Dew point temperature at the station.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "gust_kmh": {
+      "description": "Maximum wind gust speed recorded in the observation period in kilometres per hour.",
+      "symbol": "km/h",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "km/h"
+    },
+    "gust_kt": {
+      "description": "Maximum wind gust speed recorded in the observation period in knots.",
+      "symbol": "kt",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "knot"
+    },
+    "latitude": {
+      "description": "Latitude of the station at observation time.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "degree"
+    },
+    "local_time": {
+      "description": "Local date and time string as provided by BOM in 'local_date_time_full' format (YYYYMMDDHHmmss).",
+      "type": "string"
+    },
+    "longitude": {
+      "description": "Longitude of the station at observation time.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "degree"
+    },
+    "observation_time_utc": {
+      "description": "Timestamp of the observation in UTC, derived from the BOM 'aifstime_utc' field in YYYYMMDDHHmmss format.",
+      "type": "datetime"
+    },
+    "press": {
+      "description": "Atmospheric pressure at station level.",
+      "symbol": "hPa",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "hPa"
+    },
+    "press_msl": {
+      "description": "Mean sea level pressure — station pressure reduced to sea level, used for synoptic weather analysis.",
+      "symbol": "hPa",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "hPa"
+    },
+    "press_qnh": {
+      "description": "QNH pressure — atmospheric pressure adjusted to mean sea level using the International Standard Atmosphere, used in aviation altimetry.",
+      "symbol": "hPa",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "hPa"
+    },
+    "press_tend": {
+      "description": "Pressure tendency description indicating whether pressure is rising, falling, or steady over the past 3 hours. May be a numeric code or textual description.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rain_trace": {
+      "description": "Rainfall since 9am local time as reported by BOM. Value is a string that may be '0.0', a numeric amount in mm, or 'Trace' for very small amounts.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rel_hum": {
+      "description": "Relative humidity as a percentage.",
+      "symbol": "%",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "percent"
+    },
+    "sea_state": {
+      "description": "Sea state description for coastal stations, e.g. 'Smooth', 'Slight', 'Moderate'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "state": {
+      "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Human-readable name of the reporting station.",
+      "type": "string"
+    },
+    "station_wmo": {
+      "description": "WMO station number identifying the reporting station.",
+      "type": "string"
+    },
+    "swell_dir_worded": {
+      "description": "Dominant swell direction as a compass bearing word for coastal stations.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "swell_height": {
+      "description": "Dominant swell height for coastal stations.",
+      "symbol": "m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "swell_period": {
+      "description": "Dominant swell period for coastal stations.",
+      "symbol": "s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "s"
+    },
+    "vis_km": {
+      "description": "Horizontal visibility in kilometres. Reported as a string as BOM may include qualifiers.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "weather": {
+      "description": "Present weather description, e.g. 'Rain', 'Fog', 'Thunderstorm'. May be '-' when no significant weather.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "wind_dir": {
+      "description": "Compass direction the wind is blowing from, e.g. 'N', 'NNE', 'SSW', 'CALM'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "wind_spd_kmh": {
+      "description": "Sustained wind speed in kilometres per hour.",
+      "symbol": "km/h",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "km/h"
+    },
+    "wind_spd_kt": {
+      "description": "Sustained wind speed in knots (nautical miles per hour).",
+      "symbol": "kt",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "knot"
+    }
+  },
+  "required": [
+    "station_wmo",
+    "station_name",
+    "observation_time_utc"
+  ],
+  "type": "object"
+}

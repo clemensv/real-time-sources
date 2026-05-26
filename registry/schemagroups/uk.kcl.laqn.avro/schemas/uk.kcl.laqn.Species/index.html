@@ -1,0 +1,39 @@
+{
+  "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+  "doc": "Reference description of a LAQN pollutant species, including explanatory text and health impact guidance.",
+  "fields": [
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "Stable LAQN pollutant code, such as NO2, PM10, PM25, O3, SO2, or CO.",
+      "name": "species_code",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "Human-readable pollutant name published by LAQN for the pollutant code.",
+      "name": "species_name",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "LAQN explanatory description of the pollutant and how it is formed or encountered.",
+      "name": "description",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "LAQN health effect guidance describing the health impacts associated with exposure to the pollutant.",
+      "name": "health_effect",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "HTTP URL to the LAQN or LondonAir guidance page with more detailed information about the pollutant.",
+      "name": "link",
+      "type": "string"
+    }
+  ],
+  "name": "Species",
+  "namespace": "uk.kcl.laqn",
+  "type": "record"
+}

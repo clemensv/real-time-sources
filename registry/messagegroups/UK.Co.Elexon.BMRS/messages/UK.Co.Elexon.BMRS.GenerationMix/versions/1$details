@@ -1,0 +1,32 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/UK.Co.Elexon.BMRS.jstruct/schemas/UK.Co.Elexon.BMRS.GenerationMix",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://data.elexon.co.uk/bmrs"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{settlement_period}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "UK.Co.Elexon.BMRS.GenerationMix"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "UK.Co.Elexon.BMRS.GenerationMix",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "GenerationMix",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.GenerationMix/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.GenerationMix/versions/1"
+}

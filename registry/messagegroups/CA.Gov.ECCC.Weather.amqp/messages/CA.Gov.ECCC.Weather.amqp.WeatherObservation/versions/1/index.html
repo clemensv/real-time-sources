@@ -1,0 +1,50 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.WeatherObservation",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api.weather.gc.ca"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{msc_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "CA.Gov.ECCC.Weather.WeatherObservation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "CA.Gov.ECCC.Weather.amqp.WeatherObservation",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WeatherObservation",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "province": {
+        "description": "Routing value for province.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{province}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP subject matching the CloudEvents subject for this transport variant.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{msc_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CA.Gov.ECCC.Weather.amqp/messages/CA.Gov.ECCC.Weather.amqp.WeatherObservation/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/CA.Gov.ECCC.Weather.amqp/messages/CA.Gov.ECCC.Weather.amqp.WeatherObservation/versions/1"
+}

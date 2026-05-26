@@ -1,0 +1,41 @@
+{
+  "altnames": {
+    "kql": "DayAheadPrices"
+  },
+  "fields": [
+    {
+      "doc": "EIC code of the bidding zone",
+      "name": "inDomain",
+      "type": "string"
+    },
+    {
+      "doc": "Day-ahead price",
+      "name": "price",
+      "type": "double",
+      "unit": "EUR/MWh"
+    },
+    {
+      "doc": "Currency code (EUR)",
+      "name": "currency",
+      "type": "string"
+    },
+    {
+      "doc": "Price unit (MWH)",
+      "name": "unitName",
+      "type": "string"
+    },
+    {
+      "doc": "ISO 8601 duration",
+      "name": "resolution",
+      "type": "string"
+    },
+    {
+      "doc": "ENTSO-E document type code (A44)",
+      "name": "documentType",
+      "type": "string"
+    }
+  ],
+  "name": "DayAheadPrices",
+  "namespace": "eu.entsoe.transparency",
+  "type": "record"
+}

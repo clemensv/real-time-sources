@@ -1,0 +1,41 @@
+{
+  "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/SolarWindSummary",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Latest solar wind conditions summary from the DSCOVR satellite at the L1 Lagrange point (~1.5 million km sunward of Earth), combining proton bulk speed from the summary/solar-wind-speed endpoint and interplanetary magnetic field from the summary/solar-wind-mag-field endpoint. Provides a single snapshot of current conditions, updated approximately every minute.",
+  "name": "SolarWindSummary",
+  "properties": {
+    "bt": {
+      "description": "Interplanetary magnetic field total magnitude (Bt) measured by the DSCOVR magnetometer at L1. Quiet-time values are typically 3-6 nT; values above 20 nT indicate strong solar wind driving.",
+      "symbol": "nT",
+      "type": "double",
+      "unit": "nT"
+    },
+    "bz": {
+      "description": "Interplanetary magnetic field north-south component in Geocentric Solar Magnetospheric (GSM) coordinates (Bz GSM). Sustained negative (southward) Bz is the primary driver of geomagnetic storms via magnetic reconnection at Earth's magnetopause.",
+      "symbol": "nT",
+      "type": "double",
+      "unit": "nT"
+    },
+    "observation_time": {
+      "altnames": [
+        "time_tag",
+        "TimeStamp"
+      ],
+      "description": "UTC date-time of the solar wind measurement from DSCOVR, in ISO 8601 format.",
+      "type": "string"
+    },
+    "wind_speed": {
+      "description": "Solar wind proton bulk speed measured by DSCOVR at L1. Typical slow-wind values are 300-400 km/s; fast streams and CME passages can reach 500-1000+ km/s.",
+      "symbol": "km/s",
+      "type": "double",
+      "unit": "km/s"
+    }
+  },
+  "required": [
+    "observation_time",
+    "wind_speed",
+    "bt",
+    "bz"
+  ],
+  "type": "object"
+}

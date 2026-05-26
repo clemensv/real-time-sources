@@ -1,0 +1,13 @@
+content-disposition:org.ligo.gracedb.Superevent
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/org.ligo.gracedb.jstruct/schemas/org.ligo.gracedb.Superevent/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:org.ligo.gracedb.Superevent
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/org.ligo.gracedb.jstruct/schemas/org.ligo.gracedb.Superevent/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/org.ligo.gracedb.jstruct/schemas/org.ligo.gracedb.Superevent/versions/1

@@ -1,0 +1,83 @@
+{
+  "eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/eu.entsoe.transparency.CrossBorder/messages/eu.entsoe.transparency.CrossBorderPhysicalFlows",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.CrossBorderPhysicalFlows",
+    "description": "AMQP 1.0 binary CloudEvents variant for CrossBorderPhysicalFlows, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}/{outDomain}.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "datacontenttype": {
+        "required": false,
+        "type": "string",
+        "value": "application/json"
+      },
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://transparency.entsoe.eu/api"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{inDomain}/{outDomain}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "eu.entsoe.transparency.CrossBorderPhysicalFlows"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/eu.entsoe.transparency.CrossBorder.amqp/messages/eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "CrossBorderPhysicalFlows",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "event-type": {
+          "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix.",
+          "required": false,
+          "type": "string",
+          "value": "CrossBorderPhysicalFlows"
+        },
+        "in-domain": {
+          "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{inDomain}"
+        },
+        "out-domain": {
+          "description": "ENTSO-E routing axis `outDomain` copied from the payload for AMQP broker filters without decoding JSON.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{outDomain}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Azure Service Bus / Event Hubs partition key; broker-specific annotation that mirrors the CloudEvent subject and Kafka key to preserve per-identity ordering.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{inDomain}/{outDomain}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{inDomain}/{outDomain}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/eu.entsoe.transparency.CrossBorder.amqp/messages/eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/eu.entsoe.transparency.CrossBorder.amqp/messages/eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows/versions",
+    "xid": "/messagegroups/eu.entsoe.transparency.CrossBorder.amqp/messages/eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows"
+  }
+}

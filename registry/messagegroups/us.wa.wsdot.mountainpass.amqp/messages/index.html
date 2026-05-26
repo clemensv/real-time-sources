@@ -1,0 +1,37 @@
+{
+  "us.wa.wsdot.mountainpass.MountainPassCondition.amqp": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/us.wa.wsdot.mountainpass/messages/us.wa.wsdot.mountainpass.MountainPassCondition",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "us.wa.wsdot.mountainpass.MountainPassCondition.amqp",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.mountainpass.amqp/messages/us.wa.wsdot.mountainpass.MountainPassCondition.amqp/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "MountainPassCondition",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Partition key mirrors the CloudEvents subject.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{mountain_pass_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP subject mirrors the CloudEvents subject.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{mountain_pass_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.mountainpass.amqp/messages/us.wa.wsdot.mountainpass.MountainPassCondition.amqp",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.mountainpass.amqp/messages/us.wa.wsdot.mountainpass.MountainPassCondition.amqp/versions",
+    "xid": "/messagegroups/us.wa.wsdot.mountainpass.amqp/messages/us.wa.wsdot.mountainpass.MountainPassCondition.amqp"
+  }
+}

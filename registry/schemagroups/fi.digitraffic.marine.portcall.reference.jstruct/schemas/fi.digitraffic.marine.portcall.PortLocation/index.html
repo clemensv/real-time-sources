@@ -1,0 +1,120 @@
+{
+  "$id": "https://meri.digitraffic.fi/schemas/fi/digitraffic/marine/portcall/PortLocation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "name": "PortLocation",
+  "properties": {
+    "berths": {
+      "description": "Berth catalog entries associated with this location from the berths collection.",
+      "items": {
+        "description": "A transport update from Fintraffic Digitraffic. It carries maritime traffic and fairway updates for Finnish maritime fairways and vessels.",
+        "name": "Berth",
+        "properties": {
+          "berth_code": {
+            "description": "Berth code within the port area.",
+            "type": "string"
+          },
+          "berth_name": {
+            "description": "Human-readable berth name.",
+            "type": "string"
+          },
+          "port_area_code": {
+            "description": "Code of the port area that contains this berth.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "port_area_code",
+          "berth_code",
+          "berth_name"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "country": {
+      "description": "Country name reported for the location in the ssnLocations feature properties.",
+      "type": "string"
+    },
+    "data_updated_time": {
+      "description": "Timestamp when the ports snapshot used for this location was last updated in Digitraffic.",
+      "type": "datetime"
+    },
+    "latitude": {
+      "description": "Latitude of the port location point in decimal degrees north when the upstream feature includes geometry.",
+      "symbol": "deg",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "location_name": {
+      "description": "Human-readable port or location name from the ssnLocations feature properties.",
+      "type": "string"
+    },
+    "locode": {
+      "description": "UN/LOCODE identifying the port location. This value is used as the CloudEvents subject and Kafka record key for port-location reference events.",
+      "type": "string"
+    },
+    "longitude": {
+      "description": "Longitude of the port location point in decimal degrees east when the upstream feature includes geometry.",
+      "symbol": "deg",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "port_areas": {
+      "description": "Port areas associated with this location from the portAreas feature collection.",
+      "items": {
+        "description": "A transport update from Fintraffic Digitraffic. It carries maritime traffic and fairway updates for Finnish maritime fairways and vessels.",
+        "name": "PortArea",
+        "properties": {
+          "latitude": {
+            "description": "Latitude of the port-area point in decimal degrees north when the upstream feature includes geometry.",
+            "symbol": "deg",
+            "type": [
+              "double",
+              "null"
+            ],
+            "unit": "deg"
+          },
+          "longitude": {
+            "description": "Longitude of the port-area point in decimal degrees east when the upstream feature includes geometry.",
+            "symbol": "deg",
+            "type": [
+              "double",
+              "null"
+            ],
+            "unit": "deg"
+          },
+          "port_area_code": {
+            "description": "Port-area code identifying one sub-area of the port location.",
+            "type": "string"
+          },
+          "port_area_name": {
+            "description": "Human-readable name of the port area.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "port_area_code",
+          "port_area_name"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "locode",
+    "data_updated_time",
+    "location_name",
+    "country",
+    "port_areas",
+    "berths"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,38 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/Blitzortung.Lightning.jstruct/schemas/Blitzortung.Lightning.LightningStroke",
+  "description": "Live lightning-stroke event from the public LightningMaps / Blitzortung websocket feed. Each event represents one source-scoped stroke identifier with its observation time, coordinates, upstream delay and accuracy values, and optionally the detector participation flags carried in the public sta object.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "wss://live.lightningmaps.org/"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{source_id}/{stroke_id}"
+    },
+    "time": {
+      "required": false,
+      "type": "timestamp",
+      "value": "{event_time}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "Blitzortung.Lightning.LightningStroke"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Blitzortung.Lightning.LightningStroke",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "LightningStroke",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Blitzortung.Lightning/messages/Blitzortung.Lightning.LightningStroke/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/Blitzortung.Lightning/messages/Blitzortung.Lightning.LightningStroke/versions/1"
+}

@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/pl.gov.gios.airquality.jstruct/schemas/pl.gov.gios.airquality.Sensor",
+  "description": "Reference data for a sensor (measurement point) installed at a GIOŚ station, identifying the pollutant it measures.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api.gios.gov.pl/pjp-api/v1/rest/"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}/{sensor_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "pl.gov.gios.airquality.Sensor"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "pl.gov.gios.airquality.Sensor",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Sensor",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor/versions",
+  "xid": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor"
+}

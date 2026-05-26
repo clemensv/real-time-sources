@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/fi.digitraffic.road.stations.jstruct/schemas/fi.digitraffic.road.stations.WeatherStation",
+  "description": "A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://tie.digitraffic.fi/api"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "fi.digitraffic.road.stations.WeatherStation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "fi.digitraffic.road.stations.WeatherStation",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WeatherStation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.WeatherStation/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.WeatherStation/versions/1"
+}

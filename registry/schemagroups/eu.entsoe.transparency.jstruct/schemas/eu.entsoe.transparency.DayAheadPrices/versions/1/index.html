@@ -1,0 +1,52 @@
+{
+  "$id": "https://example.com/schemas/eu/entsoe/transparency/DayAheadPrices",
+  "$root": "/definitions/eu/entsoe/transparency/DayAheadPrices",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "eu": {
+      "entsoe": {
+        "transparency": {
+          "DayAheadPrices": {
+            "name": "DayAheadPrices",
+            "properties": {
+              "currency": {
+                "description": "Currency code (EUR)",
+                "type": "string"
+              },
+              "documentType": {
+                "description": "ENTSO-E document type code (A44)",
+                "type": "string"
+              },
+              "inDomain": {
+                "description": "EIC code of the bidding zone",
+                "type": "string"
+              },
+              "price": {
+                "description": "Day-ahead price",
+                "type": "double"
+              },
+              "resolution": {
+                "description": "ISO 8601 duration",
+                "type": "string"
+              },
+              "unitName": {
+                "description": "Price unit (MWH)",
+                "type": "string"
+              }
+            },
+            "required": [
+              "inDomain",
+              "price",
+              "currency",
+              "unitName",
+              "resolution",
+              "documentType"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "DayAheadPrices"
+}

@@ -1,0 +1,54 @@
+{
+  "$id": "https://clemensv.github.io/real-time-sources/schemas/uk/gov/defra/aurn/station.json",
+  "$root": "/definitions/uk/gov/defra/aurn/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "definitions": {
+    "uk": {
+      "gov": {
+        "defra": {
+          "aurn": {
+            "Station": {
+              "description": "Reference metadata for a Defra AURN monitoring station entry as published by the 52°North SOS Timeseries API stations collection.",
+              "name": "Station",
+              "properties": {
+                "label": {
+                  "description": "Upstream station label from properties.label in GET /stations. In this API the label includes both the site name and the monitored pollutant description, for example 'Camden Kerbside-Particulate matter less than 10 micro m (aerosol)'.",
+                  "type": "string"
+                },
+                "latitude": {
+                  "description": "WGS84 latitude in decimal degrees taken from geometry.coordinates[0] in the Defra SOS GeoJSON feature. The upstream API uses latitude-first coordinate ordering rather than GeoJSON's usual longitude-first convention.",
+                  "maximum": 90,
+                  "minimum": -90,
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "degree"
+                },
+                "longitude": {
+                  "description": "WGS84 longitude in decimal degrees taken from geometry.coordinates[1] in the Defra SOS GeoJSON feature. The bridge ignores the third coordinate array member because the upstream API returns a string 'NaN' elevation value there.",
+                  "maximum": 180,
+                  "minimum": -180,
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "degree"
+                },
+                "station_id": {
+                  "description": "Stable numeric monitoring station identifier from the GeoJSON feature properties.id field returned by GET /stations. The bridge converts the numeric API value to a string so it can be used consistently as the Kafka key and CloudEvents subject.",
+                  "pattern": "^[0-9]+$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "station_id",
+                "label",
+                "latitude",
+                "longitude"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "Station"
+}

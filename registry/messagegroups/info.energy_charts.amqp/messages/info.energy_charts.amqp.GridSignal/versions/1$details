@@ -1,0 +1,32 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/info.energy_charts/messages/info.energy_charts.GridSignal",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "info.energy_charts.amqp.GridSignal",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "GridSignal",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "AMQP partition key matching the CloudEvent subject and Kafka key.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{country}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP subject matching the CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{country}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.GridSignal/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.GridSignal/versions/1"
+}

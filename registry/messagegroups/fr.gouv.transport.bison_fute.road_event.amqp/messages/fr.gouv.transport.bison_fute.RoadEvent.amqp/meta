@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fr.gouv.transport.bison_fute.road_event.amqp/messages/fr.gouv.transport.bison_fute.RoadEvent.amqp/versions/1",
+  "epoch": 1,
+  "messageid": "fr.gouv.transport.bison_fute.RoadEvent.amqp",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fr.gouv.transport.bison_fute.road_event.amqp/messages/fr.gouv.transport.bison_fute.RoadEvent.amqp/meta",
+  "xid": "/messagegroups/fr.gouv.transport.bison_fute.road_event.amqp/messages/fr.gouv.transport.bison_fute.RoadEvent.amqp/meta"
+}

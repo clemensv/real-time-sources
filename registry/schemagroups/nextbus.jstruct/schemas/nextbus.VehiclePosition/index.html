@@ -1,0 +1,48 @@
+{
+  "$id": "https://schemas.real-time-sources.io/nextbus/nextbus.VehiclePosition/v1",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Nextbus XML feed event payload.",
+  "name": "VehiclePosition",
+  "properties": {
+    "agency_id": {
+      "description": "agency_id value from the Nextbus XML feed.",
+      "type": "string"
+    },
+    "event_type": {
+      "description": "event_type value from the Nextbus XML feed.",
+      "type": "string"
+    },
+    "lat": {
+      "description": "lat value from the Nextbus XML feed.",
+      "type": "string"
+    },
+    "lon": {
+      "description": "lon value from the Nextbus XML feed.",
+      "type": "string"
+    },
+    "route_tag": {
+      "description": "route_tag value from the Nextbus XML feed.",
+      "type": "string"
+    },
+    "stop_or_vehicle_id": {
+      "description": "stop_or_vehicle_id value from the Nextbus XML feed.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "timestamp value from the Nextbus XML feed.",
+      "type": "double"
+    },
+    "vehicle_id": {
+      "description": "vehicle_id value from the Nextbus XML feed.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "agency_id",
+    "route_tag",
+    "vehicle_id",
+    "stop_or_vehicle_id",
+    "event_type"
+  ],
+  "type": "object"
+}

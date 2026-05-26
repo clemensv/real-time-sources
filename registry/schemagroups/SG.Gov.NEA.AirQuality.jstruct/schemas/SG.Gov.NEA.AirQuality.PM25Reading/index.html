@@ -1,0 +1,44 @@
+{
+  "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/AirQuality/PM25Reading",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value.",
+  "name": "PM25Reading",
+  "properties": {
+    "pm25_one_hourly": {
+      "description": "PM2.5 1-hour concentration for the region.",
+      "minimum": 0,
+      "symbol": "µg/m³",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "unit": "ug/m3"
+    },
+    "region": {
+      "altenums": [
+        "west",
+        "east",
+        "central",
+        "south",
+        "north"
+      ],
+      "description": "Region identifier (west/east/central/south/north).",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Observation period start timestamp in ISO 8601 with timezone.",
+      "type": "datetime"
+    },
+    "update_timestamp": {
+      "description": "Timestamp when the NEA API last updated this reading.",
+      "type": "datetime"
+    }
+  },
+  "required": [
+    "region",
+    "timestamp",
+    "update_timestamp",
+    "pm25_one_hourly"
+  ],
+  "type": "object"
+}

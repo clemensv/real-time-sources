@@ -1,0 +1,39 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/Translations",
+  "$root": "/definitions/GeneralTransitFeedStatic/Translations",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "Translations": {
+        "description": "Defines translations.",
+        "name": "Translations",
+        "properties": {
+          "fieldName": {
+            "description": "Name of the field to be translated.",
+            "type": "string"
+          },
+          "language": {
+            "description": "Language of the translation.",
+            "type": "string"
+          },
+          "tableName": {
+            "description": "Name of the table containing the field to be translated.",
+            "type": "string"
+          },
+          "translation": {
+            "description": "Translated value.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tableName",
+          "fieldName",
+          "language",
+          "translation"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "Translations"
+}

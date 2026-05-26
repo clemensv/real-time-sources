@@ -1,0 +1,34 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "de.wsv.pegelonline.amqp.Station",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "water_shortname": {
+          "description": "Lowercase ASCII water-body shortname (e.g. 'rhein'); supplied by the bridge from the station catalog so message routers / filters can route by waterway without cracking the JSON body.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{water_shortname}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject — stable station identifier matching the CloudEvent subject so SB/EH consumers can correlate.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/de.wsv.pegelonline.amqp/messages/de.wsv.pegelonline.amqp.Station/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/de.wsv.pegelonline.amqp/messages/de.wsv.pegelonline.amqp.Station/versions/1"
+  }
+}

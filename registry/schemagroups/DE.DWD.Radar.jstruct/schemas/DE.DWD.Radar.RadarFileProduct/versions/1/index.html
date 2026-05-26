@@ -1,0 +1,50 @@
+{
+  "$id": "https://opendata.dwd.de/schemas/DE/DWD/Radar/RadarFileProduct",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
+  "name": "RadarFileProduct",
+  "properties": {
+    "file_id": {
+      "description": "Normalized routing field 'file_id' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "file_name": {
+      "description": "Bare file name (no directory component) as listed in the DWD Apache directory index. Convenient for parsing the embedded product code and observation timestamp without having to split file_url.",
+      "type": "string"
+    },
+    "file_url": {
+      "description": "Absolute HTTPS URL of a single DWD radar product file on the DWD Open Data server. The URL is publicly fetchable with an unauthenticated HTTP GET and supports HTTP Range and If-Modified-Since/ETag conditional requests, so handlers can dereference the event by performing a plain GET against this URL. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key, which guarantees per-file ordering. Example: 'https://opendata.dwd.de/weather/radar/composite/wn/composite_wn_20260517_2005-hd5'.",
+      "type": "string"
+    },
+    "modified": {
+      "description": "Upstream Last-Modified timestamp of the file as reported by the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new RadarFileProduct event whenever this value changes for a known file_url, so consumers can use it for change detection and de-duplication.",
+      "type": "string"
+    },
+    "product": {
+      "description": "Short identifier of the radar product family this file belongs to (for example 'wn', 'rv', 'dmax'); matches the 'product' field of the corresponding RadarProductCatalog event.",
+      "type": "string"
+    },
+    "product_type": {
+      "description": "Normalized routing field 'product_type' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "size_bytes": {
+      "description": "File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size consumers should rely on the Content-Length header returned by the actual GET on file_url. Radar composite files typically range from tens of KB (BUFR products) up to roughly 10 MB (large HDF5 composites).",
+      "type": [
+        "int64",
+        "null"
+      ]
+    },
+    "state": {
+      "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "file_url",
+    "product",
+    "file_name",
+    "modified"
+  ],
+  "type": "object"
+}

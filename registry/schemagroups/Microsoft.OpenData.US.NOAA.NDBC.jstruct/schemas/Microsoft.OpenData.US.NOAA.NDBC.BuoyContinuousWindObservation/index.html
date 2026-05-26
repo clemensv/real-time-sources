@@ -1,0 +1,69 @@
+{
+  "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyContinuousWindObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Continuous-wind measurement from the NDBC .cwind realtime2 product. Each record reports the latest ten-minute wind average together with the strongest gust observed during the surrounding hourly window and the HHMM code describing when that gust occurred.",
+  "name": "BuoyContinuousWindObservation",
+  "properties": {
+    "gust": {
+      "description": "Maximum 5-second peak gust from the GST column during the measurement hour. Unit: meters per second.",
+      "symbol": "m/s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m/s"
+    },
+    "gust_direction": {
+      "description": "Direction of the hourly peak gust from the GDR column, measured clockwise from true north. Unit: degrees true.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "gust_time_code": {
+      "description": "HHMM UTC time code from the GTIME column indicating when the reported gust occurred within the surrounding hourly window. Around midnight the code can refer to the previous UTC day.",
+      "pattern": "^[0-9]{4}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "region": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "NDBC station identifier for the station publishing the .cwind realtime2 file.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .cwind realtime2 file.",
+      "type": "datetime"
+    },
+    "wind_direction": {
+      "description": "Ten-minute average wind direction from the WDIR column, measured clockwise from true north. Unit: degrees true.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "wind_speed": {
+      "description": "Ten-minute average wind speed from the WSPD column. Unit: meters per second.",
+      "symbol": "m/s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m/s"
+    }
+  },
+  "required": [
+    "station_id",
+    "timestamp"
+  ],
+  "type": "object"
+}

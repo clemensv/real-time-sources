@@ -1,0 +1,47 @@
+{
+  "$id": "https://example.com/schemas/eu/entsoe/transparency/LoadForecastMargin",
+  "$root": "/definitions/eu/entsoe/transparency/LoadForecastMargin",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "eu": {
+      "entsoe": {
+        "transparency": {
+          "LoadForecastMargin": {
+            "name": "LoadForecastMargin",
+            "properties": {
+              "documentType": {
+                "description": "ENTSO-E document type code (A70)",
+                "type": "string"
+              },
+              "inDomain": {
+                "description": "EIC code of the bidding zone",
+                "type": "string"
+              },
+              "quantity": {
+                "description": "Forecast margin in MW",
+                "type": "double"
+              },
+              "resolution": {
+                "description": "ISO 8601 duration",
+                "type": "string"
+              },
+              "unitName": {
+                "description": "Unit of measurement (MAW)",
+                "type": "string"
+              }
+            },
+            "required": [
+              "inDomain",
+              "quantity",
+              "resolution",
+              "documentType",
+              "unitName"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "LoadForecastMargin"
+}

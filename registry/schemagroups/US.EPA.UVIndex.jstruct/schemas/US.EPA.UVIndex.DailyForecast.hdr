@@ -1,0 +1,17 @@
+content-disposition:US.EPA.UVIndex.DailyForecast
+content-length:1559
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.DailyForecast/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.DailyForecast/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:US.EPA.UVIndex.DailyForecast
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.DailyForecast
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.DailyForecast/versions
+xregistry-xid:/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.DailyForecast

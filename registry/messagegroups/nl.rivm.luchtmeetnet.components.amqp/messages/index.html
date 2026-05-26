@@ -1,0 +1,43 @@
+{
+  "nl.rivm.luchtmeetnet.components.amqp.Component": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/nl.rivm.luchtmeetnet.components/messages/nl.rivm.luchtmeetnet.components.Component",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "nl.rivm.luchtmeetnet.components.amqp.Component",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nl.rivm.luchtmeetnet.components.amqp/messages/nl.rivm.luchtmeetnet.components.amqp.Component/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Component",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "region": {
+          "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{region}"
+        },
+        "station_number": {
+          "description": "Routing attribute `station_number` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_number}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{formula}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nl.rivm.luchtmeetnet.components.amqp/messages/nl.rivm.luchtmeetnet.components.amqp.Component",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nl.rivm.luchtmeetnet.components.amqp/messages/nl.rivm.luchtmeetnet.components.amqp.Component/versions",
+    "xid": "/messagegroups/nl.rivm.luchtmeetnet.components.amqp/messages/nl.rivm.luchtmeetnet.components.amqp.Component"
+  }
+}

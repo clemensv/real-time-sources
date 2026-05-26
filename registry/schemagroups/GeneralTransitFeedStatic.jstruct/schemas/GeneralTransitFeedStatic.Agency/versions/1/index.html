@@ -1,0 +1,59 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/Agency",
+  "$root": "/definitions/GeneralTransitFeedStatic/Agency",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "Agency": {
+        "description": "Information about the transit agencies.",
+        "name": "Agency",
+        "properties": {
+          "agencyEmail": {
+            "default": null,
+            "description": "Email address actively monitored by the agency’s customer service department.",
+            "type": "string"
+          },
+          "agencyFareUrl": {
+            "default": null,
+            "description": "URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online.",
+            "type": "string"
+          },
+          "agencyId": {
+            "description": "Identifies a transit brand which is often synonymous with a transit agency.",
+            "type": "string"
+          },
+          "agencyLang": {
+            "default": null,
+            "description": "Primary language used by this transit agency.",
+            "type": "string"
+          },
+          "agencyName": {
+            "description": "Full name of the transit agency.",
+            "type": "string"
+          },
+          "agencyPhone": {
+            "default": null,
+            "description": "A voice telephone number for the specified agency.",
+            "type": "string"
+          },
+          "agencyTimezone": {
+            "description": "Timezone where the transit agency is located.",
+            "type": "string"
+          },
+          "agencyUrl": {
+            "description": "URL of the transit agency.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "agencyId",
+          "agencyName",
+          "agencyUrl",
+          "agencyTimezone"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "Agency"
+}

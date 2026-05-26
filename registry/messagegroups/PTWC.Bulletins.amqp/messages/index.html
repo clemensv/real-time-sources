@@ -1,0 +1,51 @@
+{
+  "PTWC.Bulletins.amqp.TsunamiBulletin": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/PTWC.Bulletins/messages/PTWC.TsunamiBulletin",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "PTWC.Bulletins.amqp.TsunamiBulletin",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/PTWC.Bulletins.amqp/messages/PTWC.Bulletins.amqp.TsunamiBulletin/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "TsunamiBulletin",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "basin": {
+          "description": "AMQP application property mirroring the basin routing axis from the Kafka subject/MQTT topic for broker-side filtering.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{basin}"
+        },
+        "ptwc_level": {
+          "description": "AMQP application property mirroring the ptwc_level routing axis from the Kafka subject/MQTT topic for broker-side filtering.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{ptwc_level}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{bulletin_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{bulletin_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/PTWC.Bulletins.amqp/messages/PTWC.Bulletins.amqp.TsunamiBulletin",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/PTWC.Bulletins.amqp/messages/PTWC.Bulletins.amqp.TsunamiBulletin/versions",
+    "xid": "/messagegroups/PTWC.Bulletins.amqp/messages/PTWC.Bulletins.amqp.TsunamiBulletin"
+  }
+}

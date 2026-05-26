@@ -1,0 +1,72 @@
+{
+  "doc": "A block relationship between users",
+  "fields": [
+    {
+      "doc": "AT-URI of the block record",
+      "name": "uri",
+      "type": "string"
+    },
+    {
+      "doc": "Content Identifier of the block",
+      "name": "cid",
+      "type": "string"
+    },
+    {
+      "doc": "DID of the blocker",
+      "name": "did",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Handle of the blocker",
+      "name": "handle",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "DID of the blocked user",
+      "name": "subject",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Handle of the blocked user",
+      "name": "subject_handle",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "ISO 8601 timestamp of block creation",
+      "name": "created_at",
+      "type": "string"
+    },
+    {
+      "doc": "ISO 8601 timestamp of indexing",
+      "name": "indexed_at",
+      "type": "string"
+    },
+    {
+      "doc": "Firehose sequence number",
+      "name": "seq",
+      "type": "long"
+    },
+    {
+      "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.",
+      "name": "collection",
+      "type": "string"
+    },
+    {
+      "default": "und",
+      "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.",
+      "name": "lang",
+      "type": "string"
+    }
+  ],
+  "name": "Block",
+  "namespace": "Bluesky.Graph",
+  "type": "record"
+}

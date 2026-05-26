@@ -1,0 +1,14 @@
+content-disposition:GeneralTransitFeedStatic.LocationGeoJson
+content-length:486
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.LocationGeoJson/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2024-10-18T13:48:58.114853Z
+xregistry-epoch:1
+xregistry-format:Avro
+xregistry-isdefault:true
+xregistry-modifiedat:2024-10-18T13:48:58.114853Z
+xregistry-schemaid:GeneralTransitFeedStatic.LocationGeoJson
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.LocationGeoJson/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.LocationGeoJson/versions/1

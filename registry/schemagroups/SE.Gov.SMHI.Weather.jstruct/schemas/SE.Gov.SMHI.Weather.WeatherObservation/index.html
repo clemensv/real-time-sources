@@ -1,0 +1,167 @@
+{
+  "$id": "https://opendata-download-metobs.smhi.se/schemas/SE/Gov/SMHI/Weather/WeatherObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current environmental measurement from the Swedish Meteorological and Hydrological Institute (SMHI). It carries weather observations when the upstream feed reports a new or refreshed value.",
+  "name": "WeatherObservation",
+  "properties": {
+    "air_pressure": {
+      "description": "Atmospheric pressure reduced to mean sea level, reported hourly (SMHI parameter 9).",
+      "symbol": "hPa",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "hPa"
+    },
+    "air_temperature": {
+      "description": "Instantaneous air temperature, reported hourly (SMHI parameter 1).",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "dew_point": {
+      "description": "Dew point temperature, reported hourly (SMHI parameter 39).",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "global_irradiance": {
+      "description": "Global solar irradiance (direct + diffuse), average over the hour, measured by pyranometer (SMHI parameter 11).",
+      "symbol": "W/m²",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "W/m2"
+    },
+    "lan": {
+      "description": "Normalized routing field 'lan' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "max_wind_speed": {
+      "description": "Maximum of 10-minute mean wind speed during the hour, measured at 10 m height (SMHI parameter 25).",
+      "symbol": "m/s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m/s"
+    },
+    "observation_time": {
+      "description": "Timestamp of the observation in UTC, derived from the SMHI epoch millisecond value.",
+      "type": "datetime"
+    },
+    "precipitation_intensity": {
+      "description": "Instantaneous precipitation intensity measured by optical or weighing gauge (SMHI parameter 38).",
+      "symbol": "mm/h",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "mm/h"
+    },
+    "precipitation_last_hour": {
+      "description": "Total precipitation in the last hour, reported hourly (SMHI parameter 7).",
+      "symbol": "mm",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "mm"
+    },
+    "present_weather": {
+      "description": "WMO present weather code (ww table 4677) describing current weather phenomena at the time of observation (SMHI parameter 13). Values range from 0 (clear) to 99 (thunderstorm with hail).",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "quality": {
+      "description": "Quality flag for the observation as assigned by SMHI: 'G' for approved, 'Y' for suspect.",
+      "type": "string"
+    },
+    "relative_humidity": {
+      "description": "Relative humidity as a percentage, reported hourly (SMHI parameter 6).",
+      "symbol": "%",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "percent"
+    },
+    "station_id": {
+      "description": "SMHI station identifier for the reporting station.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Human-readable name of the reporting station.",
+      "type": "string"
+    },
+    "sunshine_duration": {
+      "description": "Duration of sunshine during the last hour in seconds (SMHI parameter 10).",
+      "symbol": "s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "s"
+    },
+    "total_cloud_cover": {
+      "description": "Total cloud cover in oktas (eighths of sky covered), reported hourly (SMHI parameter 16).",
+      "symbol": "okta",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "okta"
+    },
+    "visibility": {
+      "description": "Horizontal visibility, reported hourly (SMHI parameter 12).",
+      "symbol": "km",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "km"
+    },
+    "wind_direction": {
+      "description": "Wind direction in degrees from which the wind is blowing, measured at 10 m height, reported hourly (SMHI parameter 3).",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degree"
+    },
+    "wind_gust": {
+      "description": "Maximum wind gust speed, reported hourly (SMHI parameter 21).",
+      "symbol": "m/s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m/s"
+    },
+    "wind_speed": {
+      "description": "Mean wind speed over 10 minutes measured at 10 m height, reported hourly (SMHI parameter 4).",
+      "symbol": "m/s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m/s"
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name",
+    "observation_time"
+  ],
+  "type": "object"
+}

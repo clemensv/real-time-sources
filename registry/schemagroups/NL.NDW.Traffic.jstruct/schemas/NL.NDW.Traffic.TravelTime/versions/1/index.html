@@ -1,0 +1,70 @@
+{
+  "$id": "https://example.com/schemas/nl/ndw/traffic/TravelTime",
+  "$root": "/definitions/nl/ndw/traffic/TravelTime",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "nl": {
+      "ndw": {
+        "traffic": {
+          "TravelTime": {
+            "description": "Travel time measurement for a road segment from the Dutch NDW DATEX II traveltime feed. Each record contains the actual measured travel time and the static free-flow reference time for a measurement site.",
+            "name": "TravelTime",
+            "properties": {
+              "accuracy": {
+                "description": "Accuracy of the travel time measurement as a percentage (0-100), indicating the quality of the sensor coverage.",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              },
+              "data_quality": {
+                "description": "Supplier-calculated data quality score as a percentage (0-100). Higher values indicate more reliable measurements.",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              },
+              "duration": {
+                "description": "Actual measured travel time in seconds for this road segment. Null when the measurement has a data error (duration is -1 in the upstream).",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "s"
+              },
+              "measurement_time": {
+                "description": "Timestamp of the measurement in ISO 8601 format (UTC), from the DATEX II measurementTimeDefault element.",
+                "type": "string"
+              },
+              "number_of_input_values": {
+                "description": "Number of individual vehicle travel times used to compute this aggregate travel time measurement.",
+                "type": [
+                  "int32",
+                  "null"
+                ]
+              },
+              "reference_duration": {
+                "description": "Static reference (free-flow) travel time in seconds for this road segment. Null when unavailable or when the measurement has a data error.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "s"
+              },
+              "site_id": {
+                "description": "Unique identifier of the NDW measurement site, taken from the DATEX II measurementSiteReference id attribute.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "site_id",
+              "measurement_time"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "TravelTime"
+}

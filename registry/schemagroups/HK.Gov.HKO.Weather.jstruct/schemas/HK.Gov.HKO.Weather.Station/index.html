@@ -1,0 +1,30 @@
+{
+  "$id": "https://data.weather.gov.hk/schemas/HK/Gov/HKO/Weather/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record published by the Hong Kong Observatory. It lets consumers label, group, and route the live measurement or forecast events.",
+  "name": "Station",
+  "properties": {
+    "data_types": {
+      "description": "Comma-separated list of data types reported by this place. Values: 'temperature', 'rainfall', 'humidity', 'uvindex'.",
+      "type": "string"
+    },
+    "district": {
+      "description": "Normalized routing field 'district' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "name": {
+      "description": "Original English place name from the HKO rhrread API, e.g. 'King's Park', 'Central \u0026 Western District'.",
+      "type": "string"
+    },
+    "place_id": {
+      "description": "URL-safe slug identifier derived from the English place name, e.g. 'kings-park', 'central-western-district'. Used as Kafka key and CloudEvents subject.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "place_id",
+    "name",
+    "data_types"
+  ],
+  "type": "object"
+}

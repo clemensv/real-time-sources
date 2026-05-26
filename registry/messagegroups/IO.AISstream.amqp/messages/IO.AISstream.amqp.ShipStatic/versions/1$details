@@ -1,0 +1,44 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/IO.AISstream.mqtt/messages/IO.AISstream.mqtt.ShipStatic",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "IO.AISstream.amqp.ShipStatic",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "ShipStatic",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "flag": {
+        "description": "Routing axis 'flag' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{flag}"
+      },
+      "geohash5": {
+        "description": "Routing axis 'geohash5' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{geohash5}"
+      },
+      "ship_type": {
+        "description": "Routing axis 'ship_type' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{ship_type}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream.amqp/messages/IO.AISstream.amqp.ShipStatic/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/IO.AISstream.amqp/messages/IO.AISstream.amqp.ShipStatic/versions/1"
+}

@@ -1,0 +1,38 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/Wikimedia.EventStreams.jstruct/schemas/Wikimedia.EventStreams.RecentChange",
+  "description": "Public recentchange events from Wikimedia EventStreams. Each event describes one edit, page creation, log action, categorization change, or related MediaWiki recentchanges entry from across Wikimedia projects.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://stream.wikimedia.org/v2/stream/recentchange"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{event_id}"
+    },
+    "time": {
+      "required": false,
+      "type": "timestamp",
+      "value": "{event_time}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "Wikimedia.EventStreams.RecentChange"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Wikimedia.EventStreams.RecentChange",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "RecentChange",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Wikimedia.EventStreams/messages/Wikimedia.EventStreams.RecentChange/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/Wikimedia.EventStreams/messages/Wikimedia.EventStreams.RecentChange/versions/1"
+}

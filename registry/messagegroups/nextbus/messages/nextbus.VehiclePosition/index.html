@@ -1,0 +1,41 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/nextbus.jstruct/schemas/nextbus.VehiclePosition",
+  "description": "Nextbus VehiclePosition event.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://retro.umoiq.com/service/publicXMLFeed"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{agency_id}/{route_tag}/vehicle/{vehicle_id}"
+    },
+    "time": {
+      "required": false,
+      "type": "timestamp",
+      "value": "{timestamp}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "nextbus.VehiclePosition"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "nextbus.VehiclePosition",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nextbus/messages/nextbus.VehiclePosition/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "VehiclePosition",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nextbus/messages/nextbus.VehiclePosition",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nextbus/messages/nextbus.VehiclePosition/versions",
+  "xid": "/messagegroups/nextbus/messages/nextbus.VehiclePosition"
+}

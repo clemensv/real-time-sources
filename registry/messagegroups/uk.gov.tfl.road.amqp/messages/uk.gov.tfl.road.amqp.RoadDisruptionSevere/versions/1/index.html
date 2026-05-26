@@ -1,0 +1,52 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "uk.gov.tfl.road.amqp.RoadDisruptionSevere",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "RoadDisruptionSevere",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "disruption_id": {
+        "description": "AMQP application property mirroring the disruption_id routing axis from the Kafka subject/MQTT topic for broker-side filtering.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{disruption_id}"
+      },
+      "road_id": {
+        "description": "AMQP application property mirroring the road_id routing axis from the Kafka subject/MQTT topic for broker-side filtering.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{road_id}"
+      },
+      "severity": {
+        "description": "AMQP application property mirroring the severity routing axis from the Kafka subject/MQTT topic for broker-side filtering.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{severity}"
+      }
+    },
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "disruptions/{road_id}/{severity}/{disruption_id}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "disruptions/{road_id}/{severity}/{disruption_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionSevere/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadDisruptionSevere/versions/1"
+}

@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/CH.BAFU.Hydrology.jstruct/schemas/CH.BAFU.Hydrology.WaterLevelObservation",
+  "description": "A current measurement from the Swiss Federal Office for the Environment (BAFU/FOEN) for one monitoring site. It carries water level, discharge, and water temperature observations when the upstream feed reports a new or refreshed value.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://www.hydrodaten.admin.ch"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "CH.BAFU.Hydrology.WaterLevelObservation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "CH.BAFU.Hydrology.WaterLevelObservation",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CH.BAFU.Hydrology/messages/CH.BAFU.Hydrology.WaterLevelObservation/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WaterLevelObservation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CH.BAFU.Hydrology/messages/CH.BAFU.Hydrology.WaterLevelObservation",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CH.BAFU.Hydrology/messages/CH.BAFU.Hydrology.WaterLevelObservation/versions",
+  "xid": "/messagegroups/CH.BAFU.Hydrology/messages/CH.BAFU.Hydrology.WaterLevelObservation"
+}

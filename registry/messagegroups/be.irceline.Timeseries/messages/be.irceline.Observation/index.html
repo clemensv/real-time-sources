@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/be.irceline.jstruct/schemas/be.irceline.Observation",
+  "description": "A current environmental measurement from Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed reports a new or refreshed value.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://geo.irceline.be/sos/api/v1/timeseries"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{timeseries_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "be.irceline.Observation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "be.irceline.Observation",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/be.irceline.Timeseries/messages/be.irceline.Observation/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Observation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/be.irceline.Timeseries/messages/be.irceline.Observation",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/be.irceline.Timeseries/messages/be.irceline.Observation/versions",
+  "xid": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Observation"
+}

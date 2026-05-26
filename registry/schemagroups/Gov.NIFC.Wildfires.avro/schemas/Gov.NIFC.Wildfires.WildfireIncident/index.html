@@ -1,0 +1,242 @@
+{
+  "description": "Payload for an incident update from the U.S. National Interagency Fire Center. It reports the current status, location, and classification for a wildfire or emergency incident.",
+  "doc": "Active wildfire incident data from the National Interagency Fire Center (NIFC) IRWIN system, published via ArcGIS Feature Service.",
+  "fields": [
+    {
+      "doc": "IRWIN incident identifier, a globally unique GUID assigned by the Integrated Reporting of Wildland-Fire Information (IRWIN) system.",
+      "name": "irwin_id",
+      "type": "string"
+    },
+    {
+      "doc": "Lowercase two-letter US state or territory routing segment.",
+      "name": "state",
+      "type": "string"
+    },
+    {
+      "doc": "Normalized wildfire lifecycle status: active, contained, controlled, or out.",
+      "name": "status",
+      "type": "string"
+    },
+    {
+      "doc": "The name assigned to the wildfire incident.",
+      "name": "incident_name",
+      "type": "string"
+    },
+    {
+      "doc": "Unique fire identifier string assigned by the dispatching agency.",
+      "name": "unique_fire_identifier",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Category of the incident type: WF (Wildfire), RX (Prescribed Fire), etc.",
+      "name": "incident_type_category",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Kind of incident from NWCG classification.",
+      "name": "incident_type_kind",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Date and time when the fire was first discovered, in ISO 8601 format.",
+      "name": "fire_discovery_datetime",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Most recently reported fire size in acres from the daily situation report.",
+      "name": "daily_acres",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "GIS-calculated fire area in acres.",
+      "name": "calculated_acres",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Size of the fire in acres at the time of initial discovery.",
+      "name": "discovery_acres",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Percentage of the fire perimeter that is contained (0-100).",
+      "name": "percent_contained",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "US state where the point of origin is located.",
+      "name": "poo_state",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "County where the point of origin of the fire is located.",
+      "name": "poo_county",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Latitude of the fire incident point of origin in decimal degrees (WGS 84).",
+      "name": "latitude",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Longitude of the fire incident point of origin in decimal degrees (WGS 84).",
+      "name": "longitude",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "General cause of the fire.",
+      "name": "fire_cause",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Specific fire cause category when known.",
+      "name": "fire_cause_general",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Geographic Area Coordination Center responsible for the incident.",
+      "name": "gacc",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Total number of personnel assigned to the incident.",
+      "name": "total_incident_personnel",
+      "type": [
+        "int",
+        "null"
+      ]
+    },
+    {
+      "doc": "Name or type of the incident management organization.",
+      "name": "incident_management_organization",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Complexity level of the fire management effort.",
+      "name": "fire_mgmt_complexity",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Number of residential structures destroyed by the fire.",
+      "name": "residences_destroyed",
+      "type": [
+        "int",
+        "null"
+      ]
+    },
+    {
+      "doc": "Number of non-residential structures destroyed by the fire.",
+      "name": "other_structures_destroyed",
+      "type": [
+        "int",
+        "null"
+      ]
+    },
+    {
+      "doc": "Number of injuries reported in connection with the incident.",
+      "name": "injuries",
+      "type": [
+        "int",
+        "null"
+      ]
+    },
+    {
+      "doc": "Number of fatalities reported in connection with the incident.",
+      "name": "fatalities",
+      "type": [
+        "int",
+        "null"
+      ]
+    },
+    {
+      "doc": "Date and time the fire was fully contained, in ISO 8601 format.",
+      "name": "containment_datetime",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Date and time the fire was declared under control, in ISO 8601 format.",
+      "name": "control_datetime",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Date and time the fire was declared out, in ISO 8601 format.",
+      "name": "fire_out_datetime",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "Final fire size in acres after the fire is declared out.",
+      "name": "final_acres",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Date and time when the incident record was last modified in the IRWIN system, in ISO 8601 format.",
+      "name": "modified_on_datetime",
+      "type": "string"
+    }
+  ],
+  "name": "WildfireIncident",
+  "namespace": "Gov.NIFC.Wildfires",
+  "type": "record"
+}

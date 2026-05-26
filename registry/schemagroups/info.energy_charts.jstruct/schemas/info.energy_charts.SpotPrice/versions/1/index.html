@@ -1,0 +1,47 @@
+{
+  "$id": "https://api.energy-charts.info/schemas/info/energy_charts/SpotPrice",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Day-ahead electricity spot price for a given bidding zone at a specific timestamp. Sourced from the Energy-Charts /price endpoint (Fraunhofer ISE) which provides wholesale electricity market prices from ENTSO-E and national exchanges. Prices are the day-ahead auction clearing price in EUR per MWh. The bidding zone identifies the market area (e.g. 'DE-LU' for the Germany-Luxembourg zone).",
+  "name": "SpotPrice",
+  "properties": {
+    "bidding_zone": {
+      "description": "European electricity bidding zone identifier as used by ENTSO-E (e.g. 'DE-LU' for Germany-Luxembourg, 'FR' for France, 'NO1' for Norway zone 1). The bzn parameter in the Energy-Charts /price API.",
+      "type": "string"
+    },
+    "country": {
+      "description": "ISO 3166-1 alpha-2 country code derived from the bidding zone (e.g. 'de' from 'DE-LU'). Used for Kafka key partitioning.",
+      "type": "string"
+    },
+    "price_eur_per_mwh": {
+      "description": "Day-ahead electricity spot price in EUR per megawatt-hour (EUR/MWh). This is the clearing price from the day-ahead auction on the relevant power exchange. Can be negative during periods of excess generation.",
+      "symbol": "EUR/MWh",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "EUR/MWh"
+    },
+    "timestamp": {
+      "description": "UTC timestamp derived from the unix_seconds value. Marks the start of the price interval (typically 15-minute or hourly depending on the market).",
+      "type": "datetime"
+    },
+    "unit": {
+      "description": "Unit label as returned by the Energy-Charts API (e.g. 'EUR / MWh'). Included for traceability with the upstream response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "unix_seconds": {
+      "description": "Unix epoch timestamp in seconds as returned by the Energy-Charts API.",
+      "type": "int64"
+    }
+  },
+  "required": [
+    "country",
+    "bidding_zone",
+    "timestamp",
+    "unix_seconds"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/PTWC.jstruct/schemas/PTWC.TsunamiBulletin",
+  "description": "A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Bulletins indicate seismic events and their tsunami threat assessment, parsed from the NOAA Atom feeds at tsunami.gov.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://www.tsunami.gov"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{bulletin_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "PTWC.TsunamiBulletin"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "PTWC.TsunamiBulletin",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "TsunamiBulletin",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/PTWC.Bulletins/messages/PTWC.TsunamiBulletin/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/PTWC.Bulletins/messages/PTWC.TsunamiBulletin/versions/1"
+}

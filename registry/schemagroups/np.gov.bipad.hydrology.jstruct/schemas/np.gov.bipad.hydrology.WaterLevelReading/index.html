@@ -1,0 +1,77 @@
+{
+  "$id": "https://bipadportal.gov.np/schemas/np/gov/bipad/hydrology/WaterLevelReading",
+  "$root": "/definitions/np/gov/bipad/hydrology/WaterLevelReading",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "np": {
+      "gov": {
+        "bipad": {
+          "hydrology": {
+            "WaterLevelReading": {
+              "description": "Real-time water level telemetry reading from a BIPAD river monitoring station in Nepal, including current water level, alert status, and trend direction.",
+              "name": "WaterLevelReading",
+              "properties": {
+                "basin": {
+                  "description": "Name of the river basin the station belongs to at the time of the reading.",
+                  "type": "string"
+                },
+                "danger_level": {
+                  "description": "Configured danger water level threshold in meters. Null when not configured.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                },
+                "station_id": {
+                  "description": "Unique integer identifier of the river station assigned by the BIPAD portal, transmitted as a string for key compatibility.",
+                  "type": "string"
+                },
+                "status": {
+                  "description": "Current alert status of the station relative to configured thresholds. Known values: 'BELOW WARNING LEVEL', 'WARNING', 'DANGER'.",
+                  "type": "string"
+                },
+                "title": {
+                  "description": "Human-readable name of the river station at the time of the reading.",
+                  "type": "string"
+                },
+                "trend": {
+                  "description": "Direction of water level change. Known values: 'STEADY', 'RISING', 'FALLING'.",
+                  "type": "string"
+                },
+                "warning_level": {
+                  "description": "Configured warning water level threshold in meters. Null when not configured.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                },
+                "water_level": {
+                  "description": "Current water level at the station in meters. Null when the station has no current reading available.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                },
+                "water_level_on": {
+                  "description": "ISO 8601 timestamp of when the water level was measured, in Nepal Standard Time (+05:45).",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "station_id",
+                "title",
+                "basin",
+                "status",
+                "trend",
+                "water_level_on"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "description": "Measurement payload for observations in the Nepal BIPAD River Monitoring source.",
+  "name": "WaterLevelReading"
+}

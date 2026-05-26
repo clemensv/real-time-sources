@@ -1,0 +1,182 @@
+{
+  "NL.NDW.Situations.BridgeOpening": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.Situations.BridgeOpening",
+    "description": "Bridge opening event from the Dutch NDW DATEX II planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes temporary road closure.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://opendata.ndw.nu/planningsfeed_brugopeningen.xml.gz"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "situations/{situation_record_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "NL.NDW.Situations.BridgeOpening"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "NL.NDW.Situations.BridgeOpening",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "BridgeOpening",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening/versions",
+    "xid": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening"
+  },
+  "NL.NDW.Situations.Roadwork": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.Situations.Roadwork",
+    "description": "Road construction or maintenance work event from the Dutch NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on the Dutch national road network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://opendata.ndw.nu/planningsfeed_wegwerkzaamheden_en_evenementen.xml.gz"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "situations/{situation_record_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "NL.NDW.Situations.Roadwork"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "NL.NDW.Situations.Roadwork",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Roadwork",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork/versions",
+    "xid": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork"
+  },
+  "NL.NDW.Situations.SafetyRelatedMessage": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.Situations.SafetyRelatedMessage",
+    "description": "Safety-related traffic information message from the Dutch NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard notifications on the national road network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://opendata.ndw.nu/veiligheidsgerelateerde_berichten_srti.xml.gz"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "situations/{situation_record_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "NL.NDW.Situations.SafetyRelatedMessage"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "NL.NDW.Situations.SafetyRelatedMessage",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "SafetyRelatedMessage",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage/versions",
+    "xid": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage"
+  },
+  "NL.NDW.Situations.TemporaryClosure": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.Situations.TemporaryClosure",
+    "description": "Temporary road closure from the Dutch NDW DATEX II tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or lane on the Dutch national road network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://opendata.ndw.nu/tijdelijke_verkeersmaatregelen_afsluitingen.xml.gz"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "situations/{situation_record_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "NL.NDW.Situations.TemporaryClosure"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "NL.NDW.Situations.TemporaryClosure",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporaryClosure/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "TemporaryClosure",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporaryClosure",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporaryClosure/versions",
+    "xid": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporaryClosure"
+  },
+  "NL.NDW.Situations.TemporarySpeedLimit": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.Situations.TemporarySpeedLimit",
+    "description": "Temporary speed limit measure from the Dutch NDW DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in maximum speed on a section of the national road network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://opendata.ndw.nu/tijdelijke_verkeersmaatregelen_maximum_snelheden.xml.gz"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "situations/{situation_record_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "NL.NDW.Situations.TemporarySpeedLimit"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "NL.NDW.Situations.TemporarySpeedLimit",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporarySpeedLimit/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "TemporarySpeedLimit",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporarySpeedLimit",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporarySpeedLimit/versions",
+    "xid": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporarySpeedLimit"
+  }
+}

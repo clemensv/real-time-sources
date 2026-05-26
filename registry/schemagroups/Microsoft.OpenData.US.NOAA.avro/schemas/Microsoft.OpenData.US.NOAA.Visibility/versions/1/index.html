@@ -1,0 +1,42 @@
+{
+  "altnames": {
+    "kql": "noaa_events"
+  },
+  "ce_type": "Microsoft.OpenData.US.NOAA.Visibility",
+  "fields": [
+    {
+      "doc": "{\"description\": \"Timestamp of the visibility measurement\"}",
+      "logicalType": "timestamp-millis",
+      "name": "timestamp",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Value of the visibility\"}",
+      "name": "value",
+      "type": "double",
+      "unit": "km"
+    },
+    {
+      "doc": "A flag that indicates whether the maximum expected visibility was exceeded",
+      "name": "max_visibility_exceeded",
+      "type": "boolean"
+    },
+    {
+      "doc": "A flag that indicates whether the minimum expected visibility was exceeded",
+      "name": "min_visibility_exceeded",
+      "type": "boolean"
+    },
+    {
+      "doc": "A flag that indicates whether the rate of change tolerance limit was exceeded",
+      "name": "rate_of_change_exceeded",
+      "type": "boolean"
+    },
+    {
+      "name": "station_id",
+      "type": "string"
+    }
+  ],
+  "name": "Visibility",
+  "namespace": "Microsoft.OpenData.US.NOAA",
+  "type": "record"
+}

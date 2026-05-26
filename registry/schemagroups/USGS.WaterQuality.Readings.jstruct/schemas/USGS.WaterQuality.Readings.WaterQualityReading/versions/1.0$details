@@ -1,0 +1,13 @@
+{
+  "ancestor": "1.0",
+  "contenttype": "application/json",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "format": "JsonStructure/draft-02",
+  "isdefault": true,
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "schemaid": "USGS.WaterQuality.Readings.WaterQualityReading",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.WaterQuality.Readings.jstruct/schemas/USGS.WaterQuality.Readings.WaterQualityReading/versions/1.0",
+  "versionid": "1.0",
+  "xid": "/schemagroups/USGS.WaterQuality.Readings.jstruct/schemas/USGS.WaterQuality.Readings.WaterQualityReading/versions/1.0"
+}

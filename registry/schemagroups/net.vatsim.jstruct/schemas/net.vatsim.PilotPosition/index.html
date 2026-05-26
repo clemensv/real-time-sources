@@ -1,0 +1,130 @@
+{
+  "$id": "https://example.com/schemas/net/vatsim/PilotPosition",
+  "$root": "/definitions/net/vatsim/PilotPosition",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "net": {
+      "vatsim": {
+        "PilotPosition": {
+          "description": "Current position, flight plan summary, and state of a pilot connected to the VATSIM virtual aviation network. Updated every 15 seconds at the source.",
+          "name": "PilotPosition",
+          "properties": {
+            "aircraft_short": {
+              "description": "ICAO aircraft type designator from the filed flight plan (e.g. 'B738', 'A320'). Null if no flight plan is filed.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "altitude": {
+              "description": "Indicated altitude of the aircraft in feet above mean sea level.",
+              "symbol": "ft",
+              "type": "int32",
+              "unit": "foot"
+            },
+            "arrival": {
+              "description": "ICAO code of the arrival airport from the filed flight plan. Null if no flight plan is filed.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "callsign": {
+              "description": "ATC-style callsign chosen by the pilot for this session (e.g. 'BAW123', 'N12345').",
+              "type": "string"
+            },
+            "cid": {
+              "description": "VATSIM Certificate Identifier (CID) — unique numeric member ID.",
+              "type": "int32"
+            },
+            "cruise_altitude": {
+              "description": "Planned cruise altitude or flight level from the filed flight plan (e.g. '36000' or 'FL350'). Null if no flight plan is filed.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "departure": {
+              "description": "ICAO code of the departure airport from the filed flight plan. Null if no flight plan is filed.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "flight_rules": {
+              "description": "Flight rules filed in the flight plan: 'I' for Instrument Flight Rules, 'V' for Visual Flight Rules. Null if no flight plan is filed.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "groundspeed": {
+              "description": "Ground speed of the aircraft in knots.",
+              "symbol": "kn",
+              "type": "int32",
+              "unit": "knot"
+            },
+            "heading": {
+              "description": "Magnetic heading of the aircraft in degrees (0-359).",
+              "symbol": "°",
+              "type": "int32",
+              "unit": "degree"
+            },
+            "last_updated": {
+              "description": "UTC timestamp of the last position update received by the VATSIM data servers (RFC3339 string).",
+              "type": "string"
+            },
+            "latitude": {
+              "description": "Aircraft latitude in decimal degrees (WGS-84). Positive is north.",
+              "symbol": "°",
+              "type": "double",
+              "unit": "degree"
+            },
+            "longitude": {
+              "description": "Aircraft longitude in decimal degrees (WGS-84). Positive is east.",
+              "symbol": "°",
+              "type": "double",
+              "unit": "degree"
+            },
+            "pilot_rating": {
+              "description": "VATSIM pilot rating bitmask. 0 = New Member (P0), 1 = PPL, 3 = IR, 7 = CMEL, 15 = ATPL.",
+              "type": "int32"
+            },
+            "qnh_mb": {
+              "description": "Altimeter setting (QNH) in millibars / hectopascals as reported by the pilot client.",
+              "symbol": "mb",
+              "type": "int32",
+              "unit": "millibar"
+            },
+            "route": {
+              "description": "Route string from the filed flight plan. Null if no flight plan is filed.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "transponder": {
+              "description": "Four-digit transponder (squawk) code currently set by the pilot.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "cid",
+            "callsign",
+            "latitude",
+            "longitude",
+            "altitude",
+            "groundspeed",
+            "heading",
+            "transponder",
+            "qnh_mb",
+            "pilot_rating",
+            "last_updated"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "PilotPosition"
+}

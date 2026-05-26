@@ -1,0 +1,22 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/PTWC.Bulletins/messages/PTWC.TsunamiBulletin",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "PTWC.Bulletins.mqtt.TsunamiBulletin",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/PTWC.Bulletins.mqtt/messages/PTWC.Bulletins.mqtt.TsunamiBulletin/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "TsunamiBulletin",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": false,
+    "topic_name": "alerts/intl/ptwc/ptwc-tsunami/{basin}/{ptwc_level}/{bulletin_id}/bulletin"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/PTWC.Bulletins.mqtt/messages/PTWC.Bulletins.mqtt.TsunamiBulletin",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/PTWC.Bulletins.mqtt/messages/PTWC.Bulletins.mqtt.TsunamiBulletin/versions",
+  "xid": "/messagegroups/PTWC.Bulletins.mqtt/messages/PTWC.Bulletins.mqtt.TsunamiBulletin"
+}

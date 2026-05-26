@@ -1,0 +1,14 @@
+content-disposition:BE.Vlaanderen.Waterinfo.VMM.Station
+content-length:1186
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.Station/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:Avro/1.11.3
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:BE.Vlaanderen.Waterinfo.VMM.Station
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.Station/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/BE.Vlaanderen.Waterinfo.VMM.avro/schemas/BE.Vlaanderen.Waterinfo.VMM.Station/versions/1

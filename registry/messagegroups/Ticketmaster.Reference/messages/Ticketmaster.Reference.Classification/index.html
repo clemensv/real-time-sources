@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Reference.Classification",
+  "description": "Reference data for a Ticketmaster classification segment (e.g. Music, Sports, Arts \u0026 Theatre). Emitted at bridge startup and refreshed daily. Carries the stable segment identifier, name, and the primary genre and subgenre under that segment.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://app.ticketmaster.com/discovery/v2/classifications"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{entity_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "Ticketmaster.Reference.Classification"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Ticketmaster.Reference.Classification",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Classification/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Classification",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Classification",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Classification/versions",
+  "xid": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Classification"
+}

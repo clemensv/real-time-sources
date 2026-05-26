@@ -1,0 +1,69 @@
+{
+  "description": "A transport update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates for Washington road, bridge, pass, ferry, and border resources.",
+  "doc": "Toll rate.",
+  "fields": [
+    {
+      "name": "trip_name",
+      "type": "string"
+    },
+    {
+      "name": "state_route",
+      "type": "string"
+    },
+    {
+      "name": "travel_direction",
+      "type": "string"
+    },
+    {
+      "name": "current_toll",
+      "type": "int"
+    },
+    {
+      "default": null,
+      "name": "current_message",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "time_updated",
+      "type": "string"
+    },
+    {
+      "name": "start_location_name",
+      "type": "string"
+    },
+    {
+      "name": "start_latitude",
+      "type": "double"
+    },
+    {
+      "name": "start_longitude",
+      "type": "double"
+    },
+    {
+      "name": "start_milepost",
+      "type": "double"
+    },
+    {
+      "name": "end_location_name",
+      "type": "string"
+    },
+    {
+      "name": "end_latitude",
+      "type": "double"
+    },
+    {
+      "name": "end_longitude",
+      "type": "double"
+    },
+    {
+      "name": "end_milepost",
+      "type": "double"
+    }
+  ],
+  "name": "TollRate",
+  "namespace": "us.wa.wsdot.tolls",
+  "type": "record"
+}

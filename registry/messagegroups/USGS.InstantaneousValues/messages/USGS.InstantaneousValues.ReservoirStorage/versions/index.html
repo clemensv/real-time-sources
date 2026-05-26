@@ -1,0 +1,40 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/USGS.InstantaneousValues.jstruct/schemas/USGS.InstantaneousValues.ReservoirStorage",
+    "description": "A current reservoir record from the U.S. Geological Survey (USGS) Water Services API. It reports the latest storage, elevation, capacity, or related reservoir status available for one reservoir.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{source_uri}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}"
+      },
+      "time": {
+        "required": false,
+        "type": "timestamp",
+        "value": "{datetime}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "USGS.InstantaneousValues.ReservoirStorage"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "USGS.InstantaneousValues.ReservoirStorage",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "ReservoirStorage",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.ReservoirStorage/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.ReservoirStorage/versions/1"
+  }
+}

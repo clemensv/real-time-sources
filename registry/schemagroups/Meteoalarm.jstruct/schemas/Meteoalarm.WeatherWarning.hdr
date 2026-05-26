@@ -1,0 +1,16 @@
+content-disposition:Meteoalarm.WeatherWarning
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/Meteoalarm.jstruct/schemas/Meteoalarm.WeatherWarning/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/Meteoalarm.jstruct/schemas/Meteoalarm.WeatherWarning/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:Meteoalarm.WeatherWarning
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/Meteoalarm.jstruct/schemas/Meteoalarm.WeatherWarning
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/Meteoalarm.jstruct/schemas/Meteoalarm.WeatherWarning/versions
+xregistry-xid:/schemagroups/Meteoalarm.jstruct/schemas/Meteoalarm.WeatherWarning

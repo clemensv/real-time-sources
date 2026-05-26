@@ -1,0 +1,37 @@
+{
+  "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/AirQuality/Region",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record published by Singapore's National Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.",
+  "name": "Region",
+  "properties": {
+    "latitude": {
+      "description": "WGS84 latitude of the region label location as published by the NEA API.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "degree"
+    },
+    "longitude": {
+      "description": "WGS84 longitude of the region label location as published by the NEA API.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "degree"
+    },
+    "region": {
+      "altenums": [
+        "west",
+        "east",
+        "central",
+        "south",
+        "north"
+      ],
+      "description": "Region identifier. One of: west, east, central, south, north.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "region",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

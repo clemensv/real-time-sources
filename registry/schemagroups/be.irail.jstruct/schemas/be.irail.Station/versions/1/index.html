@@ -1,0 +1,70 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/be/irail/Station",
+  "$root": "/definitions/be/irail/Station",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "be": {
+      "irail": {
+        "Station": {
+          "description": "Metadata for a Belgian railway station in the NMBS/SNCB network as provided by the iRail API. The Belgian rail network comprises approximately 600 passenger stations. Each station has a unique UIC-derived numeric identifier assigned by the NMBS, geographic coordinates, and multilingual names.",
+          "name": "Station",
+          "properties": {
+            "latitude": {
+              "altnames": {
+                "json": "locationY"
+              },
+              "description": "Latitude of the station in WGS84 decimal degrees. Sourced from the iRail locationY field.",
+              "symbol": "°",
+              "type": "double",
+              "unit": "deg"
+            },
+            "longitude": {
+              "altnames": {
+                "json": "locationX"
+              },
+              "description": "Longitude of the station in WGS84 decimal degrees. Sourced from the iRail locationX field.",
+              "symbol": "°",
+              "type": "double",
+              "unit": "deg"
+            },
+            "name": {
+              "description": "Default display name of the station in the requested language. Example: 'Brussels-South'.",
+              "type": "string"
+            },
+            "standard_name": {
+              "altnames": {
+                "json": "standardname"
+              },
+              "description": "Consistent official station name that does not vary by language, typically using the primary local name. Example: 'Bruxelles-Midi / Brussel-Zuid'.",
+              "type": "string"
+            },
+            "station_id": {
+              "altnames": {
+                "json": "id"
+              },
+              "description": "Nine-digit UIC-derived numeric station identifier assigned by NMBS. Extracted from the iRail id field by stripping the 'BE.NMBS.' prefix. Example: '008814001' for Brussels-South (Bruxelles-Midi / Brussel-Zuid).",
+              "type": "string"
+            },
+            "uri": {
+              "altnames": {
+                "json": "@id"
+              },
+              "description": "Stable linked-data URI identifying this station in the iRail namespace. Example: 'http://irail.be/stations/NMBS/008814001'.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "station_id",
+            "name",
+            "standard_name",
+            "longitude",
+            "latitude",
+            "uri"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "Station"
+}

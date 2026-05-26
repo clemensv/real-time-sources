@@ -1,0 +1,17 @@
+content-disposition:GeneralTransitFeed.BookingRules
+content-length:723
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeed.BookingRules/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2024-10-18T13:48:21.181899Z
+xregistry-epoch:1
+xregistry-format:Avro
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeed.BookingRules/meta
+xregistry-modifiedat:2024-10-18T13:48:21.181899Z
+xregistry-schemaid:GeneralTransitFeed.BookingRules
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeed.BookingRules
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeed.BookingRules/versions
+xregistry-xid:/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeed.BookingRules

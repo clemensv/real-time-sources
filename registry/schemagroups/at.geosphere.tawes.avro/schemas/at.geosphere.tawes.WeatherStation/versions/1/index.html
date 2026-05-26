@@ -1,0 +1,49 @@
+{
+  "description": "Reference details for one station, monitoring site, or forecast area in the GeoSphere Austria Weather source.",
+  "doc": "Reference data for a GeoSphere Austria TAWES automatic weather station.",
+  "fields": [
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the GeoSphere Austria Weather source.",
+      "doc": "Stable GeoSphere Austria numeric station identifier.",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the GeoSphere Austria Weather source.",
+      "doc": "Station name from the GeoSphere metadata.",
+      "name": "station_name",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+      "doc": "WGS84 latitude of the station in decimal degrees.",
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+      "doc": "WGS84 longitude of the station in decimal degrees.",
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+      "doc": "Station altitude above sea level in meters.",
+      "name": "altitude",
+      "type": "double"
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+      "doc": "Austrian federal state (Bundesland) where the station is located.",
+      "name": "state",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "WeatherStation",
+  "namespace": "at.geosphere.tawes",
+  "type": "record"
+}

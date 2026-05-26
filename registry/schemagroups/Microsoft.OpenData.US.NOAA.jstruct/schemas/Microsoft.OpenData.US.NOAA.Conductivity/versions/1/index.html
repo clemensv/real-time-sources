@@ -1,0 +1,58 @@
+{
+  "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/Conductivity",
+  "$root": "/definitions/Microsoft/OpenData/US/NOAA/Conductivity",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Microsoft": {
+      "OpenData": {
+        "US": {
+          "NOAA": {
+            "Conductivity": {
+              "name": "Conductivity",
+              "properties": {
+                "max_conductivity_exceeded": {
+                  "description": "Flag indicating if the maximum expected conductivity was exceeded",
+                  "type": "boolean"
+                },
+                "min_conductivity_exceeded": {
+                  "description": "Flag indicating if the minimum expected conductivity was exceeded",
+                  "type": "boolean"
+                },
+                "rate_of_change_exceeded": {
+                  "description": "Flag indicating if the rate of change tolerance limit was exceeded",
+                  "type": "boolean"
+                },
+                "region": {
+                  "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa.",
+                  "type": "string"
+                },
+                "station_id": {
+                  "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+                  "type": "string"
+                },
+                "timestamp": {
+                  "description": "{\"description\": \"Timestamp of the conductivity measurement\"}",
+                  "type": "string"
+                },
+                "value": {
+                  "description": "{\"description\": \"Value of the conductivity\"}",
+                  "type": "double"
+                }
+              },
+              "required": [
+                "station_id",
+                "timestamp",
+                "value",
+                "max_conductivity_exceeded",
+                "min_conductivity_exceeded",
+                "rate_of_change_exceeded"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "Conductivity"
+}

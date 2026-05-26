@@ -1,0 +1,13 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2024-10-18T13:48:54.369996Z",
+  "epoch": 1,
+  "format": "Avro",
+  "isdefault": true,
+  "modifiedat": "2024-10-18T13:48:54.369996Z",
+  "schemaid": "GeneralTransitFeedStatic.Levels",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.Levels/versions/1",
+  "versionid": "1",
+  "xid": "/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.Levels/versions/1"
+}

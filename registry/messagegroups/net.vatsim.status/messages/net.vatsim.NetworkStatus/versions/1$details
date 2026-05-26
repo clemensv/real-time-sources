@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/net.vatsim.jstruct/schemas/net.vatsim.NetworkStatus",
+  "description": "Aggregate network status snapshot from the VATSIM data feed, emitted once per poll cycle.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://data.vatsim.net/v3/vatsim-data.json"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{callsign}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "net.vatsim.NetworkStatus"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "net.vatsim.NetworkStatus",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "NetworkStatus",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.status/messages/net.vatsim.NetworkStatus/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/net.vatsim.status/messages/net.vatsim.NetworkStatus/versions/1"
+}

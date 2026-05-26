@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/PL.Gov.IMGW.Hydro.jstruct/schemas/PL.Gov.IMGW.Hydro.WaterLevelObservation",
+    "description": "A current measurement from the Polish Institute of Meteorology and Water Management (IMGW-PIB) for one monitoring site. It carries water level and discharge observations when the upstream feed reports a new or refreshed value.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://danepubliczne.imgw.pl"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "PL.Gov.IMGW.Hydro.WaterLevelObservation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "PL.Gov.IMGW.Hydro.WaterLevelObservation",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WaterLevelObservation",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/PL.Gov.IMGW.Hydro/messages/PL.Gov.IMGW.Hydro.WaterLevelObservation/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/PL.Gov.IMGW.Hydro/messages/PL.Gov.IMGW.Hydro.WaterLevelObservation/versions/1"
+  }
+}

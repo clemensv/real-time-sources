@@ -1,0 +1,37 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://dataset.api.hub.geosphere.at/v1/station/current/tawes-v1-10min/metadata"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "at.geosphere.tawes.WeatherStation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "at.geosphere.tawes.mqtt.WeatherStation",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WeatherStation",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": true,
+    "topic_name": "weather/at/geosphere/geosphere-austria/{bundesland}/{station_id}/info"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/at.geosphere.tawes.mqtt/messages/at.geosphere.tawes.mqtt.WeatherStation/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/at.geosphere.tawes.mqtt/messages/at.geosphere.tawes.mqtt.WeatherStation/versions/1"
+}

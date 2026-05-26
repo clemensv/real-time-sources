@@ -1,0 +1,28 @@
+{
+  "description": "Measurement payload for observations in the UK Environment Agency Flood Monitoring source.",
+  "doc": "Measurement payload for observations in the UK Environment Agency Flood Monitoring source.",
+  "fields": [
+    {
+      "name": "station_reference",
+      "type": "string"
+    },
+    {
+      "name": "date_time",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "name": "measure",
+      "type": "string"
+    },
+    {
+      "name": "value",
+      "type": "double"
+    }
+  ],
+  "name": "Reading",
+  "namespace": "UK.Gov.Environment.EA.FloodMonitoring",
+  "type": "record"
+}

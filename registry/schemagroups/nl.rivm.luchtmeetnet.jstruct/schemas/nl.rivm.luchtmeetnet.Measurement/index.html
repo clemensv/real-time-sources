@@ -1,0 +1,44 @@
+{
+  "$id": "https://realtime.example.com/schemas/nl/rivm/luchtmeetnet/Measurement",
+  "$root": "/definitions/nl/rivm/luchtmeetnet/Measurement",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "nl": {
+      "rivm": {
+        "luchtmeetnet": {
+          "Measurement": {
+            "description": "Hourly Luchtmeetnet measurement for a station and component formula.",
+            "name": "Measurement",
+            "properties": {
+              "formula": {
+                "description": "Component formula code identifying what was measured, for example NO2, O3, PM10, or FN.",
+                "type": "string"
+              },
+              "station_number": {
+                "description": "Stable Luchtmeetnet station code identifying where the measurement was taken.",
+                "type": "string"
+              },
+              "timestamp_measured": {
+                "description": "Timestamp at which the value was measured, encoded as an ISO 8601 date-time string with timezone offset.",
+                "type": "string"
+              },
+              "value": {
+                "description": "Numeric measurement value published by the API for the station and formula at the given timestamp. Standard gaseous and particulate concentration formulas are expressed in micrograms per cubic meter; some specialised formulas such as particle counts or black-carbon indicators may use different domain-specific units, so consumers should interpret the formula-specific semantics together with the component catalog.",
+                "type": "double",
+                "unit": "ugm-3"
+              }
+            },
+            "required": [
+              "station_number",
+              "formula",
+              "value",
+              "timestamp_measured"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "Measurement"
+}

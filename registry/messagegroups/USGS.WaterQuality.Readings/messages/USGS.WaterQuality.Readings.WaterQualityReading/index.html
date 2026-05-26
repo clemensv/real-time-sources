@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/USGS.WaterQuality.Readings.jstruct/schemas/USGS.WaterQuality.Readings.WaterQualityReading",
+  "description": "A current measurement from the U.S. Geological Survey (USGS) Water Services API for one monitoring site. It carries continuous water-quality sensor readings when the upstream feed reports a new or refreshed value.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{source_uri}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{site_number}/{parameter_code}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "USGS.WaterQuality.Readings.WaterQualityReading"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "USGS.WaterQuality.Readings.WaterQualityReading",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.WaterQuality.Readings/messages/USGS.WaterQuality.Readings.WaterQualityReading/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WaterQualityReading",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.WaterQuality.Readings/messages/USGS.WaterQuality.Readings.WaterQualityReading",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.WaterQuality.Readings/messages/USGS.WaterQuality.Readings.WaterQualityReading/versions",
+  "xid": "/messagegroups/USGS.WaterQuality.Readings/messages/USGS.WaterQuality.Readings.WaterQualityReading"
+}

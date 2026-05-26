@@ -1,0 +1,14 @@
+content-disposition:us.wa.wsdot.traffic.TrafficFlowReading
+content-length:725
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowReading/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:Avro/1.11.3
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:us.wa.wsdot.traffic.TrafficFlowReading
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowReading/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/us.wa.wsdot.traffic.avro/schemas/us.wa.wsdot.traffic.TrafficFlowReading/versions/1

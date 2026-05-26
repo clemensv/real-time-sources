@@ -1,0 +1,16 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2024-11-14T12:00:02Z",
+  "epoch": 1,
+  "format": "Avro",
+  "isdefault": true,
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Repost/meta",
+  "modifiedat": "2024-11-14T12:00:02Z",
+  "schemaid": "Bluesky.Feed.Repost",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Repost",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Repost/versions",
+  "xid": "/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Repost"
+}

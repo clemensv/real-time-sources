@@ -1,0 +1,11 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "MQTT/5.0 transport variant for Seattle Fire 911 dispatch incidents. Topics are non-retained QoS-1 event messages under civic-events/us/wa/seattle/public-safety/fire-dispatch/{incident_type_slug}/{incident_number}. The incident_type_slug field is the deterministic lowercase kebab-case routing key derived from the display incident_type; incident_number preserves the CloudEvents subject/Kafka key for per-incident subscriptions. Message expiry is 86400 seconds for queued/offline delivery only; this event stream does not use retained MQTT state.",
+  "epoch": 1,
+  "messagegroupid": "US.WA.Seattle.Fire911.mqtt",
+  "messagescount": 1,
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.WA.Seattle.Fire911.mqtt/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.WA.Seattle.Fire911.mqtt",
+  "xid": "/messagegroups/US.WA.Seattle.Fire911.mqtt"
+}

@@ -1,0 +1,97 @@
+{
+  "doc": "Actual electricity demand record from TEPCO Electricity Forecast.",
+  "fields": [
+    {
+      "doc": "Operating date in ISO 8601 calendar-date form.",
+      "name": "date",
+      "type": "string"
+    },
+    {
+      "doc": "JST HH:MM clock time and stable key component.",
+      "name": "time",
+      "type": "string"
+    },
+    {
+      "doc": "Measurement timestamp converted to UTC RFC 3339.",
+      "name": "datetime",
+      "type": "string"
+    },
+    {
+      "doc": "Measurement timestamp in JST RFC 3339.",
+      "name": "datetime_local",
+      "type": "string"
+    },
+    {
+      "doc": "Actual electricity demand converted from 万kW to MW.",
+      "name": "actual_demand_mw",
+      "type": "double"
+    },
+    {
+      "doc": "Original actual demand value in 万kW.",
+      "name": "actual_demand_jp_unit_value",
+      "type": "int"
+    },
+    {
+      "default": null,
+      "doc": "Solar generation converted from 万kW to MW for five-minute rows.",
+      "name": "solar_generation_mw",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Original solar generation value in 万kW for five-minute rows.",
+      "name": "solar_generation_jp_unit_value",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Solar generation percentage of electricity usage for five-minute rows.",
+      "name": "solar_share_pct",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Usage percentage for hourly rows.",
+      "name": "usage_pct",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Supply capacity converted from 万kW to MW for hourly rows.",
+      "name": "supply_capacity_mw",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Original supply capacity value in 万kW for hourly rows.",
+      "name": "supply_capacity_jp_unit_value",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "doc": "Constant TEPCO area code.",
+      "name": "area_code",
+      "type": "string"
+    }
+  ],
+  "name": "DemandActual",
+  "namespace": "jp.tepco.denkiyoho",
+  "type": "record"
+}

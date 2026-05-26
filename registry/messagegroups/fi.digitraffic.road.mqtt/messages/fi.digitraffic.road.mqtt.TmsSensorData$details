@@ -1,0 +1,22 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.TmsSensorData",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "fi.digitraffic.road.mqtt.TmsSensorData",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.mqtt/messages/fi.digitraffic.road.mqtt.TmsSensorData/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "TmsSensorData",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 0,
+    "retain": false,
+    "topic_name": "traffic/fi/fintraffic/digitraffic-road/{station_id}/{sensor_id}/tms-sensor-data"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.mqtt/messages/fi.digitraffic.road.mqtt.TmsSensorData",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.mqtt/messages/fi.digitraffic.road.mqtt.TmsSensorData/versions",
+  "xid": "/messagegroups/fi.digitraffic.road.mqtt/messages/fi.digitraffic.road.mqtt.TmsSensorData"
+}

@@ -1,0 +1,86 @@
+{
+  "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/WaterLevel",
+  "$root": "/definitions/Microsoft/OpenData/US/NOAA/WaterLevel",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Microsoft": {
+      "OpenData": {
+        "US": {
+          "NOAA": {
+            "QualityLevel": {
+              "description": "Quality Assurance/Quality Control level",
+              "enum": [
+                "Preliminary",
+                "Verified"
+              ],
+              "name": "QualityLevel",
+              "type": "string"
+            },
+            "WaterLevel": {
+              "name": "WaterLevel",
+              "properties": {
+                "flat_tolerance_limit": {
+                  "description": "{\"description\": \"Flag indicating if the flat tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}",
+                  "type": "boolean"
+                },
+                "max_min_expected_height": {
+                  "description": "{\"description\": \"Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}",
+                  "type": "boolean"
+                },
+                "outside_sigma_band": {
+                  "description": "{\"description\": \"Flag indicating if the water level is outside a 3-sigma band. Possible values: 'false' (not outside), 'true' (outside).\"}",
+                  "type": "boolean"
+                },
+                "quality": {
+                  "description": "Quality Assurance/Quality Control level reported by NOAA for the water level measurement.",
+                  "enum": [
+                    "Preliminary",
+                    "Verified"
+                  ],
+                  "type": "string"
+                },
+                "rate_of_change_limit": {
+                  "description": "{\"description\": \"Flag indicating if the rate of change tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}",
+                  "type": "boolean"
+                },
+                "region": {
+                  "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa.",
+                  "type": "string"
+                },
+                "station_id": {
+                  "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+                  "type": "string"
+                },
+                "stddev": {
+                  "description": "{\"description\": \"Standard deviation of 1-second samples used to compute the water level height\"}",
+                  "type": "double"
+                },
+                "timestamp": {
+                  "description": "{\"description\": \"Timestamp of the water level measurement\"}",
+                  "type": "string"
+                },
+                "value": {
+                  "description": "{\"description\": \"Value of the water level\"}",
+                  "type": "double"
+                }
+              },
+              "required": [
+                "station_id",
+                "timestamp",
+                "value",
+                "stddev",
+                "outside_sigma_band",
+                "flat_tolerance_limit",
+                "rate_of_change_limit",
+                "max_min_expected_height",
+                "quality"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "WaterLevel"
+}

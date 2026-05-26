@@ -1,0 +1,46 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/epa-uv/schemas/US.EPA.UVIndex.HourlyForecast.json",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Hourly UV Index forecast for a configured city and state from the EPA Envirofacts UV hourly service.",
+  "name": "HourlyForecast",
+  "properties": {
+    "city": {
+      "description": "City for which the hourly UV forecast was requested.",
+      "type": "string"
+    },
+    "city_slug": {
+      "description": "Lowercase kebab-case city segment used for MQTT/UNS routing; derived from city without the state suffix.",
+      "type": "string"
+    },
+    "forecast_datetime": {
+      "description": "Forecast timestamp normalized to ISO local datetime form without an explicit UTC offset. Used as the retained MQTT hourly slot with message expiry.",
+      "type": "string"
+    },
+    "forecast_hour": {
+      "description": "Topic-safe retained forecast slot in YYYYMMDDTHH form, derived from forecast_datetime with zero padding and no offset, colon, slash, plus, or hash characters.",
+      "type": "string"
+    },
+    "location_id": {
+      "description": "Stable slug derived from the configured city and state.",
+      "type": "string"
+    },
+    "state": {
+      "description": "Lowercase two-letter US state segment used for MQTT/UNS routing; display/input state is normalized by the bridge.",
+      "type": "string"
+    },
+    "uv_index": {
+      "description": "Hourly UV Index forecast value.",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "location_id",
+    "city",
+    "city_slug",
+    "state",
+    "forecast_datetime",
+    "forecast_hour",
+    "uv_index"
+  ],
+  "type": "object"
+}

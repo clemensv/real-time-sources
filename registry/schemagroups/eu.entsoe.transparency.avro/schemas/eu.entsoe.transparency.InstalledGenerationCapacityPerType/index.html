@@ -1,0 +1,46 @@
+{
+  "altnames": {
+    "kql": "InstalledGenerationCapacityPerType"
+  },
+  "fields": [
+    {
+      "doc": "EIC code of the bidding zone",
+      "name": "inDomain",
+      "type": "string"
+    },
+    {
+      "doc": "Production type code (B01=Biomass, B02=Lignite, ...)",
+      "name": "psrType",
+      "type": "string"
+    },
+    {
+      "doc": "Installed capacity in MW",
+      "name": "quantity",
+      "type": "double",
+      "unit": "MW"
+    },
+    {
+      "doc": "ISO 8601 duration",
+      "name": "resolution",
+      "type": "string"
+    },
+    {
+      "doc": "Business type code",
+      "name": "businessType",
+      "type": "string"
+    },
+    {
+      "doc": "ENTSO-E document type code (A68)",
+      "name": "documentType",
+      "type": "string"
+    },
+    {
+      "doc": "Unit of measurement (MAW)",
+      "name": "unitName",
+      "type": "string"
+    }
+  ],
+  "name": "InstalledGenerationCapacityPerType",
+  "namespace": "eu.entsoe.transparency",
+  "type": "record"
+}

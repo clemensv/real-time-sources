@@ -1,0 +1,121 @@
+{
+  "$id": "https://example.com/schemas/CA/Gov/ECCC/Hydro/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference data for a Water Survey of Canada hydrometric monitoring station from the ECCC OGC API hydrometric-stations collection.",
+  "name": "Station",
+  "properties": {
+    "basin": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for canada-eccc-wateroffice.",
+      "type": "string"
+    },
+    "contributor_en": {
+      "altnames": [
+        "CONTRIBUTOR_EN"
+      ],
+      "description": "Name of the contributing agency responsible for operating this station in English, e.g. 'Water Survey of Canada'. Upstream field: CONTRIBUTOR_EN.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "drainage_area_effect": {
+      "altnames": [
+        "DRAINAGE_AREA_EFFECT"
+      ],
+      "description": "Effective (contributing) drainage area of the watershed upstream of this station in square kilometres, excluding non-contributing areas. Upstream field: DRAINAGE_AREA_EFFECT.",
+      "symbol": "km²",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "square kilometre"
+    },
+    "drainage_area_gross": {
+      "altnames": [
+        "DRAINAGE_AREA_GROSS"
+      ],
+      "description": "Gross drainage area of the watershed upstream of this station in square kilometres. Upstream field: DRAINAGE_AREA_GROSS.",
+      "symbol": "km²",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "square kilometre"
+    },
+    "latitude": {
+      "description": "Geographic latitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degree"
+    },
+    "longitude": {
+      "description": "Geographic longitude of the station in decimal degrees (WGS84), derived from the GeoJSON geometry coordinates.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degree"
+    },
+    "prov_terr_state_loc": {
+      "altnames": [
+        "PROV_TERR_STATE_LOC"
+      ],
+      "description": "Two-letter province, territory or state location code where the station is situated, e.g. 'AB' for Alberta. Upstream field: PROV_TERR_STATE_LOC.",
+      "type": "string"
+    },
+    "real_time": {
+      "altnames": [
+        "REAL_TIME"
+      ],
+      "description": "Indicates whether real-time data are available for this station via the WSC real-time data service. Upstream field: REAL_TIME.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "rhbn": {
+      "altnames": [
+        "RHBN"
+      ],
+      "description": "Indicates whether the station is part of the Reference Hydrometric Basin Network (RHBN), a subset of hydrologically stable, minimally disturbed basins used for climate change studies. Upstream field: RHBN.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "station_name": {
+      "altnames": [
+        "STATION_NAME"
+      ],
+      "description": "Official name of the hydrometric station, e.g. 'ELBOW RIVER AT BRAGG CREEK'. Upstream field: STATION_NAME.",
+      "type": "string"
+    },
+    "station_number": {
+      "altnames": [
+        "STATION_NUMBER"
+      ],
+      "description": "Unique WSC station identifier following the scheme 2-digit major drainage area + letter + station digits, e.g. '05BJ004'. Upstream field: STATION_NUMBER.",
+      "type": "string"
+    },
+    "status_en": {
+      "altnames": [
+        "STATUS_EN"
+      ],
+      "description": "Operational status of the station in English, e.g. 'Active', 'Discontinued'. Upstream field: STATUS_EN.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "station_number",
+    "station_name",
+    "prov_terr_state_loc"
+  ],
+  "type": "object"
+}

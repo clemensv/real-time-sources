@@ -1,0 +1,59 @@
+{
+  "doc": "Continuous-wind measurement from the NDBC .cwind realtime2 product.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "default": null,
+      "name": "wind_direction",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "wind_speed",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "gust_direction",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "gust",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "gust_time_code",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "BuoyContinuousWindObservation",
+  "namespace": "Microsoft.OpenData.US.NOAA.NDBC",
+  "type": "record"
+}

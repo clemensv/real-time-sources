@@ -1,0 +1,67 @@
+{
+  "doc": "Reference data for a Sensor.Community sensor node including hardware type and latest known location metadata.",
+  "fields": [
+    {
+      "doc": "Stable integer identifier of the Sensor.Community sensor device. This value is used as the CloudEvents subject and Kafka key.",
+      "name": "sensor_id",
+      "type": "int"
+    },
+    {
+      "doc": "Numeric upstream identifier for the sensor hardware type, such as the Sensor.Community type id for SDS011 or BME280.",
+      "name": "sensor_type_id",
+      "type": "int"
+    },
+    {
+      "doc": "Upstream sensor hardware type name published under sensor.sensor_type.name, for example SDS011, SPS30, BME280, or DHT22.",
+      "name": "sensor_type_name",
+      "type": "string"
+    },
+    {
+      "doc": "Manufacturer name published by Sensor.Community for the sensor hardware type, taken from sensor.sensor_type.manufacturer.",
+      "name": "sensor_type_manufacturer",
+      "type": "string"
+    },
+    {
+      "doc": "Sensor pin designation reported by the upstream payload under sensor.pin.",
+      "name": "pin",
+      "type": "string"
+    },
+    {
+      "doc": "Stable integer identifier of the Sensor.Community location object associated with the reading.",
+      "name": "location_id",
+      "type": "int"
+    },
+    {
+      "doc": "Latitude of the sensor location in WGS84 decimal degrees.",
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "doc": "Longitude of the sensor location in WGS84 decimal degrees.",
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "default": null,
+      "doc": "Altitude of the sensor location in meters above sea level when supplied by the upstream payload.",
+      "name": "altitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "doc": "ISO 3166-1 alpha-2 country code published in the Sensor.Community location record.",
+      "name": "country",
+      "type": "string"
+    },
+    {
+      "doc": "True when the upstream location.indoor flag marks the sensor as indoor; false when the sensor is marked as outdoor.",
+      "name": "indoor",
+      "type": "boolean"
+    }
+  ],
+  "name": "SensorInfo",
+  "namespace": "io.sensor.community",
+  "type": "record"
+}

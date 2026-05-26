@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Reference.Info",
+  "description": "Retained reference information for MQTT/AMQP topic discovery.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://github.com/clemensv/real-time-sources"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{entity_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "Ticketmaster.Reference.Info"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Ticketmaster.Reference.Info",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Info/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Info",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Info",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Info/versions",
+  "xid": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Info"
+}

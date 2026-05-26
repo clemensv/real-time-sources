@@ -1,0 +1,47 @@
+{
+  "doc": "Current state and frequency of an air traffic controller connected to the VATSIM virtual aviation network.",
+  "fields": [
+    {
+      "doc": "VATSIM Certificate Identifier (CID).",
+      "name": "cid",
+      "type": "int"
+    },
+    {
+      "doc": "Controller position callsign.",
+      "name": "callsign",
+      "type": "string"
+    },
+    {
+      "doc": "Radio frequency in MHz.",
+      "name": "frequency",
+      "type": "string"
+    },
+    {
+      "doc": "VATSIM facility type code.",
+      "name": "facility",
+      "type": "int"
+    },
+    {
+      "doc": "VATSIM ATC rating.",
+      "name": "rating",
+      "type": "int"
+    },
+    {
+      "default": null,
+      "doc": "Controller ATIS text, lines joined by newline. Null when not set.",
+      "name": "text_atis",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "UTC timestamp of last update.",
+      "name": "last_updated",
+      "type": "string"
+    }
+  ],
+  "name": "ControllerPosition",
+  "namespace": "net.vatsim",
+  "type": "record"
+}

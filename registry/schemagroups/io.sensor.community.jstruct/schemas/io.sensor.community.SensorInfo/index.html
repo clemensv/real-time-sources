@@ -1,0 +1,84 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/schemas/io/sensor/community/SensorInfo",
+  "$root": "/definitions/io/sensor/community/SensorInfo",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "io": {
+      "sensor": {
+        "community": {
+          "SensorInfo": {
+            "description": "Schema for Sensor.Community sensor reference data, capturing the stable sensor identifier, hardware type, and latest known location metadata published in the Airrohr API payload.",
+            "name": "SensorInfo",
+            "properties": {
+              "altitude": {
+                "description": "Altitude of the sensor location in meters above sea level when supplied by the upstream payload.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "m"
+              },
+              "country": {
+                "description": "ISO 3166-1 alpha-2 country code published in the Sensor.Community location record.",
+                "maxLength": 2,
+                "minLength": 2,
+                "type": "string"
+              },
+              "indoor": {
+                "description": "True when the upstream location.indoor flag marks the sensor as indoor; false when the sensor is marked as outdoor.",
+                "type": "boolean"
+              },
+              "latitude": {
+                "description": "Latitude of the sensor location in WGS84 decimal degrees.",
+                "type": "double"
+              },
+              "location_id": {
+                "description": "Stable integer identifier of the Sensor.Community location object associated with the reading.",
+                "type": "integer"
+              },
+              "longitude": {
+                "description": "Longitude of the sensor location in WGS84 decimal degrees.",
+                "type": "double"
+              },
+              "pin": {
+                "description": "Sensor pin designation reported by the upstream payload under sensor.pin.",
+                "type": "string"
+              },
+              "sensor_id": {
+                "description": "Stable integer identifier of the Sensor.Community sensor device. This value is used as the CloudEvents subject and Kafka key.",
+                "type": "integer"
+              },
+              "sensor_type_id": {
+                "description": "Numeric upstream identifier for the sensor hardware type, such as the Sensor.Community type id for SDS011 or BME280.",
+                "type": "integer"
+              },
+              "sensor_type_manufacturer": {
+                "description": "Manufacturer name published by Sensor.Community for the sensor hardware type, taken from sensor.sensor_type.manufacturer.",
+                "type": "string"
+              },
+              "sensor_type_name": {
+                "description": "Upstream sensor hardware type name published under sensor.sensor_type.name, for example SDS011, SPS30, BME280, or DHT22.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "sensor_id",
+              "sensor_type_id",
+              "sensor_type_name",
+              "sensor_type_manufacturer",
+              "pin",
+              "location_id",
+              "latitude",
+              "longitude",
+              "altitude",
+              "country",
+              "indoor"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "SensorInfo"
+}

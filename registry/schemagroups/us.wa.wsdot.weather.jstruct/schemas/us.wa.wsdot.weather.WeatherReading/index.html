@@ -1,0 +1,193 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/weather/WeatherReading",
+  "$root": "/definitions/us/wa/wsdot/weather/WeatherReading",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "us": {
+      "wa": {
+        "wsdot": {
+          "weather": {
+            "WeatherReading": {
+              "description": "A current weather reading from a WSDOT road weather station including temperature, wind, precipitation, pressure, humidity, visibility, and sky coverage.",
+              "name": "WeatherReading",
+              "properties": {
+                "barometric_pressure": {
+                  "altnames": {
+                    "json": "BarometricPressure"
+                  },
+                  "description": "Barometric pressure in hPa.",
+                  "symbol": "hPa",
+                  "type": [
+                    "double",
+                    "null"
+                  ],
+                  "unit": "hPa"
+                },
+                "latitude": {
+                  "altnames": {
+                    "json": "Latitude"
+                  },
+                  "description": "Latitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "longitude": {
+                  "altnames": {
+                    "json": "Longitude"
+                  },
+                  "description": "Longitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "precipitation_in_inches": {
+                  "altnames": {
+                    "json": "PrecipitationInInches"
+                  },
+                  "description": "Precipitation in inches.",
+                  "symbol": "in",
+                  "type": [
+                    "double",
+                    "null"
+                  ],
+                  "unit": "in"
+                },
+                "reading_time": {
+                  "altnames": {
+                    "json": "ReadingTime"
+                  },
+                  "description": "ISO 8601 UTC timestamp.",
+                  "type": "string"
+                },
+                "relative_humidity": {
+                  "altnames": {
+                    "json": "RelativeHumidity"
+                  },
+                  "description": "Relative humidity percentage.",
+                  "symbol": "%",
+                  "type": [
+                    "int32",
+                    "null"
+                  ],
+                  "unit": "%"
+                },
+                "sky_coverage": {
+                  "altnames": {
+                    "json": "SkyCoverage"
+                  },
+                  "description": "Sky coverage description.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "station_id": {
+                  "altnames": {
+                    "json": "StationID"
+                  },
+                  "description": "Station identifier from upstream StationID.",
+                  "type": "string"
+                },
+                "station_name": {
+                  "altnames": {
+                    "json": "StationName"
+                  },
+                  "description": "Station name.",
+                  "type": "string"
+                },
+                "temperature_in_fahrenheit": {
+                  "altnames": {
+                    "json": "TemperatureInFahrenheit"
+                  },
+                  "description": "Air temperature in Fahrenheit.",
+                  "symbol": "°F",
+                  "type": [
+                    "double",
+                    "null"
+                  ],
+                  "unit": "degF"
+                },
+                "visibility": {
+                  "altnames": {
+                    "json": "Visibility"
+                  },
+                  "description": "Visibility distance.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                },
+                "wind_direction": {
+                  "altnames": {
+                    "json": "WindDirection"
+                  },
+                  "description": "Wind direction in degrees from true north.",
+                  "symbol": "°",
+                  "type": [
+                    "int32",
+                    "null"
+                  ],
+                  "unit": "deg"
+                },
+                "wind_direction_cardinal": {
+                  "altnames": {
+                    "json": "WindDirectionCardinal"
+                  },
+                  "description": "Wind direction as cardinal abbreviation.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "wind_gust_speed_in_mph": {
+                  "altnames": {
+                    "json": "WindGustSpeedInMPH"
+                  },
+                  "description": "Wind gust speed in mph.",
+                  "symbol": "mph",
+                  "type": [
+                    "double",
+                    "null"
+                  ],
+                  "unit": "mi/h"
+                },
+                "wind_speed_in_mph": {
+                  "altnames": {
+                    "json": "WindSpeedInMPH"
+                  },
+                  "description": "Wind speed in mph.",
+                  "symbol": "mph",
+                  "type": [
+                    "double",
+                    "null"
+                  ],
+                  "unit": "mi/h"
+                }
+              },
+              "required": [
+                "station_id",
+                "station_name",
+                "reading_time",
+                "temperature_in_fahrenheit",
+                "precipitation_in_inches",
+                "wind_speed_in_mph",
+                "wind_gust_speed_in_mph",
+                "wind_direction",
+                "wind_direction_cardinal",
+                "barometric_pressure",
+                "relative_humidity",
+                "visibility",
+                "sky_coverage",
+                "latitude",
+                "longitude"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "WeatherReading"
+}

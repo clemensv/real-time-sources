@@ -1,0 +1,161 @@
+{
+  "description": "A vehicle or vessel update from Washington State Department of Transportation. It reports the latest position, movement, identity, or voyage information available from the upstream feed.",
+  "doc": "Commercial vehicle restriction.",
+  "fields": [
+    {
+      "name": "state_route_id",
+      "type": "string"
+    },
+    {
+      "name": "bridge_number",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "bridge_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "location_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "location_description",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "default": null,
+      "name": "state",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "restriction_type",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "vehicle_type",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "restriction_weight_in_pounds",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "name": "maximum_gross_vehicle_weight_in_pounds",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "name": "restriction_height_in_inches",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "name": "restriction_width_in_inches",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "name": "restriction_length_in_inches",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "name": "is_permanent_restriction",
+      "type": "boolean"
+    },
+    {
+      "name": "is_warning",
+      "type": "boolean"
+    },
+    {
+      "name": "is_detour_available",
+      "type": "boolean"
+    },
+    {
+      "name": "is_exceptions_allowed",
+      "type": "boolean"
+    },
+    {
+      "default": null,
+      "name": "restriction_comment",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "date_posted",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "date_effective",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "date_expires",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "CommercialVehicleRestriction",
+  "namespace": "us.wa.wsdot.cvrestrictions",
+  "type": "record"
+}

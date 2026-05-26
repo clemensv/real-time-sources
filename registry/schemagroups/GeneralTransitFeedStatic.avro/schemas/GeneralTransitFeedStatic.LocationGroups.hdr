@@ -1,0 +1,17 @@
+content-disposition:GeneralTransitFeedStatic.LocationGroups
+content-length:743
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.LocationGroups/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2024-10-18T13:49:01.792371Z
+xregistry-epoch:1
+xregistry-format:Avro
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.LocationGroups/meta
+xregistry-modifiedat:2024-10-18T13:49:01.792371Z
+xregistry-schemaid:GeneralTransitFeedStatic.LocationGroups
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.LocationGroups
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.LocationGroups/versions
+xregistry-xid:/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.LocationGroups

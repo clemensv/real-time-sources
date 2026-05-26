@@ -1,0 +1,77 @@
+{
+  "$id": "https://informo.madrid.es/schemas/es/madrid/informo/TrafficReading",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value.",
+  "name": "TrafficReading",
+  "properties": {
+    "error_flag": {
+      "description": "Error status flag for this reading. Corresponds to 'error' in the upstream XML. 'N' indicates a normal reading, 'S' or 'Y' indicates the sensor is reporting an error and the data may be unreliable.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "intensity": {
+      "altnames": {
+        "lang:es": "intensidad"
+      },
+      "description": "Current traffic intensity measured by the sensor, expressed in vehicles per hour. Corresponds to 'intensidad' in the upstream XML. A value of 0 may indicate no traffic or a sensor in standby mode.",
+      "symbol": "veh/h",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "unit": "1/h"
+    },
+    "load": {
+      "altnames": {
+        "lang:es": "carga"
+      },
+      "description": "Load percentage representing the ratio of current intensity to saturation intensity. Corresponds to 'carga' in the upstream XML. Range is typically 0 to 100.",
+      "symbol": "%",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "occupancy": {
+      "altnames": {
+        "lang:es": "ocupacion"
+      },
+      "description": "Percentage of time the sensor detects a vehicle presence. Corresponds to 'ocupacion' in the upstream XML. Range is 0 to 100.",
+      "symbol": "%",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "sensor_id": {
+      "altnames": {
+        "lang:es": "idelem"
+      },
+      "description": "Unique sensor identifier from the Madrid Informo system. Corresponds to 'idelem' in the upstream XML. Used as the key for correlating readings with measurement point reference data.",
+      "type": "string"
+    },
+    "service_level": {
+      "altnames": {
+        "lang:es": "nivelServicio"
+      },
+      "description": "Traffic service level reported by the sensor. Corresponds to 'nivelServicio' in the upstream XML. Values: 0 = fluid/free flow, 1 = moderate/dense, 2 = congested, 3 = severely congested.",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "timestamp": {
+      "description": "Timestamp of the traffic reading in UTC. Since the upstream XML does not include per-sensor timestamps, this is derived from the poll time rounded to the nearest 5-minute interval, reflecting the upstream update cadence.",
+      "type": "datetime"
+    }
+  },
+  "required": [
+    "sensor_id",
+    "timestamp"
+  ],
+  "type": "object"
+}

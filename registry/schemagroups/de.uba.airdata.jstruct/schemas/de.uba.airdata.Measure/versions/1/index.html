@@ -1,0 +1,61 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/schemas/de/uba/airdata/Measure",
+  "$root": "/definitions/de/uba/airdata/Measure",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "de": {
+      "uba": {
+        "airdata": {
+          "Measure": {
+            "description": "Hourly one-hour-average air quality measurement for a UBA monitoring station and pollutant component as returned by the air_data/v3 measures endpoint.",
+            "name": "Measure",
+            "properties": {
+              "component_id": {
+                "description": "Stable numeric UBA pollutant component identifier from the first element of the measure value array, for example 5 for NO₂.",
+                "type": "int32"
+              },
+              "date_end": {
+                "description": "Measurement period end timestamp from the fourth element of the measure value array, using the UBA local datetime format 'YYYY-MM-DD HH:MM:SS'.",
+                "type": "string"
+              },
+              "date_start": {
+                "description": "Measurement period start timestamp from the nested measures object key, using the UBA local datetime format 'YYYY-MM-DD HH:MM:SS'.",
+                "type": "string"
+              },
+              "quality_index": {
+                "description": "UBA quality or confidence flag from the fifth element of the measure value array. The published documentation commonly references 0 valid, 1 provisional, and 2 estimated; live payloads have also been observed with the code 3.",
+                "type": "string"
+              },
+              "scope_id": {
+                "description": "Stable numeric UBA averaging scope identifier from the second element of the measure value array. Scope 2 represents the one-hour average used by this bridge.",
+                "type": "int32"
+              },
+              "station_id": {
+                "description": "Stable numeric UBA station identifier for the station that reported the measurement.",
+                "type": "int32"
+              },
+              "value": {
+                "description": "Measured pollutant value from the third element of the measure value array, expressed in the unit defined by the referenced component. Null means the source returned no numeric measurement value.",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "station_id",
+              "component_id",
+              "scope_id",
+              "date_start",
+              "date_end",
+              "value",
+              "quality_index"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "Measure"
+}

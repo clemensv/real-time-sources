@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "An official alert or bulletin from the European Avalanche Warning Services ALBINA feed. It carries avalanche bulletins and danger ratings for the affected area and validity period published by the upstream source.",
+  "name": "AvalancheBulletin",
+  "properties": {
+    "avalanche_activity_highlights": {
+      "description": "Summary of current avalanche activity conditions from avalancheActivity.highlights. May contain HTML markup. Null if not provided.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "avalanche_problems_json": {
+      "description": "JSON-encoded array of CAAMLv6 avalancheProblems objects, each with problemType (e.g. wet_snow, persistent_weak_layers, wind_slab, new_snow, gliding_snow), snowpackStability, frequency, avalancheSize (1-5), aspects array, and optional elevation bounds.",
+      "type": "string"
+    },
+    "bulletin_id": {
+      "description": "Unique UUID assigned to this bulletin by the ALBINA system, from the CAAMLv6 bulletinID field.",
+      "type": "string"
+    },
+    "country": {
+      "description": "Lowercase ISO 3166-1 alpha-2 country code derived from the CAAML region_id prefix, e.g. at or it.",
+      "type": "string"
+    },
+    "danger_level": {
+      "description": "Topic-safe EAWS danger level derived from the highest danger rating, or 'unknown' when no rating is present.",
+      "type": "string"
+    },
+    "danger_patterns_json": {
+      "description": "JSON-encoded array of LWD Tyrol danger pattern codes from customData.LWD_Tyrol.dangerPatterns, e.g. [\"DP10\",\"DP4\"]. Null if not present (non-Tyrol regions).",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "danger_ratings_json": {
+      "description": "JSON-encoded array of CAAMLv6 dangerRatings objects, each with mainValue (string), optional elevation (object with upperBound/lowerBound), and validTimePeriod (string: all_day, earlier, later).",
+      "type": "string"
+    },
+    "lang": {
+      "description": "ISO 639-1 language code of the bulletin text, e.g. 'en', 'de', 'it'.",
+      "type": "string"
+    },
+    "max_danger_rating": {
+      "description": "Highest EAWS danger rating across all elevation bands and time periods in this bulletin. One of: low, moderate, considerable, high, very_high, or null if no ratings are present.",
+      "descriptions": {
+        "considerable": "Provider value `considerable` for this coded alert field.",
+        "high": "Provider value `high` for this coded alert field.",
+        "low": "Provider value `low` for this coded alert field.",
+        "moderate": "Provider value `moderate` for this coded alert field.",
+        "very_high": "Provider value `very_high` for this coded alert field."
+      },
+      "enum": [
+        "low",
+        "moderate",
+        "considerable",
+        "high",
+        "very_high"
+      ],
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "max_danger_rating_value": {
+      "description": "Numeric value (1-5) of the highest EAWS danger rating: 1=low, 2=moderate, 3=considerable, 4=high, 5=very_high. Null if no ratings are present.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "publication_time": {
+      "description": "ISO 8601 timestamp when this bulletin was published by the avalanche warning service.",
+      "type": "datetime"
+    },
+    "region_id": {
+      "description": "EAWS micro-region identifier from the CAAMLv6 regions array, e.g. AT-07-04-02 for Karwendel Mountains East.",
+      "type": "string"
+    },
+    "region_name": {
+      "description": "Human-readable name of the EAWS micro-region, e.g. 'Karwendel Mountains East'.",
+      "type": "string"
+    },
+    "snowpack_structure_comment": {
+      "description": "Description of current snowpack structure and layering from snowpackStructure.comment. May contain HTML markup. Null if not provided.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tendency_type": {
+      "description": "Overall tendency of avalanche danger from the first tendency entry: decreasing, steady, or increasing. Null if no tendency data is present.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "valid_time_end": {
+      "description": "ISO 8601 end of the validity period for this bulletin.",
+      "type": "datetime"
+    },
+    "valid_time_start": {
+      "description": "ISO 8601 start of the validity period for this bulletin.",
+      "type": "datetime"
+    }
+  },
+  "required": [
+    "region_id",
+    "country",
+    "region_name",
+    "bulletin_id",
+    "publication_time",
+    "valid_time_start",
+    "valid_time_end",
+    "lang",
+    "danger_ratings_json",
+    "avalanche_problems_json",
+    "danger_level"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,63 @@
+{
+  "doc": "Reference data for a Ticketmaster classification segment.",
+  "fields": [
+    {
+      "doc": "Stable Ticketmaster segment identifier.",
+      "name": "entity_id",
+      "type": "string"
+    },
+    {
+      "doc": "Human-readable segment name.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Resource type discriminator.",
+      "name": "type",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Stable identifier for the primary genre within this segment.",
+      "name": "primary_genre_id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Human-readable primary genre name.",
+      "name": "primary_genre_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Stable identifier for the primary subgenre.",
+      "name": "primary_subgenre_id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Human-readable primary subgenre name.",
+      "name": "primary_subgenre_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "Classification",
+  "namespace": "Ticketmaster.Reference",
+  "type": "record"
+}

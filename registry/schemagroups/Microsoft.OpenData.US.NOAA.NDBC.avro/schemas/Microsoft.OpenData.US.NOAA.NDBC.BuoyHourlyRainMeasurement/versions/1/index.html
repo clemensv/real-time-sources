@@ -1,0 +1,27 @@
+{
+  "doc": "Hourly precipitation total from the NDBC .rain realtime2 product.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "default": null,
+      "name": "accumulation",
+      "type": [
+        "null",
+        "double"
+      ]
+    }
+  ],
+  "name": "BuoyHourlyRainMeasurement",
+  "namespace": "Microsoft.OpenData.US.NOAA.NDBC",
+  "type": "record"
+}

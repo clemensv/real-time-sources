@@ -1,0 +1,77 @@
+{
+  "$id": "https://example.com/schemas/FI/SYKE/Hydrology/WaterLevelObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Measurement payload for water level and discharge observations in the SYKE Hydrology source.",
+  "name": "WaterLevelObservation",
+  "properties": {
+    "basin": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for syke-hydro.",
+      "type": "string"
+    },
+    "discharge": {
+      "altnames": {
+        "lang:fi": "Arvo"
+      },
+      "description": "Discharge (flow) reading value in cubic metres per second. Null for stations that do not measure discharge.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "discharge_timestamp": {
+      "altnames": {
+        "lang:fi": "Aika"
+      },
+      "description": "RFC3339 UTC timestamp (with 'Z' suffix) of the discharge observation, derived from the SYKE 'Aika' field. Null when no discharge is available.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "discharge_unit": {
+      "description": "Unit of measurement for discharge. Constant 'm3/s' when present, null when discharge is null.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "station_id": {
+      "altnames": {
+        "lang:fi": "Paikka_Id"
+      },
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    },
+    "water_level": {
+      "altnames": {
+        "lang:fi": "Arvo"
+      },
+      "description": "Water level reading value in centimetres. Null when the station does not report a water level in the current polling window.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "water_level_timestamp": {
+      "altnames": {
+        "lang:fi": "Aika"
+      },
+      "description": "RFC3339 UTC timestamp (with 'Z' suffix) of the water level observation, derived from the SYKE 'Aika' field. Null when no water level is available.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "water_level_unit": {
+      "description": "Unit of measurement for water_level. Constant 'cm' when present, null when water_level is null.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "station_id"
+  ],
+  "type": "object"
+}

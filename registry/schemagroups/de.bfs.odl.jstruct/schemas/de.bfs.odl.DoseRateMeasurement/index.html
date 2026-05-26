@@ -1,0 +1,87 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/de/bfs/odl/DoseRateMeasurement",
+  "$root": "/definitions/de/bfs/odl/DoseRateMeasurement",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "de": {
+      "bfs": {
+        "odl": {
+          "DoseRateMeasurement": {
+            "description": "A one-hour averaged ambient gamma dose rate measurement from a BfS ODL station. The gross dose rate value is the total ambient dose equivalent rate H*(10) at 1 meter above ground, expressed in microsieverts per hour (µSv/h). It may be decomposed into a cosmic component (secondary cosmic radiation, altitude-dependent) and a terrestrial component (naturally occurring radionuclides in soil, geology-dependent). Normal background levels in Germany range from approximately 0.05 to 0.18 µSv/h depending on local geology and altitude.",
+            "name": "DoseRateMeasurement",
+            "properties": {
+              "end_measure": {
+                "description": "End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T13:00:00Z'.",
+                "type": "string"
+              },
+              "nuclide": {
+                "description": "Nuclide identifier describing the type of radiation measured. For standard ODL probes this is always 'Gamma-ODL-Brutto' (gross gamma ambient dose rate).",
+                "type": "string"
+              },
+              "start_measure": {
+                "description": "Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-07T12:00:00Z'.",
+                "type": "string"
+              },
+              "state": {
+                "description": "German federal state (Bundesland) derived from the station Kennziffer. Propagated from station catalog so subscribers can route by state without a catalog join. Used as the {state} segment of the MQTT/UNS topic.",
+                "type": "string"
+              },
+              "station_id": {
+                "altnames": {
+                  "json": "kenn",
+                  "lang:de": "Kennziffer"
+                },
+                "description": "Nine-digit station identifier (Kennziffer) of the measuring probe. Matches the station_id in the Station schema.",
+                "type": "string"
+              },
+              "validated": {
+                "description": "Data validation flag. 1 = the measurement has been validated by BfS quality control. 0 = the measurement is preliminary or unvalidated.",
+                "type": "int32"
+              },
+              "value": {
+                "description": "Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (µSv/h). This is the total dose rate including both cosmic and terrestrial components. Null if the station did not report a valid measurement for this interval.",
+                "symbol": "µSv/h",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "uSv/h"
+              },
+              "value_cosmic": {
+                "description": "Cosmic radiation component of the ambient gamma dose rate in microsieverts per hour (µSv/h). Estimated from the station's altitude using a standard model. Null when the BfS system has not yet computed the decomposition for this measurement.",
+                "symbol": "µSv/h",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "uSv/h"
+              },
+              "value_terrestrial": {
+                "description": "Terrestrial radiation component of the ambient gamma dose rate in microsieverts per hour (µSv/h). Computed as gross value minus cosmic component. Varies with local geology (granite, basalt, sediment). Null when the cosmic component is not available.",
+                "symbol": "µSv/h",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "uSv/h"
+              }
+            },
+            "required": [
+              "station_id",
+              "state",
+              "start_measure",
+              "end_measure",
+              "value",
+              "value_cosmic",
+              "value_terrestrial",
+              "validated",
+              "nuclide"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "DoseRateMeasurement"
+}

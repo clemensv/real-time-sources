@@ -1,0 +1,46 @@
+{
+  "fields": [
+    {
+      "name": "country",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "long"
+      }
+    },
+    {
+      "name": "unix_seconds",
+      "type": "long"
+    },
+    {
+      "default": null,
+      "name": "signal",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "name": "renewable_share_pct",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "substitute",
+      "type": [
+        "null",
+        "boolean"
+      ]
+    }
+  ],
+  "name": "GridSignal",
+  "namespace": "info.energy_charts",
+  "type": "record"
+}

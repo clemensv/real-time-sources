@@ -1,0 +1,11 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "MQTT/5.0 transport variants for EPA UV Index forecasts. Topics are retained QoS-1 UV forecast leaves under uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/..., where {state} is lowercase US state, {city_slug} is lowercase kebab-case city, and {location_id} preserves the existing Kafka/CloudEvents entity id intentionally for subject/key compatibility even though it is derivable from state+city. Hourly slots use topic-safe {forecast_hour}=YYYYMMDDTHH; daily slots use {forecast_date}=YYYY-MM-DD. Message expiry bounds retained forecast slots so stale forecasts age out.",
+  "epoch": 1,
+  "messagegroupid": "US.EPA.UVIndex.mqtt",
+  "messagescount": 2,
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.EPA.UVIndex.mqtt/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.EPA.UVIndex.mqtt",
+  "xid": "/messagegroups/US.EPA.UVIndex.mqtt"
+}

@@ -1,0 +1,148 @@
+{
+  "$id": "https://fintraffic.fi/schemas/fi/digitraffic/road/messages/TrafficMessage",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.",
+  "name": "TrafficMessage",
+  "properties": {
+    "additional_information": {
+      "description": "Supplementary information text from the first announcement, often including a link to the Fintraffic traffic situation portal.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "announcements_json": {
+      "description": "JSON-serialized array of all announcement objects in the situation, preserving the full upstream structure including nested location details, road addresses, ALERT-C codes, road work phases, restrictions, and work types. Provided for consumers needing the complete upstream detail beyond the flattened first-announcement fields.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "comment": {
+      "description": "Free-text comment from the first announcement, providing additional context such as detour instructions or situation details.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contact_email": {
+      "description": "Contact email address for the issuing traffic management center.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contact_phone": {
+      "description": "Contact telephone number for the issuing traffic management center (e.g. '02002100').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "end_time": {
+      "description": "ISO 8601 UTC timestamp for the expected end of the situation. Null if the end time is unknown or the situation is open-ended.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "features_json": {
+      "description": "JSON-serialized array of feature objects from the first announcement. Features describe traffic impacts such as lane closures, detours, or speed reductions. Null if no features are listed.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "geometry_coordinates_json": {
+      "description": "JSON-serialized GeoJSON coordinates array for the situation's spatial extent. Coordinates are in [longitude, latitude] order per the GeoJSON specification (WGS84). Null if no geometry is available.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "geometry_type": {
+      "description": "GeoJSON geometry type of the situation's spatial extent (e.g. 'Point', 'LineString', 'MultiLineString'). Null if no geometry is available.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "language": {
+      "description": "ISO 639-1 language code for the announcement text. Typically 'fi' (Finnish).",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "location_description": {
+      "description": "Human-readable location description from the first announcement's location object, typically including road number, section, and municipality in Finnish.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "release_time": {
+      "description": "ISO 8601 UTC timestamp when the first version of this situation was released (e.g. '2025-10-22T06:39:54.787Z').",
+      "type": "string"
+    },
+    "road_work_phases_json": {
+      "description": "JSON-serialized array of road work phase objects from the first announcement. Each phase includes work types, restrictions (speed limits, lane narrowing), severity, and independent time windows. Present only for 'road work' situations; null otherwise.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sender": {
+      "description": "Traffic management center that issued the announcement (e.g. 'Fintraffic Tieliikennekeskus Tampere', 'Fintraffic Tieliikennekeskus Helsinki').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "situation_id": {
+      "description": "Unique situation identifier assigned by Fintraffic, prefixed with 'GUID' (e.g. 'GUID50455291'). Stable across all version updates for a given situation.",
+      "type": "string"
+    },
+    "situation_type": {
+      "description": "Situation category as defined by Fintraffic. Values: 'traffic announcement' (incidents, lane closures, ramp closures), 'road work' (planned and active road works with phases), 'weight restriction' (load-bearing limits on roads or bridges), 'exempted transport' (oversize or heavy transports requiring advance notice). Mapped from the MQTT topic situationType segment.",
+      "type": "string"
+    },
+    "start_time": {
+      "description": "ISO 8601 UTC timestamp for the start of the situation's time-and-duration window from the first announcement. Null if no time window is specified.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "title": {
+      "description": "Human-readable title from the first announcement, typically identifying the road, municipality, and situation type in Finnish (e.g. 'Tie 4, eli Ivalontie, Sodankylä. Ensitiedote liikenneonnettomuudesta.').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "traffic_announcement_type": {
+      "description": "Sub-classification for traffic announcements. Values include 'preliminary accident report', 'accident report', 'general', 'unconfirmed observation', and others. Present only when situation_type is 'traffic announcement'; null otherwise.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "version": {
+      "description": "Monotonically increasing version counter for this situation. Starts at 1 and increments with each update to the situation's announcements, timing, or status.",
+      "type": "int32"
+    },
+    "version_time": {
+      "description": "ISO 8601 UTC timestamp when this version of the situation was published (e.g. '2025-10-22T07:09:57.237Z').",
+      "type": "string"
+    }
+  },
+  "required": [
+    "situation_id",
+    "situation_type",
+    "version",
+    "release_time",
+    "version_time"
+  ],
+  "type": "object"
+}

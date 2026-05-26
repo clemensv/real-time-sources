@@ -1,0 +1,46 @@
+{
+  "altnames": {
+    "kql": "WindSolarForecast"
+  },
+  "fields": [
+    {
+      "doc": "EIC code of the bidding zone",
+      "name": "inDomain",
+      "type": "string"
+    },
+    {
+      "doc": "Production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore)",
+      "name": "psrType",
+      "type": "string"
+    },
+    {
+      "doc": "Forecast power in MW",
+      "name": "quantity",
+      "type": "double",
+      "unit": "MW"
+    },
+    {
+      "doc": "ISO 8601 duration (PT15M, PT60M)",
+      "name": "resolution",
+      "type": "string"
+    },
+    {
+      "doc": "Business type code",
+      "name": "businessType",
+      "type": "string"
+    },
+    {
+      "doc": "ENTSO-E document type code (A69)",
+      "name": "documentType",
+      "type": "string"
+    },
+    {
+      "doc": "Unit of measurement (MAW)",
+      "name": "unitName",
+      "type": "string"
+    }
+  ],
+  "name": "WindSolarForecast",
+  "namespace": "eu.entsoe.transparency",
+  "type": "record"
+}

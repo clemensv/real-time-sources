@@ -1,0 +1,63 @@
+{
+  "$id": "https://example.com/schemas/ie/gov/opw/waterlevel/WaterLevelReading",
+  "$root": "/definitions/ie/gov/opw/waterlevel/WaterLevelReading",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "ie": {
+      "gov": {
+        "opw": {
+          "waterlevel": {
+            "WaterLevelReading": {
+              "description": "A sensor reading from an OPW hydrometric station, covering water level, temperature, voltage, or Ordnance Datum.",
+              "name": "WaterLevelReading",
+              "properties": {
+                "basin": {
+                  "description": "Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel.",
+                  "type": "string"
+                },
+                "datetime": {
+                  "description": "ISO 8601 timestamp of the sensor reading as provided by the upstream API (e.g. '2024-01-15T12:00:00Z').",
+                  "type": "string"
+                },
+                "err_code": {
+                  "description": "Upstream error code for the reading. A value of 99 indicates the reading is valid (OK). Other values indicate various error conditions.",
+                  "type": "int32"
+                },
+                "sensor_ref": {
+                  "description": "Sensor reference code identifying the measurement type: '0001' for water level (metres), '0002' for temperature (degrees Celsius), '0003' for voltage (volts), 'OD' for Ordnance Datum level (metres).",
+                  "type": "string"
+                },
+                "station_name": {
+                  "description": "Human-readable name of the hydrometric station (e.g. 'Sandy Mills').",
+                  "type": "string"
+                },
+                "station_ref": {
+                  "description": "Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041').",
+                  "type": "string"
+                },
+                "value": {
+                  "description": "Numeric sensor reading value. Units depend on sensor_ref: metres for water level ('0001') and OD ('OD'), degrees Celsius for temperature ('0002'), volts for voltage ('0003'). Null if the value could not be parsed from the upstream string representation.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "station_ref",
+                "station_name",
+                "sensor_ref",
+                "value",
+                "datetime",
+                "err_code"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "description": "Measurement payload for observations in the Ireland OPW waterlevel.ie source.",
+  "name": "WaterLevelReading"
+}

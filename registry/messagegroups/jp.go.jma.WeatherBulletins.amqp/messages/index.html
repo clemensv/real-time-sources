@@ -1,0 +1,48 @@
+{
+  "jp.go.jma.WeatherBulletins.amqp.WeatherBulletin": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/jp.go.jma.WeatherBulletins/messages/jp.go.jma.WeatherBulletin",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://www.data.jma.go.jp"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{office}/{bulletin_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "jp.go.jma.WeatherBulletin"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "jp.go.jma.WeatherBulletins.amqp.WeatherBulletin",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/jp.go.jma.WeatherBulletins.amqp/messages/jp.go.jma.WeatherBulletins.amqp.WeatherBulletin/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherBulletin",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {},
+      "properties": {
+        "subject": {
+          "description": "AMQP subject matching the CloudEvents subject for this transport variant.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{office}/{bulletin_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/jp.go.jma.WeatherBulletins.amqp/messages/jp.go.jma.WeatherBulletins.amqp.WeatherBulletin",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/jp.go.jma.WeatherBulletins.amqp/messages/jp.go.jma.WeatherBulletins.amqp.WeatherBulletin/versions",
+    "xid": "/messagegroups/jp.go.jma.WeatherBulletins.amqp/messages/jp.go.jma.WeatherBulletins.amqp.WeatherBulletin"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/Networks",
+  "$root": "/definitions/GeneralTransitFeedStatic/Networks",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "Networks": {
+        "description": "Defines networks.",
+        "name": "Networks",
+        "properties": {
+          "networkDesc": {
+            "default": null,
+            "description": "Description of the network.",
+            "type": "string"
+          },
+          "networkId": {
+            "description": "Identifies a network.",
+            "type": "string"
+          },
+          "networkName": {
+            "description": "Name of the network.",
+            "type": "string"
+          },
+          "networkUrl": {
+            "default": null,
+            "description": "URL of a web page about the network.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "networkId",
+          "networkName"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "Networks"
+}

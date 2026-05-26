@@ -1,0 +1,33 @@
+{
+  "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/GoesXrayFlux",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "One-minute resolution full-disk solar X-ray flux measurement from the GOES primary satellite XRS (X-Ray Sensor) instrument, as reported by the SWPC goes/primary/xrays-7-day endpoint. Two energy bands are reported: 0.05-0.4 nm (short, harder X-rays) and 0.1-0.8 nm (long, softer X-rays). The 0.1-0.8 nm band is used for the official solar flare classification scale (A \u003c B \u003c C \u003c M \u003c X).",
+  "name": "GoesXrayFlux",
+  "properties": {
+    "energy": {
+      "description": "X-ray energy band identifier: '0.05-0.4nm' (short wavelength, harder X-rays) or '0.1-0.8nm' (long wavelength, softer X-rays used for flare classification).",
+      "type": "string"
+    },
+    "flux": {
+      "description": "Solar X-ray irradiance in the specified energy band. Flare classification thresholds for the 0.1-0.8 nm band: A (\u003c 1e-7), B (1e-7 to 1e-6), C (1e-6 to 1e-5), M (1e-5 to 1e-4), X (\u003e= 1e-4). Background is typically A1-B1 level during solar minimum.",
+      "symbol": "W/m²",
+      "type": "double",
+      "unit": "W/m²"
+    },
+    "satellite": {
+      "description": "GOES satellite number providing the measurement (e.g., 18 for GOES-18, 19 for GOES-19). The primary operational GOES satellite changes when new spacecraft are commissioned.",
+      "type": "integer"
+    },
+    "time_tag": {
+      "description": "UTC date-time of the X-ray flux measurement from the GOES XRS instrument, in ISO 8601 format (e.g., '2024-01-01T00:00:00Z').",
+      "type": "string"
+    }
+  },
+  "required": [
+    "time_tag",
+    "satellite",
+    "flux",
+    "energy"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,70 @@
+{
+  "$id": "https://opendata.ndw.nu/schemas/NL/NDW/Situations/TemporaryClosure",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Temporary road closure from the Dutch NDW DATEX II tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or lane on the Dutch national road network.",
+  "name": "TemporaryClosure",
+  "properties": {
+    "description": {
+      "description": "Human-readable description of the temporary closure from the DATEX II comment or description element.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "end_time": {
+      "description": "ISO 8601 UTC timestamp when the temporary closure ends.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "location_description": {
+      "description": "Human-readable description of the closure location from the DATEX II locationDescriptor element.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "road_name": {
+      "description": "Road identifier where the temporary closure applies.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "severity": {
+      "description": "Overall severity of the closure impact, from the DATEX II severity element.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "situation_record_id": {
+      "description": "Unique identifier of the situation record, from the DATEX II situationRecord id attribute.",
+      "type": "string"
+    },
+    "start_time": {
+      "description": "ISO 8601 UTC timestamp when the temporary closure starts.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "validity_status": {
+      "description": "Validity status of the temporary closure record from the DATEX II validityStatus element.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "version_time": {
+      "description": "ISO 8601 UTC timestamp when this situation record version was created, from the DATEX II situationVersionTime element.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "situation_record_id",
+    "version_time"
+  ],
+  "type": "object"
+}

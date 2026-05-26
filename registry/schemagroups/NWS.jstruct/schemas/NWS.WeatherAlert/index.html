@@ -1,0 +1,219 @@
+{
+  "$id": "https://api.weather.gov/schemas/NWS/WeatherAlert",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.",
+  "name": "WeatherAlert",
+  "properties": {
+    "alert_id": {
+      "altnames": {
+        "json": "id"
+      },
+      "description": "The unique URN-based identifier for the alert (e.g., 'urn:oid:2.49.0.1.840.0.xxx'). Stable across the lifecycle of the alert.",
+      "type": "string"
+    },
+    "area_desc": {
+      "altnames": {
+        "json": "areaDesc"
+      },
+      "description": "A textual description of the affected geographic area (e.g., county names).",
+      "type": "string"
+    },
+    "category": {
+      "description": "The CAP alert category (e.g., 'Met' for meteorological).",
+      "type": "string"
+    },
+    "certainty": {
+      "description": "The CAP certainty level.",
+      "descriptions": {
+        "Likely": "Provider value `Likely` for this coded alert field.",
+        "Observed": "Provider value `Observed` for this coded alert field.",
+        "Possible": "Provider value `Possible` for this coded alert field.",
+        "Unknown": "Provider value `Unknown` for this coded alert field.",
+        "Unlikely": "Provider value `Unlikely` for this coded alert field."
+      },
+      "enum": [
+        "Observed",
+        "Likely",
+        "Possible",
+        "Unlikely",
+        "Unknown"
+      ],
+      "type": "string"
+    },
+    "code": {
+      "description": "The IPAWS code (e.g., 'IPAWSv1.0').",
+      "type": "string"
+    },
+    "description": {
+      "description": "The full textual description of the alert.",
+      "type": "string"
+    },
+    "effective": {
+      "description": "The date and time when the alert becomes effective.",
+      "type": "datetime"
+    },
+    "ends": {
+      "description": "The expected end time of the weather event.",
+      "type": "datetime"
+    },
+    "event": {
+      "description": "The type of weather event (e.g., 'Tornado Warning', 'Flood Watch', 'Heat Advisory').",
+      "type": "string"
+    },
+    "event_type": {
+      "description": "Lowercase kebab-case slug derived from the CAP event field for topic partitioning.",
+      "type": "string"
+    },
+    "expires": {
+      "description": "The date and time when the alert expires.",
+      "type": "datetime"
+    },
+    "headline": {
+      "description": "A brief headline summarizing the alert.",
+      "type": "string"
+    },
+    "instruction": {
+      "description": "Recommended protective actions.",
+      "type": "string"
+    },
+    "message_type": {
+      "altnames": {
+        "json": "messageType"
+      },
+      "description": "The CAP message type.",
+      "descriptions": {
+        "Ack": "Provider value `Ack` for this coded alert field.",
+        "Alert": "Provider value `Alert` for this coded alert field.",
+        "Cancel": "Provider value `Cancel` for this coded alert field.",
+        "Error": "Provider value `Error` for this coded alert field.",
+        "Update": "Provider value `Update` for this coded alert field."
+      },
+      "enum": [
+        "Alert",
+        "Update",
+        "Cancel",
+        "Ack",
+        "Error"
+      ],
+      "type": "string"
+    },
+    "nws_headline": {
+      "description": "The NWS-specific headline from the parameters block.",
+      "type": "string"
+    },
+    "onset": {
+      "description": "The expected date and time of onset of the weather event.",
+      "type": "datetime"
+    },
+    "response": {
+      "description": "The recommended response type (e.g., 'Shelter', 'Evacuate', 'None').",
+      "type": "string"
+    },
+    "same_codes": {
+      "description": "Semicolon-separated SAME (Specific Area Message Encoding) codes identifying affected counties/zones. Used by the Emergency Alert System (EAS).",
+      "type": "string"
+    },
+    "scope": {
+      "description": "The CAP scope of the alert.",
+      "type": "string"
+    },
+    "sender": {
+      "description": "The email address or identifier of the alert sender.",
+      "type": "string"
+    },
+    "sender_name": {
+      "altnames": {
+        "json": "senderName"
+      },
+      "description": "The human-readable name of the sender (e.g., 'NWS Tulsa OK').",
+      "type": "string"
+    },
+    "sent": {
+      "description": "The date and time when the alert was sent, in ISO-8601 format.",
+      "type": "datetime"
+    },
+    "severity": {
+      "description": "The CAP severity level.",
+      "descriptions": {
+        "Extreme": "Provider value `Extreme` for this coded alert field.",
+        "Minor": "Provider value `Minor` for this coded alert field.",
+        "Moderate": "Provider value `Moderate` for this coded alert field.",
+        "Severe": "Provider value `Severe` for this coded alert field.",
+        "Unknown": "Provider value `Unknown` for this coded alert field."
+      },
+      "enum": [
+        "Extreme",
+        "Severe",
+        "Moderate",
+        "Minor",
+        "Unknown"
+      ],
+      "type": "string"
+    },
+    "state": {
+      "description": "Lowercase USPS state or territory code enriched by the bridge from NWS UGC/SAME zone identifiers; nostate when no state can be resolved.",
+      "type": "string"
+    },
+    "status": {
+      "description": "The CAP alert status.",
+      "descriptions": {
+        "Actual": "Provider value `Actual` for this coded alert field.",
+        "Draft": "Provider value `Draft` for this coded alert field.",
+        "Exercise": "Provider value `Exercise` for this coded alert field.",
+        "System": "Provider value `System` for this coded alert field.",
+        "Test": "Provider value `Test` for this coded alert field."
+      },
+      "enum": [
+        "Actual",
+        "Exercise",
+        "System",
+        "Test",
+        "Draft"
+      ],
+      "type": "string"
+    },
+    "ugc_codes": {
+      "description": "Semicolon-separated UGC (Universal Geographic Code) zone identifiers (e.g., 'MDC031', 'TXZ001').",
+      "type": "string"
+    },
+    "urgency": {
+      "description": "The CAP urgency level.",
+      "descriptions": {
+        "Expected": "Provider value `Expected` for this coded alert field.",
+        "Future": "Provider value `Future` for this coded alert field.",
+        "Immediate": "Provider value `Immediate` for this coded alert field.",
+        "Past": "Provider value `Past` for this coded alert field.",
+        "Unknown": "Provider value `Unknown` for this coded alert field."
+      },
+      "enum": [
+        "Immediate",
+        "Expected",
+        "Future",
+        "Past",
+        "Unknown"
+      ],
+      "type": "string"
+    },
+    "vtec": {
+      "description": "The P-VTEC (Valid Time Event Code) string for NWS event tracking.",
+      "type": "string"
+    },
+    "web": {
+      "description": "A URL to the full alert details.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "alert_id",
+    "event",
+    "severity",
+    "urgency",
+    "certainty",
+    "sent",
+    "status",
+    "message_type",
+    "state",
+    "event_type"
+  ],
+  "type": "object"
+}

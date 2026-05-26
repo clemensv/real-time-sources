@@ -1,0 +1,241 @@
+{
+  "$id": "https://raw.githubusercontent.com/clemensv/real-time-sources/main/ticketmaster/xreg/schemas/Ticketmaster.Events.Event",
+  "$root": "/definitions/Ticketmaster/Events/Event",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Ticketmaster": {
+      "Events": {
+        "Event": {
+          "description": "A Ticketmaster event representing a concert, sports match, theater performance, or other live public event. Sourced from the Discovery API v2 /events endpoint.",
+          "name": "Event",
+          "properties": {
+            "attraction_ids": {
+              "description": "JSON-encoded array of Ticketmaster attraction identifiers associated with this event (e.g. '[\"K8vZ91718H7\",\"K8vZ9179Ki7\"]'). Each ID corresponds to an entity_id in a Ticketmaster.Reference.Attraction reference event.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "attraction_names": {
+              "description": "JSON-encoded array of attraction names corresponding to the attraction_ids array (e.g. '[\"Taylor Swift\",\"Sabrina Carpenter\"]').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "currency": {
+              "description": "ISO 4217 currency code for price_min and price_max (e.g. 'USD', 'GBP', 'EUR').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "event_id": {
+              "description": "Stable Ticketmaster event identifier. Globally unique across all event types (e.g. 'G5v0Z9iQkPl_2'). Used as the Kafka message key.",
+              "type": "string"
+            },
+            "genre_id": {
+              "description": "Stable Ticketmaster genre identifier within the segment. Second level of the classification hierarchy.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "genre_name": {
+              "description": "Human-readable genre name (e.g. 'Rock', 'Pop', 'Hip-Hop/Rap', 'Basketball', 'Theatre').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "info": {
+              "description": "General informational text about the event as provided by the promoter or Ticketmaster. May include age restrictions, bag policies, or other event notes.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "locale": {
+              "description": "BCP-47 locale string for the event page (e.g. 'en-us', 'en-gb', 'de-de').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "name": {
+              "description": "Human-readable event name as provided by Ticketmaster (e.g. 'Taylor Swift | The Eras Tour').",
+              "type": "string"
+            },
+            "onsale_end_datetime": {
+              "description": "ISO 8601 UTC datetime when public ticket sales close for this event.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "onsale_start_datetime": {
+              "description": "ISO 8601 UTC datetime when public ticket sales open for this event.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "please_note": {
+              "description": "Important notes for ticket purchasers, such as bag-check policies, camera restrictions, or health and safety requirements. Displayed prominently on the event page.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "price_max": {
+              "description": "Maximum face-value ticket price in the currency indicated by the currency field. Provided by the price_ranges element in the Discovery API response when available.",
+              "type": [
+                "double",
+                "null"
+              ]
+            },
+            "price_min": {
+              "description": "Minimum face-value ticket price in the currency indicated by the currency field. Provided by the price_ranges element in the Discovery API response when available.",
+              "type": [
+                "double",
+                "null"
+              ]
+            },
+            "segment_id": {
+              "description": "Stable Ticketmaster classification segment identifier for this event (e.g. 'KZFzniwnSyZfZ7v7nJ' for Music). Corresponds to the top-level category.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "segment_name": {
+              "description": "Human-readable name of the classification segment (e.g. 'Music', 'Sports', 'Arts \u0026 Theatre', 'Film', 'Miscellaneous').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "start_date": {
+              "description": "Local calendar date on which the event starts, in ISO 8601 YYYY-MM-DD format. May be absent for events without a confirmed date (time-to-be-announced).",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "start_datetime_local": {
+              "description": "Combined local start date and time as an ISO 8601 datetime string (e.g. '2024-07-20T19:30:00'). Not adjusted to UTC.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "start_datetime_utc": {
+              "description": "Start date and time expressed in UTC as an ISO 8601 datetime string (e.g. '2024-07-20T23:30:00Z'). Used as the CloudEvents time attribute.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "start_time": {
+              "description": "Local clock time at which the event starts, in HH:MM:SS format. May be absent when the time is to be announced.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "status": {
+              "description": "Current on-sale status of the event. Known values: 'onsale' (tickets available), 'offsale' (tickets not available), 'cancelled' (event cancelled), 'postponed' (date changed, new date not yet set), 'rescheduled' (new date confirmed).",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "subgenre_id": {
+              "description": "Stable Ticketmaster subgenre identifier. Third level of the classification hierarchy, below genre.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "subgenre_name": {
+              "description": "Human-readable subgenre name (e.g. 'Alternative Rock', 'Dance Pop', 'NBA').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "description": "Ticketmaster resource type discriminator. Usually 'event'.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "url": {
+              "description": "URL to the event page on Ticketmaster.com where tickets can be purchased.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "venue_city": {
+              "description": "City where the venue is located.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "venue_country_code": {
+              "description": "ISO 3166-1 alpha-2 country code for the venue location (e.g. 'US', 'GB', 'DE').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "venue_id": {
+              "description": "Stable Ticketmaster venue identifier for the primary venue where this event takes place. Matches entity_id in a Ticketmaster.Reference.Venue event.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "venue_latitude": {
+              "description": "WGS-84 latitude of the venue in decimal degrees. North is positive.",
+              "type": [
+                "double",
+                "null"
+              ]
+            },
+            "venue_longitude": {
+              "description": "WGS-84 longitude of the venue in decimal degrees. East is positive.",
+              "type": [
+                "double",
+                "null"
+              ]
+            },
+            "venue_name": {
+              "description": "Human-readable name of the primary venue (e.g. 'Madison Square Garden').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "venue_state_code": {
+              "description": "ISO 3166-2 state or province code for the venue location (e.g. 'NY', 'CA'). May be absent for non-US/CA venues.",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "event_id",
+            "name"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "Event"
+}

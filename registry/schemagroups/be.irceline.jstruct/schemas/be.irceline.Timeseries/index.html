@@ -1,0 +1,186 @@
+{
+  "$id": "https://geo.irceline.be/schemas/be/irceline/Timeseries",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "additionalProperties": false,
+  "definitions": {
+    "StatusInterval": {
+      "additionalProperties": false,
+      "description": "One threshold band from the upstream statusIntervals array returned on expanded IRCELINE timeseries records. IRCELINE uses these bands to associate numeric ranges with display labels and colors.",
+      "name": "StatusInterval",
+      "properties": {
+        "color": {
+          "altnames": {
+            "irceline": "statusIntervals.color"
+          },
+          "description": "Hex RGB display color from statusIntervals[].color used by the IRCELINE UI to render the threshold band.",
+          "pattern": "^#[0-9A-Fa-f]{6}$",
+          "type": "string"
+        },
+        "lower": {
+          "altnames": {
+            "irceline": "statusIntervals.lower"
+          },
+          "description": "Inclusive lower threshold boundary as published in statusIntervals[].lower. IRCELINE publishes the threshold as a string, for example '50.0' or '-10.0'.",
+          "type": "string"
+        },
+        "name": {
+          "altnames": {
+            "irceline": "statusIntervals.name"
+          },
+          "description": "Human-readable band label from statusIntervals[].name, such as '51 - 60 PM10' or '101 - MAX PM10'.",
+          "type": "string"
+        },
+        "upper": {
+          "altnames": {
+            "irceline": "statusIntervals.upper"
+          },
+          "description": "Exclusive upper threshold boundary as published in statusIntervals[].upper. IRCELINE publishes the threshold as a string, for example '60.0' or '10000.0'.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lower",
+        "upper",
+        "name",
+        "color"
+      ],
+      "type": "object"
+    },
+    "StatusIntervalList": {
+      "description": "Ordered list of threshold bands from the upstream statusIntervals expansion. Each item describes one display interval used by IRCELINE to interpret timeseries values.",
+      "items": {
+        "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+        "type": {
+          "$ref": "/definitions/StatusInterval"
+        }
+      },
+      "name": "StatusIntervalList",
+      "type": "array"
+    }
+  },
+  "description": "A current environmental measurement from Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed reports a new or refreshed value.",
+  "name": "Timeseries",
+  "properties": {
+    "category_id": {
+      "altnames": {
+        "irceline": "parameters.category.id"
+      },
+      "description": "Identifier of the IRCELINE category linked to the timeseries from parameters.category.id. In the live API this currently mirrors the phenomenon identifier for air-quality pollutants.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "category_label": {
+      "altnames": {
+        "irceline": "parameters.category.label"
+      },
+      "description": "Human-readable IRCELINE category label from parameters.category.label. In the live API this currently mirrors the phenomenon label for air-quality pollutants.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "label": {
+      "altnames": {
+        "irceline": "label"
+      },
+      "description": "Descriptive timeseries label from the upstream label property, combining phenomenon name, timeseries identifier, procedure label, and station label. Example: 'Particulate Matter \u003c 10 µm 6152 - DAILY CORRECTION TEOM - procedure, 40AL01 - Linkeroever'.",
+      "type": "string"
+    },
+    "latitude": {
+      "altnames": {
+        "irceline": "station.geometry.coordinates[1]"
+      },
+      "description": "Station latitude in decimal degrees north, derived from station.geometry.coordinates[1] when the embedded station feature includes a GeoJSON Point geometry.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "longitude": {
+      "altnames": {
+        "irceline": "station.geometry.coordinates[0]"
+      },
+      "description": "Station longitude in decimal degrees east, derived from station.geometry.coordinates[0] when the embedded station feature includes a GeoJSON Point geometry.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "phenomenon_id": {
+      "altnames": {
+        "irceline": "parameters.phenomenon.id"
+      },
+      "description": "Identifier of the measured phenomenon from parameters.phenomenon.id on expanded timeseries metadata, for example '5' for particulate matter under 10 micrometers.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "phenomenon_label": {
+      "altnames": {
+        "irceline": "parameters.phenomenon.label"
+      },
+      "description": "Human-readable phenomenon label from parameters.phenomenon.label on expanded timeseries metadata, for example 'Nitrogen dioxide' or 'Ozone'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "station_id": {
+      "altnames": {
+        "irceline": "station.properties.id"
+      },
+      "description": "Numeric station identifier linked to the timeseries, mapped from station.properties.id on the embedded station feature. This is the stable identifier of the monitoring site that hosts the timeseries.",
+      "pattern": "^[0-9]+$",
+      "type": "string"
+    },
+    "station_label": {
+      "altnames": {
+        "irceline": "station.properties.label"
+      },
+      "description": "Human-readable station label linked to the timeseries, mapped from station.properties.label on the embedded station feature.",
+      "type": "string"
+    },
+    "status_intervals": {
+      "altnames": {
+        "irceline": "statusIntervals"
+      },
+      "description": "Optional ordered array of status interval bands from the upstream statusIntervals expansion. Each entry describes a lower and upper threshold, a display label, and a color used by IRCELINE for BelAQI-style interpretation of the timeseries values.",
+      "type": [
+        {
+          "$ref": "/definitions/StatusIntervalList"
+        },
+        "null"
+      ]
+    },
+    "timeseries_id": {
+      "altnames": {
+        "irceline": "id"
+      },
+      "description": "Stable numeric identifier of the IRCELINE timeseries from the root id property on GET /timeseries results. The bridge converts the upstream value to a string because this identifier is the Kafka key and CloudEvents subject for both reference and observation events.",
+      "pattern": "^[0-9]+$",
+      "type": "string"
+    },
+    "uom": {
+      "altnames": {
+        "irceline": "uom"
+      },
+      "description": "Published unit of measurement from the upstream uom property, such as 'µg/m³'. IRCELINE returns this literal display unit on both collection and expanded timeseries responses.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "timeseries_id",
+    "label",
+    "uom",
+    "station_id",
+    "station_label"
+  ],
+  "type": "object"
+}

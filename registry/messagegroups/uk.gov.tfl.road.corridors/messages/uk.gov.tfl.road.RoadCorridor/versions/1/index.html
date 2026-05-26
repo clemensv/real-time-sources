@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/uk.gov.tfl.road.jstruct/schemas/uk.gov.tfl.road.RoadCorridor",
+  "description": "Reference record for a TfL managed road corridor fetched from GET /Road.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api.tfl.gov.uk/Road"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "roads/{road_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "uk.gov.tfl.road.RoadCorridor"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "uk.gov.tfl.road.RoadCorridor",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "RoadCorridor",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadCorridor/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadCorridor/versions/1"
+}

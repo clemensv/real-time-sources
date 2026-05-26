@@ -1,0 +1,92 @@
+{
+  "doc": "Individual solar X-ray flare event with onset, peak, and end classifications.",
+  "fields": [
+    {
+      "name": "time_tag",
+      "type": "string"
+    },
+    {
+      "name": "begin_time",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "begin_class",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "max_time",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "max_class",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "max_xrlong",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "max_ratio",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "max_ratio_time",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "current_int_xrlong",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "end_time",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "end_class",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "satellite",
+      "type": "int"
+    }
+  ],
+  "name": "XrayFlare",
+  "namespace": "Microsoft.OpenData.US.NOAA.SWPC",
+  "type": "record"
+}

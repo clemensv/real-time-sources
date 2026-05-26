@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for UBA Airdata CloudEvents on the `uba-airdata` topic keyed by `{component_id}`.",
+  "endpointid": "de.uba.airdata.components.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/de.uba.airdata.components"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/de.uba.airdata.components.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{component_id}",
+      "topic": "uba-airdata"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/de.uba.airdata.components.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/de.uba.airdata.components.Kafka"
+}

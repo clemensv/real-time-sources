@@ -1,0 +1,126 @@
+{
+  "doc": "A post in the Bluesky feed",
+  "fields": [
+    {
+      "doc": "AT-URI of the post (at://did:plc:xxx/app.bsky.feed.post/xxx)",
+      "name": "uri",
+      "type": "string"
+    },
+    {
+      "doc": "Content Identifier (CID) of the post",
+      "name": "cid",
+      "type": "string"
+    },
+    {
+      "doc": "Decentralized Identifier of the author",
+      "name": "did",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Handle of the author",
+      "name": "handle",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "Text content of the post",
+      "name": "text",
+      "type": "string"
+    },
+    {
+      "default": [],
+      "doc": "Language codes for the post",
+      "name": "langs",
+      "type": {
+        "items": "string",
+        "type": "array"
+      }
+    },
+    {
+      "default": null,
+      "doc": "AT-URI of parent post if this is a reply",
+      "name": "reply_parent",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "AT-URI of root post in thread",
+      "name": "reply_root",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Type of embedded content (images, external, record, etc.)",
+      "name": "embed_type",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "URI of embedded content",
+      "name": "embed_uri",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "JSON string of rich text facets (mentions, links, tags)",
+      "name": "facets",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": [],
+      "doc": "Hashtags in the post",
+      "name": "tags",
+      "type": {
+        "items": "string",
+        "type": "array"
+      }
+    },
+    {
+      "doc": "ISO 8601 timestamp of post creation",
+      "name": "created_at",
+      "type": "string"
+    },
+    {
+      "doc": "ISO 8601 timestamp of when the post was indexed",
+      "name": "indexed_at",
+      "type": "string"
+    },
+    {
+      "doc": "Firehose sequence number",
+      "name": "seq",
+      "type": "long"
+    },
+    {
+      "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.",
+      "name": "collection",
+      "type": "string"
+    },
+    {
+      "default": "und",
+      "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.",
+      "name": "lang",
+      "type": "string"
+    }
+  ],
+  "name": "Post",
+  "namespace": "Bluesky.Feed",
+  "type": "record"
+}

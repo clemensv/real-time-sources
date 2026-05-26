@@ -1,0 +1,54 @@
+{
+  "$id": "https://example.com/schemas/nl/ndw/traffic/TrafficSpeed",
+  "$root": "/definitions/nl/ndw/traffic/TrafficSpeed",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "nl": {
+      "ndw": {
+        "traffic": {
+          "TrafficSpeed": {
+            "description": "Aggregated traffic speed and flow measurement per road segment from the Dutch NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow summed across all reporting lanes.",
+            "name": "TrafficSpeed",
+            "properties": {
+              "average_speed": {
+                "description": "Average vehicle speed in km/h across all lanes with valid data at this site. Null when no lane reported a valid speed (all lanes had speed \u003c= 0).",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "km/h"
+              },
+              "measurement_time": {
+                "description": "Timestamp of the measurement in ISO 8601 format (UTC), from the DATEX II measurementTimeDefault element.",
+                "type": "string"
+              },
+              "number_of_lanes_with_data": {
+                "description": "Number of lanes that reported valid measurement data (speed \u003e 0 or flow \u003e= 0) at this measurement site.",
+                "type": "int32"
+              },
+              "site_id": {
+                "description": "Unique identifier of the NDW measurement site, taken from the DATEX II measurementSiteReference id attribute. Example: PZH01_MST_0029-00.",
+                "type": "string"
+              },
+              "vehicle_flow_rate": {
+                "description": "Total vehicle flow rate in vehicles per hour, summed across all lanes at this measurement site. Null when no valid flow data was reported.",
+                "type": [
+                  "int32",
+                  "null"
+                ],
+                "unit": "vehicles/h"
+              }
+            },
+            "required": [
+              "site_id",
+              "measurement_time",
+              "number_of_lanes_with_data"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "TrafficSpeed"
+}

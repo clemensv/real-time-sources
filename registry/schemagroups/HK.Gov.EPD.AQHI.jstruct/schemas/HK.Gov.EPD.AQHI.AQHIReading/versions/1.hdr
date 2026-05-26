@@ -1,0 +1,13 @@
+content-disposition:HK.Gov.EPD.AQHI.AQHIReading
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/HK.Gov.EPD.AQHI.jstruct/schemas/HK.Gov.EPD.AQHI.AQHIReading/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:HK.Gov.EPD.AQHI.AQHIReading
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/HK.Gov.EPD.AQHI.jstruct/schemas/HK.Gov.EPD.AQHI.AQHIReading/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/HK.Gov.EPD.AQHI.jstruct/schemas/HK.Gov.EPD.AQHI.AQHIReading/versions/1

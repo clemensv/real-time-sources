@@ -1,0 +1,269 @@
+{
+  "$id": "https://meri.digitraffic.fi/schemas/fi/digitraffic/marine/portcall/PortCall",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from Fintraffic Digitraffic. It carries maritime traffic and fairway updates for Finnish maritime fairways and vessels.",
+  "name": "PortCall",
+  "properties": {
+    "agents": {
+      "description": "Agent and manager organizations attached to the port call.",
+      "items": {
+        "description": "One agent or manager assignment attached to the port call.",
+        "name": "PortCallAgent",
+        "properties": {
+          "name": {
+            "description": "Organization name for the assigned ship agent or manager.",
+            "type": "string"
+          },
+          "port_call_direction": {
+            "description": "Direction scope for the assignment, such as arrival, departure, or whole port call.",
+            "type": "string"
+          },
+          "role": {
+            "description": "Digitraffic role code for the assignment, for example agent or ship manager.",
+            "type": "int32"
+          }
+        },
+        "required": [
+          "name",
+          "port_call_direction",
+          "role"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "arrival_with_cargo": {
+      "description": "True when the vessel is reported as arriving with cargo.",
+      "type": "boolean"
+    },
+    "current_security_level": {
+      "description": "Current ISPS security level reported for the vessel at this call.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "customs_reference": {
+      "description": "Customs reference string carried with the port call when available.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "discharge": {
+      "description": "Digitraffic discharge indicator value for the call when reported.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "domestic_traffic_arrival": {
+      "description": "True when the arrival leg is domestic traffic.",
+      "type": "boolean"
+    },
+    "domestic_traffic_departure": {
+      "description": "True when the departure leg is domestic traffic.",
+      "type": "boolean"
+    },
+    "imo_lloyds": {
+      "description": "IMO or Lloyd's vessel number carried with the port call when available.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "mmsi": {
+      "description": "Maritime Mobile Service Identity associated with the visiting vessel, when available.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "nationality": {
+      "description": "Flag or nationality code reported for the vessel.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "next_port": {
+      "description": "UN/LOCODE of the vessel's next announced port when reported by Portnet.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "not_loading": {
+      "description": "True when the vessel is reported as not loading cargo at the call.",
+      "type": "boolean"
+    },
+    "port_areas": {
+      "description": "Planned or actual berth and port-area timing details associated with the call.",
+      "items": {
+        "description": "A berth or port-area schedule detail attached to the port call.",
+        "name": "PortCallAreaDetail",
+        "properties": {
+          "arrival_draught": {
+            "description": "Arrival draught reported for this berth or port-area assignment in meters.",
+            "symbol": "m",
+            "type": "double",
+            "unit": "m"
+          },
+          "ata": {
+            "description": "Actual time of arrival for this port-area assignment when recorded.",
+            "type": [
+              "datetime",
+              "null"
+            ]
+          },
+          "ata_source": {
+            "description": "Source of the ATA value when recorded.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "atd": {
+            "description": "Actual time of departure for this port-area assignment when recorded.",
+            "type": [
+              "datetime",
+              "null"
+            ]
+          },
+          "atd_source": {
+            "description": "Source of the ATD value when recorded.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "berth_code": {
+            "description": "Berth code within the destination port area when assigned.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "berth_name": {
+            "description": "Human-readable berth name when assigned.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "departure_draught": {
+            "description": "Departure draught reported for this berth or port-area assignment in meters.",
+            "symbol": "m",
+            "type": "double",
+            "unit": "m"
+          },
+          "eta": {
+            "description": "Estimated time of arrival for this port-area assignment.",
+            "type": [
+              "datetime",
+              "null"
+            ]
+          },
+          "eta_source": {
+            "description": "Source of the ETA value, for example an agent update.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "etd": {
+            "description": "Estimated time of departure for this port-area assignment.",
+            "type": [
+              "datetime",
+              "null"
+            ]
+          },
+          "etd_source": {
+            "description": "Source of the ETD value, for example an agent update.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "port_area_code": {
+            "description": "Code of the destination port area when assigned.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "port_area_name": {
+            "description": "Human-readable name of the destination port area when assigned.",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "arrival_draught",
+          "departure_draught"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "port_call_id": {
+      "description": "Digitraffic port call identifier for this Portnet vessel visit record.",
+      "type": "int32"
+    },
+    "port_to_visit": {
+      "description": "UN/LOCODE of the destination port that this call is scheduled to visit.",
+      "type": "string"
+    },
+    "previous_port": {
+      "description": "UN/LOCODE of the vessel's previous port when reported by Portnet.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "radio_call_sign": {
+      "description": "Radio call sign for the visiting vessel when reported by Portnet.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "updated_at": {
+      "description": "Timestamp when this port call record was last updated in Digitraffic, from the portCallTimestamp field.",
+      "type": "datetime"
+    },
+    "vessel_name": {
+      "description": "Reported vessel name for the visit.",
+      "type": "string"
+    },
+    "vessel_name_prefix": {
+      "description": "Reported vessel name prefix such as 'ms' or 'mt' when present.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "vessel_type_code": {
+      "description": "Digitraffic vessel type code for the visiting vessel.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "port_call_id",
+    "updated_at",
+    "port_to_visit",
+    "vessel_name",
+    "domestic_traffic_arrival",
+    "domestic_traffic_departure",
+    "arrival_with_cargo",
+    "not_loading",
+    "agents",
+    "port_areas"
+  ],
+  "type": "object"
+}

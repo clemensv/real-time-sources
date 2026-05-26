@@ -1,0 +1,14 @@
+content-disposition:GeneralTransitFeedStatic.Translations
+content-length:600
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.Translations/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2024-10-18T13:49:45.952537Z
+xregistry-epoch:1
+xregistry-format:Avro
+xregistry-isdefault:true
+xregistry-modifiedat:2024-10-18T13:49:45.952537Z
+xregistry-schemaid:GeneralTransitFeedStatic.Translations
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.Translations/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.Translations/versions/1

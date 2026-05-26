@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/uk.gov.defra.aurn.jstruct/schemas/uk.gov.defra.aurn.Observation",
+  "description": "Hourly or near-hourly Defra AURN observation value for a single timeseries, emitted from the getData endpoint for the most recent two-hour polling window.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://uk-air.defra.gov.uk/sos-ukair/api/v1/timeseries"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{timeseries_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "uk.gov.defra.aurn.Observation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "uk.gov.defra.aurn.Observation",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Observation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Observation/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/uk.gov.defra.aurn.Timeseries/messages/uk.gov.defra.aurn.Observation/versions/1"
+}

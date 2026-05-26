@@ -1,0 +1,205 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/dmi/schemas/dk/dmi/metObs/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A meteorological observation station owned and operated by (or on behalf of) DMI. See https://opendatadocs.dmi.govcloud.dk/en/Data/Meteorological_Observation_Data for the canonical field list. Identity is stable per stationId; metadata is slowly-changing via validFrom/validTo.",
+  "name": "MetObsStation",
+  "properties": {
+    "anemometer_height": {
+      "altnames": {
+        "json": "anemometerHeight"
+      },
+      "description": "Height of the anemometer above ground level.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "barometer_height": {
+      "altnames": {
+        "json": "barometerHeight"
+      },
+      "description": "Height of the barometer above mean sea level.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "country": {
+      "altenums": {
+        "lang:en": {
+          "DNK": "Denmark",
+          "FRO": "Faroe Islands",
+          "GRL": "Greenland"
+        }
+      },
+      "description": "ISO 3166-1 alpha-3 country code: 'DNK' (Denmark), 'GRL' (Greenland), 'FRO' (Faroe Islands).",
+      "enum": [
+        "DNK",
+        "GRL",
+        "FRO"
+      ],
+      "type": "string"
+    },
+    "created": {
+      "description": "Timestamp when this metadata row was created by DMI.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "latitude": {
+      "description": "Station latitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[1].",
+      "maximum": 90,
+      "minimum": -90,
+      "type": "double",
+      "unit": "deg"
+    },
+    "longitude": {
+      "description": "Station longitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[0].",
+      "maximum": 180,
+      "minimum": -180,
+      "type": "double",
+      "unit": "deg"
+    },
+    "name": {
+      "description": "Human-readable station name.",
+      "type": "string"
+    },
+    "operation_from": {
+      "altnames": {
+        "json": "operationFrom"
+      },
+      "description": "Timestamp from which the station began operating.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "operation_to": {
+      "altnames": {
+        "json": "operationTo"
+      },
+      "description": "Timestamp at which the station stopped operating; null while operational.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "owner": {
+      "description": "Organisation that owns/operates the station (typically 'DMI').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parameter_id": {
+      "altnames": {
+        "json": "parameterId"
+      },
+      "description": "List of DMI parameterId values this station reports (e.g. ['temp_dry','wind_speed','humidity']).",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "region_id": {
+      "altnames": {
+        "json": "regionId"
+      },
+      "description": "DMI region identifier within the country.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "station_height": {
+      "altnames": {
+        "json": "stationHeight"
+      },
+      "description": "Height of the station above mean sea level.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "station_id": {
+      "altnames": {
+        "json": "stationId"
+      },
+      "description": "Stable DMI station identifier (e.g. '06030', '04202' for Pituffik in Greenland). Used as the Kafka partition key and CloudEvent subject.",
+      "type": "string"
+    },
+    "status": {
+      "description": "Operational status (e.g. 'Active', 'Inactive').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "type": {
+      "description": "Station type as classified by DMI (e.g. 'Synop', 'PluvioSync').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "updated": {
+      "description": "Timestamp when this metadata row was last updated by DMI.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "valid_from": {
+      "altnames": {
+        "json": "validFrom"
+      },
+      "description": "Timestamp from which this station-metadata version is valid.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "valid_to": {
+      "altnames": {
+        "json": "validTo"
+      },
+      "description": "Timestamp after which this station-metadata version is no longer valid; null while current.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "wmo_country_code": {
+      "altnames": {
+        "json": "wmoCountryCode"
+      },
+      "description": "WMO country code as an integer string (e.g. '06' for Denmark).",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "wmo_station_id": {
+      "altnames": {
+        "json": "wmoStationId"
+      },
+      "description": "World Meteorological Organization (WMO) station identifier when registered with WMO.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "station_id",
+    "name",
+    "country",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

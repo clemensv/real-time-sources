@@ -1,0 +1,20 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/AU.Gov.Emergency.Wildfires/messages/AU.Gov.Emergency.Wildfires.FireIncident",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "AU.Gov.Emergency.Wildfires.mqtt.FireIncident",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "FireIncident",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "message_expiry_interval": 604800,
+    "qos": 1,
+    "retain": false,
+    "topic_name": "wildfire/au/{state}/{status}/{incident_id}/incident"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.Emergency.Wildfires.mqtt/messages/AU.Gov.Emergency.Wildfires.mqtt.FireIncident/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/AU.Gov.Emergency.Wildfires.mqtt/messages/AU.Gov.Emergency.Wildfires.mqtt.FireIncident/versions/1"
+}

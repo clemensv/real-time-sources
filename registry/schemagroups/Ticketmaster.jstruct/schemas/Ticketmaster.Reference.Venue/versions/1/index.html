@@ -1,0 +1,101 @@
+{
+  "$id": "https://raw.githubusercontent.com/clemensv/real-time-sources/main/ticketmaster/xreg/schemas/Ticketmaster.Reference.Venue",
+  "$root": "/definitions/Ticketmaster/Reference/Venue",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Ticketmaster": {
+      "Reference": {
+        "Venue": {
+          "description": "Reference data for a Ticketmaster venue. Carries the venue's stable identifier, location details, timezone, and geographic coordinates as returned by the Discovery API v2 /venues endpoint.",
+          "name": "Venue",
+          "properties": {
+            "address": {
+              "description": "Street address line 1 for the venue (e.g. '4 Pennsylvania Plaza').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "city": {
+              "description": "City name where the venue is located.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "country_code": {
+              "description": "ISO 3166-1 alpha-2 country code (e.g. 'US', 'GB', 'DE', 'AU').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "entity_id": {
+              "description": "Stable Ticketmaster venue identifier (e.g. 'KovZpaFVAeA'). Used as both the Kafka message key and the CloudEvents subject. Matches the venue_id field in Event records.",
+              "type": "string"
+            },
+            "latitude": {
+              "description": "WGS-84 latitude of the venue in decimal degrees. North is positive.",
+              "type": [
+                "double",
+                "null"
+              ]
+            },
+            "locale": {
+              "description": "BCP-47 locale string for the venue page (e.g. 'en-us').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "longitude": {
+              "description": "WGS-84 longitude of the venue in decimal degrees. East is positive.",
+              "type": [
+                "double",
+                "null"
+              ]
+            },
+            "name": {
+              "description": "Human-readable name of the venue as listed on Ticketmaster (e.g. 'Madison Square Garden', 'The O2 Arena').",
+              "type": "string"
+            },
+            "postal_code": {
+              "description": "Postal or ZIP code for the venue address.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "state_code": {
+              "description": "ISO 3166-2 state or province code (e.g. 'NY', 'CA'). Populated for US and Canadian venues; absent for most international venues.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "timezone": {
+              "description": "IANA timezone database name for the venue's local time (e.g. 'America/New_York', 'Europe/London'). Used to interpret local start times in Event records.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "url": {
+              "description": "URL to the venue page on Ticketmaster.com.",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "entity_id",
+            "name"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "Venue"
+}

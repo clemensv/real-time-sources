@@ -1,0 +1,13 @@
+content-disposition:gov.noaa.aviationweather.Sigmet
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/gov.noaa.aviationweather.jstruct/schemas/gov.noaa.aviationweather.Sigmet/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:gov.noaa.aviationweather.Sigmet
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/gov.noaa.aviationweather.jstruct/schemas/gov.noaa.aviationweather.Sigmet/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/gov.noaa.aviationweather.jstruct/schemas/gov.noaa.aviationweather.Sigmet/versions/1

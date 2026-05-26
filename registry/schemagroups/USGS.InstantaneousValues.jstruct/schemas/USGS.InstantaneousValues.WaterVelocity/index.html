@@ -1,0 +1,64 @@
+{
+  "$id": "https://example.com/schemas/USGS/InstantaneousValues/WaterVelocity",
+  "$root": "/definitions/USGS/InstantaneousValues/WaterVelocity",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "USGS": {
+      "InstantaneousValues": {
+        "WaterVelocity": {
+          "description": "USGS water velocity data. Parameter code 72254.",
+          "name": "WaterVelocity",
+          "properties": {
+            "datetime": {
+              "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}",
+              "type": "string"
+            },
+            "exception": {
+              "description": "{\"description\": \"Exception code when the value is unavailable.\"}",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "parameter_cd": {
+              "description": "{\"description\": \"Parameter code.\"}",
+              "type": "string"
+            },
+            "qualifiers": {
+              "description": "{\"description\": \"Qualifiers for the measurement.\"}",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "site_no": {
+              "description": "{\"description\": \"USGS site number.\"}",
+              "type": "string"
+            },
+            "timeseries_cd": {
+              "description": "{\"description\": \"Timeseries code.\"}",
+              "type": "string"
+            },
+            "value": {
+              "description": "{\"description\": \"Water velocity value.\"}",
+              "type": [
+                "double",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "site_no",
+            "datetime",
+            "qualifiers",
+            "parameter_cd",
+            "timeseries_cd"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "description": "Payload record for water velocity events in the USGS Instantaneous Values source.",
+  "name": "WaterVelocity"
+}

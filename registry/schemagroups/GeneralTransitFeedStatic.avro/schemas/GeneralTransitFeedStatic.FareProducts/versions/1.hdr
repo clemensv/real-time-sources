@@ -1,0 +1,14 @@
+content-disposition:GeneralTransitFeedStatic.FareProducts
+content-length:723
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.FareProducts/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2024-10-18T13:48:36.101368Z
+xregistry-epoch:1
+xregistry-format:Avro
+xregistry-isdefault:true
+xregistry-modifiedat:2024-10-18T13:48:36.101368Z
+xregistry-schemaid:GeneralTransitFeedStatic.FareProducts
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.FareProducts/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.FareProducts/versions/1

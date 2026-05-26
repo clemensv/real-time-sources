@@ -1,0 +1,14 @@
+content-disposition:Bluesky.Feed.Like
+content-length:1839
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Like/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2024-11-14T12:00:01Z
+xregistry-epoch:1
+xregistry-format:Avro
+xregistry-isdefault:true
+xregistry-modifiedat:2024-11-14T12:00:01Z
+xregistry-schemaid:Bluesky.Feed.Like
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Like/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Like/versions/1

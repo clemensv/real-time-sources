@@ -1,0 +1,84 @@
+{
+  "$id": "https://opendata.ndw.nu/schemas/NL/NDW/Situations/Roadwork",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Road construction or maintenance work event from the Dutch NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on the Dutch national road network.",
+  "name": "Roadwork",
+  "properties": {
+    "description": {
+      "description": "Human-readable description of the roadwork situation from the DATEX II comment or description element.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "end_time": {
+      "description": "ISO 8601 UTC timestamp when the roadwork validity period ends, from the DATEX II overallEndTime element. Null for open-ended situations.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "location_description": {
+      "description": "Human-readable description of the roadwork location from the DATEX II locationDescriptor element.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "management_type": {
+      "description": "Type of road management applied, from the DATEX II roadMaintenanceType or managementType element. Example values: laneClosures, carriagewayClosure.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "probability": {
+      "description": "Probability of occurrence for the roadwork, from the DATEX II probabilityOfOccurrence element. Example values: certain, probable, risk.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "road_name": {
+      "description": "Road name or identifier where the roadwork is located.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "severity": {
+      "description": "Overall severity of the roadwork impact, from the DATEX II severity element. Example values: highest, high, medium, low, lowest.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "situation_record_id": {
+      "description": "Unique identifier of the situation record, from the DATEX II situationRecord id attribute.",
+      "type": "string"
+    },
+    "start_time": {
+      "description": "ISO 8601 UTC timestamp when the roadwork validity period starts, from the DATEX II overallStartTime element.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "validity_status": {
+      "description": "Validity status of the situation record, from the DATEX II validityStatus element. Example values: active, suspended, definedByValidityTimeSpec.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "version_time": {
+      "description": "ISO 8601 UTC timestamp when this situation record version was created, from the DATEX II situationVersionTime element.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "situation_record_id",
+    "version_time"
+  ],
+  "type": "object"
+}

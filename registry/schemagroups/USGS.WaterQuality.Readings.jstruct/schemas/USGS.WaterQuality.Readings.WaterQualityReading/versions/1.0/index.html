@@ -1,0 +1,53 @@
+{
+  "$id": "gov.usgs.waterservices.wq.WaterQualityReading",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A single water quality observation from a USGS continuous monitoring sensor. The USGS Instantaneous Values Service returns time series of sensor readings in WaterML 2.0 JSON format. Each reading represents one measurement at a specific date_time for one parameter at one site.",
+  "name": "WaterQualityReading",
+  "properties": {
+    "date_time": {
+      "description": "ISO 8601 date-time string of the observation in UTC (e.g. '2024-11-15T16:45:00+00:00'). Converted from the site-local timestamp using the timezone information provided in the WaterML 2.0 response.",
+      "type": "string"
+    },
+    "parameter_code": {
+      "description": "Five-digit USGS parameter code identifying the measured quantity. Key water quality codes: 00010 (water temperature °C), 00300 (dissolved oxygen mg/L), 00400 (pH), 00095 (specific conductance µS/cm), 63680 (turbidity FNU), 99133 (nitrate+nitrite mg/L as N).",
+      "type": "string"
+    },
+    "parameter_name": {
+      "description": "Human-readable name of the measured parameter as provided in the USGS variable description (e.g. 'Temperature, water, degrees Celsius').",
+      "type": "string"
+    },
+    "qualifier": {
+      "description": "USGS data qualifier code indicating the quality or status of the reading. Common values: 'P' (provisional), 'A' (approved), 'e' (estimated). Null when no qualifier is provided.",
+      "type": "string"
+    },
+    "site_name": {
+      "description": "Official USGS station name for the monitoring location.",
+      "type": "string"
+    },
+    "site_number": {
+      "description": "USGS site identification number for the monitoring location that produced this reading (e.g. '01646500').",
+      "type": "string"
+    },
+    "state": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for usgs-nwis-wq.",
+      "type": "string"
+    },
+    "unit": {
+      "description": "Unit of measurement for the reading as reported by the USGS (e.g. 'deg C', 'mg/l', 'uS/cm @25C', 'FNU', 'mg/l as N').",
+      "type": "string"
+    },
+    "value": {
+      "description": "Numeric sensor reading for the parameter at the given date_time. Null when the sensor did not return a valid numeric value (e.g. equipment malfunction, ice-affected, or the USGS noDataValue sentinel -999999.0).",
+      "type": "double"
+    }
+  },
+  "required": [
+    "site_number",
+    "site_name",
+    "parameter_code",
+    "parameter_name",
+    "unit",
+    "date_time"
+  ],
+  "type": "object"
+}

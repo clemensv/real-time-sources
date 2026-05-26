@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/GeneralTransitFeedRealTime.mqtt/messages/GeneralTransitFeedRealTime.Alert.Alert.mqtt/versions/1",
+  "epoch": 1,
+  "messageid": "GeneralTransitFeedRealTime.Alert.Alert.mqtt",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/GeneralTransitFeedRealTime.mqtt/messages/GeneralTransitFeedRealTime.Alert.Alert.mqtt/meta",
+  "xid": "/messagegroups/GeneralTransitFeedRealTime.mqtt/messages/GeneralTransitFeedRealTime.Alert.Alert.mqtt/meta"
+}

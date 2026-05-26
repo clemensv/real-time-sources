@@ -1,0 +1,41 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.ChargingStation",
+  "description": "A reference record from Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://verkehr.autobahn.de/o/autobahn"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{identifier}"
+    },
+    "time": {
+      "required": false,
+      "type": "timestamp",
+      "value": "{event_time}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "DE.Autobahn.ElectricChargingStationResolved"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "DE.Autobahn.ElectricChargingStationResolved",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationResolved/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "ElectricChargingStationResolved",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationResolved",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationResolved/versions",
+  "xid": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationResolved"
+}

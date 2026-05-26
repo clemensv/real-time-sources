@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for Canada AQHI CloudEvents on the `canada-aqhi` topic keyed by `{province}/{community_name}`.",
+  "endpointid": "ca.gc.weather.aqhi.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/ca.gc.weather.aqhi"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/ca.gc.weather.aqhi.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{province}/{community_name}",
+      "topic": "canada-aqhi"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/ca.gc.weather.aqhi.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/ca.gc.weather.aqhi.Kafka"
+}

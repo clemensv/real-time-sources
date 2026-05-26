@@ -1,0 +1,16 @@
+content-disposition:GDACS.DisasterAlert
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/GDACS.jstruct/schemas/GDACS.DisasterAlert/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/GDACS.jstruct/schemas/GDACS.DisasterAlert/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:GDACS.DisasterAlert
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/GDACS.jstruct/schemas/GDACS.DisasterAlert
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/GDACS.jstruct/schemas/GDACS.DisasterAlert/versions
+xregistry-xid:/schemagroups/GDACS.jstruct/schemas/GDACS.DisasterAlert

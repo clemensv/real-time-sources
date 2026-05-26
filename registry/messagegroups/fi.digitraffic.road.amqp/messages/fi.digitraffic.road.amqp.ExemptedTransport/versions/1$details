@@ -1,0 +1,32 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.ExemptedTransport",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "fi.digitraffic.road.amqp.ExemptedTransport",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "ExemptedTransport",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Service Bus / Event Hubs partition key for exempted transport situations.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{situation_id}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject for exempted transport situations.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{situation_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.ExemptedTransport/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.ExemptedTransport/versions/1"
+}

@@ -1,0 +1,38 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.VolcanicWarning",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "JP.JMA.Volcano.amqp.VolcanicWarning",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "VolcanicWarning",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "event": {
+        "description": "event routing axis carried in the event payload.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{event}"
+      },
+      "prefecture": {
+        "description": "prefecture routing axis carried in the event payload.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{prefecture}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject matching the CloudEvent subject.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "jp.jma.volcano/{volcano_code}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Volcano.amqp/messages/JP.JMA.Volcano.amqp.VolcanicWarning/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/JP.JMA.Volcano.amqp/messages/JP.JMA.Volcano.amqp.VolcanicWarning/versions/1"
+}

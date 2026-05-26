@@ -1,0 +1,31 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "endpointid": "net.vatsim.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/net.vatsim.pilots"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/net.vatsim.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{callsign}",
+      "topic": "vatsim"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/net.vatsim.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/net.vatsim.Kafka"
+}

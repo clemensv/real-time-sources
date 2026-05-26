@@ -1,0 +1,47 @@
+{
+  "$id": "https://example.com/schemas/USGS/Sites/SiteTimeseries",
+  "$root": "/definitions/USGS/Sites/SiteTimeseries",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "USGS": {
+      "Sites": {
+        "SiteTimeseries": {
+          "description": "USGS site timeseries metadata.",
+          "name": "SiteTimeseries",
+          "properties": {
+            "agency_cd": {
+              "description": "Agency code.",
+              "type": "string"
+            },
+            "description": {
+              "description": "Description.",
+              "type": "string"
+            },
+            "parameter_cd": {
+              "description": "Parameter code.",
+              "type": "string"
+            },
+            "site_no": {
+              "description": "USGS site number.",
+              "type": "string"
+            },
+            "timeseries_cd": {
+              "description": "Timeseries code.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "agency_cd",
+            "site_no",
+            "parameter_cd",
+            "timeseries_cd",
+            "description"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "description": "Reference details for one monitoring station or site in the USGS Instantaneous Values source.",
+  "name": "SiteTimeseries"
+}

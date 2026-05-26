@@ -1,0 +1,178 @@
+{
+  "pl.gov.gios.airquality.amqp.AirQualityIndex": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.AirQualityIndex",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "pl.gov.gios.airquality.amqp.AirQualityIndex",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.AirQualityIndex/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "AirQualityIndex",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "pollutant": {
+          "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{pollutant}"
+        },
+        "voivodeship": {
+          "description": "Routing attribute `voivodeship` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{voivodeship}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.AirQualityIndex",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.AirQualityIndex/versions",
+    "xid": "/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.AirQualityIndex"
+  },
+  "pl.gov.gios.airquality.amqp.Measurement": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Measurement",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "pl.gov.gios.airquality.amqp.Measurement",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Measurement/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Measurement",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "pollutant": {
+          "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{pollutant}"
+        },
+        "station_id": {
+          "description": "Routing attribute `station_id` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        },
+        "voivodeship": {
+          "description": "Routing attribute `voivodeship` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{voivodeship}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}/{sensor_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Measurement",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Measurement/versions",
+    "xid": "/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Measurement"
+  },
+  "pl.gov.gios.airquality.amqp.Sensor": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "pl.gov.gios.airquality.amqp.Sensor",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Sensor/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Sensor",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "pollutant": {
+          "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{pollutant}"
+        },
+        "station_id": {
+          "description": "Routing attribute `station_id` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        },
+        "voivodeship": {
+          "description": "Routing attribute `voivodeship` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{voivodeship}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}/{sensor_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Sensor",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Sensor/versions",
+    "xid": "/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Sensor"
+  },
+  "pl.gov.gios.airquality.amqp.Station": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Station",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "pl.gov.gios.airquality.amqp.Station",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Station/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "pollutant": {
+          "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{pollutant}"
+        },
+        "voivodeship": {
+          "description": "Routing attribute `voivodeship` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{voivodeship}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Station",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Station/versions",
+    "xid": "/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Station"
+  }
+}

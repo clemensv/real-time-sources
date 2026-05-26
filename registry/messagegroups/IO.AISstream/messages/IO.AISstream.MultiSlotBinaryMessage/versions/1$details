@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.MultiSlotBinaryMessage",
+  "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "wss://stream.aisstream.io/v0/stream"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{mmsi}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "IO.AISstream.MultiSlotBinaryMessage"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "IO.AISstream.MultiSlotBinaryMessage",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "MultiSlotBinaryMessage",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.MultiSlotBinaryMessage/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.MultiSlotBinaryMessage/versions/1"
+}

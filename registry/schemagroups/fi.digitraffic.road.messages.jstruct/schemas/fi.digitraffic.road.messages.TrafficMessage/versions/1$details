@@ -1,0 +1,13 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "format": "JsonStructure/draft-02",
+  "isdefault": true,
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "schemaid": "fi.digitraffic.road.messages.TrafficMessage",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/fi.digitraffic.road.messages.jstruct/schemas/fi.digitraffic.road.messages.TrafficMessage/versions/1",
+  "versionid": "1",
+  "xid": "/schemagroups/fi.digitraffic.road.messages.jstruct/schemas/fi.digitraffic.road.messages.TrafficMessage/versions/1"
+}

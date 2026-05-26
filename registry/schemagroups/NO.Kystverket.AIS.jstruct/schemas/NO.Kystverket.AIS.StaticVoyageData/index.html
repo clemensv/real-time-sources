@@ -1,0 +1,81 @@
+{
+  "$id": "https://example.com/schemas/NO/Kystverket/AIS/StaticVoyageData",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.",
+  "name": "StaticVoyageData",
+  "properties": {
+    "callsign": {
+      "description": "Provider field for callsign in this record.",
+      "type": "string"
+    },
+    "destination": {
+      "description": "Provider field for destination in this record.",
+      "type": "string"
+    },
+    "dimension_to_bow": {
+      "description": "Provider field for dimension to bow in this record.",
+      "type": "int32"
+    },
+    "dimension_to_port": {
+      "description": "Provider field for dimension to port in this record.",
+      "type": "int32"
+    },
+    "dimension_to_starboard": {
+      "description": "Provider field for dimension to starboard in this record.",
+      "type": "int32"
+    },
+    "dimension_to_stern": {
+      "description": "Provider field for dimension to stern in this record.",
+      "type": "int32"
+    },
+    "draught": {
+      "description": "Provider field for draught in this record.",
+      "type": "double"
+    },
+    "eta_day": {
+      "description": "Provider field for eta day in this record.",
+      "type": "int32"
+    },
+    "eta_hour": {
+      "description": "Provider field for eta hour in this record.",
+      "type": "int32"
+    },
+    "eta_minute": {
+      "description": "Provider field for eta minute in this record.",
+      "type": "int32"
+    },
+    "eta_month": {
+      "description": "Provider field for eta month in this record.",
+      "type": "int32"
+    },
+    "imo_number": {
+      "description": "Provider field for imo number in this record.",
+      "type": "int32"
+    },
+    "mmsi": {
+      "description": "Provider field for mmsi in this record.",
+      "type": "int32"
+    },
+    "ship_name": {
+      "description": "Human-readable name of the ship.",
+      "type": "string"
+    },
+    "ship_type": {
+      "description": "Provider field for ship type in this record.",
+      "type": "int32"
+    },
+    "station_id": {
+      "description": "Stable identifier assigned by the upstream provider for the station or stop.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Time when the provider recorded or published the update.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "mmsi",
+    "timestamp"
+  ],
+  "type": "object"
+}

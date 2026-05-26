@@ -1,0 +1,99 @@
+{
+  "doc": "Detailed wave-summary record from the NDBC .spec realtime2 product.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "default": null,
+      "name": "significant_wave_height",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "swell_height",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "swell_period",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "wind_wave_height",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "wind_wave_period",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "swell_direction",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "wind_wave_direction",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "steepness",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "average_wave_period",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "mean_wave_direction",
+      "type": [
+        "null",
+        "double"
+      ]
+    }
+  ],
+  "name": "BuoyDetailedWaveSummary",
+  "namespace": "Microsoft.OpenData.US.NOAA.NDBC",
+  "type": "record"
+}

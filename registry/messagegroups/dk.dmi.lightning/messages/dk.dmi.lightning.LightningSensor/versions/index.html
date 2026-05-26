@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.lightning.LightningSensor",
+    "description": "Reference data for one of DMI's lightning detection sensors. Six DMI-owned sensors cover Denmark; third-party sensor IDs that appear in observation.sensors are not catalogued here.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{sensor_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "dk.dmi.lightning.LightningSensor"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "dk.dmi.lightning.LightningSensor",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "LightningSensor",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningSensor/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningSensor/versions/1"
+  }
+}

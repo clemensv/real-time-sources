@@ -1,0 +1,17 @@
+content-disposition:uk.kcl.laqn.Species
+content-length:1794
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/uk.kcl.laqn.avro/schemas/uk.kcl.laqn.Species/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:Avro/1.11.3
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/uk.kcl.laqn.avro/schemas/uk.kcl.laqn.Species/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:uk.kcl.laqn.Species
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/uk.kcl.laqn.avro/schemas/uk.kcl.laqn.Species
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/uk.kcl.laqn.avro/schemas/uk.kcl.laqn.Species/versions
+xregistry-xid:/schemagroups/uk.kcl.laqn.avro/schemas/uk.kcl.laqn.Species

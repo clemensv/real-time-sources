@@ -1,0 +1,73 @@
+{
+  "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/GoesMagnetometer",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "One-minute resolution magnetic field measurement from the GOES primary satellite magnetometer at geostationary orbit (~6.6 Earth radii), as reported by the SWPC goes/primary/magnetometers-7-day endpoint. The field is measured in the spacecraft-centered HEN coordinate system where Hp is parallel to Earth's rotation axis, He is perpendicular in the east-west direction, and Hn is radially earthward. During geomagnetic storms, Hp can drop dramatically or even become negative, indicating magnetopause compression.",
+  "name": "GoesMagnetometer",
+  "properties": {
+    "arcjet_flag": {
+      "description": "When true, the satellite's electric propulsion (arcjet) thrusters are firing, which causes magnetic field contamination. Magnetometer readings during arcjet events should be treated with caution as they may not reflect the ambient geomagnetic field.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "he": {
+      "altnames": [
+        "He"
+      ],
+      "description": "Magnetic field He component: perpendicular to the satellite-Earth direction and the dipole axis, positive eastward. Measures the east-west distortion of the geomagnetic field at geostationary orbit.",
+      "symbol": "nT",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "nT"
+    },
+    "hn": {
+      "altnames": [
+        "Hn"
+      ],
+      "description": "Magnetic field Hn component: along the satellite-Earth direction, positive radially earthward.",
+      "symbol": "nT",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "nT"
+    },
+    "hp": {
+      "altnames": [
+        "Hp"
+      ],
+      "description": "Magnetic field Hp component: parallel to Earth's dipole axis, positive northward. During quiet times Hp is typically 80-120 nT; during intense geomagnetic storms (G4-G5) it can drop below zero, indicating the magnetopause has been compressed inside geostationary orbit.",
+      "symbol": "nT",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "nT"
+    },
+    "satellite": {
+      "description": "GOES satellite number providing the measurement (e.g., 19 for GOES-19).",
+      "type": "integer"
+    },
+    "time_tag": {
+      "description": "UTC date-time of the magnetic field measurement in ISO 8601 format.",
+      "type": "string"
+    },
+    "total": {
+      "description": "Total magnetic field magnitude at geostationary orbit, computed as sqrt(He² + Hp² + Hn²). Typical quiet-time values are 100-120 nT.",
+      "symbol": "nT",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "nT"
+    }
+  },
+  "required": [
+    "time_tag",
+    "satellite"
+  ],
+  "type": "object"
+}

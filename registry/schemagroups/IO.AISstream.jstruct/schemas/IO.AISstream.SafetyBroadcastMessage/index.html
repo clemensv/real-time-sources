@@ -1,0 +1,38 @@
+{
+  "$id": "https://example.com/schemas/IO/AISstream/SafetyBroadcastMessage",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+  "name": "SafetyBroadcastMessage",
+  "properties": {
+    "MessageID": {
+      "description": "Provider field for message i d in this record.",
+      "type": "int32"
+    },
+    "RepeatIndicator": {
+      "description": "Provider field for repeat indicator in this record.",
+      "type": "int32"
+    },
+    "Spare": {
+      "description": "Provider field for spare in this record.",
+      "type": "int32"
+    },
+    "Text": {
+      "description": "Provider field for text in this record.",
+      "type": "string"
+    },
+    "UserID": {
+      "description": "Provider field for user i d in this record.",
+      "type": "int32"
+    },
+    "Valid": {
+      "description": "Provider field for valid in this record.",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "MessageID",
+    "UserID",
+    "Valid"
+  ],
+  "type": "object"
+}

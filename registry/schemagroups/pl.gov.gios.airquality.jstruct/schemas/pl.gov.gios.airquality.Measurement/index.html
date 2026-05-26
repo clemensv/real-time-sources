@@ -1,0 +1,40 @@
+{
+  "$id": "https://api.gios.gov.pl/schemas/pl/gov/gios/airquality/Measurement",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Hourly air quality measurement from a single sensor, reporting the concentration of the monitored pollutant in µg/m³.",
+  "name": "Measurement",
+  "properties": {
+    "sensor_code": {
+      "description": "Code identifying the sensor and its aggregation period, e.g. 'DsLegAlRzecz-NO2-1g'. Mapped from 'Kod stanowiska'.",
+      "type": "string"
+    },
+    "sensor_id": {
+      "description": "Numeric identifier of the sensor that produced this measurement.",
+      "type": "integer"
+    },
+    "station_id": {
+      "description": "Numeric identifier of the monitoring station that owns this sensor.",
+      "type": "integer"
+    },
+    "timestamp": {
+      "description": "Measurement timestamp in local Polish time (ISO 8601 format). Mapped from 'Data'.",
+      "type": "datetime"
+    },
+    "value": {
+      "description": "Measured pollutant concentration. Unit: micrograms per cubic meter (µg/m³). Null when the measurement is missing or invalid. Mapped from 'Wartość'.",
+      "symbol": "µg/m³",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "ug/m3"
+    }
+  },
+  "required": [
+    "station_id",
+    "sensor_id",
+    "sensor_code",
+    "timestamp"
+  ],
+  "type": "object"
+}

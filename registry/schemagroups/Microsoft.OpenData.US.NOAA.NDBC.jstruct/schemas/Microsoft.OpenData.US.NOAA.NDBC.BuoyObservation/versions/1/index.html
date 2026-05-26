@@ -1,0 +1,161 @@
+{
+  "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Real-time standard meteorological and oceanographic observation from an NDBC buoy, C-MAN station, or partner platform. Sourced from the NDBC latest_obs.txt composite file which is updated every five minutes. Fields cover wind, waves, pressure, temperature, dewpoint, pressure tendency, visibility, and tide.",
+  "name": "BuoyObservation",
+  "properties": {
+    "air_temperature": {
+      "description": "Air temperature measured at the station. Unit: degrees Celsius.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "CEL"
+    },
+    "average_wave_period": {
+      "description": "Average wave period of all waves during the 20-minute sampling period. Unit: seconds.",
+      "symbol": "s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "s"
+    },
+    "dewpoint": {
+      "description": "Dewpoint temperature computed from air temperature and relative humidity. Unit: degrees Celsius.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "CEL"
+    },
+    "dominant_wave_period": {
+      "description": "Dominant wave period — the period (in seconds) of the wave band with the maximum energy in the spectral wave analysis. Unit: seconds.",
+      "symbol": "s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "s"
+    },
+    "gust": {
+      "description": "Peak 5-second or 8-second gust speed during the observation period. Unit: meters per second.",
+      "symbol": "m/s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m/s"
+    },
+    "latitude": {
+      "description": "Latitude of the observing platform in decimal degrees north. Negative values indicate southern hemisphere.",
+      "type": "double"
+    },
+    "longitude": {
+      "description": "Longitude of the observing platform in decimal degrees east. Negative values indicate western hemisphere.",
+      "type": "double"
+    },
+    "mean_wave_direction": {
+      "description": "Mean wave direction corresponding to the energy at the dominant wave period (DPD). Unit: degrees true.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "pressure": {
+      "description": "Sea-level pressure reduced using the standard atmosphere from the station elevation. Unit: hectopascals.",
+      "symbol": "hPa",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "hPa"
+    },
+    "pressure_tendency": {
+      "description": "Pressure tendency — the signed change in sea-level pressure over the preceding 3 hours. A negative value indicates falling pressure; a positive value indicates rising pressure. Unit: hectopascals.",
+      "symbol": "hPa",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "hPa"
+    },
+    "region": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "NDBC station identifier. Five-character alphanumeric code assigned by NDBC (e.g. '41001' for deep-ocean buoys, 'BURL1' for C-MAN stations).",
+      "type": "string"
+    },
+    "tide": {
+      "description": "Water level above or below Mean Lower Low Water (MLLW) at coastal and C-MAN stations. Unit: feet.",
+      "symbol": "ft",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "[ft_i]"
+    },
+    "timestamp": {
+      "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC data.",
+      "type": "datetime"
+    },
+    "visibility": {
+      "description": "Station visibility as reported by the observing platform. Buoy visibility sensors have a range of 0 to 1.6 nautical miles and are generally only available on C-MAN stations. Unit: nautical miles.",
+      "symbol": "nmi",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "[nmi_i]"
+    },
+    "water_temperature": {
+      "description": "Sea surface temperature. For buoys, measured by a hull-contact sensor near the waterline. Unit: degrees Celsius.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "CEL"
+    },
+    "wave_height": {
+      "description": "Significant wave height — the average of the highest one-third of all wave heights during a 20-minute sampling period. Unit: meters.",
+      "symbol": "m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "wind_direction": {
+      "description": "Wind direction (the direction the wind is coming from) averaged over an 8-minute period for buoys or a 2-minute period for land stations. Unit: degrees true.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "wind_speed": {
+      "description": "Average wind speed during the observation period: 8 minutes for buoys, 2 minutes for land stations. Unit: meters per second.",
+      "symbol": "m/s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m/s"
+    }
+  },
+  "required": [
+    "station_id",
+    "latitude",
+    "longitude",
+    "timestamp"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/no.entur.jstruct/schemas/no.entur.PtSituationElement",
+  "description": "Real-time transit disruption or service alert from the Entur SIRI-SX feed (GET /realtime/v1/rest/sx). Represents a published situation element describing a service disruption, delay cause, or passenger information notice. Includes affected lines, stops, severity level, and validity periods.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api.entur.io/realtime/v1/rest/sx"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "situations/{situation_number}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "no.entur.PtSituationElement"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "no.entur.PtSituationElement",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "PtSituationElement",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/no.entur.situations/messages/no.entur.PtSituationElement/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/no.entur.situations/messages/no.entur.PtSituationElement/versions/1"
+}

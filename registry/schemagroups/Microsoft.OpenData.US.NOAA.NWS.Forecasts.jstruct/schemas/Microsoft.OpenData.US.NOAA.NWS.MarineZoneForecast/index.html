@@ -1,0 +1,98 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/nws-forecasts/schemas/Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast.json",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Marine forecast bulletin snapshot parsed from the NOAA/NWS coastal waters text feed under tgftp.nws.noaa.gov/data/forecasts/marine/coastal/pz/. The upstream feed is plain text rather than structured JSON, so the bridge emits the bulletin metadata plus an ordered array of named narrative periods for the selected marine zone.",
+  "name": "MarineZoneForecast",
+  "properties": {
+    "bulletin_awips_id": {
+      "description": "AWIPS product identifier line from the bulletin, for example CWFSEW.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "bulletin_text": {
+      "description": "Zone-specific marine bulletin body including the ordered period sections, preserved as plain text so downstream consumers can retain the original marine forecast wording.",
+      "type": "string"
+    },
+    "expires_text": {
+      "description": "Raw Expires header value from the bulletin preamble, preserved as text because the feed does not provide an explicit timezone annotation in ISO form.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "issued_at_text": {
+      "description": "Issue time line from the zone-specific section of the marine bulletin, preserved as the original text because the feed uses local-office time abbreviations such as PDT.",
+      "type": "string"
+    },
+    "office_name": {
+      "description": "Issuing office line from the bulletin header, for example 'National Weather Service Seattle WA'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "periods": {
+      "description": "Ordered narrative forecast periods parsed from the zone-specific section. Each element preserves the named period heading and its free-text forecast text.",
+      "items": {
+        "description": "One named forecast period parsed from the marine text bulletin.",
+        "name": "MarineForecastPeriod",
+        "properties": {
+          "forecast_text": {
+            "description": "Narrative forecast text for the period, preserving the marine bulletin wording about winds, seas, waves, precipitation, and outlook conditions.",
+            "type": "string"
+          },
+          "period_name": {
+            "description": "Uppercase period label parsed from the leading token in the bulletin section, such as TONIGHT, TUE, or SAT NIGHT.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "period_name",
+          "forecast_text"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "product_title": {
+      "description": "Bulletin title line, such as 'Coastal Waters Forecast for Washington'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "synopsis": {
+      "description": "Narrative synopsis paragraph that appears before the zone-specific section and describes the broader marine area covered by the bulletin.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "wmo_header": {
+      "description": "WMO abbreviated heading line from the marine bulletin, for example 'FZUS56 KSEW 132142'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "zone_id": {
+      "description": "Marine forecast zone identifier parsed from the bulletin zone header line, such as PZZ135 for Puget Sound and Hood Canal.",
+      "pattern": "^[A-Z]{3}[0-9]{3}$",
+      "type": "string"
+    },
+    "zone_name": {
+      "description": "Marine zone display name parsed from the zone header line immediately following the zone identifier in the text bulletin.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "zone_id",
+    "zone_name",
+    "issued_at_text",
+    "periods",
+    "bulletin_text"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,32 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.DemandOutturn",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "UK.Co.Elexon.BMRS.amqp.DemandOutturn",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "DemandOutturn",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "AMQP partition key matching the CloudEvent subject and Kafka key.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{settlement_period}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP subject matching the CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{settlement_period}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/UK.Co.Elexon.BMRS.amqp/messages/UK.Co.Elexon.BMRS.amqp.DemandOutturn/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/UK.Co.Elexon.BMRS.amqp/messages/UK.Co.Elexon.BMRS.amqp.DemandOutturn/versions/1"
+}

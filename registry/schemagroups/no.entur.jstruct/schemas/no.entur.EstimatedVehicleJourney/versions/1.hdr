@@ -1,0 +1,13 @@
+content-disposition:no.entur.EstimatedVehicleJourney
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/no.entur.jstruct/schemas/no.entur.EstimatedVehicleJourney/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:no.entur.EstimatedVehicleJourney
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/no.entur.jstruct/schemas/no.entur.EstimatedVehicleJourney/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/no.entur.jstruct/schemas/no.entur.EstimatedVehicleJourney/versions/1

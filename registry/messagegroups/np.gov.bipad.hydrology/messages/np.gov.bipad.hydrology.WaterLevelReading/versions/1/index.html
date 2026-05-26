@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/np.gov.bipad.hydrology.jstruct/schemas/np.gov.bipad.hydrology.WaterLevelReading",
+  "description": "A current measurement from Nepal's BIPAD Portal for one monitoring site. It carries river water level observations when the upstream feed reports a new or refreshed value.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{feedurl}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "np.gov.bipad.hydrology.WaterLevelReading"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "np.gov.bipad.hydrology.WaterLevelReading",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WaterLevelReading",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.WaterLevelReading/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.WaterLevelReading/versions/1"
+}

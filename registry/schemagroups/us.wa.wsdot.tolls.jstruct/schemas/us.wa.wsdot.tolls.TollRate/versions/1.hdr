@@ -1,0 +1,13 @@
+content-disposition:us.wa.wsdot.tolls.TollRate
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/us.wa.wsdot.tolls.jstruct/schemas/us.wa.wsdot.tolls.TollRate/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:us.wa.wsdot.tolls.TollRate
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/us.wa.wsdot.tolls.jstruct/schemas/us.wa.wsdot.tolls.TollRate/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/us.wa.wsdot.tolls.jstruct/schemas/us.wa.wsdot.tolls.TollRate/versions/1

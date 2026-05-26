@@ -1,0 +1,90 @@
+{
+  "doc": "Reference data for a Ticketmaster attraction (performer, artist, sports team, or production).",
+  "fields": [
+    {
+      "doc": "Stable Ticketmaster attraction identifier.",
+      "name": "entity_id",
+      "type": "string"
+    },
+    {
+      "doc": "Human-readable name of the attraction.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "URL to the attraction page on Ticketmaster.com.",
+      "name": "url",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "BCP-47 locale string.",
+      "name": "locale",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Stable classification segment identifier.",
+      "name": "segment_id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Classification segment name.",
+      "name": "segment_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Stable genre identifier.",
+      "name": "genre_id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Genre name.",
+      "name": "genre_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Stable subgenre identifier.",
+      "name": "subgenre_id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Subgenre name.",
+      "name": "subgenre_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "Attraction",
+  "namespace": "Ticketmaster.Reference",
+  "type": "record"
+}

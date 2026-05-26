@@ -1,0 +1,13 @@
+content-disposition:GeneralTransitFeedRealTime.Trip.TripUpdate
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Trip.TripUpdate/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2024-10-18T13:48:02.088029Z
+xregistry-epoch:1
+xregistry-format:Avro
+xregistry-isdefault:true
+xregistry-modifiedat:2024-10-18T13:48:02.088029Z
+xregistry-schemaid:GeneralTransitFeedRealTime.Trip.TripUpdate
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Trip.TripUpdate/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Trip.TripUpdate/versions/1

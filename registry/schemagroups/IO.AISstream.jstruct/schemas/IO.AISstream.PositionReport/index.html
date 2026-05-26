@@ -1,0 +1,84 @@
+{
+  "$id": "https://example.com/schemas/IO/AISstream/PositionReport",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+  "name": "PositionReport",
+  "properties": {
+    "Cog": {
+      "description": "Provider field for cog in this record.",
+      "type": "double"
+    },
+    "CommunicationState": {
+      "description": "Provider field for communication state in this record.",
+      "type": "int32"
+    },
+    "Latitude": {
+      "description": "Latitude of the resource in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "Longitude": {
+      "description": "Longitude of the resource in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "MessageID": {
+      "description": "Provider field for message i d in this record.",
+      "type": "int32"
+    },
+    "NavigationalStatus": {
+      "description": "Provider field for navigational status in this record.",
+      "type": "int32"
+    },
+    "PositionAccuracy": {
+      "description": "Provider field for position accuracy in this record.",
+      "type": "boolean"
+    },
+    "Raim": {
+      "description": "Provider field for raim in this record.",
+      "type": "boolean"
+    },
+    "RateOfTurn": {
+      "description": "Provider field for rate of turn in this record.",
+      "type": "int32"
+    },
+    "RepeatIndicator": {
+      "description": "Provider field for repeat indicator in this record.",
+      "type": "int32"
+    },
+    "Sog": {
+      "description": "Provider field for sog in this record.",
+      "type": "double"
+    },
+    "Spare": {
+      "description": "Provider field for spare in this record.",
+      "type": "int32"
+    },
+    "SpecialManoeuvreIndicator": {
+      "description": "Provider field for special manoeuvre indicator in this record.",
+      "type": "int32"
+    },
+    "Timestamp": {
+      "description": "Time when the provider recorded or published the update.",
+      "type": "int32"
+    },
+    "TrueHeading": {
+      "description": "Provider field for true heading in this record.",
+      "type": "int32"
+    },
+    "UserID": {
+      "description": "Provider field for user i d in this record.",
+      "type": "int32"
+    },
+    "Valid": {
+      "description": "Provider field for valid in this record.",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "MessageID",
+    "UserID",
+    "Longitude",
+    "Latitude",
+    "Valid"
+  ],
+  "type": "object"
+}

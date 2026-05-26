@@ -1,0 +1,19 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/xceed/messages/xceed.Event",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "xceed.mqtt.Event",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Event",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": true,
+    "topic_name": "civic-events/intl/xceed/xceed/{city}/{event_id}/event"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/xceed.mqtt/messages/xceed.mqtt.Event/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/xceed.mqtt/messages/xceed.mqtt.Event/versions/1"
+}

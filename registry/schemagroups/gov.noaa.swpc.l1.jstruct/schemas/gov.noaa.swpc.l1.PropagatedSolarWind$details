@@ -1,0 +1,16 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "format": "JsonStructure/draft-02",
+  "isdefault": true,
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/gov.noaa.swpc.l1.jstruct/schemas/gov.noaa.swpc.l1.PropagatedSolarWind/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "schemaid": "gov.noaa.swpc.l1.PropagatedSolarWind",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/gov.noaa.swpc.l1.jstruct/schemas/gov.noaa.swpc.l1.PropagatedSolarWind",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/gov.noaa.swpc.l1.jstruct/schemas/gov.noaa.swpc.l1.PropagatedSolarWind/versions",
+  "xid": "/schemagroups/gov.noaa.swpc.l1.jstruct/schemas/gov.noaa.swpc.l1.PropagatedSolarWind"
+}

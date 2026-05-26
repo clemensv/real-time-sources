@@ -1,0 +1,43 @@
+{
+  "Ticketmaster.Events.Event": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Events.Event",
+    "description": "A Ticketmaster event representing a concert, sports match, theater performance, or other live public event. Emitted when a new event is discovered or when an existing event's status or schedule changes.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://app.ticketmaster.com/discovery/v2/events"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{event_id}"
+      },
+      "time": {
+        "required": false,
+        "type": "timestamp",
+        "value": "{start_datetime_utc}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "Ticketmaster.Events.Event"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "Ticketmaster.Events.Event",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Events/messages/Ticketmaster.Events.Event/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Event",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Events/messages/Ticketmaster.Events.Event",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Events/messages/Ticketmaster.Events.Event/versions",
+    "xid": "/messagegroups/Ticketmaster.Events/messages/Ticketmaster.Events.Event"
+  }
+}

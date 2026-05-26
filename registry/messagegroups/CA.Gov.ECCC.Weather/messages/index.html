@@ -1,0 +1,74 @@
+{
+  "CA.Gov.ECCC.Weather.Station": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/CA.Gov.ECCC.Weather.jstruct/schemas/CA.Gov.ECCC.Weather.Station",
+    "description": "A reference record published by Environment and Climate Change Canada (ECCC). It lets consumers label, group, and route the live measurement or forecast events.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://api.weather.gc.ca"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{msc_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "CA.Gov.ECCC.Weather.Station"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "CA.Gov.ECCC.Weather.Station",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.Station/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.Station",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.Station/versions",
+    "xid": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.Station"
+  },
+  "CA.Gov.ECCC.Weather.WeatherObservation": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/CA.Gov.ECCC.Weather.jstruct/schemas/CA.Gov.ECCC.Weather.WeatherObservation",
+    "description": "A current environmental measurement from Environment and Climate Change Canada (ECCC). It carries current weather observations when the upstream feed reports a new or refreshed value.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://api.weather.gc.ca"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{msc_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "CA.Gov.ECCC.Weather.WeatherObservation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "CA.Gov.ECCC.Weather.WeatherObservation",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.WeatherObservation/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherObservation",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.WeatherObservation",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.WeatherObservation/versions",
+    "xid": "/messagegroups/CA.Gov.ECCC.Weather/messages/CA.Gov.ECCC.Weather.WeatherObservation"
+  }
+}

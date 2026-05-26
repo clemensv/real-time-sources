@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for NDW Road Traffic CloudEvents on the `ndw-road-traffic` topic keyed by `msi-signs/{sign_id}`.",
+  "endpointid": "NL.NDW.MSI.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/NL.NDW.MSI"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/NL.NDW.MSI.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "msi-signs/{sign_id}",
+      "topic": "ndw-road-traffic"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/NL.NDW.MSI.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/NL.NDW.MSI.Kafka"
+}

@@ -1,0 +1,35 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Venue",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Ticketmaster.Reference.amqp.Venue",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference.amqp/messages/Ticketmaster.Reference.amqp.Venue/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Venue",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "AMQP partition key matching the CloudEvent subject and Kafka key.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{entity_id}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP subject matching the CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{entity_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference.amqp/messages/Ticketmaster.Reference.amqp.Venue",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference.amqp/messages/Ticketmaster.Reference.amqp.Venue/versions",
+  "xid": "/messagegroups/Ticketmaster.Reference.amqp/messages/Ticketmaster.Reference.amqp.Venue"
+}

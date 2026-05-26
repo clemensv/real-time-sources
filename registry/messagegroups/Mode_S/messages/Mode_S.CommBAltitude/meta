@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Mode_S/messages/Mode_S.CommBAltitude/versions/1",
+  "epoch": 1,
+  "messageid": "Mode_S.CommBAltitude",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Mode_S/messages/Mode_S.CommBAltitude/meta",
+  "xid": "/messagegroups/Mode_S/messages/Mode_S.CommBAltitude/meta"
+}

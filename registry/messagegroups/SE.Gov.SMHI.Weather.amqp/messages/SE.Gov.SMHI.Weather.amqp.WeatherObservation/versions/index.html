@@ -1,0 +1,52 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/SE.Gov.SMHI.Weather/messages/SE.Gov.SMHI.Weather.WeatherObservation",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://opendata-download-metobs.smhi.se"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "SE.Gov.SMHI.Weather.WeatherObservation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "SE.Gov.SMHI.Weather.amqp.WeatherObservation",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherObservation",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "lan": {
+          "description": "Routing value for lan.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{lan}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP subject matching the CloudEvents subject for this transport variant.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/SE.Gov.SMHI.Weather.amqp/messages/SE.Gov.SMHI.Weather.amqp.WeatherObservation/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/SE.Gov.SMHI.Weather.amqp/messages/SE.Gov.SMHI.Weather.amqp.WeatherObservation/versions/1"
+  }
+}

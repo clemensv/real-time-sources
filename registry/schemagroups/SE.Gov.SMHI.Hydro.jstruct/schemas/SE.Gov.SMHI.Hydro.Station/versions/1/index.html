@@ -1,0 +1,56 @@
+{
+  "$id": "https://example.com/schemas/SE/Gov/SMHI/Hydro/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference details for one monitoring station or site in the SMHI Hydrological Data source.",
+  "name": "Station",
+  "properties": {
+    "catchment_name": {
+      "description": "Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog. When the catalog has no catchmentName for a station the bridge substitutes the lowercase sentinel 'unknown' so the field stays non-null and the {catchment_name} MQTT topic segment remains populated. Normalized to lowercase kebab-case before publishing.",
+      "type": "string"
+    },
+    "catchment_number": {
+      "description": "Provider-supplied catchment number value for this record.",
+      "type": "int32"
+    },
+    "catchment_size": {
+      "description": "Provider-supplied catchment size value for this record.",
+      "type": "double"
+    },
+    "latitude": {
+      "description": "Latitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "longitude": {
+      "description": "Longitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "measuring_stations": {
+      "description": "Provider-supplied measuring stations value for this record.",
+      "type": "string"
+    },
+    "name": {
+      "description": "Human-readable name of the station, site, or location.",
+      "type": "string"
+    },
+    "owner": {
+      "description": "Provider-supplied owner value for this record.",
+      "type": "string"
+    },
+    "region": {
+      "description": "Provider-supplied region value for this record.",
+      "type": "int32"
+    },
+    "station_id": {
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "name",
+    "catchment_name",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

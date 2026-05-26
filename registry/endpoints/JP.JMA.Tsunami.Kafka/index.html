@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for JMA Bosai Warnings CloudEvents on the `jma-bosai-tsunami` topic keyed by `jp.jma.tsunami/{event_id}/{serial}`.",
+  "endpointid": "JP.JMA.Tsunami.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/JP.JMA.Tsunami"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/JP.JMA.Tsunami.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "jp.jma.tsunami/{event_id}/{serial}",
+      "topic": "jma-bosai-tsunami"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/JP.JMA.Tsunami.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/JP.JMA.Tsunami.Kafka"
+}

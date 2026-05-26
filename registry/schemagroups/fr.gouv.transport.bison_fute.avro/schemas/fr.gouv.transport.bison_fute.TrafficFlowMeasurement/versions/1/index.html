@@ -1,0 +1,55 @@
+{
+  "description": "A current transport measurement or status update from French public road-traffic feeds. It carries traffic measurements and road situations when the upstream feed reports a new or refreshed value.",
+  "doc": "Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network.",
+  "fields": [
+    {
+      "doc": "Unique identifier of the DATEX II measurement site record.",
+      "name": "site_id",
+      "type": "string"
+    },
+    {
+      "doc": "ISO 8601 timestamp of the measurement.",
+      "name": "measurement_time",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Number of vehicles per hour passing the measurement site.",
+      "name": "vehicle_flow_rate",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Average speed of vehicles in km/h at the measurement site.",
+      "name": "average_speed",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Number of vehicle observations used to compute the flow rate.",
+      "name": "input_values_flow",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Number of vehicle observations used to compute the average speed.",
+      "name": "input_values_speed",
+      "type": [
+        "null",
+        "int"
+      ]
+    }
+  ],
+  "name": "TrafficFlowMeasurement",
+  "namespace": "fr.gouv.transport.bison_fute",
+  "type": "record"
+}

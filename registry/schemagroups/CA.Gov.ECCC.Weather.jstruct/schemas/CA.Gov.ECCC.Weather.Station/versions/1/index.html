@@ -1,0 +1,79 @@
+{
+  "$id": "https://api.weather.gc.ca/schemas/CA/Gov/ECCC/Weather/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record published by Environment and Climate Change Canada (ECCC). It lets consumers label, group, and route the live measurement or forecast events.",
+  "name": "Station",
+  "properties": {
+    "auto_man": {
+      "description": "Station type: 'AUTO' for automatic, 'MAN' for manual, or combination.",
+      "type": "string"
+    },
+    "data_provider": {
+      "description": "Organization providing the data, typically 'MSC' for Meteorological Service of Canada.",
+      "type": "string"
+    },
+    "dataset_network": {
+      "description": "Network identifier, typically 'CA' for Canadian stations.",
+      "type": "string"
+    },
+    "elevation": {
+      "description": "Station elevation above sea level in meters.",
+      "symbol": "m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "iata_id": {
+      "description": "IATA station code, e.g. 'CYYZ' for Toronto Pearson.",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "WGS84 latitude of the station in decimal degrees.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degree"
+    },
+    "longitude": {
+      "description": "WGS84 longitude of the station in decimal degrees.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degree"
+    },
+    "msc_id": {
+      "description": "MSC station identifier (Meteorological Service of Canada ID), also known as Climate ID. Used as Kafka key.",
+      "type": "string"
+    },
+    "name": {
+      "description": "Station name as listed in the SWOB station registry, e.g. 'TORONTO PEARSON INTL A', 'VANCOUVER INTL A'.",
+      "type": "string"
+    },
+    "province": {
+      "description": "Normalized routing field 'province' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "province_territory": {
+      "description": "Canadian province or territory where the station is located, e.g. 'Ontario', 'British Columbia'.",
+      "type": "string"
+    },
+    "wmo_id": {
+      "description": "WMO synoptic station identifier, e.g. 71624 for Toronto Pearson. Null for stations without a WMO assignment.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "msc_id",
+    "name"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference event describing an EAWS region (or super-region) that the bridge is configured to observe. Emitted at bridge startup and whenever the configured region set changes. Acts as the catalog backbone for downstream consumers, ensuring the regional context is available even outside the avalanche season when no bulletins are being published.",
+  "name": "AvalancheRegion",
+  "properties": {
+    "bulletin_base_url": {
+      "description": "Base URL used by the bridge to fetch CAAMLv6 bulletins for this region (typically https://avalanche.report/albina_files). Null when not provided.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "configured_at": {
+      "description": "ISO 8601 UTC timestamp when this region was registered in the bridge configuration. Updated whenever the bridge starts and re-emits its catalog.",
+      "type": "datetime"
+    },
+    "lang": {
+      "description": "ISO 639-1 language code used by the bridge when requesting bulletins for this region (de, en, it, fr, etc.).",
+      "type": "string"
+    },
+    "region_id": {
+      "description": "EAWS region identifier (country prefix plus warning service code), e.g. AT-07 for Tirol, IT-32-BZ for South Tyrol. Matches the regionID used in CAAMLv6 bulletins.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "region_id",
+    "lang",
+    "configured_at"
+  ],
+  "type": "object"
+}

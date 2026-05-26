@@ -1,0 +1,49 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/FareLegRules",
+  "$root": "/definitions/GeneralTransitFeedStatic/FareLegRules",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "FareLegRules": {
+        "description": "Defines fare leg rules.",
+        "name": "FareLegRules",
+        "properties": {
+          "fareLegRuleId": {
+            "description": "Identifies a fare leg rule.",
+            "type": "string"
+          },
+          "fareProductId": {
+            "description": "Identifies a fare product.",
+            "type": "string"
+          },
+          "fromAreaId": {
+            "default": null,
+            "description": "Identifies the origin area.",
+            "type": "string"
+          },
+          "legGroupId": {
+            "default": null,
+            "description": "Identifies a group of legs.",
+            "type": "string"
+          },
+          "networkId": {
+            "default": null,
+            "description": "Identifies a network.",
+            "type": "string"
+          },
+          "toAreaId": {
+            "default": null,
+            "description": "Identifies the destination area.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fareLegRuleId",
+          "fareProductId"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "FareLegRules"
+}

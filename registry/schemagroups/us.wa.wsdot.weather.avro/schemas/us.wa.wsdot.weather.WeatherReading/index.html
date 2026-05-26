@@ -1,0 +1,109 @@
+{
+  "description": "A transport update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates for Washington road, bridge, pass, ferry, and border resources.",
+  "doc": "Weather reading.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "station_name",
+      "type": "string"
+    },
+    {
+      "name": "reading_time",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "temperature_in_fahrenheit",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "precipitation_in_inches",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "wind_speed_in_mph",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "wind_gust_speed_in_mph",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "wind_direction",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "name": "wind_direction_cardinal",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "barometric_pressure",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "relative_humidity",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "name": "visibility",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "sky_coverage",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "name": "longitude",
+      "type": "double"
+    }
+  ],
+  "name": "WeatherReading",
+  "namespace": "us.wa.wsdot.weather",
+  "type": "record"
+}

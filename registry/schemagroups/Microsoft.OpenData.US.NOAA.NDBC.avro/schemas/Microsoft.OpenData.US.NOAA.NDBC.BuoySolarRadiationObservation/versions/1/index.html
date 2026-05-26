@@ -1,0 +1,43 @@
+{
+  "doc": "Hourly solar radiation observation from the NDBC .srad realtime2 product.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "default": null,
+      "name": "shortwave_radiation_licor",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "shortwave_radiation_eppley",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "longwave_radiation",
+      "type": [
+        "null",
+        "double"
+      ]
+    }
+  ],
+  "name": "BuoySolarRadiationObservation",
+  "namespace": "Microsoft.OpenData.US.NOAA.NDBC",
+  "type": "record"
+}

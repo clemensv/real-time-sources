@@ -1,0 +1,65 @@
+{
+  "$id": "https://example.com/schemas/NL/RWS/Waterwebservices/WaterLevelObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Measurement payload for water level observations in the RWS Waterwebservices source.",
+  "name": "WaterLevelObservation",
+  "properties": {
+    "compartment": {
+      "description": "Provider-supplied compartment value for this record.",
+      "type": "string"
+    },
+    "location_name": {
+      "altnames": {
+        "lang:nl": "Naam"
+      },
+      "description": "Human-readable name of the location.",
+      "type": "string"
+    },
+    "parameter": {
+      "description": "Provider-supplied parameter value for this record.",
+      "type": "string"
+    },
+    "quality_code": {
+      "altnames": {
+        "lang:nl": "Kwaliteitswaardecode"
+      },
+      "description": "Provider code identifying the quality.",
+      "type": "string"
+    },
+    "station_code": {
+      "description": "Provider code identifying the station.",
+      "type": "string"
+    },
+    "status": {
+      "altnames": {
+        "lang:nl": "Statuswaarde"
+      },
+      "description": "Provider status value for the station, measurement, or alert.",
+      "type": "string"
+    },
+    "timestamp": {
+      "altnames": {
+        "lang:nl": "Tijdstip"
+      },
+      "description": "Time when the provider recorded or published the observation.",
+      "type": "datetime"
+    },
+    "unit": {
+      "description": "Unit used for the measured value.",
+      "type": "string"
+    },
+    "value": {
+      "altnames": {
+        "lang:nl": "Waarde_Numeriek"
+      },
+      "description": "Measured value reported by the upstream provider.",
+      "type": "double"
+    }
+  },
+  "required": [
+    "station_code",
+    "timestamp",
+    "value"
+  ],
+  "type": "object"
+}

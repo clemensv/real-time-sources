@@ -1,0 +1,17 @@
+content-disposition:US.EPA.UVIndex.HourlyForecast
+content-length:1689
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.HourlyForecast/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.HourlyForecast/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:US.EPA.UVIndex.HourlyForecast
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.HourlyForecast
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.HourlyForecast/versions
+xregistry-xid:/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.HourlyForecast

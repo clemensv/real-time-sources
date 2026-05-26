@@ -1,0 +1,14 @@
+content-disposition:eu.entsoe.transparency.GenerationForecast
+content-length:720
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.GenerationForecast/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:Avro/1.11.3
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:eu.entsoe.transparency.GenerationForecast
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.GenerationForecast/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/eu.entsoe.transparency.avro/schemas/eu.entsoe.transparency.GenerationForecast/versions/1

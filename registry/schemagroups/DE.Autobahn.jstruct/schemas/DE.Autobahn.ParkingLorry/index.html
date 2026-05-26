@@ -1,0 +1,227 @@
+{
+  "$id": "https://example.com/schemas/DE/Autobahn/ParkingLorry",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "additionalProperties": false,
+  "definitions": {
+    "StringList": {
+      "description": "Reusable array of strings for Autobahn list-valued text and symbol fields.",
+      "items": {
+        "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.",
+        "type": "string"
+      },
+      "name": "StringList",
+      "type": "array"
+    }
+  },
+  "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.",
+  "name": "ParkingLorry",
+  "properties": {
+    "amenity_descriptions": {
+      "altnames": {
+        "autobahn-api": "lorryParkingFeatureIcons[].description"
+      },
+      "description": "Descriptions extracted from lorryParkingFeatureIcons[].description for the parking site amenities.",
+      "type": [
+        {
+          "$ref": "/definitions/StringList"
+        },
+        "null"
+      ]
+    },
+    "car_space_count": {
+      "description": "Number of passenger-car spaces parsed from description lines that contain PKW Stellplätze.",
+      "minimum": 0,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "coordinate_lat": {
+      "altnames": {
+        "autobahn-api": "coordinate.lat"
+      },
+      "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+      "maximum": 90,
+      "minimum": -90,
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "coordinate_lon": {
+      "altnames": {
+        "autobahn-api": "coordinate.long"
+      },
+      "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+      "maximum": 180,
+      "minimum": -180,
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "description_lines": {
+      "altnames": {
+        "autobahn-api": "description"
+      },
+      "description": "Description lines from the Autobahn API description array.",
+      "type": [
+        {
+          "$ref": "/definitions/StringList"
+        },
+        "null"
+      ]
+    },
+    "display_type": {
+      "altnames": {
+        "autobahn-api": "display_type"
+      },
+      "description": "Autobahn API display_type for lorry parking items.",
+      "descriptions": {
+        "PARKING": "Provider coded value `PARKING` for this field."
+      },
+      "enum": [
+        "PARKING"
+      ],
+      "type": "string"
+    },
+    "event_time": {
+      "description": "CloudEvents event time for the emitted parking record. The bridge uses the poll timestamp because parking items do not expose startTimestamp in the normalized payload.",
+      "type": "datetime"
+    },
+    "extent": {
+      "altnames": {
+        "autobahn-api": "extent"
+      },
+      "description": "Autobahn API extent text for the parking site.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "footer_lines": {
+      "altnames": {
+        "autobahn-api": "footer"
+      },
+      "description": "Footer lines from the Autobahn API footer array.",
+      "type": [
+        {
+          "$ref": "/definitions/StringList"
+        },
+        "null"
+      ]
+    },
+    "future": {
+      "altnames": {
+        "autobahn-api": "future"
+      },
+      "description": "Whether the Autobahn API marks the parking item as a future entry.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "icon": {
+      "altnames": {
+        "autobahn-api": "icon"
+      },
+      "description": "Autobahn API icon identifier for the parking item.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "identifier": {
+      "altnames": {
+        "autobahn-api": "identifier"
+      },
+      "description": "Stable Autobahn parking identifier used for the CloudEvents subject and Kafka key.",
+      "type": "string"
+    },
+    "is_blocked": {
+      "altnames": {
+        "autobahn-api": "isBlocked"
+      },
+      "description": "Whether the Autobahn API marks the parking site as blocked.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "lorry_space_count": {
+      "description": "Number of lorry spaces parsed from description lines that contain LKW Stellplätze.",
+      "minimum": 0,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "point": {
+      "altnames": {
+        "autobahn-api": "point"
+      },
+      "description": "Autobahn API point text that identifies the parking site location.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "road": {
+      "description": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness.",
+      "pattern": "^[a-z0-9-]+$",
+      "type": "string"
+    },
+    "road_ids": {
+      "description": "Autobahn road identifiers for the road query that yielded this parking item.",
+      "items": {
+        "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.",
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "route_recommendation_json": {
+      "altnames": {
+        "autobahn-api": "routeRecommendation"
+      },
+      "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available for the parking location.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "start_lc_position": {
+      "altnames": {
+        "autobahn-api": "startLcPosition"
+      },
+      "description": "Numeric startLcPosition value emitted by the Autobahn API for the parking site location.",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "subtitle": {
+      "description": "Human-readable subtitle from the Autobahn API parking item.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "title": {
+      "description": "Human-readable title from the Autobahn API parking item.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "identifier",
+    "road",
+    "road_ids",
+    "event_time",
+    "display_type"
+  ],
+  "type": "object"
+}

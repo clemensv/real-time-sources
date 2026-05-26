@@ -1,0 +1,54 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/FareAttributes",
+  "$root": "/definitions/GeneralTransitFeedStatic/FareAttributes",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "FareAttributes": {
+        "description": "Defines fare attributes.",
+        "name": "FareAttributes",
+        "properties": {
+          "agencyId": {
+            "default": null,
+            "description": "Identifies the agency for the specified fare.",
+            "type": "string"
+          },
+          "currencyType": {
+            "description": "Currency type used to pay the fare.",
+            "type": "string"
+          },
+          "fareId": {
+            "description": "Identifies a fare class.",
+            "type": "string"
+          },
+          "paymentMethod": {
+            "description": "When 0, fare must be paid on board. When 1, fare must be paid before boarding.",
+            "type": "int32"
+          },
+          "price": {
+            "description": "Fare price, in the unit specified by currency_type.",
+            "type": "double"
+          },
+          "transferDuration": {
+            "default": null,
+            "description": "Length of time in seconds before a transfer expires.",
+            "type": "int64"
+          },
+          "transfers": {
+            "default": null,
+            "description": "Specifies the number of transfers permitted on this fare.",
+            "type": "int32"
+          }
+        },
+        "required": [
+          "fareId",
+          "price",
+          "currencyType",
+          "paymentMethod"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "FareAttributes"
+}

@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/JP.JMA.Warning.jstruct/schemas/JP.JMA.Warning.WeatherWarning",
+    "description": "JMA Bosai weather warning/advisory telemetry for one forecast area within an office bulletin.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "jp.jma.warning/{office_code}/{area_code}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "JP.JMA.Warning.WeatherWarning"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "JP.JMA.Warning.WeatherWarning",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherWarning",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.WeatherWarning/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.WeatherWarning/versions/1"
+  }
+}

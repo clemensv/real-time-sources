@@ -1,0 +1,34 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "Mode_S.amqp.CommBAltitude",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "CommBAltitude",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "msg_type": {
+          "description": "Downlink-format family routing axis for AMQP filters without decoding the payload.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{msg_type}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{icao24}/{receiver_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.CommBAltitude/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/Mode_S.amqp/messages/Mode_S.amqp.CommBAltitude/versions/1"
+  }
+}

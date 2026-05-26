@@ -1,0 +1,93 @@
+{
+  "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/XrayFlare",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Individual solar X-ray flare event detected by the GOES primary satellite XRS instrument, as reported by the SWPC goes/primary/xray-flares-7-day endpoint. Each record represents a discrete flare event with onset, peak, and end times plus X-ray classifications on the standard A/B/C/M/X logarithmic scale. The flare classification is based on peak 0.1-0.8 nm X-ray flux: C-class (1e-6 W/m²), M-class (1e-5), X-class (1e-4).",
+  "name": "XrayFlare",
+  "properties": {
+    "begin_class": {
+      "description": "X-ray classification at flare onset, e.g., 'B6.9' or 'C1.0'. Format is a letter (A/B/C/M/X) followed by a decimal multiplier within that decade of flux.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "begin_time": {
+      "description": "UTC date-time of the flare onset (start of the X-ray flux rise above background), in ISO 8601 format. Used as part of the Kafka key to uniquely identify each flare event.",
+      "type": "string"
+    },
+    "current_int_xrlong": {
+      "description": "Current time-integrated X-ray flux in the 0.1-0.8 nm band since flare onset, representing total X-ray energy delivered.",
+      "symbol": "J/m²",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "J/m²"
+    },
+    "end_class": {
+      "description": "X-ray classification at the declared end of the flare event.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "end_time": {
+      "description": "UTC date-time when the flare X-ray flux returned to half the peak value above background, in ISO 8601 format. Null if the flare is still in progress.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "max_class": {
+      "description": "X-ray classification at flare peak, e.g., 'C1.2', 'M5.3', 'X1.0'. This is the official flare magnitude used in space weather bulletins.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "max_ratio": {
+      "description": "Ratio of 0.05-0.4 nm (short) to 0.1-0.8 nm (long) X-ray flux at flare maximum. Higher ratios indicate a spectrally harder (more energetic) flare, which correlates with stronger ionospheric effects.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "max_ratio_time": {
+      "description": "UTC date-time of the maximum short/long flux ratio, in ISO 8601 format. May differ from max_time.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "max_time": {
+      "description": "UTC date-time of the peak X-ray flux during the flare, in ISO 8601 format.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "max_xrlong": {
+      "description": "Peak X-ray flux in the 0.1-0.8 nm (long wavelength) band at the time of maximum.",
+      "symbol": "W/m²",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "W/m²"
+    },
+    "satellite": {
+      "description": "GOES satellite number that detected this flare event (e.g., 18 for GOES-18, 19 for GOES-19).",
+      "type": "integer"
+    },
+    "time_tag": {
+      "description": "UTC date-time when this flare record was reported/filed by SWPC, in ISO 8601 format.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "time_tag",
+    "satellite",
+    "begin_time"
+  ],
+  "type": "object"
+}

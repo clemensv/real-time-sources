@@ -1,0 +1,16 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2024-10-18T13:48:21.181899Z",
+  "epoch": 1,
+  "format": "Avro",
+  "isdefault": true,
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeed.BookingRules/meta",
+  "modifiedat": "2024-10-18T13:48:21.181899Z",
+  "schemaid": "GeneralTransitFeed.BookingRules",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeed.BookingRules",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeed.BookingRules/versions",
+  "xid": "/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeed.BookingRules"
+}

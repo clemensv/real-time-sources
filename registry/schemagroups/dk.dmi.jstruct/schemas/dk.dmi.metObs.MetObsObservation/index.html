@@ -1,0 +1,104 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/dmi/schemas/dk/dmi/metObs/Observation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A single meteorological observation: one parameter, one station, one timestamp. Units are SI: degC, hPa, m/s, %, m, mm, degrees. wind_dir=0 means calm (not north).",
+  "name": "MetObsObservation",
+  "properties": {
+    "latitude": {
+      "description": "Station latitude (decimal degrees, WGS84) at observation time.",
+      "maximum": 90,
+      "minimum": -90,
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "longitude": {
+      "description": "Station longitude (decimal degrees, WGS84) at observation time.",
+      "maximum": 180,
+      "minimum": -180,
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "observation_id": {
+      "altnames": {
+        "json": "id"
+      },
+      "description": "DMI-assigned per-row identifier. Not stable across re-ingestions; use (station_id, parameter_id, observed) for idempotency.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "observed": {
+      "description": "Timestamp at which the value was observed (UTC, ISO 8601).",
+      "type": "datetime"
+    },
+    "parameter_id": {
+      "altnames": {
+        "json": "parameterId"
+      },
+      "description": "DMI parameter identifier (e.g. 'temp_dry', 'wind_speed', 'humidity', 'pressure_at_sea').",
+      "enum": [
+        "temp_dry",
+        "temp_dew",
+        "temp_grass",
+        "temp_soil_10cm",
+        "temp_mean_past1h",
+        "temp_max_past1h",
+        "temp_min_past1h",
+        "humidity",
+        "humidity_past1h",
+        "pressure",
+        "pressure_at_sea",
+        "wind_dir",
+        "wind_dir_past1h",
+        "wind_speed",
+        "wind_speed_past1h",
+        "wind_max",
+        "wind_min",
+        "wind_max_per10min_past1h",
+        "wind_min_past1h",
+        "gust_always_past1h",
+        "precip_past1h",
+        "precip_past10min",
+        "precip_past24h",
+        "snow_depth_man",
+        "snow_cover_man",
+        "visibility",
+        "visib_mean_last10min",
+        "cloud_cover",
+        "cloud_height",
+        "weather",
+        "leav_hum_dur_past10min",
+        "radia_glob",
+        "radia_glob_past1h",
+        "sun_last10min_glob",
+        "sun_last1h_glob"
+      ],
+      "type": "string"
+    },
+    "station_id": {
+      "altnames": {
+        "json": "stationId"
+      },
+      "description": "Reporting station identifier (foreign key to Station).",
+      "type": "string"
+    },
+    "value": {
+      "description": "Numeric measurement value. Units depend on parameter_id (see DMI documentation).",
+      "type": "double"
+    }
+  },
+  "required": [
+    "station_id",
+    "parameter_id",
+    "observed",
+    "value"
+  ],
+  "type": "object"
+}

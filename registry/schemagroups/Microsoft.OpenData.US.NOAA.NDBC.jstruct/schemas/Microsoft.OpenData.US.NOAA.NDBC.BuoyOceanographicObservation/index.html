@@ -1,0 +1,111 @@
+{
+  "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyOceanographicObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Oceanographic observation from the NDBC .ocean realtime2 product. Each record reports the measurement depth together with direct ocean temperature, conductivity, salinity, dissolved oxygen, chlorophyll, turbidity, pH, and redox potential for one station and timestamp.",
+  "name": "BuoyOceanographicObservation",
+  "properties": {
+    "chlorophyll_concentration": {
+      "description": "Chlorophyll concentration from the CLCON column. Unit: micrograms per liter.",
+      "symbol": "ug/L",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "ug/L"
+    },
+    "conductivity": {
+      "description": "Electrical conductivity of seawater from the COND column. Unit: millisiemens per centimeter.",
+      "symbol": "mS/cm",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "mS/cm"
+    },
+    "depth": {
+      "description": "Depth in meters at which the oceanographic measurements in this record were taken.",
+      "symbol": "m",
+      "type": "double",
+      "unit": "m"
+    },
+    "ocean_temperature": {
+      "description": "Direct ocean temperature measurement from the OTMP column. Unit: degrees Celsius.",
+      "symbol": "degC",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "CEL"
+    },
+    "oxygen_concentration": {
+      "description": "Dissolved oxygen concentration from the O2PPM column. Unit: parts per million.",
+      "symbol": "ppm",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "ppm"
+    },
+    "oxygen_saturation": {
+      "description": "Dissolved oxygen saturation percentage from the O2% column.",
+      "symbol": "%",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "ph": {
+      "description": "Acidity or alkalinity of the seawater sample from the PH column. This is dimensionless.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "redox_potential": {
+      "description": "Oxidation-reduction potential of seawater from the EH column. Unit: millivolts.",
+      "symbol": "mV",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "mV"
+    },
+    "region": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.",
+      "type": "string"
+    },
+    "salinity": {
+      "description": "Practical salinity computed from conductivity, temperature, and pressure using the Practical Salinity Scale of 1978. Unit: practical salinity units.",
+      "symbol": "psu",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "psu"
+    },
+    "station_id": {
+      "description": "NDBC station identifier. The .ocean realtime2 file is published per station and keyed by this identifier.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .ocean realtime2 file.",
+      "type": "datetime"
+    },
+    "turbidity": {
+      "description": "Turbidity from the TURB column. Unit: Formazin Turbidity Units.",
+      "symbol": "FTU",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "FTU"
+    }
+  },
+  "required": [
+    "station_id",
+    "timestamp",
+    "depth"
+  ],
+  "type": "object"
+}

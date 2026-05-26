@@ -1,0 +1,57 @@
+{
+  "$id": "https://example.com/schemas/eu/entsoe/transparency/WindSolarForecast",
+  "$root": "/definitions/eu/entsoe/transparency/WindSolarForecast",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "eu": {
+      "entsoe": {
+        "transparency": {
+          "WindSolarForecast": {
+            "name": "WindSolarForecast",
+            "properties": {
+              "businessType": {
+                "description": "Business type code",
+                "type": "string"
+              },
+              "documentType": {
+                "description": "ENTSO-E document type code (A69)",
+                "type": "string"
+              },
+              "inDomain": {
+                "description": "EIC code of the bidding zone",
+                "type": "string"
+              },
+              "psrType": {
+                "description": "Production type code (B16=Solar, B18=Wind Offshore, B19=Wind Onshore)",
+                "type": "string"
+              },
+              "quantity": {
+                "description": "Forecast power in MW",
+                "type": "double"
+              },
+              "resolution": {
+                "description": "ISO 8601 duration (PT15M, PT60M)",
+                "type": "string"
+              },
+              "unitName": {
+                "description": "Unit of measurement (MAW)",
+                "type": "string"
+              }
+            },
+            "required": [
+              "inDomain",
+              "psrType",
+              "quantity",
+              "resolution",
+              "businessType",
+              "documentType",
+              "unitName"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "WindSolarForecast"
+}

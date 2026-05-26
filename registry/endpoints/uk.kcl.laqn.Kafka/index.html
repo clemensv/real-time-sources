@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for London Air Quality Network CloudEvents on the `laqn-london` topic keyed by `{site_code}`.",
+  "endpointid": "uk.kcl.laqn.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/uk.kcl.laqn"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/uk.kcl.laqn.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{site_code}",
+      "topic": "laqn-london"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/uk.kcl.laqn.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/uk.kcl.laqn.Kafka"
+}

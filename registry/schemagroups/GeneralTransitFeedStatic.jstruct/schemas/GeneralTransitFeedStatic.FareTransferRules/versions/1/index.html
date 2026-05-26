@@ -1,0 +1,54 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/FareTransferRules",
+  "$root": "/definitions/GeneralTransitFeedStatic/FareTransferRules",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "FareTransferRules": {
+        "description": "Defines fare transfer rules.",
+        "name": "FareTransferRules",
+        "properties": {
+          "duration": {
+            "default": null,
+            "description": "Length of time in seconds before a transfer expires.",
+            "type": "int64"
+          },
+          "durationType": {
+            "default": null,
+            "description": "Type of duration for the transfer.",
+            "type": "string"
+          },
+          "fareProductId": {
+            "description": "Identifies a fare product.",
+            "type": "string"
+          },
+          "fareTransferRuleId": {
+            "description": "Identifies a fare transfer rule.",
+            "type": "string"
+          },
+          "fromLegGroupId": {
+            "default": null,
+            "description": "Identifies the leg group from which the transfer starts.",
+            "type": "string"
+          },
+          "toLegGroupId": {
+            "default": null,
+            "description": "Identifies the leg group to which the transfer applies.",
+            "type": "string"
+          },
+          "transferCount": {
+            "default": null,
+            "description": "Number of transfers permitted.",
+            "type": "int32"
+          }
+        },
+        "required": [
+          "fareTransferRuleId",
+          "fareProductId"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "FareTransferRules"
+}

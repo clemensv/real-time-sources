@@ -1,0 +1,172 @@
+{
+  "$id": "https://aviationweather.gov/schemas/gov/noaa/aviationweather/Metar",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "METAR aviation weather observation from the AviationWeather.gov API. Reports surface conditions including temperature, dewpoint, wind, visibility, pressure, clouds, and flight category for an ICAO reporting station.",
+  "name": "Metar",
+  "properties": {
+    "altim": {
+      "description": "Altimeter setting (QNH) in hectopascals.",
+      "symbol": "hPa",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "hPa"
+    },
+    "clouds": {
+      "description": "JSON-encoded array of cloud layer objects. Each object has 'cover' (string: SKC, CLR, FEW, SCT, BKN, OVC) and 'base' (integer or null: cloud base in feet AGL). Example: '[{\"cover\":\"SCT\",\"base\":5000}]'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "dewp": {
+      "description": "Dewpoint temperature at the station. Unit: degrees Celsius.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "CEL"
+    },
+    "elevation": {
+      "description": "Station elevation in meters above mean sea level from the METAR response.",
+      "symbol": "m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "flt_cat": {
+      "description": "Flight category derived from ceiling and visibility: VFR, MVFR, IFR, or LIFR.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "icao_id": {
+      "description": "ICAO station identifier for the reporting station (e.g. 'KJFK').",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "Station latitude in decimal degrees north from the METAR response.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "longitude": {
+      "description": "Station longitude in decimal degrees east from the METAR response.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "metar_type": {
+      "description": "METAR report type: 'METAR' for routine, 'SPECI' for special observation.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "name": {
+      "description": "Human-readable station name included in the METAR response (e.g. 'New York/JF Kennedy Intl, NY, US').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "obs_time": {
+      "description": "Observation time as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z) from the obsTime field in the API response.",
+      "type": "datetime"
+    },
+    "qc_field": {
+      "description": "Quality control flag bitmask from the qcField in the API response.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "raw_ob": {
+      "description": "The full raw METAR observation text as received, e.g. 'METAR KJFK 061051Z 32013KT 10SM SCT050 05/M05 A3001'.",
+      "type": "string"
+    },
+    "report_time": {
+      "description": "Report time as an ISO 8601 UTC string from the reportTime field. This is the time the observation was officially reported.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "slp": {
+      "description": "Sea level pressure in hectopascals. May be null if not reported.",
+      "symbol": "hPa",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "hPa"
+    },
+    "temp": {
+      "description": "Air temperature at the station. Unit: degrees Celsius.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "CEL"
+    },
+    "visib": {
+      "description": "Prevailing visibility as reported. Value is a string because it can contain qualifiers like '10+' (greater than 10 statute miles) or fractional values. Unit: statute miles.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "wdir": {
+      "description": "Wind direction in degrees true (the direction from which the wind is blowing), averaged over the observation period. Value of 0 indicates variable or calm.",
+      "symbol": "°",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "wgst": {
+      "description": "Wind gust speed in knots. Null if no gusts reported.",
+      "symbol": "kt",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "[kn_i]"
+    },
+    "wspd": {
+      "description": "Sustained wind speed in knots.",
+      "symbol": "kt",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "[kn_i]"
+    },
+    "wx_string": {
+      "description": "Present weather string using standard METAR codes (e.g. '-RA' for light rain, 'BR' for mist).",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "icao_id",
+    "obs_time",
+    "raw_ob"
+  ],
+  "type": "object"
+}

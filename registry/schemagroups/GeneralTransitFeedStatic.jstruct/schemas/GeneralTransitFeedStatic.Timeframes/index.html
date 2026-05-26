@@ -1,0 +1,162 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/Timeframes",
+  "$root": "/definitions/GeneralTransitFeedStatic/Timeframes",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "Calendar": {
+        "name": "Calendar",
+        "properties": {
+          "endDate": {
+            "description": "End service day for the service interval.",
+            "type": "string"
+          },
+          "friday": {
+            "description": "Indicates whether the service operates on all Fridays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          },
+          "monday": {
+            "description": "Indicates whether the service operates on all Mondays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          },
+          "saturday": {
+            "description": "Indicates whether the service operates on all Saturdays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          },
+          "serviceId": {
+            "description": "Identifies a set of dates when service is available for one or more routes.",
+            "type": "string"
+          },
+          "startDate": {
+            "description": "Start service day for the service interval.",
+            "type": "string"
+          },
+          "sunday": {
+            "description": "Indicates whether the service operates on all Sundays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          },
+          "thursday": {
+            "description": "Indicates whether the service operates on all Thursdays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          },
+          "tuesday": {
+            "description": "Indicates whether the service operates on all Tuesdays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          },
+          "wednesday": {
+            "description": "Indicates whether the service operates on all Wednesdays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          }
+        },
+        "required": [
+          "serviceId",
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+          "sunday",
+          "startDate",
+          "endDate"
+        ],
+        "type": "object"
+      },
+      "CalendarDates": {
+        "name": "CalendarDates",
+        "properties": {
+          "date": {
+            "description": "Date when service exception occurs.",
+            "type": "string"
+          },
+          "exceptionType": {
+            "description": "Indicates whether service is available on the date specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ExceptionType"
+            }
+          },
+          "serviceId": {
+            "description": "Identifies a set of dates when a service exception occurs for one or more routes.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "serviceId",
+          "date",
+          "exceptionType"
+        ],
+        "type": "object"
+      },
+      "ExceptionType": {
+        "description": "Indicates whether service is available on the date specified. Symbols: SERVICE_ADDED - Service has been added for the specified date; SERVICE_REMOVED - Service has been removed for the specified date.",
+        "enum": [
+          "SERVICE_ADDED",
+          "SERVICE_REMOVED"
+        ],
+        "name": "ExceptionType",
+        "type": "string"
+      },
+      "ServiceAvailability": {
+        "description": "Indicates whether the service operates on all Mondays in the date range specified. Symbols: NO_SERVICE - Service is not available; SERVICE_AVAILABLE - Service is available.",
+        "enum": [
+          "NO_SERVICE",
+          "SERVICE_AVAILABLE"
+        ],
+        "name": "ServiceAvailability",
+        "type": "string"
+      },
+      "Timeframes": {
+        "description": "Used to describe fares that can vary based on the time of day, the day of the week, or a particular day in the year.",
+        "name": "Timeframes",
+        "properties": {
+          "endTime": {
+            "default": null,
+            "description": "Defines the end of a timeframe.",
+            "type": "string"
+          },
+          "serviceDates": {
+            "choices": {
+              "Calendar": {
+                "$ref": "/definitions/GeneralTransitFeedStatic/Calendar"
+              },
+              "CalendarDates": {
+                "$ref": "/definitions/GeneralTransitFeedStatic/CalendarDates"
+              }
+            },
+            "description": "Identifies a set of dates when service is available for one or more routes.",
+            "type": "choice"
+          },
+          "startTime": {
+            "default": null,
+            "description": "Defines the beginning of a timeframe.",
+            "type": "string"
+          },
+          "timeframeGroupId": {
+            "description": "Identifies a timeframe or set of timeframes.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "timeframeGroupId",
+          "serviceDates"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "Timeframes"
+}

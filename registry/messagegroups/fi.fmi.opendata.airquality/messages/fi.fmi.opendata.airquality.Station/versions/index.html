@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/fi.fmi.opendata.airquality.jstruct/schemas/fi.fmi.opendata.airquality.Station",
+    "description": "Reference data for a Finnish Meteorological Institute air quality monitoring station.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://opendata.fmi.fi/wfs?service=WFS\u0026version=2.0.0\u0026request=getFeature\u0026storedquery_id=fmi::ef::stations"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{fmisid}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "fi.fmi.opendata.airquality.Station"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.fmi.opendata.airquality.Station",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Station/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Station/versions/1"
+  }
+}

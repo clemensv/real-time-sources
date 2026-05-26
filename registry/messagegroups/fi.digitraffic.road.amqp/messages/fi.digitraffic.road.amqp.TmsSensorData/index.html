@@ -1,0 +1,49 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.TmsSensorData",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "fi.digitraffic.road.amqp.TmsSensorData",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TmsSensorData/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "TmsSensorData",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "sensor_id": {
+        "description": "Sensor identifier within the TMS station. Allows Service Bus subscription SQL filters to route by sensor family.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{sensor_id}"
+      },
+      "station_id": {
+        "description": "TMS station identifier. Allows Service Bus subscription SQL filters to route by station without decoding the payload.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      }
+    },
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Service Bus / Event Hubs partition key. Mirrors the CloudEvent subject and Kafka key so all events for the same sensor hash to the same partition.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}/{sensor_id}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject matching the CloudEvent subject and Kafka key for TMS sensor telemetry. Stable per-sensor identity.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{station_id}/{sensor_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TmsSensorData",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TmsSensorData/versions",
+  "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TmsSensorData"
+}

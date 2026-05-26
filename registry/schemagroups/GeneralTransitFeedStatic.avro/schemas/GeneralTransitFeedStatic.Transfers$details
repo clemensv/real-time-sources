@@ -1,0 +1,16 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2024-10-18T13:49:42.267607Z",
+  "epoch": 1,
+  "format": "Avro",
+  "isdefault": true,
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.Transfers/meta",
+  "modifiedat": "2024-10-18T13:49:42.267607Z",
+  "schemaid": "GeneralTransitFeedStatic.Transfers",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.Transfers",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.Transfers/versions",
+  "xid": "/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.Transfers"
+}

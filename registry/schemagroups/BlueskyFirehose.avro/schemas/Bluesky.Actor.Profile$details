@@ -1,0 +1,16 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2024-11-14T12:00:05Z",
+  "epoch": 1,
+  "format": "Avro",
+  "isdefault": true,
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Actor.Profile/meta",
+  "modifiedat": "2024-11-14T12:00:05Z",
+  "schemaid": "Bluesky.Actor.Profile",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Actor.Profile",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Actor.Profile/versions",
+  "xid": "/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Actor.Profile"
+}

@@ -1,0 +1,16 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2024-10-18T13:49:16.443796Z",
+  "epoch": 1,
+  "format": "Avro",
+  "isdefault": true,
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.RouteNetworks/meta",
+  "modifiedat": "2024-10-18T13:49:16.443796Z",
+  "schemaid": "GeneralTransitFeedStatic.RouteNetworks",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.RouteNetworks",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.RouteNetworks/versions",
+  "xid": "/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.RouteNetworks"
+}

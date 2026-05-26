@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/de.bfs.odl.jstruct/schemas/de.bfs.odl.DoseRateMeasurement",
+    "description": "A one-hour averaged ambient gamma dose rate measurement from the BfS ODL monitoring network. Each measurement reports the gross gamma dose rate in microsieverts per hour (µSv/h), optionally split into cosmic and terrestrial components. The cosmic component originates from secondary cosmic radiation and depends primarily on altitude; the terrestrial component originates from naturally occurring radionuclides in the ground and varies with local geology.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "de.bfs.odl.DoseRateMeasurement"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "de.bfs.odl.DoseRateMeasurement",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "DoseRateMeasurement",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/de.bfs.odl/messages/de.bfs.odl.DoseRateMeasurement/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.DoseRateMeasurement/versions/1"
+  }
+}

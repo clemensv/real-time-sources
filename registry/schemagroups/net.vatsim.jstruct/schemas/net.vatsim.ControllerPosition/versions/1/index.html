@@ -1,0 +1,58 @@
+{
+  "$id": "https://example.com/schemas/net/vatsim/ControllerPosition",
+  "$root": "/definitions/net/vatsim/ControllerPosition",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "net": {
+      "vatsim": {
+        "ControllerPosition": {
+          "description": "Current state and frequency of an air traffic controller or observer connected to the VATSIM virtual aviation network.",
+          "name": "ControllerPosition",
+          "properties": {
+            "callsign": {
+              "description": "Controller position callsign (e.g. 'EGLL_TWR', 'KJFK_APP').",
+              "type": "string"
+            },
+            "cid": {
+              "description": "VATSIM Certificate Identifier (CID) — unique numeric member ID.",
+              "type": "int32"
+            },
+            "facility": {
+              "description": "VATSIM facility type code. 0 = Observer, 1 = Flight Service Station, 2 = Delivery, 3 = Ground, 4 = Tower, 5 = Approach/Departure, 6 = Center/Enroute.",
+              "type": "int32"
+            },
+            "frequency": {
+              "description": "Radio frequency the controller is operating on, in MHz with three decimal places (e.g. '118.500').",
+              "type": "string"
+            },
+            "last_updated": {
+              "description": "UTC timestamp of the last update received by the VATSIM data servers (RFC3339 string).",
+              "type": "string"
+            },
+            "rating": {
+              "description": "VATSIM ATC rating. 1 = OBS, 2 = S1, 3 = S2, 4 = S3, 5 = C1, 6 = C2, 7 = C3, 8 = I1, 9 = I2, 10 = I3, 11 = SUP, 12 = ADM.",
+              "type": "int32"
+            },
+            "text_atis": {
+              "description": "Controller information or ATIS text, with individual lines joined by newline characters. Null when the controller has not set any ATIS text.",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "cid",
+            "callsign",
+            "frequency",
+            "facility",
+            "rating",
+            "last_updated"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "ControllerPosition"
+}

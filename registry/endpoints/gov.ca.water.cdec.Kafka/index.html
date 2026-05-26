@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for CDEC California Reservoirs CloudEvents on the `cdec-reservoirs` topic keyed by `{station_id}/{sensor_num}`.",
+  "endpointid": "gov.ca.water.cdec.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/gov.ca.water.cdec"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/gov.ca.water.cdec.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{station_id}/{sensor_num}",
+      "topic": "cdec-reservoirs"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/gov.ca.water.cdec.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/gov.ca.water.cdec.Kafka"
+}

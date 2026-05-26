@@ -1,0 +1,40 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Observation",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "ca.gc.weather.aqhi.amqp.Observation",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Observation",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "community_name": {
+          "description": "Routing attribute `community_name` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{community_name}"
+        },
+        "province": {
+          "description": "Routing attribute `province` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{province}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{province}/{community_name}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/ca.gc.weather.aqhi.amqp/messages/ca.gc.weather.aqhi.amqp.Observation/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/ca.gc.weather.aqhi.amqp/messages/ca.gc.weather.aqhi.amqp.Observation/versions/1"
+  }
+}

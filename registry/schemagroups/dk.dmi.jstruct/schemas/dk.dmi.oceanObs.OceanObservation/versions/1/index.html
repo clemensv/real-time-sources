@@ -1,0 +1,77 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/dmi/schemas/dk/dmi/oceanObs/Observation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A single oceanographic measurement. parameter_id is one of: sealev_dvr (sea level vs DVR90 datum, cm; preferred since 1997), sealev_ln (sea level vs local zero, cm; preferred before 1997), sea_reg (sea-level registration by Kystdirektoratet, cm), tw (water temperature, deg C; indicative).",
+  "name": "OceanObservation",
+  "properties": {
+    "latitude": {
+      "maximum": 90,
+      "minimum": -90,
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "longitude": {
+      "maximum": 180,
+      "minimum": -180,
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "observation_id": {
+      "altnames": {
+        "json": "id"
+      },
+      "description": "DMI-assigned row identifier (not stable across re-ingestions).",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "observed": {
+      "type": "datetime"
+    },
+    "parameter_id": {
+      "altenums": {
+        "descriptions": {
+          "sea_reg": "Sea level registration by Kystdirektoratet (cm)",
+          "sealev_dvr": "Sea level relative to DVR90 datum (cm)",
+          "sealev_ln": "Sea level relative to local zero (cm)",
+          "tw": "Water temperature (deg C)"
+        }
+      },
+      "altnames": {
+        "json": "parameterId"
+      },
+      "description": "One of sealev_dvr, sealev_ln, sea_reg, tw.",
+      "enum": [
+        "sealev_dvr",
+        "sealev_ln",
+        "sea_reg",
+        "tw"
+      ],
+      "type": "string"
+    },
+    "station_id": {
+      "altnames": {
+        "json": "stationId"
+      },
+      "type": "string"
+    },
+    "value": {
+      "description": "Numeric value. cm for sealev_*/sea_reg, deg C for tw.",
+      "type": "double"
+    }
+  },
+  "required": [
+    "station_id",
+    "parameter_id",
+    "observed",
+    "value"
+  ],
+  "type": "object"
+}

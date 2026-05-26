@@ -1,0 +1,117 @@
+{
+  "$id": "https://example.com/schemas/IO/AISstream/AidsToNavigationReport",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+  "name": "AidsToNavigationReport",
+  "properties": {
+    "AssignedMode": {
+      "description": "Provider field for assigned mode in this record.",
+      "type": "boolean"
+    },
+    "AtoN": {
+      "description": "Provider field for ato n in this record.",
+      "type": "int32"
+    },
+    "Dimension": {
+      "description": "Provider field for dimension in this record.",
+      "name": "Dimension",
+      "properties": {
+        "A": {
+          "description": "Provider field for a in this record.",
+          "type": "int32"
+        },
+        "B": {
+          "description": "Provider field for b in this record.",
+          "type": "int32"
+        },
+        "C": {
+          "description": "Provider field for c in this record.",
+          "type": "int32"
+        },
+        "D": {
+          "description": "Provider field for d in this record.",
+          "type": "int32"
+        }
+      },
+      "required": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "type": "object"
+    },
+    "Fixtype": {
+      "description": "Provider field for fixtype in this record.",
+      "type": "int32"
+    },
+    "Latitude": {
+      "description": "Latitude of the resource in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "Longitude": {
+      "description": "Longitude of the resource in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "MessageID": {
+      "description": "Provider field for message i d in this record.",
+      "type": "int32"
+    },
+    "Name": {
+      "description": "Human-readable name of the resource.",
+      "type": "string"
+    },
+    "NameExtension": {
+      "description": "Provider field for name extension in this record.",
+      "type": "string"
+    },
+    "OffPosition": {
+      "description": "Provider field for off position in this record.",
+      "type": "boolean"
+    },
+    "PositionAccuracy": {
+      "description": "Provider field for position accuracy in this record.",
+      "type": "boolean"
+    },
+    "Raim": {
+      "description": "Provider field for raim in this record.",
+      "type": "boolean"
+    },
+    "RepeatIndicator": {
+      "description": "Provider field for repeat indicator in this record.",
+      "type": "int32"
+    },
+    "Spare": {
+      "description": "Provider field for spare in this record.",
+      "type": "boolean"
+    },
+    "Timestamp": {
+      "description": "Time when the provider recorded or published the update.",
+      "type": "int32"
+    },
+    "Type": {
+      "description": "Provider field for type in this record.",
+      "type": "int32"
+    },
+    "UserID": {
+      "description": "Provider field for user i d in this record.",
+      "type": "int32"
+    },
+    "Valid": {
+      "description": "Provider field for valid in this record.",
+      "type": "boolean"
+    },
+    "VirtualAtoN": {
+      "description": "Provider field for virtual ato n in this record.",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "MessageID",
+    "UserID",
+    "Longitude",
+    "Latitude",
+    "Valid"
+  ],
+  "type": "object"
+}

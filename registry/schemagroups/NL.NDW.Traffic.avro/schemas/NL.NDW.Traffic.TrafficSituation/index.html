@@ -1,0 +1,69 @@
+{
+  "description": "A traffic or service situation update from Dutch road-traffic open data feeds. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.",
+  "doc": "Current traffic situation from the NDW DATEX II v3 actueel_beeld feed.",
+  "fields": [
+    {
+      "doc": "Unique identifier of the traffic situation.",
+      "name": "situation_id",
+      "type": "string"
+    },
+    {
+      "doc": "Timestamp of the latest version of this situation in ISO 8601 format (UTC).",
+      "name": "version_time",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Overall severity: low, medium, high, highest, unknown.",
+      "name": "severity",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "DATEX II situation record type.",
+      "name": "record_type",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Cause of the traffic situation.",
+      "name": "cause_type",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Start time of the situation validity period in ISO 8601 format.",
+      "name": "start_time",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "End time of the situation validity period in ISO 8601 format.",
+      "name": "end_time",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "Status of the information: real, test, or exercise.",
+      "name": "information_status",
+      "type": "string"
+    }
+  ],
+  "name": "TrafficSituation",
+  "namespace": "nl.ndw.traffic",
+  "type": "record"
+}

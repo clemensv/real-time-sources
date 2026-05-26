@@ -1,0 +1,44 @@
+{
+  "description": "Measurement payload for observations in the Hub'Eau Hydrométrie source.",
+  "doc": "Measurement payload for observations in the Hub'Eau Hydrométrie source.",
+  "fields": [
+    {
+      "name": "code_station",
+      "type": "string"
+    },
+    {
+      "name": "date_obs",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "name": "resultat_obs",
+      "type": "double"
+    },
+    {
+      "name": "grandeur_hydro",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "libelle_methode_obs",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "libelle_qualification_obs",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "Observation",
+  "namespace": "FR.Gov.Eaufrance.HubEau.Hydrometrie",
+  "type": "record"
+}

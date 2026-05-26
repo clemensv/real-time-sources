@@ -1,0 +1,38 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/USGS.Earthquakes.jstruct/schemas/USGS.Earthquakes.Event",
+  "description": "USGS earthquake event data from the Earthquake Hazards Program.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{source_uri}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{net}/{code}"
+    },
+    "time": {
+      "required": false,
+      "type": "timestamp",
+      "value": "{event_time}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "USGS.Earthquakes.Event"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "USGS.Earthquakes.Event",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Event",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.Earthquakes/messages/USGS.Earthquakes.Event/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/USGS.Earthquakes/messages/USGS.Earthquakes.Event/versions/1"
+}

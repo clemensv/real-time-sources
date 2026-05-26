@@ -1,0 +1,35 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/gov.usgs.geomag.jstruct/schemas/gov.usgs.geomag.Observatory",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://geomag.usgs.gov"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{iaga_code}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "gov.usgs.geomag.Observatory"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "gov.usgs.geomag.Observatory",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.Observatory/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Observatory",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.Observatory",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.Observatory/versions",
+  "xid": "/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.Observatory"
+}

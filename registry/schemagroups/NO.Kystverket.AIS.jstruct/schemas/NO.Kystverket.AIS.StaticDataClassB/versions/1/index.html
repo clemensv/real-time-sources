@@ -1,0 +1,57 @@
+{
+  "$id": "https://example.com/schemas/NO/Kystverket/AIS/StaticDataClassB",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.",
+  "name": "StaticDataClassB",
+  "properties": {
+    "callsign": {
+      "description": "Provider field for callsign in this record.",
+      "type": "string"
+    },
+    "dimension_to_bow": {
+      "description": "Provider field for dimension to bow in this record.",
+      "type": "int32"
+    },
+    "dimension_to_port": {
+      "description": "Provider field for dimension to port in this record.",
+      "type": "int32"
+    },
+    "dimension_to_starboard": {
+      "description": "Provider field for dimension to starboard in this record.",
+      "type": "int32"
+    },
+    "dimension_to_stern": {
+      "description": "Provider field for dimension to stern in this record.",
+      "type": "int32"
+    },
+    "mmsi": {
+      "description": "Provider field for mmsi in this record.",
+      "type": "int32"
+    },
+    "part_number": {
+      "description": "Provider field for part number in this record.",
+      "type": "int32"
+    },
+    "ship_name": {
+      "description": "Human-readable name of the ship.",
+      "type": "string"
+    },
+    "ship_type": {
+      "description": "Provider field for ship type in this record.",
+      "type": "int32"
+    },
+    "station_id": {
+      "description": "Stable identifier assigned by the upstream provider for the station or stop.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Time when the provider recorded or published the update.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "mmsi",
+    "timestamp"
+  ],
+  "type": "object"
+}

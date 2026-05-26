@@ -1,0 +1,38 @@
+{
+  "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/PlanetaryKIndex",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Planetary K-index (Kp) observation from the NOAA Space Weather Prediction Center. The Kp index quantifies disturbances in the horizontal component of Earth's magnetic field on a 0-9 quasi-logarithmic scale, derived from 3-hour standardized K values at a global network of ground magnetometer stations. Values of Kp \u003e= 5 indicate geomagnetic storm conditions (G1-G5 on the NOAA scale).",
+  "name": "PlanetaryKIndex",
+  "properties": {
+    "a_running": {
+      "description": "Running daily planetary A-index (Ap), a linear measure of geomagnetic activity derived from the eight 3-hour Kp values via a standard conversion table. Ap is measured in units of 2 nT.",
+      "symbol": "nT",
+      "type": "double",
+      "unit": "nT"
+    },
+    "kp": {
+      "description": "Planetary K-index value for this 3-hour period, ranging from 0.00 (quiet) to 9.00 (extreme storm). Each unit increase corresponds to roughly a doubling of geomagnetic disturbance amplitude. Storm thresholds: G1 (Kp=5), G2 (Kp=6), G3 (Kp=7), G4 (Kp=8), G5 (Kp=9).",
+      "maximum": 9,
+      "minimum": 0,
+      "type": "double"
+    },
+    "observation_time": {
+      "altnames": [
+        "time_tag"
+      ],
+      "description": "UTC date-time marking the start of the 3-hour Kp observation period, in 'YYYY-MM-DD HH:MM:SS.fff' format from the SWPC noaa-planetary-k-index endpoint.",
+      "type": "string"
+    },
+    "station_count": {
+      "description": "Number of ground magnetometer stations contributing data to this Kp determination. Typical station count is 8-13; fewer stations may reduce measurement confidence.",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "observation_time",
+    "kp",
+    "a_running",
+    "station_count"
+  ],
+  "type": "object"
+}

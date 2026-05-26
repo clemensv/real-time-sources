@@ -1,0 +1,70 @@
+{
+  "description": "Reference details for one monitoring station or site in the SMHI Hydrological Data source.",
+  "doc": "Reference details for one monitoring station or site in the SMHI Hydrological Data source.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "owner",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "measuring_stations",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "region",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "doc": "SMHI catchmentName, e.g. 'Torneälven'. Bridge substitutes the lowercase sentinel 'unknown' when the catalog lookup is empty so the field is always non-null.",
+      "name": "catchment_name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "catchment_number",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "name": "catchment_size",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "name": "longitude",
+      "type": "double"
+    }
+  ],
+  "name": "Station",
+  "namespace": "SE.Gov.SMHI.Hydro",
+  "type": "record"
+}

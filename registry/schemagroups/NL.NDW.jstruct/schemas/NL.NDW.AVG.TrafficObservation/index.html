@@ -1,0 +1,42 @@
+{
+  "$id": "https://opendata.ndw.nu/schemas/NL/NDW/AVG/TrafficObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Aggregated traffic speed and flow observation from the Dutch NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow summed across all reporting lanes.",
+  "name": "TrafficObservation",
+  "properties": {
+    "average_speed": {
+      "description": "Average vehicle speed in km/h across all lanes with valid data at this site. Null when no lane reported a valid speed.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "km/h"
+    },
+    "measurement_site_id": {
+      "description": "Unique identifier of the NDW measurement site, from the DATEX II measurementSiteReference id attribute.",
+      "type": "string"
+    },
+    "measurement_time": {
+      "description": "Timestamp of the measurement in ISO 8601 UTC format, from the DATEX II measurementTimeDefault element.",
+      "type": "string"
+    },
+    "number_of_lanes_with_data": {
+      "description": "Number of lanes that reported valid measurement data at this measurement site.",
+      "type": "int32"
+    },
+    "vehicle_flow_rate": {
+      "description": "Total vehicle flow rate in vehicles per hour, summed across all lanes at this measurement site. Null when no valid flow data was reported.",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "vehicles/h"
+    }
+  },
+  "required": [
+    "measurement_site_id",
+    "measurement_time",
+    "number_of_lanes_with_data"
+  ],
+  "type": "object"
+}

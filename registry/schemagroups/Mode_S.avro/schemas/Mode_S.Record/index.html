@@ -1,0 +1,132 @@
+{
+  "doc": "Single Mode-S record published on the MQTT firehose. Carries the topic axes (icao24, receiver_id, msg_type) and the decoded record fields.",
+  "fields": [
+    {
+      "doc": "ICAO 24-bit address (lowercase hex).",
+      "name": "icao24",
+      "type": "string"
+    },
+    {
+      "doc": "Stable identifier of the receiver/station that decoded this message.",
+      "name": "receiver_id",
+      "type": "string"
+    },
+    {
+      "doc": "Kebab-case Mode-S downlink-format family literal (df17-adsb, df4-altitude, df5-identity, df11-acquisition, df20-comm-b, df21-comm-b).",
+      "name": "msg_type",
+      "type": "string"
+    },
+    {
+      "doc": "Reception timestamp (epoch millis).",
+      "name": "ts",
+      "type": "long"
+    },
+    {
+      "doc": "Downlink Format value.",
+      "name": "df",
+      "type": "int"
+    },
+    {
+      "default": null,
+      "doc": "Type Code (ADS-B only).",
+      "name": "tc",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "BDS code (Comm-B only).",
+      "name": "bcode",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Barometric altitude (ft).",
+      "name": "alt",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Aircraft callsign.",
+      "name": "cs",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Squawk code.",
+      "name": "sq",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Latitude (deg).",
+      "name": "lat",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Longitude (deg).",
+      "name": "lon",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Speed (kn).",
+      "name": "spd",
+      "type": [
+        "null",
+        "float"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Heading angle (deg).",
+      "name": "ang",
+      "type": [
+        "null",
+        "float"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Vertical rate (ft/min).",
+      "name": "vr",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "RSSI (dBFS).",
+      "name": "rssi",
+      "type": [
+        "null",
+        "float"
+      ]
+    }
+  ],
+  "name": "Record",
+  "namespace": "Mode_S",
+  "type": "record"
+}

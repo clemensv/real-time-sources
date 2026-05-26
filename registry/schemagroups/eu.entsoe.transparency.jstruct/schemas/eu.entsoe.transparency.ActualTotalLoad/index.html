@@ -1,0 +1,46 @@
+{
+  "$id": "https://example.com/schemas/eu/entsoe/transparency/ActualTotalLoad",
+  "$root": "/definitions/eu/entsoe/transparency/ActualTotalLoad",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "eu": {
+      "entsoe": {
+        "transparency": {
+          "ActualTotalLoad": {
+            "name": "ActualTotalLoad",
+            "properties": {
+              "documentType": {
+                "description": "ENTSO-E document type code (A65)",
+                "type": "string"
+              },
+              "inDomain": {
+                "description": "EIC code of the bidding zone",
+                "type": "string"
+              },
+              "outDomain": {
+                "description": "EIC code of the out domain, if applicable",
+                "type": "string"
+              },
+              "quantity": {
+                "description": "Total load in MW",
+                "type": "double"
+              },
+              "resolution": {
+                "description": "ISO 8601 duration",
+                "type": "string"
+              }
+            },
+            "required": [
+              "inDomain",
+              "quantity",
+              "resolution",
+              "documentType"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "ActualTotalLoad"
+}

@@ -1,0 +1,53 @@
+{
+  "$id": "https://www.aqhi.gov.hk/schemas/HK/Gov/EPD/AQHI/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record published by Hong Kong's Environmental Protection Department. It lets consumers label, group, and route the live measurement or forecast events.",
+  "name": "Station",
+  "properties": {
+    "district": {
+      "description": "Hong Kong 18-district administrative area where the monitoring station is located, normalized to lowercase snake_case. Used as the {district} segment of the MQTT/UNS topic. Examples: central-and-western, wan-chai, yau-tsim-mong.",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "WGS84 latitude of the monitoring station.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degree"
+    },
+    "longitude": {
+      "description": "WGS84 longitude of the monitoring station.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degree"
+    },
+    "station_id": {
+      "description": "Stable station identifier derived from the station name in snake_case, for example central_western or mong_kok.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Station name as published in the EPD AQHI feed, for example 'Central/Western' or 'Mong Kok'.",
+      "type": "string"
+    },
+    "station_type": {
+      "altenums": [
+        "General Stations",
+        "Roadside Stations"
+      ],
+      "description": "Station classification. General Stations measure ambient background air quality and Roadside Stations are positioned near roads to capture traffic-related pollution.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name",
+    "station_type",
+    "district"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/HK.Gov.EPD.AQHI.jstruct/schemas/HK.Gov.EPD.AQHI.AQHIReading",
+    "description": "A current environmental measurement from Hong Kong's Environmental Protection Department. It carries air-quality health index and pollutant measurements when the upstream feed reports a new or refreshed value.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://www.aqhi.gov.hk"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "HK.Gov.EPD.AQHI.AQHIReading"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "HK.Gov.EPD.AQHI.AQHIReading",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "AQHIReading",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.AQHIReading/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.AQHIReading/versions/1"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.oceanObs.OceanObservation",
+    "description": "A single oceanographic observation. Parameters are sealev_dvr (sea level vs DVR90 datum, cm), sealev_ln (sea level vs local zero, cm), sea_reg (registered sea level by Kystdirektoratet, cm), and tw (water temperature, deg C). 10-minute cadence.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}/{parameter_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "dk.dmi.oceanObs.OceanObservation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "dk.dmi.oceanObs.OceanObservation",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "OceanObservation",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation/versions/1"
+  }
+}

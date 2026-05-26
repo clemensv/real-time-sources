@@ -1,0 +1,271 @@
+{
+  "$id": "https://www.jma.go.jp/schemas/bosai/warning/TsunamiAlert",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "description": "JMA Bosai active tsunami alert telemetry from list.json enriched with detail bulletin coastal forecasts.",
+  "name": "TsunamiAlert",
+  "properties": {
+    "affected_coastal_regions": {
+      "description": "Coastal forecast regions and expected wave/arrival data parsed from VTSE41 tsunami detail bulletins. AffectedCoastalRegion is defined inline to avoid duplicate schema definitions during Avro and producer generation.",
+      "items": {
+        "description": "Coastal forecast region item parsed from a JMA tsunami detail bulletin when active tsunami information is available. It preserves region identity, per-region tsunami category, expected first-arrival time, and expected maximum wave height when those fields appear in VTSE detail JSON.",
+        "name": "AffectedCoastalRegion",
+        "properties": {
+          "category": {
+            "altenums": {
+              "lang:ja": {
+                "ADVISORY": "津波注意報",
+                "FORECAST": "津波予報",
+                "MAJOR_WARNING": "大津波警報",
+                "WARNING": "津波警報"
+              }
+            },
+            "description": "Per-region tsunami forecast category from VTSE41 detail bulletins, normalized from JMA 大津波警報, 津波警報, 津波注意報, or 津波予報 text.",
+            "descriptions": {
+              "ADVISORY": "Provider value `ADVISORY` for this coded alert field.",
+              "FORECAST": "Provider value `FORECAST` for this coded alert field.",
+              "MAJOR_WARNING": "Provider value `MAJOR_WARNING` for this coded alert field.",
+              "WARNING": "Provider value `WARNING` for this coded alert field."
+            },
+            "enum": [
+              "MAJOR_WARNING",
+              "WARNING",
+              "ADVISORY",
+              "FORECAST"
+            ],
+            "type": "string"
+          },
+          "code": {
+            "description": "JMA tsunami coastal forecast region code from detail bulletin area entries.",
+            "pattern": "^[0-9]{3,7}$",
+            "type": "string"
+          },
+          "expected_arrival_datetime": {
+            "description": "Expected first tsunami arrival time converted to RFC3339 UTC when available in the detail bulletin.",
+            "type": [
+              "datetime",
+              "null"
+            ]
+          },
+          "expected_arrival_datetime_local": {
+            "description": "Original expected first tsunami arrival time from the JMA detail bulletin preserving its local offset when available.",
+            "type": [
+              "datetime",
+              "null"
+            ]
+          },
+          "expected_max_wave_height_m": {
+            "description": "Expected maximum tsunami wave height in meters parsed from JMA detail values. Null is emitted when the bulletin describes the height textually or omits it.",
+            "minimum": 0,
+            "symbol": "m",
+            "type": [
+              "double",
+              "null"
+            ],
+            "unit": "meter"
+          },
+          "name": {
+            "description": "Japanese coastal forecast region name from the tsunami detail bulletin.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "category",
+          "expected_max_wave_height_m",
+          "expected_arrival_datetime",
+          "expected_arrival_datetime_local"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "bulletin_type": {
+      "altnames": {
+        "jma-bosai": "json"
+      },
+      "description": "JMA tsunami product code parsed from the detail JSON filename, such as VTSE41, VTSE51, or VTSE52.",
+      "type": "string"
+    },
+    "detail_url": {
+      "altnames": {
+        "jma-bosai": "json"
+      },
+      "description": "Absolute URL for the JMA Bosai tsunami detail JSON referenced by list.json json.",
+      "type": "uri"
+    },
+    "event_id": {
+      "altnames": {
+        "jma-bosai": "eid"
+      },
+      "description": "Stable JMA tsunami event identifier copied from list.json eid and corresponding detail Head.EventID. This is the first stable key component.",
+      "pattern": "^[0-9]{14}$",
+      "type": "string"
+    },
+    "info_type": {
+      "altenums": {
+        "jma_label": {
+          "CANCELLED": "取消",
+          "CORRECTED": "訂正",
+          "ISSUED": "発表"
+        }
+      },
+      "altnames": {
+        "jma-bosai": "ift"
+      },
+      "description": "Normalized information type derived from JMA ift text: ISSUED for 発表, CORRECTED for 訂正, and CANCELLED for 取消.",
+      "descriptions": {
+        "CANCELLED": "Provider value `CANCELLED` for this coded alert field.",
+        "CORRECTED": "Provider value `CORRECTED` for this coded alert field.",
+        "ISSUED": "Provider value `ISSUED` for this coded alert field."
+      },
+      "enum": [
+        "ISSUED",
+        "CORRECTED",
+        "CANCELLED"
+      ],
+      "type": "string"
+    },
+    "observations": {
+      "description": "Observed tsunami station readings parsed from VTSE51/VTSE52 observed-wave detail bulletins. The bridge emits an empty array for forecast-only bulletins or when no station observations are present.",
+      "items": {
+        "description": "Observed tsunami station measurement parsed from JMA VTSE51/VTSE52 observed-wave bulletins and embedded in the alert revision that carries the same event id and serial. Keeping observations inside TsunamiAlert preserves one generated top-level dataclass and one {event_id}/{serial} Kafka identity for all tsunami bulletin revisions.",
+        "name": "TsunamiObservation",
+        "properties": {
+          "arrival_status": {
+            "description": "Normalized observation lifecycle for station wave entries: ESTIMATED for expected or pending arrivals, FIRST_WAVE_OBSERVED when the first wave has arrived, and MAX_WAVE_OBSERVED when a maximum wave height is reported.",
+            "descriptions": {
+              "ESTIMATED": "Provider value `ESTIMATED` for this coded alert field.",
+              "FIRST_WAVE_OBSERVED": "Provider value `FIRST_WAVE_OBSERVED` for this coded alert field.",
+              "MAX_WAVE_OBSERVED": "Provider value `MAX_WAVE_OBSERVED` for this coded alert field."
+            },
+            "enum": [
+              "ESTIMATED",
+              "FIRST_WAVE_OBSERVED",
+              "MAX_WAVE_OBSERVED"
+            ],
+            "type": "string"
+          },
+          "observed_at": {
+            "description": "Observed wave time converted to RFC3339 UTC when the station entry includes an observation time.",
+            "type": [
+              "datetime",
+              "null"
+            ]
+          },
+          "observed_at_local": {
+            "description": "Original observed wave time preserving the local offset when available in the station entry.",
+            "type": [
+              "datetime",
+              "null"
+            ]
+          },
+          "observed_max_wave_height_m": {
+            "description": "Observed maximum tsunami wave height at the station in meters. Null is emitted for qualitative or not-yet-available observed-wave entries.",
+            "minimum": 0,
+            "symbol": "m",
+            "type": [
+              "double",
+              "null"
+            ],
+            "unit": "meter"
+          },
+          "station_code": {
+            "description": "JMA observation station code from the observed tsunami bulletin when the station entry exposes a code; null is emitted for text-only station entries.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "station_name_en": {
+            "description": "English observation station name when supplied by JMA or mapped by the bridge; null when the upstream bulletin only contains Japanese station text.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "station_name_jp": {
+            "description": "Japanese tsunami observation station name from the observed-wave bulletin.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "station_code",
+          "station_name_jp",
+          "station_name_en",
+          "observed_max_wave_height_m",
+          "observed_at",
+          "observed_at_local",
+          "arrival_status"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "prefecture": {
+      "description": "ASCII-safe Japan region routing axis for tsunami MQTT/AMQP topics.",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "type": "string"
+    },
+    "report_datetime": {
+      "altnames": {
+        "jma-bosai": "rdt"
+      },
+      "description": "JMA tsunami report publication time converted from list.json rdt to RFC3339 UTC.",
+      "type": "datetime"
+    },
+    "report_datetime_local": {
+      "altnames": {
+        "jma-bosai": "rdt"
+      },
+      "description": "Original JMA tsunami report publication timestamp from list.json rdt preserving the local offset.",
+      "type": "datetime"
+    },
+    "serial": {
+      "altnames": {
+        "jma-bosai": "ser"
+      },
+      "description": "JMA tsunami bulletin serial parsed from list.json ser or detail Head.Serial. This is the second stable key component.",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "severity": {
+      "description": "Japan-native tsunami warning severity axis: advisory, warning, or emergency.",
+      "descriptions": {
+        "advisory": "Tsunami advisory or forecast-level routing severity.",
+        "emergency": "Major tsunami warning routing severity.",
+        "warning": "Tsunami warning routing severity."
+      },
+      "enum": [
+        "advisory",
+        "warning",
+        "emergency"
+      ],
+      "type": "string"
+    },
+    "title_en": {
+      "description": "English tsunami title generated from the known JMA title class when no English list title is present.",
+      "type": "string"
+    },
+    "title_jp": {
+      "description": "Japanese JMA tsunami bulletin title copied from list.json ttl.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "severity",
+    "prefecture",
+    "event_id",
+    "serial",
+    "info_type",
+    "report_datetime",
+    "report_datetime_local",
+    "title_jp",
+    "title_en",
+    "bulletin_type",
+    "detail_url",
+    "affected_coastal_regions",
+    "observations"
+  ],
+  "type": "object"
+}

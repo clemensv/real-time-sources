@@ -1,0 +1,85 @@
+{
+  "$id": "https://opendata.dwd.de/schemas/DE/DWD/Forecast/IconD2ForecastFile",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source.",
+  "name": "IconD2ForecastFile",
+  "properties": {
+    "file_id": {
+      "description": "Normalized routing field 'file_id' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "file_name": {
+      "description": "Bare file name as listed in the DWD Apache directory index, following the DWD convention 'icon-d2_\u003cgrid\u003e_\u003clevel_type\u003e_\u003crun\u003e_\u003clead\u003e_\u003clevel\u003e_\u003cparameter\u003e.grib2.bz2'. Convenient for parsing without splitting file_url.",
+      "type": "string"
+    },
+    "file_url": {
+      "description": "Absolute HTTPS URL of a single ICON-D2 GRIB2 forecast file on the DWD Open Data server. The file is bzip2-compressed GRIB2 (.grib2.bz2) and can be fetched with an unauthenticated HTTP GET; the server supports HTTP Range and If-Modified-Since/ETag conditional requests, so handlers can dereference the event with a plain GET against this URL. Each file holds a single variable at a single vertical level for a single forecast lead hour, which keeps per-file payloads small (typically a few hundred KB compressed). Also used verbatim as the CloudEvents 'subject' and the Kafka partition key. Example: 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/00/t/icon-d2_germany_icosahedral_model-level_2026051700_003_10_t.grib2.bz2'.",
+      "type": "string"
+    },
+    "forecast_hour": {
+      "description": "Forecast lead time in whole hours from the start of the run, parsed from file_name. For ICON-D2 this ranges from 0 to 48. Null when the file name does not match the expected pattern.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "level": {
+      "description": "Vertical level value token parsed from file_name. The interpretation depends on level_type: model-level uses an integer level index, pressure-level uses pressure in hPa, single-level may carry a short surface tag or be omitted.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "level_type": {
+      "description": "Vertical level encoding parsed from file_name. Common values are 'single-level' (surface and 2D fields), 'model-level' (native ICON hybrid levels indexed 1..65 from top to bottom), 'pressure-level' (interpolated to fixed pressure surfaces, in hPa), and 'time-invariant' (constant fields such as orography).",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "model": {
+      "description": "Identifier of the source forecast model; matches the 'model' field of the corresponding ForecastModelCatalog event. Currently always 'icon-d2'.",
+      "type": "string"
+    },
+    "modified": {
+      "description": "Upstream Last-Modified timestamp from the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new IconD2ForecastFile event whenever this value changes for a known file_url, enabling change detection and de-duplication.",
+      "type": "string"
+    },
+    "parameter": {
+      "description": "Short ICON-D2 parameter identifier parsed from file_name (for example 't' for temperature, 'u'/'v' for wind components, 'tot_prec' for total precipitation, 'clct' for total cloud cover, 'alb_rad' for shortwave albedo).",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "run": {
+      "description": "Model run cycle in 'YYYYMMDDHH' UTC form, parsed from file_name (e.g. '2026051700' for the 00 UTC run on 2026-05-17). ICON-D2 is run every three hours. Null when the file name does not match the expected pattern (for example time-invariant or auxiliary files).",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "size_bytes": {
+      "description": "File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size rely on the Content-Length header from the actual GET on file_url. Individual ICON-D2 .grib2.bz2 files are typically well below 1 MB compressed.",
+      "type": [
+        "int64",
+        "null"
+      ]
+    },
+    "state": {
+      "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "variable": {
+      "description": "Normalized routing field 'variable' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "file_url",
+    "model",
+    "file_name",
+    "modified"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,40 @@
+{
+  "$id": "https://realtime.example.com/schemas/nl/rivm/luchtmeetnet/Component",
+  "$root": "/definitions/nl/rivm/luchtmeetnet/components/Component",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "nl": {
+      "rivm": {
+        "luchtmeetnet": {
+          "components": {
+            "Component": {
+              "description": "Reference definition for a monitored component formula in the Luchtmeetnet network.",
+              "name": "Component",
+              "properties": {
+                "formula": {
+                  "description": "Stable component formula code used in measurement queries and in station component lists, such as NO2, PM25, O3, or BCWB.",
+                  "type": "string"
+                },
+                "name_en": {
+                  "description": "English display name for the component from the component catalog.",
+                  "type": "string"
+                },
+                "name_nl": {
+                  "description": "Dutch display name for the component from the component catalog.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "formula",
+                "name_nl",
+                "name_en"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "Component"
+}

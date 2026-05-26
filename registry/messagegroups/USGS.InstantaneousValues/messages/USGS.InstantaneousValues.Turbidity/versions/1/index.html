@@ -1,0 +1,38 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/USGS.InstantaneousValues.jstruct/schemas/USGS.InstantaneousValues.Turbidity",
+  "description": "A turbidity event from the U.S. Geological Survey (USGS) Water Services API. It represents source data for United States streamgages and other monitoring sites as published by the upstream feed.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{source_uri}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}"
+    },
+    "time": {
+      "required": false,
+      "type": "timestamp",
+      "value": "{datetime}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "USGS.InstantaneousValues.Turbidity"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "USGS.InstantaneousValues.Turbidity",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Turbidity",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Turbidity/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Turbidity/versions/1"
+}

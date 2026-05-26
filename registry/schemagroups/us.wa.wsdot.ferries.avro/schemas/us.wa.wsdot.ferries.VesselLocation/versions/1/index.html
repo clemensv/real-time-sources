@@ -1,0 +1,149 @@
+{
+  "description": "A reference record from Washington State Department of Transportation for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "doc": "WSF vessel location.",
+  "fields": [
+    {
+      "name": "vessel_id",
+      "type": "string"
+    },
+    {
+      "name": "vessel_name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "mmsi",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "name": "in_service",
+      "type": "boolean"
+    },
+    {
+      "name": "at_dock",
+      "type": "boolean"
+    },
+    {
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "default": null,
+      "name": "speed",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "heading",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "name": "departing_terminal_id",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "name": "departing_terminal_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "departing_terminal_abbrev",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "arriving_terminal_id",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "name": "arriving_terminal_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "arriving_terminal_abbrev",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "scheduled_departure",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "left_dock",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "eta",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "eta_basis",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "route_abbreviation",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "timestamp",
+      "type": "string"
+    }
+  ],
+  "name": "VesselLocation",
+  "namespace": "us.wa.wsdot.ferries",
+  "type": "record"
+}

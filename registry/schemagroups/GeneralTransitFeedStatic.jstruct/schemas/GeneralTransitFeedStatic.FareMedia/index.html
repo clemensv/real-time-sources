@@ -1,0 +1,39 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/FareMedia",
+  "$root": "/definitions/GeneralTransitFeedStatic/FareMedia",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "FareMedia": {
+        "description": "Defines fare media.",
+        "name": "FareMedia",
+        "properties": {
+          "fareMediaDesc": {
+            "default": null,
+            "description": "Description of the fare media.",
+            "type": "string"
+          },
+          "fareMediaId": {
+            "description": "Identifies a fare media.",
+            "type": "string"
+          },
+          "fareMediaName": {
+            "description": "Name of the fare media.",
+            "type": "string"
+          },
+          "fareMediaUrl": {
+            "default": null,
+            "description": "URL of a web page about the fare media.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fareMediaId",
+          "fareMediaName"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "FareMedia"
+}

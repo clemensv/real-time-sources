@@ -1,0 +1,47 @@
+{
+  "$id": "https://example.com/schemas/BE/Vlaanderen/Waterinfo/VMM/WaterLevelReading",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "WaterLevelReading",
+  "name": "WaterLevelReading",
+  "properties": {
+    "parameter_name": {
+      "description": "Plain-language name of the measured parameter.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Human-readable name of the monitoring station.",
+      "type": "string"
+    },
+    "station_no": {
+      "description": "Provider-supplied station no value for this record.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Time when the provider recorded or published the observation.",
+      "type": "datetime"
+    },
+    "ts_id": {
+      "description": "Stable identifier assigned by the upstream provider for the ts.",
+      "type": "string"
+    },
+    "unit_name": {
+      "description": "Human-readable name of the unit.",
+      "type": "string"
+    },
+    "value": {
+      "description": "Measured value reported by the upstream provider.",
+      "type": "double"
+    },
+    "water_body": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for waterinfo-vmm.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "ts_id",
+    "station_no",
+    "timestamp",
+    "value"
+  ],
+  "type": "object"
+}

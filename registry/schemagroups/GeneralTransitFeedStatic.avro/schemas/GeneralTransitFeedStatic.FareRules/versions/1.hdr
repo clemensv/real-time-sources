@@ -1,0 +1,14 @@
+content-disposition:GeneralTransitFeedStatic.FareRules
+content-length:974
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.FareRules/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2024-10-18T13:48:39.788513Z
+xregistry-epoch:1
+xregistry-format:Avro
+xregistry-isdefault:true
+xregistry-modifiedat:2024-10-18T13:48:39.788513Z
+xregistry-schemaid:GeneralTransitFeedStatic.FareRules
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.FareRules/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/GeneralTransitFeedStatic.avro/schemas/GeneralTransitFeedStatic.FareRules/versions/1

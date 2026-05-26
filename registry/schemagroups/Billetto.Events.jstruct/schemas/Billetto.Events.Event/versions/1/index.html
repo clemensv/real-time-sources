@@ -1,0 +1,188 @@
+{
+  "$id": "https://example.com/schemas/Billetto/Events/Event",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A public ticketed event from the Billetto platform. Each record represents a single upcoming or ongoing public event with schedule, venue, organizer, pricing, and availability information.",
+  "name": "Event",
+  "properties": {
+    "availability": {
+      "description": "Ticket availability status for the event. 'available' means tickets are currently on sale. 'sold_out' means all tickets have been sold. 'unavailable' means ticket sales are not yet open or have closed. Null when not determinable from the API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "description": {
+      "description": "Full event description in HTML format as provided by the organizer. May be null if not set.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "enddate": {
+      "description": "Event end date and time in ISO 8601 format. Null when no end time is specified by the organizer.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "event_id": {
+      "altnames": {
+        "upstream": "id"
+      },
+      "description": "Unique numeric identifier for the event on the Billetto platform, assigned at event creation. Used as the Kafka key and CloudEvents subject for stable event identity across polls.",
+      "type": "int32"
+    },
+    "image_link": {
+      "description": "URL of the cover image for the event as uploaded by the organizer.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "location_address": {
+      "altnames": {
+        "upstream": "location.address"
+      },
+      "description": "Street address of the event venue, from the event location object.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "location_city": {
+      "altnames": {
+        "upstream": "location.city"
+      },
+      "description": "City where the event is held, from the event location object.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "location_country_code": {
+      "altnames": {
+        "upstream": "location.country_code"
+      },
+      "description": "ISO 3166-1 alpha-2 country code of the event venue (e.g. 'DK' for Denmark, 'GB' for Great Britain, 'DE' for Germany). From the event location object.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "location_latitude": {
+      "altnames": {
+        "upstream": "location.latitude"
+      },
+      "description": "WGS 84 latitude of the event venue in decimal degrees. From the event location object.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degree"
+    },
+    "location_longitude": {
+      "altnames": {
+        "upstream": "location.longitude"
+      },
+      "description": "WGS 84 longitude of the event venue in decimal degrees. From the event location object.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degree"
+    },
+    "location_name": {
+      "altnames": {
+        "upstream": "location.location_name"
+      },
+      "description": "Venue name where the event is held, from the event location object.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "location_zip_code": {
+      "altnames": {
+        "upstream": "location.zip_code"
+      },
+      "description": "Postal code of the event venue, from the event location object.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "minimum_price_amount_in_cents": {
+      "altnames": {
+        "upstream": "minimum_price.amount_in_cents"
+      },
+      "description": "Minimum ticket price across all available ticket types, expressed in the smallest currency unit (e.g. pence for GBP, øre for DKK, cent for EUR). Zero indicates a free event. From the event minimum_price object.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "minimum_price_currency": {
+      "altnames": {
+        "upstream": "minimum_price.currency"
+      },
+      "description": "ISO 4217 currency code for the minimum ticket price (e.g. 'GBP', 'DKK', 'EUR', 'NOK', 'SEK'). From the event minimum_price object.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "organiser_id": {
+      "altnames": {
+        "upstream": "organiser.id"
+      },
+      "description": "Unique numeric identifier for the event organizer on the Billetto platform. From the event organiser object.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "organiser_name": {
+      "altnames": {
+        "upstream": "organiser.name"
+      },
+      "description": "Display name of the event organizer as registered on the Billetto platform. From the event organiser object.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "startdate": {
+      "altnames": {
+        "upstream": "startdate"
+      },
+      "description": "Event start date and time in ISO 8601 format (e.g. '2026-06-15T19:00:00'). Used as the CloudEvents time attribute.",
+      "type": "string"
+    },
+    "status": {
+      "description": "Event lifecycle status as reported by the Billetto platform. Common values include 'published', 'cancelled', and 'postponed'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "title": {
+      "description": "Event title as set by the organizer.",
+      "type": "string"
+    },
+    "url": {
+      "description": "Canonical URL of the event page on the Billetto platform.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "event_id",
+    "title",
+    "startdate"
+  ],
+  "type": "object"
+}

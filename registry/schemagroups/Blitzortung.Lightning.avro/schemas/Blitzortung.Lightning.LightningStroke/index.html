@@ -1,0 +1,100 @@
+{
+  "doc": "Live lightning-stroke event from the public LightningMaps / Blitzortung websocket feed.",
+  "fields": [
+    {
+      "doc": "Upstream live-source identifier from the src field.",
+      "name": "source_id",
+      "type": "int"
+    },
+    {
+      "doc": "Source-scoped stroke identifier from the upstream id field, stringified for key and subject resolution.",
+      "name": "stroke_id",
+      "type": "string"
+    },
+    {
+      "doc": "ISO-8601 UTC timestamp derived from the upstream time field.",
+      "name": "event_time",
+      "type": "string"
+    },
+    {
+      "doc": "Original upstream time value in Unix epoch milliseconds.",
+      "name": "event_timestamp_ms",
+      "type": "long"
+    },
+    {
+      "doc": "Latitude of the located lightning stroke in decimal degrees.",
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "doc": "Longitude of the located lightning stroke in decimal degrees.",
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "doc": "5-char geohash of the located stroke, derived by the bridge from lat/lon.",
+      "name": "geohash5",
+      "type": "string"
+    },
+    {
+      "doc": "7-char geohash of the located stroke, derived by the bridge from lat/lon.",
+      "name": "geohash7",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Upstream server identifier from the srv field.",
+      "name": "server_id",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Delay between the upstream server computing the stroke and sending it to the live client, in milliseconds.",
+      "name": "server_delay_ms",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Estimated accuracy diameter in meters from the upstream dev field.",
+      "name": "accuracy_diameter_m",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": [],
+      "doc": "Detector participation entries expanded from the upstream sta object.",
+      "name": "detector_participations",
+      "type": {
+        "items": {
+          "doc": "One detector entry expanded from the upstream sta object on a live stroke.",
+          "fields": [
+            {
+              "doc": "Detector station identifier from the key of the upstream sta object.",
+              "name": "station_id",
+              "type": "int"
+            },
+            {
+              "doc": "Opaque integer status flag from the value of the upstream sta object.",
+              "name": "status",
+              "type": "int"
+            }
+          ],
+          "name": "DetectorParticipation",
+          "type": "record"
+        },
+        "type": "array"
+      }
+    }
+  ],
+  "name": "LightningStroke",
+  "namespace": "Blitzortung.Lightning",
+  "type": "record"
+}

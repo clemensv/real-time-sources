@@ -1,0 +1,59 @@
+{
+  "description": "Reference details for one station, monitoring site, or forecast area in the Canada AQHI source.",
+  "doc": "Reference record for an AQHI community from the official ECCC AQHI city lists.",
+  "fields": [
+    {
+      "description": "Measurement payload for air-quality health index observations and forecasts in the Canada AQHI source.",
+      "doc": "Two-letter Canadian province or territory abbreviation resolved for the AQHI community.",
+      "name": "province",
+      "type": "string"
+    },
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the Canada AQHI source.",
+      "doc": "English AQHI community name as published by Environment and Climate Change Canada.",
+      "name": "community_name",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for air-quality health index observations and forecasts in the Canada AQHI source.",
+      "doc": "Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.",
+      "name": "cgndb_code",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for air-quality health index observations and forecasts in the Canada AQHI source.",
+      "doc": "Latitude of the AQHI community reference point in WGS84 decimal degrees.",
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "description": "Measurement payload for air-quality health index observations and forecasts in the Canada AQHI source.",
+      "doc": "Longitude of the AQHI community reference point in WGS84 decimal degrees.",
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for air-quality health index observations and forecasts in the Canada AQHI source.",
+      "doc": "Current XML observation feed URL for the AQHI community, or null when observations are not distributed for that community.",
+      "name": "observation_url",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Forecast payload for air-quality health index observations and forecasts in the Canada AQHI source.",
+      "doc": "Current XML forecast feed URL for the AQHI community, or null when a public forecast feed is not available.",
+      "name": "forecast_url",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "Community",
+  "namespace": "ca.gc.weather.aqhi",
+  "type": "record"
+}

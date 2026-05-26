@@ -1,0 +1,227 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/Trips",
+  "$root": "/definitions/GeneralTransitFeedStatic/Trips",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "BikesAllowed": {
+        "description": "Indicates whether bikes are allowed. Symbols: NO_INFO - No bike information for the trip; BICYCLE_ALLOWED - Vehicle can accommodate at least one bicycle; BICYCLE_NOT_ALLOWED - No bicycles are allowed on this trip.",
+        "enum": [
+          "NO_INFO",
+          "BICYCLE_ALLOWED",
+          "BICYCLE_NOT_ALLOWED"
+        ],
+        "name": "BikesAllowed",
+        "type": "string"
+      },
+      "Calendar": {
+        "name": "Calendar",
+        "properties": {
+          "endDate": {
+            "description": "End service day for the service interval.",
+            "type": "string"
+          },
+          "friday": {
+            "description": "Indicates whether the service operates on all Fridays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          },
+          "monday": {
+            "description": "Indicates whether the service operates on all Mondays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          },
+          "saturday": {
+            "description": "Indicates whether the service operates on all Saturdays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          },
+          "serviceId": {
+            "description": "Identifies a set of dates when service is available for one or more routes.",
+            "type": "string"
+          },
+          "startDate": {
+            "description": "Start service day for the service interval.",
+            "type": "string"
+          },
+          "sunday": {
+            "description": "Indicates whether the service operates on all Sundays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          },
+          "thursday": {
+            "description": "Indicates whether the service operates on all Thursdays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          },
+          "tuesday": {
+            "description": "Indicates whether the service operates on all Tuesdays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          },
+          "wednesday": {
+            "description": "Indicates whether the service operates on all Wednesdays in the date range specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ServiceAvailability"
+            }
+          }
+        },
+        "required": [
+          "serviceId",
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+          "sunday",
+          "startDate",
+          "endDate"
+        ],
+        "type": "object"
+      },
+      "CalendarDates": {
+        "name": "CalendarDates",
+        "properties": {
+          "date": {
+            "description": "Date when service exception occurs.",
+            "type": "string"
+          },
+          "exceptionType": {
+            "description": "Indicates whether service is available on the date specified.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ExceptionType"
+            }
+          },
+          "serviceId": {
+            "description": "Identifies a set of dates when a service exception occurs for one or more routes.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "serviceId",
+          "date",
+          "exceptionType"
+        ],
+        "type": "object"
+      },
+      "DirectionId": {
+        "description": "Indicates the direction of travel for a trip. Symbols: OUTBOUND - Travel in one direction; INBOUND - Travel in the opposite direction.",
+        "enum": [
+          "OUTBOUND",
+          "INBOUND"
+        ],
+        "name": "DirectionId",
+        "type": "string"
+      },
+      "ExceptionType": {
+        "description": "Indicates whether service is available on the date specified. Symbols: SERVICE_ADDED - Service has been added for the specified date; SERVICE_REMOVED - Service has been removed for the specified date.",
+        "enum": [
+          "SERVICE_ADDED",
+          "SERVICE_REMOVED"
+        ],
+        "name": "ExceptionType",
+        "type": "string"
+      },
+      "ServiceAvailability": {
+        "description": "Indicates whether the service operates on all Mondays in the date range specified. Symbols: NO_SERVICE - Service is not available; SERVICE_AVAILABLE - Service is available.",
+        "enum": [
+          "NO_SERVICE",
+          "SERVICE_AVAILABLE"
+        ],
+        "name": "ServiceAvailability",
+        "type": "string"
+      },
+      "Trips": {
+        "description": "Identifies a trip.",
+        "name": "Trips",
+        "properties": {
+          "bikesAllowed": {
+            "description": "Indicates whether bikes are allowed.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/BikesAllowed"
+            }
+          },
+          "blockId": {
+            "default": null,
+            "description": "Identifies the block to which the trip belongs.",
+            "type": "string"
+          },
+          "directionId": {
+            "description": "Indicates the direction of travel for a trip.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/DirectionId"
+            }
+          },
+          "routeId": {
+            "description": "Identifies a route.",
+            "type": "string"
+          },
+          "serviceDates": {
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/Calendar"
+            }
+          },
+          "serviceExceptions": {
+            "items": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/CalendarDates"
+            },
+            "type": "array"
+          },
+          "shapeId": {
+            "default": null,
+            "description": "Identifies a geospatial shape describing the vehicle travel path for a trip.",
+            "type": "string"
+          },
+          "tripHeadsign": {
+            "default": null,
+            "description": "Text that appears on signage identifying the trip's destination to riders.",
+            "type": "string"
+          },
+          "tripId": {
+            "description": "Identifies a trip.",
+            "type": "string"
+          },
+          "tripShortName": {
+            "default": null,
+            "description": "Public facing text used to identify the trip to riders.",
+            "type": "string"
+          },
+          "wheelchairAccessible": {
+            "description": "Indicates wheelchair accessibility.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/WheelchairAccessible"
+            }
+          }
+        },
+        "required": [
+          "routeId",
+          "serviceDates",
+          "serviceExceptions",
+          "tripId",
+          "directionId",
+          "wheelchairAccessible",
+          "bikesAllowed"
+        ],
+        "type": "object"
+      },
+      "WheelchairAccessible": {
+        "description": "Indicates wheelchair accessibility. Symbols: NO_INFO - No accessibility information for the trip; WHEELCHAIR_ACCESSIBLE - Vehicle can accommodate at least one rider in a wheelchair; NOT_WHEELCHAIR_ACCESSIBLE - No riders in wheelchairs can be accommodated on this trip.",
+        "enum": [
+          "NO_INFO",
+          "WHEELCHAIR_ACCESSIBLE",
+          "NOT_WHEELCHAIR_ACCESSIBLE"
+        ],
+        "name": "WheelchairAccessible",
+        "type": "string"
+      }
+    }
+  },
+  "name": "Trips"
+}

@@ -1,0 +1,34 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.Station",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "eu.jrc.eurdep.amqp.Station",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "country": {
+          "description": "ISO 3166-1 alpha-2 country code used for broker-side filtering.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{country}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key station identity.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/eu.jrc.eurdep.amqp/messages/eu.jrc.eurdep.amqp.Station/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/eu.jrc.eurdep.amqp/messages/eu.jrc.eurdep.amqp.Station/versions/1"
+  }
+}

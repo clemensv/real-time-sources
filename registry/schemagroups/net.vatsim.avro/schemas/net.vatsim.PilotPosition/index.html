@@ -1,0 +1,117 @@
+{
+  "doc": "Current position, flight plan summary, and state of a pilot connected to the VATSIM virtual aviation network.",
+  "fields": [
+    {
+      "doc": "VATSIM Certificate Identifier (CID) — unique numeric member ID.",
+      "name": "cid",
+      "type": "int"
+    },
+    {
+      "doc": "ATC-style callsign chosen by the pilot for this session.",
+      "name": "callsign",
+      "type": "string"
+    },
+    {
+      "doc": "Aircraft latitude in decimal degrees (WGS-84).",
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "doc": "Aircraft longitude in decimal degrees (WGS-84).",
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "doc": "Indicated altitude in feet above mean sea level.",
+      "name": "altitude",
+      "type": "int"
+    },
+    {
+      "doc": "Ground speed in knots.",
+      "name": "groundspeed",
+      "type": "int"
+    },
+    {
+      "doc": "Magnetic heading in degrees (0-359).",
+      "name": "heading",
+      "type": "int"
+    },
+    {
+      "doc": "Four-digit transponder (squawk) code.",
+      "name": "transponder",
+      "type": "string"
+    },
+    {
+      "doc": "Altimeter setting (QNH) in millibars.",
+      "name": "qnh_mb",
+      "type": "int"
+    },
+    {
+      "default": null,
+      "doc": "Flight rules: I or V. Null if no flight plan.",
+      "name": "flight_rules",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "ICAO aircraft type designator. Null if no flight plan.",
+      "name": "aircraft_short",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "ICAO departure airport code. Null if no flight plan.",
+      "name": "departure",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "ICAO arrival airport code. Null if no flight plan.",
+      "name": "arrival",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Route string from flight plan. Null if no flight plan.",
+      "name": "route",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Planned cruise altitude. Null if no flight plan.",
+      "name": "cruise_altitude",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "VATSIM pilot rating bitmask.",
+      "name": "pilot_rating",
+      "type": "int"
+    },
+    {
+      "doc": "UTC timestamp of last position update.",
+      "name": "last_updated",
+      "type": "string"
+    }
+  ],
+  "name": "PilotPosition",
+  "namespace": "net.vatsim",
+  "type": "record"
+}

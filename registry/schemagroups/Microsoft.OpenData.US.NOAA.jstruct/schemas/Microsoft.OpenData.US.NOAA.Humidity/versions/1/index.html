@@ -1,0 +1,58 @@
+{
+  "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/Humidity",
+  "$root": "/definitions/Microsoft/OpenData/US/NOAA/Humidity",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Microsoft": {
+      "OpenData": {
+        "US": {
+          "NOAA": {
+            "Humidity": {
+              "name": "Humidity",
+              "properties": {
+                "max_humidity_exceeded": {
+                  "description": "Flag indicating if the maximum expected humidity was exceeded",
+                  "type": "boolean"
+                },
+                "min_humidity_exceeded": {
+                  "description": "Flag indicating if the minimum expected humidity was exceeded",
+                  "type": "boolean"
+                },
+                "rate_of_change_exceeded": {
+                  "description": "Flag indicating if the rate of change tolerance limit was exceeded",
+                  "type": "boolean"
+                },
+                "region": {
+                  "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa.",
+                  "type": "string"
+                },
+                "station_id": {
+                  "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+                  "type": "string"
+                },
+                "timestamp": {
+                  "description": "{\"description\": \"Timestamp of the humidity measurement\"}",
+                  "type": "string"
+                },
+                "value": {
+                  "description": "{\"description\": \"Value of the humidity\"}",
+                  "type": "double"
+                }
+              },
+              "required": [
+                "station_id",
+                "timestamp",
+                "value",
+                "max_humidity_exceeded",
+                "min_humidity_exceeded",
+                "rate_of_change_exceeded"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "Humidity"
+}

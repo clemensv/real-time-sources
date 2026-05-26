@@ -1,0 +1,44 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.Visibility",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "datacontenttype": {
+      "required": true,
+      "type": "string"
+    },
+    "dataschema": {
+      "required": true,
+      "type": "uritemplate"
+    },
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api.tidesandcurrents.noaa.gov"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "time": {
+      "required": true,
+      "type": "timestamp"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "Microsoft.OpenData.US.NOAA.Visibility"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Microsoft.OpenData.US.NOAA.Visibility",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Visibility",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Visibility/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Visibility/versions/1"
+}

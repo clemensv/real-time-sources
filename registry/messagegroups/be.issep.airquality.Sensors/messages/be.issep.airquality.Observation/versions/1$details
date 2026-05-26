@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/be.issep.airquality.jstruct/schemas/be.issep.airquality.Observation",
+  "description": "A current environmental measurement from Wallonia's Institut Scientifique de Service Public (ISSeP). It carries pollutant concentration measurements when the upstream feed reports a new or refreshed value.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://www.odwb.be/api/explore/v2.1/catalog/datasets/last-data-capteurs-qualite-de-l-air-issep/records"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{configuration_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "be.issep.airquality.Observation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "be.issep.airquality.Observation",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Observation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/be.issep.airquality.Sensors/messages/be.issep.airquality.Observation/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/be.issep.airquality.Sensors/messages/be.issep.airquality.Observation/versions/1"
+}

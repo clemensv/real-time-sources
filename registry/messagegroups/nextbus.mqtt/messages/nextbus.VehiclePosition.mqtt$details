@@ -1,0 +1,22 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/nextbus/messages/nextbus.VehiclePosition",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "nextbus.VehiclePosition.mqtt",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nextbus.mqtt/messages/nextbus.VehiclePosition.mqtt/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "VehiclePosition",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": false,
+    "topic_name": "transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nextbus.mqtt/messages/nextbus.VehiclePosition.mqtt",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nextbus.mqtt/messages/nextbus.VehiclePosition.mqtt/versions",
+  "xid": "/messagegroups/nextbus.mqtt/messages/nextbus.VehiclePosition.mqtt"
+}

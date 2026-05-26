@@ -1,0 +1,23 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/BR.INPE.DETER/messages/BR.INPE.DETER.DeforestationAlert",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "BR.INPE.DETER.mqtt.DeforestationAlert",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BR.INPE.DETER.mqtt/messages/BR.INPE.DETER.mqtt.DeforestationAlert/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "DeforestationAlert",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "message_expiry_interval": 604800,
+    "qos": 1,
+    "retain": false,
+    "topic_name": "deforestation/br/inpe/inpe-deter-brazil/{biome}/{state_slug}/{class_slug}/{alert_id}/alert"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BR.INPE.DETER.mqtt/messages/BR.INPE.DETER.mqtt.DeforestationAlert",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BR.INPE.DETER.mqtt/messages/BR.INPE.DETER.mqtt.DeforestationAlert/versions",
+  "xid": "/messagegroups/BR.INPE.DETER.mqtt/messages/BR.INPE.DETER.mqtt.DeforestationAlert"
+}

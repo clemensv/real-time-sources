@@ -1,0 +1,22 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.CurrentPredictions",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Microsoft.OpenData.US.NOAA.mqtt.CurrentPredictions",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.mqtt/messages/Microsoft.OpenData.US.NOAA.mqtt.CurrentPredictions/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "CurrentPredictions",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": true,
+    "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/current-predictions"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.mqtt/messages/Microsoft.OpenData.US.NOAA.mqtt.CurrentPredictions",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.mqtt/messages/Microsoft.OpenData.US.NOAA.mqtt.CurrentPredictions/versions",
+  "xid": "/messagegroups/Microsoft.OpenData.US.NOAA.mqtt/messages/Microsoft.OpenData.US.NOAA.mqtt.CurrentPredictions"
+}

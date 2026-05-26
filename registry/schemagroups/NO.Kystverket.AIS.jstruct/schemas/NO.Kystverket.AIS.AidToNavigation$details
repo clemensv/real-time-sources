@@ -1,0 +1,16 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "format": "JsonStructure/draft-02",
+  "isdefault": true,
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.AidToNavigation/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "schemaid": "NO.Kystverket.AIS.AidToNavigation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.AidToNavigation",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.AidToNavigation/versions",
+  "xid": "/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.AidToNavigation"
+}

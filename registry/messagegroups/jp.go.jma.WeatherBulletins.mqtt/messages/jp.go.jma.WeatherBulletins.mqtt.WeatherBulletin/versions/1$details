@@ -1,0 +1,37 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/jp.go.jma.WeatherBulletins/messages/jp.go.jma.WeatherBulletin",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://www.data.jma.go.jp"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{office}/{bulletin_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "jp.go.jma.WeatherBulletin"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "jp.go.jma.WeatherBulletins.mqtt.WeatherBulletin",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WeatherBulletin",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": false,
+    "topic_name": "weather/jp/jma/jma-japan/{office}/{bulletin_id}/bulletin"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/jp.go.jma.WeatherBulletins.mqtt/messages/jp.go.jma.WeatherBulletins.mqtt.WeatherBulletin/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/jp.go.jma.WeatherBulletins.mqtt/messages/jp.go.jma.WeatherBulletins.mqtt.WeatherBulletin/versions/1"
+}

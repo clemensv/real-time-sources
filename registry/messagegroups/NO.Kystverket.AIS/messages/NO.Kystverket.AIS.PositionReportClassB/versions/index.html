@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.PositionReportClassB",
+    "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "urn:ais:kystverket:tcp"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "NO.Kystverket.AIS.PositionReportClassB"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "NO.Kystverket.AIS.PositionReportClassB",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "PositionReportClassB",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReportClassB/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReportClassB/versions/1"
+  }
+}

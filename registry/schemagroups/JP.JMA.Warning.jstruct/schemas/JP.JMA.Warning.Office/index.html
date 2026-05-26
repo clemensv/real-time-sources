@@ -1,0 +1,94 @@
+{
+  "$id": "https://www.jma.go.jp/schemas/bosai/warning/Office",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "description": "JMA Bosai warning office reference data from area.json offices.",
+  "name": "Office",
+  "properties": {
+    "area_code": {
+      "description": "Six-digit JMA Bosai office code repeated as the area component for office reference events so reference records use the same numeric warning subject and key shape as area warning telemetry.",
+      "pattern": "^[0-9]{6,7}$",
+      "type": "string"
+    },
+    "event": {
+      "description": "Fixed MQTT topic event segment for retained office reference records.",
+      "descriptions": {
+        "info": "Provider value `info` for retained office reference records."
+      },
+      "enum": [
+        "info"
+      ],
+      "type": "string"
+    },
+    "name_en": {
+      "description": "English office or warning-region name from area.json offices[].enName, such as Tokyo or Soya.",
+      "type": "string"
+    },
+    "name_jp": {
+      "description": "Japanese office or warning-region name from area.json offices[].name, such as 東京都 or 宗谷地方.",
+      "type": "string"
+    },
+    "office_code": {
+      "altnames": {
+        "jma-bosai": "offices key"
+      },
+      "description": "Six-digit JMA Bosai office code from area.json offices. This is the first stable key component for warning reference and telemetry events.",
+      "pattern": "^[0-9]{6}$",
+      "type": "string"
+    },
+    "office_type": {
+      "description": "Normalized office class. PREFECTURE is used for standard prefectural offices, SUBREGION for Hokkaido/Okinawa-style regional warning offices, and OFFICE for other JMA issuing-office catalog entries.",
+      "descriptions": {
+        "OFFICE": "Provider value `OFFICE` for this coded alert field.",
+        "PREFECTURE": "Provider value `PREFECTURE` for this coded alert field.",
+        "SUBREGION": "Provider value `SUBREGION` for this coded alert field."
+      },
+      "enum": [
+        "PREFECTURE",
+        "SUBREGION",
+        "OFFICE"
+      ],
+      "type": "string"
+    },
+    "parent_office_code": {
+      "description": "Parent JMA regional center code from area.json offices[].parent. Null is emitted only if the upstream catalog omits a parent.",
+      "pattern": "^[0-9]{6}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "prefecture": {
+      "description": "ASCII-safe Romanized prefecture or JMA warning subregion slug derived from the JMA office code/name for MQTT topic routing. Japanese administrative names are preserved separately in name_jp/area_name.",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "type": "string"
+    },
+    "severity": {
+      "description": "Japan-native severity axis for JMA warning MQTT topics: info for office reference records, advisory for 注意報-level notices and cancellations, warning for 警報-level warnings, and emergency for 特別警報/special-warning category codes.",
+      "descriptions": {
+        "advisory": "Normalized advisory/cancellation value for 注意報-level or cleared JMA warning items.",
+        "emergency": "Normalized emergency value for 特別警報 or special-warning category codes 32-38.",
+        "info": "Reference-information routing value used by retained JMA office records.",
+        "warning": "Normalized warning value for 警報-level JMA warning items."
+      },
+      "enum": [
+        "info",
+        "advisory",
+        "warning",
+        "emergency"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "office_code",
+    "area_code",
+    "name_jp",
+    "name_en",
+    "parent_office_code",
+    "office_type",
+    "prefecture",
+    "severity",
+    "event"
+  ],
+  "type": "object"
+}

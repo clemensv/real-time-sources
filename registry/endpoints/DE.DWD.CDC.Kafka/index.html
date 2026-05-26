@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for DWD Weather CloudEvents on the `dwd` topic keyed by `{station_id}`.",
+  "endpointid": "DE.DWD.CDC.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/DE.DWD.CDC"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/DE.DWD.CDC.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{station_id}",
+      "topic": "dwd"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/DE.DWD.CDC.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/DE.DWD.CDC.Kafka"
+}

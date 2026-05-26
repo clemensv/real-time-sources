@@ -1,0 +1,167 @@
+{
+  "$id": "https://fienta.com/schemas/Com/Fienta/Event",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference data for a Fienta public event as exposed by the public events endpoint. Emitted at bridge startup and refreshed periodically so downstream consumers can correlate sale-status change events with the latest published event metadata from https://fienta.com/api/v1/public/events.",
+  "name": "Event",
+  "properties": {
+    "address": {
+      "description": "Postal street address for the venue as shown on the public event listing. Null when the address is not supplied. Sourced from the 'address' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "attendance_mode": {
+      "description": "Attendance mode reported by Fienta for the event, for example 'offline'. Null when the public event listing omits the field. Sourced from the 'attendance_mode' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "buy_tickets_url": {
+      "description": "Public URL that Fienta exposes for the ticket purchase flow. Null when the listing does not include a dedicated purchase URL. Sourced from the 'buy_tickets_url' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "categories": {
+      "description": "List of category labels assigned to the event listing, such as 'other' or 'family'. The bridge emits an empty array when the public event payload omits the categories array. Sourced from the 'categories' field in the Fienta API response.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "description": {
+      "description": "Event description as published by the organizer. The public payload can contain HTML markup or be empty. Sourced from the 'description' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "duration_text": {
+      "description": "Human-readable duration summary rendered by Fienta for the event schedule, for example 'Tue 1. April 2025 at 09:00 - Thu 31. December 2026 at 17:00'. Sourced from the 'duration_string' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "end": {
+      "description": "Local event end datetime string in the format 'YYYY-MM-DD HH:MM:SS'. Null when the public event payload has no end time. Sourced from the 'ends_at' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "event_id": {
+      "description": "Unique stable identifier for the event as assigned by Fienta. Sourced from the 'id' field in the Fienta API response and used as the CloudEvents subject and Kafka key.",
+      "type": "string"
+    },
+    "event_status": {
+      "description": "Lifecycle status of the event listing as published by Fienta, for example 'scheduled'. Sourced from the 'event_status' field in the Fienta API response.",
+      "type": "string"
+    },
+    "image_small_url": {
+      "description": "URL of the smaller promotional image variant for the event. Null when the public event listing does not include a smaller image rendition. Sourced from the 'image_small_url' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "image_url": {
+      "description": "URL of the primary promotional image for the event. Null when no image is provided. Sourced from the 'image_url' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "name": {
+      "description": "Display title of the event as shown on the public event page. Sourced from the 'title' field in the Fienta API response.",
+      "type": "string"
+    },
+    "organizer_email": {
+      "description": "Organizer email address published on the event listing. Null when the organizer did not expose an email address. Sourced from the 'organizer_email' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "organizer_id": {
+      "description": "Numeric identifier of the organizer account in Fienta. Null when the public event payload omits the organizer identifier. Sourced from the 'organizer_id' field in the Fienta API response.",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "organizer_name": {
+      "description": "Display name of the event organizer. Null when the organizer name is absent from the public payload. Sourced from the 'organizer_name' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "organizer_phone": {
+      "description": "Organizer phone number published on the event listing. Null when the organizer did not expose a phone number. Sourced from the 'organizer_phone' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "postal_code": {
+      "description": "Postal code for the venue address. Null when the event listing has no postal code. Sourced from the 'address_postal_code' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sale_status": {
+      "description": "Current ticket sale status of the event. Observed values in the public feed include 'onSale', 'soldOut', 'notOnSale', and 'saleEnded'. Sourced from the 'sale_status' field in the Fienta API response.",
+      "type": "string"
+    },
+    "series_id": {
+      "description": "Series identifier or slug used by Fienta to group related event listings. Null when the event is not associated with a series. Sourced from the 'series_id' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "start": {
+      "description": "Local event start datetime string in the format 'YYYY-MM-DD HH:MM:SS'. Sourced from the 'starts_at' field in the Fienta API response.",
+      "type": "string"
+    },
+    "time_notes": {
+      "description": "Free-form notes about the event timing published by the organizer. Null when the event listing has no timing note. Sourced from the 'notes_about_time' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "url": {
+      "description": "Public Fienta URL for the event details page. Sourced from the 'url' field in the Fienta API response.",
+      "type": "string"
+    },
+    "venue_id": {
+      "description": "Venue identifier provided by Fienta for the event location. Null when the listing has no venue identifier. Sourced from the 'venue_id' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "venue_name": {
+      "description": "Venue or place name shown on the public event listing, for example 'Worldwide' or a named physical venue. Null when not supplied. Sourced from the 'venue' field in the Fienta API response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "event_id",
+    "name",
+    "start",
+    "event_status",
+    "sale_status",
+    "url"
+  ],
+  "type": "object"
+}

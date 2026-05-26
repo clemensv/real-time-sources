@@ -1,0 +1,38 @@
+{
+  "fr.gouv.transport.bison_fute.TrafficFlowMeasurement": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/fr.gouv.transport.bison_fute.jstruct/schemas/fr.gouv.transport.bison_fute.TrafficFlowMeasurement",
+    "description": "Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Published by Bison Futé (TIPI) as a MeasuredDataPublication snapshot every 6 minutes.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{site_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "fr.gouv.transport.bison_fute.TrafficFlowMeasurement"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fr.gouv.transport.bison_fute.TrafficFlowMeasurement",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fr.gouv.transport.bison_fute.traffic_flow/messages/fr.gouv.transport.bison_fute.TrafficFlowMeasurement/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "TrafficFlowMeasurement",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fr.gouv.transport.bison_fute.traffic_flow/messages/fr.gouv.transport.bison_fute.TrafficFlowMeasurement",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fr.gouv.transport.bison_fute.traffic_flow/messages/fr.gouv.transport.bison_fute.TrafficFlowMeasurement/versions",
+    "xid": "/messagegroups/fr.gouv.transport.bison_fute.traffic_flow/messages/fr.gouv.transport.bison_fute.TrafficFlowMeasurement"
+  }
+}

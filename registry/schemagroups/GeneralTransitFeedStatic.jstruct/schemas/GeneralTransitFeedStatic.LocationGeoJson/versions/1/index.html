@@ -1,0 +1,34 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/LocationGeoJson",
+  "$root": "/definitions/GeneralTransitFeedStatic/LocationGeoJson",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "LocationGeoJson": {
+        "description": "Defines location GeoJSON data.",
+        "name": "LocationGeoJson",
+        "properties": {
+          "locationGeoJsonData": {
+            "description": "GeoJSON data.",
+            "type": "string"
+          },
+          "locationGeoJsonId": {
+            "description": "Identifies a location GeoJSON.",
+            "type": "string"
+          },
+          "locationGeoJsonType": {
+            "description": "Type of the GeoJSON.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "locationGeoJsonId",
+          "locationGeoJsonType",
+          "locationGeoJsonData"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "LocationGeoJson"
+}

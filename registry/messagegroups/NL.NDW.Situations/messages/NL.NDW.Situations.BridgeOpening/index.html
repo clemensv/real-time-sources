@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.Situations.BridgeOpening",
+  "description": "Bridge opening event from the Dutch NDW DATEX II planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes temporary road closure.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://opendata.ndw.nu/planningsfeed_brugopeningen.xml.gz"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "situations/{situation_record_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "NL.NDW.Situations.BridgeOpening"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "NL.NDW.Situations.BridgeOpening",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "BridgeOpening",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening/versions",
+  "xid": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening"
+}

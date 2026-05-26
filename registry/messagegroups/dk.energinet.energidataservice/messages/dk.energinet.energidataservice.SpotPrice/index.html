@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/dk.energinet.energidataservice.jstruct/schemas/dk.energinet.energidataservice.SpotPrice",
+  "description": "Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool). One record per hour per price area (DK1 – Western Denmark, DK2 – Eastern Denmark). Prices are published in both DKK and EUR.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api.energidataservice.dk"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{price_area}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "dk.energinet.energidataservice.SpotPrice"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "dk.energinet.energidataservice.SpotPrice",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "SpotPrice",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice/versions",
+  "xid": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice"
+}

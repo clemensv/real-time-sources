@@ -1,0 +1,57 @@
+{
+  "description": "A reference record from Washington State Department of Transportation for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "doc": "Traffic flow sensor station metadata.",
+  "fields": [
+    {
+      "name": "flow_data_id",
+      "type": "string"
+    },
+    {
+      "name": "station_name",
+      "type": "string"
+    },
+    {
+      "name": "region",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "description",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "road_name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "direction",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "milepost",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "name": "longitude",
+      "type": "double"
+    }
+  ],
+  "name": "TrafficFlowStation",
+  "namespace": "us.wa.wsdot.traffic",
+  "type": "record"
+}

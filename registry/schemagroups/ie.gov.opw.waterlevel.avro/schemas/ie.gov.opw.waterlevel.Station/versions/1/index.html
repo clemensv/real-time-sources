@@ -1,0 +1,34 @@
+{
+  "description": "Reference details for one monitoring station or site in the Ireland OPW waterlevel.ie source.",
+  "doc": "Reference data for an OPW hydrometric station in Ireland, including location and region.",
+  "fields": [
+    {
+      "doc": "Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041').",
+      "name": "station_ref",
+      "type": "string"
+    },
+    {
+      "doc": "Human-readable name of the hydrometric station (e.g. 'Sandy Mills').",
+      "name": "station_name",
+      "type": "string"
+    },
+    {
+      "doc": "Integer identifier of the OPW hydrometric region the station belongs to.",
+      "name": "region_id",
+      "type": "int"
+    },
+    {
+      "doc": "Longitude of the station location in WGS84 decimal degrees.",
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "doc": "Latitude of the station location in WGS84 decimal degrees.",
+      "name": "latitude",
+      "type": "double"
+    }
+  ],
+  "name": "Station",
+  "namespace": "ie.gov.opw.waterlevel",
+  "type": "record"
+}

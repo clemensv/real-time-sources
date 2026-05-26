@@ -1,0 +1,52 @@
+{
+  "doc": "Reference metadata for an ambient gamma dose rate monitoring station in the EURDEP network.",
+  "fields": [
+    {
+      "doc": "Alphanumeric station identifier with country prefix (e.g. 'AT0001').",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "Human-readable station location name.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "doc": "ISO 3166-1 alpha-2 country code used as the country routing axis.",
+      "name": "country",
+      "type": "string"
+    },
+    {
+      "doc": "Latitude in WGS84 decimal degrees.",
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "doc": "Longitude in WGS84 decimal degrees.",
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "default": null,
+      "doc": "Elevation above sea level in meters. Null if unknown.",
+      "name": "height_above_sea",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "doc": "Numeric operational status code. 1 = active.",
+      "name": "site_status",
+      "type": "int"
+    },
+    {
+      "doc": "Human-readable operational status text.",
+      "name": "site_status_text",
+      "type": "string"
+    }
+  ],
+  "name": "Station",
+  "namespace": "eu.jrc.eurdep",
+  "type": "record"
+}

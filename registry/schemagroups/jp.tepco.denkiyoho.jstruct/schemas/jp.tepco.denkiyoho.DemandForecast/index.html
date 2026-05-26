@@ -1,0 +1,98 @@
+{
+  "$id": "https://www.tepco.co.jp/schemas/denkiyoho/DemandForecast",
+  "$root": "/definitions/jp/tepco/denkiyoho/DemandForecast",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "jp": {
+      "tepco": {
+        "denkiyoho": {
+          "DemandForecast": {
+            "description": "Hourly telemetry schema for TEPCO electricity demand forecasts in the Tokyo Electric Power Company service area, including usage and supply-capacity context from section 3.",
+            "name": "DemandForecast",
+            "properties": {
+              "area_code": {
+                "description": "Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page.",
+                "type": "string"
+              },
+              "date": {
+                "description": "Operating date from the DATE column in TEPCO's hourly same-day forecast section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD). This is the first stable key component.",
+                "type": "date"
+              },
+              "datetime": {
+                "description": "Combined DATE and TIME converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp for cross-region analytics.",
+                "type": "datetime"
+              },
+              "datetime_local": {
+                "description": "Combined DATE and TIME serialized as an RFC 3339 timestamp with +09:00 offset for the Japan Standard Time instant represented by the TEPCO CSV row.",
+                "type": "datetime"
+              },
+              "forecast_demand_jp_unit_value": {
+                "description": "Original integer value from TEPCO's section 3 予測値(万kW) hourly forecast column. The bridge uses this value in forecast de-duplication so revised forecasts for the same date and hour are emitted again.",
+                "minimum": 0,
+                "symbol": "万kW",
+                "type": "int32",
+                "unit": "10MW"
+              },
+              "forecast_demand_mw": {
+                "description": "Hourly forecast electricity demand for the Tokyo service area, converted to megawatts from TEPCO's section 3 予測値(万kW) column by multiplying by 10.",
+                "minimum": 0,
+                "symbol": "MW",
+                "type": "double",
+                "unit": "MW"
+              },
+              "supply_capacity_jp_unit_value": {
+                "description": "Original integer supply-capacity value from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3.",
+                "minimum": 0,
+                "symbol": "万kW",
+                "type": [
+                  "int32",
+                  "null"
+                ],
+                "unit": "10MW"
+              },
+              "supply_capacity_mw": {
+                "description": "Available supply capacity converted to megawatts from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3.",
+                "minimum": 0,
+                "symbol": "MW",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "time": {
+                "description": "Local Japan Standard Time clock hour from the TIME column in TEPCO's hourly forecast section, normalized to zero-padded HH:MM form. This is the second stable key component.",
+                "pattern": "^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$",
+                "type": "string"
+              },
+              "usage_pct": {
+                "description": "Usage percentage from TEPCO's hourly section 3 使用率(%) column. This field is populated only for hourly-cadence DemandForecast rows derived from section 3 and can be null when TEPCO leaves future-hour usage blank until actual demand is available.",
+                "minimum": 0,
+                "symbol": "%",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "percent"
+              }
+            },
+            "required": [
+              "date",
+              "time",
+              "datetime",
+              "datetime_local",
+              "forecast_demand_mw",
+              "forecast_demand_jp_unit_value",
+              "usage_pct",
+              "supply_capacity_mw",
+              "supply_capacity_jp_unit_value",
+              "area_code"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "DemandForecast"
+}

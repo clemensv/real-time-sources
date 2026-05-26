@@ -1,0 +1,35 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/CZ.Gov.CHMI.Hydro/messages/CZ.Gov.CHMI.Hydro.WaterLevelObservation",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CZ.Gov.CHMI.Hydro.amqp/messages/CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WaterLevelObservation",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "stream_name": {
+        "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (stream_name).",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{stream_name}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CZ.Gov.CHMI.Hydro.amqp/messages/CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CZ.Gov.CHMI.Hydro.amqp/messages/CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation/versions",
+  "xid": "/messagegroups/CZ.Gov.CHMI.Hydro.amqp/messages/CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation"
+}

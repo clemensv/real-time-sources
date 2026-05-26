@@ -1,0 +1,45 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/xceed.jstruct/schemas/xceed.Event",
+  "description": "Metadata for a scheduled nightlife or live-entertainment event as published by the Xceed Open Event API. Includes event identity, schedule, venue, and external sales link. Emitted as reference data at startup and on each refresh cycle.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "description": "Base URL of the Xceed Open Event API feed",
+      "required": true,
+      "type": "uritemplate",
+      "value": "{feedurl}"
+    },
+    "specversion": {
+      "description": "CloudEvents specification version",
+      "required": true,
+      "type": "string",
+      "value": "1.0"
+    },
+    "subject": {
+      "description": "Unique UUID identifier of the Xceed event, matching the Kafka key",
+      "required": true,
+      "type": "uritemplate",
+      "value": "{event_id}"
+    },
+    "type": {
+      "description": "CloudEvents type identifier for an Xceed event record",
+      "required": true,
+      "type": "string",
+      "value": "xceed.Event"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "xceed.Event",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/xceed/messages/xceed.Event/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Event",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/xceed/messages/xceed.Event",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/xceed/messages/xceed.Event/versions",
+  "xid": "/messagegroups/xceed/messages/xceed.Event"
+}

@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.oceanObs.TidewaterPrediction",
+  "description": "A deterministic tidewater (sea-level) prediction for one station and one forecast horizon. predictionType is typically '10minutes'; predictions are issued forward ~30 days.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{feedurl}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "dk.dmi.oceanObs.TidewaterPrediction"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "dk.dmi.oceanObs.TidewaterPrediction",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "TidewaterPrediction",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction/versions/1"
+}

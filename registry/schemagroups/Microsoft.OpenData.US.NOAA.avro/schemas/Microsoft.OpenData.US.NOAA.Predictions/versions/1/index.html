@@ -1,0 +1,26 @@
+{
+  "altnames": {
+    "kql": "Predictions"
+  },
+  "fields": [
+    {
+      "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timestamp of the prediction\"}",
+      "logicalType": "timestamp-millis",
+      "name": "timestamp",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Value of the prediction\"}",
+      "name": "value",
+      "type": "double"
+    }
+  ],
+  "name": "Predictions",
+  "namespace": "Microsoft.OpenData.US.NOAA",
+  "type": "record"
+}

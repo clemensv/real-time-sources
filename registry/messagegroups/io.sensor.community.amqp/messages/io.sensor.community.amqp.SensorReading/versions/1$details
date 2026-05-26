@@ -1,0 +1,38 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorReading",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "io.sensor.community.amqp.SensorReading",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "SensorReading",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "country": {
+        "description": "Routing attribute `country` used in the MQTT topic hierarchy and AMQP subscription filters.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{country}"
+      },
+      "geohash5": {
+        "description": "Routing attribute `geohash5` used in the MQTT topic hierarchy and AMQP subscription filters.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{geohash5}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject matching the CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{sensor_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/io.sensor.community.amqp/messages/io.sensor.community.amqp.SensorReading/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/io.sensor.community.amqp/messages/io.sensor.community.amqp.SensorReading/versions/1"
+}

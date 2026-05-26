@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/io.sensor.community.jstruct/schemas/io.sensor.community.SensorInfo",
+    "description": "Reference data for a Sensor.Community sensor node including its hardware type and last known location metadata.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{sensor_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "io.sensor.community.SensorInfo"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "io.sensor.community.SensorInfo",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "SensorInfo",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/io.sensor.community/messages/io.sensor.community.SensorInfo/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorInfo/versions/1"
+  }
+}

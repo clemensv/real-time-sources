@@ -1,0 +1,79 @@
+{
+  "description": "Measurement payload for observations in the ČHMÚ Hydrological Data source.",
+  "doc": "Measurement payload for observations in the ČHMÚ Hydrological Data source.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "station_name",
+      "type": "string"
+    },
+    {
+      "doc": "Name of the watercourse / stream the station observes (Czech: 'tok'). Sourced by the bridge from the station catalog and propagated to telemetry so consumers can route by river without a separate catalog join.",
+      "name": "stream_name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "water_level",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_level_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_temperature",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_temperature_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "name": "WaterLevelObservation",
+  "namespace": "CZ.Gov.CHMI.Hydro",
+  "type": "record"
+}

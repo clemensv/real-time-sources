@@ -1,0 +1,142 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/StopTimes",
+  "$root": "/definitions/GeneralTransitFeedStatic/StopTimes",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "ContinuousDropOff": {
+        "description": "Indicates that the rider can alight from the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping drop off; NO_CONTINUOUS_STOPPING - No continuous stopping drop off; PHONE_AGENCY - Must phone agency to arrange continuous stopping drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping drop off.",
+        "enum": [
+          "CONTINUOUS_STOPPING",
+          "NO_CONTINUOUS_STOPPING",
+          "PHONE_AGENCY",
+          "COORDINATE_WITH_DRIVER"
+        ],
+        "name": "ContinuousDropOff",
+        "type": "string"
+      },
+      "ContinuousPickup": {
+        "description": "Indicates that the rider can board the transit vehicle at any point along the vehicle’s travel path. Symbols: CONTINUOUS_STOPPING - Continuous stopping pickup; NO_CONTINUOUS_STOPPING - No continuous stopping pickup; PHONE_AGENCY - Must phone agency to arrange continuous stopping pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange continuous stopping pickup.",
+        "enum": [
+          "CONTINUOUS_STOPPING",
+          "NO_CONTINUOUS_STOPPING",
+          "PHONE_AGENCY",
+          "COORDINATE_WITH_DRIVER"
+        ],
+        "name": "ContinuousPickup",
+        "type": "string"
+      },
+      "DropOffType": {
+        "description": "Indicates drop off method. Symbols: REGULAR - Regularly scheduled drop off; NO_DROP_OFF - No drop off available; PHONE_AGENCY - Must phone agency to arrange drop off; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange drop off.",
+        "enum": [
+          "REGULAR",
+          "NO_DROP_OFF",
+          "PHONE_AGENCY",
+          "COORDINATE_WITH_DRIVER"
+        ],
+        "name": "DropOffType",
+        "type": "string"
+      },
+      "PickupType": {
+        "description": "Indicates pickup method. Symbols: REGULAR - Regularly scheduled pickup; NO_PICKUP - No pickup available; PHONE_AGENCY - Must phone agency to arrange pickup; COORDINATE_WITH_DRIVER - Must coordinate with driver to arrange pickup.",
+        "enum": [
+          "REGULAR",
+          "NO_PICKUP",
+          "PHONE_AGENCY",
+          "COORDINATE_WITH_DRIVER"
+        ],
+        "name": "PickupType",
+        "type": "string"
+      },
+      "StopTimes": {
+        "description": "Represents times that a vehicle arrives at and departs from individual stops for each trip.",
+        "name": "StopTimes",
+        "properties": {
+          "arrivalTime": {
+            "default": null,
+            "description": "Arrival time at the stop for a specific trip.",
+            "type": "string"
+          },
+          "continuousDropOff": {
+            "default": null,
+            "description": "Indicates continuous stopping drop off.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ContinuousDropOff"
+            }
+          },
+          "continuousPickup": {
+            "default": null,
+            "description": "Indicates continuous stopping pickup.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/ContinuousPickup"
+            }
+          },
+          "departureTime": {
+            "default": null,
+            "description": "Departure time from the stop for a specific trip.",
+            "type": "string"
+          },
+          "dropOffType": {
+            "description": "Indicates drop off method.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/DropOffType"
+            }
+          },
+          "pickupType": {
+            "description": "Indicates pickup method.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/PickupType"
+            }
+          },
+          "shapeDistTraveled": {
+            "default": null,
+            "description": "Actual distance traveled along the shape from the first stop to the stop specified in this record.",
+            "type": "double"
+          },
+          "stopHeadsign": {
+            "default": null,
+            "description": "Text that appears on signage identifying the trip's destination to riders.",
+            "type": "string"
+          },
+          "stopId": {
+            "default": null,
+            "description": "Identifies the serviced stop.",
+            "type": "string"
+          },
+          "stopSequence": {
+            "description": "Order of stops for a particular trip.",
+            "type": "int32"
+          },
+          "timepoint": {
+            "description": "Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times.",
+            "type": {
+              "$ref": "/definitions/GeneralTransitFeedStatic/Timepoint"
+            }
+          },
+          "tripId": {
+            "description": "Identifies a trip.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tripId",
+          "stopSequence",
+          "pickupType",
+          "dropOffType",
+          "timepoint"
+        ],
+        "type": "object"
+      },
+      "Timepoint": {
+        "description": "Indicates if arrival and departure times for a stop are strictly adhered to by the vehicle or if they are instead approximate and/or interpolated times. Symbols: APPROXIMATE - Times are considered approximate; EXACT - Times are considered exact.",
+        "enum": [
+          "APPROXIMATE",
+          "EXACT"
+        ],
+        "name": "Timepoint",
+        "type": "string"
+      }
+    }
+  },
+  "name": "StopTimes"
+}

@@ -1,0 +1,39 @@
+{
+  "description": "A reference record from the Belgian iRail train data API for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "doc": "Metadata for a Belgian railway station in the NMBS/SNCB network.",
+  "fields": [
+    {
+      "doc": "Nine-digit UIC-derived numeric station identifier assigned by NMBS.",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "Default display name of the station.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "doc": "Consistent official station name.",
+      "name": "standard_name",
+      "type": "string"
+    },
+    {
+      "doc": "Longitude in WGS84 decimal degrees.",
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "doc": "Latitude in WGS84 decimal degrees.",
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "doc": "Stable linked-data URI identifying this station.",
+      "name": "uri",
+      "type": "string"
+    }
+  ],
+  "name": "Station",
+  "namespace": "be.irail",
+  "type": "record"
+}

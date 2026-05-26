@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/SE.Gov.SMHI.Weather.jstruct/schemas/SE.Gov.SMHI.Weather.WeatherObservation",
+  "description": "A current environmental measurement from the Swedish Meteorological and Hydrological Institute (SMHI). It carries weather observations when the upstream feed reports a new or refreshed value.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://opendata-download-metobs.smhi.se"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "SE.Gov.SMHI.Weather.WeatherObservation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "SE.Gov.SMHI.Weather.WeatherObservation",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/SE.Gov.SMHI.Weather/messages/SE.Gov.SMHI.Weather.WeatherObservation/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WeatherObservation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/SE.Gov.SMHI.Weather/messages/SE.Gov.SMHI.Weather.WeatherObservation",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/SE.Gov.SMHI.Weather/messages/SE.Gov.SMHI.Weather.WeatherObservation/versions",
+  "xid": "/messagegroups/SE.Gov.SMHI.Weather/messages/SE.Gov.SMHI.Weather.WeatherObservation"
+}

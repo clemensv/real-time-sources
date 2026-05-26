@@ -1,0 +1,83 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/gov/cbp/borderwait/Port",
+  "$root": "/definitions/gov/cbp/borderwait/Port",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "definitions": {
+    "gov": {
+      "cbp": {
+        "borderwait": {
+          "Port": {
+            "description": "Reference data for a US CBP land border port of entry. Describes the port identity, geographic border, crossing name, and operating hours. The port_number is a six-digit code assigned by CBP that uniquely identifies each crossing point. A single city (port_name) may have multiple crossings, each with its own port_number.",
+            "name": "Port",
+            "properties": {
+              "border": {
+                "description": "Which international border this port serves. One of 'Canadian Border' or 'Mexican Border'.",
+                "type": "string"
+              },
+              "border_slug": {
+                "description": "Lowercase kebab-case MQTT/UNS routing segment derived from the CBP border field. Expected values are canadian-border or mexican-border.",
+                "enum": [
+                  "canadian-border",
+                  "mexican-border"
+                ],
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+                "type": "string"
+              },
+              "commercial_vehicle_max_lanes": {
+                "description": "Maximum number of commercial vehicle inspection lanes available at this crossing. Null if commercial vehicle processing is not available at this port.",
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "crossing_name": {
+                "description": "Name of the specific border crossing facility. Example: 'Peace Arch', 'Thousand Islands Bridge', 'San Ysidro'. Distinguishes multiple crossings within the same port_name city.",
+                "type": "string"
+              },
+              "hours": {
+                "description": "Operating hours of the port as a human-readable string. Examples: '24 hrs/day', '6:00 am - 10:00 pm'. Empty string if not reported.",
+                "type": "string"
+              },
+              "passenger_vehicle_max_lanes": {
+                "description": "Maximum number of passenger vehicle inspection lanes available at this crossing. Null if passenger vehicle processing is not available at this port.",
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "pedestrian_max_lanes": {
+                "description": "Maximum number of pedestrian inspection lanes available at this crossing. Null if pedestrian processing is not available at this port.",
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "port_name": {
+                "description": "Name of the city or locality where the port is located. Example: 'Blaine', 'San Ysidro'. Multiple crossings may share the same port_name.",
+                "type": "string"
+              },
+              "port_number": {
+                "description": "Six-digit CBP port number that uniquely identifies this crossing. Composed of a district code and a port sequence. Example: '250401' for San Ysidro. This is the stable key used for all wait time lookups.",
+                "pattern": "^[0-9]{6}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "port_number",
+              "border_slug",
+              "port_name",
+              "border",
+              "crossing_name",
+              "hours",
+              "passenger_vehicle_max_lanes",
+              "commercial_vehicle_max_lanes",
+              "pedestrian_max_lanes"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "Port"
+}

@@ -1,0 +1,42 @@
+{
+  "altnames": {
+    "kql": "AirTemperature"
+  },
+  "fields": [
+    {
+      "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timestamp of the air temperature measurement\"}",
+      "logicalType": "timestamp-millis",
+      "name": "timestamp",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Value of the air temperature\"}",
+      "name": "value",
+      "type": "double",
+      "unit": "C"
+    },
+    {
+      "doc": "Flag indicating if the maximum expected air temperature was exceeded",
+      "name": "max_temp_exceeded",
+      "type": "boolean"
+    },
+    {
+      "doc": "Flag indicating if the minimum expected air temperature was exceeded",
+      "name": "min_temp_exceeded",
+      "type": "boolean"
+    },
+    {
+      "doc": "Flag indicating if the rate of change tolerance limit was exceeded",
+      "name": "rate_of_change_exceeded",
+      "type": "boolean"
+    }
+  ],
+  "name": "AirTemperature",
+  "namespace": "Microsoft.OpenData.US.NOAA",
+  "type": "record"
+}

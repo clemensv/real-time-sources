@@ -1,0 +1,116 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/traffic/TrafficFlowStation",
+  "$root": "/definitions/us/wa/wsdot/traffic/TrafficFlowStation",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "us": {
+      "wa": {
+        "wsdot": {
+          "traffic": {
+            "TrafficFlowStation": {
+              "description": "Metadata for a traffic flow sensor station in the Washington State DOT network. WSDOT deploys approximately 1,400 inductive loop sensors embedded in highway pavement across four geographic regions.",
+              "name": "TrafficFlowStation",
+              "properties": {
+                "description": {
+                  "altnames": {
+                    "json": "Description"
+                  },
+                  "description": "Location description. Null if not provided.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "direction": {
+                  "altnames": {
+                    "json": "Direction"
+                  },
+                  "description": "Direction of travel monitored. Examples: NB, SB, EB, WB.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "flow_data_id": {
+                  "altnames": {
+                    "json": "FlowDataID"
+                  },
+                  "description": "Unique numeric identifier for this traffic flow sensor station, stringified from upstream FlowDataID.",
+                  "type": "string"
+                },
+                "latitude": {
+                  "altnames": {
+                    "json": "Latitude"
+                  },
+                  "description": "Latitude in WGS84 decimal degrees.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "longitude": {
+                  "altnames": {
+                    "json": "Longitude"
+                  },
+                  "description": "Longitude in WGS84 decimal degrees.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "milepost": {
+                  "altnames": {
+                    "json": "MilePost"
+                  },
+                  "description": "Milepost marker along the roadway.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                },
+                "region": {
+                  "altnames": {
+                    "json": "Region"
+                  },
+                  "description": "WSDOT geographic coverage region.",
+                  "enum": [
+                    "Eastern",
+                    "Northwest",
+                    "Olympic",
+                    "Southwest"
+                  ],
+                  "type": "string"
+                },
+                "road_name": {
+                  "altnames": {
+                    "json": "RoadName"
+                  },
+                  "description": "Road designation where the sensor is installed.",
+                  "type": "string"
+                },
+                "station_name": {
+                  "altnames": {
+                    "json": "StationName"
+                  },
+                  "description": "Descriptive name of the flow sensor station.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "flow_data_id",
+                "station_name",
+                "region",
+                "description",
+                "road_name",
+                "direction",
+                "milepost",
+                "latitude",
+                "longitude"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "TrafficFlowStation"
+}

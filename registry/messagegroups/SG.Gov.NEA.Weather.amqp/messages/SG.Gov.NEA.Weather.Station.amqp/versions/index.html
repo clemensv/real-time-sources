@@ -1,0 +1,40 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/SG.Gov.NEA.Weather/messages/SG.Gov.NEA.Weather.Station",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "SG.Gov.NEA.Weather.Station.amqp",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "event": {
+          "description": "Routing property event copied from the event payload or derived routing context.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{event}"
+        },
+        "region": {
+          "description": "Routing property region copied from the event payload or derived routing context.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{region}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/SG.Gov.NEA.Weather.amqp/messages/SG.Gov.NEA.Weather.Station.amqp/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/SG.Gov.NEA.Weather.amqp/messages/SG.Gov.NEA.Weather.Station.amqp/versions/1"
+  }
+}

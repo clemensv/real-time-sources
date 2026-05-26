@@ -1,0 +1,67 @@
+{
+  "doc": "Metadata for a BfS ODL gamma dose rate monitoring station in the IMIS network.",
+  "fields": [
+    {
+      "doc": "Nine-digit station identifier (Kennziffer) assigned by BfS.",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "German federal state (Bundesland) derived from AGS prefix of Kennziffer.",
+      "name": "state",
+      "type": "string"
+    },
+    {
+      "doc": "Short alphanumeric station code (DEZ prefix + four digits).",
+      "name": "station_code",
+      "type": "string"
+    },
+    {
+      "doc": "Human-readable station location name.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "doc": "German postal code (PLZ) of the station location.",
+      "name": "postal_code",
+      "type": "string"
+    },
+    {
+      "doc": "Numeric operational status code. 1 = in operation.",
+      "name": "site_status",
+      "type": "int"
+    },
+    {
+      "doc": "Human-readable German operational status text.",
+      "name": "site_status_text",
+      "type": "string"
+    },
+    {
+      "doc": "Numeric region identifier (Kreis-ID).",
+      "name": "kid",
+      "type": "int"
+    },
+    {
+      "default": null,
+      "doc": "Elevation above sea level in meters. Null if unknown.",
+      "name": "height_above_sea",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "doc": "Longitude in WGS84 decimal degrees.",
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "doc": "Latitude in WGS84 decimal degrees.",
+      "name": "latitude",
+      "type": "double"
+    }
+  ],
+  "name": "Station",
+  "namespace": "de.bfs.odl",
+  "type": "record"
+}

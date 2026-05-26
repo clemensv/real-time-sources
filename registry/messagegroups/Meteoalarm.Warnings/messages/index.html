@@ -1,0 +1,38 @@
+{
+  "Meteoalarm.WeatherWarning": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/Meteoalarm.jstruct/schemas/Meteoalarm.WeatherWarning",
+    "description": "A severe weather warning from the EUMETNET Meteoalarm system, aggregating warnings from 30+ European national meteorological services. Each warning follows the CAP (Common Alerting Protocol) structure with awareness levels and hazard types.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://feeds.meteoalarm.org"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{identifier}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "Meteoalarm.WeatherWarning"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "Meteoalarm.WeatherWarning",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Meteoalarm.Warnings/messages/Meteoalarm.WeatherWarning/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherWarning",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Meteoalarm.Warnings/messages/Meteoalarm.WeatherWarning",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Meteoalarm.Warnings/messages/Meteoalarm.WeatherWarning/versions",
+    "xid": "/messagegroups/Meteoalarm.Warnings/messages/Meteoalarm.WeatherWarning"
+  }
+}

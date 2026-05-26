@@ -1,0 +1,239 @@
+{
+  "$id": "https://meteoalarm.org/schemas/Meteoalarm/WeatherWarning",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A severe weather warning from the EUMETNET Meteoalarm system, aggregating warnings from 30+ European national meteorological services. Each warning follows the CAP (Common Alerting Protocol) structure with awareness levels and hazard types.",
+  "name": "WeatherWarning",
+  "properties": {
+    "area_desc": {
+      "description": "A textual description of the affected geographic area.",
+      "type": "string"
+    },
+    "awareness_level": {
+      "description": "The Meteoalarm awareness level as a string combining the numeric level and color, e.g., '2; yellow; Moderate'. Values range from '1; green' (no significant weather) to '4; red' (very dangerous).",
+      "type": "string"
+    },
+    "awareness_type": {
+      "description": "Meteoalarm awareness type label normalized to lowercase kebab-case for MQTT topic routing (for example wind, snow-ice, thunderstorm, flooding). Matches the {awareness_type} MQTT topic axis.",
+      "type": "string"
+    },
+    "awareness_type_raw": {
+      "description": "Raw Meteoalarm awareness_type parameter value as provided by CAP, for example \"2; Snow/Ice\".",
+      "type": "string"
+    },
+    "category": {
+      "description": "The CAP alert category. 'Met' for meteorological warnings.",
+      "descriptions": {
+        "CBRNE": "Provider value `CBRNE` for this coded alert field.",
+        "Env": "Provider value `Env` for this coded alert field.",
+        "Fire": "Provider value `Fire` for this coded alert field.",
+        "Geo": "Provider value `Geo` for this coded alert field.",
+        "Health": "Provider value `Health` for this coded alert field.",
+        "Infra": "Provider value `Infra` for this coded alert field.",
+        "Met": "Provider value `Met` for this coded alert field.",
+        "Other": "Provider value `Other` for this coded alert field.",
+        "Rescue": "Provider value `Rescue` for this coded alert field.",
+        "Safety": "Provider value `Safety` for this coded alert field.",
+        "Security": "Provider value `Security` for this coded alert field.",
+        "Transport": "Provider value `Transport` for this coded alert field."
+      },
+      "enum": [
+        "Met",
+        "Geo",
+        "Safety",
+        "Security",
+        "Rescue",
+        "Fire",
+        "Health",
+        "Env",
+        "Transport",
+        "Infra",
+        "CBRNE",
+        "Other"
+      ],
+      "type": "string"
+    },
+    "certainty": {
+      "description": "The CAP certainty level indicating the confidence in the forecast.",
+      "descriptions": {
+        "Likely": "Provider value `Likely` for this coded alert field.",
+        "Observed": "Provider value `Observed` for this coded alert field.",
+        "Possible": "Provider value `Possible` for this coded alert field.",
+        "Unknown": "Provider value `Unknown` for this coded alert field.",
+        "Unlikely": "Provider value `Unlikely` for this coded alert field."
+      },
+      "enum": [
+        "Observed",
+        "Likely",
+        "Possible",
+        "Unlikely",
+        "Unknown"
+      ],
+      "type": "string"
+    },
+    "contact": {
+      "description": "Contact information for the issuing meteorological service.",
+      "type": "string"
+    },
+    "country": {
+      "description": "Country feed slug where the warning applies (for example germany or france). Matches the {country} MQTT topic axis.",
+      "type": "string"
+    },
+    "description": {
+      "description": "A detailed description of the weather warning, often in the national language.",
+      "type": "string"
+    },
+    "effective": {
+      "description": "The date and time when the warning becomes effective, in ISO-8601 format.",
+      "type": "datetime"
+    },
+    "event": {
+      "description": "The weather event description, typically in the national language of the issuing service (e.g., 'STURMBÖEN', 'Thunderstorm').",
+      "type": "string"
+    },
+    "expires": {
+      "description": "The date and time when the warning expires, in ISO-8601 format.",
+      "type": "datetime"
+    },
+    "geocodes": {
+      "description": "A semicolon-separated list of geocode values (EMMA_ID or WARNCELLID) identifying the specific warning zones.",
+      "type": "string"
+    },
+    "headline": {
+      "description": "A brief human-readable headline summarizing the warning, often in the national language.",
+      "type": "string"
+    },
+    "identifier": {
+      "description": "The unique CAP alert identifier assigned by the issuing national meteorological service.",
+      "type": "string"
+    },
+    "instruction": {
+      "description": "Recommended protective actions for the public.",
+      "type": "string"
+    },
+    "language": {
+      "description": "The language of the info block used to populate this event (e.g., 'de-DE', 'en-GB').",
+      "type": "string"
+    },
+    "msg_type": {
+      "altnames": {
+        "json": "msgType"
+      },
+      "description": "The CAP message type indicating the nature of the alert.",
+      "descriptions": {
+        "Ack": "Provider value `Ack` for this coded alert field.",
+        "Alert": "Provider value `Alert` for this coded alert field.",
+        "Cancel": "Provider value `Cancel` for this coded alert field.",
+        "Error": "Provider value `Error` for this coded alert field.",
+        "Update": "Provider value `Update` for this coded alert field."
+      },
+      "enum": [
+        "Alert",
+        "Update",
+        "Cancel",
+        "Ack",
+        "Error"
+      ],
+      "type": "string"
+    },
+    "onset": {
+      "description": "The expected date and time of onset of the weather event, in ISO-8601 format.",
+      "type": "datetime"
+    },
+    "scope": {
+      "description": "The CAP scope of the alert. Typically 'Public' for weather warnings.",
+      "descriptions": {
+        "Private": "Provider value `Private` for this coded alert field.",
+        "Public": "Provider value `Public` for this coded alert field.",
+        "Restricted": "Provider value `Restricted` for this coded alert field."
+      },
+      "enum": [
+        "Public",
+        "Restricted",
+        "Private"
+      ],
+      "type": "string"
+    },
+    "sender": {
+      "description": "The identifier of the issuing national meteorological service (e.g., 'opendata@dwd.de').",
+      "type": "string"
+    },
+    "sent": {
+      "description": "The date and time when the warning was issued, in ISO-8601 format.",
+      "type": "datetime"
+    },
+    "severity": {
+      "description": "Native CAP severity level (Minor, Moderate, Severe, Extreme, or Unknown). Matches the {severity} MQTT topic axis without further bucketing.",
+      "descriptions": {
+        "Extreme": "Provider value `Extreme` for this coded alert field.",
+        "Minor": "Provider value `Minor` for this coded alert field.",
+        "Moderate": "Provider value `Moderate` for this coded alert field.",
+        "Severe": "Provider value `Severe` for this coded alert field.",
+        "Unknown": "Provider value `Unknown` for this coded alert field."
+      },
+      "enum": [
+        "Extreme",
+        "Severe",
+        "Moderate",
+        "Minor",
+        "Unknown"
+      ],
+      "type": "string"
+    },
+    "status": {
+      "description": "The CAP alert status. 'Actual' for real warnings, 'Test' for test messages.",
+      "descriptions": {
+        "Actual": "Provider value `Actual` for this coded alert field.",
+        "Draft": "Provider value `Draft` for this coded alert field.",
+        "Exercise": "Provider value `Exercise` for this coded alert field.",
+        "System": "Provider value `System` for this coded alert field.",
+        "Test": "Provider value `Test` for this coded alert field."
+      },
+      "enum": [
+        "Actual",
+        "Exercise",
+        "System",
+        "Test",
+        "Draft"
+      ],
+      "type": "string"
+    },
+    "urgency": {
+      "description": "The CAP urgency level indicating the time-frame for protective action.",
+      "descriptions": {
+        "Expected": "Provider value `Expected` for this coded alert field.",
+        "Future": "Provider value `Future` for this coded alert field.",
+        "Immediate": "Provider value `Immediate` for this coded alert field.",
+        "Past": "Provider value `Past` for this coded alert field.",
+        "Unknown": "Provider value `Unknown` for this coded alert field."
+      },
+      "enum": [
+        "Immediate",
+        "Expected",
+        "Future",
+        "Past",
+        "Unknown"
+      ],
+      "type": "string"
+    },
+    "web": {
+      "description": "A URL to the full warning details on the issuing service's website.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "identifier",
+    "sender",
+    "sent",
+    "status",
+    "msg_type",
+    "scope",
+    "event",
+    "severity",
+    "urgency",
+    "certainty",
+    "area_desc",
+    "country",
+    "awareness_type"
+  ],
+  "type": "object"
+}

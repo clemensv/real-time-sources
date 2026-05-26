@@ -1,0 +1,61 @@
+{
+  "doc": "Reference event for one JMA AMeDAS station from the Bosai amedastable.json station table, including names, geodetic position, elevation, station capability tier, and measurement capability bitmask.",
+  "fields": [
+    {
+      "doc": "JMA AMeDAS five-digit station code used as the stable identifier in the Bosai AMeDAS station table and observation map.",
+      "name": "station_code",
+      "type": "string"
+    },
+    {
+      "doc": "Japanese kanji station name from the JMA AMeDAS station table (kjName), used by the Bosai web application for Japanese display labels.",
+      "name": "kj_name",
+      "type": "string"
+    },
+    {
+      "doc": "Japanese kana station reading from the JMA AMeDAS station table (knName in live payloads, kana in older examples), used by the Bosai web application for phonetic Japanese display.",
+      "name": "kana",
+      "type": "string"
+    },
+    {
+      "doc": "English station name from the JMA AMeDAS station table.",
+      "name": "en_name",
+      "type": "string"
+    },
+    {
+      "doc": "Station latitude in WGS84 decimal degrees. The JMA station table publishes latitude as [degrees, minutes]; the bridge converts it with degrees + minutes/60.",
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "doc": "Station longitude in WGS84 decimal degrees. The JMA station table publishes longitude as [degrees, minutes]; the bridge converts it with degrees + minutes/60.",
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "doc": "Station elevation above sea level in meters from the JMA station table alt field.",
+      "name": "altitude_m",
+      "type": "double"
+    },
+    {
+      "doc": "JMA AMeDAS station capability tier as published in the station table. The tier controls which measurements may be emitted for a station.",
+      "name": "station_type",
+      "type": "string"
+    },
+    {
+      "doc": "JMA Bosai AMeDAS element bitmask string from the station table. Each non-zero character indicates that the corresponding station capability is enabled in the Bosai web application.",
+      "name": "elems_bitmask",
+      "type": "string"
+    },
+    {
+      "doc": "Measurement capability names derived by the bridge from the JMA elems_bitmask. The values describe which observation families the station can emit, such as precipitation, wind, temperature, sunshine_duration, snow_depth, humidity, pressure, or visibility.",
+      "name": "enabled_measurements",
+      "type": {
+        "items": "string",
+        "type": "array"
+      }
+    }
+  ],
+  "name": "Station",
+  "namespace": "JP.JMA.Amedas",
+  "type": "record"
+}

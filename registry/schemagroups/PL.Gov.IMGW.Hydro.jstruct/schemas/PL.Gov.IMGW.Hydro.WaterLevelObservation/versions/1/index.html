@@ -1,0 +1,127 @@
+{
+  "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/WaterLevelObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Measurement payload for water level and discharge observations in the IMGW-PIB Hydrological Data source.",
+  "name": "WaterLevelObservation",
+  "properties": {
+    "basin": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro.",
+      "type": "string"
+    },
+    "discharge": {
+      "altnames": {
+        "lang:pl": "przeplyw"
+      },
+      "description": "Current streamflow or discharge reported for the station.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "discharge_timestamp": {
+      "altnames": {
+        "lang:pl": "przeplyw_data"
+      },
+      "description": "Time associated with the discharge measurement.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "ice_phenomenon_code": {
+      "altnames": {
+        "lang:pl": "zjawisko_lodowe"
+      },
+      "description": "Provider code identifying the ice phenomenon.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "overgrowth_code": {
+      "altnames": {
+        "lang:pl": "zjawisko_zarastania"
+      },
+      "description": "Provider code identifying the overgrowth.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "river": {
+      "altnames": {
+        "lang:pl": "rzeka"
+      },
+      "description": "Provider-supplied river value for this record.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "station_id": {
+      "altnames": {
+        "lang:pl": "id_stacji"
+      },
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    },
+    "station_name": {
+      "altnames": {
+        "lang:pl": "stacja"
+      },
+      "description": "Human-readable name of the monitoring station.",
+      "type": "string"
+    },
+    "voivodeship": {
+      "altnames": {
+        "lang:pl": "wojewodztwo"
+      },
+      "description": "Provider-supplied voivodeship value for this record.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "water_level": {
+      "altnames": {
+        "lang:pl": "stan_wody"
+      },
+      "description": "Current water level reported for the station.",
+      "type": "double"
+    },
+    "water_level_timestamp": {
+      "altnames": {
+        "lang:pl": "stan_wody_data_pomiaru"
+      },
+      "description": "Time associated with the water-level measurement.",
+      "type": "datetime"
+    },
+    "water_temperature": {
+      "altnames": {
+        "lang:pl": "temperatura_wody"
+      },
+      "description": "Current water temperature reported for the station.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "water_temperature_timestamp": {
+      "altnames": {
+        "lang:pl": "temperatura_wody_data_pomiaru"
+      },
+      "description": "Time associated with the water-temperature measurement.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name",
+    "water_level",
+    "water_level_timestamp"
+  ],
+  "type": "object"
+}

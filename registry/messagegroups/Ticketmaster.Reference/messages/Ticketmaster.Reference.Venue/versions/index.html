@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Reference.Venue",
+    "description": "Reference data for a Ticketmaster venue. Emitted at bridge startup and refreshed periodically. Carries the stable venue identifier, location, address, timezone, and capacity information.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://app.ticketmaster.com/discovery/v2/venues"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{entity_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "Ticketmaster.Reference.Venue"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "Ticketmaster.Reference.Venue",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Venue",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Venue/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Venue/versions/1"
+  }
+}

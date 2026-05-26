@@ -1,0 +1,105 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/nws-forecasts/schemas/Microsoft.OpenData.US.NOAA.NWS.ForecastZone.json",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference data for an NWS forecast zone selected by the bridge. The api.weather.gov /zones/forecast/{zoneId} endpoint returns both public land forecast zones such as WAZ315 and marine forecast zones such as PZZ135. The bridge emits this reference event at startup and on periodic refresh so downstream consumers can correlate forecast snapshots with stable zone metadata.",
+  "name": "ForecastZone",
+  "properties": {
+    "awips_location_identifier": {
+      "description": "AWIPS location identifier from properties.awipsLocationIdentifier when the zone has a matching AWIPS code.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cwa_ids": {
+      "description": "List of Weather Forecast Office county warning area identifiers from properties.cwa. The NWS publishes this as an array because a zone can be served by one or more CWAs.",
+      "items": {
+        "pattern": "^[A-Z]{3}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "effective_date": {
+      "description": "Date and time at which this zone definition became effective, from properties.effectiveDate.",
+      "type": "datetime"
+    },
+    "expiration_date": {
+      "description": "Date and time at which this zone definition expires, from properties.expirationDate. NWS currently uses a far-future sentinel date for active zone definitions.",
+      "type": "datetime"
+    },
+    "forecast_office_url": {
+      "description": "Canonical api.weather.gov URL of the primary Weather Forecast Office responsible for the zone, from properties.forecastOffice.",
+      "type": "string"
+    },
+    "forecast_office_urls": {
+      "description": "List of api.weather.gov office URLs from properties.forecastOffices. The public zone detail currently repeats the primary office here, but the endpoint models it as a list.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "grid_identifier": {
+      "description": "Grid identifier from properties.gridIdentifier. For Seattle forecast zones this is commonly the three-letter WFO grid identifier such as SEW. Marine zones can omit this field.",
+      "pattern": "^[A-Z]{3}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "name": {
+      "description": "Human-readable NWS zone name from properties.name, for example 'City of Seattle' or 'Puget Sound and Hood Canal'.",
+      "type": "string"
+    },
+    "observation_station_ids": {
+      "description": "Ordered list of observation station identifiers derived from the properties.observationStations URL array. The bridge strips the common URL prefix and emits only the terminal station identifier for compact reference data.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "radar_station": {
+      "description": "Nearest NEXRAD radar station identifier from properties.radarStation, such as ATX for Seattle-area land zones, or null when the zone metadata does not declare a radar station.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "state": {
+      "description": "Two-letter state or marine area code from properties.state. Washington forecast zones use WA for public zones and PZ for Washington coastal and inland waters marine zones.",
+      "pattern": "^[A-Z]{2}$",
+      "type": "string"
+    },
+    "time_zones": {
+      "description": "Ordered list of IANA timezone names from properties.timeZone for the zone boundary. Most Puget Sound zones use a single entry of America/Los_Angeles.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "zone_id": {
+      "description": "NWS forecast zone identifier from the upstream properties.id field, such as WAZ315 for the City of Seattle public forecast zone or PZZ135 for the Puget Sound and Hood Canal marine zone.",
+      "pattern": "^[A-Z]{3}[0-9]{3}$",
+      "type": "string"
+    },
+    "zone_type": {
+      "description": "NWS zone category from the upstream properties.type field. Forecast-zone responses use 'public' for land forecast zones and marine-oriented values such as 'coastal', 'offshore', or 'marine' for waters forecasts.",
+      "enum": [
+        "public",
+        "coastal",
+        "offshore",
+        "marine"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "zone_id",
+    "zone_type",
+    "name",
+    "state",
+    "forecast_office_url",
+    "effective_date",
+    "expiration_date"
+  ],
+  "type": "object"
+}

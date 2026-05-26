@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Reading/versions/1",
+  "epoch": 1,
+  "messageid": "UK.Gov.Environment.EA.FloodMonitoring.Reading",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Reading/meta",
+  "xid": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Reading/meta"
+}

@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/NWS.jstruct/schemas/NWS.WeatherAlert",
+  "description": "A weather or non-weather alert from the US National Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting Protocol) standard.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api.weather.gov"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{alert_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "NWS.WeatherAlert"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "NWS.WeatherAlert",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WeatherAlert",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert/versions",
+  "xid": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert"
+}

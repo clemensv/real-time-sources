@@ -1,0 +1,49 @@
+{
+  "$id": "https://clemensv.github.io/real-time-sources/schemas/uk/gov/defra/aurn/observation.json",
+  "$root": "/definitions/uk/gov/defra/aurn/Observation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "definitions": {
+    "uk": {
+      "gov": {
+        "defra": {
+          "aurn": {
+            "Observation": {
+              "description": "Hourly or near-hourly Defra AURN observation value for a single timeseries, emitted from the getData endpoint for the most recent two-hour polling window.",
+              "name": "Observation",
+              "properties": {
+                "timeseries_id": {
+                  "description": "Stable numeric timeseries identifier for the series that produced this observation. This field is the Kafka key and CloudEvents subject for both the reference timeseries event and the observation event.",
+                  "pattern": "^[0-9]+$",
+                  "type": "string"
+                },
+                "timestamp": {
+                  "description": "Observation timestamp encoded as an ISO 8601 UTC string. The bridge converts the upstream GET /timeseries/{id}/getData values[].timestamp Unix millisecond value with datetime.fromtimestamp(timestamp/1000, tz=timezone.utc).isoformat().",
+                  "type": "datetime"
+                },
+                "uom": {
+                  "description": "Unit of measurement for the observation, copied from the parent timeseries uom field so each telemetry event remains self-describing.",
+                  "type": "string"
+                },
+                "value": {
+                  "description": "Measured pollutant concentration or other reported numeric reading from values[].value in GET /timeseries/{id}/getData. The field is nullable because the API can represent missing or flagged values with null.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "timeseries_id",
+                "timestamp",
+                "value",
+                "uom"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "Observation"
+}

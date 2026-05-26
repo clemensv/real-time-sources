@@ -1,0 +1,13 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "format": "Avro/1.11.1",
+  "isdefault": true,
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "schemaid": "info.energy_charts.PublicPower",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.PublicPower/versions/1",
+  "versionid": "1",
+  "xid": "/schemagroups/info.energy_charts.avro/schemas/info.energy_charts.PublicPower/versions/1"
+}

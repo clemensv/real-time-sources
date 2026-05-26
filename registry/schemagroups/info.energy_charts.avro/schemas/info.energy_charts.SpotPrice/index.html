@@ -1,0 +1,42 @@
+{
+  "fields": [
+    {
+      "name": "country",
+      "type": "string"
+    },
+    {
+      "name": "bidding_zone",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "long"
+      }
+    },
+    {
+      "name": "unix_seconds",
+      "type": "long"
+    },
+    {
+      "default": null,
+      "name": "price_eur_per_mwh",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "unit",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "SpotPrice",
+  "namespace": "info.energy_charts",
+  "type": "record"
+}

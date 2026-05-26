@@ -1,0 +1,17 @@
+content-disposition:CA.Gov.ECCC.Hydro.Observation
+content-length:1837
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Observation/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:Avro/1.11.3
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Observation/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:CA.Gov.ECCC.Hydro.Observation
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Observation
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Observation/versions
+xregistry-xid:/schemagroups/CA.Gov.ECCC.Hydro.avro/schemas/CA.Gov.ECCC.Hydro.Observation

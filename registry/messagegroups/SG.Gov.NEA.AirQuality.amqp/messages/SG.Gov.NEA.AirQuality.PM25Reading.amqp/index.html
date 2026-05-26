@@ -1,0 +1,41 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.PM25Reading",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "SG.Gov.NEA.AirQuality.PM25Reading.amqp",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/SG.Gov.NEA.AirQuality.amqp/messages/SG.Gov.NEA.AirQuality.PM25Reading.amqp/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "PM25Reading",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "event": {
+        "description": "Routing property event copied from the event payload or derived routing context.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{event}"
+      },
+      "station_id": {
+        "description": "Routing property station_id copied from the event payload or derived routing context.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{region}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/SG.Gov.NEA.AirQuality.amqp/messages/SG.Gov.NEA.AirQuality.PM25Reading.amqp",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/SG.Gov.NEA.AirQuality.amqp/messages/SG.Gov.NEA.AirQuality.PM25Reading.amqp/versions",
+  "xid": "/messagegroups/SG.Gov.NEA.AirQuality.amqp/messages/SG.Gov.NEA.AirQuality.PM25Reading.amqp"
+}

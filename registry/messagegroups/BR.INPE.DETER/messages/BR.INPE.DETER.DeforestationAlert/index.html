@@ -1,0 +1,41 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/BR.INPE.DETER.jstruct/schemas/BR.INPE.DETER.DeforestationAlert",
+  "description": "INPE DETER deforestation alert for Amazon and Cerrado biomes.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{source_uri}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{biome}/{alert_id}"
+    },
+    "time": {
+      "required": false,
+      "type": "timestamp",
+      "value": "{view_date}T00:00:00Z"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "BR.INPE.DETER.DeforestationAlert"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "BR.INPE.DETER.DeforestationAlert",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BR.INPE.DETER/messages/BR.INPE.DETER.DeforestationAlert/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "DeforestationAlert",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BR.INPE.DETER/messages/BR.INPE.DETER.DeforestationAlert",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BR.INPE.DETER/messages/BR.INPE.DETER.DeforestationAlert/versions",
+  "xid": "/messagegroups/BR.INPE.DETER/messages/BR.INPE.DETER.DeforestationAlert"
+}

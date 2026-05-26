@@ -1,0 +1,35 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/Com.Fienta/messages/Com.Fienta.Event",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Com.Fienta.amqp.Event",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Com.Fienta.amqp/messages/Com.Fienta.amqp.Event/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Event",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "AMQP partition key matching the CloudEvent subject and Kafka key.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{event_id}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP subject matching the CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{event_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Com.Fienta.amqp/messages/Com.Fienta.amqp.Event",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Com.Fienta.amqp/messages/Com.Fienta.amqp.Event/versions",
+  "xid": "/messagegroups/Com.Fienta.amqp/messages/Com.Fienta.amqp.Event"
+}

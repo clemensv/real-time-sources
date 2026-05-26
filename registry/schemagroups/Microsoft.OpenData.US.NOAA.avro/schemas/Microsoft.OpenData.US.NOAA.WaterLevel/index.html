@@ -1,0 +1,63 @@
+{
+  "altnames": {
+    "kql": "WaterLevel"
+  },
+  "fields": [
+    {
+      "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timestamp of the water level measurement\"}",
+      "logicalType": "timestamp-millis",
+      "name": "timestamp",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Value of the water level\"}",
+      "name": "value",
+      "type": "double"
+    },
+    {
+      "doc": "{\"description\": \"Standard deviation of 1-second samples used to compute the water level height\"}",
+      "name": "stddev",
+      "type": "double"
+    },
+    {
+      "doc": "{\"description\": \"Flag indicating if the water level is outside a 3-sigma band. Possible values: 'false' (not outside), 'true' (outside).\"}",
+      "name": "outside_sigma_band",
+      "type": "boolean"
+    },
+    {
+      "doc": "{\"description\": \"Flag indicating if the flat tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}",
+      "name": "flat_tolerance_limit",
+      "type": "boolean"
+    },
+    {
+      "doc": "{\"description\": \"Flag indicating if the rate of change tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}",
+      "name": "rate_of_change_limit",
+      "type": "boolean"
+    },
+    {
+      "doc": "{\"description\": \"Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}",
+      "name": "max_min_expected_height",
+      "type": "boolean"
+    },
+    {
+      "name": "quality",
+      "type": {
+        "doc": "Quality Assurance/Quality Control level",
+        "name": "QualityLevel",
+        "symbols": [
+          "Preliminary",
+          "Verified"
+        ],
+        "type": "enum"
+      }
+    }
+  ],
+  "name": "WaterLevel",
+  "namespace": "Microsoft.OpenData.US.NOAA",
+  "type": "record"
+}

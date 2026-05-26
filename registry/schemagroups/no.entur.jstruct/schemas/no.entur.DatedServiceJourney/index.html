@@ -1,0 +1,145 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/no/entur/DatedServiceJourney",
+  "$root": "/definitions/no/entur/DatedServiceJourney",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "no": {
+      "entur": {
+        "DatedServiceJourney": {
+          "description": "Reference data for a dated service journey in the Norwegian public transport network. A DatedServiceJourney is a specific vehicle journey operating on a particular operating day, identified by its NeTEx ServiceJourney reference and operating day. This reference event is emitted at bridge startup from the SIRI-ET feed and refreshed periodically to provide downstream consumers with the timetable context for subsequent telemetry events.",
+          "name": "DatedServiceJourney",
+          "properties": {
+            "data_source": {
+              "altnames": {
+                "xml": "DataSource"
+              },
+              "description": "Operator codespace originating this data record, as reported in the SIRI DataSource element. Example: RUT.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "destination_name": {
+              "altnames": {
+                "xml": "DestinationName"
+              },
+              "description": "Human-readable name of the destination stop or place for this journey.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "direction_ref": {
+              "altnames": {
+                "xml": "DirectionRef"
+              },
+              "description": "Direction reference for this journey leg, e.g. Outbound or Inbound, or a NeTEx DirectionType value.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "external_line_ref": {
+              "altnames": {
+                "xml": "ExternalLineRef"
+              },
+              "description": "External line reference, typically the same value as line_ref, used for cross-system reconciliation.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "line_ref": {
+              "altnames": {
+                "xml": "LineRef"
+              },
+              "description": "NeTEx Line reference identifying the line this journey belongs to. Example: RUT:Line:1.",
+              "type": "string"
+            },
+            "operating_day": {
+              "altnames": {
+                "xml": "DataFrameRef"
+              },
+              "description": "ISO 8601 calendar date string representing the operating day on which this journey runs, extracted from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "type": "string"
+            },
+            "operator_ref": {
+              "altnames": {
+                "xml": "OperatorRef"
+              },
+              "description": "NeTEx Operator or codespace reference identifying the operator responsible for this journey. Example: RUT.",
+              "type": "string"
+            },
+            "origin_name": {
+              "altnames": {
+                "xml": "OriginName"
+              },
+              "description": "Human-readable name of the origin stop or place for this journey.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "published_line_name": {
+              "altnames": {
+                "xml": "PublishedLineName"
+              },
+              "description": "Public-facing line number or name displayed to passengers on signs and in apps. Example: 31.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "route_ref": {
+              "altnames": {
+                "xml": "RouteRef"
+              },
+              "description": "NeTEx Route reference for this journey, if available.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "service_journey_id": {
+              "altnames": {
+                "xml": "DatedVehicleJourneyRef"
+              },
+              "description": "NeTEx ServiceJourney identifier extracted from FramedVehicleJourneyRef/DatedVehicleJourneyRef. Uniquely identifies the planned vehicle journey within the NeTEx codespace. Example: RUT:ServiceJourney:1-1234.",
+              "type": "string"
+            },
+            "vehicle_mode": {
+              "altenums": [
+                "bus",
+                "tram",
+                "rail",
+                "ferry",
+                "metro",
+                "water",
+                "air",
+                "coach",
+                "taxi"
+              ],
+              "altnames": {
+                "xml": "VehicleMode"
+              },
+              "description": "SIRI VehicleMode describing the mode of transport for this journey. Known values: bus, tram, rail, ferry, metro, water, air, coach, taxi.",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "service_journey_id",
+            "operating_day",
+            "line_ref",
+            "operator_ref"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "DatedServiceJourney"
+}

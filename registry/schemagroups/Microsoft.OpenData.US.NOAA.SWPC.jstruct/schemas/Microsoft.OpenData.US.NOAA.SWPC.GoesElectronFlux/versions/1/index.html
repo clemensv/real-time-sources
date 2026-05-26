@@ -1,0 +1,33 @@
+{
+  "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/GoesElectronFlux",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Five-minute resolution integral electron flux measurement from the GOES primary satellite SEISS/SGPS instrument, as reported by the SWPC goes/primary/integral-electrons-3-day endpoint. The \u003e= 2 MeV channel is monitored for deep dielectric charging risk to geosynchronous spacecraft. Elevated fluxes (\u003e 1000 e/cm²/sr/s) sustained for several days can cause internal charging failures in satellite electronics.",
+  "name": "GoesElectronFlux",
+  "properties": {
+    "energy": {
+      "description": "Electron energy threshold identifier, currently '\u003e=2 MeV'. This channel is monitored for spacecraft internal charging hazard assessment.",
+      "type": "string"
+    },
+    "flux": {
+      "description": "Integral electron flux above the specified energy threshold, in electrons per cm² per steradian per second. Values above 1000 indicate elevated deep dielectric charging risk for geosynchronous satellites.",
+      "symbol": "e/(cm²·sr·s)",
+      "type": "double",
+      "unit": "e/(cm²·sr·s)"
+    },
+    "satellite": {
+      "description": "GOES satellite number providing the measurement (e.g., 19 for GOES-19).",
+      "type": "integer"
+    },
+    "time_tag": {
+      "description": "UTC date-time of the electron flux measurement in ISO 8601 format.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "time_tag",
+    "satellite",
+    "flux",
+    "energy"
+  ],
+  "type": "object"
+}

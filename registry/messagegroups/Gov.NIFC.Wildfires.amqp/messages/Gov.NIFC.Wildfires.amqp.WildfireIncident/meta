@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Gov.NIFC.Wildfires.amqp/messages/Gov.NIFC.Wildfires.amqp.WildfireIncident/versions/1",
+  "epoch": 1,
+  "messageid": "Gov.NIFC.Wildfires.amqp.WildfireIncident",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Gov.NIFC.Wildfires.amqp/messages/Gov.NIFC.Wildfires.amqp.WildfireIncident/meta",
+  "xid": "/messagegroups/Gov.NIFC.Wildfires.amqp/messages/Gov.NIFC.Wildfires.amqp.WildfireIncident/meta"
+}

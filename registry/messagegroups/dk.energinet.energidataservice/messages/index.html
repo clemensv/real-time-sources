@@ -1,0 +1,110 @@
+{
+  "dk.energinet.energidataservice.Info": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/dk.energinet.energidataservice.jstruct/schemas/dk.energinet.energidataservice.Info",
+    "description": "Retained reference information for MQTT/AMQP topic discovery.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://github.com/clemensv/real-time-sources"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{price_area}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "dk.energinet.energidataservice.Info"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "dk.energinet.energidataservice.Info",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.Info/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Info",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.Info",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.Info/versions",
+    "xid": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.Info"
+  },
+  "dk.energinet.energidataservice.PowerSystemSnapshot": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/dk.energinet.energidataservice.jstruct/schemas/dk.energinet.energidataservice.PowerSystemSnapshot",
+    "description": "Minute-by-minute snapshot of the Danish power system from Energi Data Service (Energinet), including CO2 emission intensity, renewable generation (solar, onshore wind, offshore wind), conventional production bands, total cross-border exchange flows, per-interconnector exchange (DK1–DE, DK1–NL, DK1–GB, DK1–NO, DK1–SE, DK1–DK2, DK2–DE, DK2–SE, Bornholm–SE), automatic and manual frequency restoration reserve activation (aFRR, mFRR) per price area, and grid imbalance per price area.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://api.energidataservice.dk"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{price_area}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "dk.energinet.energidataservice.PowerSystemSnapshot"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "dk.energinet.energidataservice.PowerSystemSnapshot",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "PowerSystemSnapshot",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot/versions",
+    "xid": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot"
+  },
+  "dk.energinet.energidataservice.SpotPrice": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/dk.energinet.energidataservice.jstruct/schemas/dk.energinet.energidataservice.SpotPrice",
+    "description": "Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool). One record per hour per price area (DK1 – Western Denmark, DK2 – Eastern Denmark). Prices are published in both DKK and EUR.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://api.energidataservice.dk"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{price_area}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "dk.energinet.energidataservice.SpotPrice"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "dk.energinet.energidataservice.SpotPrice",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "SpotPrice",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice/versions",
+    "xid": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.SpotPrice"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2024-11-14T12:00:03Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/BlueskyFirehose.jstruct/schemas/Bluesky.Graph.Follow",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "description": "Source Firehose URL",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{firehoseurl}"
+      },
+      "specversion": {
+        "description": "CloudEvents version",
+        "required": true,
+        "type": "string",
+        "value": "1.0"
+      },
+      "subject": {
+        "description": "Decentralized Identifier",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{did}"
+      },
+      "type": {
+        "description": "Event type",
+        "required": true,
+        "type": "string",
+        "value": "Bluesky.Graph.Follow"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "Bluesky.Graph.Follow",
+    "modifiedat": "2024-11-14T12:00:03Z",
+    "protocol": "None",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Follow/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Follow/versions/1"
+  }
+}

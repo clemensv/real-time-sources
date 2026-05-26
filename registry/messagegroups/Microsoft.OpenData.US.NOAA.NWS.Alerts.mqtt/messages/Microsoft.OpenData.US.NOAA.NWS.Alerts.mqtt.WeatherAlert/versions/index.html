@@ -1,0 +1,39 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://api.weather.gov"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{state}/{severity}/{event_type}/{alert_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.WeatherAlert",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherAlert",
+    "protocol": "MQTT/5.0",
+    "protocoloptions": {
+      "qos": 1,
+      "retain": false,
+      "topic_name": "alerts/us/noaa/noaa-nws/{state}/{severity}/{event_type}/{alert_id}/alert"
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.WeatherAlert/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt/messages/Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.WeatherAlert/versions/1"
+  }
+}

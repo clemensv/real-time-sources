@@ -1,0 +1,57 @@
+{
+  "$id": "https://example.com/schemas/eu/entsoe/transparency/ActualGenerationPerType",
+  "$root": "/definitions/eu/entsoe/transparency/ActualGenerationPerType",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "eu": {
+      "entsoe": {
+        "transparency": {
+          "ActualGenerationPerType": {
+            "name": "ActualGenerationPerType",
+            "properties": {
+              "businessType": {
+                "description": "Business type code",
+                "type": "string"
+              },
+              "documentType": {
+                "description": "ENTSO-E document type code (A75)",
+                "type": "string"
+              },
+              "inDomain": {
+                "description": "EIC code of the bidding zone",
+                "type": "string"
+              },
+              "psrType": {
+                "description": "Production type code (B01=Biomass, B02=Lignite, ...)",
+                "type": "string"
+              },
+              "quantity": {
+                "description": "Generated power in MW",
+                "type": "double"
+              },
+              "resolution": {
+                "description": "ISO 8601 duration (PT15M, PT60M)",
+                "type": "string"
+              },
+              "unitName": {
+                "description": "Unit of measurement (MAW)",
+                "type": "string"
+              }
+            },
+            "required": [
+              "inDomain",
+              "psrType",
+              "quantity",
+              "resolution",
+              "businessType",
+              "documentType",
+              "unitName"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "ActualGenerationPerType"
+}

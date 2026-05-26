@@ -1,0 +1,66 @@
+{
+  "$id": "https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/ObservationStation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "NWS surface weather observation station reference data from the api.weather.gov /stations endpoint. Each station represents a fixed automated or manual observing site in the US.",
+  "name": "ObservationStation",
+  "properties": {
+    "county": {
+      "description": "NWS county zone identifier for the station's location.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "elevation_m": {
+      "description": "Station elevation above mean sea level.",
+      "symbol": "m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "fire_weather_zone": {
+      "description": "NWS fire weather zone identifier for the station's location.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "forecast_zone": {
+      "description": "NWS forecast zone identifier associated with this station.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "name": {
+      "description": "Human-readable station name, e.g. 'New York, Kennedy International Airport'.",
+      "type": "string"
+    },
+    "state": {
+      "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "Station identifier, typically a 4-character ICAO code such as 'KJFK' or a cooperative observer ID.",
+      "type": "string"
+    },
+    "time_zone": {
+      "description": "IANA timezone of the station, e.g. 'America/New_York'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "zone_id": {
+      "description": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "name"
+  ],
+  "type": "object"
+}

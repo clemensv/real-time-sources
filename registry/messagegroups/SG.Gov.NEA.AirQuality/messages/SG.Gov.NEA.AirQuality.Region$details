@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/SG.Gov.NEA.AirQuality.jstruct/schemas/SG.Gov.NEA.AirQuality.Region",
+  "description": "A reference record published by Singapore's National Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api.data.gov.sg"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{region}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "SG.Gov.NEA.AirQuality.Region"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "SG.Gov.NEA.AirQuality.Region",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.Region/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Region",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.Region",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.Region/versions",
+  "xid": "/messagegroups/SG.Gov.NEA.AirQuality/messages/SG.Gov.NEA.AirQuality.Region"
+}

@@ -1,0 +1,94 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/jp/odpt/docomobikeshare/BikeshareSystem",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from Docomo Bike Share open feeds. It carries station status and availability updates for Tokyo bike-share stations.",
+  "name": "BikeshareSystem",
+  "properties": {
+    "email": {
+      "description": "A single contact email address actively monitored by the operator's customer service department.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "feed_contact_email": {
+      "description": "A single contact email address for the purpose of reporting issues with the GBFS feed for this system.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "language": {
+      "description": "A single IETF BCP 47 language identifier representing the primary language used in this feed, for example 'ja' for Japanese or 'en' for English.",
+      "type": "string"
+    },
+    "license_url": {
+      "description": "A fully qualified URL of a page that defines the license terms for the GBFS data published by this system.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "name": {
+      "description": "Full name of the bikeshare system as displayed to customers, for example 'ドコモ・バイクシェア' or 'Docomo Bikeshare'.",
+      "type": "string"
+    },
+    "operator": {
+      "description": "Name of the company or organization that operates the bikeshare system, for example 'NTT Docomo, Inc.'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "phone_number": {
+      "description": "A single voice telephone number for the customer service department of this bikeshare system, including country and area code.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "purchase_url": {
+      "description": "URL where a customer can purchase a membership or learn about purchasing memberships for this bikeshare system.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "short_name": {
+      "description": "Optional abbreviation or short form of the system name, for example 'DocomoBike'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "start_date": {
+      "description": "Date that the bikeshare system began operations, formatted as YYYY-MM-DD in accordance with ISO 8601.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "system_id": {
+      "description": "Unique identifier for this bikeshare system. A short, URL-friendly identifier that does not contain spaces, for example 'docomo-cycle-tokyo'. This value is stable and matches the GBFS feed directory name on the ODPT platform.",
+      "type": "string"
+    },
+    "timezone": {
+      "description": "The IANA time zone database name for the time zone where the system is located, for example 'Asia/Tokyo'.",
+      "type": "string"
+    },
+    "url": {
+      "description": "URL of the bikeshare system or operator website for end users, for example 'https://docomo-cycle.jp/'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "system_id",
+    "language",
+    "name",
+    "timezone"
+  ],
+  "type": "object"
+}

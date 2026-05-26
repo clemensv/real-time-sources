@@ -1,0 +1,39 @@
+{
+  "$id": "https://example.com/schemas/CH/BAFU/Hydrology/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference details for one monitoring station or site in the BAFU Hydrology source.",
+  "name": "Station",
+  "properties": {
+    "latitude": {
+      "description": "Latitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "longitude": {
+      "description": "Longitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "name": {
+      "description": "Human-readable name of the station, site, or location.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    },
+    "water_body_name": {
+      "description": "Name of the river, lake, canal, reservoir, or other water body observed at the station.",
+      "type": "string"
+    },
+    "water_body_type": {
+      "description": "Provider classification for the observed water body.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "name",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

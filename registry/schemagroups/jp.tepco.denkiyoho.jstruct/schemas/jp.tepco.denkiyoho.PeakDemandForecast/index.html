@@ -1,0 +1,81 @@
+{
+  "$id": "https://www.tepco.co.jp/schemas/denkiyoho/PeakDemandForecast",
+  "$root": "/definitions/jp/tepco/denkiyoho/PeakDemandForecast",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "jp": {
+      "tepco": {
+        "denkiyoho": {
+          "PeakDemandForecast": {
+            "description": "Daily reference schema for TEPCO Electricity Forecast section 2 peak-demand forecast metadata for the Tokyo Electric Power Company service area.",
+            "name": "PeakDemandForecast",
+            "properties": {
+              "area_code": {
+                "description": "Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page.",
+                "type": "string"
+              },
+              "area_name_en": {
+                "description": "English display name for the TEPCO service territory covered by the Electricity Forecast page: TEPCO Service Area (Kanto).",
+                "type": "string"
+              },
+              "area_name_jp": {
+                "description": "Japanese name of the TEPCO Power Grid service area used by the Electricity Forecast page: 東京電力エリア. The page defines this as Tokyo plus Kanagawa, Saitama, Chiba, Tochigi, Gunma, Ibaraki, Yamanashi, and the portion of Shizuoka east of the Fujikawa River.",
+                "type": "string"
+              },
+              "date": {
+                "description": "Operating date for TEPCO's section 2 peak-demand forecast, normalized from 予想最大電力情報更新日 with the CSV update year to ISO 8601 calendar-date form (YYYY-MM-DD). This is the stable date key component.",
+                "type": "date"
+              },
+              "peak_demand_forecast_jp_unit_value": {
+                "description": "Original integer peak-demand forecast value from TEPCO's section 2 予想最大電力(万kW) field.",
+                "minimum": 0,
+                "symbol": "万kW",
+                "type": "int32",
+                "unit": "10MW"
+              },
+              "peak_demand_forecast_mw": {
+                "description": "Forecast maximum electricity demand for the Tokyo service area from TEPCO's section 2 予想最大電力(万kW) row, converted from 万kW to megawatts by multiplying by 10.",
+                "minimum": 0,
+                "symbol": "MW",
+                "type": "double",
+                "unit": "MW"
+              },
+              "peak_time_slot": {
+                "description": "Local Japan Standard Time hour range from TEPCO's section 2 時間帯 column indicating when the forecast maximum demand is expected, normalized to an ASCII hyphen such as 13:00-14:00.",
+                "pattern": "^(([01]?[0-9]|2[0-3]):[0-5][0-9])-(([01]?[0-9]|2[0-3]):[0-5][0-9])$",
+                "type": "string"
+              },
+              "time": {
+                "description": "Stable subject and Kafka key time component for the section 2 peak-demand forecast. The bridge sets this field to the sentinel value _peak_forecast_ so the daily peak forecast shares the same jp.tepco.denkiyoho/{date}/{time} key model as the other TEPCO events without pretending to be an hourly measurement.",
+                "pattern": "^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$",
+                "type": "string"
+              },
+              "update_datetime": {
+                "description": "Section 2 peak-demand forecast information update timestamp converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp. TEPCO publishes the date and time in 予想最大電力情報更新日 and 予想最大電力情報更新時刻.",
+                "type": "datetime"
+              },
+              "update_datetime_local": {
+                "description": "Section 2 peak-demand forecast information update timestamp in Japan Standard Time serialized as an RFC 3339 timestamp with +09:00 offset, built from TEPCO's 予想最大電力情報更新日 and 予想最大電力情報更新時刻 columns.",
+                "type": "datetime"
+              }
+            },
+            "required": [
+              "date",
+              "time",
+              "peak_demand_forecast_mw",
+              "peak_demand_forecast_jp_unit_value",
+              "peak_time_slot",
+              "update_datetime",
+              "update_datetime_local",
+              "area_code",
+              "area_name_jp",
+              "area_name_en"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "PeakDemandForecast"
+}

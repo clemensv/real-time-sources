@@ -1,0 +1,36 @@
+{
+  "altnames": {
+    "kql": "GenerationForecast"
+  },
+  "fields": [
+    {
+      "doc": "EIC code of the bidding zone",
+      "name": "inDomain",
+      "type": "string"
+    },
+    {
+      "doc": "Forecast total generation in MW",
+      "name": "quantity",
+      "type": "double",
+      "unit": "MW"
+    },
+    {
+      "doc": "ISO 8601 duration",
+      "name": "resolution",
+      "type": "string"
+    },
+    {
+      "doc": "ENTSO-E document type code (A71)",
+      "name": "documentType",
+      "type": "string"
+    },
+    {
+      "doc": "Unit of measurement (MAW)",
+      "name": "unitName",
+      "type": "string"
+    }
+  ],
+  "name": "GenerationForecast",
+  "namespace": "eu.entsoe.transparency",
+  "type": "record"
+}

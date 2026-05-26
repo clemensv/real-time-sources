@@ -1,0 +1,14 @@
+content-disposition:FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation
+content-length:894
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:Avro/1.11.3
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.avro/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation/versions/1

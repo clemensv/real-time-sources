@@ -1,0 +1,88 @@
+{
+  "$id": "https://api.tfl.gov.uk/schemas/uk/gov/tfl/road/RoadStatus",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Real-time status snapshot for a TfL managed road corridor fetched from GET /Road/all/Status.",
+  "name": "RoadStatus",
+  "properties": {
+    "bounds": {
+      "description": "Bounding box for the road corridor as a JSON array string. Corresponds to 'bounds' in the upstream response. Format: '[[lon_sw,lat_sw],[lon_ne,lat_ne]]' in WGS84 decimal degrees.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "display_name": {
+      "altnames": {
+        "upstream": "displayName"
+      },
+      "description": "Human-readable display name for the road corridor as reported by TfL. Corresponds to 'displayName' in the upstream response. Examples: 'A2', 'A12', 'M25'.",
+      "type": "string"
+    },
+    "envelope": {
+      "description": "GeoJSON envelope polygon for the road corridor geometry. Corresponds to 'envelope' in the upstream response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "road_id": {
+      "altnames": {
+        "upstream": "id"
+      },
+      "description": "Unique identifier for the road corridor as used by the TfL Unified API. Corresponds to 'id' in the upstream response. Examples: 'a2', 'a12', 'm25'. Used as the stable domain key.",
+      "type": "string"
+    },
+    "status_aggregation_end_date": {
+      "altnames": {
+        "upstream": "statusAggregationEndDate"
+      },
+      "description": "End date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationEndDate' in the upstream response.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "status_aggregation_start_date": {
+      "altnames": {
+        "upstream": "statusAggregationStartDate"
+      },
+      "description": "Start date of the current status aggregation period reported by TfL. Corresponds to 'statusAggregationStartDate' in the upstream response.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "status_severity": {
+      "altnames": {
+        "upstream": "statusSeverity"
+      },
+      "description": "Current aggregate status severity for this corridor as assessed by TfL. Corresponds to 'statusSeverity' in the upstream response. Common values: 'Good', 'Moderate', 'Serious', 'Severe', 'NoDisruptions'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "status_severity_description": {
+      "altnames": {
+        "upstream": "statusSeverityDescription"
+      },
+      "description": "Human-readable description of the current status severity. Corresponds to 'statusSeverityDescription' in the upstream response. Example: 'Serious Delays'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "url": {
+      "description": "URL to the TfL Unified API detail page for this corridor. Corresponds to 'url' in the upstream response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "road_id",
+    "display_name"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,57 @@
+{
+  "$id": "https://opendata-download-metobs.smhi.se/schemas/SE/Gov/SMHI/Weather/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record published by the Swedish Meteorological and Hydrological Institute (SMHI). It lets consumers label, group, and route the live measurement or forecast events.",
+  "name": "Station",
+  "properties": {
+    "height": {
+      "description": "Sensor height above ground in meters.",
+      "symbol": "m",
+      "type": "double",
+      "unit": "m"
+    },
+    "lan": {
+      "description": "Normalized routing field 'lan' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "Geographic latitude of the station in decimal degrees.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "degree"
+    },
+    "longitude": {
+      "description": "Geographic longitude of the station in decimal degrees.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "degree"
+    },
+    "measuring_stations": {
+      "description": "Station classification within SMHI's measuring station network, e.g. 'CORE' for primary network stations.",
+      "type": "string"
+    },
+    "name": {
+      "description": "Human-readable station name as assigned by SMHI, e.g. 'Abisko Aut' or 'Stockholm-Arlanda'.",
+      "type": "string"
+    },
+    "owner": {
+      "description": "Organization or entity that owns and operates the station, e.g. 'SMHI' or 'Polarforskningssekretariatet'.",
+      "type": "string"
+    },
+    "owner_category": {
+      "description": "Category of station ownership, e.g. 'CLIMATE' for long-running climate stations or 'AVIATION' for airport stations.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "SMHI numeric station identifier, unique within the SMHI observation network.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "name",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

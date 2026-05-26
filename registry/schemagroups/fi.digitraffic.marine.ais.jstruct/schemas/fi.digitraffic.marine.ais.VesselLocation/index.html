@@ -1,0 +1,65 @@
+{
+  "$id": "https://example.com/schemas/fi/digitraffic/marine/ais/VesselLocation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "name": "VesselLocation",
+  "properties": {
+    "cog": {
+      "description": "Provider field for cog in this record.",
+      "type": "double"
+    },
+    "heading": {
+      "description": "Provider field for heading in this record.",
+      "type": "int32"
+    },
+    "lat": {
+      "description": "Provider field for lat in this record.",
+      "type": "double"
+    },
+    "lon": {
+      "description": "Provider field for lon in this record.",
+      "type": "double"
+    },
+    "mmsi": {
+      "description": "Provider field for mmsi in this record.",
+      "type": "int32"
+    },
+    "navStat": {
+      "description": "Provider field for nav stat in this record.",
+      "type": "int32"
+    },
+    "posAcc": {
+      "description": "Provider field for pos acc in this record.",
+      "type": "boolean"
+    },
+    "raim": {
+      "description": "Provider field for raim in this record.",
+      "type": "boolean"
+    },
+    "rot": {
+      "description": "Provider field for rot in this record.",
+      "type": "int32"
+    },
+    "sog": {
+      "description": "Provider field for sog in this record.",
+      "type": "double"
+    },
+    "time": {
+      "description": "Time when the provider recorded or published the update.",
+      "type": "int32"
+    }
+  },
+  "required": [
+    "time",
+    "sog",
+    "cog",
+    "navStat",
+    "rot",
+    "posAcc",
+    "raim",
+    "heading",
+    "lon",
+    "lat"
+  ],
+  "type": "object"
+}

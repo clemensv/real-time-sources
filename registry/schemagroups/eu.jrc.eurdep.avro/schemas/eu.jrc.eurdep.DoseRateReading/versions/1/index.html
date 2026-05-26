@@ -1,0 +1,62 @@
+{
+  "doc": "An ambient gamma dose rate reading from a EURDEP monitoring station.",
+  "fields": [
+    {
+      "doc": "Alphanumeric station identifier from the EURDEP network.",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "ISO 3166-1 alpha-2 country code used as the country routing axis.",
+      "name": "country",
+      "type": "string"
+    },
+    {
+      "doc": "Human-readable station location name.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Gross ambient gamma dose rate in µSv/h. Null if not reported.",
+      "name": "value",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "doc": "Unit of the dose rate value, typically 'µSv/h'.",
+      "name": "unit",
+      "type": "string"
+    },
+    {
+      "doc": "Start of measurement period in ISO 8601 UTC.",
+      "name": "start_measure",
+      "type": "string"
+    },
+    {
+      "doc": "End of measurement period in ISO 8601 UTC.",
+      "name": "end_measure",
+      "type": "string"
+    },
+    {
+      "doc": "Nuclide identifier, typically 'Gamma-ODL-Brutto'.",
+      "name": "nuclide",
+      "type": "string"
+    },
+    {
+      "doc": "Measurement integration period (e.g. '1h').",
+      "name": "duration",
+      "type": "string"
+    },
+    {
+      "doc": "Validation status flag. 0 = not validated, 1 = nationally validated, 2 = EURDEP validated.",
+      "name": "validated",
+      "type": "int"
+    }
+  ],
+  "name": "DoseRateReading",
+  "namespace": "eu.jrc.eurdep",
+  "type": "record"
+}

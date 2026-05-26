@@ -1,0 +1,135 @@
+{
+  "$id": "https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/WeatherObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Latest weather observation from a NWS surface station. Observations are fetched from the api.weather.gov /stations/{stationId}/observations/latest endpoint. Measurement values are extracted from NWS quantity objects (unitCode + value + qualityControl).",
+  "name": "WeatherObservation",
+  "properties": {
+    "barometric_pressure": {
+      "description": "Station barometric pressure (not reduced to sea level).",
+      "symbol": "Pa",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Pa"
+    },
+    "dewpoint": {
+      "description": "Dew point temperature.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "heat_index": {
+      "description": "Calculated heat index temperature, null when conditions do not warrant it.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "relative_humidity": {
+      "description": "Relative humidity percentage.",
+      "symbol": "%",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "percent"
+    },
+    "sea_level_pressure": {
+      "description": "Atmospheric pressure reduced to mean sea level.",
+      "symbol": "Pa",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Pa"
+    },
+    "state": {
+      "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "ICAO or cooperative observer station identifier.",
+      "type": "string"
+    },
+    "temperature": {
+      "description": "Air temperature at the time of observation.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "text_description": {
+      "description": "Brief text summary of current conditions, e.g. 'Clear', 'Mostly Cloudy', 'Rain'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "timestamp": {
+      "description": "UTC timestamp of the observation.",
+      "type": "datetime"
+    },
+    "visibility": {
+      "description": "Horizontal visibility.",
+      "symbol": "m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "wind_chill": {
+      "description": "Calculated wind chill temperature, null when conditions do not warrant it.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "wind_direction": {
+      "description": "Wind direction in degrees from which the wind is blowing.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degree"
+    },
+    "wind_gust": {
+      "description": "Peak wind gust speed, null if no gusts observed.",
+      "symbol": "km/h",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "km/h"
+    },
+    "wind_speed": {
+      "description": "Sustained wind speed.",
+      "symbol": "km/h",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "km/h"
+    },
+    "zone_id": {
+      "description": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "timestamp"
+  ],
+  "type": "object"
+}

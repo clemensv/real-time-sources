@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/CA.Gov.ECCC.Hydro.jstruct/schemas/CA.Gov.ECCC.Hydro.Station",
+    "description": "A reference record for one Canadian hydrometric station published by Environment and Climate Change Canada Water Survey of Canada. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://api.weather.gc.ca/collections/hydrometric-stations"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "stations/{station_number}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "CA.Gov.ECCC.Hydro.Station"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "CA.Gov.ECCC.Hydro.Station",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Station/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Station/versions/1"
+  }
+}

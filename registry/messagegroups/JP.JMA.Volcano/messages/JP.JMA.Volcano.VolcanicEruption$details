@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/jp.jma.volcano.jstruct/schemas/jp.jma.volcano.VolcanicEruption",
+  "description": "JMA Bosai volcanic eruption observation report for a target volcano.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{feedurl}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "jp.jma.volcano/{volcano_code}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "JP.JMA.Volcano.VolcanicEruption"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "JP.JMA.Volcano.VolcanicEruption",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.VolcanicEruption/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "VolcanicEruption",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.VolcanicEruption",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.VolcanicEruption/versions",
+  "xid": "/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.VolcanicEruption"
+}

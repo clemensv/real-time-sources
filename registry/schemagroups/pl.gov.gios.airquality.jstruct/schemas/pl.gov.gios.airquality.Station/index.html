@@ -1,0 +1,86 @@
+{
+  "$id": "https://api.gios.gov.pl/schemas/pl/gov/gios/airquality/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference data for a GIOŚ air quality monitoring station, including its geographic location, city, commune, district, and voivodeship.",
+  "name": "Station",
+  "properties": {
+    "city_id": {
+      "description": "Numeric identifier of the city where the station is located. Mapped from 'Identyfikator miasta'.",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "city_name": {
+      "description": "Name of the city where the station is located. Mapped from 'Nazwa miasta'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "commune": {
+      "description": "Name of the commune (gmina) where the station is located. Mapped from 'Gmina'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "district": {
+      "description": "Name of the district (powiat) where the station is located. Mapped from 'Powiat'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "latitude": {
+      "description": "Latitude of the station in decimal degrees north (WGS84). Mapped from 'WGS84 φ N'.",
+      "symbol": "°N",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "longitude": {
+      "description": "Longitude of the station in decimal degrees east (WGS84). Mapped from 'WGS84 λ E'.",
+      "symbol": "°E",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "name": {
+      "description": "Human-readable name of the monitoring station, typically including city and street. Mapped from 'Nazwa stacji'.",
+      "type": "string"
+    },
+    "station_code": {
+      "description": "Short alphanumeric code uniquely identifying the station, e.g. 'DsLegAlRzecz'. Mapped from 'Kod stacji'.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "Unique numeric identifier of the monitoring station assigned by GIOŚ. Mapped from the Polish field 'Identyfikator stacji'.",
+      "type": "integer"
+    },
+    "street": {
+      "description": "Street address of the station, if available. Mapped from 'Ulica'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "voivodeship": {
+      "description": "Name of the voivodeship (province) where the station is located, in uppercase Polish. Mapped from 'Województwo'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "station_id",
+    "station_code",
+    "name"
+  ],
+  "type": "object"
+}

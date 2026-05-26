@@ -1,0 +1,122 @@
+{
+  "description": "A transport update from the Belgian iRail train data API. It carries train departure, arrival, and connection updates for Belgian railway stations, vehicles, and connections.",
+  "doc": "Real-time arrival board for a Belgian railway station.",
+  "fields": [
+    {
+      "doc": "Nine-digit UIC-derived numeric identifier of the station.",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "Display name of the station.",
+      "name": "station_name",
+      "type": "string"
+    },
+    {
+      "doc": "ISO 8601 UTC timestamp when this board was retrieved.",
+      "name": "retrieved_at",
+      "type": "string"
+    },
+    {
+      "doc": "Number of arrivals in this board snapshot.",
+      "name": "arrival_count",
+      "type": "int"
+    },
+    {
+      "doc": "Array of arrival entries on the station board.",
+      "name": "arrivals",
+      "type": {
+        "items": {
+          "doc": "A single scheduled arrival at a Belgian railway station with real-time status.",
+          "fields": [
+            {
+              "doc": "Nine-digit UIC-derived numeric identifier of the origin station.",
+              "name": "origin_station_id",
+              "type": "string"
+            },
+            {
+              "doc": "Display name of the origin station.",
+              "name": "origin_name",
+              "type": "string"
+            },
+            {
+              "doc": "Scheduled arrival time in ISO 8601 UTC.",
+              "name": "scheduled_time",
+              "type": "string"
+            },
+            {
+              "doc": "Current delay in seconds.",
+              "name": "delay_seconds",
+              "type": "int"
+            },
+            {
+              "doc": "True if this arrival has been canceled.",
+              "name": "is_canceled",
+              "type": "boolean"
+            },
+            {
+              "doc": "True if the train has already arrived.",
+              "name": "has_arrived",
+              "type": "boolean"
+            },
+            {
+              "doc": "True if this stop is not part of the original schedule.",
+              "name": "is_extra_stop",
+              "type": "boolean"
+            },
+            {
+              "doc": "Full iRail vehicle identifier.",
+              "name": "vehicle_id",
+              "type": "string"
+            },
+            {
+              "doc": "Human-readable short name of the train service.",
+              "name": "vehicle_short_name",
+              "type": "string"
+            },
+            {
+              "doc": "NMBS train service type abbreviation.",
+              "name": "vehicle_type",
+              "type": "string"
+            },
+            {
+              "doc": "Numeric part of the vehicle identifier.",
+              "name": "vehicle_number",
+              "type": "string"
+            },
+            {
+              "default": null,
+              "doc": "Platform number. Null if not assigned.",
+              "name": "platform",
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            {
+              "doc": "True if the platform is the normally scheduled one.",
+              "name": "is_normal_platform",
+              "type": "boolean"
+            },
+            {
+              "doc": "Crowd-sourced occupancy estimate: low, medium, high, or unknown.",
+              "name": "occupancy",
+              "type": "string"
+            },
+            {
+              "doc": "Stable linked-data URI uniquely identifying this arrival.",
+              "name": "connection_uri",
+              "type": "string"
+            }
+          ],
+          "name": "Arrival",
+          "type": "record"
+        },
+        "type": "array"
+      }
+    }
+  ],
+  "name": "ArrivalBoard",
+  "namespace": "be.irail",
+  "type": "record"
+}

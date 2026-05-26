@@ -1,0 +1,176 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/seattle-street-closures/schemas/US.WA.Seattle.StreetClosures.StreetClosure.json",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Street closure row from the Seattle Department of Transportation street closures dataset, describing one closed street segment and its active occurrence window.",
+  "name": "StreetClosure",
+  "properties": {
+    "closure_id": {
+      "description": "Derived stable identity for the closure row, composed from permit number, street segment key, start date, and end date.",
+      "type": "string"
+    },
+    "end_date": {
+      "alternates": [
+        {
+          "description": "Original field name in the Seattle street closures dataset.",
+          "name": "end_date"
+        }
+      ],
+      "description": "Date on which the closure event ends, normalized to YYYY-MM-DD.",
+      "type": "string"
+    },
+    "friday": {
+      "description": "Time period, if any, during which the closure occurs on Fridays between the start and end dates.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "geometry_json": {
+      "alternates": [
+        {
+          "description": "Original GeoJSON geometry object in the Seattle street closures dataset.",
+          "name": "line_string"
+        }
+      ],
+      "description": "Serialized GeoJSON LineString geometry for the closed street block.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "monday": {
+      "description": "Time period, if any, during which the closure occurs on Mondays between the start and end dates.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "permit_number": {
+      "alternates": [
+        {
+          "description": "Original field name in the Seattle street closures dataset.",
+          "name": "permit_number"
+        }
+      ],
+      "description": "Identifier for the permit record granting authorization to close the street.",
+      "type": "string"
+    },
+    "permit_type": {
+      "alternates": [
+        {
+          "description": "Original field name in the Seattle street closures dataset.",
+          "name": "permit_type"
+        }
+      ],
+      "description": "Type of permit, such as Block Party, Play Street, Farmers Market, or Temporary Activation.",
+      "type": "string"
+    },
+    "project_description": {
+      "alternates": [
+        {
+          "description": "Original field name in the Seattle street closures dataset.",
+          "name": "project_description"
+        }
+      ],
+      "description": "Longer description of the permit, including issuance notes and closure details.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "project_name": {
+      "alternates": [
+        {
+          "description": "Original field name in the Seattle street closures dataset.",
+          "name": "project_name"
+        }
+      ],
+      "description": "Short title used by Seattle to quickly identify the closure permit.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "saturday": {
+      "description": "Time period, if any, during which the closure occurs on Saturdays between the start and end dates.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "segkey": {
+      "description": "Identifier for the street segment that is closed.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "start_date": {
+      "alternates": [
+        {
+          "description": "Original field name in the Seattle street closures dataset.",
+          "name": "start_date"
+        }
+      ],
+      "description": "Date on which the closure event begins, normalized to YYYY-MM-DD.",
+      "type": "string"
+    },
+    "street_from": {
+      "description": "Name of the intersecting street at the low end of the closed segment.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "street_on": {
+      "description": "Street name of the closed street segment.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "street_to": {
+      "description": "Name of the intersecting street at the high end of the closed segment.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sunday": {
+      "description": "Time period, if any, during which the closure occurs on Sundays between the start and end dates.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "thursday": {
+      "description": "Time period, if any, during which the closure occurs on Thursdays between the start and end dates.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tuesday": {
+      "description": "Time period, if any, during which the closure occurs on Tuesdays between the start and end dates.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "wednesday": {
+      "description": "Time period, if any, during which the closure occurs on Wednesdays between the start and end dates.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "closure_id",
+    "permit_number",
+    "permit_type",
+    "start_date",
+    "end_date"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,42 @@
+{
+  "altnames": {
+    "kql": "Conductivity"
+  },
+  "fields": [
+    {
+      "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timestamp of the conductivity measurement\"}",
+      "logicalType": "timestamp-millis",
+      "name": "timestamp",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Value of the conductivity\"}",
+      "name": "value",
+      "type": "double",
+      "unit": "S/m"
+    },
+    {
+      "doc": "Flag indicating if the maximum expected conductivity was exceeded",
+      "name": "max_conductivity_exceeded",
+      "type": "boolean"
+    },
+    {
+      "doc": "Flag indicating if the minimum expected conductivity was exceeded",
+      "name": "min_conductivity_exceeded",
+      "type": "boolean"
+    },
+    {
+      "doc": "Flag indicating if the rate of change tolerance limit was exceeded",
+      "name": "rate_of_change_exceeded",
+      "type": "boolean"
+    }
+  ],
+  "name": "Conductivity",
+  "namespace": "Microsoft.OpenData.US.NOAA",
+  "type": "record"
+}

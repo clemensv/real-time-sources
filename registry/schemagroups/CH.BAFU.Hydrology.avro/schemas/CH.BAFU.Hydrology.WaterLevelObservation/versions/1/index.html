@@ -1,0 +1,99 @@
+{
+  "description": "Measurement payload for observations in the BAFU Hydrology source.",
+  "doc": "Measurement payload for observations in the BAFU Hydrology source.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "Name of the water body the station observes (BAFU/FOEN 'water-body-name', e.g. 'Rhein'). Sourced by the bridge from the station catalog and propagated to telemetry so consumers can route by river/lake without a separate catalog join.",
+      "name": "water_body_name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "water_level",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_level_unit",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_level_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge_unit",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_temperature",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_temperature_unit",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_temperature_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "name": "WaterLevelObservation",
+  "namespace": "CH.BAFU.Hydrology",
+  "type": "record"
+}

@@ -1,0 +1,32 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/net.vatsim.status/messages/net.vatsim.NetworkStatus",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "net.vatsim.amqp.FacilityStatus",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "FacilityStatus",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "facility": {
+        "description": "Routing axis 'facility' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{facility}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{callsign}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.FacilityStatus/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.FacilityStatus/versions/1"
+}

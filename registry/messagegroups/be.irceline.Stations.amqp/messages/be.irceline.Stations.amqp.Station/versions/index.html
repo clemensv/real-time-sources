@@ -1,0 +1,40 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/be.irceline.Stations/messages/be.irceline.Station",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "be.irceline.Stations.amqp.Station",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "pollutant": {
+          "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{pollutant}"
+        },
+        "region": {
+          "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{region}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/be.irceline.Stations.amqp/messages/be.irceline.Stations.amqp.Station/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/be.irceline.Stations.amqp/messages/be.irceline.Stations.amqp.Station/versions/1"
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "$id": "https://example.com/schemas/IO/AISstream/ShipStaticData",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+  "name": "ShipStaticData",
+  "properties": {
+    "AisVersion": {
+      "description": "Provider field for ais version in this record.",
+      "type": "int32"
+    },
+    "CallSign": {
+      "description": "Provider field for call sign in this record.",
+      "type": "string"
+    },
+    "Destination": {
+      "description": "Provider field for destination in this record.",
+      "type": "string"
+    },
+    "Dimension": {
+      "description": "Provider field for dimension in this record.",
+      "name": "Dimension",
+      "properties": {
+        "A": {
+          "description": "Provider field for a in this record.",
+          "type": "int32"
+        },
+        "B": {
+          "description": "Provider field for b in this record.",
+          "type": "int32"
+        },
+        "C": {
+          "description": "Provider field for c in this record.",
+          "type": "int32"
+        },
+        "D": {
+          "description": "Provider field for d in this record.",
+          "type": "int32"
+        }
+      },
+      "required": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "type": "object"
+    },
+    "Dte": {
+      "description": "Provider field for dte in this record.",
+      "type": "boolean"
+    },
+    "Eta": {
+      "description": "Provider field for eta in this record.",
+      "name": "Eta",
+      "properties": {
+        "Day": {
+          "description": "Provider field for day in this record.",
+          "type": "int32"
+        },
+        "Hour": {
+          "description": "Provider field for hour in this record.",
+          "type": "int32"
+        },
+        "Minute": {
+          "description": "Provider field for minute in this record.",
+          "type": "int32"
+        },
+        "Month": {
+          "description": "Provider field for month in this record.",
+          "type": "int32"
+        }
+      },
+      "required": [
+        "Month",
+        "Day",
+        "Hour",
+        "Minute"
+      ],
+      "type": "object"
+    },
+    "FixType": {
+      "description": "Provider field for fix type in this record.",
+      "type": "int32"
+    },
+    "ImoNumber": {
+      "description": "Provider field for imo number in this record.",
+      "type": "int32"
+    },
+    "MaximumStaticDraught": {
+      "description": "Provider field for maximum static draught in this record.",
+      "type": "double"
+    },
+    "MessageID": {
+      "description": "Provider field for message i d in this record.",
+      "type": "int32"
+    },
+    "Name": {
+      "description": "Human-readable name of the resource.",
+      "type": "string"
+    },
+    "RepeatIndicator": {
+      "description": "Provider field for repeat indicator in this record.",
+      "type": "int32"
+    },
+    "Spare": {
+      "description": "Provider field for spare in this record.",
+      "type": "boolean"
+    },
+    "Type": {
+      "description": "Provider field for type in this record.",
+      "type": "int32"
+    },
+    "UserID": {
+      "description": "Provider field for user i d in this record.",
+      "type": "int32"
+    },
+    "Valid": {
+      "description": "Provider field for valid in this record.",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "MessageID",
+    "UserID",
+    "Valid"
+  ],
+  "type": "object"
+}

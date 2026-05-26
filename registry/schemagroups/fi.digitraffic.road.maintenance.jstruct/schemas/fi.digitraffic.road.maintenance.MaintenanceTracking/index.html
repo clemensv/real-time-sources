@@ -1,0 +1,54 @@
+{
+  "$id": "https://fintraffic.fi/schemas/fi/digitraffic/road/maintenance/MaintenanceTracking",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.",
+  "name": "MaintenanceTracking",
+  "properties": {
+    "direction": {
+      "description": "Vehicle heading in degrees (0-360, clockwise from north). May be null or absent if heading information is not available from the tracking device.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "domain": {
+      "description": "Data domain identifying the source system. Primary domain is 'state-roads' for data from the Finnish Transport Infrastructure Agency's Harja system. Other domains include municipal systems such as 'autori-kuopio', 'autori-oulu', and 'paikannin-kuopio'. The domain value comes from the MQTT topic path.",
+      "type": "string"
+    },
+    "source": {
+      "description": "Name of the source system that produced the tracking data (e.g. 'Harja/Väylävirasto' for the state road maintenance system). May be null if the source system is not identified.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "tasks": {
+      "description": "Array of maintenance task type identifiers being performed by the vehicle at this position. Task types follow the Fintraffic taxonomy, e.g. 'BRUSHING', 'SALTING', 'PLOUGHING_AND_SLUSH_REMOVAL', 'LEVELLING_GRAVEL_ROAD_SURFACE'. Full task type list with Finnish, English, and Swedish names is available at /api/maintenance/v1/tracking/tasks.",
+      "items": {
+        "description": "A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "time": {
+      "description": "Tracking timestamp as Unix epoch seconds (UTC). Indicates when the position and task were recorded by the vehicle.",
+      "type": "int32"
+    },
+    "x": {
+      "description": "Longitude of the vehicle position in WGS84 (EPSG:4326) decimal degrees.",
+      "type": "double"
+    },
+    "y": {
+      "description": "Latitude of the vehicle position in WGS84 (EPSG:4326) decimal degrees.",
+      "type": "double"
+    }
+  },
+  "required": [
+    "domain",
+    "time",
+    "tasks",
+    "x",
+    "y"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,51 @@
+{
+  "USGS.WaterQuality.Readings.amqp.WaterQualityReading": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/USGS.WaterQuality.Readings/messages/USGS.WaterQuality.Readings.WaterQualityReading",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "USGS.WaterQuality.Readings.amqp.WaterQualityReading",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.WaterQuality.Readings.amqp/messages/USGS.WaterQuality.Readings.amqp.WaterQualityReading/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WaterQualityReading",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "parameter_code": {
+          "description": "Routing property for AMQP subscription filters (parameter_code).",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{parameter_code}"
+        },
+        "state": {
+          "description": "Routing property for AMQP subscription filters (state).",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{state}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{site_number}/{parameter_code}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{site_number}/{parameter_code}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.WaterQuality.Readings.amqp/messages/USGS.WaterQuality.Readings.amqp.WaterQualityReading",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.WaterQuality.Readings.amqp/messages/USGS.WaterQuality.Readings.amqp.WaterQualityReading/versions",
+    "xid": "/messagegroups/USGS.WaterQuality.Readings.amqp/messages/USGS.WaterQuality.Readings.amqp.WaterQualityReading"
+  }
+}

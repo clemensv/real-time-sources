@@ -1,0 +1,55 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/king-county-marine/schemas/US.WA.KingCounty.Marine.Station.json",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record from King County Metro marine feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "name": "Station",
+  "properties": {
+    "dataset_id": {
+      "description": "Socrata dataset identifier for the source dataset.",
+      "type": "string"
+    },
+    "dataset_name": {
+      "description": "Original King County dataset title.",
+      "type": "string"
+    },
+    "dataset_url": {
+      "description": "Dataset page URL on data.kingcounty.gov.",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "Station latitude in decimal degrees north, parsed from the dataset description.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "longitude": {
+      "description": "Station longitude in decimal degrees east of Greenwich; King County locations are negative because they lie west of Greenwich.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "sensor_level": {
+      "description": "Sensor position classification inferred from the dataset title, such as surface, bottom, or water-column.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "Stable bridge identifier for the buoy or mooring dataset.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Human-readable station name derived from the dataset title.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name",
+    "dataset_id",
+    "dataset_name",
+    "dataset_url",
+    "sensor_level"
+  ],
+  "type": "object"
+}

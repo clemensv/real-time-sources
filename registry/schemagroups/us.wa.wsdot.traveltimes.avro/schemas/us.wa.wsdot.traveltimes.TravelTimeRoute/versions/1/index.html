@@ -1,0 +1,117 @@
+{
+  "description": "A reference record from Washington State Department of Transportation for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "doc": "Travel time route.",
+  "fields": [
+    {
+      "name": "travel_time_id",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "description",
+      "type": "string"
+    },
+    {
+      "name": "distance",
+      "type": "double"
+    },
+    {
+      "name": "average_time",
+      "type": "int"
+    },
+    {
+      "name": "current_time",
+      "type": "int"
+    },
+    {
+      "name": "time_updated",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "start_description",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "start_road_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "start_direction",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "start_milepost",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "name": "start_latitude",
+      "type": "double"
+    },
+    {
+      "name": "start_longitude",
+      "type": "double"
+    },
+    {
+      "default": null,
+      "name": "end_description",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "end_road_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "end_direction",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "end_milepost",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "name": "end_latitude",
+      "type": "double"
+    },
+    {
+      "name": "end_longitude",
+      "type": "double"
+    }
+  ],
+  "name": "TravelTimeRoute",
+  "namespace": "us.wa.wsdot.traveltimes",
+  "type": "record"
+}

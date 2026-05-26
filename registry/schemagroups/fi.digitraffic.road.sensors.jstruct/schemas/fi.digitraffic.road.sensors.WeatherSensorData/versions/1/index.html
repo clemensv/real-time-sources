@@ -1,0 +1,31 @@
+{
+  "$id": "https://fintraffic.fi/schemas/fi/digitraffic/road/sensors/WeatherSensorData",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.",
+  "name": "WeatherSensorData",
+  "properties": {
+    "sensor_id": {
+      "description": "Sensor identifier within the road weather station. Each sensor measures a specific weather or road surface parameter. Common sensors: ILMA (id 1, air temperature °C), ILMA_DERIVAATTA (id 2, air temp derivative °C/h), TIE_1 (id 3, road surface temp °C), MAA_1 (id 7, ground temp °C), KASTEPISTE (id 9, dew point °C), JÄÄTYMISPISTE_1 (id 10, freezing point °C), KESKITUULI (id 16, avg wind m/s), MAKSIMITUULI (id 17, max wind m/s), ILMAN_KOSTEUS (id 19, relative humidity %). Full sensor list at /api/weather/v1/sensors.",
+      "type": "int32"
+    },
+    "station_id": {
+      "description": "Road weather station numeric identifier as assigned by Fintraffic (e.g. 1012). Station metadata including road address, municipality, and available sensors is available from the /api/weather/v1/stations REST endpoint.",
+      "type": "int32"
+    },
+    "time": {
+      "description": "Measurement timestamp as Unix epoch seconds (UTC). Indicates when the sensor reading was taken.",
+      "type": "int32"
+    },
+    "value": {
+      "description": "Measured value in the sensor's native unit. Units vary by sensor: °C for temperatures and dew/freezing points, °C/h for temperature derivatives, m/s for wind speed, % for relative humidity, mm for precipitation amounts.",
+      "type": "double"
+    }
+  },
+  "required": [
+    "station_id",
+    "sensor_id",
+    "value",
+    "time"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/ca.gc.weather.aqhi.jstruct/schemas/ca.gc.weather.aqhi.Forecast",
+  "description": "Public AQHI forecast for one of the four standard Canadian forecast periods published for an AQHI community.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://dd.weather.gc.ca/today/air_quality/aqhi/"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{province}/{community_name}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "ca.gc.weather.aqhi.Forecast"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "ca.gc.weather.aqhi.Forecast",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Forecast",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Forecast/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Forecast/versions/1"
+}

@@ -1,0 +1,33 @@
+{
+  "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+  "doc": "Hourly air quality measurement for a LAQN site and pollutant species at a GMT timestamp.",
+  "fields": [
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source.",
+      "doc": "Stable LAQN site code for the monitoring site that produced the measurement.",
+      "name": "site_code",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "Stable LAQN pollutant code for the measured species.",
+      "name": "species_code",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "Measurement timestamp in GMT, encoded by LAQN as YYYY-MM-DD HH:MM:SS.",
+      "name": "measurement_date_gmt",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "Measured pollutant concentration as a decimal number. The bridge omits records for timestamps where the upstream API reports an empty value.",
+      "name": "value",
+      "type": "double"
+    }
+  ],
+  "name": "Measurement",
+  "namespace": "uk.kcl.laqn",
+  "type": "record"
+}

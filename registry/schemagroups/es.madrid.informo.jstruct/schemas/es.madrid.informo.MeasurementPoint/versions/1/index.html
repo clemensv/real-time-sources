@@ -1,0 +1,74 @@
+{
+  "$id": "https://informo.madrid.es/schemas/es/madrid/informo/MeasurementPoint",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value.",
+  "name": "MeasurementPoint",
+  "properties": {
+    "description": {
+      "altnames": {
+        "lang:es": "descripcion"
+      },
+      "description": "Human-readable description of the road segment where this sensor is installed. Typically includes the street name, direction, and bounding cross-streets. Corresponds to 'descripcion' in the upstream XML. Text is in Spanish.",
+      "type": "string"
+    },
+    "element_type": {
+      "altnames": {
+        "lang:es": "tipo_elem"
+      },
+      "description": "Classification of the measurement point within Madrid's traffic network. Derived from the 'accesoAsociado' field prefix in the upstream XML. Common values include 'URB' for urban streets and 'M30' for the M-30 ring motorway.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "latitude": {
+      "description": "Latitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM northing in 'st_y' in the upstream XML, which uses European comma decimal separators.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "longitude": {
+      "description": "Longitude of the sensor in decimal degrees (WGS84, EPSG:4326). Converted from the UTM easting in 'st_x' in the upstream XML, which uses European comma decimal separators.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "saturation_intensity": {
+      "altnames": {
+        "lang:es": "intensidadSat"
+      },
+      "description": "Maximum traffic intensity that the road segment can handle, expressed in vehicles per hour. Corresponds to 'intensidadSat' in the upstream XML. Used as the denominator for computing load and saturation ratios.",
+      "symbol": "veh/h",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "unit": "1/h"
+    },
+    "sensor_id": {
+      "altnames": {
+        "lang:es": "idelem"
+      },
+      "description": "Unique sensor identifier from the Madrid Informo system. Corresponds to the 'idelem' field in the upstream XML. Numeric code assigned by the Madrid traffic management center to each measurement point.",
+      "type": "string"
+    },
+    "subarea": {
+      "description": "Traffic management zone code for this sensor. Corresponds to 'subarea' in the upstream XML. Used by Madrid's traffic management center for geographic grouping of sensors.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "sensor_id",
+    "description"
+  ],
+  "type": "object"
+}

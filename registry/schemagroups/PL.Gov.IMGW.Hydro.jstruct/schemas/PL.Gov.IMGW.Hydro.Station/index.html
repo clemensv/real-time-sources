@@ -1,0 +1,65 @@
+{
+  "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source.",
+  "name": "Station",
+  "properties": {
+    "basin": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro.",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "Latitude of the station in WGS 84 coordinates.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "longitude": {
+      "description": "Longitude of the station in WGS 84 coordinates.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "river": {
+      "altnames": {
+        "lang:pl": "rzeka"
+      },
+      "description": "Provider-supplied river value for this record.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "station_id": {
+      "altnames": {
+        "lang:pl": "id_stacji"
+      },
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    },
+    "station_name": {
+      "altnames": {
+        "lang:pl": "stacja"
+      },
+      "description": "Human-readable name of the monitoring station.",
+      "type": "string"
+    },
+    "voivodeship": {
+      "altnames": {
+        "lang:pl": "wojewodztwo"
+      },
+      "description": "Provider-supplied voivodeship value for this record.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name"
+  ],
+  "type": "object"
+}

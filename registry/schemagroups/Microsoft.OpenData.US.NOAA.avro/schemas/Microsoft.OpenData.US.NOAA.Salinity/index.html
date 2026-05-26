@@ -1,0 +1,33 @@
+{
+  "altnames": {
+    "kql": "Salinity"
+  },
+  "fields": [
+    {
+      "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timestamp of the salinity measurement\"}",
+      "logicalType": "timestamp-millis",
+      "name": "timestamp",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Value of the salinity\"}",
+      "name": "salinity",
+      "type": "double",
+      "unit": "ppt"
+    },
+    {
+      "doc": "{\"description\": \"Grams of salt per kilogram of water\"}",
+      "name": "grams_per_kg",
+      "type": "double",
+      "unit": "g/kg"
+    }
+  ],
+  "name": "Salinity",
+  "namespace": "Microsoft.OpenData.US.NOAA",
+  "type": "record"
+}

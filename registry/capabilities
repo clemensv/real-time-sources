@@ -1,0 +1,91 @@
+{
+  "available": {
+    "capabilities": {
+      "mutable": false
+    },
+    "capabilitiesoffered": {
+      "mutable": false
+    },
+    "entities": {
+      "mutable": false
+    },
+    "export": {
+      "mutable": false
+    },
+    "model": {
+      "mutable": false
+    },
+    "modelsource": {
+      "mutable": false
+    }
+  },
+  "compatibilities": {
+    "avro*": [
+      "backward",
+      "backward_transitive",
+      "forward",
+      "forward_transitive",
+      "full",
+      "full_transitive"
+    ],
+    "jsonschema*": [
+      "backward",
+      "backward_transitive",
+      "forward",
+      "forward_transitive",
+      "full",
+      "full_transitive"
+    ],
+    "numbers": [
+      "backward",
+      "backward_transitive",
+      "forward",
+      "forward_transitive",
+      "full",
+      "full_transitive"
+    ],
+    "protobuf*": [
+      "backward",
+      "backward_transitive",
+      "forward",
+      "forward_transitive",
+      "full",
+      "full_transitive"
+    ],
+    "xmlschema*": [
+      "backward",
+      "backward_transitive",
+      "forward",
+      "forward_transitive",
+      "full",
+      "full_transitive"
+    ]
+  },
+  "flags": null,
+  "formats": [
+    "avro*",
+    "jsonschema*",
+    "numbers",
+    "protobuf*",
+    "xmlschema*"
+  ],
+  "ignores": [
+    "capabilities",
+    "defaultversionid",
+    "defaultversionsticky",
+    "epoch",
+    "id",
+    "modelsource",
+    "readonly"
+  ],
+  "pagination": false,
+  "shortself": false,
+  "specversions": [
+    "1.0-rc2"
+  ],
+  "stickyversions": true,
+  "versionmodes": [
+    "createdat",
+    "manual"
+  ]
+}

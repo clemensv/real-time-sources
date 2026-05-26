@@ -1,0 +1,49 @@
+{
+  "description": "A transport update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates for Washington road, bridge, pass, ferry, and border resources.",
+  "doc": "Border crossing wait time.",
+  "fields": [
+    {
+      "name": "crossing_name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "wait_time",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "name": "time",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "description",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "road_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "name": "longitude",
+      "type": "double"
+    }
+  ],
+  "name": "BorderCrossing",
+  "namespace": "us.wa.wsdot.border",
+  "type": "record"
+}

@@ -1,0 +1,19 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.Port",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "gov.cbp.borderwait.mqtt.Port",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Port",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": true,
+    "topic_name": "traffic/us/cbp/cbp-border-wait/{border_slug}/{port_number}/info"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/gov.cbp.borderwait.mqtt/messages/gov.cbp.borderwait.mqtt.Port/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/gov.cbp.borderwait.mqtt/messages/gov.cbp.borderwait.mqtt.Port/versions/1"
+}

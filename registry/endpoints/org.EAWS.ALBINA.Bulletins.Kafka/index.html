@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for EAWS ALBINA CloudEvents on the `eaws-albina` topic keyed by `{region_id}`.",
+  "endpointid": "org.EAWS.ALBINA.Bulletins.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/org.EAWS.ALBINA.Bulletins"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/org.EAWS.ALBINA.Bulletins.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{region_id}",
+      "topic": "eaws-albina"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/org.EAWS.ALBINA.Bulletins.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/org.EAWS.ALBINA.Bulletins.Kafka"
+}

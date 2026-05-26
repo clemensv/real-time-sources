@@ -1,0 +1,177 @@
+{
+  "$id": "https://fintraffic.fi/schemas/fi/digitraffic/road/stations/TmsStation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "name": "TmsStation",
+  "properties": {
+    "altitude": {
+      "description": "Station altitude in meters above sea level. Null or 0.0 if altitude data is not available.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "bearing": {
+      "description": "Bearing of the road at the station in degrees (0-360, clockwise from north). Indicates the direction of increasing road section numbering. Null if not measured.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "carriageway": {
+      "description": "Carriageway type at the station location. Values from the Digitraffic API include \"DUAL_CARRIAGEWAY_RIGHT_IN_INCREASING_DIRECTION\", \"DUAL_CARRIAGEWAY_LEFT_IN_INCREASING_DIRECTION\", \"ONE_CARRIAGEWAY\". Null if not specified.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "collection_status": {
+      "description": "Current data collection status of the station. Values: \"GATHERING\" (actively collecting), \"REMOVED_TEMPORARILY\", \"REMOVED_PERMANENTLY\". Only stations with GATHERING status produce telemetry.",
+      "type": "string"
+    },
+    "data_updated_time": {
+      "description": "ISO 8601 UTC timestamp when the station metadata was last updated in the Digitraffic system. Null if not tracked.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "distance_from_section_start": {
+      "description": "Distance from the start of the road section in meters, part of the Finnish road addressing system.",
+      "type": "int32"
+    },
+    "free_flow_speed_1": {
+      "description": "Reference free-flow speed for traffic direction 1 in km/h. Used to calculate traffic fluency ratios for VVAPAAS-suffixed sensors. Null if not calibrated.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "free_flow_speed_2": {
+      "description": "Reference free-flow speed for traffic direction 2 in km/h. Used to calculate traffic fluency ratios. Null if not calibrated or station is on a one-way road.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "latitude": {
+      "description": "Station latitude in WGS84 (EPSG:4326) decimal degrees.",
+      "type": "double"
+    },
+    "livi_id": {
+      "description": "Legacy identifier used by the Finnish Transport Infrastructure Agency (Väylävirasto, formerly Liikennevirasto) for the station (e.g. \"Livi968639\"). Null if not assigned.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "longitude": {
+      "description": "Station longitude in WGS84 (EPSG:4326) decimal degrees.",
+      "type": "double"
+    },
+    "municipality": {
+      "description": "Name of the Finnish municipality where the station is located (e.g. \"Porvoo\", \"Espoo\").",
+      "type": "string"
+    },
+    "municipality_code": {
+      "description": "Finnish municipality code as defined by Statistics Finland (e.g. 638 for Porvoo, 49 for Espoo).",
+      "type": "int32"
+    },
+    "name": {
+      "description": "Internal station name used by Fintraffic, typically encoding road and location (e.g. \"vt7_Rita\"). Not intended for display; use names_fi/sv/en for human-readable names.",
+      "type": "string"
+    },
+    "names_en": {
+      "description": "English display name for the station (e.g. \"Road 7 Porvoo, Rita\"). Null if no English translation is available.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "names_fi": {
+      "description": "Finnish display name for the station, typically including road number, municipality, and local area (e.g. \"Tie 7 Porvoo, Rita\").",
+      "type": "string"
+    },
+    "names_sv": {
+      "description": "Swedish display name for the station (e.g. \"Väg 7 Borgå, Rita\"). Null if no Swedish translation is available.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "province": {
+      "description": "Name of the Finnish province (maakunta) where the station is located (e.g. \"Uusimaa\", \"Pirkanmaa\").",
+      "type": "string"
+    },
+    "province_code": {
+      "description": "Finnish province code as defined by Statistics Finland (e.g. 1 for Uusimaa).",
+      "type": "int32"
+    },
+    "road_number": {
+      "description": "Finnish road number where the station is installed (e.g. 7 for Highway 7 / E18).",
+      "type": "int32"
+    },
+    "road_section": {
+      "description": "Road section number within the road, part of the Finnish road addressing system.",
+      "type": "int32"
+    },
+    "sensors": {
+      "description": "Array of computational sensor identifiers available at this station. Each ID corresponds to a sensor that produces TmsSensorData telemetry events. Common sensor families: OHITUKSET (passings), KESKINOPEUS (average speed), LIUKUVA_NOPEUS (rolling speed). Sensor metadata is available at /api/tms/v1/sensors.",
+      "items": {
+        "description": "A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.",
+        "type": "int32"
+      },
+      "type": "array"
+    },
+    "side": {
+      "description": "Side of the road where the station is located. Values: \"LEFT\", \"RIGHT\", \"BETWEEN\", \"UNKNOWN\". Null if not specified.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "start_time": {
+      "description": "ISO 8601 UTC timestamp when the station started collecting data (e.g. \"2001-11-07T00:00:00Z\").",
+      "type": "string"
+    },
+    "state": {
+      "description": "Operational state of the station hardware. Values include \"OK\", \"FAULT\", \"DISABLED\". Null if state information is not available.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "station_id": {
+      "description": "TMS station numeric identifier as assigned by Fintraffic (e.g. 23001). Unique across all TMS stations in the Finnish road network. Corresponds to the station_id in TmsSensorData telemetry events.",
+      "type": "int32"
+    },
+    "station_type": {
+      "description": "TMS station type code indicating the hardware configuration (e.g. \"DSL_6\" for a 6-loop DSL station). Determines which sensor families are available.",
+      "type": "string"
+    },
+    "tms_number": {
+      "description": "Legacy TMS numbering used in older Fintraffic systems. May differ from station_id. Null if not assigned.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "station_id",
+    "name",
+    "longitude",
+    "latitude",
+    "municipality",
+    "municipality_code",
+    "province",
+    "province_code",
+    "road_number",
+    "road_section",
+    "station_type",
+    "collection_status",
+    "start_time",
+    "sensors"
+  ],
+  "type": "object"
+}

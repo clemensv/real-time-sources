@@ -1,0 +1,28 @@
+{
+  "$id": "https://example.com/schemas/Org/OpenStreetMap/Diffs/ReplicationState",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "The current replication state of the OpenStreetMap minutely diff feed. Published once per poll cycle. The sequence_number and timestamp are parsed from the Java-properties-style state.txt file at https://planet.openstreetmap.org/replication/minute/state.txt.",
+  "name": "ReplicationState",
+  "properties": {
+    "sequence_number": {
+      "description": "The monotonically increasing sequence number of the latest processed minutely diff file. Each diff file corresponds to exactly one sequence number.",
+      "type": "int64"
+    },
+    "source_url": {
+      "description": "The replication state document URL from which this snapshot was parsed. Useful so subscribers can re-derive the diff file URL or compare across mirror feeds. Null when the bridge does not record the URL.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "timestamp": {
+      "description": "The UTC timestamp associated with the replication state, indicating the point in time up to which the diff file covers OSM edits.",
+      "type": "datetime"
+    }
+  },
+  "required": [
+    "sequence_number",
+    "timestamp"
+  ],
+  "type": "object"
+}

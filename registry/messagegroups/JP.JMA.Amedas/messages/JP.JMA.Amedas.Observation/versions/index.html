@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/JP.JMA.Amedas.jstruct/schemas/JP.JMA.Amedas.Observation",
+    "description": "Telemetry event for one JMA AMeDAS station observation in a ten-minute Bosai map snapshot. Each measurement value is nullable because JMA publishes different fields by station capability and by observation availability.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "jp.jma.amedas/{station_code}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "JP.JMA.Amedas.Observation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "JP.JMA.Amedas.Observation",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Observation",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation/versions/1"
+  }
+}

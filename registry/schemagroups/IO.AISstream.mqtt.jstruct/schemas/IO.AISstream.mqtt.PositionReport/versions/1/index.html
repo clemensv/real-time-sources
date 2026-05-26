@@ -1,0 +1,101 @@
+{
+  "$id": "https://schemas.real-time-sources.dev/aisstream/mqtt/PositionReport",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+  "name": "PositionReport",
+  "properties": {
+    "cog": {
+      "description": "Course over ground in degrees (0..359.9).",
+      "type": "double"
+    },
+    "flag": {
+      "description": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country (e.g. inland-water identifiers, auxiliary craft, base stations) or for MMSIs shorter than 9 digits.",
+      "pattern": "^[a-z]{2}$|^xx$",
+      "type": "string"
+    },
+    "geohash5": {
+      "description": "5-character geohash of the reported (Latitude, Longitude) using the standard base32 geohash alphabet. Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position (Type 5/24/21 base reports) this is filled from the most recently observed position for the MMSI, falling back to '00000' if no position has been seen.",
+      "pattern": "^[0-9b-hjkmnp-z]{5}$",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "Reported latitude in WGS-84 decimal degrees.",
+      "type": "double"
+    },
+    "longitude": {
+      "description": "Reported longitude in WGS-84 decimal degrees.",
+      "type": "double"
+    },
+    "message_id": {
+      "description": "Original ITU-R M.1371 message ID (1, 2, 3, 4, 9, 18, 19, or 27).",
+      "type": "int32"
+    },
+    "mmsi": {
+      "description": "Source MMSI (Maritime Mobile Service Identity) as a 9-digit ASCII string. Mirrors UserID from the upstream AIS payload, padded to 9 digits with leading zeros. Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject.",
+      "pattern": "^[0-9]{9}$",
+      "type": "string"
+    },
+    "msg_type": {
+      "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.",
+      "descriptions": {
+        "aid-to-navigation": "Provider coded value `aid-to-navigation` for this field.",
+        "position-report": "Provider coded value `position-report` for this field.",
+        "static": "Provider coded value `static` for this field."
+      },
+      "enum": [
+        "position-report",
+        "static",
+        "aid-to-navigation"
+      ],
+      "type": "string"
+    },
+    "navigational_status": {
+      "description": "ITU navigation status code (0..15).",
+      "type": "int32"
+    },
+    "position_accuracy": {
+      "description": "True if the reported position is high accuracy (DGPS).",
+      "type": "boolean"
+    },
+    "raim": {
+      "description": "RAIM (Receiver Autonomous Integrity Monitoring) flag.",
+      "type": "boolean"
+    },
+    "rate_of_turn": {
+      "description": "Rate of turn in AIS-encoded units.",
+      "type": "int32"
+    },
+    "ship_type": {
+      "description": "Kebab-case ship-type bucket. For static reports this is derived directly from the AIS Type-5/24 ShipType field via the standard ITU-R M.1371 vocabulary (e.g. 'cargo', 'tanker', 'passenger', 'fishing', 'tug', 'pleasure-craft'). For position reports it is looked up from an in-process ship-type cache keyed by MMSI; if no static report has been observed for the MMSI yet, the value is 'unknown'.",
+      "type": "string"
+    },
+    "sog": {
+      "description": "Speed over ground in knots (0..102.2).",
+      "type": "double"
+    },
+    "timestamp": {
+      "description": "AIS report timestamp seconds-of-minute (0..59, 60..63 = special).",
+      "type": "int32"
+    },
+    "true_heading": {
+      "description": "True heading in degrees (0..359, 511 = not available).",
+      "type": "int32"
+    },
+    "user_id": {
+      "description": "Source AIS UserID (numeric MMSI, 9-digit).",
+      "type": "int32"
+    }
+  },
+  "required": [
+    "mmsi",
+    "flag",
+    "ship_type",
+    "geohash5",
+    "msg_type",
+    "user_id",
+    "latitude",
+    "longitude",
+    "message_id"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/net.vatsim.jstruct/schemas/net.vatsim.PilotPosition",
+  "description": "Current position, flight plan summary, and state of a pilot connected to the VATSIM virtual aviation network.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://data.vatsim.net/v3/vatsim-data.json"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{callsign}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "net.vatsim.PilotPosition"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "net.vatsim.PilotPosition",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.pilots/messages/net.vatsim.PilotPosition/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "PilotPosition",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.pilots/messages/net.vatsim.PilotPosition",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.pilots/messages/net.vatsim.PilotPosition/versions",
+  "xid": "/messagegroups/net.vatsim.pilots/messages/net.vatsim.PilotPosition"
+}

@@ -1,0 +1,43 @@
+{
+  "org.ligo.gracedb.Superevent": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/org.ligo.gracedb.jstruct/schemas/org.ligo.gracedb.Superevent",
+    "description": "A gravitational wave candidate superevent from the LIGO/Virgo/KAGRA collaboration, published via GraceDB. A superevent aggregates one or more pipeline detections into a single candidate and carries significance, classification, and alert-lifecycle metadata.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{source_uri}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{superevent_id}"
+      },
+      "time": {
+        "required": false,
+        "type": "timestamp",
+        "value": "{created}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "org.ligo.gracedb.Superevent"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "org.ligo.gracedb.Superevent",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/org.ligo.gracedb/messages/org.ligo.gracedb.Superevent/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Superevent",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/org.ligo.gracedb/messages/org.ligo.gracedb.Superevent",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/org.ligo.gracedb/messages/org.ligo.gracedb.Superevent/versions",
+    "xid": "/messagegroups/org.ligo.gracedb/messages/org.ligo.gracedb.Superevent"
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "$id": "https://aviationweather.gov/schemas/gov/noaa/aviationweather/Sigmet",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "SIGMET (Significant Meteorological Information) advisory from the AviationWeather.gov API. Covers both US domestic convective/non-convective SIGMETs and international SIGMETs. Reports hazardous weather conditions for aviation including thunderstorms, turbulence, icing, and volcanic ash.",
+  "name": "Sigmet",
+  "properties": {
+    "altitude_hi": {
+      "description": "Upper altitude limit of the hazard area in feet. From altitudeHi1 for US SIGMETs or top for international SIGMETs.",
+      "symbol": "ft",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "[ft_i]"
+    },
+    "altitude_low": {
+      "description": "Lower altitude limit of the hazard area in feet. From altitudeLow1 for US SIGMETs or base for international SIGMETs.",
+      "symbol": "ft",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "[ft_i]"
+    },
+    "coords": {
+      "description": "JSON-encoded array of coordinate objects defining the hazard area polygon. Each object has 'lat' (number) and 'lon' (number). Example: '[{\"lat\":41.88,\"lon\":-123.70},{\"lat\":40.00,\"lon\":-124.23}]'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hazard": {
+      "description": "Weather hazard type: 'CONVECTIVE' for US convective SIGMETs, 'TS' (thunderstorm), 'TURB' (turbulence), 'ICE' (icing), 'VA' (volcanic ash), 'MTW' (mountain wave), etc.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "icao_id": {
+      "description": "ICAO identifier for the issuing office (e.g. 'KKCI' for the Kansas City Aviation Weather Center) or FIR identifier for international SIGMETs.",
+      "type": "string"
+    },
+    "movement_dir": {
+      "description": "Direction of movement of the weather phenomenon. Numeric degrees for US SIGMETs, cardinal direction string (e.g. 'NE') for international.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "movement_spd": {
+      "description": "Speed of movement of the weather phenomenon. Numeric knots for US SIGMETs, knots string for international.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "qualifier": {
+      "description": "Hazard qualifier for international SIGMETs (e.g. 'EMBD' for embedded, 'SEV' for severe, 'OBSC' for obscured). Null for US domestic SIGMETs.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "raw_sigmet": {
+      "description": "Full raw SIGMET text as received from the upstream source.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "region": {
+      "description": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "series_id": {
+      "description": "SIGMET series identifier combining alphanumeric sequence (e.g. '6W' for domestic, '8' for international).",
+      "type": "string"
+    },
+    "severity": {
+      "description": "Severity level indicator from the severity field in the US SIGMET response. Higher values indicate greater severity.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sigmet_id": {
+      "description": "Normalized routing field 'sigmet_id' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "sigmet_type": {
+      "description": "SIGMET classification: 'SIGMET' for US domestic, 'ISIGMET' for international SIGMETs.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "valid_time_from": {
+      "description": "Start of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z).",
+      "type": "datetime"
+    },
+    "valid_time_to": {
+      "description": "End of the SIGMET validity period as a Unix epoch timestamp (seconds since 1970-01-01T00:00:00Z).",
+      "type": "datetime"
+    }
+  },
+  "required": [
+    "icao_id",
+    "series_id",
+    "valid_time_from",
+    "valid_time_to"
+  ],
+  "type": "object"
+}

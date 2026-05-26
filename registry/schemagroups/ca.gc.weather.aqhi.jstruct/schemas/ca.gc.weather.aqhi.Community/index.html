@@ -1,0 +1,70 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/canada-aqhi/schemas/ca.gc.weather.aqhi.Community",
+  "$root": "/definitions/ca/gc/weather/aqhi/Community",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "ca": {
+      "gc": {
+        "weather": {
+          "aqhi": {
+            "Community": {
+              "description": "Reference data for a Canadian Air Quality Health Index reporting community, including its stable CGNDB identifier and current upstream feed URLs.",
+              "name": "Community",
+              "properties": {
+                "cgndb_code": {
+                  "description": "Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.",
+                  "pattern": "^[A-Z0-9]{5}$",
+                  "type": "string"
+                },
+                "community_name": {
+                  "description": "English AQHI community name as published by Environment and Climate Change Canada.",
+                  "type": "string"
+                },
+                "forecast_url": {
+                  "description": "Current XML forecast feed URL for the AQHI community, or null when a public forecast feed is not available.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "latitude": {
+                  "description": "Latitude of the AQHI community reference point in WGS84 decimal degrees.",
+                  "maximum": 90,
+                  "minimum": -90,
+                  "type": "double"
+                },
+                "longitude": {
+                  "description": "Longitude of the AQHI community reference point in WGS84 decimal degrees.",
+                  "maximum": 180,
+                  "minimum": -180,
+                  "type": "double"
+                },
+                "observation_url": {
+                  "description": "Current XML observation feed URL for the AQHI community, or null when observations are not distributed for that community.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "province": {
+                  "description": "Two-letter Canadian province or territory abbreviation resolved for the AQHI community.",
+                  "pattern": "^[A-Z]{2}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "province",
+                "community_name",
+                "cgndb_code",
+                "latitude",
+                "longitude"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "Community"
+}

@@ -1,0 +1,39 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.Station",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://data.weather.gov.hk"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{place_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "HK.Gov.HKO.Weather.Station"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "HK.Gov.HKO.Weather.mqtt.Station",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "protocol": "MQTT/5.0",
+    "protocoloptions": {
+      "qos": 1,
+      "retain": true,
+      "topic_name": "weather/hk/hko/hko-hong-kong/{district}/{place_id}/info"
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/HK.Gov.HKO.Weather.mqtt/messages/HK.Gov.HKO.Weather.mqtt.Station/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/HK.Gov.HKO.Weather.mqtt/messages/HK.Gov.HKO.Weather.mqtt.Station/versions/1"
+  }
+}

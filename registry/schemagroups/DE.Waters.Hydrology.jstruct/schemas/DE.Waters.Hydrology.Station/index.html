@@ -1,0 +1,81 @@
+{
+  "$id": "https://example.com/schemas/DE/Waters/Hydrology/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference details for one monitoring station or site in the German Waters source.",
+  "name": "Station",
+  "properties": {
+    "alarm_level_cm": {
+      "description": "Provider-supplied alarm level cm value for this record.",
+      "type": "double"
+    },
+    "alarm_level_m3s": {
+      "description": "Provider-supplied alarm level m3s value for this record.",
+      "type": "double"
+    },
+    "altitude": {
+      "altnames": {
+        "lang:de": "Hoehe"
+      },
+      "description": "Provider-supplied altitude value for this record.",
+      "type": "double"
+    },
+    "latitude": {
+      "description": "Latitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "longitude": {
+      "description": "Longitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "provider": {
+      "description": "Provider-supplied provider value for this record.",
+      "type": "string"
+    },
+    "region": {
+      "description": "Provider-supplied region value for this record.",
+      "type": "string"
+    },
+    "river_km": {
+      "description": "Provider-supplied river km value for this record.",
+      "type": "double"
+    },
+    "state": {
+      "description": "State, province, or region containing the station.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Human-readable name of the monitoring station.",
+      "type": "string"
+    },
+    "station_type": {
+      "description": "Provider-supplied station type value for this record.",
+      "type": "string"
+    },
+    "warn_level_cm": {
+      "description": "Provider-supplied warn level cm value for this record.",
+      "type": "double"
+    },
+    "warn_level_m3s": {
+      "description": "Provider-supplied warn level m3s value for this record.",
+      "type": "double"
+    },
+    "water_body": {
+      "altnames": {
+        "lang:de": "Gewaesser"
+      },
+      "description": "Provider-supplied water body value for this record.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name",
+    "water_body",
+    "provider"
+  ],
+  "type": "object"
+}

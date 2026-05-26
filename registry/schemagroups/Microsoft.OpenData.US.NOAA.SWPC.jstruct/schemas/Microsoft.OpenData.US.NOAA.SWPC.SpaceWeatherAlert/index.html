@@ -1,0 +1,26 @@
+{
+  "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/SpaceWeatherAlert",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "NOAA Space Weather Prediction Center alert, watch, or warning bulletin. Alerts are issued for observed or expected space weather conditions that may affect technology systems on Earth or in space, including geomagnetic storms (ALTK/WARK), solar radiation storms (ALTPC/WARPC), and radio blackouts (ALTXR/SUM).",
+  "name": "SpaceWeatherAlert",
+  "properties": {
+    "issue_datetime": {
+      "description": "Date and time the alert was issued by SWPC, formatted as 'YYYY Mon DD HHMM UTC' (e.g., '2024 Jan 01 0030 UTC').",
+      "type": "string"
+    },
+    "message": {
+      "description": "Full text body of the SWPC alert bulletin, including the message code, serial number, issue time, IP code, validity period, and detailed description of the observed or expected space weather condition with numerical thresholds.",
+      "type": "string"
+    },
+    "product_id": {
+      "description": "Unique SWPC product identifier for this alert bulletin, combining the alert type code and serial number or date (e.g., 'ALTK04-20240101'). Used as the Kafka message key.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "product_id",
+    "issue_datetime",
+    "message"
+  ],
+  "type": "object"
+}

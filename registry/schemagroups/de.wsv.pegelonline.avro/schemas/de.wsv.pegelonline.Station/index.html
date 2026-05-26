@@ -1,0 +1,74 @@
+{
+  "description": "Reference details for one monitoring station or site in the PegelOnline source.",
+  "doc": "WSV PegelOnline gauge installation. Each record represents one physical Pegelmessstelle on a federally administered German inland or coastal waterway. Sourced from GET /stations.json on the PegelOnline REST API v2. Emitted as reference data at bridge startup and re-emitted periodically. Avro mirror of the JsonStructure Station schema — keep field semantics in sync.",
+  "fields": [
+    {
+      "doc": "Stable UUID assigned by WSV to identify the gauge installation; persists across renaming, relocation, and timeseries reconfiguration. Sourced from the upstream 'uuid' field. Used as the CloudEvents subject and the Kafka partition key.",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "Official WSV Pegelmessstellennummer (6-8 digit numeric identifier) used in published German hydrology bulletins. National identifier only - not globally unique outside Germany; prefer station_id for joins.",
+      "name": "number",
+      "type": "string"
+    },
+    {
+      "doc": "Operator-assigned display label for the gauge (\u003c=40 characters). May differ from the town name when multiple gauges share a town. Mutable - do not use as a routing key or stable identifier.",
+      "name": "shortname",
+      "type": "string"
+    },
+    {
+      "doc": "Canonical gauge name as used in WSV publications (\u003c=255 characters). Mutable - do not use as a routing key.",
+      "name": "longname",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Position along the federal waterway expressed as river-kilometre downstream from the waterway's official origin (e.g. Rhine-km 0 at the Old Rhine Bridge in Konstanz). Decimal fraction is the hectometre offset within the km. Null for tidal / coastal gauges and for waterways without a km reference. Unit: km.",
+      "name": "km",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "doc": "Free-form name of the Wasserstrassen- und Schifffahrtsamt (WSA) operating the gauge - e.g. 'WSA RHEIN', 'WSA ELBE'. Sourced from the upstream 'agency' field. Not a stable identifier and not suitable as a routing key.",
+      "name": "agency",
+      "type": "string"
+    },
+    {
+      "doc": "WGS84 decimal-degree longitude of the gauge installation; positive east of the prime meridian, range -180..180. Surveyed to the gauge structure, not to the river centreline. Unit: degrees.",
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "doc": "WGS84 decimal-degree latitude of the gauge installation; positive north of the equator, range -90..90. Surveyed to the gauge structure, not to the river centreline. Unit: degrees.",
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "doc": "Federal waterway the gauge measures, sourced from the upstream nested 'water' object. Acts as the routing hierarchy for the MQTT Unified Namespace topology.",
+      "name": "water",
+      "type": {
+        "doc": "Federal waterway / water body the gauge measures, as returned in the nested 'water' object of GET /stations.json.",
+        "fields": [
+          {
+            "doc": "Lowercase routing token for the waterway as published by WSV - e.g. 'rhein', 'elbe', 'donau', 'mosel'. Used (after ASCII normalization) as the {water_shortname} template variable on the MQTT topic and the AMQP application property. Sourced from the upstream water.shortname key. Maximum 40 characters.",
+            "name": "shortname",
+            "type": "string"
+          },
+          {
+            "doc": "Canonical uppercase WSV name of the waterway (e.g. 'RHEIN', 'ELBE') as published in official German hydrology bulletins. Sourced from the upstream water.longname key. Maximum 255 characters.",
+            "name": "longname",
+            "type": "string"
+          }
+        ],
+        "name": "Water",
+        "type": "record"
+      }
+    }
+  ],
+  "name": "Station",
+  "namespace": "de.wsv.pegelonline",
+  "type": "record"
+}

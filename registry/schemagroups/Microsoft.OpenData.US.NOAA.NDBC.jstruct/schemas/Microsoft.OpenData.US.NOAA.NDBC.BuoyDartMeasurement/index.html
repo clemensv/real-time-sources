@@ -1,0 +1,37 @@
+{
+  "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyDartMeasurement",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Realtime DART tsunameter measurement from the NDBC .dart product. Each record contains a second-resolution timestamp, the documented NDBC measurement type code, and the measured water-column height for a DART station.",
+  "name": "BuoyDartMeasurement",
+  "properties": {
+    "measurement_type_code": {
+      "description": "Measurement type code from the T column in the DART file. NDBC documents 1 as a 15-minute measurement, 2 as a 1-minute measurement, and 3 as a 15-second measurement.",
+      "type": "integer"
+    },
+    "region": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "NDBC station identifier for the DART tsunameter site publishing the .dart realtime2 file.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm ss columns in the NDBC .dart realtime2 file.",
+      "type": "datetime"
+    },
+    "water_column_height": {
+      "description": "Height of the measured water column from the HEIGHT column in the DART file. Unit: meters.",
+      "symbol": "m",
+      "type": "double",
+      "unit": "m"
+    }
+  },
+  "required": [
+    "station_id",
+    "timestamp",
+    "measurement_type_code",
+    "water_column_height"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for Digitraffic Road CloudEvents on the `digitraffic-road-sensors` topic keyed by `{station_id}/{sensor_id}`.",
+  "endpointid": "fi.digitraffic.road.sensors.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/fi.digitraffic.road.sensors"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/fi.digitraffic.road.sensors.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{station_id}/{sensor_id}",
+      "topic": "digitraffic-road-sensors"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/fi.digitraffic.road.sensors.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/fi.digitraffic.road.sensors.Kafka"
+}

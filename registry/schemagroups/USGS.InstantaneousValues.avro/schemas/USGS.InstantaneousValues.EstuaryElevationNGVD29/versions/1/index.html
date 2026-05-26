@@ -1,0 +1,54 @@
+{
+  "description": "Payload record for estuary elevation n g v d29 events in the USGS Instantaneous Values source.",
+  "doc": "USGS estuary or ocean water surface elevation above NGVD 1929, feet. Parameter code 62619.",
+  "fields": [
+    {
+      "doc": "{\"description\": \"USGS site number.\"}",
+      "name": "site_no",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}",
+      "name": "datetime",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Estuary or ocean water surface elevation above NGVD 1929.\"}",
+      "name": "value",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "feet"
+    },
+    {
+      "doc": "{\"description\": \"Exception code when the value is unavailable.\"}",
+      "name": "exception",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "{\"description\": \"Qualifiers for the measurement.\"}",
+      "name": "qualifiers",
+      "type": {
+        "items": "string",
+        "type": "array"
+      }
+    },
+    {
+      "doc": "{\"description\": \"Parameter code.\"}",
+      "name": "parameter_cd",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timeseries code.\"}",
+      "name": "timeseries_cd",
+      "type": "string"
+    }
+  ],
+  "name": "EstuaryElevationNGVD29",
+  "namespace": "USGS.InstantaneousValues",
+  "type": "record"
+}

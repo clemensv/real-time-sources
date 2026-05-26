@@ -1,0 +1,16 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "format": "JsonStructure/draft-02",
+  "isdefault": true,
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.InstantaneousValues.jstruct/schemas/USGS.InstantaneousValues.WaterVelocity/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "schemaid": "USGS.InstantaneousValues.WaterVelocity",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.InstantaneousValues.jstruct/schemas/USGS.InstantaneousValues.WaterVelocity",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.InstantaneousValues.jstruct/schemas/USGS.InstantaneousValues.WaterVelocity/versions",
+  "xid": "/schemagroups/USGS.InstantaneousValues.jstruct/schemas/USGS.InstantaneousValues.WaterVelocity"
+}

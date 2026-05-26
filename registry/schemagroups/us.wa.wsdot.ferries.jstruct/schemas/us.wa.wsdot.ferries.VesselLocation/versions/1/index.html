@@ -1,0 +1,240 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/ferries/VesselLocation",
+  "$root": "/definitions/us/wa/wsdot/ferries/VesselLocation",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "us": {
+      "wa": {
+        "wsdot": {
+          "ferries": {
+            "VesselLocation": {
+              "description": "Real-time location and status of a Washington State Ferries vessel. WSF operates approximately 21 vessels across Puget Sound routes.",
+              "name": "VesselLocation",
+              "properties": {
+                "arriving_terminal_abbrev": {
+                  "altnames": {
+                    "json": "ArrivingTerminalAbbrev"
+                  },
+                  "description": "Arrival terminal abbreviation.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "arriving_terminal_id": {
+                  "altnames": {
+                    "json": "ArrivingTerminalID"
+                  },
+                  "description": "Arrival terminal ID.",
+                  "type": [
+                    "int32",
+                    "null"
+                  ]
+                },
+                "arriving_terminal_name": {
+                  "altnames": {
+                    "json": "ArrivingTerminalName"
+                  },
+                  "description": "Arrival terminal name.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "at_dock": {
+                  "altnames": {
+                    "json": "AtDock"
+                  },
+                  "description": "True if docked.",
+                  "type": "boolean"
+                },
+                "departing_terminal_abbrev": {
+                  "altnames": {
+                    "json": "DepartingTerminalAbbrev"
+                  },
+                  "description": "Departure terminal abbreviation.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "departing_terminal_id": {
+                  "altnames": {
+                    "json": "DepartingTerminalID"
+                  },
+                  "description": "Departure terminal ID.",
+                  "type": [
+                    "int32",
+                    "null"
+                  ]
+                },
+                "departing_terminal_name": {
+                  "altnames": {
+                    "json": "DepartingTerminalName"
+                  },
+                  "description": "Departure terminal name.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "eta": {
+                  "altnames": {
+                    "json": "Eta"
+                  },
+                  "description": "ISO 8601 UTC estimated arrival.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "eta_basis": {
+                  "altnames": {
+                    "json": "EtaBasis"
+                  },
+                  "description": "ETA calculation description.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "heading": {
+                  "altnames": {
+                    "json": "Heading"
+                  },
+                  "description": "Heading in degrees.",
+                  "symbol": "°",
+                  "type": [
+                    "int32",
+                    "null"
+                  ],
+                  "unit": "deg"
+                },
+                "in_service": {
+                  "altnames": {
+                    "json": "InService"
+                  },
+                  "description": "True if in active service.",
+                  "type": "boolean"
+                },
+                "latitude": {
+                  "altnames": {
+                    "json": "Latitude"
+                  },
+                  "description": "Latitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "left_dock": {
+                  "altnames": {
+                    "json": "LeftDock"
+                  },
+                  "description": "ISO 8601 UTC actual departure.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "longitude": {
+                  "altnames": {
+                    "json": "Longitude"
+                  },
+                  "description": "Longitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "mmsi": {
+                  "altnames": {
+                    "json": "Mmsi"
+                  },
+                  "description": "Maritime Mobile Service Identity for AIS.",
+                  "type": [
+                    "int32",
+                    "null"
+                  ]
+                },
+                "route_abbreviation": {
+                  "description": "Current route abbreviation.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "scheduled_departure": {
+                  "altnames": {
+                    "json": "ScheduledDeparture"
+                  },
+                  "description": "ISO 8601 UTC scheduled departure.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "speed": {
+                  "altnames": {
+                    "json": "Speed"
+                  },
+                  "description": "Speed in knots.",
+                  "symbol": "kn",
+                  "type": [
+                    "double",
+                    "null"
+                  ],
+                  "unit": "kn"
+                },
+                "timestamp": {
+                  "altnames": {
+                    "json": "TimeStamp"
+                  },
+                  "description": "ISO 8601 UTC position timestamp.",
+                  "type": "string"
+                },
+                "vessel_id": {
+                  "altnames": {
+                    "json": "VesselID"
+                  },
+                  "description": "Vessel identifier, stringified from upstream VesselID.",
+                  "type": "string"
+                },
+                "vessel_name": {
+                  "altnames": {
+                    "json": "VesselName"
+                  },
+                  "description": "Ferry vessel name.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "vessel_id",
+                "vessel_name",
+                "mmsi",
+                "in_service",
+                "at_dock",
+                "latitude",
+                "longitude",
+                "speed",
+                "heading",
+                "departing_terminal_id",
+                "departing_terminal_name",
+                "departing_terminal_abbrev",
+                "arriving_terminal_id",
+                "arriving_terminal_name",
+                "arriving_terminal_abbrev",
+                "scheduled_departure",
+                "left_dock",
+                "eta",
+                "eta_basis",
+                "route_abbreviation",
+                "timestamp"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "VesselLocation"
+}

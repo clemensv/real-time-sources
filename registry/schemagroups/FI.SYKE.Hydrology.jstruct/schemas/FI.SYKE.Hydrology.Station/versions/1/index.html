@@ -1,0 +1,62 @@
+{
+  "$id": "https://example.com/schemas/FI/SYKE/Hydrology/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference details for one monitoring station or site in the SYKE Hydrology source.",
+  "name": "Station",
+  "properties": {
+    "basin": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for syke-hydro.",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "Latitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "longitude": {
+      "description": "Longitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "municipality": {
+      "altnames": {
+        "lang:fi": "KuntaNimi"
+      },
+      "description": "Provider-supplied municipality value for this record.",
+      "type": "string"
+    },
+    "name": {
+      "altnames": {
+        "lang:fi": "Nimi"
+      },
+      "description": "Human-readable name of the station, site, or location.",
+      "type": "string"
+    },
+    "river_name": {
+      "altnames": {
+        "lang:fi": "PaaVesalNimi"
+      },
+      "description": "Name of the river or watercourse observed at the station.",
+      "type": "string"
+    },
+    "station_id": {
+      "altnames": {
+        "lang:fi": "Paikka_Id"
+      },
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    },
+    "water_area_name": {
+      "altnames": {
+        "lang:fi": "VesalNimi"
+      },
+      "description": "Human-readable name of the water area.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "name",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

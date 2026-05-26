@@ -1,0 +1,13 @@
+content-disposition:jp.jma.volcano.VolcanicWarning
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/jp.jma.volcano.jstruct/schemas/jp.jma.volcano.VolcanicWarning/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:jp.jma.volcano.VolcanicWarning
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/jp.jma.volcano.jstruct/schemas/jp.jma.volcano.VolcanicWarning/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/jp.jma.volcano.jstruct/schemas/jp.jma.volcano.VolcanicWarning/versions/1

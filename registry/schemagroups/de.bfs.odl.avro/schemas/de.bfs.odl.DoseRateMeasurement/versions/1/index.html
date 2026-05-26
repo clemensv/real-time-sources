@@ -1,0 +1,65 @@
+{
+  "doc": "A one-hour averaged ambient gamma dose rate measurement from a BfS ODL station.",
+  "fields": [
+    {
+      "doc": "Nine-digit station identifier (Kennziffer) of the measuring probe.",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "German federal state (Bundesland) derived from station Kennziffer AGS prefix.",
+      "name": "state",
+      "type": "string"
+    },
+    {
+      "doc": "Start of the measurement period in ISO 8601 UTC.",
+      "name": "start_measure",
+      "type": "string"
+    },
+    {
+      "doc": "End of the measurement period in ISO 8601 UTC.",
+      "name": "end_measure",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Gross ambient gamma dose rate in µSv/h. Null if not reported.",
+      "name": "value",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Cosmic radiation component in µSv/h. Null when not computed.",
+      "name": "value_cosmic",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Terrestrial radiation component in µSv/h. Null when not computed.",
+      "name": "value_terrestrial",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "doc": "Data validation flag. 1 = validated, 0 = preliminary.",
+      "name": "validated",
+      "type": "int"
+    },
+    {
+      "doc": "Nuclide identifier, typically 'Gamma-ODL-Brutto'.",
+      "name": "nuclide",
+      "type": "string"
+    }
+  ],
+  "name": "DoseRateMeasurement",
+  "namespace": "de.bfs.odl",
+  "type": "record"
+}

@@ -1,0 +1,80 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.WindSolarGeneration",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.WindSolarGeneration",
+    "description": "AMQP 1.0 binary CloudEvents variant for WindSolarGeneration, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}/{psrType}.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "datacontenttype": {
+        "required": false,
+        "type": "string",
+        "value": "application/json"
+      },
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://transparency.entsoe.eu/api"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{inDomain}/{psrType}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "eu.entsoe.transparency.WindSolarGeneration"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WindSolarGeneration",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "event-type": {
+          "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix.",
+          "required": false,
+          "type": "string",
+          "value": "WindSolarGeneration"
+        },
+        "in-domain": {
+          "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{inDomain}"
+        },
+        "psr-type": {
+          "description": "ENTSO-E routing axis `psrType` copied from the payload for AMQP broker filters without decoding JSON.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{psrType}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Azure Service Bus / Event Hubs partition key; broker-specific annotation that mirrors the CloudEvent subject and Kafka key to preserve per-identity ordering.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{inDomain}/{psrType}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{inDomain}/{psrType}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/eu.entsoe.transparency.ByDomainPsrType.amqp/messages/eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/eu.entsoe.transparency.ByDomainPsrType.amqp/messages/eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration/versions/1"
+  }
+}

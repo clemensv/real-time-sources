@@ -1,0 +1,69 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/jp/odpt/docomobikeshare/BikeshareStationStatus",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record from Docomo Bike Share open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "name": "BikeshareStationStatus",
+  "properties": {
+    "is_installed": {
+      "description": "Indicates whether the station infrastructure is installed on-street and operational. A value of false means the station is temporarily or permanently removed from service.",
+      "type": "boolean"
+    },
+    "is_renting": {
+      "description": "Indicates whether the station is currently allowing vehicle rentals. May be false even when bikes are present, for example during a system outage.",
+      "type": "boolean"
+    },
+    "is_returning": {
+      "description": "Indicates whether the station is currently accepting vehicle returns. May be false even when docks are empty, for example during a system outage.",
+      "type": "boolean"
+    },
+    "last_reported": {
+      "description": "Unix timestamp in seconds (UTC) indicating the last time this station's status was updated by the operator's system. Absent if the operator does not publish this value.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "num_bikes_available": {
+      "description": "Number of functional vehicles (bicycles) physically available for rental at this station at the time of the last update.",
+      "type": "int32"
+    },
+    "num_bikes_disabled": {
+      "description": "Number of disabled or broken vehicles at the station that are not available for rental. Absent if the operator does not publish this value.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "num_docks_available": {
+      "description": "Number of empty and functional docking points at the station where a customer can return a vehicle. Absent if the operator does not publish this value.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "num_docks_disabled": {
+      "description": "Number of broken or disabled docking points at the station that cannot accept vehicle returns. Absent if the operator does not publish this value.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "station_id": {
+      "description": "Unique identifier of the station within the GBFS feed, for example '00010137'. Matches the station_id in the corresponding BikeshareStation event.",
+      "type": "string"
+    },
+    "system_id": {
+      "description": "Identifier of the bikeshare system this station belongs to, for example 'docomo-cycle-tokyo'. Included in the payload so that the composite Kafka key {system_id}/{station_id} can be resolved from the event data.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "system_id",
+    "station_id",
+    "num_bikes_available",
+    "is_installed",
+    "is_renting",
+    "is_returning"
+  ],
+  "type": "object"
+}

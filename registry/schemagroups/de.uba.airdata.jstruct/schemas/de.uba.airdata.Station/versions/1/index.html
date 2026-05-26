@@ -1,0 +1,128 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/schemas/de/uba/airdata/Station",
+  "$root": "/definitions/de/uba/airdata/Station",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "de": {
+      "uba": {
+        "airdata": {
+          "Station": {
+            "description": "Reference data for a UBA air quality monitoring station, including geographic position, station environment, and the denormalized monitoring network metadata published by the UBA air_data/v3 station catalog.",
+            "name": "Station",
+            "properties": {
+              "active_from": {
+                "description": "Station activation date from the 'station active from' column in ISO date form 'YYYY-MM-DD'.",
+                "type": "string"
+              },
+              "active_to": {
+                "description": "Station deactivation date from the 'station active to' column in ISO date form 'YYYY-MM-DD'. Null means the station is still active.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "latitude": {
+                "description": "Station latitude from the 'station latitude' column in WGS84 decimal degrees.",
+                "type": "double"
+              },
+              "longitude": {
+                "description": "Station longitude from the 'station longitude' column in WGS84 decimal degrees.",
+                "type": "double"
+              },
+              "network_code": {
+                "description": "Short network code from the 'network code' column, usually a two-letter German state code such as 'BE' or 'BB', or 'UB' for UBA.",
+                "type": "string"
+              },
+              "network_id": {
+                "description": "Stable numeric monitoring network identifier from the 'network id' column. This maps to the federal state or the UBA-operated network.",
+                "type": "int32"
+              },
+              "network_name": {
+                "description": "Monitoring network name from the 'network name' column, typically the English federal state name such as 'Berlin' or 'Brandenburg'.",
+                "type": "string"
+              },
+              "setting_name": {
+                "description": "Station environment description from the 'station setting name' column, for example 'urban area'.",
+                "type": "string"
+              },
+              "setting_short": {
+                "description": "Short station environment code from the 'station setting short name' column, for example 'urban'.",
+                "type": "string"
+              },
+              "station_city": {
+                "description": "City or locality from the 'station city' column where the monitoring station is located.",
+                "type": "string"
+              },
+              "station_code": {
+                "description": "Official station code from the 'station code' column, typically the European Environment Agency style identifier such as 'DEBE021' or 'DEBB003'.",
+                "type": "string"
+              },
+              "station_id": {
+                "description": "Stable numeric UBA station identifier from the 'station id' column. This is the station key used for CloudEvents subject and Kafka key.",
+                "type": "int32"
+              },
+              "station_name": {
+                "description": "Human-readable station name from the 'station name' column as published by UBA.",
+                "type": "string"
+              },
+              "station_synonym": {
+                "description": "Legacy or alternate station short code from the 'station synonym' column. UBA may publish an empty value when no synonym exists.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "street": {
+                "description": "Street name from the 'station street' column. Null is used when UBA does not publish a street value.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "street_nr": {
+                "description": "Street number from the 'station street nr' column. Null is used when the source publishes an empty value.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "type_name": {
+                "description": "Station type classification from the 'station type name' column, for example 'traffic', 'background', or 'industrial'.",
+                "type": "string"
+              },
+              "zip_code": {
+                "description": "Postal code from the 'station zip code' column. Null is used when the source publishes an empty value.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "station_id",
+              "station_code",
+              "station_name",
+              "station_city",
+              "station_synonym",
+              "active_from",
+              "active_to",
+              "longitude",
+              "latitude",
+              "network_id",
+              "network_code",
+              "network_name",
+              "setting_name",
+              "setting_short",
+              "type_name",
+              "street",
+              "street_nr",
+              "zip_code"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "Station"
+}

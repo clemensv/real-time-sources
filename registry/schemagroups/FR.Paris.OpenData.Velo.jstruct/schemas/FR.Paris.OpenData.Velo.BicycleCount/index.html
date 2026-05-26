@@ -1,0 +1,76 @@
+{
+  "$id": "https://schemas.real-time-sources.io/paris-bicycle-counters/BicycleCount/v1",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value.",
+  "name": "BicycleCount",
+  "properties": {
+    "ce_id": {
+      "description": "Deterministic CloudEvents id composed from counter_id and hourly count date for subscriber deduplication.",
+      "type": "string"
+    },
+    "count": {
+      "alternates": [
+        {
+          "description": "Original French field name in the Paris Open Data API.",
+          "name": "sum_counts"
+        }
+      ],
+      "description": "Number of bicycles counted during the one-hour window (mapped from 'sum_counts').",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "counter_id": {
+      "alternates": [
+        {
+          "description": "Original French field name in the Paris Open Data API.",
+          "name": "id_compteur"
+        }
+      ],
+      "altnames": {
+        "lang:fr": "id_compteur"
+      },
+      "description": "Unique identifier for the counting channel (mapped from 'id_compteur').",
+      "type": "string"
+    },
+    "counter_name": {
+      "alternates": [
+        {
+          "description": "Original French field name in the Paris Open Data API.",
+          "name": "nom_compteur"
+        }
+      ],
+      "altnames": {
+        "lang:fr": "nom_compteur"
+      },
+      "description": "Human-readable name of the counter including street name and direction (mapped from 'nom_compteur').",
+      "type": "string"
+    },
+    "date": {
+      "description": "Start of the one-hour counting window in ISO 8601 format with timezone offset.",
+      "type": "datetime"
+    },
+    "latitude": {
+      "description": "Latitude of the counter location in decimal degrees (WGS 84).",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "longitude": {
+      "description": "Longitude of the counter location in decimal degrees (WGS 84).",
+      "type": [
+        "double",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "ce_id",
+    "counter_id",
+    "counter_name",
+    "date"
+  ],
+  "type": "object"
+}

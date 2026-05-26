@@ -1,0 +1,86 @@
+{
+  "$id": "https://aviationweather.gov/schemas/gov/noaa/aviationweather/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference record for an aviation weather reporting station. Sourced from the AviationWeather.gov station information endpoint. Fields cover ICAO, IATA, FAA, and WMO identifiers, location, elevation, and available data products.",
+  "name": "Station",
+  "properties": {
+    "country": {
+      "description": "Two-character ISO 3166-1 alpha-2 country code (e.g. 'US', 'GB').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "elevation": {
+      "description": "Station field elevation in meters above mean sea level.",
+      "symbol": "m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "faa_id": {
+      "description": "FAA location identifier. Three or four character code assigned by the FAA. May be null for non-US stations.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "iata_id": {
+      "description": "IATA airport code, a three-character code used by the airline industry (e.g. 'JFK'). May be null for non-airport stations.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "icao_id": {
+      "description": "ICAO station identifier. Four-character alphanumeric code assigned by ICAO (e.g. 'KJFK' for John F. Kennedy International Airport).",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "Station latitude in decimal degrees north. Negative values indicate southern hemisphere.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "deg"
+    },
+    "longitude": {
+      "description": "Station longitude in decimal degrees east. Negative values indicate western hemisphere.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "deg"
+    },
+    "name": {
+      "description": "Human-readable site name from the AviationWeather station database, e.g. 'New York/JF Kennedy Intl'.",
+      "type": "string"
+    },
+    "site_type": {
+      "description": "Comma-separated list of data products available at this station from the siteType array (e.g. 'METAR,TAF').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "state": {
+      "description": "State or province code where the station is located (e.g. 'NY'). May be null for non-US stations.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "wmo_id": {
+      "description": "WMO station identifier. Five-digit numeric code assigned by the World Meteorological Organization. May be null.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "icao_id",
+    "name",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

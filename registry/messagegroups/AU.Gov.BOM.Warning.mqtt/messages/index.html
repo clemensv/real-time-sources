@@ -1,0 +1,42 @@
+{
+  "AU.Gov.BOM.Warning.mqtt.WarningBulletin": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/AU.Gov.BOM.Warning/messages/AU.Gov.BOM.Warning.WarningBulletin",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://www.bom.gov.au/rss/"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{state}/{severity}/{warning_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "AU.Gov.BOM.Warning.WarningBulletin"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "AU.Gov.BOM.Warning.mqtt.WarningBulletin",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.BOM.Warning.mqtt/messages/AU.Gov.BOM.Warning.mqtt.WarningBulletin/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WarningBulletin",
+    "protocol": "MQTT/5.0",
+    "protocoloptions": {
+      "qos": 1,
+      "retain": false,
+      "topic_name": "alerts/au/bom/bom-australia/{state}/{severity}/{warning_id}/warning"
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.BOM.Warning.mqtt/messages/AU.Gov.BOM.Warning.mqtt.WarningBulletin",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.BOM.Warning.mqtt/messages/AU.Gov.BOM.Warning.mqtt.WarningBulletin/versions",
+    "xid": "/messagegroups/AU.Gov.BOM.Warning.mqtt/messages/AU.Gov.BOM.Warning.mqtt.WarningBulletin"
+  }
+}

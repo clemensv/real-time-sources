@@ -1,0 +1,283 @@
+{
+  "$id": "https://api.tfl.gov.uk/schemas/uk/gov/tfl/road/RoadDisruption",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "definitions": {
+    "CorridorIdArray": {
+      "description": "Array of road corridor identifiers affected by this disruption.",
+      "items": {
+        "description": "A transport update from Transport for London. It carries road disruption and traffic status updates for London roads and disruption areas.",
+        "type": "string"
+      },
+      "name": "CorridorIdArray",
+      "type": "array"
+    },
+    "Street": {
+      "description": "An individual street segment affected by a road disruption in London. Part of the 'streets' array in a RoadDisruption event.",
+      "name": "Street",
+      "properties": {
+        "closure": {
+          "description": "Type of closure applied to this street. Corresponds to 'closure' in the upstream streets entry. Values: 'Full', 'Partial'.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "directions": {
+          "description": "Affected directions of travel on this street. Corresponds to 'directions' in the upstream streets entry. Examples: 'Both Directions', 'Northbound', 'Southbound'.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "description": "Street name as reported by TfL. Corresponds to 'name' in the upstream streets array entry.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_system_id": {
+          "altnames": {
+            "upstream": "sourceSystemId"
+          },
+          "description": "Source system identifier for this street record. Corresponds to 'sourceSystemId' in the upstream streets entry.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_system_key": {
+          "altnames": {
+            "upstream": "sourceSystemKey"
+          },
+          "description": "Source system key for this street record. Corresponds to 'sourceSystemKey' in the upstream streets entry.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "StreetArray": {
+      "description": "Array of street segments affected by this disruption.",
+      "items": {
+        "description": "A transport update from Transport for London. It carries road disruption and traffic status updates for London roads and disruption areas.",
+        "type": {
+          "$ref": "/definitions/Street"
+        }
+      },
+      "name": "StreetArray",
+      "type": "array"
+    }
+  },
+  "description": "Real-time road disruption event on the TfL road network fetched from GET /Road/all/Disruption.",
+  "name": "RoadDisruption",
+  "properties": {
+    "category": {
+      "description": "Top-level category of the disruption. Corresponds to 'category' in the upstream response. Common values: 'RealTime' for live incidents, 'PlannedWork' for scheduled roadworks.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "comments": {
+      "description": "Free-text comments describing the disruption context. Corresponds to 'comments' in the upstream response. May include street names, junction descriptions, or operational notes.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "corridor_ids": {
+      "altnames": {
+        "upstream": "corridorIds"
+      },
+      "description": "Array of road corridor identifiers affected by this disruption. Corresponds to 'corridorIds' in the upstream response. Examples: ['a2', 'a12']. May be empty or null for disruptions not associated with a specific named corridor.",
+      "type": [
+        {
+          "$ref": "/definitions/CorridorIdArray"
+        },
+        "null"
+      ]
+    },
+    "current_update": {
+      "altnames": {
+        "upstream": "currentUpdate"
+      },
+      "description": "Latest operational update text for this disruption. Corresponds to 'currentUpdate' in the upstream response. Updated by TfL operators as the situation evolves.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "current_update_datetime": {
+      "altnames": {
+        "upstream": "currentUpdateDateTime"
+      },
+      "description": "Timestamp when the current update text was last modified. Corresponds to 'currentUpdateDateTime' in the upstream response.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "disruption_id": {
+      "altnames": {
+        "upstream": "id"
+      },
+      "description": "Unique identifier for the disruption assigned by the TfL Traffic Information Management System (TIMS). Corresponds to 'id' in the upstream response. Format: 'TIMS-NNNNN' or similar TIMS prefix.",
+      "type": "string"
+    },
+    "end_datetime": {
+      "altnames": {
+        "upstream": "endDateTime"
+      },
+      "description": "Scheduled or actual end date and time of the disruption. Corresponds to 'endDateTime' in the upstream response. May be null for open-ended incidents.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "geography": {
+      "description": "GeoJSON geometry of the disruption area as a JSON string. Corresponds to 'geography' in the upstream response. May be a Point, LineString, or Polygon representing the spatial extent of the disruption.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "geometry": {
+      "description": "Secondary geometry field from the TfL database as a JSON string. Corresponds to 'geometry' in the upstream response. May contain database geometry in an alternate representation.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "has_closures": {
+      "altnames": {
+        "upstream": "hasClosures"
+      },
+      "description": "Whether this disruption includes full or partial road closures. Corresponds to 'hasClosures' in the upstream response.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "is_active": {
+      "altnames": {
+        "upstream": "isActive"
+      },
+      "description": "Whether this disruption is currently active. Corresponds to 'isActive' in the upstream response.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "is_provisional": {
+      "altnames": {
+        "upstream": "isProvisional"
+      },
+      "description": "Whether the disruption timing or details are provisional and subject to change. Corresponds to 'isProvisional' in the upstream response.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "last_modified_time": {
+      "altnames": {
+        "upstream": "lastModifiedTime"
+      },
+      "description": "Timestamp when this disruption record was last modified in the TfL system. Corresponds to 'lastModifiedTime' in the upstream response. Used for deduplication: disruptions are re-emitted only when this value changes.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "level_of_interest": {
+      "altnames": {
+        "upstream": "levelOfInterest"
+      },
+      "description": "TfL classification of the level of public interest for this disruption. Corresponds to 'levelOfInterest' in the upstream response. Examples: 'Low', 'Medium', 'High'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "location": {
+      "description": "Free-text textual description of the disruption location. Corresponds to 'location' in the upstream response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ordinal": {
+      "description": "Ordinal rank of this disruption used for ordering within a severity level. Corresponds to 'ordinal' in the upstream response.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "point": {
+      "description": "Representative point location of the disruption as a WKT or coordinate string. Corresponds to 'point' in the upstream response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "road_id": {
+      "description": "Primary affected TfL road corridor identifier used by MQTT/UNS topics. Derived from the first upstream corridorIds entry when present, otherwise 'unknown'.",
+      "type": "string"
+    },
+    "severity": {
+      "description": "Normalized TfL-native severity for MQTT partitioning. Values: serious, severe, moderate, minor, information, closure. Upstream values are normalized to lowercase-kebab.",
+      "type": "string"
+    },
+    "start_datetime": {
+      "altnames": {
+        "upstream": "startDateTime"
+      },
+      "description": "Scheduled or actual start date and time of the disruption. Corresponds to 'startDateTime' in the upstream response.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "status": {
+      "description": "Current lifecycle status of the disruption. Corresponds to 'status' in the upstream response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "streets": {
+      "description": "Array of street segments affected by this disruption. Corresponds to 'streets' in the upstream response. Each entry describes an individual street with its closure type, affected directions, and geometry.",
+      "type": [
+        {
+          "$ref": "/definitions/StreetArray"
+        },
+        "null"
+      ]
+    },
+    "sub_category": {
+      "altnames": {
+        "upstream": "subCategory"
+      },
+      "description": "More detailed sub-category of the disruption. Corresponds to 'subCategory' in the upstream response. Examples: 'TfL planned works', 'Utility works', 'Incident', 'Traffic signal failure'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "url": {
+      "description": "URL to the TfL Unified API detail page for this disruption. Corresponds to 'url' in the upstream response.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "disruption_id",
+    "road_id",
+    "severity"
+  ],
+  "type": "object"
+}

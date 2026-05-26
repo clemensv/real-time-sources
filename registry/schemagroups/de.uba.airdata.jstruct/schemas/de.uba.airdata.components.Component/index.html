@@ -1,0 +1,50 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/schemas/de/uba/airdata/components/Component",
+  "$root": "/definitions/de/uba/airdata/components/Component",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "de": {
+      "uba": {
+        "airdata": {
+          "components": {
+            "Component": {
+              "description": "Reference data for an air pollutant component published by the UBA air_data/v3 components catalog, including the stable numeric component identifier, code, symbol, unit, and English display name.",
+              "name": "Component",
+              "properties": {
+                "component_code": {
+                  "description": "Short UBA component code from the 'component code' column, such as 'PM10', 'NO2', 'O3', or 'PM2'.",
+                  "type": "string"
+                },
+                "component_id": {
+                  "description": "Stable numeric UBA component identifier from the 'component id' column. This is the CloudEvents subject and Kafka key for component events.",
+                  "type": "int32"
+                },
+                "name": {
+                  "description": "English component display name from the 'component name' column, such as 'Particulate matter' or 'Nitrogen dioxide'.",
+                  "type": "string"
+                },
+                "symbol": {
+                  "description": "Published component symbol from the 'component symbol' column. This may include Unicode subscripts, for example 'PM₁₀' or 'NO₂'.",
+                  "type": "string"
+                },
+                "unit": {
+                  "description": "Published measurement unit string from the 'component unit' column, such as 'µg/m³', 'mg/m³', or 'ng/m³'.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "component_id",
+                "component_code",
+                "symbol",
+                "unit",
+                "name"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "Component"
+}

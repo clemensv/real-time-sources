@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/us.wa.wsdot.weather.jstruct/schemas/us.wa.wsdot.weather.WeatherReading",
+    "description": "A current weather reading from a WSDOT road weather station including temperature, wind, precipitation, pressure, humidity, visibility, and sky coverage.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "us.wa.wsdot.weather.WeatherReading"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "us.wa.wsdot.weather.WeatherReading",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherReading",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.weather/messages/us.wa.wsdot.weather.WeatherReading/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/us.wa.wsdot.weather/messages/us.wa.wsdot.weather.WeatherReading/versions/1"
+  }
+}

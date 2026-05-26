@@ -1,0 +1,78 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/eu/jrc/eurdep/DoseRateReading",
+  "$root": "/definitions/eu/jrc/eurdep/DoseRateReading",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "eu": {
+      "jrc": {
+        "eurdep": {
+          "DoseRateReading": {
+            "description": "An ambient gamma dose rate reading from a EURDEP monitoring station. The gross dose rate value is the total ambient dose equivalent rate at the station location, expressed in microsieverts per hour (µSv/h). Each reading covers a one-hour measurement window and includes validation status and the nuclide type measured. Normal European background levels range from approximately 0.04 to 0.20 µSv/h depending on local geology and altitude.",
+            "name": "DoseRateReading",
+            "properties": {
+              "country": {
+                "description": "ISO 3166-1 alpha-2 country code for the station, derived from the first two characters of station_id and used as the {country} routing axis.",
+                "type": "string"
+              },
+              "duration": {
+                "description": "Measurement integration period as reported by the upstream system. Example: '1h' for one hour.",
+                "type": "string"
+              },
+              "end_measure": {
+                "description": "End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-08T20:00:00Z'.",
+                "type": "string"
+              },
+              "name": {
+                "description": "Human-readable name of the station location. Included for convenience so readings are self-describing without a Station reference join.",
+                "type": "string"
+              },
+              "nuclide": {
+                "description": "Nuclide identifier describing the type of radiation measured. For standard gamma dose rate probes this is 'Gamma-ODL-Brutto' (gross gamma ambient dose rate).",
+                "type": "string"
+              },
+              "start_measure": {
+                "description": "Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-08T19:00:00Z'.",
+                "type": "string"
+              },
+              "station_id": {
+                "description": "Alphanumeric station identifier from the EURDEP network. Matches the station_id in the Station schema. Example: 'AT0001'.",
+                "type": "string"
+              },
+              "unit": {
+                "description": "Unit of the dose rate value as reported by the upstream EURDEP system. Typically 'µSv/h' (microsieverts per hour), though encoding artifacts may appear in the raw API response.",
+                "type": "string"
+              },
+              "validated": {
+                "description": "Data validation status flag. 0 = not validated, 1 = validated by national authority, 2 = validated by EURDEP system. Higher values indicate stronger quality assurance.",
+                "type": "int32"
+              },
+              "value": {
+                "description": "Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (µSv/h). Null if the station did not report a valid measurement for this interval.",
+                "symbol": "µSv/h",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "uSv/h"
+              }
+            },
+            "required": [
+              "station_id",
+              "country",
+              "name",
+              "value",
+              "unit",
+              "start_measure",
+              "end_measure",
+              "nuclide",
+              "duration",
+              "validated"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "DoseRateReading"
+}

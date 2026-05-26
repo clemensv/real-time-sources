@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/fi.digitraffic.marine.ais.jstruct/schemas/fi.digitraffic.marine.ais.VesselLocation",
+    "description": "A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://meri.digitraffic.fi/mqtt"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "fi.digitraffic.marine.ais.VesselLocation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.marine.ais.VesselLocation",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "VesselLocation",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselLocation/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselLocation/versions/1"
+  }
+}

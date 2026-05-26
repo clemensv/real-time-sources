@@ -1,0 +1,74 @@
+{
+  "dk.dmi.lightning.LightningSensor": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.lightning.LightningSensor",
+    "description": "Reference data for one of DMI's lightning detection sensors. Six DMI-owned sensors cover Denmark; third-party sensor IDs that appear in observation.sensors are not catalogued here.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{sensor_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "dk.dmi.lightning.LightningSensor"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "dk.dmi.lightning.LightningSensor",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningSensor/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "LightningSensor",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningSensor",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningSensor/versions",
+    "xid": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningSensor"
+  },
+  "dk.dmi.lightning.LightningStrike": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.lightning.LightningStrike",
+    "description": "A single triangulated lightning strike. Type 0 = cloud-to-ground negative, 1 = cloud-to-ground positive, 2 = cloud-to-cloud. amp is signed peak current in kA. observed timestamps have microsecond precision.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{strike_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "dk.dmi.lightning.LightningStrike"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "dk.dmi.lightning.LightningStrike",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningStrike/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "LightningStrike",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningStrike",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningStrike/versions",
+    "xid": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningStrike"
+  }
+}

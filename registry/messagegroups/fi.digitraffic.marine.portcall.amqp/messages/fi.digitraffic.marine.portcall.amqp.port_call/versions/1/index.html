@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/fi.digitraffic.marine.portcall/messages/fi.digitraffic.marine.portcall.PortCall",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "AMQP transport projection of port_call using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "fi.digitraffic.marine.portcall.amqp.port_call",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "port_call",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Partition key aligned with CloudEvent subject and Kafka key.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{port_call_id}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject — stable entity identifier matching CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{port_call_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.marine.portcall.amqp/messages/fi.digitraffic.marine.portcall.amqp.port_call/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/fi.digitraffic.marine.portcall.amqp/messages/fi.digitraffic.marine.portcall.amqp.port_call/versions/1"
+}

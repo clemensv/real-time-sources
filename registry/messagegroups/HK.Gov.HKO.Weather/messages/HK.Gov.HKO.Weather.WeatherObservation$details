@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/HK.Gov.HKO.Weather.jstruct/schemas/HK.Gov.HKO.Weather.WeatherObservation",
+  "description": "A current environmental measurement from the Hong Kong Observatory. It carries weather observations when the upstream feed reports a new or refreshed value.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://data.weather.gov.hk"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{place_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "HK.Gov.HKO.Weather.WeatherObservation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "HK.Gov.HKO.Weather.WeatherObservation",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.WeatherObservation/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WeatherObservation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.WeatherObservation",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.WeatherObservation/versions",
+  "xid": "/messagegroups/HK.Gov.HKO.Weather/messages/HK.Gov.HKO.Weather.WeatherObservation"
+}

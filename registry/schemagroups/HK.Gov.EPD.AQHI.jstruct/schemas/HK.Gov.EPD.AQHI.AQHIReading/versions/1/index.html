@@ -1,0 +1,60 @@
+{
+  "$id": "https://www.aqhi.gov.hk/schemas/HK/Gov/EPD/AQHI/AQHIReading",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current environmental measurement from Hong Kong's Environmental Protection Department. It carries air-quality health index and pollutant measurements when the upstream feed reports a new or refreshed value.",
+  "name": "AQHIReading",
+  "properties": {
+    "aqhi": {
+      "description": "AQHI value. Scale: 1 to 3 Low health risk, 4 to 6 Moderate, 7 High, 8 to 10 Very High, and above 10 Serious. Value 11 is used in the feed to indicate 10+ Serious.",
+      "minimum": 1,
+      "type": "integer"
+    },
+    "district": {
+      "description": "Hong Kong 18-district administrative area where the monitoring station is located, normalized to lowercase snake_case. Used as the {district} segment of the MQTT/UNS topic.",
+      "type": "string"
+    },
+    "health_risk_category": {
+      "altenums": [
+        "Low",
+        "Moderate",
+        "High",
+        "Very High",
+        "Serious"
+      ],
+      "description": "Health risk category derived from the AQHI value: Low, Moderate, High, Very High, or Serious.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "reading_time": {
+      "description": "Observation timestamp parsed from the feed DateTime field. The XML feed publishes RFC 2822 timestamps and the bridge emits ISO 8601 values.",
+      "type": "datetime"
+    },
+    "station_id": {
+      "description": "Stable station identifier in snake_case.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Station name as published in the EPD AQHI feed.",
+      "type": "string"
+    },
+    "station_type": {
+      "altenums": [
+        "General Stations",
+        "Roadside Stations"
+      ],
+      "description": "Station classification: General Stations or Roadside Stations.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name",
+    "station_type",
+    "district",
+    "reading_time",
+    "aqhi"
+  ],
+  "type": "object"
+}

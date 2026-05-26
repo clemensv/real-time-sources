@@ -1,0 +1,43 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.CurrentPredictions",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Microsoft.OpenData.US.NOAA.amqp.CurrentPredictions",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.amqp/messages/Microsoft.OpenData.US.NOAA.amqp.CurrentPredictions/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "CurrentPredictions",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "region": {
+        "description": "Routing property for AMQP subscription filters (region).",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{region}"
+      }
+    },
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.amqp/messages/Microsoft.OpenData.US.NOAA.amqp.CurrentPredictions",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.amqp/messages/Microsoft.OpenData.US.NOAA.amqp.CurrentPredictions/versions",
+  "xid": "/messagegroups/Microsoft.OpenData.US.NOAA.amqp/messages/Microsoft.OpenData.US.NOAA.amqp.CurrentPredictions"
+}

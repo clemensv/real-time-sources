@@ -1,0 +1,14 @@
+content-disposition:Bluesky.Graph.Follow
+content-length:1917
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Follow/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2024-11-14T12:00:03Z
+xregistry-epoch:1
+xregistry-format:Avro
+xregistry-isdefault:true
+xregistry-modifiedat:2024-11-14T12:00:03Z
+xregistry-schemaid:Bluesky.Graph.Follow
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Follow/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Follow/versions/1

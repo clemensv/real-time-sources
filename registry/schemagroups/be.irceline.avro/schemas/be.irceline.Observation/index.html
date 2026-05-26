@@ -1,0 +1,37 @@
+{
+  "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+  "doc": "Telemetry event for one IRCELINE measurement value.",
+  "fields": [
+    {
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Stable numeric timeseries identifier.",
+      "name": "timeseries_id",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Observation timestamp in ISO 8601 UTC form.",
+      "name": "timestamp",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Measured value from the IRCELINE getData response.",
+      "name": "value",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Published unit of measurement copied from the parent timeseries.",
+      "name": "uom",
+      "type": "string"
+    }
+  ],
+  "name": "Observation",
+  "namespace": "be.irceline",
+  "type": "record"
+}

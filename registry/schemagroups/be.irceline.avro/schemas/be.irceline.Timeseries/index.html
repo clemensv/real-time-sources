@@ -1,0 +1,138 @@
+{
+  "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+  "doc": "Reference event for one IRCELINE station-timeseries combination.",
+  "fields": [
+    {
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Stable numeric timeseries identifier from id.",
+      "name": "timeseries_id",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Descriptive upstream timeseries label.",
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Published unit of measurement.",
+      "name": "uom",
+      "type": "string"
+    },
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the IRCELINE Belgium Air Quality source.",
+      "doc": "Linked numeric station identifier from station.properties.id.",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the IRCELINE Belgium Air Quality source.",
+      "doc": "Linked station label from station.properties.label.",
+      "name": "station_label",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Linked station latitude from station.geometry.coordinates[1].",
+      "name": "latitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Linked station longitude from station.geometry.coordinates[0].",
+      "name": "longitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Measured phenomenon identifier from parameters.phenomenon.id.",
+      "name": "phenomenon_id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Measured phenomenon label from parameters.phenomenon.label.",
+      "name": "phenomenon_label",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Category identifier from parameters.category.id.",
+      "name": "category_id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Category label from parameters.category.label.",
+      "name": "category_label",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Optional ordered array of status interval bands from the expanded timeseries metadata.",
+      "name": "status_intervals",
+      "type": [
+        "null",
+        {
+          "items": {
+            "doc": "One threshold band from the IRCELINE statusIntervals expansion.",
+            "fields": [
+              {
+                "doc": "Inclusive lower threshold boundary.",
+                "name": "lower",
+                "type": "string"
+              },
+              {
+                "doc": "Exclusive upper threshold boundary.",
+                "name": "upper",
+                "type": "string"
+              },
+              {
+                "doc": "Human-readable band label.",
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "doc": "Hex RGB display color.",
+                "name": "color",
+                "type": "string"
+              }
+            ],
+            "name": "StatusInterval",
+            "type": "record"
+          },
+          "type": "array"
+        }
+      ]
+    }
+  ],
+  "name": "Timeseries",
+  "namespace": "be.irceline",
+  "type": "record"
+}

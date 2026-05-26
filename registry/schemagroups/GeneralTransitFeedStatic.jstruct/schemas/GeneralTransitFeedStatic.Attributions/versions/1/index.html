@@ -1,0 +1,74 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/Attributions",
+  "$root": "/definitions/GeneralTransitFeedStatic/Attributions",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "Attributions": {
+        "description": "Provides information about the attributions.",
+        "name": "Attributions",
+        "properties": {
+          "agencyId": {
+            "default": null,
+            "description": "Identifies the agency associated with the attribution.",
+            "type": "string"
+          },
+          "attributionEmail": {
+            "default": null,
+            "description": "Email address associated with the attribution.",
+            "type": "string"
+          },
+          "attributionId": {
+            "default": null,
+            "description": "Identifies an attribution for the dataset.",
+            "type": "string"
+          },
+          "attributionPhone": {
+            "default": null,
+            "description": "Phone number associated with the attribution.",
+            "type": "string"
+          },
+          "attributionUrl": {
+            "default": null,
+            "description": "URL of a web page about the attribution.",
+            "type": "string"
+          },
+          "isAuthority": {
+            "default": null,
+            "description": "Indicates if the organization is an authority.",
+            "type": "int32"
+          },
+          "isOperator": {
+            "default": null,
+            "description": "Indicates if the organization is an operator.",
+            "type": "int32"
+          },
+          "isProducer": {
+            "default": null,
+            "description": "Indicates if the organization is a producer.",
+            "type": "int32"
+          },
+          "organizationName": {
+            "description": "Name of the organization associated with the attribution.",
+            "type": "string"
+          },
+          "routeId": {
+            "default": null,
+            "description": "Identifies the route associated with the attribution.",
+            "type": "string"
+          },
+          "tripId": {
+            "default": null,
+            "description": "Identifies the trip associated with the attribution.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "organizationName"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "Attributions"
+}

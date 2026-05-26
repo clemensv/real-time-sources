@@ -1,0 +1,49 @@
+{
+  "$id": "https://example.com/schemas/FR/Gov/Eaufrance/HubEau/Hydrometrie/Observation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Measurement payload for water height and discharge observations in the Hub'Eau Hydrométrie source.",
+  "name": "Observation",
+  "properties": {
+    "basin": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie.",
+      "type": "string"
+    },
+    "code_station": {
+      "description": "Permanent hydrometry-station code assigned by the French monitoring network. Use it as the stable identity for station records and related observations.",
+      "type": "string"
+    },
+    "date_obs": {
+      "description": "Observation timestamp published by Hub'Eau for this measurement.",
+      "type": "datetime"
+    },
+    "grandeur_hydro": {
+      "description": "Hydrometric quantity code identifying what `resultat_obs` measures, such as discharge or water height.",
+      "type": "string"
+    },
+    "libelle_methode_obs": {
+      "description": "Provider label for the observation method used to produce the measurement.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "libelle_qualification_obs": {
+      "description": "Provider quality label describing how Hub'Eau qualifies the observation.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "resultat_obs": {
+      "description": "Measured hydrometric value. Interpret the quantity and unit from `grandeur_hydro`, such as discharge or water height.",
+      "type": "double"
+    }
+  },
+  "required": [
+    "code_station",
+    "date_obs",
+    "resultat_obs",
+    "grandeur_hydro"
+  ],
+  "type": "object"
+}

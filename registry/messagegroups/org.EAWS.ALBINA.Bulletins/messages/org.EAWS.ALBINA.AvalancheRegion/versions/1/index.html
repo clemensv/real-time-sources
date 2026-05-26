@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/org.EAWS.ALBINA.jstruct/schemas/org.EAWS.ALBINA.AvalancheRegion",
+  "description": "Reference event describing an EAWS region (or super-region) that the bridge is configured to observe. Emitted at bridge startup and whenever the configured region set changes. Acts as the catalog backbone for downstream consumers, ensuring the regional context is available even outside the avalanche season when no bulletins are being published.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://avalanche.report"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{region_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "org.EAWS.ALBINA.AvalancheRegion"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "org.EAWS.ALBINA.AvalancheRegion",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "AvalancheRegion",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheRegion/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheRegion/versions/1"
+}

@@ -1,0 +1,45 @@
+{
+  "$id": "https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/Zone",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "NWS forecast zone reference data. Zones partition the US into geographic areas for which forecasts and warnings are issued.",
+  "name": "Zone",
+  "properties": {
+    "forecast_office": {
+      "description": "NWS Weather Forecast Office (WFO) responsible for this zone, e.g. 'OKX'.",
+      "type": "string"
+    },
+    "name": {
+      "description": "Human-readable zone name.",
+      "type": "string"
+    },
+    "radar_station": {
+      "description": "Nearest NEXRAD radar station identifier, or null if none assigned.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "state": {
+      "description": "Two-letter US state or territory abbreviation.",
+      "type": "string"
+    },
+    "timezone": {
+      "description": "IANA timezone name for the zone, e.g. 'America/New_York'.",
+      "type": "string"
+    },
+    "type": {
+      "description": "Zone type: 'forecast', 'county', 'fire', 'coastal', or 'offshore'.",
+      "type": "string"
+    },
+    "zone_id": {
+      "description": "NWS zone identifier, e.g. 'NYZ072' for New York City.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "zone_id",
+    "name",
+    "state"
+  ],
+  "type": "object"
+}

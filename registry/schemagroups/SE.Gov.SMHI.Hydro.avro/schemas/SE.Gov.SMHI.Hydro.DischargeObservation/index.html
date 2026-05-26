@@ -1,0 +1,41 @@
+{
+  "description": "Measurement payload for observations in the SMHI Hydrological Data source.",
+  "doc": "Measurement payload for observations in the SMHI Hydrological Data source.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "station_name",
+      "type": "string"
+    },
+    {
+      "doc": "SMHI catchmentName the station belongs to. Bridge substitutes the lowercase sentinel 'unknown' when the catalog lookup is empty so the field is always non-null and the MQTT topic segment remains populated.",
+      "name": "catchment_name",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "name": "discharge",
+      "type": "double"
+    },
+    {
+      "default": null,
+      "name": "quality",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "DischargeObservation",
+  "namespace": "SE.Gov.SMHI.Hydro",
+  "type": "record"
+}

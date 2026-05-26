@@ -1,0 +1,59 @@
+{
+  "doc": "Supplemental hourly extrema from the NDBC .supl realtime2 product.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "default": null,
+      "name": "lowest_pressure",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "lowest_pressure_time_code",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "highest_wind_speed",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "highest_wind_direction",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "highest_wind_time_code",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "BuoySupplementalMeasurement",
+  "namespace": "Microsoft.OpenData.US.NOAA.NDBC",
+  "type": "record"
+}

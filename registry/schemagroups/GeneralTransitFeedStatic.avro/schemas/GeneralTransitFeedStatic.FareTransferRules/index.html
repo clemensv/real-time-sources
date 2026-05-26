@@ -1,0 +1,63 @@
+{
+  "doc": "Defines fare transfer rules.",
+  "fields": [
+    {
+      "doc": "Identifies a fare transfer rule.",
+      "name": "fareTransferRuleId",
+      "type": "string"
+    },
+    {
+      "doc": "Identifies a fare product.",
+      "name": "fareProductId",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Number of transfers permitted.",
+      "name": "transferCount",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Identifies the leg group from which the transfer starts.",
+      "name": "fromLegGroupId",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Identifies the leg group to which the transfer applies.",
+      "name": "toLegGroupId",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Length of time in seconds before a transfer expires.",
+      "name": "duration",
+      "type": [
+        "null",
+        "long"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Type of duration for the transfer.",
+      "name": "durationType",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "FareTransferRules",
+  "namespace": "GeneralTransitFeedStatic",
+  "type": "record"
+}

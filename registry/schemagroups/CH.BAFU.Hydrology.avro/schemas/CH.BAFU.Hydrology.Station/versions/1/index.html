@@ -1,0 +1,41 @@
+{
+  "description": "Reference details for one monitoring station or site in the BAFU Hydrology source.",
+  "doc": "Reference details for one monitoring station or site in the BAFU Hydrology source.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "water_body_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_body_type",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "name": "longitude",
+      "type": "double"
+    }
+  ],
+  "name": "Station",
+  "namespace": "CH.BAFU.Hydrology",
+  "type": "record"
+}

@@ -1,0 +1,22 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/US.WA.KingCounty.Marine/messages/US.WA.KingCounty.Marine.Station",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "US.WA.KingCounty.Marine.mqtt.Station",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.WA.KingCounty.Marine.mqtt/messages/US.WA.KingCounty.Marine.mqtt.Station/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Station",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": true,
+    "topic_name": "maritime/us/wa/king-county/king-county-marine/{station_id}/info"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.WA.KingCounty.Marine.mqtt/messages/US.WA.KingCounty.Marine.mqtt.Station",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.WA.KingCounty.Marine.mqtt/messages/US.WA.KingCounty.Marine.mqtt.Station/versions",
+  "xid": "/messagegroups/US.WA.KingCounty.Marine.mqtt/messages/US.WA.KingCounty.Marine.mqtt.Station"
+}

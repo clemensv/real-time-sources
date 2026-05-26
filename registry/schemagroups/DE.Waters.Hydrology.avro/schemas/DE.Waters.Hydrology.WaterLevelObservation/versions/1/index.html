@@ -1,0 +1,92 @@
+{
+  "description": "Measurement payload for observations in the German Waters source.",
+  "doc": "Measurement payload for observations in the German Waters source.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "provider",
+      "type": "string"
+    },
+    {
+      "doc": "Name of the water body the station observes (e.g. 'Rhein', 'Donau', 'Elbe'). Mirrored from the JSON Structure WaterLevelObservation schema; sourced by the bridge from the per-provider station catalog and propagated onto every observation. Required non-null string.",
+      "name": "water_body",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "water_level",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_level_unit",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_level_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge_unit",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "trend",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "name": "situation",
+      "type": [
+        "null",
+        "int"
+      ]
+    }
+  ],
+  "name": "WaterLevelObservation",
+  "namespace": "DE.Waters.Hydrology",
+  "type": "record"
+}

@@ -1,0 +1,42 @@
+{
+  "altnames": {
+    "kql": "Humidity"
+  },
+  "fields": [
+    {
+      "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timestamp of the humidity measurement\"}",
+      "logicalType": "timestamp-millis",
+      "name": "timestamp",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Value of the humidity\"}",
+      "name": "value",
+      "type": "double",
+      "unit": "%"
+    },
+    {
+      "doc": "Flag indicating if the maximum expected humidity was exceeded",
+      "name": "max_humidity_exceeded",
+      "type": "boolean"
+    },
+    {
+      "doc": "Flag indicating if the minimum expected humidity was exceeded",
+      "name": "min_humidity_exceeded",
+      "type": "boolean"
+    },
+    {
+      "doc": "Flag indicating if the rate of change tolerance limit was exceeded",
+      "name": "rate_of_change_exceeded",
+      "type": "boolean"
+    }
+  ],
+  "name": "Humidity",
+  "namespace": "Microsoft.OpenData.US.NOAA",
+  "type": "record"
+}

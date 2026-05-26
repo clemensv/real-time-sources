@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/NL.RWS.Waterwebservices.jstruct/schemas/NL.RWS.Waterwebservices.WaterLevelObservation",
+  "description": "A current measurement from Rijkswaterstaat for one monitoring site. It carries water level observations when the upstream feed reports a new or refreshed value.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://waterwebservices.rijkswaterstaat.nl"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_code}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "NL.RWS.Waterwebservices.WaterLevelObservation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "NL.RWS.Waterwebservices.WaterLevelObservation",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WaterLevelObservation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.WaterLevelObservation/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.WaterLevelObservation/versions/1"
+}

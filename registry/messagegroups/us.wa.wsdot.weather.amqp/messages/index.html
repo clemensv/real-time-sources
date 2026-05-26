@@ -1,0 +1,72 @@
+{
+  "us.wa.wsdot.weather.WeatherReading.amqp": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/us.wa.wsdot.weather/messages/us.wa.wsdot.weather.WeatherReading",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "us.wa.wsdot.weather.WeatherReading.amqp",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.weather.amqp/messages/us.wa.wsdot.weather.WeatherReading.amqp/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherReading",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Partition key mirrors the CloudEvents subject.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP subject mirrors the CloudEvents subject.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.weather.amqp/messages/us.wa.wsdot.weather.WeatherReading.amqp",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.weather.amqp/messages/us.wa.wsdot.weather.WeatherReading.amqp/versions",
+    "xid": "/messagegroups/us.wa.wsdot.weather.amqp/messages/us.wa.wsdot.weather.WeatherReading.amqp"
+  },
+  "us.wa.wsdot.weather.WeatherStation.amqp": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/us.wa.wsdot.weather/messages/us.wa.wsdot.weather.WeatherStation",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "us.wa.wsdot.weather.WeatherStation.amqp",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.weather.amqp/messages/us.wa.wsdot.weather.WeatherStation.amqp/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherStation",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Partition key mirrors the CloudEvents subject.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP subject mirrors the CloudEvents subject.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.weather.amqp/messages/us.wa.wsdot.weather.WeatherStation.amqp",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.weather.amqp/messages/us.wa.wsdot.weather.WeatherStation.amqp/versions",
+    "xid": "/messagegroups/us.wa.wsdot.weather.amqp/messages/us.wa.wsdot.weather.WeatherStation.amqp"
+  }
+}

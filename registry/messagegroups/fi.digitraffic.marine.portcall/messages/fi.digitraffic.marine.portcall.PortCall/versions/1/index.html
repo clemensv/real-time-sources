@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/fi.digitraffic.marine.portcall.jstruct/schemas/fi.digitraffic.marine.portcall.PortCall",
+  "description": "A transport update from Fintraffic Digitraffic. It carries maritime traffic and fairway updates for Finnish maritime fairways and vessels.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://meri.digitraffic.fi/api/port-call/v1/port-calls"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{port_call_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "fi.digitraffic.marine.portcall.PortCall"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "fi.digitraffic.marine.portcall.PortCall",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "PortCall",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.marine.portcall/messages/fi.digitraffic.marine.portcall.PortCall/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/fi.digitraffic.marine.portcall/messages/fi.digitraffic.marine.portcall.PortCall/versions/1"
+}

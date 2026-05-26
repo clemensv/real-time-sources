@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/fi.digitraffic.road.messages.jstruct/schemas/fi.digitraffic.road.messages.TrafficMessage",
+    "description": "A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://tie.digitraffic.fi/mqtt"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{situation_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "fi.digitraffic.road.messages.WeightRestriction"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.messages.WeightRestriction",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeightRestriction",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.WeightRestriction/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.WeightRestriction/versions/1"
+  }
+}

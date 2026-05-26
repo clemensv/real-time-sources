@@ -1,0 +1,45 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.HourlyForecast",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "An hourly UV Index forecast from the US EPA Envirofacts UV service for one configured city/state location. It carries the forecast valid hour, normalized location identity, and UV index value for operational exposure planning.",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "US.EPA.UVIndex.amqp.HourlyForecast",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "HourlyForecast",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "city_slug": {
+        "description": "Topic-safe city slug used by consumers to filter EPA UV forecasts without parsing the JSON body.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{city_slug}"
+      },
+      "forecast_hour": {
+        "description": "Forecast valid hour in compact YYYYMMDDTHH form for AMQP consumer filtering and diagnostics.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{forecast_hour}"
+      },
+      "state": {
+        "description": "Lowercase US state abbreviation used by consumers to filter EPA UV forecasts without parsing the JSON body.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{state}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for cross-transport correlation.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{location_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.EPA.UVIndex.amqp/messages/US.EPA.UVIndex.amqp.HourlyForecast/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/US.EPA.UVIndex.amqp/messages/US.EPA.UVIndex.amqp.HourlyForecast/versions/1"
+}

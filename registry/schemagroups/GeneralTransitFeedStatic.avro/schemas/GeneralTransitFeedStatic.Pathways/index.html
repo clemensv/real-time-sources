@@ -1,0 +1,96 @@
+{
+  "doc": "Defines pathways.",
+  "fields": [
+    {
+      "doc": "Identifies a pathway.",
+      "name": "pathwayId",
+      "type": "string"
+    },
+    {
+      "doc": "Identifies a stop or station where the pathway begins.",
+      "name": "fromStopId",
+      "type": "string"
+    },
+    {
+      "doc": "Identifies a stop or station where the pathway ends.",
+      "name": "toStopId",
+      "type": "string"
+    },
+    {
+      "doc": "Type of pathway between the specified (from_stop_id, to_stop_id) pair.",
+      "name": "pathwayMode",
+      "type": "int"
+    },
+    {
+      "doc": "When 1, the pathway can be used in both directions. When 0, the pathway can only be used from (from_stop_id) to (to_stop_id).",
+      "name": "isBidirectional",
+      "type": "int"
+    },
+    {
+      "default": null,
+      "doc": "Length of the pathway, in meters.",
+      "name": "length",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Average time, in seconds, needed to walk through the pathway.",
+      "name": "traversalTime",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Number of stairs of the pathway.",
+      "name": "stairCount",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Maximum slope of the pathway, in percent.",
+      "name": "maxSlope",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Minimum width of the pathway, in meters.",
+      "name": "minWidth",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Signposting information for the pathway.",
+      "name": "signpostedAs",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Reversed signposting information for the pathway.",
+      "name": "reversedSignpostedAs",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "Pathways",
+  "namespace": "GeneralTransitFeedStatic",
+  "type": "record"
+}

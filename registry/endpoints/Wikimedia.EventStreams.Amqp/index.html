@@ -1,0 +1,31 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "AMQP 1.0 producer endpoint for wikimedia-eventstreams CloudEvents on the configured broker address.",
+  "endpointid": "Wikimedia.EventStreams.Amqp",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "mode": "binary"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/Wikimedia.EventStreams.amqp"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/Wikimedia.EventStreams.Amqp/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "deployed": false,
+    "distribution-mode": "move",
+    "durable": false,
+    "endpoints": [
+      {
+        "uri": "amqps://localhost:5671/wikimedia-eventstreams"
+      }
+    ]
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/Wikimedia.EventStreams.Amqp",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/Wikimedia.EventStreams.Amqp"
+}

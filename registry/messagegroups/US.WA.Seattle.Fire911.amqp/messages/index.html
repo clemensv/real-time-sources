@@ -1,0 +1,45 @@
+{
+  "US.WA.Seattle.Fire911.amqp.Incident": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/US.WA.Seattle.Fire911/messages/US.WA.Seattle.Fire911.Incident",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "US.WA.Seattle.Fire911.amqp.Incident",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.WA.Seattle.Fire911.amqp/messages/US.WA.Seattle.Fire911.amqp.Incident/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Incident",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "incident_type_slug": {
+          "description": "AMQP application property mirroring the incident_type_slug routing axis from the Kafka subject/MQTT topic for broker-side filtering.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{incident_type_slug}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{incident_number}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{incident_number}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.WA.Seattle.Fire911.amqp/messages/US.WA.Seattle.Fire911.amqp.Incident",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.WA.Seattle.Fire911.amqp/messages/US.WA.Seattle.Fire911.amqp.Incident/versions",
+    "xid": "/messagegroups/US.WA.Seattle.Fire911.amqp/messages/US.WA.Seattle.Fire911.amqp.Incident"
+  }
+}

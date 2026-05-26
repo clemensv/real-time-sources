@@ -1,0 +1,196 @@
+{
+  "$id": "https://api.gios.gov.pl/schemas/pl/gov/gios/airquality/AirQualityIndex",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Current Polish Air Quality Index for a station, including the overall index and sub-indices for individual pollutants (SO₂, NO₂, PM10, PM2.5, O₃).",
+  "name": "AirQualityIndex",
+  "properties": {
+    "calculation_timestamp": {
+      "description": "Timestamp when the overall index was calculated (ISO 8601 in local Polish time). Mapped from 'Data wykonania obliczeń indeksu'.",
+      "type": "datetime"
+    },
+    "critical_pollutant_code": {
+      "description": "Code of the pollutant that determined the overall index value, e.g. 'OZON', 'PM10'. Mapped from 'Kod zanieczyszczenia krytycznego'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "index_category": {
+      "description": "Polish-language category name of the overall index, e.g. 'Bardzo dobry', 'Dobry', 'Umiarkowany'. Mapped from 'Nazwa kategorii indeksu'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "index_value": {
+      "description": "Overall air quality index value: 0=Bardzo dobry (Very good), 1=Dobry (Good), 2=Umiarkowany (Moderate), 3=Dostateczny (Sufficient), 4=Zły (Bad), 5=Bardzo zły (Very bad). Mapped from 'Wartość indeksu'.",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "no2_calculation_timestamp": {
+      "description": "Timestamp when the NO₂ sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika NO2'.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "no2_index_category": {
+      "description": "Polish-language category name for the NO₂ sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika NO2'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "no2_index_value": {
+      "description": "NO₂ sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika NO2'.",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "no2_source_data_timestamp": {
+      "description": "Timestamp of the source data used for the NO₂ sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika NO2'.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "o3_calculation_timestamp": {
+      "description": "Timestamp when the O₃ sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika O3'.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "o3_index_category": {
+      "description": "Polish-language category name for the O₃ sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika O3'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "o3_index_value": {
+      "description": "O₃ sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika O3'.",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "o3_source_data_timestamp": {
+      "description": "Timestamp of the source data used for the O₃ sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika O3'.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "overall_status": {
+      "description": "Whether the overall air quality index is currently valid for this station. Mapped from 'Status indeksu ogólnego dla stacji pomiarowej'.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "pm10_calculation_timestamp": {
+      "description": "Timestamp when the PM10 sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika PM10'.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "pm10_index_category": {
+      "description": "Polish-language category name for the PM10 sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika PM10'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pm10_index_value": {
+      "description": "PM10 sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika PM10'.",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "pm10_source_data_timestamp": {
+      "description": "Timestamp of the source data used for the PM10 sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika PM10'.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "pm25_calculation_timestamp": {
+      "description": "Timestamp when the PM2.5 sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika PM2.5'.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "pm25_index_category": {
+      "description": "Polish-language category name for the PM2.5 sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika PM2.5'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pm25_index_value": {
+      "description": "PM2.5 sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika PM2.5'.",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "pm25_source_data_timestamp": {
+      "description": "Timestamp of the source data used for the PM2.5 sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika PM2.5'.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "so2_calculation_timestamp": {
+      "description": "Timestamp when the SO₂ sub-index was calculated. Mapped from 'Data wykonania obliczeń indeksu dla wskaźnika SO2'.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "so2_index_category": {
+      "description": "Polish-language category name for the SO₂ sub-index. Mapped from 'Nazwa kategorii indeksu dla wskażnika SO2'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "so2_index_value": {
+      "description": "SO₂ sub-index value (0–5 scale). Mapped from 'Wartość indeksu dla wskaźnika SO2'.",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "so2_source_data_timestamp": {
+      "description": "Timestamp of the source data used for the SO₂ sub-index. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika SO2'.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "source_data_timestamp": {
+      "description": "Timestamp of the source measurement data used for the overall index calculation. Mapped from 'Data danych źródłowych, z których policzono wartość indeksu dla wskaźnika st'.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "station_id": {
+      "description": "Numeric identifier of the monitoring station. Mapped from 'Identyfikator stacji pomiarowej'.",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "station_id",
+    "calculation_timestamp"
+  ],
+  "type": "object"
+}

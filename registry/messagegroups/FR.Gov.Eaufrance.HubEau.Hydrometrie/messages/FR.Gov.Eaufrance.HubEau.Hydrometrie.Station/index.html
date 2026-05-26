@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.jstruct/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+  "description": "A reference record for one French hydrometric monitoring station published by the French Eaufrance Hub'Eau hydrometry API. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://hubeau.eaufrance.fr/api/v2/hydrometrie"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{code_station}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Station",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station/versions",
+  "xid": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station"
+}

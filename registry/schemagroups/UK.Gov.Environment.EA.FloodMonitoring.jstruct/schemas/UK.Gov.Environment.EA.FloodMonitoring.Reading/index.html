@@ -1,0 +1,35 @@
+{
+  "$id": "https://example.com/schemas/UK/Gov/Environment/EA/FloodMonitoring/Reading",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Payload record for reading events in the UK Environment Agency Flood Monitoring source.",
+  "name": "Reading",
+  "properties": {
+    "date_time": {
+      "description": "Time associated with the date time value.",
+      "type": "datetime"
+    },
+    "measure": {
+      "description": "Provider-supplied measure value for this record.",
+      "type": "string"
+    },
+    "river": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for uk-ea-flood-monitoring.",
+      "type": "string"
+    },
+    "station_reference": {
+      "description": "Provider-supplied station reference value for this record.",
+      "type": "string"
+    },
+    "value": {
+      "description": "Measured value reported by the upstream provider.",
+      "type": "double"
+    }
+  },
+  "required": [
+    "station_reference",
+    "date_time",
+    "measure",
+    "value"
+  ],
+  "type": "object"
+}

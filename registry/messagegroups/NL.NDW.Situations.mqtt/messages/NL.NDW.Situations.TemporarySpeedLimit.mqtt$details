@@ -1,0 +1,22 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporarySpeedLimit",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "NL.NDW.Situations.TemporarySpeedLimit.mqtt",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations.mqtt/messages/NL.NDW.Situations.TemporarySpeedLimit.mqtt/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "TemporarySpeedLimit",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": false,
+    "topic_name": "traffic/nl/ndw/ndw-road-traffic/situations/{road}/{situation_record_id}/temporary-speed-limit"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations.mqtt/messages/NL.NDW.Situations.TemporarySpeedLimit.mqtt",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations.mqtt/messages/NL.NDW.Situations.TemporarySpeedLimit.mqtt/versions",
+  "xid": "/messagegroups/NL.NDW.Situations.mqtt/messages/NL.NDW.Situations.TemporarySpeedLimit.mqtt"
+}

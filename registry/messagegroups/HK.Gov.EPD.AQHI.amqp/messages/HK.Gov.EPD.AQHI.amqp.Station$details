@@ -1,0 +1,35 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.Station",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "HK.Gov.EPD.AQHI.amqp.Station",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/HK.Gov.EPD.AQHI.amqp/messages/HK.Gov.EPD.AQHI.amqp.Station/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Station",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "district": {
+        "description": "Hong Kong 18-district administrative area normalized for routing and Service Bus subscription filters.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{district}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for cross-transport correlation.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/HK.Gov.EPD.AQHI.amqp/messages/HK.Gov.EPD.AQHI.amqp.Station",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/HK.Gov.EPD.AQHI.amqp/messages/HK.Gov.EPD.AQHI.amqp.Station/versions",
+  "xid": "/messagegroups/HK.Gov.EPD.AQHI.amqp/messages/HK.Gov.EPD.AQHI.amqp.Station"
+}

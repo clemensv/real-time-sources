@@ -1,0 +1,42 @@
+{
+  "description": "A current transport measurement or status update from Dutch road-traffic open data feeds. It carries road traffic measurements and situation updates when the upstream feed reports a new or refreshed value.",
+  "doc": "Aggregated traffic speed and flow measurement per road segment from the NDW DATEX II trafficspeed feed.",
+  "fields": [
+    {
+      "doc": "Unique identifier of the NDW measurement site.",
+      "name": "site_id",
+      "type": "string"
+    },
+    {
+      "doc": "Timestamp of the measurement in ISO 8601 format (UTC).",
+      "name": "measurement_time",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Average vehicle speed in km/h across all lanes with valid data. Null when no valid speed data.",
+      "name": "average_speed",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Total vehicle flow rate in vehicles per hour summed across all lanes. Null when no valid flow data.",
+      "name": "vehicle_flow_rate",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "doc": "Number of lanes that reported valid measurement data.",
+      "name": "number_of_lanes_with_data",
+      "type": "int"
+    }
+  ],
+  "name": "TrafficSpeed",
+  "namespace": "nl.ndw.traffic",
+  "type": "record"
+}

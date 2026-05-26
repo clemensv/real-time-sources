@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/dk.energinet.energidataservice.jstruct/schemas/dk.energinet.energidataservice.PowerSystemSnapshot",
+  "description": "Minute-by-minute snapshot of the Danish power system from Energi Data Service (Energinet), including CO2 emission intensity, renewable generation (solar, onshore wind, offshore wind), conventional production bands, total cross-border exchange flows, per-interconnector exchange (DK1–DE, DK1–NL, DK1–GB, DK1–NO, DK1–SE, DK1–DK2, DK2–DE, DK2–SE, Bornholm–SE), automatic and manual frequency restoration reserve activation (aFRR, mFRR) per price area, and grid imbalance per price area.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api.energidataservice.dk"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{price_area}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "dk.energinet.energidataservice.PowerSystemSnapshot"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "dk.energinet.energidataservice.PowerSystemSnapshot",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "PowerSystemSnapshot",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/dk.energinet.energidataservice/messages/dk.energinet.energidataservice.PowerSystemSnapshot/versions/1"
+}

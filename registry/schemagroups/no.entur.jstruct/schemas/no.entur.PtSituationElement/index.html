@@ -1,0 +1,192 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/no/entur/PtSituationElement",
+  "$root": "/definitions/no/entur/PtSituationElement",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "no": {
+      "entur": {
+        "PtSituationElement": {
+          "description": "Real-time transit disruption or service alert from the Entur SIRI-SX feed (GET /realtime/v1/rest/sx). Represents a published situation element describing a service disruption, delay cause, or passenger information notice. Includes affected lines, stops, severity level, and validity periods.",
+          "name": "PtSituationElement",
+          "properties": {
+            "affects_line_refs": {
+              "description": "List of NeTEx LineRef values identifying the lines affected by this situation, extracted from Affects/Networks/AffectedNetwork/AffectedLine/LineRef elements.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "affects_stop_point_refs": {
+              "description": "List of NSR StopPointRef values identifying the stop points affected by this situation, extracted from Affects/StopPoints/AffectedStopPoint/StopPointRef elements.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "creation_time": {
+              "altnames": {
+                "xml": "CreationTime"
+              },
+              "description": "ISO 8601 UTC timestamp when this situation was first created, from the SIRI CreationTime element.",
+              "type": "datetime"
+            },
+            "description": {
+              "altnames": {
+                "xml": "Description"
+              },
+              "description": "Full public-facing descriptive text in Norwegian or English providing details about the situation, from the SIRI Description element.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "keywords": {
+              "altnames": {
+                "xml": "Keywords"
+              },
+              "description": "Space-separated list of classification keywords from the SIRI Keywords element, used to categorise the situation type.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "progress": {
+              "altenums": [
+                "open",
+                "published",
+                "closing",
+                "closed"
+              ],
+              "altnames": {
+                "xml": "Progress"
+              },
+              "description": "Publication progress state of this situation from the SIRI Progress element.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "severity": {
+              "altenums": [
+                "unknown",
+                "noImpact",
+                "verySlight",
+                "slight",
+                "normal",
+                "severe",
+                "verySevere",
+                "undefined"
+              ],
+              "altnames": {
+                "xml": "Severity"
+              },
+              "description": "SIRI Severity classification of the impact of this situation on passenger services, or 'unknown' when absent.",
+              "type": "string"
+            },
+            "situation_number": {
+              "altnames": {
+                "xml": "SituationNumber"
+              },
+              "description": "Unique situation identifier from the SIRI SituationNumber element. Used as the Kafka key. Example: RUT:SituationNumber:12345.",
+              "type": "string"
+            },
+            "source_name": {
+              "altnames": {
+                "xml": "Name"
+              },
+              "description": "Name of the originating source organisation from the SIRI Source/Name element.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_type": {
+              "altenums": [
+                "directReport",
+                "email",
+                "phone",
+                "post",
+                "feed",
+                "radio",
+                "tv",
+                "web",
+                "pager",
+                "text",
+                "other"
+              ],
+              "altnames": {
+                "xml": "SourceType"
+              },
+              "description": "Type of the originating source system from the SIRI Source/SourceType element.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "summary": {
+              "altnames": {
+                "xml": "Summary"
+              },
+              "description": "Short public-facing summary text in Norwegian or English describing the situation, from the SIRI Summary element.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "validity_periods": {
+              "description": "One or more time windows during which this situation is active, from the SIRI ValidityPeriod elements.",
+              "items": {
+                "$ref": "/definitions/no/entur/ValidityPeriod"
+              },
+              "type": "array"
+            },
+            "version": {
+              "altnames": {
+                "xml": "Version"
+              },
+              "description": "Version number of this situation record, from the SIRI Version element. Increments with each update to the same situation.",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "situation_number",
+            "severity",
+            "creation_time"
+          ],
+          "type": "object"
+        },
+        "ValidityPeriod": {
+          "description": "A time window during which a PtSituationElement is active and applicable. A situation may have multiple validity periods covering separate intervals. Sourced from the SIRI ValidityPeriod element.",
+          "name": "ValidityPeriod",
+          "properties": {
+            "end_time": {
+              "altnames": {
+                "xml": "EndTime"
+              },
+              "description": "ISO 8601 UTC end time of this validity window, from ValidityPeriod/EndTime. Null if the validity period is open-ended.",
+              "type": [
+                "datetime",
+                "null"
+              ]
+            },
+            "start_time": {
+              "altnames": {
+                "xml": "StartTime"
+              },
+              "description": "ISO 8601 UTC start time of this validity window, from ValidityPeriod/StartTime.",
+              "type": "datetime"
+            }
+          },
+          "required": [
+            "start_time"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "PtSituationElement"
+}

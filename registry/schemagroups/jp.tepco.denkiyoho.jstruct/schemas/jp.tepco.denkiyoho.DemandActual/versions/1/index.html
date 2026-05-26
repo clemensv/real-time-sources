@@ -1,0 +1,132 @@
+{
+  "$id": "https://www.tepco.co.jp/schemas/denkiyoho/DemandActual",
+  "$root": "/definitions/jp/tepco/denkiyoho/DemandActual",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "jp": {
+      "tepco": {
+        "denkiyoho": {
+          "DemandActual": {
+            "description": "Telemetry schema for actual TEPCO electricity demand in the Tokyo Electric Power Company service area. Hourly rows from section 3 carry usage and supply-capacity context, while five-minute rows from section 5 carry solar generation context.",
+            "name": "DemandActual",
+            "properties": {
+              "actual_demand_jp_unit_value": {
+                "description": "Original integer value from TEPCO's 当日実績(万kW) hourly column or 当日実績(5分間隔値)(万kW) five-minute column. Rows with 0 or blank actual-demand values are future or unavailable measurements and are skipped by the bridge.",
+                "minimum": 0,
+                "symbol": "万kW",
+                "type": "int32",
+                "unit": "10MW"
+              },
+              "actual_demand_mw": {
+                "description": "Actual electricity demand for the Tokyo service area, converted to megawatts from TEPCO's 当日実績(万kW) hourly column or 当日実績(5分間隔値)(万kW) five-minute column by multiplying by 10.",
+                "minimum": 0,
+                "symbol": "MW",
+                "type": "double",
+                "unit": "MW"
+              },
+              "area_code": {
+                "description": "Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page.",
+                "type": "string"
+              },
+              "date": {
+                "description": "Operating date from the DATE column in TEPCO's hourly actual-demand section or five-minute actual-demand section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD). This is the first stable key component.",
+                "type": "date"
+              },
+              "datetime": {
+                "description": "Combined DATE and TIME converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp for cross-region analytics.",
+                "type": "datetime"
+              },
+              "datetime_local": {
+                "description": "Combined DATE and TIME serialized as an RFC 3339 timestamp with +09:00 offset for the Japan Standard Time instant represented by the TEPCO CSV row.",
+                "type": "datetime"
+              },
+              "solar_generation_jp_unit_value": {
+                "description": "Original integer solar generation actual value from TEPCO's section 5 太陽光発電実績(5分間隔値)(万kW) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar cell.",
+                "minimum": 0,
+                "symbol": "万kW",
+                "type": [
+                  "int32",
+                  "null"
+                ],
+                "unit": "10MW"
+              },
+              "solar_generation_mw": {
+                "description": "Solar generation actual value converted to megawatts from TEPCO's section 5 太陽光発電実績(5分間隔値)(万kW) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar cell.",
+                "minimum": 0,
+                "symbol": "MW",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "solar_share_pct": {
+                "description": "Solar generation percentage of electricity usage from TEPCO's section 5 太陽光発電量(電力使用量に対する割合)(%) column. The field is null for hourly section 3 rows and for five-minute rows where TEPCO publishes an empty solar-share cell.",
+                "maximum": 100,
+                "minimum": 0,
+                "symbol": "%",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "percent"
+              },
+              "supply_capacity_jp_unit_value": {
+                "description": "Original integer supply-capacity value from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence rows derived from section 3; it is null for five-minute rows derived from section 5.",
+                "minimum": 0,
+                "symbol": "万kW",
+                "type": [
+                  "int32",
+                  "null"
+                ],
+                "unit": "10MW"
+              },
+              "supply_capacity_mw": {
+                "description": "Available supply capacity converted to megawatts from TEPCO's hourly section 3 供給力(万kW) column. This field is populated only for hourly-cadence rows derived from section 3; it is null for five-minute rows derived from section 5.",
+                "minimum": 0,
+                "symbol": "MW",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "time": {
+                "description": "Local Japan Standard Time clock time from the TIME column in TEPCO's hourly or five-minute actual-demand section, normalized to zero-padded HH:MM form. This is the second stable key component.",
+                "pattern": "^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$",
+                "type": "string"
+              },
+              "usage_pct": {
+                "description": "Usage percentage from TEPCO's hourly section 3 使用率(%) column. This field is populated only for hourly-cadence DemandActual rows derived from section 3; it is null for five-minute rows derived from section 5. TEPCO may leave future-hour usage blank until actual demand is available.",
+                "minimum": 0,
+                "symbol": "%",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "percent"
+              }
+            },
+            "required": [
+              "date",
+              "time",
+              "datetime",
+              "datetime_local",
+              "actual_demand_mw",
+              "actual_demand_jp_unit_value",
+              "solar_generation_mw",
+              "solar_generation_jp_unit_value",
+              "solar_share_pct",
+              "usage_pct",
+              "supply_capacity_mw",
+              "supply_capacity_jp_unit_value",
+              "area_code"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "DemandActual"
+}

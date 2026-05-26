@@ -1,0 +1,65 @@
+{
+  "doc": "Reference data for a US CBP land border port of entry.",
+  "fields": [
+    {
+      "doc": "Six-digit CBP port number.",
+      "name": "port_number",
+      "type": "string"
+    },
+    {
+      "doc": "Lowercase kebab-case MQTT/UNS routing segment derived from the CBP border field. Expected values: canadian-border, mexican-border.",
+      "name": "border_slug",
+      "type": "string"
+    },
+    {
+      "doc": "City or locality name.",
+      "name": "port_name",
+      "type": "string"
+    },
+    {
+      "doc": "International border: Canadian Border or Mexican Border.",
+      "name": "border",
+      "type": "string"
+    },
+    {
+      "doc": "Name of the crossing facility.",
+      "name": "crossing_name",
+      "type": "string"
+    },
+    {
+      "doc": "Operating hours as a human-readable string.",
+      "name": "hours",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Max passenger vehicle lanes. Null if not available.",
+      "name": "passenger_vehicle_max_lanes",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Max commercial vehicle lanes. Null if not available.",
+      "name": "commercial_vehicle_max_lanes",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Max pedestrian lanes. Null if not available.",
+      "name": "pedestrian_max_lanes",
+      "type": [
+        "null",
+        "int"
+      ]
+    }
+  ],
+  "name": "Port",
+  "namespace": "gov.cbp.borderwait",
+  "type": "record"
+}

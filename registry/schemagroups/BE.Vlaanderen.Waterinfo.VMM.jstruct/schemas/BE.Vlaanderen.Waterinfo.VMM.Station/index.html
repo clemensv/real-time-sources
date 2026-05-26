@@ -1,0 +1,67 @@
+{
+  "$id": "https://example.com/schemas/BE/Vlaanderen/Waterinfo/VMM/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference details for one monitoring station or site in the Waterinfo VMM source.",
+  "name": "Station",
+  "properties": {
+    "river_name": {
+      "description": "Name of the river or watercourse observed at the station.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "station_id": {
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    },
+    "station_latitude": {
+      "description": "Provider-supplied station latitude value for this record.",
+      "type": "double"
+    },
+    "station_longitude": {
+      "description": "Provider-supplied station longitude value for this record.",
+      "type": "double"
+    },
+    "station_name": {
+      "description": "Human-readable name of the monitoring station.",
+      "type": "string"
+    },
+    "station_no": {
+      "description": "Provider-supplied station no value for this record.",
+      "type": "string"
+    },
+    "stationparameter_name": {
+      "description": "Human-readable name of the stationparameter.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ts_id": {
+      "description": "Stable identifier assigned by the upstream provider for the ts.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ts_unitname": {
+      "description": "Provider-supplied ts unitname value for this record.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "water_body": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for waterinfo-vmm.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_no",
+    "station_name",
+    "station_latitude",
+    "station_longitude"
+  ],
+  "type": "object"
+}

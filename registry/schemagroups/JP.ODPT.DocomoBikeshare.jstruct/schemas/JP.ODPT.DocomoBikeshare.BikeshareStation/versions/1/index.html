@@ -1,0 +1,89 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/jp/odpt/docomobikeshare/BikeshareStation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record from Docomo Bike Share open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "name": "BikeshareStation",
+  "properties": {
+    "address": {
+      "description": "Street address of the station, if provided by the operator.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "capacity": {
+      "description": "Total number of docking points installed at the station, including those that are temporarily disabled. Reflects the physical capacity of the station.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "cross_street": {
+      "description": "Cross street or nearby landmark of the station location, if provided.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "is_virtual_station": {
+      "description": "If true, the station is a virtual station (i.e., a parking zone without physical docks) rather than a docked station. If absent or false, the station has physical docking points.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "lat": {
+      "description": "WGS 84 latitude of the station in decimal degrees. Positive values indicate north of the equator.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "deg"
+    },
+    "lon": {
+      "description": "WGS 84 longitude of the station in decimal degrees. Positive values indicate east of the prime meridian.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "deg"
+    },
+    "name": {
+      "description": "Public name of the station as displayed to customers. Tokyo Docomo Bikeshare publishes bilingual names in the format 'Japanese / English', for example 'A4-01.東京駅八重洲口 / Tokyo Station Yaesu'.",
+      "type": "string"
+    },
+    "post_code": {
+      "description": "Postal code of the station location, if provided.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "region_id": {
+      "description": "Identifier of the district or region where the station is located, as defined in the GBFS system_regions.json feed.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "short_name": {
+      "description": "Short name or other operator-assigned identifier for the station, if provided.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "station_id": {
+      "description": "Unique identifier of the station within the GBFS feed, for example '00010137'. Stable across feed updates; used as the second component of the Kafka key.",
+      "type": "string"
+    },
+    "system_id": {
+      "description": "Identifier of the bikeshare system this station belongs to, for example 'docomo-cycle-tokyo'. Included in the payload so that the composite Kafka key {system_id}/{station_id} can be resolved from the event data.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "system_id",
+    "station_id",
+    "name",
+    "lat",
+    "lon"
+  ],
+  "type": "object"
+}

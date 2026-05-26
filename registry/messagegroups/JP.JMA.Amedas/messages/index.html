@@ -1,0 +1,74 @@
+{
+  "JP.JMA.Amedas.Observation": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/JP.JMA.Amedas.jstruct/schemas/JP.JMA.Amedas.Observation",
+    "description": "Telemetry event for one JMA AMeDAS station observation in a ten-minute Bosai map snapshot. Each measurement value is nullable because JMA publishes different fields by station capability and by observation availability.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "jp.jma.amedas/{station_code}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "JP.JMA.Amedas.Observation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "JP.JMA.Amedas.Observation",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Observation",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation/versions",
+    "xid": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation"
+  },
+  "JP.JMA.Amedas.Station": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/JP.JMA.Amedas.jstruct/schemas/JP.JMA.Amedas.Station",
+    "description": "Reference event for one JMA AMeDAS station from the Bosai amedastable.json station table, including names, geodetic position, elevation, station capability tier, and measurement capability bitmask.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "jp.jma.amedas/{station_code}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "JP.JMA.Amedas.Station"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "JP.JMA.Amedas.Station",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Station/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Station",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Station/versions",
+    "xid": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Station"
+  }
+}

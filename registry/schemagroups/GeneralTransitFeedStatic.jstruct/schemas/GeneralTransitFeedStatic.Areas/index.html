@@ -1,0 +1,39 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/Areas",
+  "$root": "/definitions/GeneralTransitFeedStatic/Areas",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "Areas": {
+        "description": "Defines areas.",
+        "name": "Areas",
+        "properties": {
+          "areaDesc": {
+            "default": null,
+            "description": "Description of the area.",
+            "type": "string"
+          },
+          "areaId": {
+            "description": "Identifies an area.",
+            "type": "string"
+          },
+          "areaName": {
+            "description": "Name of the area.",
+            "type": "string"
+          },
+          "areaUrl": {
+            "default": null,
+            "description": "URL of a web page about the area.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "areaId",
+          "areaName"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "Areas"
+}

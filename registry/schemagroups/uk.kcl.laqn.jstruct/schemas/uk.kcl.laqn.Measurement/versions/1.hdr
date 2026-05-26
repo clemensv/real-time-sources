@@ -1,0 +1,14 @@
+content-disposition:uk.kcl.laqn.Measurement
+content-length:1858
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.Measurement/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:uk.kcl.laqn.Measurement
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.Measurement/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.Measurement/versions/1

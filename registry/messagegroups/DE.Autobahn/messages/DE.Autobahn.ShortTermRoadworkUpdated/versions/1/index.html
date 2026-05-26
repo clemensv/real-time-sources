@@ -1,0 +1,38 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.RoadEvent",
+  "description": "A traffic or service situation update from Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://verkehr.autobahn.de/o/autobahn"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{identifier}"
+    },
+    "time": {
+      "required": false,
+      "type": "timestamp",
+      "value": "{event_time}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "DE.Autobahn.ShortTermRoadworkUpdated"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "DE.Autobahn.ShortTermRoadworkUpdated",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "ShortTermRoadworkUpdated",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkUpdated/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkUpdated/versions/1"
+}

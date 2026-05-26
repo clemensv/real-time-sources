@@ -1,0 +1,73 @@
+{
+  "$id": "https://example.com/schemas/DE/DWD/CDC/AirTemperature10Min",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
+  "name": "AirTemperature10Min",
+  "properties": {
+    "air_temperature_2m": {
+      "altnames": {
+        "lang:de": "TT_10"
+      },
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "double"
+    },
+    "air_temperature_5cm": {
+      "altnames": {
+        "lang:de": "TM5_10"
+      },
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "double"
+    },
+    "dew_point_temperature": {
+      "altnames": {
+        "lang:de": "TD_10"
+      },
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "double"
+    },
+    "pressure_station_level": {
+      "altnames": {
+        "lang:de": "PP_10"
+      },
+      "description": "Reference details for a station, monitoring site, or reporting area in the DWD Weather source.",
+      "type": "double"
+    },
+    "quality_level": {
+      "altnames": {
+        "lang:de": "QN"
+      },
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "int32"
+    },
+    "relative_humidity": {
+      "altnames": {
+        "lang:de": "RF_10"
+      },
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "double"
+    },
+    "state": {
+      "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "station_id": {
+      "altnames": {
+        "lang:de": "STATIONS_ID"
+      },
+      "description": "Stable identifier assigned by the upstream provider for the station or monitoring site.",
+      "type": "string"
+    },
+    "timestamp": {
+      "altnames": {
+        "lang:de": "MESS_DATUM"
+      },
+      "description": "Time when the provider recorded or published the value.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "timestamp"
+  ],
+  "type": "object"
+}

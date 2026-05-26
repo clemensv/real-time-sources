@@ -1,0 +1,111 @@
+{
+  "$id": "uk.org.carbonintensity.GenerationMix",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "National half-hourly electricity generation fuel mix for Great Britain, published by National Grid ESO. Each field represents the percentage contribution of a specific fuel type to total generation during the settlement period.",
+  "name": "GenerationMix",
+  "properties": {
+    "biomass_pct": {
+      "description": "Percentage of electricity generated from biomass (wood pellets, energy crops, and other organic matter) during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "ce_id": {
+      "description": "Deterministic CloudEvents id for subscriber deduplication, composed from settlement period, national region, and event leaf.",
+      "type": "string"
+    },
+    "coal_pct": {
+      "description": "Percentage of electricity generated from coal-fired power stations during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "gas_pct": {
+      "description": "Percentage of electricity generated from natural gas (CCGT and OCGT) during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "hydro_pct": {
+      "description": "Percentage of electricity generated from hydroelectric power stations during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "imports_pct": {
+      "description": "Percentage of electricity supplied via interconnector imports from continental Europe and Ireland during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "nuclear_pct": {
+      "description": "Percentage of electricity generated from nuclear power stations during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "oil_pct": {
+      "description": "Percentage of electricity generated from oil-fired power stations during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "other_pct": {
+      "description": "Percentage of electricity generated from other or unclassified fuel sources during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "period_from": {
+      "description": "ISO 8601 UTC timestamp marking the start of the half-hour settlement period.",
+      "type": "datetime"
+    },
+    "period_to": {
+      "description": "ISO 8601 UTC timestamp marking the end of the half-hour settlement period.",
+      "type": "datetime"
+    },
+    "region": {
+      "description": "Topic-safe MQTT/UNS region segment. National GB-wide records use the literal national.",
+      "type": "string"
+    },
+    "solar_pct": {
+      "description": "Percentage of electricity generated from solar photovoltaic installations during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "wind_pct": {
+      "description": "Percentage of electricity generated from onshore and offshore wind turbines during this settlement period.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    }
+  },
+  "required": [
+    "ce_id",
+    "period_from",
+    "period_to",
+    "region"
+  ],
+  "type": "object"
+}

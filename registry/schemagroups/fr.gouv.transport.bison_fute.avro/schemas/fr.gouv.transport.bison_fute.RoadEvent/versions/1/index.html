@@ -1,0 +1,160 @@
+{
+  "description": "A transport update from French public road-traffic feeds. It carries traffic measurements and road situations for French road network sites and situations.",
+  "doc": "Real-time road situation record from the French national non-conceded road network.",
+  "fields": [
+    {
+      "doc": "Unique identifier of the parent DATEX II situation.",
+      "name": "situation_id",
+      "type": "string"
+    },
+    {
+      "doc": "Unique identifier of this situation record within the parent situation.",
+      "name": "record_id",
+      "type": "string"
+    },
+    {
+      "doc": "Version number of the parent situation.",
+      "name": "version",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Overall severity of the parent situation.",
+      "name": "severity",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "DATEX II xsi:type of the situation record.",
+      "name": "record_type",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Probability of occurrence of the event.",
+      "name": "probability",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "WGS84 latitude of the event location.",
+      "name": "latitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "WGS84 longitude of the event location.",
+      "name": "longitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Road identifier (e.g. N20, A10).",
+      "name": "road_number",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Name of the nearest town.",
+      "name": "town_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Direction of traffic affected.",
+      "name": "direction",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Human-readable description of the event.",
+      "name": "description",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Human-readable description of the event location.",
+      "name": "location_description",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Name of the publishing organization.",
+      "name": "source_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Validity status of the situation record.",
+      "name": "validity_status",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "ISO 8601 start time of the event validity period.",
+      "name": "overall_start_time",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "ISO 8601 end time of the event validity period.",
+      "name": "overall_end_time",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "ISO 8601 timestamp when the situation record was first created.",
+      "name": "creation_time",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "ISO 8601 timestamp of the most recent observation.",
+      "name": "observation_time",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "RoadEvent",
+  "namespace": "fr.gouv.transport.bison_fute",
+  "type": "record"
+}

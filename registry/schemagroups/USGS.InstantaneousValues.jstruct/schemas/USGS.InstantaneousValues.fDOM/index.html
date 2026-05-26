@@ -1,0 +1,64 @@
+{
+  "$id": "https://example.com/schemas/USGS/InstantaneousValues/fDOM",
+  "$root": "/definitions/USGS/InstantaneousValues/fDOM",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "USGS": {
+      "InstantaneousValues": {
+        "fDOM": {
+          "description": "USGS dissolved organic matter fluorescence data (fDOM). Parameter codes 32295 and 32322.",
+          "name": "fDOM",
+          "properties": {
+            "datetime": {
+              "description": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}",
+              "type": "string"
+            },
+            "exception": {
+              "description": "{\"description\": \"Exception code when the value is unavailable.\"}",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "parameter_cd": {
+              "description": "{\"description\": \"Parameter code.\"}",
+              "type": "string"
+            },
+            "qualifiers": {
+              "description": "{\"description\": \"Qualifiers for the measurement.\"}",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "site_no": {
+              "description": "{\"description\": \"USGS site number.\"}",
+              "type": "string"
+            },
+            "timeseries_cd": {
+              "description": "{\"description\": \"Timeseries code.\"}",
+              "type": "string"
+            },
+            "value": {
+              "description": "{\"description\": \"Dissolved organic matter fluorescence value.\"}",
+              "type": [
+                "double",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "site_no",
+            "datetime",
+            "qualifiers",
+            "parameter_cd",
+            "timeseries_cd"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "description": "Payload record for f d o m events in the USGS Instantaneous Values source.",
+  "name": "fDOM"
+}

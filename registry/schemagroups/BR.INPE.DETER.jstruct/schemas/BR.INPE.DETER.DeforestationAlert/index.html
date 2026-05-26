@@ -1,0 +1,121 @@
+{
+  "$id": "https://example.com/schemas/BR/INPE/DETER/DeforestationAlert",
+  "$root": "/definitions/BR/INPE/DETER/DeforestationAlert",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "BR": {
+      "INPE": {
+        "DETER": {
+          "DeforestationAlert": {
+            "description": "INPE DETER deforestation alert for Amazon and Cerrado biomes.",
+            "name": "DeforestationAlert",
+            "properties": {
+              "alert_id": {
+                "description": "Stable reference ID from INPE (gid).",
+                "type": "string"
+              },
+              "area_km2": {
+                "description": "Area of the deforestation polygon in square kilometers.",
+                "type": "double"
+              },
+              "biome": {
+                "description": "Biome of the alert: amazon or cerrado.",
+                "enum": [
+                  "amazon",
+                  "cerrado"
+                ],
+                "type": "string"
+              },
+              "centroid_latitude": {
+                "description": "Latitude of the polygon centroid in decimal degrees.",
+                "type": "double"
+              },
+              "centroid_longitude": {
+                "description": "Longitude of the polygon centroid in decimal degrees.",
+                "type": "double"
+              },
+              "class_slug": {
+                "description": "Lowercase-kebab normalized DETER class used as a topic-safe MQTT routing axis, e.g. desmatamento-cr, degradacao, mineracao.",
+                "enum": [
+                  "desmatamento-cr",
+                  "desmatamento-veg",
+                  "degradacao",
+                  "mineracao",
+                  "cs-desordenado",
+                  "cs-geometrico",
+                  "cicatriz-de-queimada",
+                  "corte-seletivo",
+                  "unknown"
+                ],
+                "pattern": "^[a-z0-9][a-z0-9-]*$",
+                "type": "string"
+              },
+              "classname": {
+                "description": "Deforestation class: DESMATAMENTO_CR, DEGRADACAO, MINERACAO, CS_DESORDENADO, etc.",
+                "type": "string"
+              },
+              "municipality": {
+                "description": "Municipality name.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "path_row": {
+                "description": "Satellite path/row identifier.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "publish_month": {
+                "description": "Publication month in YYYY-MM-DD format.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "satellite": {
+                "description": "Satellite name (CBERS-4, Amazonia-1, etc.).",
+                "type": "string"
+              },
+              "sensor": {
+                "description": "Sensor name (AWFI, WFI, MSI).",
+                "type": "string"
+              },
+              "state_code": {
+                "description": "Brazilian state code (UF), e.g. PA, MT, when provided by INPE; null when omitted. The topic-safe state_slug field is used for MQTT routing.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "state_slug": {
+                "description": "Lowercased Brazilian state code (UF), e.g. pa, mt, used as a topic-safe MQTT routing axis; unknown when INPE omits the UF.",
+                "pattern": "^([a-z]{2}|unknown)$",
+                "type": "string"
+              },
+              "view_date": {
+                "description": "Observation date in YYYY-MM-DD format.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "alert_id",
+              "biome",
+              "classname",
+              "view_date",
+              "satellite",
+              "sensor",
+              "area_km2",
+              "centroid_latitude",
+              "centroid_longitude"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "DeforestationAlert"
+}

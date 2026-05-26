@@ -1,0 +1,108 @@
+{
+  "doc": "Reference data for a Ticketmaster venue.",
+  "fields": [
+    {
+      "doc": "Stable Ticketmaster venue identifier.",
+      "name": "entity_id",
+      "type": "string"
+    },
+    {
+      "doc": "Human-readable name of the venue.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "URL to the venue page on Ticketmaster.com.",
+      "name": "url",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "BCP-47 locale string.",
+      "name": "locale",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "IANA timezone database name.",
+      "name": "timezone",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "City name.",
+      "name": "city",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "ISO 3166-2 state or province code.",
+      "name": "state_code",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "ISO 3166-1 alpha-2 country code.",
+      "name": "country_code",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Street address line 1.",
+      "name": "address",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Postal or ZIP code.",
+      "name": "postal_code",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "WGS-84 latitude in decimal degrees.",
+      "name": "latitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "WGS-84 longitude in decimal degrees.",
+      "name": "longitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    }
+  ],
+  "name": "Venue",
+  "namespace": "Ticketmaster.Reference",
+  "type": "record"
+}

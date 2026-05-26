@@ -1,0 +1,73 @@
+{
+  "$id": "https://example.com/schemas/nl/ndw/traffic/TrafficSituation",
+  "$root": "/definitions/nl/ndw/traffic/TrafficSituation",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "nl": {
+      "ndw": {
+        "traffic": {
+          "TrafficSituation": {
+            "description": "Current traffic situation record from the Dutch NDW DATEX II actueel_beeld (current situation overview) feed. Includes road works, closures, lane management, and other traffic-affecting events on the Dutch road network.",
+            "name": "TrafficSituation",
+            "properties": {
+              "cause_type": {
+                "description": "Cause of the traffic situation. Common values: roadMaintenance, accident, congestion, roadClosed. Null when no cause is specified.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "end_time": {
+                "description": "End time of the situation validity period in ISO 8601 format (UTC). Null when the end time is open-ended or not specified.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "information_status": {
+                "description": "Status of the information: real (confirmed traffic data), test (test data), or exercise (drill/exercise data).",
+                "type": "string"
+              },
+              "record_type": {
+                "description": "DATEX II situation record type indicating the nature of the event. Common values: RoadOrCarriagewayOrLaneManagement, MaintenanceWorks, ConstructionWorks, ReroutingManagement. Null when not available.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "severity": {
+                "description": "Overall severity of the situation. Values include: low, medium, high, highest, unknown. Null if not specified.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "situation_id": {
+                "description": "Unique identifier of the traffic situation from the DATEX II situation id attribute. Example: RWS01_SM1117672_D2_WWA.",
+                "type": "string"
+              },
+              "start_time": {
+                "description": "Start time of the situation validity period in ISO 8601 format (UTC). Null when no validity time specification is provided.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "version_time": {
+                "description": "Timestamp of the latest version of this situation in ISO 8601 format (UTC), from the DATEX II situationVersionTime element.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "situation_id",
+              "version_time",
+              "information_status"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "TrafficSituation"
+}

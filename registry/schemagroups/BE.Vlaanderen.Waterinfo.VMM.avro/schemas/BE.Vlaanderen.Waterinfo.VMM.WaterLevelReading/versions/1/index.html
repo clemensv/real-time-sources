@@ -1,0 +1,52 @@
+{
+  "description": "Measurement payload for observations in the Waterinfo VMM source.",
+  "doc": "Measurement payload for observations in the Waterinfo VMM source.",
+  "fields": [
+    {
+      "name": "ts_id",
+      "type": "string"
+    },
+    {
+      "name": "station_no",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "station_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "timestamp",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "name": "value",
+      "type": "double"
+    },
+    {
+      "default": null,
+      "name": "unit_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "parameter_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "WaterLevelReading",
+  "namespace": "BE.Vlaanderen.Waterinfo.VMM",
+  "type": "record"
+}

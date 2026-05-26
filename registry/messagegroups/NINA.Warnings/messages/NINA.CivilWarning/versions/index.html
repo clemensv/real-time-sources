@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/NINA.jstruct/schemas/NINA.CivilWarning",
+    "description": "A civil protection warning from Germany's NINA/BBK warning system. Aggregates warnings from MOWAS (federal), KATWARN (municipal), BIWAPP (municipal), DWD (weather service), LHP (flood centers), and police services. Each warning follows the CAP (Common Alerting Protocol) structure with multi-language support.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://warnung.bund.de"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{warning_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "NINA.CivilWarning"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "NINA.CivilWarning",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "CivilWarning",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NINA.Warnings/messages/NINA.CivilWarning/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/NINA.Warnings/messages/NINA.CivilWarning/versions/1"
+  }
+}

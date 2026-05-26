@@ -1,0 +1,337 @@
+{
+  "$id": "https://meri.digitraffic.fi/schemas/fi/digitraffic/marine/portcall/VesselDetails",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "definitions": {
+    "VesselConstruction": {
+      "description": "Construction and classification attributes for the vessel.",
+      "name": "VesselConstruction",
+      "properties": {
+        "ballast_tank": {
+          "description": "True when the vessel is reported as having a ballast tank.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "double_bottom": {
+          "description": "True when the vessel is reported as having a double bottom.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "ice_class_code": {
+          "description": "Ice class code reported for the vessel when available.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ice_class_end_date": {
+          "description": "Date when the current ice-class endorsement ends, when available.",
+          "type": [
+            "datetime",
+            "null"
+          ]
+        },
+        "ice_class_issue_date": {
+          "description": "Date when the current ice-class endorsement was issued, when available.",
+          "type": [
+            "datetime",
+            "null"
+          ]
+        },
+        "ice_class_issue_place": {
+          "description": "Place where the ice-class endorsement was issued when available.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "inert_gas_system": {
+          "description": "True when the vessel is reported as having an inert gas system.",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "vessel_type_code": {
+          "description": "Digitraffic vessel type code from vesselConstruction.vesselTypeCode when available.",
+          "type": [
+            "int32",
+            "null"
+          ]
+        },
+        "vessel_type_name": {
+          "description": "Human-readable vessel type name from vesselConstruction.vesselTypeName when available.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "VesselDimensions": {
+      "description": "Tonnage and dimensional attributes for the vessel.",
+      "name": "VesselDimensions",
+      "properties": {
+        "breadth": {
+          "description": "Reported vessel breadth in meters when available.",
+          "symbol": "m",
+          "type": [
+            "double",
+            "null"
+          ],
+          "unit": "m"
+        },
+        "date_of_issue": {
+          "description": "Date when the tonnage certificate was issued when available.",
+          "type": [
+            "datetime",
+            "null"
+          ]
+        },
+        "dead_weight": {
+          "description": "Deadweight reported for the vessel from the deathWeight field when available.",
+          "type": [
+            "int32",
+            "null"
+          ]
+        },
+        "draught": {
+          "description": "Reported vessel draught in meters when available.",
+          "symbol": "m",
+          "type": [
+            "double",
+            "null"
+          ],
+          "unit": "m"
+        },
+        "engine_power": {
+          "description": "Engine power value as reported by Digitraffic when available.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "gross_tonnage": {
+          "description": "Gross tonnage reported for the vessel when available.",
+          "type": [
+            "int32",
+            "null"
+          ]
+        },
+        "height": {
+          "description": "Reported vessel height in meters when available.",
+          "symbol": "m",
+          "type": [
+            "double",
+            "null"
+          ],
+          "unit": "m"
+        },
+        "length": {
+          "description": "Reported vessel length in meters when available.",
+          "symbol": "m",
+          "type": [
+            "double",
+            "null"
+          ],
+          "unit": "m"
+        },
+        "max_speed": {
+          "description": "Reported maximum vessel speed in knots when available.",
+          "symbol": "kn",
+          "type": [
+            "double",
+            "null"
+          ],
+          "unit": "kn"
+        },
+        "net_tonnage": {
+          "description": "Net tonnage reported for the vessel when available.",
+          "type": [
+            "int32",
+            "null"
+          ]
+        },
+        "overall_length": {
+          "description": "Reported vessel overall length in meters when available.",
+          "symbol": "m",
+          "type": [
+            "double",
+            "null"
+          ],
+          "unit": "m"
+        },
+        "tonnage_certificate_issuer": {
+          "description": "Issuer of the vessel tonnage certificate when available.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "VesselRegistration": {
+      "description": "Registry and nationality details for the vessel.",
+      "name": "VesselRegistration",
+      "properties": {
+        "nationality": {
+          "description": "Reported nationality or flag state for the vessel when available.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "port_of_registry": {
+          "description": "Reported port of registry or home port for the vessel when available.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "VesselSystem": {
+      "description": "System and contact details carried with the vessel metadata.",
+      "name": "VesselSystem",
+      "properties": {
+        "ship_email": {
+          "description": "Ship email address when available.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ship_owner": {
+          "description": "Reported ship owner name when available.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ship_telephone_1": {
+          "description": "Primary ship telephone number when available.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ship_verifier": {
+          "description": "Verifier or registry authority code carried with the vessel system record when available.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    }
+  },
+  "description": "A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage information available from the upstream feed.",
+  "name": "VesselDetails",
+  "properties": {
+    "data_source": {
+      "description": "Upstream data source reported by Digitraffic for the vessel metadata, for example Portnet.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "imo_lloyds": {
+      "description": "IMO or Lloyd's number associated with the vessel when available.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "mmsi": {
+      "description": "Maritime Mobile Service Identity associated with this vessel when available.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "name": {
+      "description": "Reported vessel name.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "name_prefix": {
+      "description": "Reported vessel-name prefix such as ms when available.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "radio_call_sign": {
+      "description": "Radio call sign associated with the vessel when available.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "radio_call_sign_type": {
+      "description": "Type of radio call sign reported by Digitraffic, for example REAL.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "updated_at": {
+      "description": "Timestamp when Digitraffic last updated the vessel metadata record, from the updateTimestamp field.",
+      "type": "datetime"
+    },
+    "vessel_construction": {
+      "description": "Construction and classification attributes for the vessel.",
+      "type": [
+        "null",
+        {
+          "$ref": "/definitions/VesselConstruction"
+        }
+      ]
+    },
+    "vessel_dimensions": {
+      "description": "Tonnage and dimensional attributes for the vessel.",
+      "type": [
+        "null",
+        {
+          "$ref": "/definitions/VesselDimensions"
+        }
+      ]
+    },
+    "vessel_id": {
+      "description": "Digitraffic vessel identifier from the vesselId field. This is the stable identifier used as the CloudEvents subject and Kafka record key for vessel reference events.",
+      "type": "integer"
+    },
+    "vessel_registration": {
+      "description": "Registry and nationality details for the vessel.",
+      "type": [
+        "null",
+        {
+          "$ref": "/definitions/VesselRegistration"
+        }
+      ]
+    },
+    "vessel_system": {
+      "description": "System and contact details carried with the vessel metadata.",
+      "type": [
+        "null",
+        {
+          "$ref": "/definitions/VesselSystem"
+        }
+      ]
+    }
+  },
+  "required": [
+    "vessel_id",
+    "updated_at"
+  ],
+  "type": "object"
+}

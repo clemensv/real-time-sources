@@ -1,0 +1,68 @@
+{
+  "$id": "https://example.com/schemas/fi/digitraffic/marine/ais/VesselMetadata",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage information available from the upstream feed.",
+  "name": "VesselMetadata",
+  "properties": {
+    "callSign": {
+      "description": "Provider field for call sign in this record.",
+      "type": "string"
+    },
+    "destination": {
+      "description": "Provider field for destination in this record.",
+      "type": "string"
+    },
+    "draught": {
+      "description": "Provider field for draught in this record.",
+      "type": "int32"
+    },
+    "eta": {
+      "description": "Provider field for eta in this record.",
+      "type": "int32"
+    },
+    "imo": {
+      "description": "Provider field for imo in this record.",
+      "type": "int32"
+    },
+    "mmsi": {
+      "description": "Provider field for mmsi in this record.",
+      "type": "int32"
+    },
+    "name": {
+      "description": "Human-readable name of the resource.",
+      "type": "string"
+    },
+    "posType": {
+      "description": "Provider field for pos type in this record.",
+      "type": "int32"
+    },
+    "refA": {
+      "description": "Provider field for ref a in this record.",
+      "type": "int32"
+    },
+    "refB": {
+      "description": "Provider field for ref b in this record.",
+      "type": "int32"
+    },
+    "refC": {
+      "description": "Provider field for ref c in this record.",
+      "type": "int32"
+    },
+    "refD": {
+      "description": "Provider field for ref d in this record.",
+      "type": "int32"
+    },
+    "timestamp": {
+      "description": "Time when the provider recorded or published the update.",
+      "type": "int32"
+    },
+    "type": {
+      "description": "Provider field for type in this record.",
+      "type": "int32"
+    }
+  },
+  "required": [
+    "timestamp"
+  ],
+  "type": "object"
+}

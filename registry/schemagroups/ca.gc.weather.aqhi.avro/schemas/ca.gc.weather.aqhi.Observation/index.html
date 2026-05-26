@@ -1,0 +1,49 @@
+{
+  "description": "Measurement payload for air-quality health index observations and forecasts in the Canada AQHI source.",
+  "doc": "Latest AQHI observation for a reporting community.",
+  "fields": [
+    {
+      "description": "Measurement payload for air-quality health index observations and forecasts in the Canada AQHI source.",
+      "doc": "Two-letter Canadian province or territory abbreviation resolved for the AQHI community.",
+      "name": "province",
+      "type": "string"
+    },
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the Canada AQHI source.",
+      "doc": "English AQHI community name as published by Environment and Climate Change Canada.",
+      "name": "community_name",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for air-quality health index observations and forecasts in the Canada AQHI source.",
+      "doc": "Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.",
+      "name": "cgndb_code",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for air-quality health index observations and forecasts in the Canada AQHI source.",
+      "doc": "UTC timestamp of the AQHI observation in ISO 8601 format.",
+      "name": "observation_datetime",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for air-quality health index observations and forecasts in the Canada AQHI source.",
+      "doc": "Observed AQHI value for the community. Observation feeds publish AQHI with decimal precision.",
+      "name": "aqhi",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "description": "Measurement payload for air-quality health index observations and forecasts in the Canada AQHI source.",
+      "doc": "Public AQHI health-risk category derived from the AQHI value.",
+      "name": "aqhi_category",
+      "type": "string"
+    }
+  ],
+  "name": "Observation",
+  "namespace": "ca.gc.weather.aqhi",
+  "type": "record"
+}

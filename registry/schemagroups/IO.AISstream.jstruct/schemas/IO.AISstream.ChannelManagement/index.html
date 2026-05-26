@@ -1,0 +1,126 @@
+{
+  "$id": "https://example.com/schemas/IO/AISstream/ChannelManagement",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+  "name": "ChannelManagement",
+  "properties": {
+    "Area": {
+      "description": "Provider field for area in this record.",
+      "name": "Area",
+      "properties": {
+        "Latitude1": {
+          "description": "Provider field for latitude1 in this record.",
+          "type": "double"
+        },
+        "Latitude2": {
+          "description": "Provider field for latitude2 in this record.",
+          "type": "double"
+        },
+        "Longitude1": {
+          "description": "Provider field for longitude1 in this record.",
+          "type": "double"
+        },
+        "Longitude2": {
+          "description": "Provider field for longitude2 in this record.",
+          "type": "double"
+        }
+      },
+      "required": [
+        "Longitude1",
+        "Latitude1",
+        "Longitude2",
+        "Latitude2"
+      ],
+      "type": "object"
+    },
+    "BwA": {
+      "description": "Provider field for bw a in this record.",
+      "type": "boolean"
+    },
+    "BwB": {
+      "description": "Provider field for bw b in this record.",
+      "type": "boolean"
+    },
+    "ChannelA": {
+      "description": "Provider field for channel a in this record.",
+      "type": "int32"
+    },
+    "ChannelB": {
+      "description": "Provider field for channel b in this record.",
+      "type": "int32"
+    },
+    "IsAddressed": {
+      "description": "Provider field for is addressed in this record.",
+      "type": "boolean"
+    },
+    "LowPower": {
+      "description": "Provider field for low power in this record.",
+      "type": "boolean"
+    },
+    "MessageID": {
+      "description": "Provider field for message i d in this record.",
+      "type": "int32"
+    },
+    "RepeatIndicator": {
+      "description": "Provider field for repeat indicator in this record.",
+      "type": "int32"
+    },
+    "Spare1": {
+      "description": "Provider field for spare1 in this record.",
+      "type": "int32"
+    },
+    "Spare4": {
+      "description": "Provider field for spare4 in this record.",
+      "type": "int32"
+    },
+    "TransitionalZoneSize": {
+      "description": "Provider field for transitional zone size in this record.",
+      "type": "int32"
+    },
+    "TxRxMode": {
+      "description": "Provider field for tx rx mode in this record.",
+      "type": "int32"
+    },
+    "Unicast": {
+      "description": "Provider field for unicast in this record.",
+      "name": "Unicast",
+      "properties": {
+        "AddressStation1": {
+          "description": "Provider field for address station1 in this record.",
+          "type": "int32"
+        },
+        "AddressStation2": {
+          "description": "Provider field for address station2 in this record.",
+          "type": "int32"
+        },
+        "Spare2": {
+          "description": "Provider field for spare2 in this record.",
+          "type": "int32"
+        },
+        "Spare3": {
+          "description": "Provider field for spare3 in this record.",
+          "type": "int32"
+        }
+      },
+      "required": [
+        "AddressStation1",
+        "AddressStation2"
+      ],
+      "type": "object"
+    },
+    "UserID": {
+      "description": "Provider field for user i d in this record.",
+      "type": "int32"
+    },
+    "Valid": {
+      "description": "Provider field for valid in this record.",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "MessageID",
+    "UserID",
+    "Valid"
+  ],
+  "type": "object"
+}

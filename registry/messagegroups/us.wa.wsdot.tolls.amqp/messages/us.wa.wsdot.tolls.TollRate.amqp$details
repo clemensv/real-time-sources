@@ -1,0 +1,35 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/us.wa.wsdot.tolls/messages/us.wa.wsdot.tolls.TollRate",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "us.wa.wsdot.tolls.TollRate.amqp",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.tolls.amqp/messages/us.wa.wsdot.tolls.TollRate.amqp/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "TollRate",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Partition key mirrors the CloudEvents subject.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{trip_name}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP subject mirrors the CloudEvents subject.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{trip_name}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.tolls.amqp/messages/us.wa.wsdot.tolls.TollRate.amqp",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.tolls.amqp/messages/us.wa.wsdot.tolls.TollRate.amqp/versions",
+  "xid": "/messagegroups/us.wa.wsdot.tolls.amqp/messages/us.wa.wsdot.tolls.TollRate.amqp"
+}

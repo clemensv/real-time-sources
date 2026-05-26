@@ -1,0 +1,120 @@
+{
+  "$id": "https://www.tepco.co.jp/schemas/denkiyoho/SupplyCapacity",
+  "$root": "/definitions/jp/tepco/denkiyoho/SupplyCapacity",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "jp": {
+      "tepco": {
+        "denkiyoho": {
+          "SupplyCapacity": {
+            "description": "Daily reference schema for TEPCO Electricity Forecast supply capability and daily maximum-usage summary metadata. The source CSV is Shift-JIS encoded and section 1 reports peak supply capacity, reserve margin, usage percentage, and update time for the Tokyo Electric Power Company service area.",
+            "name": "SupplyCapacity",
+            "properties": {
+              "area_code": {
+                "description": "Constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page.",
+                "type": "string"
+              },
+              "area_name_en": {
+                "description": "English display name for the TEPCO service territory covered by the Electricity Forecast page: TEPCO Service Area (Kanto).",
+                "type": "string"
+              },
+              "area_name_jp": {
+                "description": "Japanese name of the TEPCO Power Grid service area used by the Electricity Forecast page: 東京電力エリア. The page defines this as Tokyo plus Kanagawa, Saitama, Chiba, Tochigi, Gunma, Ibaraki, Yamanashi, and the portion of Shizuoka east of the Fujikawa River.",
+                "type": "string"
+              },
+              "daily_max_usage_pct": {
+                "description": "Daily maximum usage percentage from TEPCO's section 4 最大使用率(%) summary row. The field is null when that section is absent or blank in the CSV.",
+                "maximum": 100,
+                "minimum": 0,
+                "symbol": "%",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "percent"
+              },
+              "daily_max_usage_time_slot": {
+                "description": "Local Japan Standard Time hour range from TEPCO's section 4 時間帯 column for the daily maximum usage percentage, normalized to an ASCII hyphen such as 4:00-5:00. The field is null when that section is absent or blank.",
+                "pattern": "^(([01]?[0-9]|2[0-3]):[0-5][0-9])-(([01]?[0-9]|2[0-3]):[0-5][0-9])$",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "date": {
+                "description": "Service date for TEPCO's Electricity Forecast daily CSV in local Tokyo time, normalized from the DATE column to ISO 8601 calendar-date form (YYYY-MM-DD). This date is a stable key component for all records from the same operating day.",
+                "type": "date"
+              },
+              "peak_reserve_margin_pct": {
+                "description": "Peak-time reserve margin percentage from TEPCO's section 1 ピーク時予備率(%) column for the published peak supply-capability slot.",
+                "maximum": 100,
+                "minimum": 0,
+                "symbol": "%",
+                "type": "double",
+                "unit": "percent"
+              },
+              "peak_supply_capacity_jp_unit_value": {
+                "description": "Original integer value from TEPCO's ピーク時供給力(万kW) header field. TEPCO publishes demand and supply values in 万kW, where one unit is 10,000 kilowatts, equal to 10 megawatts.",
+                "minimum": 0,
+                "symbol": "万kW",
+                "type": "int32",
+                "unit": "10MW"
+              },
+              "peak_supply_capacity_mw": {
+                "description": "Peak-time available supply capability for the Tokyo service area shown by TEPCO as ピーク時供給力(万kW). The bridge converts the published 10,000-kilowatt unit to megawatts by multiplying the source value by 10.",
+                "minimum": 0,
+                "symbol": "MW",
+                "type": "double",
+                "unit": "MW"
+              },
+              "peak_time_slot": {
+                "description": "Local Japan Standard Time hour range from TEPCO's section 1 時間帯 column indicating the peak supply-capability time slot, normalized to an ASCII hyphen such as 13:00-14:00.",
+                "pattern": "^(([01]?[0-9]|2[0-3]):[0-5][0-9])-(([01]?[0-9]|2[0-3]):[0-5][0-9])$",
+                "type": "string"
+              },
+              "peak_usage_pct": {
+                "description": "Peak-time usage percentage from TEPCO's section 1 ピーク時使用率(%) column for the published peak supply-capability slot.",
+                "maximum": 100,
+                "minimum": 0,
+                "symbol": "%",
+                "type": "double",
+                "unit": "percent"
+              },
+              "time": {
+                "description": "Stable subject and Kafka key time component. Supply capacity is daily reference data rather than a point-in-time demand measurement, so the bridge sets this field to the sentinel value _supply_capacity_ while using the same jp.tepco.denkiyoho/{date}/{time} key model as demand events.",
+                "pattern": "^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$",
+                "type": "string"
+              },
+              "update_datetime": {
+                "description": "Section 1 supply-capability information update timestamp converted from Japan Standard Time to UTC and serialized as an RFC 3339 timestamp. TEPCO publishes the date and time in 供給力情報更新日 and 供給力情報更新時刻.",
+                "type": "datetime"
+              },
+              "update_datetime_local": {
+                "description": "Section 1 supply-capability information update timestamp in Japan Standard Time serialized as an RFC 3339 timestamp with +09:00 offset, built from TEPCO's 供給力情報更新日 and 供給力情報更新時刻 columns.",
+                "type": "datetime"
+              }
+            },
+            "required": [
+              "date",
+              "time",
+              "peak_supply_capacity_mw",
+              "peak_supply_capacity_jp_unit_value",
+              "peak_time_slot",
+              "peak_reserve_margin_pct",
+              "peak_usage_pct",
+              "daily_max_usage_pct",
+              "daily_max_usage_time_slot",
+              "update_datetime",
+              "update_datetime_local",
+              "area_code",
+              "area_name_jp",
+              "area_name_en"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "SupplyCapacity"
+}

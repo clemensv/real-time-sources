@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Amedas.amqp/messages/JP.JMA.Amedas.amqp.Observation/versions/1",
+  "epoch": 1,
+  "messageid": "JP.JMA.Amedas.amqp.Observation",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Amedas.amqp/messages/JP.JMA.Amedas.amqp.Observation/meta",
+  "xid": "/messagegroups/JP.JMA.Amedas.amqp/messages/JP.JMA.Amedas.amqp.Observation/meta"
+}

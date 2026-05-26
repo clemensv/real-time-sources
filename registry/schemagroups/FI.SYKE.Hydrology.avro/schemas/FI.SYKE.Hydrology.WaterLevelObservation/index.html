@@ -1,0 +1,67 @@
+{
+  "description": "Measurement payload for observations in the SYKE Hydrology source.",
+  "doc": "Measurement payload for observations in the SYKE Hydrology source.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "water_level",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_level_unit",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_level_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge_unit",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "name": "WaterLevelObservation",
+  "namespace": "FI.SYKE.Hydrology",
+  "type": "record"
+}

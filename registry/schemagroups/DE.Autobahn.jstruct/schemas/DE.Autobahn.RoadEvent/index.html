@@ -1,0 +1,259 @@
+{
+  "$id": "https://example.com/schemas/DE/Autobahn/RoadEvent",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "additionalProperties": false,
+  "definitions": {
+    "StringList": {
+      "description": "Reusable array of strings for Autobahn list-valued text and symbol fields.",
+      "items": {
+        "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.",
+        "type": "string"
+      },
+      "name": "StringList",
+      "type": "array"
+    }
+  },
+  "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.",
+  "name": "RoadEvent",
+  "properties": {
+    "coordinate_lat": {
+      "altnames": {
+        "autobahn-api": "coordinate.lat"
+      },
+      "description": "Latitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+      "maximum": 90,
+      "minimum": -90,
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "coordinate_lon": {
+      "altnames": {
+        "autobahn-api": "coordinate.long"
+      },
+      "description": "Longitude extracted from the Autobahn API coordinate object or coordinate GeoJSON point.",
+      "maximum": 180,
+      "minimum": -180,
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "description_lines": {
+      "altnames": {
+        "autobahn-api": "description"
+      },
+      "description": "Description lines from the Autobahn API description array.",
+      "type": [
+        {
+          "$ref": "/definitions/StringList"
+        },
+        "null"
+      ]
+    },
+    "display_type": {
+      "altnames": {
+        "autobahn-api": "display_type"
+      },
+      "description": "Autobahn API display_type value that identifies the road-event subtype.",
+      "descriptions": {
+        "CLOSURE": "Provider coded value `CLOSURE` for this field.",
+        "CLOSURE_ENTRY_EXIT": "Provider coded value `CLOSURE_ENTRY_EXIT` for this field.",
+        "ROADWORKS": "Provider coded value `ROADWORKS` for this field.",
+        "SHORT_TERM_ROADWORKS": "Provider coded value `SHORT_TERM_ROADWORKS` for this field.",
+        "WEIGHT_LIMIT_35": "Provider coded value `WEIGHT_LIMIT_35` for this field."
+      },
+      "enum": [
+        "ROADWORKS",
+        "SHORT_TERM_ROADWORKS",
+        "CLOSURE",
+        "CLOSURE_ENTRY_EXIT",
+        "WEIGHT_LIMIT_35"
+      ],
+      "type": "string"
+    },
+    "event_time": {
+      "description": "CloudEvents event time for the emitted record. For appeared events the bridge uses startTimestamp when the API supplies it; otherwise it uses the poll timestamp.",
+      "type": "datetime"
+    },
+    "extent": {
+      "altnames": {
+        "autobahn-api": "extent"
+      },
+      "description": "Autobahn API extent text for the affected road segment.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "footer_lines": {
+      "altnames": {
+        "autobahn-api": "footer"
+      },
+      "description": "Footer lines from the Autobahn API footer array.",
+      "type": [
+        {
+          "$ref": "/definitions/StringList"
+        },
+        "null"
+      ]
+    },
+    "future": {
+      "altnames": {
+        "autobahn-api": "future"
+      },
+      "description": "Whether the Autobahn API marks the item as a future event.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "geometry_json": {
+      "altnames": {
+        "autobahn-api": "geometry"
+      },
+      "description": "Serialized Autobahn API geometry object for the affected road segment.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "icon": {
+      "altnames": {
+        "autobahn-api": "icon"
+      },
+      "description": "Autobahn API icon identifier for the item.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "identifier": {
+      "altnames": {
+        "autobahn-api": "identifier"
+      },
+      "description": "Stable Autobahn item identifier used for the CloudEvents subject and Kafka key.",
+      "type": "string"
+    },
+    "impact_lower": {
+      "altnames": {
+        "autobahn-api": "impact.lower"
+      },
+      "description": "Lower bound from the Autobahn API impact object.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "impact_symbols": {
+      "altnames": {
+        "autobahn-api": "impact.symbols"
+      },
+      "description": "Impact symbols from the Autobahn API impact.symbols array.",
+      "type": [
+        {
+          "$ref": "/definitions/StringList"
+        },
+        "null"
+      ]
+    },
+    "impact_upper": {
+      "altnames": {
+        "autobahn-api": "impact.upper"
+      },
+      "description": "Upper bound from the Autobahn API impact object.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "is_blocked": {
+      "altnames": {
+        "autobahn-api": "isBlocked"
+      },
+      "description": "Whether the Autobahn API marks the affected road segment as blocked.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "point": {
+      "altnames": {
+        "autobahn-api": "point"
+      },
+      "description": "Autobahn API point text that identifies the affected point on the road segment.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "road": {
+      "description": "Lowercase kebab-case autobahn road designation (e.g. 'a1', 'a2') for the road query that yielded this item. Populated by the bridge from the Autobahn API road id (which is upper-case, e.g. 'A1'). Used as the second-to-last MQTT topic segment so subscribers can wildcard per road (e.g. 'traffic/de/autobahn/autobahn/a1/+/+/+'). The full upstream set is retained on `road_ids` for completeness.",
+      "pattern": "^[a-z0-9-]+$",
+      "type": "string"
+    },
+    "road_ids": {
+      "description": "Autobahn road identifiers for the road query that yielded this item. The bridge emits the queried road id as a stable array field shared by all Autobahn families.",
+      "items": {
+        "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.",
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "route_recommendation_json": {
+      "altnames": {
+        "autobahn-api": "routeRecommendation"
+      },
+      "description": "Serialized Autobahn API routeRecommendation object when rerouting advice is available.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "start_lc_position": {
+      "altnames": {
+        "autobahn-api": "startLcPosition"
+      },
+      "description": "Numeric startLcPosition value emitted by the Autobahn API for the beginning of the affected segment.",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "start_timestamp": {
+      "altnames": {
+        "autobahn-api": "startTimestamp"
+      },
+      "description": "startTimestamp value from the Autobahn API when the item includes a scheduled or known start time.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "subtitle": {
+      "description": "Human-readable subtitle from the Autobahn API item.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "title": {
+      "description": "Human-readable title from the Autobahn API item.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "identifier",
+    "road",
+    "road_ids",
+    "event_time",
+    "display_type"
+  ],
+  "type": "object"
+}

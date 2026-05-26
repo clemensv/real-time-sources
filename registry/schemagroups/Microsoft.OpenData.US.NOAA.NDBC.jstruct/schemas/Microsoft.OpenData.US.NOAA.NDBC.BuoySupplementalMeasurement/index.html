@@ -1,0 +1,68 @@
+{
+  "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoySupplementalMeasurement",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Supplemental hourly extrema from the NDBC .supl realtime2 product. Each record reports the lowest one-minute pressure recorded during the hour and the highest one-minute wind speed with its direction and HHMM occurrence times.",
+  "name": "BuoySupplementalMeasurement",
+  "properties": {
+    "highest_wind_direction": {
+      "description": "Direction associated with the highest one-minute wind speed from the WDIR column, measured clockwise from true north. Unit: degrees true.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "highest_wind_speed": {
+      "description": "Highest one-minute wind speed recorded during the hour from the WSPD column. Unit: meters per second.",
+      "symbol": "m/s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m/s"
+    },
+    "highest_wind_time_code": {
+      "description": "HHMM UTC time code from the WTIME column indicating when the highest one-minute wind speed occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day.",
+      "pattern": "^[0-9]{4}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "lowest_pressure": {
+      "description": "Lowest one-minute atmospheric pressure recorded during the hour from the PRES column. Unit: hectopascals.",
+      "symbol": "hPa",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "hPa"
+    },
+    "lowest_pressure_time_code": {
+      "description": "HHMM UTC time code from the PTIME column indicating when the lowest one-minute pressure occurred during the surrounding hourly window. Around midnight the code can refer to the previous UTC day.",
+      "pattern": "^[0-9]{4}$",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "region": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "NDBC station identifier for the station publishing the .supl realtime2 file.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .supl realtime2 file.",
+      "type": "datetime"
+    }
+  },
+  "required": [
+    "station_id",
+    "timestamp"
+  ],
+  "type": "object"
+}

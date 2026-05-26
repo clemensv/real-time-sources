@@ -1,0 +1,16 @@
+content-disposition:JP.JMA.Amedas.Observation
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/JP.JMA.Amedas.jstruct/schemas/JP.JMA.Amedas.Observation/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/JP.JMA.Amedas.jstruct/schemas/JP.JMA.Amedas.Observation/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:JP.JMA.Amedas.Observation
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/JP.JMA.Amedas.jstruct/schemas/JP.JMA.Amedas.Observation
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/JP.JMA.Amedas.jstruct/schemas/JP.JMA.Amedas.Observation/versions
+xregistry-xid:/schemagroups/JP.JMA.Amedas.jstruct/schemas/JP.JMA.Amedas.Observation

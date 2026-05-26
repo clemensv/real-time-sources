@@ -1,0 +1,38 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/Gov.NIFC.Wildfires.jstruct/schemas/Gov.NIFC.Wildfires.WildfireIncident",
+  "description": "Active wildfire incident data from the National Interagency Fire Center (NIFC) IRWIN system, published via ArcGIS Feature Service.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{source_uri}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{irwin_id}"
+    },
+    "time": {
+      "required": false,
+      "type": "timestamp",
+      "value": "{modified_on_datetime}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "Gov.NIFC.Wildfires.WildfireIncident"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Gov.NIFC.Wildfires.WildfireIncident",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WildfireIncident",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Gov.NIFC.Wildfires/messages/Gov.NIFC.Wildfires.WildfireIncident/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/Gov.NIFC.Wildfires/messages/Gov.NIFC.Wildfires.WildfireIncident/versions/1"
+}

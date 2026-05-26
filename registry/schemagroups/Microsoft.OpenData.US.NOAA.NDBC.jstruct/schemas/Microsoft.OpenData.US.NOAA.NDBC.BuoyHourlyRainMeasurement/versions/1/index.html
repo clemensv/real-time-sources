@@ -1,0 +1,34 @@
+{
+  "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyHourlyRainMeasurement",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Hourly precipitation total from the NDBC .rain realtime2 product. Each record reports the one-hour rain accumulation for a station timestamp.",
+  "name": "BuoyHourlyRainMeasurement",
+  "properties": {
+    "accumulation": {
+      "description": "Hourly rain accumulation from the ACCUM column. This is the total precipitation accumulated during the 60-minute period ending at the reported timestamp. Unit: millimeters.",
+      "symbol": "mm",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "mm"
+    },
+    "region": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "NDBC station identifier for the station publishing the .rain realtime2 file.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .rain realtime2 file.",
+      "type": "datetime"
+    }
+  },
+  "required": [
+    "station_id",
+    "timestamp"
+  ],
+  "type": "object"
+}

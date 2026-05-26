@@ -1,0 +1,34 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.PeakDemandForecast",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "PeakDemandForecast",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "AMQP partition key matching the CloudEvent subject and Kafka key.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "jp.tepco.denkiyoho/{date}/{time}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP subject matching the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "jp.tepco.denkiyoho/{date}/{time}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.TEPCO.Denkiyoho.amqp/messages/JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/JP.TEPCO.Denkiyoho.amqp/messages/JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast/versions/1"
+  }
+}

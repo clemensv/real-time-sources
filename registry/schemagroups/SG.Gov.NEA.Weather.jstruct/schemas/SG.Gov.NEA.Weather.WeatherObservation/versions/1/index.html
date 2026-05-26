@@ -1,0 +1,71 @@
+{
+  "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/Weather/WeatherObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value.",
+  "name": "WeatherObservation",
+  "properties": {
+    "air_temperature": {
+      "description": "Air temperature from the air-temperature endpoint.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "observation_time": {
+      "description": "Timestamp of the observation in ISO 8601 with Singapore timezone (+08:00).",
+      "type": "datetime"
+    },
+    "rainfall": {
+      "description": "Rainfall amount in the last 5 minutes from the rainfall endpoint.",
+      "symbol": "mm",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "mm"
+    },
+    "relative_humidity": {
+      "description": "Relative humidity from the relative-humidity endpoint.",
+      "symbol": "%",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "percent"
+    },
+    "station_id": {
+      "description": "NEA station identifier.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Station location name.",
+      "type": "string"
+    },
+    "wind_direction": {
+      "description": "Wind direction in degrees clockwise from true north, from the wind-direction endpoint.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degree"
+    },
+    "wind_speed": {
+      "description": "Wind speed from the wind-speed endpoint.",
+      "symbol": "kn",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "kn"
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name",
+    "observation_time"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,37 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://planet.openstreetmap.org/replication/minute"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{geohash5}/{element_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "Org.OpenStreetMap.Diffs.MapChange"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Org.OpenStreetMap.Diffs.mqtt.Way",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Way",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 0,
+    "retain": false,
+    "topic_name": "osm/intl/wikimedia/wikimedia-osm-diffs/way/{geohash5}/{element_id}/change"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Org.OpenStreetMap.Diffs.mqtt/messages/Org.OpenStreetMap.Diffs.mqtt.Way/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/Org.OpenStreetMap.Diffs.mqtt/messages/Org.OpenStreetMap.Diffs.mqtt.Way/versions/1"
+}

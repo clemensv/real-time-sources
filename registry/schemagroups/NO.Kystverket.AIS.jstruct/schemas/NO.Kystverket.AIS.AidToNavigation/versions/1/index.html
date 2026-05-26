@@ -1,0 +1,85 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/schemas/NO/Kystverket/AIS/AidToNavigation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.",
+  "name": "AidToNavigation",
+  "properties": {
+    "aid_type": {
+      "description": "AtoN type code (0..31) per ITU-R M.1371.",
+      "type": "int32"
+    },
+    "ais_msg_type": {
+      "description": "Original ITU-R M.1371 message ID (21).",
+      "type": "int32"
+    },
+    "flag": {
+      "description": "ISO-3166-1 alpha-2 country code (lower-case) derived from the first three digits of the MMSI via the ITU MID (Maritime Identification Digit) registry. 'xx' is used for MIDs that do not map to a country.",
+      "pattern": "^[a-z]{2}$|^xx$",
+      "type": "string"
+    },
+    "geohash5": {
+      "description": "5-character geohash of the reported (latitude, longitude). Approx. 4.9 km x 4.9 km cells at the equator. For messages without a position, filled from the most recently observed position for the MMSI, falling back to '00000'.",
+      "pattern": "^[0-9b-hjkmnp-z]{5}$",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "Reported latitude in WGS-84 decimal degrees.",
+      "type": "double"
+    },
+    "longitude": {
+      "description": "Reported longitude in WGS-84 decimal degrees.",
+      "type": "double"
+    },
+    "mmsi": {
+      "description": "Source MMSI as a 9-digit ASCII string (padded with leading zeros). Used as the UNS topic '{mmsi}' placeholder and as the CloudEvents subject.",
+      "pattern": "^[0-9]{9}$",
+      "type": "string"
+    },
+    "msg_type": {
+      "description": "Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.",
+      "descriptions": {
+        "aid-to-navigation": "Provider coded value `aid-to-navigation` for this field.",
+        "position-report": "Provider coded value `position-report` for this field.",
+        "static": "Provider coded value `static` for this field."
+      },
+      "enum": [
+        "position-report",
+        "static",
+        "aid-to-navigation"
+      ],
+      "type": "string"
+    },
+    "name": {
+      "description": "Aid-to-Navigation name as broadcast.",
+      "type": "string"
+    },
+    "position_accuracy": {
+      "description": "1 if high-accuracy (DGPS), else 0.",
+      "type": "int32"
+    },
+    "ship_type": {
+      "description": "Kebab-case ship-type bucket derived from the ITU-R M.1371 ShipType code. For static reports it is derived from the broadcast Type-5/24 ShipType field; for position reports it is looked up from an in-process ship-type cache keyed by MMSI. 'unknown' if no static report has been observed yet.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "Kystverket base-station identifier.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "ISO-8601 receive time as supplied by the upstream NMEA tag.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "mmsi",
+    "flag",
+    "ship_type",
+    "geohash5",
+    "msg_type",
+    "aid_type",
+    "latitude",
+    "longitude",
+    "ais_msg_type"
+  ],
+  "type": "object"
+}

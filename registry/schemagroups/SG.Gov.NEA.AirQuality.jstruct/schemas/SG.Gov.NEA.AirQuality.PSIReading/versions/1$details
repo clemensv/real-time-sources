@@ -1,0 +1,13 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "format": "JsonStructure/draft-02",
+  "isdefault": true,
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "schemaid": "SG.Gov.NEA.AirQuality.PSIReading",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/SG.Gov.NEA.AirQuality.jstruct/schemas/SG.Gov.NEA.AirQuality.PSIReading/versions/1",
+  "versionid": "1",
+  "xid": "/schemagroups/SG.Gov.NEA.AirQuality.jstruct/schemas/SG.Gov.NEA.AirQuality.PSIReading/versions/1"
+}

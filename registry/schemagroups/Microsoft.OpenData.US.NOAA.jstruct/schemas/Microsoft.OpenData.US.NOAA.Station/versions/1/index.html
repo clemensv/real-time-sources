@@ -1,0 +1,472 @@
+{
+  "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/Station",
+  "$root": "/definitions/Microsoft/OpenData/US/NOAA/Station",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Microsoft": {
+      "OpenData": {
+        "US": {
+          "NOAA": {
+            "Station": {
+              "name": "Station",
+              "properties": {
+                "HTFhistorical": {
+                  "description": "{\"description\": \"Indicates whether the station has historical High Tide Flooding data.\"}",
+                  "type": "boolean"
+                },
+                "affiliations": {
+                  "description": "{\"description\": \"Affiliations of the station.\"}",
+                  "type": "string"
+                },
+                "benchmarks": {
+                  "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self"
+                  ],
+                  "type": "object"
+                },
+                "datums": {
+                  "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self"
+                  ],
+                  "type": "object"
+                },
+                "details": {
+                  "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                  "properties": {
+                    "region": {
+                      "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa.",
+                      "type": "string"
+                    },
+                    "self": {
+                      "type": "string"
+                    },
+                    "station_id": {
+                      "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self"
+                  ],
+                  "type": "object"
+                },
+                "disclaimers": {
+                  "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self"
+                  ],
+                  "type": "object"
+                },
+                "expand": {
+                  "description": "{\"description\": \"URL to expanded information about the station.\"}",
+                  "type": "string"
+                },
+                "floodlevels": {
+                  "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self"
+                  ],
+                  "type": "object"
+                },
+                "forecast": {
+                  "description": "{\"description\": \"Indicates whether the station provides forecast data.\"}",
+                  "type": "boolean"
+                },
+                "greatlakes": {
+                  "description": "{\"description\": \"Indicates whether the station is located in the Great Lakes region.\"}",
+                  "type": "boolean"
+                },
+                "harmonicConstituents": {
+                  "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self"
+                  ],
+                  "type": "object"
+                },
+                "lat": {
+                  "description": "{\"description\": \"Latitude of the station.\"}",
+                  "type": "double"
+                },
+                "lng": {
+                  "description": "{\"description\": \"Longitude of the station.\"}",
+                  "type": "double"
+                },
+                "name": {
+                  "description": "{\"description\": \"Name of the station.\"}",
+                  "type": "string"
+                },
+                "nearby": {
+                  "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self"
+                  ],
+                  "type": "object"
+                },
+                "nonNavigational": {
+                  "description": "{\"description\": \"Indicates whether the station is non-navigational.\"}",
+                  "type": "boolean"
+                },
+                "notices": {
+                  "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self"
+                  ],
+                  "type": "object"
+                },
+                "observedst": {
+                  "description": "{\"description\": \"Indicates whether the station observes Daylight Saving Time.\"}",
+                  "type": "boolean"
+                },
+                "ofsMapOffsets": {
+                  "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self"
+                  ],
+                  "type": "object"
+                },
+                "outlook": {
+                  "description": "{\"description\": \"Indicates whether the station provides outlook data.\"}",
+                  "type": "boolean"
+                },
+                "portscode": {
+                  "description": "{\"description\": \"PORTS code for the station.\"}",
+                  "type": "string"
+                },
+                "products": {
+                  "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self"
+                  ],
+                  "type": "object"
+                },
+                "self": {
+                  "description": "{\"description\": \"URL to the station's data.\"}",
+                  "type": "string"
+                },
+                "sensors": {
+                  "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self"
+                  ],
+                  "type": "object"
+                },
+                "shefcode": {
+                  "description": "{\"description\": \"Standard Hydrologic Exchange Format code for the station.\"}",
+                  "type": "string"
+                },
+                "state": {
+                  "description": "{\"description\": \"State where the station is located.\"}",
+                  "type": "string"
+                },
+                "station_id": {
+                  "description": "{\"description\": \"Unique identifier for the station.\"}",
+                  "type": "string"
+                },
+                "stormsurge": {
+                  "description": "{\"description\": \"Indicates whether the station measures storm surge data.\"}",
+                  "type": "boolean"
+                },
+                "supersededdatums": {
+                  "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self"
+                  ],
+                  "type": "object"
+                },
+                "tidal": {
+                  "description": "{\"description\": \"Indicates whether the station measures tidal data.\"}",
+                  "type": "boolean"
+                },
+                "tidePredOffsets": {
+                  "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                  "properties": {
+                    "self": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "self"
+                  ],
+                  "type": "object"
+                },
+                "tideType": {
+                  "description": "{\"description\": \"Type of tide measured by the station.\"}",
+                  "type": "string"
+                },
+                "timezone": {
+                  "description": "{\"description\": \"Timezone of the station.\"}",
+                  "type": "string"
+                },
+                "timezonecorr": {
+                  "description": "{\"description\": \"Timezone correction in minutes for the station.\"}",
+                  "type": "int32"
+                }
+              },
+              "required": [
+                "tidal",
+                "greatlakes",
+                "shefcode",
+                "details",
+                "sensors",
+                "floodlevels",
+                "datums",
+                "supersededdatums",
+                "harmonicConstituents",
+                "benchmarks",
+                "tidePredOffsets",
+                "ofsMapOffsets",
+                "state",
+                "timezone",
+                "timezonecorr",
+                "observedst",
+                "stormsurge",
+                "nearby",
+                "forecast",
+                "outlook",
+                "HTFhistorical",
+                "nonNavigational",
+                "station_id",
+                "name",
+                "lat",
+                "lng",
+                "affiliations",
+                "portscode",
+                "products",
+                "disclaimers",
+                "notices",
+                "self",
+                "expand",
+                "tideType"
+              ],
+              "type": "object"
+            },
+            "StationTypes": {
+              "benchmarks": {
+                "name": "benchmarks",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self"
+                ],
+                "type": "object"
+              },
+              "datums": {
+                "name": "datums",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self"
+                ],
+                "type": "object"
+              },
+              "details": {
+                "name": "details",
+                "properties": {
+                  "region": {
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa.",
+                    "type": "string"
+                  },
+                  "self": {
+                    "type": "string"
+                  },
+                  "station_id": {
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self"
+                ],
+                "type": "object"
+              },
+              "disclaimers": {
+                "name": "disclaimers",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self"
+                ],
+                "type": "object"
+              },
+              "floodlevels": {
+                "name": "floodlevels",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self"
+                ],
+                "type": "object"
+              },
+              "harmonicConstituents": {
+                "name": "harmonicConstituents",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self"
+                ],
+                "type": "object"
+              },
+              "nearby": {
+                "name": "nearby",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self"
+                ],
+                "type": "object"
+              },
+              "notices": {
+                "name": "notices",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self"
+                ],
+                "type": "object"
+              },
+              "ofsMapOffsets": {
+                "name": "ofsMapOffsets",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self"
+                ],
+                "type": "object"
+              },
+              "products": {
+                "name": "products",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self"
+                ],
+                "type": "object"
+              },
+              "sensors": {
+                "name": "sensors",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self"
+                ],
+                "type": "object"
+              },
+              "supersededdatums": {
+                "name": "supersededdatums",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self"
+                ],
+                "type": "object"
+              },
+              "tidePredOffsets": {
+                "name": "tidePredOffsets",
+                "properties": {
+                  "self": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "self"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "Station"
+}

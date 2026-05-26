@@ -1,0 +1,45 @@
+{
+  "$id": "https://example.com/schemas/NO/NVE/Hydrology/WaterLevelObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Measurement payload for water level and discharge observations in the NVE Hydrology source.",
+  "name": "WaterLevelObservation",
+  "properties": {
+    "discharge": {
+      "description": "Current streamflow or discharge reported for the station.",
+      "type": "double"
+    },
+    "discharge_timestamp": {
+      "description": "Time associated with the discharge measurement.",
+      "type": "datetime"
+    },
+    "discharge_unit": {
+      "description": "Unit used for the discharge value.",
+      "type": "string"
+    },
+    "river_name": {
+      "description": "Name of the river the station observes (NVE HydAPI 'riverName' field, in Norwegian 'Vassdrag', e.g. 'Glomma', 'Drammenselva'). Sourced by the bridge from the station catalog (https://hydapi.nve.no/api/v1/Stations) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {river_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    },
+    "water_level": {
+      "description": "Current water level reported for the station.",
+      "type": "double"
+    },
+    "water_level_timestamp": {
+      "description": "Time associated with the water-level measurement.",
+      "type": "datetime"
+    },
+    "water_level_unit": {
+      "description": "Unit used for the water-level value.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "river_name"
+  ],
+  "type": "object"
+}

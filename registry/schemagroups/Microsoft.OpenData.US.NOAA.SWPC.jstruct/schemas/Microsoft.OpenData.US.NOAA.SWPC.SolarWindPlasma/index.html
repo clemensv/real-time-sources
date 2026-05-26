@@ -1,0 +1,46 @@
+{
+  "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/SolarWindPlasma",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "One-minute resolution solar wind plasma measurement from the DSCOVR satellite Faraday Cup instrument at the L1 Lagrange point, as reported by the SWPC solar-wind/plasma-7-day endpoint. Includes proton density, bulk speed, and ion temperature. DSCOVR provides approximately 15-45 minutes of advance warning before solar wind structures reach Earth's magnetosphere.",
+  "name": "SolarWindPlasma",
+  "properties": {
+    "density": {
+      "description": "Solar wind proton number density measured by the DSCOVR Faraday Cup. Typical quiet-time values are 3-10 n/cm³; values above 20 n/cm³ may indicate a coronal mass ejection passage or a compressed solar wind region.",
+      "symbol": "n/cm³",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "n/cm³"
+    },
+    "observation_time": {
+      "altnames": [
+        "time_tag"
+      ],
+      "description": "UTC date-time of the plasma measurement, in 'YYYY-MM-DD HH:MM:SS.fff' format.",
+      "type": "string"
+    },
+    "speed": {
+      "description": "Solar wind proton bulk speed measured by DSCOVR. Typical quiet-time values are 300-400 km/s (slow wind); high-speed streams reach 500-800 km/s and CME-driven shocks can exceed 1000 km/s.",
+      "symbol": "km/s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "km/s"
+    },
+    "temperature": {
+      "description": "Solar wind ion temperature measured by DSCOVR. Typical values are 10,000-200,000 K; elevated temperatures often accompany high-speed streams and interplanetary shock passages.",
+      "symbol": "K",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "K"
+    }
+  },
+  "required": [
+    "observation_time"
+  ],
+  "type": "object"
+}

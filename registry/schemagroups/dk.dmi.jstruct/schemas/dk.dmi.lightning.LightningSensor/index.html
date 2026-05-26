@@ -1,0 +1,84 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/dmi/schemas/dk/dmi/lightning/Sensor",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A DMI lightning detection sensor site. Six DMI-owned sensors cover Denmark; third-party sensors that contribute to triangulation are not catalogued here but their IDs appear in Strike.sensors.",
+  "name": "LightningSensor",
+  "properties": {
+    "active_from": {
+      "altnames": {
+        "json": "activeFrom"
+      },
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "active_to": {
+      "altnames": {
+        "json": "activeTo"
+      },
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "country": {
+      "altenums": {
+        "lang:en": {
+          "DNK": "Denmark",
+          "FRO": "Faroe Islands",
+          "GRL": "Greenland"
+        }
+      },
+      "description": "ISO 3166-1 alpha-3 country code (typically 'DNK').",
+      "enum": [
+        "DNK",
+        "GRL",
+        "FRO"
+      ],
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "latitude": {
+      "maximum": 90,
+      "minimum": -90,
+      "type": "double",
+      "unit": "deg"
+    },
+    "longitude": {
+      "maximum": 180,
+      "minimum": -180,
+      "type": "double",
+      "unit": "deg"
+    },
+    "name": {
+      "description": "Human-readable sensor site name.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "owner": {
+      "description": "Operating agency (typically 'DMI').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sensor_id": {
+      "altnames": {
+        "json": "sensorId"
+      },
+      "description": "Stable sensor identifier (1..6 for DMI-owned sensors).",
+      "type": "string"
+    }
+  },
+  "required": [
+    "sensor_id",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

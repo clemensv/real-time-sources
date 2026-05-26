@@ -1,0 +1,14 @@
+content-disposition:GeneralTransitFeedStatic.Levels
+content-length:965
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Levels/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:GeneralTransitFeedStatic.Levels
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Levels/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/GeneralTransitFeedStatic.jstruct/schemas/GeneralTransitFeedStatic.Levels/versions/1

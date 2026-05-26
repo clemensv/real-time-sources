@@ -1,0 +1,35 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/info.energy_charts/messages/info.energy_charts.PublicPower",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "info.energy_charts.amqp.PublicPower",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.PublicPower/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "PublicPower",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "AMQP partition key matching the CloudEvent subject and Kafka key.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{country}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP subject matching the CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{country}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.PublicPower",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.PublicPower/versions",
+  "xid": "/messagegroups/info.energy_charts.amqp/messages/info.energy_charts.amqp.PublicPower"
+}

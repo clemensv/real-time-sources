@@ -1,0 +1,56 @@
+{
+  "description": "A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "doc": "AIS vessel position report from Digitraffic MQTT stream. Represents a decoded AIS message type 1/2/3/18/19 position update.",
+  "fields": [
+    {
+      "default": null,
+      "name": "mmsi",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "name": "time",
+      "type": "int"
+    },
+    {
+      "name": "sog",
+      "type": "double"
+    },
+    {
+      "name": "cog",
+      "type": "double"
+    },
+    {
+      "name": "navStat",
+      "type": "int"
+    },
+    {
+      "name": "rot",
+      "type": "int"
+    },
+    {
+      "name": "posAcc",
+      "type": "boolean"
+    },
+    {
+      "name": "raim",
+      "type": "boolean"
+    },
+    {
+      "name": "heading",
+      "type": "int"
+    },
+    {
+      "name": "lon",
+      "type": "double"
+    },
+    {
+      "name": "lat",
+      "type": "double"
+    }
+  ],
+  "name": "VesselLocation",
+  "type": "record"
+}

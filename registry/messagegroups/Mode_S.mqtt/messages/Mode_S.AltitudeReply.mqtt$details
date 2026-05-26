@@ -1,0 +1,21 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Mode_S.AltitudeReply.mqtt",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Mode_S.mqtt/messages/Mode_S.AltitudeReply.mqtt/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 0,
+    "retain": false,
+    "topic_name": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Mode_S.mqtt/messages/Mode_S.AltitudeReply.mqtt",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Mode_S.mqtt/messages/Mode_S.AltitudeReply.mqtt/versions",
+  "xid": "/messagegroups/Mode_S.mqtt/messages/Mode_S.AltitudeReply.mqtt"
+}

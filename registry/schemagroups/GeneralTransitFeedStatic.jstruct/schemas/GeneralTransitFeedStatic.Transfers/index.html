@@ -1,0 +1,39 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/Transfers",
+  "$root": "/definitions/GeneralTransitFeedStatic/Transfers",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "Transfers": {
+        "description": "Defines transfers.",
+        "name": "Transfers",
+        "properties": {
+          "fromStopId": {
+            "description": "Identifies a stop or station where a connection between routes begins.",
+            "type": "string"
+          },
+          "minTransferTime": {
+            "default": null,
+            "description": "Amount of time, in seconds, needed to transfer from the specified (from_stop_id) to the specified (to_stop_id).",
+            "type": "int32"
+          },
+          "toStopId": {
+            "description": "Identifies a stop or station where a connection between routes ends.",
+            "type": "string"
+          },
+          "transferType": {
+            "description": "Type of connection for the specified (from_stop_id, to_stop_id) pair.",
+            "type": "int32"
+          }
+        },
+        "required": [
+          "fromStopId",
+          "toStopId",
+          "transferType"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "Transfers"
+}

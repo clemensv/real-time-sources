@@ -1,0 +1,31 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "endpointid": "US.WA.Seattle.StreetClosures.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/US.WA.Seattle.StreetClosures"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/US.WA.Seattle.StreetClosures.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{closure_id}",
+      "topic": "seattle-street-closures"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/US.WA.Seattle.StreetClosures.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/US.WA.Seattle.StreetClosures.Kafka"
+}

@@ -1,0 +1,220 @@
+{
+  "$id": "https://api.energy-charts.info/schemas/info/energy_charts/PublicPower",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Net electricity generation by fuel type for a given country at a specific 15-minute interval. Sourced from the Energy-Charts /public_power endpoint (Fraunhofer ISE) which aggregates ENTSO-E transparency platform data. Each record represents one timestamp in the parallel-array response, with individual production types flattened into named fields in megawatts (MW). Negative values for hydro pumped storage consumption and cross-border trading indicate consumption or export. The renewable_share_of_generation and renewable_share_of_load fields are percentages (0–100). Load represents total grid demand.",
+  "name": "PublicPower",
+  "properties": {
+    "biomass_mw": {
+      "description": "Net generation from biomass power plants (MW). Includes solid biomass, biogas, and bioliquids. Corresponds to the 'Biomass' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "country": {
+      "description": "ISO 3166-1 alpha-2 country code identifying the electricity market area (e.g. 'de' for Germany, 'fr' for France). Used as the query parameter in the Energy-Charts API.",
+      "type": "string"
+    },
+    "cross_border_electricity_trading_mw": {
+      "description": "Net cross-border electricity exchange (MW). Positive values indicate net imports; negative values indicate net exports. Corresponds to the 'Cross border electricity trading' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "fossil_brown_coal_lignite_mw": {
+      "description": "Net generation from brown coal (lignite) power plants (MW). Lignite is a low-grade coal with high moisture content used primarily in Germany. Corresponds to the 'Fossil brown coal / lignite' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "fossil_coal_derived_gas_mw": {
+      "description": "Net generation from coal-derived gas power plants (MW). Includes blast furnace gas, coke oven gas, and coal mine methane. Corresponds to the 'Fossil coal-derived gas' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "fossil_gas_mw": {
+      "description": "Net generation from natural gas power plants (MW). Includes combined-cycle gas turbines (CCGT) and open-cycle gas turbines (OCGT). Corresponds to the 'Fossil gas' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "fossil_hard_coal_mw": {
+      "description": "Net generation from hard coal power plants (MW). Hard coal (anthracite/bituminous) has higher energy density than lignite. Corresponds to the 'Fossil hard coal' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "fossil_oil_mw": {
+      "description": "Net generation from oil-fired power plants (MW). Includes heavy fuel oil and light oil combustion turbines. Corresponds to the 'Fossil oil' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "geothermal_mw": {
+      "description": "Net generation from geothermal power plants (MW). Uses heat from the earth's interior to generate electricity. Corresponds to the 'Geothermal' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "hydro_pumped_storage_consumption_mw": {
+      "description": "Net power consumed by pumped-storage hydroelectric plants (MW). Values are typically negative, indicating the plant is pumping water uphill (consuming electricity). Corresponds to the 'Hydro pumped storage consumption' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "hydro_pumped_storage_mw": {
+      "description": "Net generation from pumped-storage hydroelectric plants when generating (MW). Positive values indicate the plant is releasing stored water to generate electricity. Corresponds to the 'Hydro pumped storage' (generation) production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "hydro_run_of_river_mw": {
+      "description": "Net generation from run-of-river hydroelectric plants (MW). These plants generate electricity from the natural flow of rivers without significant storage. Corresponds to the 'Hydro Run-of-River' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "hydro_water_reservoir_mw": {
+      "description": "Net generation from reservoir hydroelectric plants (MW). These plants store water behind a dam and release it to generate electricity on demand. Corresponds to the 'Hydro water reservoir' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "load_mw": {
+      "description": "Total electricity grid load (demand) for the country (MW). Represents the sum of all electricity consumption at the given timestamp. Corresponds to the 'Load' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "nuclear_mw": {
+      "description": "Net generation from nuclear power plants (MW). Not present for all countries (e.g. absent for Germany after nuclear phase-out). Corresponds to the 'Nuclear' production type when available.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "others_mw": {
+      "description": "Net generation from other power sources not classified into specific categories (MW). May include mixed-fuel plants or uncategorized sources. Corresponds to the 'Others' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "renewable_share_of_generation_pct": {
+      "description": "Percentage of total electricity generation that comes from renewable sources (0–100). Calculated by dividing renewable generation by total generation. Corresponds to the 'Renewable share of generation' production type.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "renewable_share_of_load_pct": {
+      "description": "Percentage of the total grid load that is covered by renewable generation (0–100). Calculated by dividing renewable generation by total load. Corresponds to the 'Renewable share of load' production type.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "residual_load_mw": {
+      "description": "Residual load (MW). Calculated as total load minus generation from variable renewable sources (wind and solar). A high residual load indicates that conventional or dispatchable power plants must cover most of the demand. Corresponds to the 'Residual load' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "solar_mw": {
+      "description": "Net generation from solar photovoltaic (PV) and concentrated solar power (CSP) plants (MW). Corresponds to the 'Solar' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "timestamp": {
+      "description": "UTC timestamp derived from the unix_seconds value. Marks the start of the 15-minute measurement interval.",
+      "type": "datetime"
+    },
+    "unix_seconds": {
+      "description": "Unix epoch timestamp in seconds as returned by the Energy-Charts API. Each value corresponds to one row in the parallel arrays of production_types.",
+      "type": "int64"
+    },
+    "waste_mw": {
+      "description": "Net generation from waste incineration power plants (MW). Includes municipal solid waste and industrial waste combustion. Corresponds to the 'Waste' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "wind_offshore_mw": {
+      "description": "Net generation from offshore wind turbines (MW). Offshore wind farms are located in bodies of water, typically on the continental shelf. Corresponds to the 'Wind offshore' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "wind_onshore_mw": {
+      "description": "Net generation from onshore wind turbines (MW). Onshore wind farms are located on land. Corresponds to the 'Wind onshore' production type.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    }
+  },
+  "required": [
+    "country",
+    "timestamp",
+    "unix_seconds"
+  ],
+  "type": "object"
+}

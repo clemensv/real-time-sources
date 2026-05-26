@@ -1,0 +1,297 @@
+{
+  "altnames": {
+    "kql": "Station"
+  },
+  "fields": [
+    {
+      "doc": "{\"description\": \"Indicates whether the station measures tidal data.\"}",
+      "name": "tidal",
+      "type": "boolean"
+    },
+    {
+      "doc": "{\"description\": \"Indicates whether the station is located in the Great Lakes region.\"}",
+      "name": "greatlakes",
+      "type": "boolean"
+    },
+    {
+      "doc": "{\"description\": \"Standard Hydrologic Exchange Format code for the station.\"}",
+      "name": "shefcode",
+      "type": "string"
+    },
+    {
+      "name": "details",
+      "type": {
+        "fields": [
+          {
+            "name": "self",
+            "type": "string"
+          }
+        ],
+        "name": "details",
+        "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+        "type": "record"
+      }
+    },
+    {
+      "name": "sensors",
+      "type": {
+        "fields": [
+          {
+            "name": "self",
+            "type": "string"
+          }
+        ],
+        "name": "sensors",
+        "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+        "type": "record"
+      }
+    },
+    {
+      "name": "floodlevels",
+      "type": {
+        "fields": [
+          {
+            "name": "self",
+            "type": "string"
+          }
+        ],
+        "name": "floodlevels",
+        "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+        "type": "record"
+      }
+    },
+    {
+      "name": "datums",
+      "type": {
+        "fields": [
+          {
+            "name": "self",
+            "type": "string"
+          }
+        ],
+        "name": "datums",
+        "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+        "type": "record"
+      }
+    },
+    {
+      "name": "supersededdatums",
+      "type": {
+        "fields": [
+          {
+            "name": "self",
+            "type": "string"
+          }
+        ],
+        "name": "supersededdatums",
+        "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+        "type": "record"
+      }
+    },
+    {
+      "name": "harmonicConstituents",
+      "type": {
+        "fields": [
+          {
+            "name": "self",
+            "type": "string"
+          }
+        ],
+        "name": "harmonicConstituents",
+        "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+        "type": "record"
+      }
+    },
+    {
+      "name": "benchmarks",
+      "type": {
+        "fields": [
+          {
+            "name": "self",
+            "type": "string"
+          }
+        ],
+        "name": "benchmarks",
+        "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+        "type": "record"
+      }
+    },
+    {
+      "name": "tidePredOffsets",
+      "type": {
+        "fields": [
+          {
+            "name": "self",
+            "type": "string"
+          }
+        ],
+        "name": "tidePredOffsets",
+        "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+        "type": "record"
+      }
+    },
+    {
+      "name": "ofsMapOffsets",
+      "type": {
+        "fields": [
+          {
+            "name": "self",
+            "type": "string"
+          }
+        ],
+        "name": "ofsMapOffsets",
+        "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+        "type": "record"
+      }
+    },
+    {
+      "doc": "{\"description\": \"State where the station is located.\"}",
+      "name": "state",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timezone of the station.\"}",
+      "name": "timezone",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timezone correction in minutes for the station.\"}",
+      "name": "timezonecorr",
+      "type": "int"
+    },
+    {
+      "doc": "{\"description\": \"Indicates whether the station observes Daylight Saving Time.\"}",
+      "name": "observedst",
+      "type": "boolean"
+    },
+    {
+      "doc": "{\"description\": \"Indicates whether the station measures storm surge data.\"}",
+      "name": "stormsurge",
+      "type": "boolean"
+    },
+    {
+      "name": "nearby",
+      "type": {
+        "fields": [
+          {
+            "name": "self",
+            "type": "string"
+          }
+        ],
+        "name": "nearby",
+        "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+        "type": "record"
+      }
+    },
+    {
+      "doc": "{\"description\": \"Indicates whether the station provides forecast data.\"}",
+      "name": "forecast",
+      "type": "boolean"
+    },
+    {
+      "doc": "{\"description\": \"Indicates whether the station provides outlook data.\"}",
+      "name": "outlook",
+      "type": "boolean"
+    },
+    {
+      "doc": "{\"description\": \"Indicates whether the station has historical High Tide Flooding data.\"}",
+      "name": "HTFhistorical",
+      "type": "boolean"
+    },
+    {
+      "doc": "{\"description\": \"Indicates whether the station is non-navigational.\"}",
+      "name": "nonNavigational",
+      "type": "boolean"
+    },
+    {
+      "doc": "{\"description\": \"Unique identifier for the station.\"}",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Name of the station.\"}",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Latitude of the station.\"}",
+      "name": "lat",
+      "type": "double"
+    },
+    {
+      "doc": "{\"description\": \"Longitude of the station.\"}",
+      "name": "lng",
+      "type": "double"
+    },
+    {
+      "doc": "{\"description\": \"Affiliations of the station.\"}",
+      "name": "affiliations",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"PORTS code for the station.\"}",
+      "name": "portscode",
+      "type": "string"
+    },
+    {
+      "name": "products",
+      "type": {
+        "fields": [
+          {
+            "name": "self",
+            "type": "string"
+          }
+        ],
+        "name": "products",
+        "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+        "type": "record"
+      }
+    },
+    {
+      "name": "disclaimers",
+      "type": {
+        "fields": [
+          {
+            "name": "self",
+            "type": "string"
+          }
+        ],
+        "name": "disclaimers",
+        "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+        "type": "record"
+      }
+    },
+    {
+      "name": "notices",
+      "type": {
+        "fields": [
+          {
+            "name": "self",
+            "type": "string"
+          }
+        ],
+        "name": "notices",
+        "namespace": "Microsoft.OpenData.US.NOAA.StationTypes",
+        "type": "record"
+      }
+    },
+    {
+      "doc": "{\"description\": \"URL to the station's data.\"}",
+      "name": "self",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"URL to expanded information about the station.\"}",
+      "name": "expand",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Type of tide measured by the station.\"}",
+      "name": "tideType",
+      "type": "string"
+    }
+  ],
+  "name": "Station",
+  "namespace": "Microsoft.OpenData.US.NOAA",
+  "type": "record"
+}

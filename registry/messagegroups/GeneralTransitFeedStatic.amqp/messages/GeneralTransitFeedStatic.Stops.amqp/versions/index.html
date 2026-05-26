@@ -1,0 +1,34 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Stops",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "GeneralTransitFeedStatic.Stops.amqp",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Stops",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Partition key mirrors the CloudEvents subject.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{agencyid}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP subject mirrors the CloudEvents subject.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{agencyid}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/GeneralTransitFeedStatic.amqp/messages/GeneralTransitFeedStatic.Stops.amqp/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/GeneralTransitFeedStatic.amqp/messages/GeneralTransitFeedStatic.Stops.amqp/versions/1"
+  }
+}

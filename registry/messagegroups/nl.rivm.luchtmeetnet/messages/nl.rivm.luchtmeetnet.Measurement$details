@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/nl.rivm.luchtmeetnet.jstruct/schemas/nl.rivm.luchtmeetnet.Measurement",
+  "description": "Hourly Luchtmeetnet measurement for a station and component formula.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api.luchtmeetnet.nl/open_api/measurements"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_number}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "nl.rivm.luchtmeetnet.Measurement"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "nl.rivm.luchtmeetnet.Measurement",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Measurement/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Measurement",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Measurement",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Measurement/versions",
+  "xid": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Measurement"
+}

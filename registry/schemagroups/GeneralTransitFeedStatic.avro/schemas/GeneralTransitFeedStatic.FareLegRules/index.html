@@ -1,0 +1,54 @@
+{
+  "doc": "Defines fare leg rules.",
+  "fields": [
+    {
+      "doc": "Identifies a fare leg rule.",
+      "name": "fareLegRuleId",
+      "type": "string"
+    },
+    {
+      "doc": "Identifies a fare product.",
+      "name": "fareProductId",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Identifies a group of legs.",
+      "name": "legGroupId",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Identifies a network.",
+      "name": "networkId",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Identifies the origin area.",
+      "name": "fromAreaId",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Identifies the destination area.",
+      "name": "toAreaId",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "FareLegRules",
+  "namespace": "GeneralTransitFeedStatic",
+  "type": "record"
+}

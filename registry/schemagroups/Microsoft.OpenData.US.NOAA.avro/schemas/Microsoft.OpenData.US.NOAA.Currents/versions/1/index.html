@@ -1,0 +1,38 @@
+{
+  "altnames": {
+    "kql": "Currents"
+  },
+  "fields": [
+    {
+      "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timestamp of the currents measurement\"}",
+      "logicalType": "timestamp-millis",
+      "name": "timestamp",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Current speed\"}",
+      "name": "speed",
+      "type": "double",
+      "unit": "cm/s"
+    },
+    {
+      "doc": "{\"description\": \"Current direction in degrees\"}",
+      "name": "direction_degrees",
+      "type": "double",
+      "unit": "degrees"
+    },
+    {
+      "doc": "{\"description\": \"Bin number\"}",
+      "name": "bin",
+      "type": "string"
+    }
+  ],
+  "name": "Currents",
+  "namespace": "Microsoft.OpenData.US.NOAA",
+  "type": "record"
+}

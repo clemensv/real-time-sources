@@ -1,0 +1,22 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureResolved",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "DE.Autobahn.ClosureResolved.mqtt",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ClosureResolved.mqtt/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "ClosureResolved",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": false,
+    "topic_name": "traffic/de/autobahn/autobahn/{road}/closure/{identifier}/resolved"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ClosureResolved.mqtt",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ClosureResolved.mqtt/versions",
+  "xid": "/messagegroups/DE.Autobahn.mqtt/messages/DE.Autobahn.ClosureResolved.mqtt"
+}

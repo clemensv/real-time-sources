@@ -1,0 +1,58 @@
+{
+  "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/WaterTemperature",
+  "$root": "/definitions/Microsoft/OpenData/US/NOAA/WaterTemperature",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Microsoft": {
+      "OpenData": {
+        "US": {
+          "NOAA": {
+            "WaterTemperature": {
+              "name": "WaterTemperature",
+              "properties": {
+                "max_temp_exceeded": {
+                  "description": "Flag indicating if the maximum expected water temperature was exceeded",
+                  "type": "boolean"
+                },
+                "min_temp_exceeded": {
+                  "description": "Flag indicating if the minimum expected water temperature was exceeded",
+                  "type": "boolean"
+                },
+                "rate_of_change_exceeded": {
+                  "description": "Flag indicating if the rate of change tolerance limit was exceeded",
+                  "type": "boolean"
+                },
+                "region": {
+                  "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa.",
+                  "type": "string"
+                },
+                "station_id": {
+                  "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+                  "type": "string"
+                },
+                "timestamp": {
+                  "description": "{\"description\": \"Timestamp of the water temperature measurement\"}",
+                  "type": "string"
+                },
+                "value": {
+                  "description": "{\"description\": \"Value of the water temperature\"}",
+                  "type": "double"
+                }
+              },
+              "required": [
+                "station_id",
+                "timestamp",
+                "value",
+                "max_temp_exceeded",
+                "min_temp_exceeded",
+                "rate_of_change_exceeded"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "WaterTemperature"
+}

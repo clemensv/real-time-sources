@@ -1,0 +1,40 @@
+{
+  "altnames": {
+    "kql": "ActualTotalLoad"
+  },
+  "fields": [
+    {
+      "doc": "EIC code of the bidding zone",
+      "name": "inDomain",
+      "type": "string"
+    },
+    {
+      "doc": "Total load in MW",
+      "name": "quantity",
+      "type": "double",
+      "unit": "MW"
+    },
+    {
+      "doc": "ISO 8601 duration",
+      "name": "resolution",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "EIC code of the out domain, if applicable",
+      "name": "outDomain",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "ENTSO-E document type code (A65)",
+      "name": "documentType",
+      "type": "string"
+    }
+  ],
+  "name": "ActualTotalLoad",
+  "namespace": "eu.entsoe.transparency",
+  "type": "record"
+}

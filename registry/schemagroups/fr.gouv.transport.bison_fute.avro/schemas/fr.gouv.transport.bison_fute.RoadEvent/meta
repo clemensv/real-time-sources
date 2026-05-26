@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/fr.gouv.transport.bison_fute.avro/schemas/fr.gouv.transport.bison_fute.RoadEvent/versions/1",
+  "epoch": 1,
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "schemaid": "fr.gouv.transport.bison_fute.RoadEvent",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/fr.gouv.transport.bison_fute.avro/schemas/fr.gouv.transport.bison_fute.RoadEvent/meta",
+  "xid": "/schemagroups/fr.gouv.transport.bison_fute.avro/schemas/fr.gouv.transport.bison_fute.RoadEvent/meta"
+}

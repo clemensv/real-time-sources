@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/jp.tepco.denkiyoho.jstruct/schemas/jp.tepco.denkiyoho.DemandForecast",
+  "description": "Hourly electricity demand forecast record from TEPCO Electricity Forecast for the Tokyo service area.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{feedurl}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "jp.tepco.denkiyoho/{date}/{time}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "JP.TEPCO.Denkiyoho.DemandForecast"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "jp.tepco.denkiyoho.DemandForecast",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandForecast/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "DemandForecast",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandForecast",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandForecast/versions",
+  "xid": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandForecast"
+}

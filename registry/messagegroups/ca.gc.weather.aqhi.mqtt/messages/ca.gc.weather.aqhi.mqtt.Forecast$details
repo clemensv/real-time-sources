@@ -1,0 +1,22 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Forecast",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "ca.gc.weather.aqhi.mqtt.Forecast",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/ca.gc.weather.aqhi.mqtt/messages/ca.gc.weather.aqhi.mqtt.Forecast/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Forecast",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": true,
+    "topic_name": "air-quality/ca/eccc/canada-aqhi/{province}/{community_name}/forecast"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/ca.gc.weather.aqhi.mqtt/messages/ca.gc.weather.aqhi.mqtt.Forecast",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/ca.gc.weather.aqhi.mqtt/messages/ca.gc.weather.aqhi.mqtt.Forecast/versions",
+  "xid": "/messagegroups/ca.gc.weather.aqhi.mqtt/messages/ca.gc.weather.aqhi.mqtt.Forecast"
+}

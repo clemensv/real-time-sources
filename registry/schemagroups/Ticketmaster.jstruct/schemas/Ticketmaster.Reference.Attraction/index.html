@@ -1,0 +1,87 @@
+{
+  "$id": "https://raw.githubusercontent.com/clemensv/real-time-sources/main/ticketmaster/xreg/schemas/Ticketmaster.Reference.Attraction",
+  "$root": "/definitions/Ticketmaster/Reference/Attraction",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Ticketmaster": {
+      "Reference": {
+        "Attraction": {
+          "description": "Reference data for a Ticketmaster attraction, which represents a performer, musical artist, sports team, theatrical production, or other headline act. Sourced from the Discovery API v2 /attractions endpoint.",
+          "name": "Attraction",
+          "properties": {
+            "entity_id": {
+              "description": "Stable Ticketmaster attraction identifier (e.g. 'K8vZ91718H7'). Used as both the Kafka message key and the CloudEvents subject. Matches values in the attraction_ids array of Event records.",
+              "type": "string"
+            },
+            "genre_id": {
+              "description": "Stable Ticketmaster genre identifier for this attraction within its segment.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "genre_name": {
+              "description": "Human-readable genre name (e.g. 'Rock', 'Pop', 'Basketball').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "locale": {
+              "description": "BCP-47 locale string for the attraction page (e.g. 'en-us').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "name": {
+              "description": "Human-readable name of the attraction as listed on Ticketmaster (e.g. 'Taylor Swift', 'Los Angeles Lakers').",
+              "type": "string"
+            },
+            "segment_id": {
+              "description": "Stable Ticketmaster classification segment identifier for this attraction (e.g. 'KZFzniwnSyZfZ7v7nJ' for Music). Matches entity_id in Classification reference events.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "segment_name": {
+              "description": "Human-readable name of the classification segment (e.g. 'Music', 'Sports', 'Arts \u0026 Theatre').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "subgenre_id": {
+              "description": "Stable Ticketmaster subgenre identifier for this attraction.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "subgenre_name": {
+              "description": "Human-readable subgenre name (e.g. 'Alternative Rock', 'Dance Pop').",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "url": {
+              "description": "URL to the attraction page on Ticketmaster.com.",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "entity_id",
+            "name"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "Attraction"
+}

@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/fr.gouv.transport.bison_fute.jstruct/schemas/fr.gouv.transport.bison_fute.RoadEvent",
+  "description": "Real-time road situation record from the French national non-conceded road network. Published by Bison Futé (TIPI) as a SituationPublication snapshot. Each record represents a traffic incident, construction works, lane management, obstruction, or other event affecting road conditions. Record types include Accident, ConstructionWorks, MaintenanceWorks, RoadOrCarriagewayOrLaneManagement, AbnormalTraffic, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, AnimalPresenceObstruction, InfrastructureDamageObstruction, GeneralNetworkManagement, ReroutingManagement, SpeedManagement, WeatherRelatedRoadConditions, OperatorAction, GeneralInstructionOrMessageToRoadUsers, and RoadsideServiceDisruption.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{feedurl}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{situation_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "fr.gouv.transport.bison_fute.RoadEvent"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "fr.gouv.transport.bison_fute.RoadEvent",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "RoadEvent",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fr.gouv.transport.bison_fute.road_event/messages/fr.gouv.transport.bison_fute.RoadEvent/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/fr.gouv.transport.bison_fute.road_event/messages/fr.gouv.transport.bison_fute.RoadEvent/versions/1"
+}

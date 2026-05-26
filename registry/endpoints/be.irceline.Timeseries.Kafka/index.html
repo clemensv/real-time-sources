@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for IRCELINE Belgium Air Quality CloudEvents on the `irceline-belgium` topic keyed by `{timeseries_id}`.",
+  "endpointid": "be.irceline.Timeseries.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/be.irceline.Timeseries"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/be.irceline.Timeseries.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{timeseries_id}",
+      "topic": "irceline-belgium"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/be.irceline.Timeseries.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/be.irceline.Timeseries.Kafka"
+}

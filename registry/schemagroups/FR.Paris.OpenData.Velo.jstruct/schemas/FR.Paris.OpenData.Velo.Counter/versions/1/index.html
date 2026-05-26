@@ -1,0 +1,72 @@
+{
+  "$id": "https://schemas.real-time-sources.io/paris-bicycle-counters/Counter/v1",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value.",
+  "name": "Counter",
+  "properties": {
+    "ce_id": {
+      "description": "Deterministic CloudEvents id for the retained counter reference record.",
+      "type": "string"
+    },
+    "channel_name": {
+      "description": "Directional channel label for the counter, e.g. 'SE-NO' or 'E-O' (mapped from 'channel_name').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "counter_id": {
+      "alternates": [
+        {
+          "description": "Original French field name in the Paris Open Data API.",
+          "name": "id_compteur"
+        }
+      ],
+      "altnames": {
+        "lang:fr": "id_compteur"
+      },
+      "description": "Unique identifier for the counting channel, combining the site ID and channel ID (mapped from 'id_compteur').",
+      "type": "string"
+    },
+    "counter_name": {
+      "alternates": [
+        {
+          "description": "Original French field name in the Paris Open Data API.",
+          "name": "nom_compteur"
+        }
+      ],
+      "altnames": {
+        "lang:fr": "nom_compteur"
+      },
+      "description": "Human-readable name of the counter including street name and direction (mapped from 'nom_compteur').",
+      "type": "string"
+    },
+    "installation_date": {
+      "description": "Date when the counter was installed, in ISO 8601 date format (YYYY-MM-DD).",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "latitude": {
+      "description": "Latitude of the counter location in decimal degrees (WGS 84).",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "longitude": {
+      "description": "Longitude of the counter location in decimal degrees (WGS 84).",
+      "type": [
+        "double",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "ce_id",
+    "counter_id",
+    "counter_name"
+  ],
+  "type": "object"
+}

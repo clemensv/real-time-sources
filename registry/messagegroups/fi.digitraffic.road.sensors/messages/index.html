@@ -1,0 +1,74 @@
+{
+  "fi.digitraffic.road.sensors.TmsSensorData": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/fi.digitraffic.road.sensors.jstruct/schemas/fi.digitraffic.road.sensors.TmsSensorData",
+    "description": "A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://tie.digitraffic.fi/mqtt"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}/{sensor_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "fi.digitraffic.road.sensors.TmsSensorData"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.sensors.TmsSensorData",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.TmsSensorData/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "TmsSensorData",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.TmsSensorData",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.TmsSensorData/versions",
+    "xid": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.TmsSensorData"
+  },
+  "fi.digitraffic.road.sensors.WeatherSensorData": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/fi.digitraffic.road.sensors.jstruct/schemas/fi.digitraffic.road.sensors.WeatherSensorData",
+    "description": "A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://tie.digitraffic.fi/mqtt"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}/{sensor_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "fi.digitraffic.road.sensors.WeatherSensorData"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.sensors.WeatherSensorData",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.WeatherSensorData/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherSensorData",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.WeatherSensorData",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.WeatherSensorData/versions",
+    "xid": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.WeatherSensorData"
+  }
+}

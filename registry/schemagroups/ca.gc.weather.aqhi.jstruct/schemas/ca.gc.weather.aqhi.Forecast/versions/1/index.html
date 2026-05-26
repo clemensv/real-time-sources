@@ -1,0 +1,94 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/canada-aqhi/schemas/ca.gc.weather.aqhi.Forecast",
+  "$root": "/definitions/ca/gc/weather/aqhi/Forecast",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "ca": {
+      "gc": {
+        "weather": {
+          "aqhi": {
+            "Forecast": {
+              "description": "Public AQHI forecast for one of the four standard Canadian forecast periods published for an AQHI community.",
+              "name": "Forecast",
+              "properties": {
+                "aqhi": {
+                  "description": "Forecast AQHI value for the forecast period. Public forecasts are published as whole numbers.",
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "aqhi_category": {
+                  "description": "Public AQHI health-risk category derived from the forecast AQHI value.",
+                  "enum": [
+                    "Low",
+                    "Moderate",
+                    "High",
+                    "Very High",
+                    "Unknown"
+                  ],
+                  "type": "string"
+                },
+                "cgndb_code": {
+                  "description": "Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.",
+                  "pattern": "^[A-Z0-9]{5}$",
+                  "type": "string"
+                },
+                "community_name": {
+                  "description": "English AQHI community name as published by Environment and Climate Change Canada.",
+                  "type": "string"
+                },
+                "forecast_date": {
+                  "description": "Forecast target date expressed as YYYYMMDD. Periods 1 and 2 use the bulletin issue date; periods 3 and 4 use the following day.",
+                  "pattern": "^[0-9]{8}$",
+                  "type": "string"
+                },
+                "forecast_period": {
+                  "description": "AQHI public forecast period number: 1 Today, 2 Tonight, 3 Tomorrow, 4 Tomorrow Night.",
+                  "enum": [
+                    1,
+                    2,
+                    3,
+                    4
+                  ],
+                  "type": "integer"
+                },
+                "forecast_period_label": {
+                  "description": "English public label for the AQHI forecast period.",
+                  "enum": [
+                    "Today",
+                    "Tonight",
+                    "Tomorrow",
+                    "Tomorrow Night"
+                  ],
+                  "type": "string"
+                },
+                "province": {
+                  "description": "Two-letter Canadian province or territory abbreviation resolved for the AQHI community.",
+                  "pattern": "^[A-Z]{2}$",
+                  "type": "string"
+                },
+                "publication_datetime": {
+                  "description": "UTC timestamp at which the public AQHI forecast bulletin was issued.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "province",
+                "community_name",
+                "cgndb_code",
+                "publication_datetime",
+                "forecast_date",
+                "forecast_period",
+                "forecast_period_label",
+                "aqhi_category"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "Forecast"
+}

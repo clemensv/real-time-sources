@@ -1,0 +1,51 @@
+{
+  "$id": "https://example.com/schemas/DE/DWD/CDC/StationMetadata",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events.",
+  "name": "StationMetadata",
+  "properties": {
+    "elevation": {
+      "description": "Elevation of the station above mean sea level or the provider datum.",
+      "type": "double"
+    },
+    "from_date": {
+      "description": "Start date when the station, product, or metadata record is valid.",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "Latitude of the station or site in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "longitude": {
+      "description": "Longitude of the station or site in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "state": {
+      "description": "State, province, or administrative region for the station or area.",
+      "type": "string"
+    },
+    "station_id": {
+      "altnames": {
+        "lang:de": "STATIONS_ID"
+      },
+      "description": "Stable identifier assigned by the upstream provider for the station or monitoring site.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Human-readable name of the station or monitoring site.",
+      "type": "string"
+    },
+    "to_date": {
+      "description": "End date when the station, product, or metadata record is valid, when known.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name",
+    "latitude",
+    "longitude",
+    "elevation"
+  ],
+  "type": "object"
+}

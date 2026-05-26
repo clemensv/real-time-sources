@@ -1,0 +1,33 @@
+{
+  "description": "Reference details for one station, monitoring site, or forecast area in the IRCELINE Belgium Air Quality source.",
+  "doc": "Reference event for one IRCELINE monitoring station.",
+  "fields": [
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the IRCELINE Belgium Air Quality source.",
+      "doc": "Stable numeric station identifier from properties.id.",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Human-readable station label from properties.label.",
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Latitude in decimal degrees north from GeoJSON coordinates[1].",
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration and air-quality measurements in the IRCELINE Belgium Air Quality source.",
+      "doc": "Longitude in decimal degrees east from GeoJSON coordinates[0].",
+      "name": "longitude",
+      "type": "double"
+    }
+  ],
+  "name": "Station",
+  "namespace": "be.irceline",
+  "type": "record"
+}

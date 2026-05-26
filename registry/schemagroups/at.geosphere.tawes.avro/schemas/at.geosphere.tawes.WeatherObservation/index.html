@@ -1,0 +1,101 @@
+{
+  "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+  "doc": "10-minute weather observation from a GeoSphere Austria TAWES station.",
+  "fields": [
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the GeoSphere Austria Weather source.",
+      "doc": "GeoSphere Austria numeric station identifier for the observing station.",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+      "doc": "Observation timestamp in UTC from the GeoSphere API timestamps array.",
+      "name": "observation_time",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+      "doc": "Air temperature in degrees Celsius over the 10-minute interval.",
+      "name": "temperature",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+      "doc": "Relative humidity as a percentage over the 10-minute interval.",
+      "name": "humidity",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+      "doc": "Precipitation in millimeters accumulated during the 10-minute interval.",
+      "name": "precipitation",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+      "doc": "Wind direction in degrees over the 10-minute interval.",
+      "name": "wind_direction",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+      "doc": "Wind speed in meters per second over the 10-minute interval.",
+      "name": "wind_speed",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+      "doc": "Atmospheric pressure in hectopascals at station level.",
+      "name": "pressure",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+      "doc": "Sunshine duration in seconds during the 10-minute interval.",
+      "name": "sunshine_duration",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the GeoSphere Austria Weather source.",
+      "doc": "Global radiation in watts per square meter during the 10-minute interval.",
+      "name": "global_radiation",
+      "type": [
+        "null",
+        "double"
+      ]
+    }
+  ],
+  "name": "WeatherObservation",
+  "namespace": "at.geosphere.tawes",
+  "type": "record"
+}

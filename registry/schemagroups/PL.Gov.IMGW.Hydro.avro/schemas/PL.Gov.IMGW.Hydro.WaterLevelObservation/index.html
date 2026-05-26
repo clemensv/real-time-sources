@@ -1,0 +1,98 @@
+{
+  "description": "Measurement payload for observations in the IMGW-PIB Hydrological Data source.",
+  "doc": "Measurement payload for observations in the IMGW-PIB Hydrological Data source.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "station_name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "river",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "voivodeship",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "water_level",
+      "type": "double"
+    },
+    {
+      "name": "water_level_timestamp",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "default": null,
+      "name": "water_temperature",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "water_temperature_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "discharge_timestamp",
+      "type": [
+        "null",
+        {
+          "logicalType": "timestamp-millis",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "ice_phenomenon_code",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "overgrowth_code",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "WaterLevelObservation",
+  "namespace": "PL.Gov.IMGW.Hydro",
+  "type": "record"
+}

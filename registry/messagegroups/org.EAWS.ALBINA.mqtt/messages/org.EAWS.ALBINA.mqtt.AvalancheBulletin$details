@@ -1,0 +1,22 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheBulletin",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "org.EAWS.ALBINA.mqtt.AvalancheBulletin",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/org.EAWS.ALBINA.mqtt/messages/org.EAWS.ALBINA.mqtt.AvalancheBulletin/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "AvalancheBulletin",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": false,
+    "topic_name": "alerts/at/eaws/eaws-albina/{country}/{region_id}/{danger_level}/bulletin"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/org.EAWS.ALBINA.mqtt/messages/org.EAWS.ALBINA.mqtt.AvalancheBulletin",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/org.EAWS.ALBINA.mqtt/messages/org.EAWS.ALBINA.mqtt.AvalancheBulletin/versions",
+  "xid": "/messagegroups/org.EAWS.ALBINA.mqtt/messages/org.EAWS.ALBINA.mqtt.AvalancheBulletin"
+}

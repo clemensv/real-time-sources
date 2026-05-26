@@ -1,0 +1,85 @@
+{
+  "description": "A transport update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates for Washington road, bridge, pass, ferry, and border resources.",
+  "doc": "Mountain pass conditions.",
+  "fields": [
+    {
+      "name": "mountain_pass_id",
+      "type": "string"
+    },
+    {
+      "name": "mountain_pass_name",
+      "type": "string"
+    },
+    {
+      "name": "elevation_in_feet",
+      "type": "int"
+    },
+    {
+      "name": "latitude",
+      "type": "double"
+    },
+    {
+      "name": "longitude",
+      "type": "double"
+    },
+    {
+      "default": null,
+      "name": "temperature_in_fahrenheit",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "name": "weather_condition",
+      "type": "string"
+    },
+    {
+      "name": "road_condition",
+      "type": "string"
+    },
+    {
+      "name": "travel_advisory_active",
+      "type": "boolean"
+    },
+    {
+      "default": null,
+      "name": "restriction_one_direction",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "restriction_one_text",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "restriction_two_direction",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "restriction_two_text",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "date_updated",
+      "type": "string"
+    }
+  ],
+  "name": "MountainPassCondition",
+  "namespace": "us.wa.wsdot.mountainpass",
+  "type": "record"
+}

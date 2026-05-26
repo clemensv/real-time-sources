@@ -1,0 +1,37 @@
+{
+  "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+  "doc": "Observation value from GET /timeseries/{id}/getData.",
+  "fields": [
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Stable numeric timeseries identifier for the series that produced this observation.",
+      "name": "timeseries_id",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Observation timestamp encoded as an ISO 8601 UTC string.",
+      "name": "timestamp",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Measured pollutant concentration or other reported numeric reading.",
+      "name": "value",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Unit of measurement for the observation.",
+      "name": "uom",
+      "type": "string"
+    }
+  ],
+  "name": "Observation",
+  "namespace": "uk.gov.defra.aurn",
+  "type": "record"
+}

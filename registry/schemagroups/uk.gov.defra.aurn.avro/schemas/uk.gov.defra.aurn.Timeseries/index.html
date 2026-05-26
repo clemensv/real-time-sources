@@ -1,0 +1,99 @@
+{
+  "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+  "doc": "Reference metadata for a Defra AURN station and pollutant timeseries combination.",
+  "fields": [
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Stable numeric timeseries identifier from id.",
+      "name": "timeseries_id",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Descriptive label from the timeseries label field.",
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Unit of measurement string from the timeseries uom field.",
+      "name": "uom",
+      "type": "string"
+    },
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the DEFRA AURN source.",
+      "doc": "Stable station identifier from station.properties.id.",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the DEFRA AURN source.",
+      "doc": "Station display label from station.properties.label.",
+      "name": "station_label",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Nullable WGS84 latitude in decimal degrees from station.geometry.coordinates[0].",
+      "name": "latitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Nullable WGS84 longitude in decimal degrees from station.geometry.coordinates[1].",
+      "name": "longitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Nullable pollutant phenomenon identifier from parameters.phenomenon.id.",
+      "name": "phenomenon_id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Nullable pollutant label from parameters.phenomenon.label.",
+      "name": "phenomenon_label",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Nullable category identifier from parameters.category.id.",
+      "name": "category_id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration measurements in the DEFRA AURN source.",
+      "doc": "Nullable category label from parameters.category.label.",
+      "name": "category_label",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "Timeseries",
+  "namespace": "uk.gov.defra.aurn",
+  "type": "record"
+}

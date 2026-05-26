@@ -1,0 +1,84 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/border/BorderCrossing",
+  "$root": "/definitions/us/wa/wsdot/border/BorderCrossing",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "us": {
+      "wa": {
+        "wsdot": {
+          "border": {
+            "BorderCrossing": {
+              "description": "Current wait time at a US-Canada border crossing lane in Washington State. Wait times are in minutes, updated approximately every 5 minutes.",
+              "name": "BorderCrossing",
+              "properties": {
+                "crossing_name": {
+                  "altnames": {
+                    "json": "CrossingName"
+                  },
+                  "description": "Crossing lane identifier.",
+                  "type": "string"
+                },
+                "description": {
+                  "description": "Lane description.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "latitude": {
+                  "description": "Latitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "longitude": {
+                  "description": "Longitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "road_name": {
+                  "description": "Road designation.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "time": {
+                  "altnames": {
+                    "json": "Time"
+                  },
+                  "description": "ISO 8601 UTC measurement timestamp.",
+                  "type": "string"
+                },
+                "wait_time": {
+                  "altnames": {
+                    "json": "WaitTime"
+                  },
+                  "description": "Wait time in minutes.",
+                  "symbol": "min",
+                  "type": [
+                    "int32",
+                    "null"
+                  ],
+                  "unit": "min"
+                }
+              },
+              "required": [
+                "crossing_name",
+                "wait_time",
+                "time",
+                "description",
+                "road_name",
+                "latitude",
+                "longitude"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "BorderCrossing"
+}

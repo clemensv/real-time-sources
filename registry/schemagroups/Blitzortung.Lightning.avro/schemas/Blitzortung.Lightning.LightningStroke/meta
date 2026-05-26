@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/Blitzortung.Lightning.avro/schemas/Blitzortung.Lightning.LightningStroke/versions/1",
+  "epoch": 1,
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "schemaid": "Blitzortung.Lightning.LightningStroke",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/Blitzortung.Lightning.avro/schemas/Blitzortung.Lightning.LightningStroke/meta",
+  "xid": "/schemagroups/Blitzortung.Lightning.avro/schemas/Blitzortung.Lightning.LightningStroke/meta"
+}

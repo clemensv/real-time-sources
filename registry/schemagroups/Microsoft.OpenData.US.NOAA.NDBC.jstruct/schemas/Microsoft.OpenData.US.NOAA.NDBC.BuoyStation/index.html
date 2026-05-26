@@ -1,0 +1,71 @@
+{
+  "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyStation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference record from the NDBC station table describing the owning agency, platform type, hull class, canonical station name, parsed location, and time-zone code for an observing platform.",
+  "name": "BuoyStation",
+  "properties": {
+    "hull": {
+      "description": "Hull or platform class reported in the station table, for example DISCUS or 3-meter.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "latitude": {
+      "description": "Station latitude in decimal degrees north parsed from the station table LOCATION field. Negative values indicate southern hemisphere.",
+      "symbol": "deg",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "longitude": {
+      "description": "Station longitude in decimal degrees east parsed from the station table LOCATION field. Negative values indicate western hemisphere.",
+      "symbol": "deg",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "name": {
+      "description": "Human-readable station name from the NDBC station table.",
+      "type": "string"
+    },
+    "owner": {
+      "description": "Owning organization as listed in the NDBC station table, such as NDBC, NOS, or another partner agency.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "region": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "NDBC station identifier. Five-character alphanumeric code assigned by NDBC and reused across the station table, latest observations, and realtime2 products.",
+      "type": "string"
+    },
+    "station_type": {
+      "description": "Platform type from the station table, such as Weather Buoy or C-MAN Station.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "timezone": {
+      "description": "Single-letter time-zone code carried in the NDBC station table for display and forecast products.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "station_id",
+    "name"
+  ],
+  "type": "object"
+}

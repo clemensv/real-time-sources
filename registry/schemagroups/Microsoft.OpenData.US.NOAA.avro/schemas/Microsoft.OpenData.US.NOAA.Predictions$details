@@ -1,0 +1,16 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "format": "Avro/1.11.3",
+  "isdefault": true,
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/Microsoft.OpenData.US.NOAA.avro/schemas/Microsoft.OpenData.US.NOAA.Predictions/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "schemaid": "Microsoft.OpenData.US.NOAA.Predictions",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/Microsoft.OpenData.US.NOAA.avro/schemas/Microsoft.OpenData.US.NOAA.Predictions",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/Microsoft.OpenData.US.NOAA.avro/schemas/Microsoft.OpenData.US.NOAA.Predictions/versions",
+  "xid": "/schemagroups/Microsoft.OpenData.US.NOAA.avro/schemas/Microsoft.OpenData.US.NOAA.Predictions"
+}

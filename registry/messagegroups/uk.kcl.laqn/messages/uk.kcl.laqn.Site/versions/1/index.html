@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/uk.kcl.laqn.jstruct/schemas/uk.kcl.laqn.Site",
+  "description": "LAQN monitoring site reference data, including stable site identity, operator information, and WGS84 coordinates.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "http://api.erg.ic.ac.uk/AirQuality/Information/MonitoringSites/GroupName=All/Json"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{site_code}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "uk.kcl.laqn.Site"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "uk.kcl.laqn.Site",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Site",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Site/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Site/versions/1"
+}

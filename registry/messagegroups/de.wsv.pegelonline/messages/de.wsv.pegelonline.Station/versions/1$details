@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/de.wsv.pegelonline.jstruct/schemas/de.wsv.pegelonline.Station",
+  "description": "A reference record for one federally administered German inland and coastal gauge published by Germany's Federal Waterways and Shipping Administration (WSV). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{feedurl}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "de.wsv.pegelonline.Station"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "de.wsv.pegelonline.Station",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Station",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station/versions/1"
+}

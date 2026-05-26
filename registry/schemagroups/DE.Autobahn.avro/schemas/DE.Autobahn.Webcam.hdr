@@ -1,0 +1,16 @@
+content-disposition:DE.Autobahn.Webcam
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:Avro/1.11.3
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:DE.Autobahn.Webcam
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam/versions
+xregistry-xid:/schemagroups/DE.Autobahn.avro/schemas/DE.Autobahn.Webcam

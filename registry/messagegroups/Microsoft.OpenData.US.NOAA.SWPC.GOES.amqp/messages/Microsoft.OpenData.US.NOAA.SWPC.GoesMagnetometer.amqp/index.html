@@ -1,0 +1,35 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "GoesMagnetometer",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "event": {
+        "description": "Routing property event copied from the event payload or derived routing context.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{event}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{satellite}/{time_tag}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp/versions",
+  "xid": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp"
+}

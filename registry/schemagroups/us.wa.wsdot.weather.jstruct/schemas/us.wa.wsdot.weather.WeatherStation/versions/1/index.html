@@ -1,0 +1,61 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/weather/WeatherStation",
+  "$root": "/definitions/us/wa/wsdot/weather/WeatherStation",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "us": {
+      "wa": {
+        "wsdot": {
+          "weather": {
+            "WeatherStation": {
+              "description": "Metadata for a WSDOT road weather information system (RWIS) station. WSDOT operates approximately 134 stations across Washington State highways.",
+              "name": "WeatherStation",
+              "properties": {
+                "latitude": {
+                  "altnames": {
+                    "json": "Latitude"
+                  },
+                  "description": "Latitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "longitude": {
+                  "altnames": {
+                    "json": "Longitude"
+                  },
+                  "description": "Longitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "station_id": {
+                  "altnames": {
+                    "json": "StationCode"
+                  },
+                  "description": "Station identifier from upstream StationCode.",
+                  "type": "string"
+                },
+                "station_name": {
+                  "altnames": {
+                    "json": "StationName"
+                  },
+                  "description": "Station name with highway and milepost.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "station_id",
+                "station_name",
+                "latitude",
+                "longitude"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "WeatherStation"
+}

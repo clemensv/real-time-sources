@@ -1,0 +1,82 @@
+{
+  "AU.Gov.BOM.Weather.mqtt.Station": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.Station",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "http://reg.bom.gov.au/fwo"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_wmo}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "AU.Gov.BOM.Weather.Station"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "AU.Gov.BOM.Weather.mqtt.Station",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.BOM.Weather.mqtt/messages/AU.Gov.BOM.Weather.mqtt.Station/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "protocol": "MQTT/5.0",
+    "protocoloptions": {
+      "qos": 1,
+      "retain": true,
+      "topic_name": "weather/au/bom/bom-australia/{state}/{station_wmo}/info"
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.BOM.Weather.mqtt/messages/AU.Gov.BOM.Weather.mqtt.Station",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.BOM.Weather.mqtt/messages/AU.Gov.BOM.Weather.mqtt.Station/versions",
+    "xid": "/messagegroups/AU.Gov.BOM.Weather.mqtt/messages/AU.Gov.BOM.Weather.mqtt.Station"
+  },
+  "AU.Gov.BOM.Weather.mqtt.WeatherObservation": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.WeatherObservation",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "http://reg.bom.gov.au/fwo"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_wmo}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "AU.Gov.BOM.Weather.WeatherObservation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "AU.Gov.BOM.Weather.mqtt.WeatherObservation",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.BOM.Weather.mqtt/messages/AU.Gov.BOM.Weather.mqtt.WeatherObservation/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherObservation",
+    "protocol": "MQTT/5.0",
+    "protocoloptions": {
+      "qos": 1,
+      "retain": true,
+      "topic_name": "weather/au/bom/bom-australia/{state}/{station_wmo}/observation"
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.BOM.Weather.mqtt/messages/AU.Gov.BOM.Weather.mqtt.WeatherObservation",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.BOM.Weather.mqtt/messages/AU.Gov.BOM.Weather.mqtt.WeatherObservation/versions",
+    "xid": "/messagegroups/AU.Gov.BOM.Weather.mqtt/messages/AU.Gov.BOM.Weather.mqtt.WeatherObservation"
+  }
+}

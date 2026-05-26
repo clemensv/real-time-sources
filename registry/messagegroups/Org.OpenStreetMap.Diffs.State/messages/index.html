@@ -1,0 +1,38 @@
+{
+  "Org.OpenStreetMap.Diffs.ReplicationState": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/Org.OpenStreetMap.Diffs.jstruct/schemas/Org.OpenStreetMap.Diffs.ReplicationState",
+    "description": "Current replication state from the OpenStreetMap minutely diff feed. Emitted once per poll cycle to record which replication sequence was just processed. The state is read from https://planet.openstreetmap.org/replication/minute/state.txt.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://planet.openstreetmap.org/replication/minute"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "replication_state"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "Org.OpenStreetMap.Diffs.ReplicationState"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "Org.OpenStreetMap.Diffs.ReplicationState",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Org.OpenStreetMap.Diffs.State/messages/Org.OpenStreetMap.Diffs.ReplicationState/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "ReplicationState",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Org.OpenStreetMap.Diffs.State/messages/Org.OpenStreetMap.Diffs.ReplicationState",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Org.OpenStreetMap.Diffs.State/messages/Org.OpenStreetMap.Diffs.ReplicationState/versions",
+    "xid": "/messagegroups/Org.OpenStreetMap.Diffs.State/messages/Org.OpenStreetMap.Diffs.ReplicationState"
+  }
+}

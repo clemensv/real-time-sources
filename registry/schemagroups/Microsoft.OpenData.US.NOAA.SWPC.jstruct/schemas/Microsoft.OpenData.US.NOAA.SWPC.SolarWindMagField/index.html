@@ -1,0 +1,73 @@
+{
+  "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/SolarWindMagField",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "One-minute resolution interplanetary magnetic field (IMF) vector measurement from the DSCOVR satellite magnetometer at the L1 Lagrange point, as reported by the SWPC solar-wind/mag-7-day endpoint. Provides the full magnetic field vector in Geocentric Solar Magnetospheric (GSM) coordinates plus total magnitude. The Bz GSM component is the primary indicator of geomagnetic storm potential.",
+  "name": "SolarWindMagField",
+  "properties": {
+    "bt": {
+      "description": "Total interplanetary magnetic field magnitude, computed as the vector sum sqrt(Bx² + By² + Bz²). Typical quiet-time values are 3-6 nT; values above 20 nT indicate strong solar wind magnetic driving.",
+      "symbol": "nT",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "nT"
+    },
+    "bx_gsm": {
+      "description": "IMF X-component in GSM coordinates, directed from Earth toward the Sun along the Earth-Sun line.",
+      "symbol": "nT",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "nT"
+    },
+    "by_gsm": {
+      "description": "IMF Y-component in GSM coordinates, perpendicular to the Earth-Sun line in the magnetic equatorial plane. Influences the dawn-dusk electric field in the magnetosphere.",
+      "symbol": "nT",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "nT"
+    },
+    "bz_gsm": {
+      "description": "IMF Z-component in GSM coordinates (north-south). Sustained negative (southward) Bz is the primary driver of geomagnetic storms through magnetic reconnection at the dayside magnetopause. Values below -10 nT can produce G2+ storms.",
+      "symbol": "nT",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "nT"
+    },
+    "lat_gsm": {
+      "description": "IMF latitude angle in GSM coordinates, measured from the GSM X-Y plane toward the Z-axis.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degrees"
+    },
+    "lon_gsm": {
+      "description": "IMF longitude angle in GSM coordinates, measured in the GSM X-Y plane from the Earth-Sun line.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degrees"
+    },
+    "observation_time": {
+      "altnames": [
+        "time_tag"
+      ],
+      "description": "UTC date-time of the magnetic field measurement, in 'YYYY-MM-DD HH:MM:SS.fff' format.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "observation_time"
+  ],
+  "type": "object"
+}

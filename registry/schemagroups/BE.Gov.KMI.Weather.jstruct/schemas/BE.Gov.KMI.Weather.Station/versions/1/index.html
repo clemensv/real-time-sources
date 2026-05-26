@@ -1,0 +1,34 @@
+{
+  "$id": "https://opendata.meteo.be/schemas/BE/Gov/KMI/Weather/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record published by the Royal Meteorological Institute of Belgium (KMI/IRM). It lets consumers label, group, and route the live measurement or forecast events.",
+  "name": "Station",
+  "properties": {
+    "latitude": {
+      "description": "Geographic latitude of the station in decimal degrees (WGS 84), derived from the second value of the GeoJSON `geometry.coordinates` array.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "degree"
+    },
+    "longitude": {
+      "description": "Geographic longitude of the station in decimal degrees (WGS 84), derived from the first value of the GeoJSON `geometry.coordinates` array.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "degree"
+    },
+    "region": {
+      "description": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "station_code": {
+      "description": "KMI/RMI automatic weather station code from the GeoJSON feature property `code`, unique within the Belgian AWS network.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_code",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

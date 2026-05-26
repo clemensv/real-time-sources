@@ -1,0 +1,55 @@
+{
+  "$id": "https://example.com/schemas/ie/gov/opw/waterlevel/Station",
+  "$root": "/definitions/ie/gov/opw/waterlevel/Station",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "ie": {
+      "gov": {
+        "opw": {
+          "waterlevel": {
+            "Station": {
+              "description": "Reference data for an OPW hydrometric station in Ireland, including location and region.",
+              "name": "Station",
+              "properties": {
+                "basin": {
+                  "description": "Stable routing axis used by MQTT and AMQP transport templates for ireland-opw-waterlevel.",
+                  "type": "string"
+                },
+                "latitude": {
+                  "description": "Latitude of the station location in WGS84 decimal degrees.",
+                  "type": "double"
+                },
+                "longitude": {
+                  "description": "Longitude of the station location in WGS84 decimal degrees.",
+                  "type": "double"
+                },
+                "region_id": {
+                  "description": "Integer identifier of the OPW hydrometric region the station belongs to.",
+                  "type": "int32"
+                },
+                "station_name": {
+                  "description": "Human-readable name of the hydrometric station (e.g. 'Sandy Mills').",
+                  "type": "string"
+                },
+                "station_ref": {
+                  "description": "Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041').",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "station_ref",
+                "station_name",
+                "region_id",
+                "longitude",
+                "latitude"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "description": "Reference details for one monitoring station or site in the Ireland OPW waterlevel.ie source.",
+  "name": "Station"
+}

@@ -1,0 +1,45 @@
+{
+  "$id": "https://api.gios.gov.pl/schemas/pl/gov/gios/airquality/Sensor",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference data for a sensor (measurement point) installed at a GIOŚ station, identifying the pollutant it measures.",
+  "name": "Sensor",
+  "properties": {
+    "parameter_code": {
+      "description": "Short code identifying the pollutant parameter, e.g. 'PM10', 'NO2'. Mapped from 'Wskaźnik - kod'.",
+      "type": "string"
+    },
+    "parameter_formula": {
+      "description": "Chemical formula of the measured pollutant, e.g. 'PM10', 'NO2', 'SO2', 'O3', 'CO', 'C6H6', 'PM2.5'. Mapped from 'Wskaźnik - wzór'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parameter_id": {
+      "description": "Numeric identifier of the pollutant parameter in the GIOŚ system. Mapped from 'Id wskaźnika'.",
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "parameter_name": {
+      "description": "Polish-language name of the measured pollutant, e.g. 'pył zawieszony PM10', 'dwutlenek azotu'. Mapped from 'Wskaźnik'.",
+      "type": "string"
+    },
+    "sensor_id": {
+      "description": "Unique numeric identifier of the sensor (measurement point) assigned by GIOŚ. Mapped from 'Identyfikator stanowiska'.",
+      "type": "integer"
+    },
+    "station_id": {
+      "description": "Numeric identifier of the parent monitoring station. Mapped from 'Identyfikator stacji'.",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "sensor_id",
+    "station_id",
+    "parameter_name",
+    "parameter_code"
+  ],
+  "type": "object"
+}

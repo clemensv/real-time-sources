@@ -1,0 +1,246 @@
+{
+  "doc": "Flattened wait time snapshot for a US land border port of entry.",
+  "fields": [
+    {
+      "doc": "Six-digit CBP port number.",
+      "name": "port_number",
+      "type": "string"
+    },
+    {
+      "doc": "Lowercase kebab-case MQTT/UNS routing segment derived from the CBP border field. Expected values: canadian-border, mexican-border.",
+      "name": "border_slug",
+      "type": "string"
+    },
+    {
+      "doc": "City or locality name.",
+      "name": "port_name",
+      "type": "string"
+    },
+    {
+      "doc": "International border.",
+      "name": "border",
+      "type": "string"
+    },
+    {
+      "doc": "Crossing facility name.",
+      "name": "crossing_name",
+      "type": "string"
+    },
+    {
+      "doc": "Overall port operational status.",
+      "name": "port_status",
+      "type": "string"
+    },
+    {
+      "doc": "Report date in US format (M/D/YYYY).",
+      "name": "date",
+      "type": "string"
+    },
+    {
+      "doc": "Report time in HH:MM:SS local time.",
+      "name": "time",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Standard passenger vehicle delay in minutes.",
+      "name": "passenger_vehicle_standard_delay",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Standard passenger vehicle lanes open.",
+      "name": "passenger_vehicle_standard_lanes_open",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Standard passenger vehicle operational status.",
+      "name": "passenger_vehicle_standard_operational_status",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "NEXUS/SENTRI passenger vehicle delay in minutes.",
+      "name": "passenger_vehicle_nexus_sentri_delay",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "NEXUS/SENTRI passenger vehicle lanes open.",
+      "name": "passenger_vehicle_nexus_sentri_lanes_open",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "NEXUS/SENTRI passenger vehicle operational status.",
+      "name": "passenger_vehicle_nexus_sentri_operational_status",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Ready Lane passenger vehicle delay in minutes.",
+      "name": "passenger_vehicle_ready_delay",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Ready Lane passenger vehicle lanes open.",
+      "name": "passenger_vehicle_ready_lanes_open",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Ready Lane passenger vehicle operational status.",
+      "name": "passenger_vehicle_ready_operational_status",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Standard pedestrian delay in minutes.",
+      "name": "pedestrian_standard_delay",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Standard pedestrian lanes open.",
+      "name": "pedestrian_standard_lanes_open",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Standard pedestrian operational status.",
+      "name": "pedestrian_standard_operational_status",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Ready Lane pedestrian delay in minutes.",
+      "name": "pedestrian_ready_delay",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Ready Lane pedestrian lanes open.",
+      "name": "pedestrian_ready_lanes_open",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Ready Lane pedestrian operational status.",
+      "name": "pedestrian_ready_operational_status",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Standard commercial vehicle delay in minutes.",
+      "name": "commercial_vehicle_standard_delay",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Standard commercial vehicle lanes open.",
+      "name": "commercial_vehicle_standard_lanes_open",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Standard commercial vehicle operational status.",
+      "name": "commercial_vehicle_standard_operational_status",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "FAST commercial vehicle delay in minutes.",
+      "name": "commercial_vehicle_fast_delay",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "FAST commercial vehicle lanes open.",
+      "name": "commercial_vehicle_fast_lanes_open",
+      "type": [
+        "null",
+        "int"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "FAST commercial vehicle operational status.",
+      "name": "commercial_vehicle_fast_operational_status",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Construction or closure notice text.",
+      "name": "construction_notice",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "WaitTime",
+  "namespace": "gov.cbp.borderwait",
+  "type": "record"
+}

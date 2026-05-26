@@ -1,0 +1,32 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.SolarFlares/messages/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "XrayFlare",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "flare_class": {
+        "description": "Routing property flare_class copied from the event payload or derived routing context.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{flare_class}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{satellite}/{begin_time}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp/versions/1"
+}

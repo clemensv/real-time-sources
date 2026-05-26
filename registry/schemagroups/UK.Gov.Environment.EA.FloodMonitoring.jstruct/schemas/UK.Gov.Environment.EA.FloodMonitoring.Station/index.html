@@ -1,0 +1,75 @@
+{
+  "$id": "https://example.com/schemas/UK/Gov/Environment/EA/FloodMonitoring/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference details for one monitoring station or site in the UK Environment Agency Flood Monitoring source.",
+  "name": "Station",
+  "properties": {
+    "catchment_name": {
+      "description": "Human-readable name of the catchment.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "date_opened": {
+      "description": "Provider-supplied date opened value for this record.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "label": {
+      "description": "Provider-supplied label value for this record.",
+      "type": "string"
+    },
+    "lat": {
+      "description": "Provider-supplied lat value for this record.",
+      "type": "double"
+    },
+    "long": {
+      "description": "Provider-supplied long value for this record.",
+      "type": "double"
+    },
+    "notation": {
+      "description": "Provider-supplied notation value for this record.",
+      "type": "string"
+    },
+    "river": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for uk-ea-flood-monitoring.",
+      "type": "string"
+    },
+    "river_name": {
+      "description": "Name of the river or watercourse observed at the station.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "station_reference": {
+      "description": "Provider-supplied station reference value for this record.",
+      "type": "string"
+    },
+    "status": {
+      "description": "Provider status value for the station, measurement, or alert.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "town": {
+      "description": "Provider-supplied town value for this record.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "station_reference",
+    "label",
+    "lat",
+    "long",
+    "notation"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.Situations.SafetyRelatedMessage",
+  "description": "Safety-related traffic information message from the Dutch NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard notifications on the national road network.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://opendata.ndw.nu/veiligheidsgerelateerde_berichten_srti.xml.gz"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "situations/{situation_record_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "NL.NDW.Situations.SafetyRelatedMessage"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "NL.NDW.Situations.SafetyRelatedMessage",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "SafetyRelatedMessage",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage/versions",
+  "xid": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage"
+}

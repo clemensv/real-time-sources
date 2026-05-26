@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.jstruct/schemas/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+  "description": "A current measurement from the French Eaufrance Hub'Eau hydrometry API for one monitoring site. It carries water height and discharge observations when the upstream feed reports a new or refreshed value.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://hubeau.eaufrance.fr/api/v2/hydrometrie"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{code_station}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Observation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation/versions",
+  "xid": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation"
+}

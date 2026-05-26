@@ -1,0 +1,22 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/USGS.WaterQuality.Sites/messages/USGS.WaterQuality.Sites.MonitoringSite",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "USGS.WaterQuality.Sites.mqtt.MonitoringSite",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.WaterQuality.Sites.mqtt/messages/USGS.WaterQuality.Sites.mqtt.MonitoringSite/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "MonitoringSite",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": true,
+    "topic_name": "hydro/us/usgs/usgs-nwis-wq/{state}/{site_number}/info"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.WaterQuality.Sites.mqtt/messages/USGS.WaterQuality.Sites.mqtt.MonitoringSite",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.WaterQuality.Sites.mqtt/messages/USGS.WaterQuality.Sites.mqtt.MonitoringSite/versions",
+  "xid": "/messagegroups/USGS.WaterQuality.Sites.mqtt/messages/USGS.WaterQuality.Sites.mqtt.MonitoringSite"
+}

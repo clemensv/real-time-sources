@@ -1,0 +1,60 @@
+{
+  "$id": "https://opendata.ndw.nu/schemas/NL/NDW/AVG/TravelTimeObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Travel time observation for a road segment from the Dutch NDW DATEX II traveltime feed. Contains the actual measured travel time and the static free-flow reference time for a route measurement site.",
+  "name": "TravelTimeObservation",
+  "properties": {
+    "accuracy": {
+      "description": "Accuracy percentage of the travel time measurement as a value between 0 and 100, from the DATEX II travelTime accuracy attribute.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "data_quality": {
+      "description": "Supplier-calculated data quality score as a value between 0 and 100, from the DATEX II supplierCalculatedDataQuality attribute.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "%"
+    },
+    "duration": {
+      "description": "Measured travel time in seconds for the route section, from the DATEX II travelTime/duration element. Null if the upstream value was negative (invalid).",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "s"
+    },
+    "measurement_site_id": {
+      "description": "Unique identifier of the NDW route measurement site, from the DATEX II measurementSiteReference id attribute.",
+      "type": "string"
+    },
+    "measurement_time": {
+      "description": "Timestamp of the measurement in ISO 8601 UTC format, from the DATEX II measurementTimeDefault element.",
+      "type": "string"
+    },
+    "number_of_input_values": {
+      "description": "Number of input observations used to compute the travel time, from the DATEX II numberOfInputValuesUsed attribute.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "reference_duration": {
+      "description": "Free-flow reference travel time in seconds for the route section, from the DATEX II basicDataReferenceValue/travelTimeData/travelTime/duration extension element. Null if not provided.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "s"
+    }
+  },
+  "required": [
+    "measurement_site_id",
+    "measurement_time"
+  ],
+  "type": "object"
+}

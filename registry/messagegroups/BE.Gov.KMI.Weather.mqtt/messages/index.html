@@ -1,0 +1,82 @@
+{
+  "BE.Gov.KMI.Weather.mqtt.Station": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.Station",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://opendata.meteo.be"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_code}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "BE.Gov.KMI.Weather.Station"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "BE.Gov.KMI.Weather.mqtt.Station",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather.mqtt/messages/BE.Gov.KMI.Weather.mqtt.Station/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "protocol": "MQTT/5.0",
+    "protocoloptions": {
+      "qos": 1,
+      "retain": true,
+      "topic_name": "weather/be/kmi/kmi-belgium/{region}/{station_code}/info"
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather.mqtt/messages/BE.Gov.KMI.Weather.mqtt.Station",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather.mqtt/messages/BE.Gov.KMI.Weather.mqtt.Station/versions",
+    "xid": "/messagegroups/BE.Gov.KMI.Weather.mqtt/messages/BE.Gov.KMI.Weather.mqtt.Station"
+  },
+  "BE.Gov.KMI.Weather.mqtt.WeatherObservation": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.WeatherObservation",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://opendata.meteo.be"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_code}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "BE.Gov.KMI.Weather.WeatherObservation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "BE.Gov.KMI.Weather.mqtt.WeatherObservation",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather.mqtt/messages/BE.Gov.KMI.Weather.mqtt.WeatherObservation/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherObservation",
+    "protocol": "MQTT/5.0",
+    "protocoloptions": {
+      "qos": 1,
+      "retain": true,
+      "topic_name": "weather/be/kmi/kmi-belgium/{region}/{station_code}/observation"
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather.mqtt/messages/BE.Gov.KMI.Weather.mqtt.WeatherObservation",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather.mqtt/messages/BE.Gov.KMI.Weather.mqtt.WeatherObservation/versions",
+    "xid": "/messagegroups/BE.Gov.KMI.Weather.mqtt/messages/BE.Gov.KMI.Weather.mqtt.WeatherObservation"
+  }
+}

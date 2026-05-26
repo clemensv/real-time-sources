@@ -1,0 +1,68 @@
+{
+  "$id": "https://example.com/schemas/IO/AISstream/LongRangeAisBroadcastMessage",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A vehicle or vessel update from AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from the upstream feed.",
+  "name": "LongRangeAisBroadcastMessage",
+  "properties": {
+    "Cog": {
+      "description": "Provider field for cog in this record.",
+      "type": "double"
+    },
+    "Latitude": {
+      "description": "Latitude of the resource in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "Longitude": {
+      "description": "Longitude of the resource in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "MessageID": {
+      "description": "Provider field for message i d in this record.",
+      "type": "int32"
+    },
+    "NavigationalStatus": {
+      "description": "Provider field for navigational status in this record.",
+      "type": "int32"
+    },
+    "PositionAccuracy": {
+      "description": "Provider field for position accuracy in this record.",
+      "type": "boolean"
+    },
+    "PositionLatency": {
+      "description": "Provider field for position latency in this record.",
+      "type": "boolean"
+    },
+    "Raim": {
+      "description": "Provider field for raim in this record.",
+      "type": "boolean"
+    },
+    "RepeatIndicator": {
+      "description": "Provider field for repeat indicator in this record.",
+      "type": "int32"
+    },
+    "Sog": {
+      "description": "Provider field for sog in this record.",
+      "type": "double"
+    },
+    "Spare": {
+      "description": "Provider field for spare in this record.",
+      "type": "boolean"
+    },
+    "UserID": {
+      "description": "Provider field for user i d in this record.",
+      "type": "int32"
+    },
+    "Valid": {
+      "description": "Provider field for valid in this record.",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "MessageID",
+    "UserID",
+    "Longitude",
+    "Latitude",
+    "Valid"
+  ],
+  "type": "object"
+}

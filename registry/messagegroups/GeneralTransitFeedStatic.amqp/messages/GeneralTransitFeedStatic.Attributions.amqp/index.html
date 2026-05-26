@@ -1,0 +1,35 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Attributions",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "GeneralTransitFeedStatic.Attributions.amqp",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/GeneralTransitFeedStatic.amqp/messages/GeneralTransitFeedStatic.Attributions.amqp/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Attributions",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Partition key mirrors the CloudEvents subject.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{agencyid}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP subject mirrors the CloudEvents subject.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{agencyid}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/GeneralTransitFeedStatic.amqp/messages/GeneralTransitFeedStatic.Attributions.amqp",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/GeneralTransitFeedStatic.amqp/messages/GeneralTransitFeedStatic.Attributions.amqp/versions",
+  "xid": "/messagegroups/GeneralTransitFeedStatic.amqp/messages/GeneralTransitFeedStatic.Attributions.amqp"
+}

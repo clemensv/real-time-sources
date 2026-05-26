@@ -1,0 +1,72 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/eu/jrc/eurdep/Station",
+  "$root": "/definitions/eu/jrc/eurdep/Station",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "eu": {
+      "jrc": {
+        "eurdep": {
+          "Station": {
+            "description": "Reference metadata for an ambient gamma dose rate monitoring station in the EURDEP network. EURDEP (European Radiological Data Exchange Platform) is operated by the European Commission's Joint Research Centre (JRC) and aggregates real-time radiological monitoring data from national networks across 39 European countries. Each station is identified by a country-prefixed alphanumeric code (e.g. 'AT0001' for Austria, 'DE0123' for Germany).",
+            "name": "Station",
+            "properties": {
+              "country": {
+                "description": "ISO 3166-1 alpha-2 country code for the station, derived from the first two characters of station_id and used as the {country} routing axis.",
+                "type": "string"
+              },
+              "height_above_sea": {
+                "description": "Elevation of the station above mean sea level in meters. Determines the cosmic radiation component contribution. Null if the elevation is not reported by the national network.",
+                "symbol": "m",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "m"
+              },
+              "latitude": {
+                "description": "Latitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates returned by the WFS endpoint.",
+                "symbol": "°",
+                "type": "double",
+                "unit": "deg"
+              },
+              "longitude": {
+                "description": "Longitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates returned by the WFS endpoint.",
+                "symbol": "°",
+                "type": "double",
+                "unit": "deg"
+              },
+              "name": {
+                "description": "Human-readable name of the station location, typically a city or locality name. Example: 'Laa/ThayaAMS'.",
+                "type": "string"
+              },
+              "site_status": {
+                "description": "Numeric operational status code of the station. 1 = active and reporting, other values indicate the station is inactive, under maintenance, or decommissioned.",
+                "type": "int32"
+              },
+              "site_status_text": {
+                "description": "Human-readable text describing the operational status of the station. Language depends on the reporting country. Example: 'in Betrieb' (German for 'in operation').",
+                "type": "string"
+              },
+              "station_id": {
+                "description": "Alphanumeric station identifier assigned within the EURDEP network. The first two characters are the ISO 3166-1 alpha-2 country code of the operating country, followed by a numeric station sequence. Example: 'AT0001' (Austria), 'DE0123' (Germany), 'FR0456' (France). This is the stable key used for data retrieval and cross-referencing.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "station_id",
+              "name",
+              "country",
+              "latitude",
+              "longitude",
+              "height_above_sea",
+              "site_status",
+              "site_status_text"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "Station"
+}

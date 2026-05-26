@@ -1,0 +1,71 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/dmi/schemas/dk/dmi/oceanObs/TidewaterPrediction",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A deterministic tidewater (sea-level) prediction for one station and one forecast horizon. Predictions are issued every model cycle and span ~30 days at 10-minute granularity.",
+  "name": "TidewaterPrediction",
+  "properties": {
+    "latitude": {
+      "maximum": 90,
+      "minimum": -90,
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "longitude": {
+      "maximum": 180,
+      "minimum": -180,
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "prediction_id": {
+      "altnames": {
+        "json": "id"
+      },
+      "description": "DMI-assigned row identifier.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "prediction_time": {
+      "altnames": {
+        "json": "predictionTime"
+      },
+      "description": "Target time for which the value is predicted.",
+      "type": "datetime"
+    },
+    "prediction_type": {
+      "altnames": {
+        "json": "predictionType"
+      },
+      "description": "Granularity of the prediction series (typically '10minutes').",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "station_id": {
+      "altnames": {
+        "json": "stationId"
+      },
+      "type": "string"
+    },
+    "value": {
+      "description": "Predicted sea level (cm vs DVR90 unless otherwise noted).",
+      "symbol": "cm",
+      "type": "double",
+      "unit": "cm"
+    }
+  },
+  "required": [
+    "station_id",
+    "prediction_time",
+    "value"
+  ],
+  "type": "object"
+}

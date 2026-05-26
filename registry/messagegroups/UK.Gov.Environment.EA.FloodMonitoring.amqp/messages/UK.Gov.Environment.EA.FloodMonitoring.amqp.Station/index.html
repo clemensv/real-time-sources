@@ -1,0 +1,43 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Station",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "UK.Gov.Environment.EA.FloodMonitoring.amqp.Station",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.amqp/messages/UK.Gov.Environment.EA.FloodMonitoring.amqp.Station/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Station",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "river": {
+        "description": "Routing property for AMQP subscription filters (river).",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{river}"
+      }
+    },
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_reference}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{station_reference}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.amqp/messages/UK.Gov.Environment.EA.FloodMonitoring.amqp.Station",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.amqp/messages/UK.Gov.Environment.EA.FloodMonitoring.amqp.Station/versions",
+  "xid": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.amqp/messages/UK.Gov.Environment.EA.FloodMonitoring.amqp.Station"
+}

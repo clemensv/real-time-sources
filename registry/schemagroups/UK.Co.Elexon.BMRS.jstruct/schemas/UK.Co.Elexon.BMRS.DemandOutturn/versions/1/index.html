@@ -1,0 +1,48 @@
+{
+  "$id": "https://data.elexon.co.uk/schemas/UK/Co/Elexon/BMRS/DemandOutturn",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Half-hourly demand outturn for the GB electricity transmission system from the Elexon BMRS API. Each record represents one settlement period and contains the initial national demand outturn (INDO) and initial transmission system demand outturn (ITSDO) in megawatts (MW). Sourced from the BMRS /demand/outturn endpoint. Published under CC-BY 4.0 licence by Elexon.",
+  "name": "DemandOutturn",
+  "properties": {
+    "initial_demand_outturn_mw": {
+      "description": "Initial national demand outturn (INDO) in megawatts (MW). This is the metered generation output less station transformer, unit transformer, and pumped storage demand, measured at the Grid Supply Point (GSP).",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "initial_transmission_system_demand_outturn_mw": {
+      "description": "Initial transmission system demand outturn (ITSDO) in megawatts (MW). This represents the national demand plus station demand, pumping, and interconnector exports.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "publish_time": {
+      "description": "UTC timestamp when the demand outturn data was published by Elexon.",
+      "type": "datetime"
+    },
+    "settlement_date": {
+      "description": "Settlement date in ISO 8601 format (YYYY-MM-DD) as reported by the BMRS demand outturn endpoint.",
+      "type": "string"
+    },
+    "settlement_period": {
+      "description": "GB electricity settlement period number (1-50). Each settlement period is 30 minutes long, starting at midnight UTC.",
+      "type": "int32"
+    },
+    "start_time": {
+      "description": "UTC start time of the settlement period as reported by the BMRS demand outturn endpoint.",
+      "type": "datetime"
+    }
+  },
+  "required": [
+    "settlement_period",
+    "settlement_date",
+    "start_time"
+  ],
+  "type": "object"
+}

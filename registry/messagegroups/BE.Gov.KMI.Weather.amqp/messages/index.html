@@ -1,0 +1,108 @@
+{
+  "BE.Gov.KMI.Weather.amqp.Station": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.Station",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://opendata.meteo.be"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_code}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "BE.Gov.KMI.Weather.Station"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "BE.Gov.KMI.Weather.amqp.Station",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather.amqp/messages/BE.Gov.KMI.Weather.amqp.Station/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "region": {
+          "description": "Routing value for region.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{region}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP subject matching the CloudEvents subject for this transport variant.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_code}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather.amqp/messages/BE.Gov.KMI.Weather.amqp.Station",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather.amqp/messages/BE.Gov.KMI.Weather.amqp.Station/versions",
+    "xid": "/messagegroups/BE.Gov.KMI.Weather.amqp/messages/BE.Gov.KMI.Weather.amqp.Station"
+  },
+  "BE.Gov.KMI.Weather.amqp.WeatherObservation": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/BE.Gov.KMI.Weather/messages/BE.Gov.KMI.Weather.WeatherObservation",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://opendata.meteo.be"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_code}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "BE.Gov.KMI.Weather.WeatherObservation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "BE.Gov.KMI.Weather.amqp.WeatherObservation",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather.amqp/messages/BE.Gov.KMI.Weather.amqp.WeatherObservation/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherObservation",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "region": {
+          "description": "Routing value for region.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{region}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP subject matching the CloudEvents subject for this transport variant.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_code}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather.amqp/messages/BE.Gov.KMI.Weather.amqp.WeatherObservation",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Gov.KMI.Weather.amqp/messages/BE.Gov.KMI.Weather.amqp.WeatherObservation/versions",
+    "xid": "/messagegroups/BE.Gov.KMI.Weather.amqp/messages/BE.Gov.KMI.Weather.amqp.WeatherObservation"
+  }
+}

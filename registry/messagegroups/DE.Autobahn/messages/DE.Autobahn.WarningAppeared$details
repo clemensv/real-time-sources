@@ -1,0 +1,41 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/DE.Autobahn.jstruct/schemas/DE.Autobahn.WarningEvent",
+  "description": "A transport update from Germany's Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks, closures, and traffic messages.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://verkehr.autobahn.de/o/autobahn"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{identifier}"
+    },
+    "time": {
+      "required": false,
+      "type": "timestamp",
+      "value": "{event_time}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "DE.Autobahn.WarningAppeared"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "DE.Autobahn.WarningAppeared",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningAppeared/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WarningAppeared",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningAppeared",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningAppeared/versions",
+  "xid": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningAppeared"
+}

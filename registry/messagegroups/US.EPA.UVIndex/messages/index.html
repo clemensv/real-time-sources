@@ -1,0 +1,74 @@
+{
+  "US.EPA.UVIndex.DailyForecast": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.DailyForecast",
+    "description": "A daily UV Index forecast from the US EPA Envirofacts UV service for one configured city/state location. It carries the forecast date, normalized location identity, UV index value, and EPA UV alert indicator for public-health planning.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://www.epa.gov/enviro/web-services"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{location_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "US.EPA.UVIndex.DailyForecast"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "US.EPA.UVIndex.DailyForecast",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.DailyForecast/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "DailyForecast",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.DailyForecast",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.DailyForecast/versions",
+    "xid": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.DailyForecast"
+  },
+  "US.EPA.UVIndex.HourlyForecast": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/US.EPA.UVIndex.jstruct/schemas/US.EPA.UVIndex.HourlyForecast",
+    "description": "An hourly UV Index forecast from the US EPA Envirofacts UV service for one configured city/state location. It carries the forecast valid hour, normalized location identity, and UV index value for operational exposure planning.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://www.epa.gov/enviro/web-services"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{location_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "US.EPA.UVIndex.HourlyForecast"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "US.EPA.UVIndex.HourlyForecast",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.HourlyForecast/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "HourlyForecast",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.HourlyForecast",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.HourlyForecast/versions",
+    "xid": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.HourlyForecast"
+  }
+}

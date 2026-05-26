@@ -1,0 +1,14 @@
+content-disposition:nl.rivm.luchtmeetnet.Measurement
+content-length:1472
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Measurement/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:Avro/1.11.3
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:nl.rivm.luchtmeetnet.Measurement
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Measurement/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/nl.rivm.luchtmeetnet.avro/schemas/nl.rivm.luchtmeetnet.Measurement/versions/1

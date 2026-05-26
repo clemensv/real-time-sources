@@ -1,0 +1,16 @@
+content-disposition:Ticketmaster.Reference.Attraction
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Reference.Attraction/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Reference.Attraction/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:Ticketmaster.Reference.Attraction
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Reference.Attraction
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Reference.Attraction/versions
+xregistry-xid:/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Reference.Attraction

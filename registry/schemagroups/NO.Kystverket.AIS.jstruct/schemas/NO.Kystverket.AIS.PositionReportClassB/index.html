@@ -1,0 +1,55 @@
+{
+  "$id": "https://example.com/schemas/NO/Kystverket/AIS/PositionReportClassB",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.",
+  "name": "PositionReportClassB",
+  "properties": {
+    "course_over_ground": {
+      "description": "Provider field for course over ground in this record.",
+      "type": "double"
+    },
+    "latitude": {
+      "description": "Latitude of the resource in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "longitude": {
+      "description": "Longitude of the resource in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "mmsi": {
+      "description": "Provider field for mmsi in this record.",
+      "type": "int32"
+    },
+    "msg_type": {
+      "description": "Provider field for msg type in this record.",
+      "type": "int32"
+    },
+    "position_accuracy": {
+      "description": "Provider field for position accuracy in this record.",
+      "type": "int32"
+    },
+    "speed_over_ground": {
+      "description": "Provider field for speed over ground in this record.",
+      "type": "double"
+    },
+    "station_id": {
+      "description": "Stable identifier assigned by the upstream provider for the station or stop.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Time when the provider recorded or published the update.",
+      "type": "string"
+    },
+    "true_heading": {
+      "description": "Provider field for true heading in this record.",
+      "type": "int32"
+    }
+  },
+  "required": [
+    "mmsi",
+    "longitude",
+    "latitude",
+    "timestamp"
+  ],
+  "type": "object"
+}

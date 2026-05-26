@@ -1,0 +1,148 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/mountainpass/MountainPassCondition",
+  "$root": "/definitions/us/wa/wsdot/mountainpass/MountainPassCondition",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "us": {
+      "wa": {
+        "wsdot": {
+          "mountainpass": {
+            "MountainPassCondition": {
+              "description": "Current conditions at a Washington State mountain pass including temperature, weather, road conditions, travel advisories, and directional restrictions.",
+              "name": "MountainPassCondition",
+              "properties": {
+                "date_updated": {
+                  "altnames": {
+                    "json": "DateUpdated"
+                  },
+                  "description": "ISO 8601 UTC timestamp of last update.",
+                  "type": "string"
+                },
+                "elevation_in_feet": {
+                  "altnames": {
+                    "json": "ElevationInFeet"
+                  },
+                  "description": "Summit elevation in feet above sea level.",
+                  "symbol": "ft",
+                  "type": "int32",
+                  "unit": "ft"
+                },
+                "latitude": {
+                  "altnames": {
+                    "json": "Latitude"
+                  },
+                  "description": "Latitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "longitude": {
+                  "altnames": {
+                    "json": "Longitude"
+                  },
+                  "description": "Longitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "mountain_pass_id": {
+                  "altnames": {
+                    "json": "MountainPassId"
+                  },
+                  "description": "Unique pass identifier, stringified from upstream MountainPassId.",
+                  "type": "string"
+                },
+                "mountain_pass_name": {
+                  "altnames": {
+                    "json": "MountainPassName"
+                  },
+                  "description": "Pass name with highway designation.",
+                  "type": "string"
+                },
+                "restriction_one_direction": {
+                  "description": "Direction for first restriction.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "restriction_one_text": {
+                  "description": "First restriction text.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "restriction_two_direction": {
+                  "description": "Direction for second restriction.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "restriction_two_text": {
+                  "description": "Second restriction text.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "road_condition": {
+                  "altnames": {
+                    "json": "RoadCondition"
+                  },
+                  "description": "Road surface condition text. Examples: Dry, Wet, Compact Snow, Ice.",
+                  "type": "string"
+                },
+                "temperature_in_fahrenheit": {
+                  "altnames": {
+                    "json": "TemperatureInFahrenheit"
+                  },
+                  "description": "Temperature at the summit in Fahrenheit. Null if not reporting.",
+                  "symbol": "°F",
+                  "type": [
+                    "int32",
+                    "null"
+                  ],
+                  "unit": "degF"
+                },
+                "travel_advisory_active": {
+                  "altnames": {
+                    "json": "TravelAdvisoryActive"
+                  },
+                  "description": "True if a travel advisory is in effect.",
+                  "type": "boolean"
+                },
+                "weather_condition": {
+                  "altnames": {
+                    "json": "WeatherCondition"
+                  },
+                  "description": "Current weather condition text. Examples: Clear, Rain, Snow, Fog.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "mountain_pass_id",
+                "mountain_pass_name",
+                "elevation_in_feet",
+                "latitude",
+                "longitude",
+                "temperature_in_fahrenheit",
+                "weather_condition",
+                "road_condition",
+                "travel_advisory_active",
+                "restriction_one_direction",
+                "restriction_one_text",
+                "restriction_two_direction",
+                "restriction_two_text",
+                "date_updated"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "MountainPassCondition"
+}

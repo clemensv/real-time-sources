@@ -1,0 +1,93 @@
+{
+  "doc": "WeatherAlert",
+  "fields": [
+    {
+      "name": "alert_id",
+      "type": "string"
+    },
+    {
+      "name": "area_desc",
+      "type": "string"
+    },
+    {
+      "name": "sent",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "name": "effective",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "name": "expires",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "string"
+      }
+    },
+    {
+      "name": "status",
+      "type": "string"
+    },
+    {
+      "name": "message_type",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "category",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "severity",
+      "type": "string"
+    },
+    {
+      "name": "certainty",
+      "type": "string"
+    },
+    {
+      "name": "urgency",
+      "type": "string"
+    },
+    {
+      "name": "event",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "sender_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "headline",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "description",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "WeatherAlert",
+  "namespace": "Microsoft.OpenData.US.NOAA.NWS",
+  "type": "record"
+}

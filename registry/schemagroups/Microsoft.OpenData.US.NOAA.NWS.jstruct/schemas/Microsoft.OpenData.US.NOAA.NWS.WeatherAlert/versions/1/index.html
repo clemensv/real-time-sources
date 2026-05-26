@@ -1,0 +1,129 @@
+{
+  "$id": "https://api.weather.gov/schemas/Microsoft/OpenData/US/NOAA/NWS/WeatherAlert",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Active weather alert from the NWS Common Alerting Protocol (CAP) feed. Alerts cover severe weather warnings, watches, advisories, and statements issued by NWS Weather Forecast Offices.",
+  "name": "WeatherAlert",
+  "properties": {
+    "alert_id": {
+      "type": "string"
+    },
+    "area_desc": {
+      "type": "string"
+    },
+    "category": {
+      "enum": [
+        "Met",
+        "Geo",
+        "Safety",
+        "Security",
+        "Rescue",
+        "Fire",
+        "Health",
+        "Env",
+        "Transport",
+        "Infra",
+        "CBRNE",
+        "Other"
+      ],
+      "type": "string"
+    },
+    "certainty": {
+      "enum": [
+        "Observed",
+        "Likely",
+        "Possible",
+        "Unlikely",
+        "Unknown"
+      ],
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "effective": {
+      "type": "datetime"
+    },
+    "event": {
+      "type": "string"
+    },
+    "event_type": {
+      "description": "Normalized routing field 'event_type' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "expires": {
+      "type": "datetime"
+    },
+    "headline": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "message_type": {
+      "enum": [
+        "Alert",
+        "Update",
+        "Cancel"
+      ],
+      "type": "string"
+    },
+    "sender_name": {
+      "type": "string"
+    },
+    "sent": {
+      "type": "datetime"
+    },
+    "severity": {
+      "enum": [
+        "Extreme",
+        "Severe",
+        "Moderate",
+        "Minor",
+        "Unknown"
+      ],
+      "type": "string"
+    },
+    "state": {
+      "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "Actual",
+        "Exercise",
+        "System",
+        "Test",
+        "Draft"
+      ],
+      "type": "string"
+    },
+    "urgency": {
+      "enum": [
+        "Immediate",
+        "Expected",
+        "Future",
+        "Past",
+        "Unknown"
+      ],
+      "type": "string"
+    },
+    "zone_id": {
+      "description": "Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "alert_id",
+    "area_desc",
+    "sent",
+    "effective",
+    "expires",
+    "status",
+    "message_type",
+    "severity",
+    "certainty",
+    "urgency",
+    "event"
+  ],
+  "type": "object"
+}

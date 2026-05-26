@@ -1,0 +1,14 @@
+content-disposition:dk.dmi.lightning.LightningSensor
+content-length:1859
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.lightning.LightningSensor/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:dk.dmi.lightning.LightningSensor
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.lightning.LightningSensor/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.lightning.LightningSensor/versions/1

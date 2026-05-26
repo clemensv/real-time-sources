@@ -1,0 +1,44 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/FareRules",
+  "$root": "/definitions/GeneralTransitFeedStatic/FareRules",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "FareRules": {
+        "description": "Defines fare rules.",
+        "name": "FareRules",
+        "properties": {
+          "containsId": {
+            "default": null,
+            "description": "Identifies the fare zone that a rider will enter or leave.",
+            "type": "string"
+          },
+          "destinationId": {
+            "default": null,
+            "description": "Identifies the fare zone of the destination.",
+            "type": "string"
+          },
+          "fareId": {
+            "description": "Identifies a fare class.",
+            "type": "string"
+          },
+          "originId": {
+            "default": null,
+            "description": "Identifies the fare zone of the origin.",
+            "type": "string"
+          },
+          "routeId": {
+            "default": null,
+            "description": "Identifies a route associated with the fare.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fareId"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "FareRules"
+}

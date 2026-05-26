@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.AVG.TravelTimeObservation",
+  "description": "Travel time observation for a road segment from the Dutch NDW DATEX II traveltime feed. Contains the actual measured travel time and the static free-flow reference time for a route measurement site.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://opendata.ndw.nu/traveltime.xml.gz"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "measurement-sites/{measurement_site_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "NL.NDW.AVG.TravelTimeObservation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "NL.NDW.AVG.TravelTimeObservation",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "TravelTimeObservation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TravelTimeObservation/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TravelTimeObservation/versions/1"
+}

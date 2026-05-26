@@ -1,0 +1,88 @@
+{
+  "$id": "https://example.com/schemas/IO/AISstream/BaseStationReport",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record from AISStream public AIS firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "name": "BaseStationReport",
+  "properties": {
+    "CommunicationState": {
+      "description": "Provider field for communication state in this record.",
+      "type": "int32"
+    },
+    "FixType": {
+      "description": "Provider field for fix type in this record.",
+      "type": "int32"
+    },
+    "Latitude": {
+      "description": "Latitude of the resource in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "LongRangeEnable": {
+      "description": "Provider field for long range enable in this record.",
+      "type": "boolean"
+    },
+    "Longitude": {
+      "description": "Longitude of the resource in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "MessageID": {
+      "description": "Provider field for message i d in this record.",
+      "type": "int32"
+    },
+    "PositionAccuracy": {
+      "description": "Provider field for position accuracy in this record.",
+      "type": "boolean"
+    },
+    "Raim": {
+      "description": "Provider field for raim in this record.",
+      "type": "boolean"
+    },
+    "RepeatIndicator": {
+      "description": "Provider field for repeat indicator in this record.",
+      "type": "int32"
+    },
+    "Spare": {
+      "description": "Provider field for spare in this record.",
+      "type": "int32"
+    },
+    "UserID": {
+      "description": "Provider field for user i d in this record.",
+      "type": "int32"
+    },
+    "UtcDay": {
+      "description": "Provider field for utc day in this record.",
+      "type": "int32"
+    },
+    "UtcHour": {
+      "description": "Provider field for utc hour in this record.",
+      "type": "int32"
+    },
+    "UtcMinute": {
+      "description": "Provider field for utc minute in this record.",
+      "type": "int32"
+    },
+    "UtcMonth": {
+      "description": "Provider field for utc month in this record.",
+      "type": "int32"
+    },
+    "UtcSecond": {
+      "description": "Provider field for utc second in this record.",
+      "type": "int32"
+    },
+    "UtcYear": {
+      "description": "Provider field for utc year in this record.",
+      "type": "int32"
+    },
+    "Valid": {
+      "description": "Provider field for valid in this record.",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "MessageID",
+    "UserID",
+    "Longitude",
+    "Latitude",
+    "Valid"
+  ],
+  "type": "object"
+}

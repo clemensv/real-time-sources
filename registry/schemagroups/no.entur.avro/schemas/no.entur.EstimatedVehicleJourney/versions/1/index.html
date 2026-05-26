@@ -1,0 +1,266 @@
+{
+  "description": "A vehicle or vessel update from Entur public transport feeds. It reports the latest position, movement, identity, or voyage information available from the upstream feed.",
+  "doc": "Real-time estimated timetable update from the Entur SIRI-ET feed.",
+  "fields": [
+    {
+      "doc": "NeTEx ServiceJourney identifier from FramedVehicleJourneyRef/DatedVehicleJourneyRef.",
+      "name": "service_journey_id",
+      "type": "string"
+    },
+    {
+      "doc": "ISO 8601 date string from FramedVehicleJourneyRef/DataFrameRef.",
+      "name": "operating_day",
+      "type": "string"
+    },
+    {
+      "doc": "NeTEx Line reference.",
+      "name": "line_ref",
+      "type": "string"
+    },
+    {
+      "doc": "Operator codespace.",
+      "name": "operator_ref",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Direction reference.",
+      "name": "direction_ref",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Transport mode.",
+      "name": "vehicle_mode",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Public-facing line name.",
+      "name": "published_line_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "NeTEx Route reference.",
+      "name": "route_ref",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Origin stop name.",
+      "name": "origin_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Destination stop name.",
+      "name": "destination_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "True if the entire journey is cancelled.",
+      "name": "is_cancellation",
+      "type": "boolean"
+    },
+    {
+      "default": null,
+      "doc": "True if this is an extra journey not in the timetable.",
+      "name": "is_extra_journey",
+      "type": [
+        "null",
+        "boolean"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "True if EstimatedCalls covers all stops.",
+      "name": "is_complete_stop_sequence",
+      "type": [
+        "null",
+        "boolean"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "True if this journey is actively monitored.",
+      "name": "monitored",
+      "type": [
+        "null",
+        "boolean"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "DataSource codespace.",
+      "name": "data_source",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "ISO 8601 UTC timestamp when this update was recorded.",
+      "name": "recorded_at_time",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "Ordered list of estimated arrival and departure times for each stop.",
+      "name": "estimated_calls",
+      "type": {
+        "items": {
+          "doc": "A single estimated call at a stop within an EstimatedVehicleJourney.",
+          "fields": [
+            {
+              "doc": "NSR Quay/StopPoint identifier. Example: NSR:Quay:1234.",
+              "name": "stop_point_ref",
+              "type": "string"
+            },
+            {
+              "doc": "Sequence order of this call, 1-based.",
+              "name": "order",
+              "type": "int"
+            },
+            {
+              "default": null,
+              "doc": "Public stop name.",
+              "name": "stop_point_name",
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            {
+              "default": null,
+              "doc": "Timetabled arrival time ISO 8601.",
+              "name": "aimed_arrival_time",
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            {
+              "default": null,
+              "doc": "Real-time expected arrival time ISO 8601.",
+              "name": "expected_arrival_time",
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            {
+              "default": null,
+              "doc": "Timetabled departure time ISO 8601.",
+              "name": "aimed_departure_time",
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            {
+              "default": null,
+              "doc": "Real-time expected departure time ISO 8601.",
+              "name": "expected_departure_time",
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            {
+              "default": null,
+              "doc": "SIRI ArrivalStatus: onTime, early, delayed, cancelled, arrived, noReport.",
+              "name": "arrival_status",
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            {
+              "default": null,
+              "doc": "SIRI DepartureStatus: onTime, early, delayed, cancelled, departed, noReport.",
+              "name": "departure_status",
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            {
+              "default": null,
+              "doc": "Platform/track identifier for departure.",
+              "name": "departure_platform_name",
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            {
+              "default": null,
+              "doc": "SIRI ArrivalBoardingActivity: boarding, noBoarding, passthru.",
+              "name": "arrival_boarding_activity",
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            {
+              "default": null,
+              "doc": "SIRI DepartureBoardingActivity: boarding, noBoarding, passthru.",
+              "name": "departure_boarding_activity",
+              "type": [
+                "null",
+                "string"
+              ]
+            },
+            {
+              "default": null,
+              "doc": "True if this individual stop is cancelled.",
+              "name": "is_cancellation",
+              "type": [
+                "null",
+                "boolean"
+              ]
+            },
+            {
+              "default": null,
+              "doc": "True if this stop was added.",
+              "name": "is_extra_stop",
+              "type": [
+                "null",
+                "boolean"
+              ]
+            }
+          ],
+          "name": "EstimatedCall",
+          "namespace": "no.entur",
+          "type": "record"
+        },
+        "type": "array"
+      }
+    }
+  ],
+  "name": "EstimatedVehicleJourney",
+  "namespace": "no.entur",
+  "type": "record"
+}

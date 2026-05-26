@@ -1,0 +1,87 @@
+{
+  "description": "Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source.",
+  "doc": "Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.",
+  "fields": [
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source.",
+      "doc": "Stable LAQN site code that identifies the monitoring site, such as BX1.",
+      "name": "site_code",
+      "type": "string"
+    },
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source.",
+      "doc": "Human-readable LAQN site name published for the monitoring site.",
+      "name": "site_name",
+      "type": "string"
+    },
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source.",
+      "doc": "Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other.",
+      "name": "site_type",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "Stable local authority code associated with the site in the LAQN reference data.",
+      "name": "local_authority_code",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "Human-readable local authority name associated with the site in the LAQN reference data.",
+      "name": "local_authority_name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "WGS84 latitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank.",
+      "name": "latitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "WGS84 longitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank.",
+      "name": "longitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format.",
+      "name": "date_opened",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published.",
+      "name": "date_closed",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "Organisation listed by LAQN as the owner of the site's data.",
+      "name": "data_owner",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the London Air Quality Network source.",
+      "doc": "Organisation listed by LAQN as the manager of the monitoring site data.",
+      "name": "data_manager",
+      "type": "string"
+    }
+  ],
+  "name": "Site",
+  "namespace": "uk.kcl.laqn",
+  "type": "record"
+}

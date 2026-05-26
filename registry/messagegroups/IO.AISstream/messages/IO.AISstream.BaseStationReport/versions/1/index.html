@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BaseStationReport",
+  "description": "A reference record from AISStream public AIS firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "wss://stream.aisstream.io/v0/stream"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{mmsi}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "IO.AISstream.BaseStationReport"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "IO.AISstream.BaseStationReport",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "BaseStationReport",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.BaseStationReport/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.BaseStationReport/versions/1"
+}

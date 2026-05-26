@@ -1,0 +1,54 @@
+{
+  "altnames": {
+    "kql": "Wind"
+  },
+  "fields": [
+    {
+      "doc": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timestamp of the wind measurement\"}",
+      "logicalType": "timestamp-millis",
+      "name": "timestamp",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Wind speed\"}",
+      "name": "speed",
+      "type": "double",
+      "unit": "m/s"
+    },
+    {
+      "doc": "{\"description\": \"Wind direction\"}",
+      "name": "direction_degrees",
+      "type": "string",
+      "unit": "degrees"
+    },
+    {
+      "doc": "{\"description\": \"Direction - wind direction in text.\"}",
+      "name": "direction_text",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Wind gust speed\"}",
+      "name": "gusts",
+      "type": "double",
+      "unit": "m/s"
+    },
+    {
+      "doc": "Flag indicating if the maximum wind speed was exceeded",
+      "name": "max_wind_speed_exceeded",
+      "type": "boolean"
+    },
+    {
+      "doc": "Flag indicating if the rate of change tolerance limit was exceeded",
+      "name": "rate_of_change_exceeded",
+      "type": "boolean"
+    }
+  ],
+  "name": "Wind",
+  "namespace": "Microsoft.OpenData.US.NOAA",
+  "type": "record"
+}

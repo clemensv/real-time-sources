@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/DE.DWD.Pollenflug.jstruct/schemas/DE.DWD.Pollenflug.Region",
+  "description": "A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://opendata.dwd.de/climate_environment/health/alerts/"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{region_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "DE.DWD.Pollenflug.Region"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "DE.DWD.Pollenflug.Region",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Region",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.Region/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.Region/versions/1"
+}

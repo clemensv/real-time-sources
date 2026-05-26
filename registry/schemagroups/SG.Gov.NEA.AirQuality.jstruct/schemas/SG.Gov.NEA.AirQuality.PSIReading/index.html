@@ -1,0 +1,142 @@
+{
+  "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/AirQuality/PSIReading",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current environmental measurement from Singapore's National Environment Agency (NEA). It carries weather observations, air-quality readings, and environmental indexes when the upstream feed reports a new or refreshed value.",
+  "name": "PSIReading",
+  "properties": {
+    "co_eight_hour_max": {
+      "description": "CO 8-hour maximum concentration.",
+      "minimum": 0,
+      "symbol": "mg/m³",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "unit": "mg/m3"
+    },
+    "co_sub_index": {
+      "description": "Carbon monoxide (CO) sub-index component of PSI.",
+      "minimum": 0,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "no2_one_hour_max": {
+      "description": "Nitrogen dioxide (NO2) 1-hour maximum concentration.",
+      "minimum": 0,
+      "symbol": "µg/m³",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "unit": "ug/m3"
+    },
+    "o3_eight_hour_max": {
+      "description": "Ozone (O3) 8-hour maximum concentration.",
+      "minimum": 0,
+      "symbol": "µg/m³",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "unit": "ug/m3"
+    },
+    "o3_sub_index": {
+      "description": "Ozone (O3) sub-index component of PSI.",
+      "minimum": 0,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "pm10_sub_index": {
+      "description": "PM10 sub-index component of PSI.",
+      "minimum": 0,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "pm10_twenty_four_hourly": {
+      "description": "PM10 24-hour concentration used to calculate the PM10 PSI sub-index.",
+      "minimum": 0,
+      "symbol": "µg/m³",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "unit": "ug/m3"
+    },
+    "pm25_sub_index": {
+      "description": "PM2.5 sub-index component of PSI.",
+      "minimum": 0,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "pm25_twenty_four_hourly": {
+      "description": "PM2.5 24-hour concentration.",
+      "minimum": 0,
+      "symbol": "µg/m³",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "unit": "ug/m3"
+    },
+    "psi_twenty_four_hourly": {
+      "description": "24-hour PSI value. The overall Pollutant Standards Index for the region. Scale: 0-50 Good, 51-100 Moderate, 101-200 Unhealthy, 201-300 Very Unhealthy, above 300 Hazardous.",
+      "minimum": 0,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "region": {
+      "altenums": [
+        "west",
+        "east",
+        "central",
+        "south",
+        "north"
+      ],
+      "description": "Region identifier (west/east/central/south/north).",
+      "type": "string"
+    },
+    "so2_sub_index": {
+      "description": "Sulphur dioxide (SO2) sub-index component of PSI.",
+      "minimum": 0,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "so2_twenty_four_hourly": {
+      "description": "SO2 24-hour concentration.",
+      "minimum": 0,
+      "symbol": "µg/m³",
+      "type": [
+        "integer",
+        "null"
+      ],
+      "unit": "ug/m3"
+    },
+    "timestamp": {
+      "description": "Observation period start timestamp in ISO 8601 with timezone.",
+      "type": "datetime"
+    },
+    "update_timestamp": {
+      "description": "Timestamp when the NEA API last updated this reading.",
+      "type": "datetime"
+    }
+  },
+  "required": [
+    "region",
+    "timestamp",
+    "update_timestamp",
+    "psi_twenty_four_hourly"
+  ],
+  "type": "object"
+}

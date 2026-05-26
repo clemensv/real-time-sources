@@ -1,0 +1,35 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.TrafficAnnouncement",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "fi.digitraffic.road.amqp.TrafficAnnouncement",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TrafficAnnouncement/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "TrafficAnnouncement",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Service Bus / Event Hubs partition key. All updates for the same traffic situation hash to the same partition.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{situation_id}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject matching the CloudEvent subject and Kafka key for traffic announcement situations.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{situation_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TrafficAnnouncement",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TrafficAnnouncement/versions",
+  "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TrafficAnnouncement"
+}

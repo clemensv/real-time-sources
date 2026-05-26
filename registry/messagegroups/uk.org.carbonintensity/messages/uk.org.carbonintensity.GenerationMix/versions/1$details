@@ -1,0 +1,37 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/uk.org.carbonintensity.jstruct/schemas/uk.org.carbonintensity.GenerationMix",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "id": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{ce_id}"
+    },
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api.carbonintensity.org.uk"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{period_from}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "uk.org.carbonintensity.GenerationMix"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "uk.org.carbonintensity.GenerationMix",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "GenerationMix",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.GenerationMix/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/uk.org.carbonintensity/messages/uk.org.carbonintensity.GenerationMix/versions/1"
+}

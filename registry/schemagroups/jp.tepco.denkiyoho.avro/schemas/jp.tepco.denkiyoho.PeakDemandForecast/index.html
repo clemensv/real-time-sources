@@ -1,0 +1,58 @@
+{
+  "doc": "Daily peak demand forecast record from TEPCO Electricity Forecast.",
+  "fields": [
+    {
+      "doc": "Operating date in ISO 8601 calendar-date form.",
+      "name": "date",
+      "type": "string"
+    },
+    {
+      "doc": "Stable key time component; peak demand forecast uses _peak_forecast_.",
+      "name": "time",
+      "type": "string"
+    },
+    {
+      "doc": "Forecast maximum demand converted from 万kW to MW.",
+      "name": "peak_demand_forecast_mw",
+      "type": "double"
+    },
+    {
+      "doc": "Original forecast maximum demand value in 万kW.",
+      "name": "peak_demand_forecast_jp_unit_value",
+      "type": "int"
+    },
+    {
+      "doc": "Forecast maximum-demand time slot.",
+      "name": "peak_time_slot",
+      "type": "string"
+    },
+    {
+      "doc": "Peak-demand forecast update timestamp converted to UTC RFC 3339.",
+      "name": "update_datetime",
+      "type": "string"
+    },
+    {
+      "doc": "Peak-demand forecast update timestamp in JST RFC 3339.",
+      "name": "update_datetime_local",
+      "type": "string"
+    },
+    {
+      "doc": "Constant TEPCO area code.",
+      "name": "area_code",
+      "type": "string"
+    },
+    {
+      "doc": "Japanese TEPCO service area name.",
+      "name": "area_name_jp",
+      "type": "string"
+    },
+    {
+      "doc": "English TEPCO service area name.",
+      "name": "area_name_en",
+      "type": "string"
+    }
+  ],
+  "name": "PeakDemandForecast",
+  "namespace": "jp.tepco.denkiyoho",
+  "type": "record"
+}

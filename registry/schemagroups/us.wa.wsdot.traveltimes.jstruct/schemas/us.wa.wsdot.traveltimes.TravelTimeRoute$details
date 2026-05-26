@@ -1,0 +1,16 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "format": "JsonStructure/draft-02",
+  "isdefault": true,
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/us.wa.wsdot.traveltimes.jstruct/schemas/us.wa.wsdot.traveltimes.TravelTimeRoute/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "schemaid": "us.wa.wsdot.traveltimes.TravelTimeRoute",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/us.wa.wsdot.traveltimes.jstruct/schemas/us.wa.wsdot.traveltimes.TravelTimeRoute",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/us.wa.wsdot.traveltimes.jstruct/schemas/us.wa.wsdot.traveltimes.TravelTimeRoute/versions",
+  "xid": "/schemagroups/us.wa.wsdot.traveltimes.jstruct/schemas/us.wa.wsdot.traveltimes.TravelTimeRoute"
+}

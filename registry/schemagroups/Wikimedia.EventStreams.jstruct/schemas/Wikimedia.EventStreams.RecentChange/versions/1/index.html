@@ -1,0 +1,265 @@
+{
+  "$id": "https://example.com/schemas/Wikimedia/EventStreams/RecentChange",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Normalized representation of Wikimedia's mediawiki/recentchange event schema. This contract preserves the documented recentchange payload while renaming the upstream $schema field to schema_uri and serializing the variant log_params field into log_params_json for stable generated types.",
+  "name": "RecentChange",
+  "properties": {
+    "bot": {
+      "description": "Whether the recentchange entry was flagged as a bot edit.",
+      "type": [
+        "null",
+        "boolean"
+      ]
+    },
+    "comment": {
+      "description": "Edit or log comment as supplied by the upstream recentchange record.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "event_id": {
+      "description": "Top-level copy of meta.id so downstream validators and consumers can resolve the CloudEvents subject and Kafka key from the event payload itself.",
+      "type": "string"
+    },
+    "event_time": {
+      "description": "Top-level copy of meta.dt in ISO-8601 UTC format so downstream validators and consumers can resolve the CloudEvents time attribute from the payload itself.",
+      "type": "string"
+    },
+    "id": {
+      "description": "MediaWiki recentchanges row identifier (rcid) for the event, stringified because some Wikimedia wikis already exceed signed 32-bit integer range.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "length": {
+      "description": "Page lengths before and after the change, measured in bytes or characters as provided by MediaWiki.",
+      "properties": {
+        "new": {
+          "description": "Length of the page after the change.",
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
+        "old": {
+          "description": "Length of the page before the change.",
+          "type": [
+            "null",
+            "integer"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "log_action": {
+      "description": "Specific MediaWiki log action name for log events.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "log_action_comment": {
+      "description": "Additional comment field emitted for some MediaWiki log actions.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "log_id": {
+      "description": "MediaWiki log identifier associated with the event when the change is a log entry, stringified for stable cross-language handling.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "log_params_json": {
+      "description": "Serialized form of the upstream log_params field, which may be an object, array, or string in the raw Wikimedia payload.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "log_type": {
+      "description": "MediaWiki log type for log events, such as move, delete, or patrol.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "meta": {
+      "description": "Wikimedia EventStreams envelope metadata describing the event identity, domain, stream, and Kafka-origin details.",
+      "properties": {
+        "domain": {
+          "description": "Wikimedia domain the event pertains to, such as www.wikipedia.org or www.wikidata.org.",
+          "type": "string"
+        },
+        "dt": {
+          "description": "UTC event timestamp in ISO-8601 format from the upstream metadata block.",
+          "type": "string"
+        },
+        "id": {
+          "description": "Globally unique Wikimedia event UUID for this recentchange record.",
+          "type": "string"
+        },
+        "offset": {
+          "description": "Underlying Kafka offset from Wikimedia's internal stream metadata, stringified to avoid range loss across generated languages and validators.",
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "partition": {
+          "description": "Underlying Kafka partition number from Wikimedia's internal stream metadata.",
+          "type": "integer"
+        },
+        "request_id": {
+          "description": "Unique request identifier assigned by Wikimedia for the request that caused the event.",
+          "type": "string"
+        },
+        "stream": {
+          "description": "Name of the upstream EventStreams stream that emitted the event, typically mediawiki.recentchange.",
+          "type": "string"
+        },
+        "topic": {
+          "description": "Underlying Wikimedia Kafka topic that carried the event before it was exposed through EventStreams.",
+          "type": "string"
+        },
+        "uri": {
+          "description": "URI of the Wikimedia entity or page the event pertains to, when provided by the upstream stream.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "domain",
+        "stream",
+        "dt"
+      ],
+      "type": "object"
+    },
+    "minor": {
+      "description": "Whether the recentchange entry was flagged as a minor change.",
+      "type": [
+        "null",
+        "boolean"
+      ]
+    },
+    "namespace": {
+      "description": "Kebab-case bucket label for the MediaWiki namespace (e.g. ``main`` for 0, ``talk`` for 1, ``file`` for 6, ``category`` for 14, ``ns-\u003cn\u003e`` for unrecognised values). Used as the {namespace} MQTT topic segment; subscribers can wildcard per wiki/namespace without parsing the integer id.",
+      "type": "string"
+    },
+    "namespace_id": {
+      "description": "Numeric MediaWiki namespace identifier for the affected page (0 = main, 1 = talk, 6 = file, 14 = category, -1 for special log events). Renamed from ``namespace`` to free that name for the kebab-case bucket that is also used as the {namespace} MQTT topic axis.",
+      "type": "integer"
+    },
+    "notify_url": {
+      "description": "URL that points to a diff view or other relevant page for the change.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "parsedcomment": {
+      "description": "HTML-parsed form of the recentchange comment when Wikimedia provides it.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "patrolled": {
+      "description": "Whether the recentchange entry had been patrolled when the event was emitted.",
+      "type": [
+        "null",
+        "boolean"
+      ]
+    },
+    "revision": {
+      "description": "Old and new MediaWiki revision identifiers associated with the change.",
+      "properties": {
+        "new": {
+          "description": "New revision identifier after the change, stringified because recent Wikimedia revision identifiers can exceed signed 32-bit integer range.",
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "old": {
+          "description": "Previous revision identifier before the change, stringified because recent Wikimedia revision identifiers can exceed signed 32-bit integer range.",
+          "type": [
+            "null",
+            "string"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "schema_uri": {
+      "description": "URI of the upstream Wikimedia JSON schema from the $schema field on the original event payload.",
+      "type": "string"
+    },
+    "server_name": {
+      "description": "Server host name of the wiki that emitted the event.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "server_script_path": {
+      "description": "MediaWiki script path on the emitting wiki.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "server_url": {
+      "description": "Canonical server URL for the wiki that emitted the event.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "timestamp": {
+      "description": "Unix timestamp derived from the MediaWiki rc_timestamp value.",
+      "type": "integer"
+    },
+    "title": {
+      "description": "Affected page title in MediaWiki prefixed text form.",
+      "type": "string"
+    },
+    "title_url": {
+      "description": "Canonical page URL for the affected title when present in the upstream payload.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "type": {
+      "description": "Recentchange type such as edit, new, log, categorize, or external.",
+      "type": "string"
+    },
+    "user": {
+      "description": "User name or IP address associated with the change.",
+      "type": "string"
+    },
+    "wiki": {
+      "description": "Internal Wikimedia wiki identifier such as enwiki, commonswiki, or wikidatawiki.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "event_time",
+    "schema_uri",
+    "meta",
+    "type",
+    "namespace_id",
+    "namespace",
+    "title",
+    "timestamp",
+    "user",
+    "wiki"
+  ],
+  "type": "object"
+}

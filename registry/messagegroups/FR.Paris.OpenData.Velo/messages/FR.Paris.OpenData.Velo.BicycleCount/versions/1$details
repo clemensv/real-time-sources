@@ -1,0 +1,43 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/FR.Paris.OpenData.Velo.jstruct/schemas/FR.Paris.OpenData.Velo.BicycleCount",
+  "description": "A current transport measurement or status update from Paris open-data bicycle counter feeds. It carries bicycle count observations when the upstream feed reports a new or refreshed value.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "id": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{ce_id}"
+    },
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://opendata.paris.fr/explore/dataset/comptage-velo-donnees-compteurs"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{counter_id}"
+    },
+    "time": {
+      "required": false,
+      "type": "timestamp",
+      "value": "{date}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "FR.Paris.OpenData.Velo.BicycleCount"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "FR.Paris.OpenData.Velo.BicycleCount",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "BicycleCount",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.BicycleCount/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.BicycleCount/versions/1"
+}

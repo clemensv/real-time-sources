@@ -1,0 +1,17 @@
+content-disposition:CH.BAFU.Hydrology.WaterLevelObservation
+content-length:2040
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/CH.BAFU.Hydrology.avro/schemas/CH.BAFU.Hydrology.WaterLevelObservation/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:Avro/1.11.3
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/CH.BAFU.Hydrology.avro/schemas/CH.BAFU.Hydrology.WaterLevelObservation/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:CH.BAFU.Hydrology.WaterLevelObservation
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/CH.BAFU.Hydrology.avro/schemas/CH.BAFU.Hydrology.WaterLevelObservation
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/CH.BAFU.Hydrology.avro/schemas/CH.BAFU.Hydrology.WaterLevelObservation/versions
+xregistry-xid:/schemagroups/CH.BAFU.Hydrology.avro/schemas/CH.BAFU.Hydrology.WaterLevelObservation

@@ -1,0 +1,43 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadStatus",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "uk.gov.tfl.road.amqp.RoadStatus",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadStatus/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "RoadStatus",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "road_id": {
+        "description": "AMQP application property mirroring the road_id routing axis from the Kafka subject/MQTT topic for broker-side filtering.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{road_id}"
+      }
+    },
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "roads/{road_id}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "roads/{road_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadStatus",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadStatus/versions",
+  "xid": "/messagegroups/uk.gov.tfl.road.amqp/messages/uk.gov.tfl.road.amqp.RoadStatus"
+}

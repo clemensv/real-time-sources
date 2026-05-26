@@ -1,0 +1,179 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/traveltimes/TravelTimeRoute",
+  "$root": "/definitions/us/wa/wsdot/traveltimes/TravelTimeRoute",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "us": {
+      "wa": {
+        "wsdot": {
+          "traveltimes": {
+            "TravelTimeRoute": {
+              "description": "A named travel time route monitored by WSDOT. Each route has fixed start and end points on Washington State highways with historical average and current real-time travel times.",
+              "name": "TravelTimeRoute",
+              "properties": {
+                "average_time": {
+                  "altnames": {
+                    "json": "AverageTime"
+                  },
+                  "description": "Historical average travel time in minutes.",
+                  "symbol": "min",
+                  "type": "int32",
+                  "unit": "min"
+                },
+                "current_time": {
+                  "altnames": {
+                    "json": "CurrentTime"
+                  },
+                  "description": "Current real-time travel time in minutes.",
+                  "symbol": "min",
+                  "type": "int32",
+                  "unit": "min"
+                },
+                "description": {
+                  "altnames": {
+                    "json": "Description"
+                  },
+                  "description": "Longer description including lane type.",
+                  "type": "string"
+                },
+                "distance": {
+                  "altnames": {
+                    "json": "Distance"
+                  },
+                  "description": "Route distance in miles.",
+                  "symbol": "mi",
+                  "type": "double",
+                  "unit": "mi"
+                },
+                "end_description": {
+                  "description": "End point description.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "end_direction": {
+                  "description": "Direction at end point.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "end_latitude": {
+                  "description": "End latitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "end_longitude": {
+                  "description": "End longitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "end_milepost": {
+                  "description": "Milepost at end.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                },
+                "end_road_name": {
+                  "description": "Road at end point.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "name": {
+                  "altnames": {
+                    "json": "Name"
+                  },
+                  "description": "Short route segment name.",
+                  "type": "string"
+                },
+                "start_description": {
+                  "description": "Start point description.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "start_direction": {
+                  "description": "Direction at start point.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "start_latitude": {
+                  "description": "Start latitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "start_longitude": {
+                  "description": "Start longitude in WGS84.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "start_milepost": {
+                  "description": "Milepost at start.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                },
+                "start_road_name": {
+                  "description": "Road at start point.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "time_updated": {
+                  "altnames": {
+                    "json": "TimeUpdated"
+                  },
+                  "description": "ISO 8601 UTC timestamp of last update.",
+                  "type": "string"
+                },
+                "travel_time_id": {
+                  "altnames": {
+                    "json": "TravelTimeID"
+                  },
+                  "description": "Unique route identifier, stringified from upstream TravelTimeID.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "travel_time_id",
+                "name",
+                "description",
+                "distance",
+                "average_time",
+                "current_time",
+                "time_updated",
+                "start_description",
+                "start_road_name",
+                "start_direction",
+                "start_milepost",
+                "start_latitude",
+                "start_longitude",
+                "end_description",
+                "end_road_name",
+                "end_direction",
+                "end_milepost",
+                "end_latitude",
+                "end_longitude"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "TravelTimeRoute"
+}

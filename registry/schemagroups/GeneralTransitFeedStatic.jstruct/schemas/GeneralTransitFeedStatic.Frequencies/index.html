@@ -1,0 +1,44 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/Frequencies",
+  "$root": "/definitions/GeneralTransitFeedStatic/Frequencies",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "Frequencies": {
+        "description": "Defines frequencies.",
+        "name": "Frequencies",
+        "properties": {
+          "endTime": {
+            "description": "Time at which service ends with the specified frequency.",
+            "type": "string"
+          },
+          "exactTimes": {
+            "default": null,
+            "description": "When 1, frequency-based trips should be exactly scheduled. When 0 (or empty), frequency-based trips are not exactly scheduled.",
+            "type": "int32"
+          },
+          "headwaySecs": {
+            "description": "Time between departures from the same stop (headway) for this trip, in seconds.",
+            "type": "int32"
+          },
+          "startTime": {
+            "description": "Time at which service begins with the specified frequency.",
+            "type": "string"
+          },
+          "tripId": {
+            "description": "Identifies a trip.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tripId",
+          "startTime",
+          "endTime",
+          "headwaySecs"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "Frequencies"
+}

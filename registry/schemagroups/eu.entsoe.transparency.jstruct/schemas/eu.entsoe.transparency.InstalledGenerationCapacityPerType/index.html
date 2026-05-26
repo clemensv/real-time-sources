@@ -1,0 +1,57 @@
+{
+  "$id": "https://example.com/schemas/eu/entsoe/transparency/InstalledGenerationCapacityPerType",
+  "$root": "/definitions/eu/entsoe/transparency/InstalledGenerationCapacityPerType",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "eu": {
+      "entsoe": {
+        "transparency": {
+          "InstalledGenerationCapacityPerType": {
+            "name": "InstalledGenerationCapacityPerType",
+            "properties": {
+              "businessType": {
+                "description": "Business type code",
+                "type": "string"
+              },
+              "documentType": {
+                "description": "ENTSO-E document type code (A68)",
+                "type": "string"
+              },
+              "inDomain": {
+                "description": "EIC code of the bidding zone",
+                "type": "string"
+              },
+              "psrType": {
+                "description": "Production type code (B01=Biomass, B02=Lignite, ...)",
+                "type": "string"
+              },
+              "quantity": {
+                "description": "Installed capacity in MW",
+                "type": "double"
+              },
+              "resolution": {
+                "description": "ISO 8601 duration",
+                "type": "string"
+              },
+              "unitName": {
+                "description": "Unit of measurement (MAW)",
+                "type": "string"
+              }
+            },
+            "required": [
+              "inDomain",
+              "psrType",
+              "quantity",
+              "resolution",
+              "businessType",
+              "documentType",
+              "unitName"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "InstalledGenerationCapacityPerType"
+}

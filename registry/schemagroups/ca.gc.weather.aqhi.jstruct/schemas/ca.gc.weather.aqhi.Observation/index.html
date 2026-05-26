@@ -1,0 +1,66 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/canada-aqhi/schemas/ca.gc.weather.aqhi.Observation",
+  "$root": "/definitions/ca/gc/weather/aqhi/Observation",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "ca": {
+      "gc": {
+        "weather": {
+          "aqhi": {
+            "Observation": {
+              "description": "Latest AQHI observation for a reporting community. Observations are published hourly and may include decimal AQHI values.",
+              "name": "Observation",
+              "properties": {
+                "aqhi": {
+                  "description": "Observed AQHI value for the community. Observation feeds publish AQHI with decimal precision.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                },
+                "aqhi_category": {
+                  "description": "Public AQHI health-risk category derived from the AQHI value.",
+                  "enum": [
+                    "Low",
+                    "Moderate",
+                    "High",
+                    "Very High",
+                    "Unknown"
+                  ],
+                  "type": "string"
+                },
+                "cgndb_code": {
+                  "description": "Five-character CGNDB community identifier published by Natural Resources Canada and referenced by ECCC AQHI feeds.",
+                  "pattern": "^[A-Z0-9]{5}$",
+                  "type": "string"
+                },
+                "community_name": {
+                  "description": "English AQHI community name as published by Environment and Climate Change Canada.",
+                  "type": "string"
+                },
+                "observation_datetime": {
+                  "description": "UTC timestamp of the AQHI observation in ISO 8601 format.",
+                  "type": "string"
+                },
+                "province": {
+                  "description": "Two-letter Canadian province or territory abbreviation resolved for the AQHI community.",
+                  "pattern": "^[A-Z]{2}$",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "province",
+                "community_name",
+                "cgndb_code",
+                "observation_datetime",
+                "aqhi_category"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "Observation"
+}

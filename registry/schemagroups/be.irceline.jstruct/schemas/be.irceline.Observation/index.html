@@ -1,0 +1,48 @@
+{
+  "$id": "https://geo.irceline.be/schemas/be/irceline/Observation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "additionalProperties": false,
+  "description": "A current environmental measurement from Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed reports a new or refreshed value.",
+  "name": "Observation",
+  "properties": {
+    "timeseries_id": {
+      "altnames": {
+        "irceline": "id"
+      },
+      "description": "Stable numeric timeseries identifier of the measurement source. This is copied from the parent timeseries metadata and matches the CloudEvents subject and Kafka key.",
+      "pattern": "^[0-9]+$",
+      "type": "string"
+    },
+    "timestamp": {
+      "altnames": {
+        "irceline": "values.timestamp"
+      },
+      "description": "Observation timestamp in ISO 8601 UTC form produced by converting the upstream Unix millisecond timestamp from values[].timestamp, for example '2025-04-08T09:00:00Z'.",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{3})?Z$",
+      "type": "string"
+    },
+    "uom": {
+      "altnames": {
+        "irceline": "uom"
+      },
+      "description": "Unit of measurement carried over from the parent timeseries uom field, such as 'µg/m³'. This keeps each observation self-describing without requiring a separate metadata lookup.",
+      "type": "string"
+    },
+    "value": {
+      "altnames": {
+        "irceline": "values.value"
+      },
+      "description": "Measured numeric value from values[].value. IRCELINE can publish null when a data point exists without a numeric value, so the schema explicitly allows null.",
+      "type": [
+        "double",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "timeseries_id",
+    "timestamp",
+    "uom"
+  ],
+  "type": "object"
+}

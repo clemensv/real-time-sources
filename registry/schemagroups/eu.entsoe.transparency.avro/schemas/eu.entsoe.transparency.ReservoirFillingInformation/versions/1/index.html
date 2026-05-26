@@ -1,0 +1,36 @@
+{
+  "altnames": {
+    "kql": "ReservoirFillingInformation"
+  },
+  "fields": [
+    {
+      "doc": "EIC code of the bidding zone",
+      "name": "inDomain",
+      "type": "string"
+    },
+    {
+      "doc": "Stored energy in MWh",
+      "name": "quantity",
+      "type": "double",
+      "unit": "MWh"
+    },
+    {
+      "doc": "ISO 8601 duration",
+      "name": "resolution",
+      "type": "string"
+    },
+    {
+      "doc": "ENTSO-E document type code (A72)",
+      "name": "documentType",
+      "type": "string"
+    },
+    {
+      "doc": "Unit of measurement",
+      "name": "unitName",
+      "type": "string"
+    }
+  ],
+  "name": "ReservoirFillingInformation",
+  "namespace": "eu.entsoe.transparency",
+  "type": "record"
+}

@@ -1,0 +1,33 @@
+{
+  "$id": "https://opendata.dwd.de/schemas/DE/DWD/Forecast/ForecastModelCatalog",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source.",
+  "name": "ForecastModelCatalog",
+  "properties": {
+    "description": {
+      "description": "Optional human-readable description of the forecast model emitted as reference data. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata.",
+      "type": "string"
+    },
+    "file_url": {
+      "description": "Absolute HTTPS URL of the DWD Open Data root directory under which all GRIB2 files for this forecast model are published. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing. Run-hour subdirectories (e.g. '00/', '03/', '06/', ...) and per-variable subdirectories live below this URL. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/'.",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Normalized routing field 'kind' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "model": {
+      "description": "Identifier of the numerical weather prediction (NWP) model. For this bridge release the value is 'icon-d2', referring to the DWD ICON-D2 convection-permitting regional model covering Germany and surrounding areas with ~2 km horizontal resolution and forecast lead times up to 48 hours.",
+      "type": "string"
+    },
+    "state": {
+      "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "model",
+    "file_url"
+  ],
+  "type": "object"
+}

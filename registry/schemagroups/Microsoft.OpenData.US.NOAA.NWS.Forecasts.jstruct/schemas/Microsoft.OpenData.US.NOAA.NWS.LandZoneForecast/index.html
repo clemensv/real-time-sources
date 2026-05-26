@@ -1,0 +1,51 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/nws-forecasts/schemas/Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast.json",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Public land-zone forecast snapshot from api.weather.gov /zones/forecast/{zoneId}/forecast. This endpoint returns narrative forecast periods for a land forecast zone such as Seattle or Tacoma. The bridge preserves the ordered forecast periods and emits the zone identifier as the Kafka key so each event represents the current forecast snapshot for one zone.",
+  "name": "LandZoneForecast",
+  "properties": {
+    "periods": {
+      "description": "Ordered narrative forecast periods from properties.periods. Each element represents one named daypart or day-level outlook such as Tonight, Tuesday, or Tuesday Night.",
+      "items": {
+        "description": "One ordered narrative period from the NWS land zone forecast payload.",
+        "name": "LandForecastPeriod",
+        "properties": {
+          "detailed_forecast": {
+            "description": "Full narrative forecast text from properties.periods[].detailedForecast. This text carries the forecast content including precipitation chances, temperature ranges, and wind conditions.",
+            "type": "string"
+          },
+          "period_name": {
+            "description": "Human-readable forecast period label from properties.periods[].name, for example Tonight, Tuesday, or Tuesday Night.",
+            "type": "string"
+          },
+          "period_number": {
+            "description": "Ordinal period number from properties.periods[].number. NWS numbers the periods in forecast order starting at 1.",
+            "type": "int32"
+          }
+        },
+        "required": [
+          "period_number",
+          "period_name",
+          "detailed_forecast"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "updated": {
+      "description": "Timestamp from properties.updated indicating when the NWS most recently updated this zone forecast.",
+      "type": "datetime"
+    },
+    "zone_id": {
+      "description": "Forecast zone identifier for the land forecast snapshot. This matches the configured zone identifier and the upstream properties.zone URL suffix.",
+      "pattern": "^[A-Z]{3}[0-9]{3}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "zone_id",
+    "updated",
+    "periods"
+  ],
+  "type": "object"
+}

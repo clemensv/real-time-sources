@@ -1,0 +1,83 @@
+{
+  "$id": "https://realtime.example.com/schemas/nl/rivm/luchtmeetnet/Station",
+  "$root": "/definitions/nl/rivm/luchtmeetnet/Station",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "nl": {
+      "rivm": {
+        "luchtmeetnet": {
+          "Station": {
+            "description": "Luchtmeetnet station metadata with location, operator, coordinates, and the formulas measured at the station.",
+            "name": "Station",
+            "properties": {
+              "components": {
+                "description": "Ordered list of formula codes measured at the station, as returned by the station detail endpoint.",
+                "items": {
+                  "description": "Component formula code measured at this station, such as NO2, PM10, FN, or BCWB.",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "latitude": {
+                "description": "Latitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[1].",
+                "type": "double"
+              },
+              "location": {
+                "description": "Human-readable station location label published by Luchtmeetnet.",
+                "type": "string"
+              },
+              "longitude": {
+                "description": "Longitude of the station in WGS84 decimal degrees, taken from geometry.coordinates[0].",
+                "type": "double"
+              },
+              "municipality": {
+                "description": "Municipality name for the station location when present in the detail response; null when the API does not provide one.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "organisation": {
+                "description": "Organisation operating or publishing the station in the Luchtmeetnet network, such as RIVM or a regional environmental agency.",
+                "type": "string"
+              },
+              "province": {
+                "description": "Province name for the station location when present in the detail response; null when the API omits it.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "station_number": {
+                "description": "Stable Luchtmeetnet station code, such as NL01491, used in station, measurement, and LKI requests.",
+                "type": "string"
+              },
+              "type": {
+                "description": "Station classification returned by the detail endpoint, for example Traffic, Industrial, Background, or Regional.",
+                "type": "string"
+              },
+              "year_start": {
+                "description": "Year in which the station became operational according to the detail response. The upstream can return an empty string when the start year is not populated.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "station_number",
+              "location",
+              "type",
+              "organisation",
+              "municipality",
+              "province",
+              "longitude",
+              "latitude",
+              "year_start",
+              "components"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "Station"
+}

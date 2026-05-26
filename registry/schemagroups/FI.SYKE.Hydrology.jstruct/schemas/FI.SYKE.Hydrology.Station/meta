@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/FI.SYKE.Hydrology.jstruct/schemas/FI.SYKE.Hydrology.Station/versions/1",
+  "epoch": 1,
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "schemaid": "FI.SYKE.Hydrology.Station",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/FI.SYKE.Hydrology.jstruct/schemas/FI.SYKE.Hydrology.Station/meta",
+  "xid": "/schemagroups/FI.SYKE.Hydrology.jstruct/schemas/FI.SYKE.Hydrology.Station/meta"
+}

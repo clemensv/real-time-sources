@@ -1,0 +1,39 @@
+{
+  "doc": "Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool). One record per hour per price area.",
+  "fields": [
+    {
+      "doc": "UTC hour for which the spot price applies, in ISO 8601 format.",
+      "name": "hour_utc",
+      "type": "string"
+    },
+    {
+      "doc": "Danish local-time hour, in ISO 8601 format.",
+      "name": "hour_dk",
+      "type": "string"
+    },
+    {
+      "doc": "Nord Pool bidding zone code (DK1 or DK2).",
+      "name": "price_area",
+      "type": "string"
+    },
+    {
+      "doc": "Day-ahead spot price in DKK/MWh.",
+      "name": "spot_price_dkk",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    {
+      "doc": "Day-ahead spot price in EUR/MWh.",
+      "name": "spot_price_eur",
+      "type": [
+        "double",
+        "null"
+      ]
+    }
+  ],
+  "name": "SpotPrice",
+  "namespace": "dk.energinet.energidataservice",
+  "type": "record"
+}

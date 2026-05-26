@@ -1,0 +1,63 @@
+{
+  "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/CurrentPredictions",
+  "$root": "/definitions/Microsoft/OpenData/US/NOAA/CurrentPredictions",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Microsoft": {
+      "OpenData": {
+        "US": {
+          "NOAA": {
+            "CurrentPredictions": {
+              "name": "CurrentPredictions",
+              "properties": {
+                "bin": {
+                  "description": "{\"description\": \"Bin number\"}",
+                  "type": "string"
+                },
+                "depth": {
+                  "description": "{\"description\": \"Depth of measurement\"}",
+                  "type": "double"
+                },
+                "mean_ebb_dir": {
+                  "description": "{\"description\": \"Mean ebb direction in degrees\"}",
+                  "type": "double"
+                },
+                "mean_flood_dir": {
+                  "description": "{\"description\": \"Mean flood direction in degrees\"}",
+                  "type": "double"
+                },
+                "region": {
+                  "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa.",
+                  "type": "string"
+                },
+                "station_id": {
+                  "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+                  "type": "string"
+                },
+                "timestamp": {
+                  "description": "{\"description\": \"Timestamp of the current prediction\"}",
+                  "type": "string"
+                },
+                "velocity_major": {
+                  "description": "{\"description\": \"Major axis velocity\"}",
+                  "type": "double"
+                }
+              },
+              "required": [
+                "station_id",
+                "timestamp",
+                "velocity_major",
+                "mean_flood_dir",
+                "mean_ebb_dir",
+                "depth",
+                "bin"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "CurrentPredictions"
+}

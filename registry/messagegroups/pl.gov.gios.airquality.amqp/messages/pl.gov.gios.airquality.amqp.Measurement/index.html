@@ -1,0 +1,47 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Measurement",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "pl.gov.gios.airquality.amqp.Measurement",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Measurement/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Measurement",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "pollutant": {
+        "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{pollutant}"
+      },
+      "station_id": {
+        "description": "Routing attribute `station_id` used in the MQTT topic hierarchy and AMQP subscription filters.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      },
+      "voivodeship": {
+        "description": "Routing attribute `voivodeship` used in the MQTT topic hierarchy and AMQP subscription filters.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{voivodeship}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject matching the CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{station_id}/{sensor_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Measurement",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Measurement/versions",
+  "xid": "/messagegroups/pl.gov.gios.airquality.amqp/messages/pl.gov.gios.airquality.amqp.Measurement"
+}

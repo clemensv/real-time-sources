@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for FMI Finland Weather CloudEvents on the `fmi-finland-airquality` topic keyed by `{fmisid}`.",
+  "endpointid": "fi.fmi.opendata.airquality.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/fi.fmi.opendata.airquality"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/fi.fmi.opendata.airquality.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{fmisid}",
+      "topic": "fmi-finland-airquality"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/fi.fmi.opendata.airquality.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/fi.fmi.opendata.airquality.Kafka"
+}

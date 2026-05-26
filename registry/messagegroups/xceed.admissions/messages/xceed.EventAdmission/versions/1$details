@@ -1,0 +1,42 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/xceed.jstruct/schemas/xceed.EventAdmission",
+  "description": "Ticket-, guest-list-, or bottle-service-offer snapshot for a single Xceed event admission record, retrieved from the public GET https://offer.xceed.me/v1/events/:eventId/admissions endpoint. The bridge flattens the upstream category arrays into one normalized event family while preserving the offer kind in the admission_type field.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "description": "Base URL of the Xceed public offer API feed",
+      "required": true,
+      "type": "uritemplate",
+      "value": "{feedurl}"
+    },
+    "specversion": {
+      "description": "CloudEvents specification version",
+      "required": true,
+      "type": "string",
+      "value": "1.0"
+    },
+    "subject": {
+      "description": "Composite identifier consisting of the parent event UUID and the admission tier UUID, separated by a slash, matching the Kafka key",
+      "required": true,
+      "type": "uritemplate",
+      "value": "{event_id}/{admission_id}"
+    },
+    "type": {
+      "description": "CloudEvents type identifier for an Xceed admission record",
+      "required": true,
+      "type": "string",
+      "value": "xceed.EventAdmission"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "xceed.EventAdmission",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "EventAdmission",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/xceed.admissions/messages/xceed.EventAdmission/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/xceed.admissions/messages/xceed.EventAdmission/versions/1"
+}

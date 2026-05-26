@@ -1,0 +1,70 @@
+{
+  "$id": "https://bom.gov.au/schemas/AU/Gov/BOM/Warning/WarningBulletin",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Current weather warning bulletin item from a Bureau of Meteorology RSS warnings feed. Each item points to the published warning product page and carries the update timestamp and headline text from the feed.",
+  "name": "WarningBulletin",
+  "properties": {
+    "affected_area_text": {
+      "description": "Affected area clause extracted from the RSS title after the word 'for', for example 'parts of Snowy Mountains Forecast District.'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "feed_title": {
+      "description": "Title of the RSS feed channel publishing this warning bulletin.",
+      "type": "string"
+    },
+    "feed_url": {
+      "description": "Absolute BOM RSS feed URL that published this warning item.",
+      "type": "string"
+    },
+    "issued_local_time_text": {
+      "description": "Local issuance time prefix embedded in the RSS headline, for example '08/16:29 EST', when present.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "published_at": {
+      "description": "UTC timestamp when the RSS item was created or updated, taken from the item's pubDate field.",
+      "type": "datetime"
+    },
+    "severity": {
+      "description": "Normalized routing field 'severity' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "state": {
+      "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "title": {
+      "description": "Normalized warning headline text from the RSS item title with line breaks collapsed to spaces.",
+      "type": "string"
+    },
+    "warning_id": {
+      "description": "Stable BOM warning product identifier derived from the linked product page path, for example 'IDN21037'.",
+      "type": "string"
+    },
+    "warning_type": {
+      "description": "Warning headline extracted from the RSS title before the trailing affected-area clause, for example 'Severe Weather Warning'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "warning_url": {
+      "description": "Absolute BOM URL of the warning product page linked from the RSS item.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "warning_id",
+    "warning_url",
+    "feed_url",
+    "feed_title",
+    "title",
+    "published_at"
+  ],
+  "type": "object"
+}

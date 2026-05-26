@@ -1,0 +1,288 @@
+{
+  "doc": "A Ticketmaster event representing a concert, sports match, theater performance, or other live public event.",
+  "fields": [
+    {
+      "doc": "Stable Ticketmaster event identifier.",
+      "name": "event_id",
+      "type": "string"
+    },
+    {
+      "doc": "Human-readable event name.",
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Ticketmaster resource type discriminator.",
+      "name": "type",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "URL to the event page on Ticketmaster.com.",
+      "name": "url",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "BCP-47 locale string for the event page.",
+      "name": "locale",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Local calendar date the event starts, YYYY-MM-DD.",
+      "name": "start_date",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Local clock time the event starts, HH:MM:SS.",
+      "name": "start_time",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Combined local start date and time as ISO 8601.",
+      "name": "start_datetime_local",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Start date and time in UTC as ISO 8601.",
+      "name": "start_datetime_utc",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "On-sale status: onsale, offsale, cancelled, postponed, rescheduled.",
+      "name": "status",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Stable classification segment identifier.",
+      "name": "segment_id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Classification segment name.",
+      "name": "segment_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Stable genre identifier within the segment.",
+      "name": "genre_id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Genre name.",
+      "name": "genre_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Stable subgenre identifier.",
+      "name": "subgenre_id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Subgenre name.",
+      "name": "subgenre_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Stable venue identifier.",
+      "name": "venue_id",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Venue name.",
+      "name": "venue_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "City where the venue is located.",
+      "name": "venue_city",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "ISO 3166-2 state or province code.",
+      "name": "venue_state_code",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "ISO 3166-1 alpha-2 country code.",
+      "name": "venue_country_code",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "WGS-84 latitude of the venue.",
+      "name": "venue_latitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "WGS-84 longitude of the venue.",
+      "name": "venue_longitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Minimum face-value ticket price.",
+      "name": "price_min",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Maximum face-value ticket price.",
+      "name": "price_max",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "ISO 4217 currency code for price fields.",
+      "name": "currency",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "JSON-encoded array of attraction identifiers.",
+      "name": "attraction_ids",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "JSON-encoded array of attraction names.",
+      "name": "attraction_names",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "UTC datetime when public ticket sales open.",
+      "name": "onsale_start_datetime",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "UTC datetime when public ticket sales close.",
+      "name": "onsale_end_datetime",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "General informational text about the event.",
+      "name": "info",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Important notes for ticket purchasers.",
+      "name": "please_note",
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ],
+  "name": "Event",
+  "namespace": "Ticketmaster.Events",
+  "type": "record"
+}

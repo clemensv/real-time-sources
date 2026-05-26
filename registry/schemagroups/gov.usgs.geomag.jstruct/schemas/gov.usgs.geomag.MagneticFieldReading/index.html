@@ -1,0 +1,57 @@
+{
+  "$id": "https://geomag.usgs.gov/schemas/gov/usgs/geomag/MagneticFieldReading",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "One-minute resolution geomagnetic field variation reading from a USGS Geomagnetism Program observatory, sourced from the timeseries web-service at https://geomag.usgs.gov/ws/data/. The H, D, Z, and F elements correspond to the four standard INTERMAGNET variation data components. The timeseries API returns parallel arrays (times + per-element value arrays) which the bridge transforms into individual timestamped events.",
+  "name": "MagneticFieldReading",
+  "properties": {
+    "d": {
+      "description": "Declination angle — the angular difference between magnetic north and geographic north. Positive values indicate east declination. Null when the observatory does not report this element or the value is missing for this minute.",
+      "symbol": "′",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "'"
+    },
+    "f": {
+      "description": "Total field intensity — the scalar magnitude of the full geomagnetic field vector. Measured by an independent proton or Overhauser magnetometer. Null when the observatory does not report this element or the value is missing for this minute.",
+      "symbol": "nT",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "nT"
+    },
+    "h": {
+      "description": "Horizontal intensity component of the geomagnetic field vector. Represents the magnitude of the horizontal projection of the total field vector. Null when the observatory does not report this element or the value is missing for this minute.",
+      "symbol": "nT",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "nT"
+    },
+    "iaga_code": {
+      "description": "IAGA observatory code identifying the station that produced this reading, e.g. BOU, BRW, FRN.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "UTC timestamp of the 1-minute magnetic field sample, in ISO 8601 format. Derived from the 'times' array in the USGS Geomagnetism web-service timeseries response.",
+      "type": "datetime"
+    },
+    "z": {
+      "description": "Vertical intensity component of the geomagnetic field vector. Positive values indicate downward (into the Earth in the northern hemisphere). Null when the observatory does not report this element or the value is missing for this minute.",
+      "symbol": "nT",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "nT"
+    }
+  },
+  "required": [
+    "iaga_code",
+    "timestamp"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/uk.gov.defra.aurn.jstruct/schemas/uk.gov.defra.aurn.Station",
+  "description": "Reference metadata for a Defra AURN monitoring station entry as published by the 52°North SOS Timeseries API stations collection.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://uk-air.defra.gov.uk/sos-ukair/api/v1/stations"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "uk.gov.defra.aurn.Station"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "uk.gov.defra.aurn.Station",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Station",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.gov.defra.aurn.Stations/messages/uk.gov.defra.aurn.Station/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/uk.gov.defra.aurn.Stations/messages/uk.gov.defra.aurn.Station/versions/1"
+}

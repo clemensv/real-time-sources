@@ -1,0 +1,93 @@
+{
+  "net.vatsim.amqp.ControllerPosition": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/net.vatsim.controllers/messages/net.vatsim.ControllerPosition",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "net.vatsim.amqp.ControllerPosition",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.ControllerPosition/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "ControllerPosition",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {},
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{callsign}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.ControllerPosition",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.ControllerPosition/versions",
+    "xid": "/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.ControllerPosition"
+  },
+  "net.vatsim.amqp.FacilityStatus": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/net.vatsim.status/messages/net.vatsim.NetworkStatus",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "net.vatsim.amqp.FacilityStatus",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.FacilityStatus/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "FacilityStatus",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "facility": {
+          "description": "Routing axis 'facility' copied from the source event so AMQP brokers and Service Bus subscriptions can filter without decoding the payload.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{facility}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{callsign}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.FacilityStatus",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.FacilityStatus/versions",
+    "xid": "/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.FacilityStatus"
+  },
+  "net.vatsim.amqp.PilotPosition": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/net.vatsim.pilots/messages/net.vatsim.PilotPosition",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "net.vatsim.amqp.PilotPosition",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.PilotPosition/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "PilotPosition",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {},
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{callsign}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.PilotPosition",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.PilotPosition/versions",
+    "xid": "/messagegroups/net.vatsim.amqp/messages/net.vatsim.amqp.PilotPosition"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "$id": "https://example.com/schemas/SE/Gov/SMHI/Hydro/DischargeObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "DischargeObservation",
+  "name": "DischargeObservation",
+  "properties": {
+    "catchment_name": {
+      "description": "Name of the catchment area the station belongs to (SMHI 'catchmentName' field, e.g. 'Torneälven', 'Dalälven'). Sourced by the bridge from the SMHI bulk API station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by catchment. When the catalog has no catchmentName the bridge substitutes the lowercase sentinel 'unknown'. Used as the {catchment_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.",
+      "type": "string"
+    },
+    "discharge": {
+      "description": "Current streamflow or discharge reported for the station.",
+      "type": "double"
+    },
+    "quality": {
+      "description": "Provider quality flag or qualification for the measurement.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Human-readable name of the monitoring station.",
+      "type": "string"
+    },
+    "timestamp": {
+      "description": "Time when the provider recorded or published the observation.",
+      "type": "datetime"
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name",
+    "catchment_name",
+    "timestamp",
+    "discharge"
+  ],
+  "type": "object"
+}

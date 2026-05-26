@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/JP.ODPT.DocomoBikeshare.jstruct/schemas/JP.ODPT.DocomoBikeshare.BikeshareSystem",
+  "description": "A transport update from Docomo Bike Share open feeds. It carries station status and availability updates for Tokyo bike-share stations.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{system_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "JP.ODPT.DocomoBikeshare.BikeshareSystem"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "JP.ODPT.DocomoBikeshare.BikeshareSystem",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "BikeshareSystem",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.ODPT.DocomoBikeshare.System/messages/JP.ODPT.DocomoBikeshare.BikeshareSystem/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/JP.ODPT.DocomoBikeshare.System/messages/JP.ODPT.DocomoBikeshare.BikeshareSystem/versions/1"
+}

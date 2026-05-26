@@ -1,0 +1,132 @@
+{
+  "description": "A traffic or service situation update from Entur public transport feeds. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered network.",
+  "doc": "Real-time transit disruption or service alert from the Entur SIRI-SX feed.",
+  "fields": [
+    {
+      "doc": "Unique situation identifier (SituationNumber). Example: RUT:SituationNumber:12345.",
+      "name": "situation_number",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Situation version number.",
+      "name": "version",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "ISO 8601 UTC creation time (CreationTime).",
+      "name": "creation_time",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Source type: directReport, email, phone, post, feed, radio, tv, web, pager, text, other.",
+      "name": "source_type",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Name of originating source or organisation.",
+      "name": "source_name",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Publication progress: open, published, closing, closed.",
+      "name": "progress",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "SIRI Severity classification, or 'unknown' when absent.",
+      "name": "severity",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Space-separated keywords from the SIRI Keywords element.",
+      "name": "keywords",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Short public summary text from Summary element.",
+      "name": "summary",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Full public description text from Description element.",
+      "name": "description",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "doc": "One or more active validity windows for this situation.",
+      "name": "validity_periods",
+      "type": {
+        "items": {
+          "doc": "An active validity window for a situation.",
+          "fields": [
+            {
+              "doc": "ISO 8601 UTC start time.",
+              "name": "start_time",
+              "type": "string"
+            },
+            {
+              "default": null,
+              "doc": "ISO 8601 UTC end time, null if open-ended.",
+              "name": "end_time",
+              "type": [
+                "null",
+                "string"
+              ]
+            }
+          ],
+          "name": "ValidityPeriod",
+          "namespace": "no.entur",
+          "type": "record"
+        },
+        "type": "array"
+      }
+    },
+    {
+      "doc": "LineRef values from AffectedLine elements.",
+      "name": "affects_line_refs",
+      "type": {
+        "items": "string",
+        "type": "array"
+      }
+    },
+    {
+      "doc": "StopPointRef values from AffectedStopPoint elements.",
+      "name": "affects_stop_point_refs",
+      "type": {
+        "items": "string",
+        "type": "array"
+      }
+    }
+  ],
+  "name": "PtSituationElement",
+  "namespace": "no.entur",
+  "type": "record"
+}

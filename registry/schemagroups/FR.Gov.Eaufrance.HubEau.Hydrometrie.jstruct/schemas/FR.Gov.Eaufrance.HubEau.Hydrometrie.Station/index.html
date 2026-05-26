@@ -1,0 +1,77 @@
+{
+  "$id": "https://example.com/schemas/FR/Gov/Eaufrance/HubEau/Hydrometrie/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference details for one monitoring station or site in the Hub'Eau Hydrométrie source.",
+  "name": "Station",
+  "properties": {
+    "basin": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie.",
+      "type": "string"
+    },
+    "code_departement": {
+      "description": "French department code for the station location.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "code_site": {
+      "description": "Optional Hub'Eau site code grouping one or more stations at the same monitoring location.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "code_station": {
+      "description": "Permanent hydrometry-station code assigned by the French monitoring network. Use it as the stable identity for station records and related observations.",
+      "type": "string"
+    },
+    "date_ouverture_station": {
+      "description": "Date when the station began operating, when the upstream catalog provides it.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "en_service": {
+      "description": "Whether Hub'Eau marks the station as currently in service.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "latitude_station": {
+      "description": "Latitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "libelle_commune": {
+      "description": "Municipality where the station is located.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "libelle_cours_eau": {
+      "description": "Name of the river or watercourse monitored by the station.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "libelle_station": {
+      "description": "Display label for the hydrometry station as published by Hub'Eau. It is useful for maps and UI labels but should not be used as a stable key.",
+      "type": "string"
+    },
+    "longitude_station": {
+      "description": "Longitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    }
+  },
+  "required": [
+    "code_station",
+    "libelle_station",
+    "longitude_station",
+    "latitude_station"
+  ],
+  "type": "object"
+}

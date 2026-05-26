@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/CA.Gov.ECCC.Hydro.jstruct/schemas/CA.Gov.ECCC.Hydro.Observation",
+    "description": "A current measurement from Environment and Climate Change Canada Water Survey of Canada for one monitoring site. It carries real-time water level and flow observations when the upstream feed reports a new or refreshed value.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://api.weather.gc.ca/collections/hydrometric-realtime"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "stations/{station_number}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "CA.Gov.ECCC.Hydro.Observation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "CA.Gov.ECCC.Hydro.Observation",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Observation",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Observation/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Observation/versions/1"
+  }
+}

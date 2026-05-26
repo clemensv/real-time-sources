@@ -1,0 +1,43 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/fi.digitraffic.road.maintenance/messages/fi.digitraffic.road.maintenance.MaintenanceTracking",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "fi.digitraffic.road.amqp.MaintenanceTracking",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTracking/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "MaintenanceTracking",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "domain": {
+        "description": "Maintenance data domain. Allows Service Bus subscription SQL filters to route by domain without decoding the payload.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{domain}"
+      }
+    },
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Service Bus / Event Hubs partition key. All maintenance tracking events for the same domain hash to the same partition.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{domain}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject matching the CloudEvent subject and Kafka key for maintenance tracking events. Identifies the data domain (e.g. 'state-roads').",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{domain}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTracking",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTracking/versions",
+  "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTracking"
+}

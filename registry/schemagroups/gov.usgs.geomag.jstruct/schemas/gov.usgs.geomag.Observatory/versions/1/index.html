@@ -1,0 +1,85 @@
+{
+  "$id": "https://geomag.usgs.gov/schemas/gov/usgs/geomag/Observatory",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference data for a USGS Geomagnetism Program observatory, sourced from the INTERMAGNET-compatible observatories GeoJSON endpoint at https://geomag.usgs.gov/ws/observatories/. Each feature represents a ground-based magnetometer station that continuously records geomagnetic field variations.",
+  "name": "Observatory",
+  "properties": {
+    "agency": {
+      "description": "Short identifier of the operating agency, e.g. 'USGS' for United States Geological Survey.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "agency_name": {
+      "description": "Full name of the operating agency, e.g. 'United States Geological Survey (USGS)'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "declination_base": {
+      "description": "Declination baseline value in minutes of arc. Used as a reference for variation measurements of the D element.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "elevation": {
+      "description": "Elevation of the observatory above mean sea level in meters.",
+      "symbol": "m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "iaga_code": {
+      "description": "IAGA (International Association of Geomagnetism and Aeronomy) three- or four-character observatory code, e.g. BOU for Boulder, BRW for Barrow. This is the primary stable identifier for an observatory.",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "Geodetic latitude of the observatory in decimal degrees. Positive values indicate north of the equator.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "longitude": {
+      "description": "Geodetic longitude of the observatory in decimal degrees east. Values above 180 represent west longitudes expressed as 360 minus the west longitude (e.g. 254.763 = -105.237 W).",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "name": {
+      "description": "Human-readable name of the observatory, e.g. 'Boulder', 'Barrow', 'College'.",
+      "type": "string"
+    },
+    "sensor_orientation": {
+      "description": "Orientation of the magnetometer sensor, e.g. 'HDZ' indicating sensors measure horizontal intensity (H), declination (D), and vertical intensity (Z).",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sensor_sampling_rate": {
+      "description": "Native sampling rate of the magnetometer sensor in hertz.",
+      "symbol": "Hz",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Hz"
+    }
+  },
+  "required": [
+    "iaga_code",
+    "name"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,13 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2024-10-18T13:47:58.386919Z",
+  "epoch": 1,
+  "format": "Avro",
+  "isdefault": true,
+  "modifiedat": "2024-10-18T13:47:58.386919Z",
+  "schemaid": "GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Vehicle.VehiclePosition/versions/1",
+  "versionid": "1",
+  "xid": "/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Vehicle.VehiclePosition/versions/1"
+}

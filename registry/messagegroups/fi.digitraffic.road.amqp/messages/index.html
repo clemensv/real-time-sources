@@ -1,0 +1,412 @@
+{
+  "fi.digitraffic.road.amqp.ExemptedTransport": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.ExemptedTransport",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.amqp.ExemptedTransport",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.ExemptedTransport/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "ExemptedTransport",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus / Event Hubs partition key for exempted transport situations.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{situation_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject for exempted transport situations.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{situation_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.ExemptedTransport",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.ExemptedTransport/versions",
+    "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.ExemptedTransport"
+  },
+  "fi.digitraffic.road.amqp.MaintenanceTaskType": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/fi.digitraffic.road.maintenance.tasks/messages/fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.amqp.MaintenanceTaskType",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTaskType/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "MaintenanceTaskType",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "task_id": {
+          "description": "Maintenance task type identifier (e.g. 'PLOUGHING_AND_SLUSH_REMOVAL'). Allows Service Bus filters to route by task type.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{task_id}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus / Event Hubs partition key for maintenance task type reference records.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{task_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject for maintenance task type reference records.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{task_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTaskType",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTaskType/versions",
+    "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTaskType"
+  },
+  "fi.digitraffic.road.amqp.MaintenanceTracking": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/fi.digitraffic.road.maintenance/messages/fi.digitraffic.road.maintenance.MaintenanceTracking",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.amqp.MaintenanceTracking",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTracking/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "MaintenanceTracking",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "domain": {
+          "description": "Maintenance data domain. Allows Service Bus subscription SQL filters to route by domain without decoding the payload.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{domain}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus / Event Hubs partition key. All maintenance tracking events for the same domain hash to the same partition.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{domain}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key for maintenance tracking events. Identifies the data domain (e.g. 'state-roads').",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{domain}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTracking",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTracking/versions",
+    "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTracking"
+  },
+  "fi.digitraffic.road.amqp.RoadWork": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.RoadWork",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.amqp.RoadWork",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.RoadWork/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "RoadWork",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus / Event Hubs partition key for road work situations.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{situation_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key for road work situations.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{situation_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.RoadWork",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.RoadWork/versions",
+    "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.RoadWork"
+  },
+  "fi.digitraffic.road.amqp.TmsSensorData": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.TmsSensorData",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.amqp.TmsSensorData",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TmsSensorData/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "TmsSensorData",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "sensor_id": {
+          "description": "Sensor identifier within the TMS station. Allows Service Bus subscription SQL filters to route by sensor family.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{sensor_id}"
+        },
+        "station_id": {
+          "description": "TMS station identifier. Allows Service Bus subscription SQL filters to route by station without decoding the payload.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus / Event Hubs partition key. Mirrors the CloudEvent subject and Kafka key so all events for the same sensor hash to the same partition.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}/{sensor_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key for TMS sensor telemetry. Stable per-sensor identity.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}/{sensor_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TmsSensorData",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TmsSensorData/versions",
+    "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TmsSensorData"
+  },
+  "fi.digitraffic.road.amqp.TmsStation": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.TmsStation",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.amqp.TmsStation",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TmsStation/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "TmsStation",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "station_id": {
+          "description": "TMS station identifier. Allows Service Bus subscription SQL filters to route by station.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus / Event Hubs partition key for TMS station reference records.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key for TMS station reference records.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TmsStation",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TmsStation/versions",
+    "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TmsStation"
+  },
+  "fi.digitraffic.road.amqp.TrafficAnnouncement": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.TrafficAnnouncement",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.amqp.TrafficAnnouncement",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TrafficAnnouncement/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "TrafficAnnouncement",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus / Event Hubs partition key. All updates for the same traffic situation hash to the same partition.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{situation_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key for traffic announcement situations.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{situation_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TrafficAnnouncement",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TrafficAnnouncement/versions",
+    "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.TrafficAnnouncement"
+  },
+  "fi.digitraffic.road.amqp.WeatherSensorData": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.WeatherSensorData",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.amqp.WeatherSensorData",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeatherSensorData/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherSensorData",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "sensor_id": {
+          "description": "Sensor identifier within the weather station. Allows filtering by sensor family.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{sensor_id}"
+        },
+        "station_id": {
+          "description": "Road weather station identifier. Allows Service Bus subscription SQL filters to route by station.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus / Event Hubs partition key. Mirrors the CloudEvent subject and Kafka key.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}/{sensor_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key for weather sensor telemetry.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}/{sensor_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeatherSensorData",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeatherSensorData/versions",
+    "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeatherSensorData"
+  },
+  "fi.digitraffic.road.amqp.WeatherStation": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.WeatherStation",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.amqp.WeatherStation",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeatherStation/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherStation",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "station_id": {
+          "description": "Road weather station identifier.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus / Event Hubs partition key for weather station reference records.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject for road weather station reference records.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeatherStation",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeatherStation/versions",
+    "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeatherStation"
+  },
+  "fi.digitraffic.road.amqp.WeightRestriction": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.WeightRestriction",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.amqp.WeightRestriction",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeightRestriction/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeightRestriction",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus / Event Hubs partition key for weight restriction situations.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{situation_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject for weight restriction situations.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{situation_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeightRestriction",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeightRestriction/versions",
+    "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeightRestriction"
+  }
+}

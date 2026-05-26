@@ -1,0 +1,61 @@
+{
+  "$id": "https://wcc.sc.egov.usda.gov/schemas/gov/usda/nrcs/snotel/SnowObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Hourly snow and weather observation from a USDA NRCS SNOTEL station. Each record represents one hourly reading transmitted via satellite telemetry from an automated high-elevation monitoring site. The observation includes Snow Water Equivalent (the primary hydrologic measurement), snow depth, accumulated precipitation, and air temperature. Missing values are common when sensors are offline, under maintenance, or producing suspect readings — the NRCS quality-control process may flag or remove values. Data is sourced from the NRCS Report Generator at https://wcc.sc.egov.usda.gov/reportGenerator/.",
+  "name": "SnowObservation",
+  "properties": {
+    "air_temperature": {
+      "description": "Instantaneously observed air temperature at the station. SNOTEL air temperature data contains a known bias rooted in the sensor conversion equation that varies through the output range; see the NRCS Air Temperature Bias Correction documentation. Reported in degrees Fahrenheit.",
+      "symbol": "°F",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "[degF]"
+    },
+    "date_time": {
+      "description": "Observation timestamp reported by the SNOTEL station. Hourly readings are transmitted via satellite telemetry, typically at the top of each hour. The time is in the station's local standard time as reported by the NRCS Report Generator.",
+      "type": "datetime"
+    },
+    "precipitation": {
+      "description": "Water-year accumulated precipitation measured by a storage-type precipitation gauge. The accumulation resets on October 1 (start of the water year). Reported in inches. Values are cumulative and should be monotonically increasing within a water year.",
+      "symbol": "in",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "[in_i]"
+    },
+    "snow_depth": {
+      "description": "Total snow depth measured by an ultrasonic depth sensor mounted above the snow surface. Reported in inches. Can fluctuate due to settling, wind redistribution, and measurement noise.",
+      "symbol": "in",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "[in_i]"
+    },
+    "snow_water_equivalent": {
+      "description": "Snow Water Equivalent (SWE) — the depth of water that would theoretically result if the entire snowpack were melted instantaneously. Measured by a snow pillow sensor at the station. This is the primary measurement for water supply forecasting. Reported in inches.",
+      "symbol": "in",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "[in_i]"
+    },
+    "state": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for snotel.",
+      "type": "string"
+    },
+    "station_triplet": {
+      "description": "SNOTEL station triplet identifier in the format '{stationId}:{stateCode}:SNTL'. Links this observation to the station that reported it.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_triplet",
+    "date_time"
+  ],
+  "type": "object"
+}

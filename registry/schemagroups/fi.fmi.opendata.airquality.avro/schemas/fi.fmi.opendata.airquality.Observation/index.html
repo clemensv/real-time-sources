@@ -1,0 +1,97 @@
+{
+  "description": "Measurement payload for weather observations in the FMI Finland Weather source.",
+  "doc": "Hourly FMI air quality observation aggregated per station and timestamp.",
+  "fields": [
+    {
+      "description": "Measurement payload for weather observations in the FMI Finland Weather source.",
+      "doc": "Stable FMI station identifier (fmisid) for the observing station.",
+      "name": "fmisid",
+      "type": "string"
+    },
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the FMI Finland Weather source.",
+      "doc": "Station name resolved from station metadata or, if metadata lookup fails, the station identifier string.",
+      "name": "station_name",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for weather observations in the FMI Finland Weather source.",
+      "doc": "Observation timestamp in UTC, formatted as an ISO-8601 instant such as 2024-01-15T13:00:00Z.",
+      "name": "observation_time",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the FMI Finland Weather source.",
+      "doc": "Finnish Air Quality Index 1-hour average.",
+      "name": "aqindex",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the FMI Finland Weather source.",
+      "doc": "PM10 particulate matter concentration 1-hour average in micrograms per cubic meter.",
+      "name": "pm10_ug_m3",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the FMI Finland Weather source.",
+      "doc": "PM2.5 particulate matter concentration 1-hour average in micrograms per cubic meter.",
+      "name": "pm2_5_ug_m3",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the FMI Finland Weather source.",
+      "doc": "Nitrogen dioxide concentration 1-hour average in micrograms per cubic meter.",
+      "name": "no2_ug_m3",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the FMI Finland Weather source.",
+      "doc": "Ozone concentration 1-hour average in micrograms per cubic meter.",
+      "name": "o3_ug_m3",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the FMI Finland Weather source.",
+      "doc": "Sulfur dioxide concentration 1-hour average in micrograms per cubic meter.",
+      "name": "so2_ug_m3",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "description": "Measurement payload for weather observations in the FMI Finland Weather source.",
+      "doc": "Carbon monoxide concentration 1-hour average in milligrams per cubic meter.",
+      "name": "co_mg_m3",
+      "type": [
+        "null",
+        "double"
+      ]
+    }
+  ],
+  "name": "Observation",
+  "namespace": "fi.fmi.opendata.airquality",
+  "type": "record"
+}

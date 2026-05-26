@@ -1,0 +1,77 @@
+{
+  "description": "Measurement payload for observations in the PegelOnline source.",
+  "doc": "Latest 15-minute water-level reading (W timeseries) for one WSV PegelOnline gauge. Sourced from GET /stations/{uuid}/W/currentmeasurement.json on the PegelOnline REST API v2. Avro mirror of the JsonStructure CurrentMeasurement schema - keep field semantics in sync.",
+  "fields": [
+    {
+      "doc": "Stable UUID of the gauge this reading was taken at. References the station_id of the corresponding Station reference event. Sourced from the upstream 'uuid' field.",
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "doc": "Wall-clock time the upstream reading was taken, encoded here as Unix milliseconds since 1970-01-01T00:00:00Z. PegelOnline publishes the value as ISO 8601 with an explicit Europe/Berlin offset (CET +01:00 / CEST +02:00); the bridge converts to UTC milliseconds for Avro encoding.",
+      "name": "timestamp",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "long"
+      }
+    },
+    {
+      "doc": "Water-level reading on the W timeseries, in centimetres above the gauge's Pegelnullpunkt (PNP - a geodetically fixed datum specific to each gauge). Typical operational range 0..1500 cm; flood events at major Rhine gauges exceed 1000 cm. Negative readings are valid at gauges whose normal pool is below PNP. Unit: cm.",
+      "name": "value",
+      "type": "double"
+    },
+    {
+      "default": null,
+      "doc": "MNW/MHW classification as computed by the upstream feed. Null when the gauge has no MNW/MHW reference series configured. Symbol 'out_dated' means the reading is stale relative to the gauge's freshness window (typically 90 minutes) - do not treat as authoritative.",
+      "name": "stateMnwMhw",
+      "type": [
+        "null",
+        {
+          "doc": "Categorical classification of the current water level against the gauge's long-term mean low water (MNW) and mean high water (MHW) reference values. Symbol 'out_dated' corresponds to the upstream label 'out-dated'.",
+          "name": "StateMnwMhw",
+          "symbols": [
+            "low",
+            "normal",
+            "high",
+            "unknown",
+            "commented",
+            "out_dated"
+          ],
+          "type": "enum"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "doc": "HSW classification as computed by the upstream feed - drives inland-shipping operational decisions (HSW = stop sign for commercial traffic). Null when the gauge has no HSW reference. Upstream never emits 'low' on this series; HSW is an upper bound only.",
+      "name": "stateNswHsw",
+      "type": [
+        "null",
+        {
+          "doc": "Categorical classification of the current water level against the highest navigable water level (HSW / Hoechster Schifffahrtswasserstand). Symbol 'out_dated' corresponds to the upstream label 'out-dated'.",
+          "name": "StateNswHsw",
+          "symbols": [
+            "normal",
+            "high",
+            "unknown",
+            "commented",
+            "out_dated"
+          ],
+          "type": "enum"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Short-term trend of the water level relative to the previous reading: -1 falling, 0 steady, +1 rising. Sourced from the upstream 'trend' field. Null when upstream cannot compute a trend (e.g. first reading after a gap).",
+      "name": "trend",
+      "type": [
+        "null",
+        "int"
+      ]
+    }
+  ],
+  "name": "CurrentMeasurement",
+  "namespace": "de.wsv.pegelonline",
+  "type": "record"
+}

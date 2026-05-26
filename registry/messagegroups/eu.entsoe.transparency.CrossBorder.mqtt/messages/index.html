@@ -1,0 +1,50 @@
+{
+  "eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/eu.entsoe.transparency.CrossBorder/messages/eu.entsoe.transparency.CrossBorderPhysicalFlows",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/eu.entsoe.transparency.jstruct/schemas/eu.entsoe.transparency.CrossBorderPhysicalFlows",
+    "description": "MQTT/UNS binary CloudEvents variant for CrossBorderPhysicalFlows. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "datacontenttype": {
+        "required": false,
+        "type": "string",
+        "value": "application/json"
+      },
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://transparency.entsoe.eu/api"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{inDomain}/{outDomain}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "eu.entsoe.transparency.CrossBorderPhysicalFlows"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/eu.entsoe.transparency.CrossBorder.mqtt/messages/eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "CrossBorderPhysicalFlows",
+    "protocol": "MQTT/5.0",
+    "protocoloptions": {
+      "qos": 1,
+      "retain": false,
+      "topic_name": "energy/eu/entsoe/transparency/cross-border/{inDomain}/{outDomain}/physical-flow"
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/eu.entsoe.transparency.CrossBorder.mqtt/messages/eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/eu.entsoe.transparency.CrossBorder.mqtt/messages/eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows/versions",
+    "xid": "/messagegroups/eu.entsoe.transparency.CrossBorder.mqtt/messages/eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows"
+  }
+}

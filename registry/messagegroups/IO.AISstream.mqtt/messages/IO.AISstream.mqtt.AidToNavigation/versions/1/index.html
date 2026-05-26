@@ -1,0 +1,39 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/IO.AISstream.mqtt.jstruct/schemas/IO.AISstream.mqtt.AidToNavigation",
+  "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "wss://stream.aisstream.io/v0/stream"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{mmsi}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "IO.AISstream.mqtt.AidToNavigation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "IO.AISstream.mqtt.AidToNavigation",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "AidToNavigation",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 0,
+    "retain": false,
+    "topic_name": "maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream.mqtt/messages/IO.AISstream.mqtt.AidToNavigation/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/IO.AISstream.mqtt/messages/IO.AISstream.mqtt.AidToNavigation/versions/1"
+}

@@ -1,0 +1,19 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring/messages/UK.Gov.Environment.EA.FloodMonitoring.Reading",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Reading",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": true,
+    "topic_name": "hydro/gb/ea/uk-ea-flood-monitoring/{river}/{station_reference}/reading"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.mqtt/messages/UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/UK.Gov.Environment.EA.FloodMonitoring.mqtt/messages/UK.Gov.Environment.EA.FloodMonitoring.mqtt.Reading/versions/1"
+}

@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nl.rivm.luchtmeetnet.components.amqp/messages/nl.rivm.luchtmeetnet.components.amqp.Component/versions/1",
+  "epoch": 1,
+  "messageid": "nl.rivm.luchtmeetnet.components.amqp.Component",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nl.rivm.luchtmeetnet.components.amqp/messages/nl.rivm.luchtmeetnet.components.amqp.Component/meta",
+  "xid": "/messagegroups/nl.rivm.luchtmeetnet.components.amqp/messages/nl.rivm.luchtmeetnet.components.amqp.Component/meta"
+}

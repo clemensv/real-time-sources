@@ -1,0 +1,43 @@
+{
+  "$id": "https://api.data.gov.sg/schemas/SG/Gov/NEA/Weather/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record published by Singapore's National Environment Agency (NEA). It lets consumers label, group, and route the live measurement or forecast events.",
+  "name": "Station",
+  "properties": {
+    "data_types": {
+      "description": "Comma-separated list of observation types this station reports. Values: 'air_temperature', 'rainfall', 'relative_humidity', 'wind_speed', 'wind_direction'.",
+      "type": "string"
+    },
+    "device_id": {
+      "description": "Device identifier, typically identical to station_id.",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "WGS84 latitude of the station.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "degree"
+    },
+    "longitude": {
+      "description": "WGS84 longitude of the station.",
+      "symbol": "°",
+      "type": "double",
+      "unit": "degree"
+    },
+    "name": {
+      "description": "Human-readable station name describing the location, e.g. 'Ang Mo Kio Avenue 5', 'Changi'.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "NEA station identifier, e.g. 'S109', 'S50'. Matches the device_id field in the NEA API metadata.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "name",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

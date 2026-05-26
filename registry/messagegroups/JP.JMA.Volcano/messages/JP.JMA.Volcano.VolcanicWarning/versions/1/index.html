@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/jp.jma.volcano.jstruct/schemas/jp.jma.volcano.VolcanicWarning",
+  "description": "JMA Bosai active volcanic warning or forecast for a target volcano.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{feedurl}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "jp.jma.volcano/{volcano_code}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "JP.JMA.Volcano.VolcanicWarning"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "JP.JMA.Volcano.VolcanicWarning",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "VolcanicWarning",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.VolcanicWarning/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.VolcanicWarning/versions/1"
+}

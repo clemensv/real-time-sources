@@ -1,0 +1,78 @@
+{
+  "$id": "https://example.com/schemas/CZ/Gov/CHMI/Hydro/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference details for one monitoring station or site in the ČHMÚ Hydrological Data source.",
+  "name": "Station",
+  "properties": {
+    "dbc": {
+      "description": "Provider-supplied dbc value for this record.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "flood_level_1": {
+      "description": "Provider-supplied flood level 1 value for this record.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "flood_level_2": {
+      "description": "Provider-supplied flood level 2 value for this record.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "flood_level_3": {
+      "description": "Provider-supplied flood level 3 value for this record.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "flood_level_4": {
+      "description": "Provider-supplied flood level 4 value for this record.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "has_forecast": {
+      "description": "Provider-supplied has forecast value for this record.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "latitude": {
+      "description": "Latitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "longitude": {
+      "description": "Longitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "station_id": {
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Human-readable name of the monitoring station.",
+      "type": "string"
+    },
+    "stream_name": {
+      "description": "Human-readable name of the stream.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name",
+    "stream_name",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

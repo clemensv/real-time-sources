@@ -1,0 +1,43 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Vlaanderen.Waterinfo.VMM.amqp/messages/BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WaterLevelReading",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "water_body": {
+        "description": "Routing property for AMQP subscription filters (water_body).",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{water_body}"
+      }
+    },
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_no}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{station_no}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Vlaanderen.Waterinfo.VMM.amqp/messages/BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/BE.Vlaanderen.Waterinfo.VMM.amqp/messages/BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading/versions",
+  "xid": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM.amqp/messages/BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading"
+}

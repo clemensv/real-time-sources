@@ -1,0 +1,35 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/us.wa.wsdot.border/messages/us.wa.wsdot.border.BorderCrossing",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "us.wa.wsdot.border.BorderCrossing.amqp",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.border.amqp/messages/us.wa.wsdot.border.BorderCrossing.amqp/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "BorderCrossing",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Partition key mirrors the CloudEvents subject.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{crossing_name}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP subject mirrors the CloudEvents subject.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{crossing_name}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.border.amqp/messages/us.wa.wsdot.border.BorderCrossing.amqp",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/us.wa.wsdot.border.amqp/messages/us.wa.wsdot.border.BorderCrossing.amqp/versions",
+  "xid": "/messagegroups/us.wa.wsdot.border.amqp/messages/us.wa.wsdot.border.BorderCrossing.amqp"
+}

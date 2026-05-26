@@ -1,0 +1,128 @@
+{
+  "$id": "https://example.com/schemas/IO/AISstream/Interrogation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+  "name": "Interrogation",
+  "properties": {
+    "MessageID": {
+      "description": "Provider field for message i d in this record.",
+      "type": "int32"
+    },
+    "RepeatIndicator": {
+      "description": "Provider field for repeat indicator in this record.",
+      "type": "int32"
+    },
+    "Spare": {
+      "description": "Provider field for spare in this record.",
+      "type": "int32"
+    },
+    "Station1Msg1": {
+      "description": "Provider field for station1 msg1 in this record.",
+      "name": "Station1Msg1",
+      "properties": {
+        "MessageID": {
+          "description": "Provider field for message i d in this record.",
+          "type": "int32"
+        },
+        "SlotOffset": {
+          "description": "Provider field for slot offset in this record.",
+          "type": "int32"
+        },
+        "StationID": {
+          "description": "Provider field for station i d in this record.",
+          "type": "int32"
+        },
+        "Valid": {
+          "description": "Provider field for valid in this record.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Valid",
+        "StationID",
+        "MessageID",
+        "SlotOffset"
+      ],
+      "type": "object"
+    },
+    "Station1Msg2": {
+      "description": "Provider field for station1 msg2 in this record.",
+      "name": "Station1Msg2",
+      "properties": {
+        "MessageID": {
+          "description": "Provider field for message i d in this record.",
+          "type": "int32"
+        },
+        "SlotOffset": {
+          "description": "Provider field for slot offset in this record.",
+          "type": "int32"
+        },
+        "Spare": {
+          "description": "Provider field for spare in this record.",
+          "type": "int32"
+        },
+        "Valid": {
+          "description": "Provider field for valid in this record.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Valid",
+        "MessageID",
+        "SlotOffset"
+      ],
+      "type": "object"
+    },
+    "Station2": {
+      "description": "Provider field for station2 in this record.",
+      "name": "Station2",
+      "properties": {
+        "MessageID": {
+          "description": "Provider field for message i d in this record.",
+          "type": "int32"
+        },
+        "SlotOffset": {
+          "description": "Provider field for slot offset in this record.",
+          "type": "int32"
+        },
+        "Spare1": {
+          "description": "Provider field for spare1 in this record.",
+          "type": "int32"
+        },
+        "Spare2": {
+          "description": "Provider field for spare2 in this record.",
+          "type": "int32"
+        },
+        "StationID": {
+          "description": "Provider field for station i d in this record.",
+          "type": "int32"
+        },
+        "Valid": {
+          "description": "Provider field for valid in this record.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Valid",
+        "StationID",
+        "MessageID",
+        "SlotOffset"
+      ],
+      "type": "object"
+    },
+    "UserID": {
+      "description": "Provider field for user i d in this record.",
+      "type": "int32"
+    },
+    "Valid": {
+      "description": "Provider field for valid in this record.",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "MessageID",
+    "UserID",
+    "Valid"
+  ],
+  "type": "object"
+}

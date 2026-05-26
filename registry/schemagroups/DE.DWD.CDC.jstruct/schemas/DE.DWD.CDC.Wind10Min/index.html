@@ -1,0 +1,52 @@
+{
+  "$id": "https://example.com/schemas/DE/DWD/CDC/Wind10Min",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
+  "name": "Wind10Min",
+  "properties": {
+    "quality_level": {
+      "altnames": {
+        "lang:de": "QN"
+      },
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "int32"
+    },
+    "state": {
+      "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "station_id": {
+      "altnames": {
+        "lang:de": "STATIONS_ID"
+      },
+      "description": "Stable identifier assigned by the upstream provider for the station or monitoring site.",
+      "type": "string"
+    },
+    "timestamp": {
+      "altnames": {
+        "lang:de": "MESS_DATUM"
+      },
+      "description": "Time when the provider recorded or published the value.",
+      "type": "string"
+    },
+    "wind_direction": {
+      "altnames": {
+        "lang:de": "DD_10"
+      },
+      "description": "Wind direction reported by the station.",
+      "type": "double"
+    },
+    "wind_speed": {
+      "altnames": {
+        "lang:de": "FF_10"
+      },
+      "description": "Wind speed reported by the station.",
+      "type": "double"
+    }
+  },
+  "required": [
+    "station_id",
+    "timestamp"
+  ],
+  "type": "object"
+}

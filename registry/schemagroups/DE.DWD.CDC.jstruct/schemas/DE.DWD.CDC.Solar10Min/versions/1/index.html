@@ -1,0 +1,66 @@
+{
+  "$id": "https://example.com/schemas/DE/DWD/CDC/Solar10Min",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
+  "name": "Solar10Min",
+  "properties": {
+    "diffuse_radiation": {
+      "altnames": {
+        "lang:de": "DS_10"
+      },
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "double"
+    },
+    "global_radiation": {
+      "altnames": {
+        "lang:de": "GS_10"
+      },
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "double"
+    },
+    "longwave_radiation": {
+      "altnames": {
+        "lang:de": "LS_10"
+      },
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "double"
+    },
+    "quality_level": {
+      "altnames": {
+        "lang:de": "QN"
+      },
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "int32"
+    },
+    "state": {
+      "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "station_id": {
+      "altnames": {
+        "lang:de": "STATIONS_ID"
+      },
+      "description": "Stable identifier assigned by the upstream provider for the station or monitoring site.",
+      "type": "string"
+    },
+    "sunshine_duration": {
+      "altnames": {
+        "lang:de": "SD_10"
+      },
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "double"
+    },
+    "timestamp": {
+      "altnames": {
+        "lang:de": "MESS_DATUM"
+      },
+      "description": "Time when the provider recorded or published the value.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "timestamp"
+  ],
+  "type": "object"
+}

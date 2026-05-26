@@ -1,0 +1,76 @@
+{
+  "$id": "https://example.com/schemas/Bluesky/Actor/Profile",
+  "$root": "/definitions/Bluesky/Actor/Profile",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Bluesky": {
+      "Actor": {
+        "Profile": {
+          "description": "A user profile update",
+          "name": "Profile",
+          "properties": {
+            "avatar": {
+              "default": null,
+              "description": "Avatar image URL",
+              "type": "string"
+            },
+            "banner": {
+              "default": null,
+              "description": "Banner image URL",
+              "type": "string"
+            },
+            "collection": {
+              "description": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.",
+              "type": "string"
+            },
+            "created_at": {
+              "description": "ISO 8601 timestamp of profile creation",
+              "type": "string"
+            },
+            "description": {
+              "default": null,
+              "description": "Bio/description",
+              "type": "string"
+            },
+            "did": {
+              "description": "Decentralized Identifier",
+              "type": "string"
+            },
+            "display_name": {
+              "default": null,
+              "description": "Display name",
+              "type": "string"
+            },
+            "handle": {
+              "description": "User handle",
+              "type": "string"
+            },
+            "indexed_at": {
+              "description": "ISO 8601 timestamp of indexing",
+              "type": "string"
+            },
+            "lang": {
+              "description": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.",
+              "type": "string"
+            },
+            "seq": {
+              "description": "Firehose sequence number",
+              "type": "int64"
+            }
+          },
+          "required": [
+            "did",
+            "handle",
+            "created_at",
+            "indexed_at",
+            "seq",
+            "collection",
+            "lang"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "Profile"
+}

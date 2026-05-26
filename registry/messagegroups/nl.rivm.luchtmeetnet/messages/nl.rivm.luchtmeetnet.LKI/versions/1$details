@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/nl.rivm.luchtmeetnet.jstruct/schemas/nl.rivm.luchtmeetnet.LKI",
+  "description": "Hourly Dutch Luchtkwaliteitsindex value for a station.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api.luchtmeetnet.nl/open_api/lki"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_number}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "nl.rivm.luchtmeetnet.LKI"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "nl.rivm.luchtmeetnet.LKI",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "LKI",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.LKI/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.LKI/versions/1"
+}

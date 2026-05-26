@@ -1,0 +1,13 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2024-10-18T13:48:02.088029Z",
+  "epoch": 1,
+  "format": "Avro",
+  "isdefault": true,
+  "modifiedat": "2024-10-18T13:48:02.088029Z",
+  "schemaid": "GeneralTransitFeedRealTime.Trip.TripUpdate",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Trip.TripUpdate/versions/1",
+  "versionid": "1",
+  "xid": "/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Trip.TripUpdate/versions/1"
+}

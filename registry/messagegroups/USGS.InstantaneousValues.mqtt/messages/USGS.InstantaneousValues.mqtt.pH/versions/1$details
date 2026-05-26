@@ -1,0 +1,20 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.pH",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "USGS.InstantaneousValues.mqtt.pH",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "pH",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "message_expiry_interval": 86400,
+    "qos": 1,
+    "retain": true,
+    "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.pH/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/USGS.InstantaneousValues.mqtt/messages/USGS.InstantaneousValues.mqtt.pH/versions/1"
+}

@@ -1,0 +1,265 @@
+{
+  "$id": "https://example.com/schemas/USGS/Sites/Site",
+  "$root": "/definitions/USGS/Sites/Site",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "USGS": {
+      "Sites": {
+        "Site": {
+          "description": "USGS site metadata.",
+          "name": "Site",
+          "properties": {
+            "agency_cd": {
+              "description": "USGS or partner agency code for the site. Combined with `site_no`, it forms the stable site identity used in CloudEvents subjects and transport keys.",
+              "type": "string"
+            },
+            "alt_acy_va": {
+              "default": null,
+              "description": "Altitude accuracy.",
+              "type": [
+                "float",
+                "null"
+              ]
+            },
+            "alt_datum_cd": {
+              "description": "Altitude datum code.",
+              "type": "string"
+            },
+            "alt_meth_cd": {
+              "description": "Method altitude determined code.",
+              "type": "string"
+            },
+            "alt_va": {
+              "default": null,
+              "description": "Altitude.",
+              "type": [
+                "float",
+                "null"
+              ]
+            },
+            "aqfr_cd": {
+              "description": "Local aquifer code.",
+              "type": "string"
+            },
+            "aqfr_type_cd": {
+              "description": "Local aquifer type code.",
+              "type": "string"
+            },
+            "basin_cd": {
+              "description": "Drainage basin code.",
+              "type": "string"
+            },
+            "construction_dt": {
+              "default": null,
+              "description": "Date of first construction.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "contrib_drain_area_va": {
+              "default": null,
+              "description": "Contributing drainage area.",
+              "type": [
+                "float",
+                "null"
+              ]
+            },
+            "coord_acy_cd": {
+              "description": "USGS accuracy code for the published coordinates.",
+              "type": "string"
+            },
+            "coord_datum_cd": {
+              "description": "Horizontal datum code for the degrees-minutes-seconds coordinates.",
+              "type": "string"
+            },
+            "coord_meth_cd": {
+              "description": "USGS method code describing how the latitude and longitude were determined.",
+              "type": "string"
+            },
+            "country_cd": {
+              "description": "Country code for the site location.",
+              "type": "string"
+            },
+            "county_cd": {
+              "description": "FIPS county code for the site location.",
+              "type": "string"
+            },
+            "dec_coord_datum_cd": {
+              "description": "Horizontal datum code for the decimal coordinates.",
+              "type": "string"
+            },
+            "dec_lat_va": {
+              "default": null,
+              "description": "Latitude in decimal degrees when USGS provides decimal coordinates.",
+              "type": [
+                "float",
+                "null"
+              ]
+            },
+            "dec_long_va": {
+              "default": null,
+              "description": "Longitude in decimal degrees when USGS provides decimal coordinates.",
+              "type": [
+                "float",
+                "null"
+              ]
+            },
+            "depth_src_cd": {
+              "description": "Source of depth data.",
+              "type": "string"
+            },
+            "district_cd": {
+              "description": "USGS district code responsible for or associated with the site.",
+              "type": "string"
+            },
+            "drain_area_va": {
+              "default": null,
+              "description": "Drainage area.",
+              "type": [
+                "float",
+                "null"
+              ]
+            },
+            "gw_file_cd": {
+              "description": "Data-other GW files code.",
+              "type": "string"
+            },
+            "hole_depth_va": {
+              "default": null,
+              "description": "Hole depth.",
+              "type": [
+                "float",
+                "null"
+              ]
+            },
+            "huc_cd": {
+              "description": "Hydrologic Unit Code identifying the watershed containing the site.",
+              "type": "string"
+            },
+            "instruments_cd": {
+              "description": "USGS code summarizing the instrumentation installed at the site.",
+              "type": "string"
+            },
+            "inventory_dt": {
+              "default": null,
+              "description": "Date site established or inventoried.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "land_net_ds": {
+              "description": "Land net location description.",
+              "type": "string"
+            },
+            "lat_va": {
+              "description": "Latitude in degrees-minutes-seconds text as published by USGS.",
+              "type": "string"
+            },
+            "local_time_fg": {
+              "description": "Flag indicating whether timestamps are reported in the site local time zone.",
+              "type": "boolean"
+            },
+            "long_va": {
+              "description": "Longitude in degrees-minutes-seconds text as published by USGS.",
+              "type": "string"
+            },
+            "map_nm": {
+              "description": "Location map name.",
+              "type": "string"
+            },
+            "map_scale_fc": {
+              "default": null,
+              "description": "Location map scale factor.",
+              "type": [
+                "float",
+                "null"
+              ]
+            },
+            "nat_aqfr_cd": {
+              "description": "National aquifer code.",
+              "type": "string"
+            },
+            "project_no": {
+              "description": "USGS project number associated with the site, when provided.",
+              "type": "string"
+            },
+            "reliability_cd": {
+              "description": "USGS reliability code describing the expected reliability of the site data.",
+              "type": "string"
+            },
+            "site_no": {
+              "description": "USGS site number within the agency. Combined with `agency_cd`, it uniquely identifies the monitoring location.",
+              "type": "string"
+            },
+            "site_tp_cd": {
+              "description": "USGS site-type code describing the kind of monitoring location, such as stream, lake, well, or atmospheric site.",
+              "type": "string"
+            },
+            "state_cd": {
+              "description": "FIPS state code for the site location.",
+              "type": "string"
+            },
+            "station_nm": {
+              "description": "Human-readable site name published by USGS. Use `agency_cd` and `site_no` for stable joins because names can change.",
+              "type": "string"
+            },
+            "topo_cd": {
+              "description": "Topographic setting code.",
+              "type": "string"
+            },
+            "tz_cd": {
+              "description": "Time-zone code used for local timestamps at the site.",
+              "type": "string"
+            },
+            "well_depth_va": {
+              "default": null,
+              "description": "Well depth.",
+              "type": [
+                "float",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "agency_cd",
+            "site_no",
+            "station_nm",
+            "site_tp_cd",
+            "lat_va",
+            "long_va",
+            "coord_meth_cd",
+            "coord_acy_cd",
+            "coord_datum_cd",
+            "dec_coord_datum_cd",
+            "district_cd",
+            "state_cd",
+            "county_cd",
+            "country_cd",
+            "land_net_ds",
+            "map_nm",
+            "alt_meth_cd",
+            "alt_datum_cd",
+            "huc_cd",
+            "basin_cd",
+            "topo_cd",
+            "instruments_cd",
+            "tz_cd",
+            "local_time_fg",
+            "reliability_cd",
+            "gw_file_cd",
+            "nat_aqfr_cd",
+            "aqfr_cd",
+            "aqfr_type_cd",
+            "depth_src_cd",
+            "project_no"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "description": "Reference details for one monitoring station or site in the USGS Instantaneous Values source.",
+  "name": "Site"
+}

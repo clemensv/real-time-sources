@@ -1,0 +1,47 @@
+{
+  "$id": "https://api.energy-charts.info/schemas/info/energy_charts/GridSignal",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Grid carbon signal for a given country at a specific timestamp. Sourced from the Energy-Charts /signal endpoint (Fraunhofer ISE). Provides a traffic-light signal (0=green, 1=yellow, 2=red) indicating how carbon-intensive the current electricity mix is. Green (0) means high renewable share and low carbon intensity — a good time to consume electricity. Red (2) means low renewable share and high carbon intensity. The renewable share percentage is also included for precise analysis.",
+  "name": "GridSignal",
+  "properties": {
+    "country": {
+      "description": "ISO 3166-1 alpha-2 country code identifying the electricity market area (e.g. 'de' for Germany). Used as the query parameter in the Energy-Charts API.",
+      "type": "string"
+    },
+    "renewable_share_pct": {
+      "description": "Renewable share of generation as a percentage (0–100) at this timestamp. This is the precise numerical value underlying the traffic-light signal.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "signal": {
+      "description": "Traffic-light carbon signal: 0 = green (high renewable share, low carbon — good time to consume), 1 = yellow (moderate renewable share), 2 = red (low renewable share, high carbon — avoid consumption if possible). The thresholds are defined by Fraunhofer ISE based on the renewable share of generation.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "substitute": {
+      "description": "Whether this signal value is a substitute (forecast or estimate) rather than based on actual metered data. True indicates the value is projected; false indicates it is based on real measurements.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "timestamp": {
+      "description": "UTC timestamp derived from the unix_seconds value. Marks the start of the 15-minute measurement interval.",
+      "type": "datetime"
+    },
+    "unix_seconds": {
+      "description": "Unix epoch timestamp in seconds as returned by the Energy-Charts API.",
+      "type": "int64"
+    }
+  },
+  "required": [
+    "country",
+    "timestamp",
+    "unix_seconds"
+  ],
+  "type": "object"
+}

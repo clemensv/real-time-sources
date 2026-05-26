@@ -1,0 +1,32 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for NVE Hydrology CloudEvents on the `nve-hydro` topic keyed by `{station_id}`.",
+  "endpointid": "NO.NVE.Hydrology.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/NO.NVE.Hydrology"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/NO.NVE.Hydrology.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{station_id}",
+      "topic": "nve-hydro"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/NO.NVE.Hydrology.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/NO.NVE.Hydrology.Kafka"
+}

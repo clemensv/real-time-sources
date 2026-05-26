@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.LongRangeAisBroadcastMessage",
+  "description": "A vehicle or vessel update from AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from the upstream feed.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "wss://stream.aisstream.io/v0/stream"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{mmsi}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "IO.AISstream.LongRangeAisBroadcastMessage"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "IO.AISstream.LongRangeAisBroadcastMessage",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "LongRangeAisBroadcastMessage",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.LongRangeAisBroadcastMessage/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.LongRangeAisBroadcastMessage/versions/1"
+}

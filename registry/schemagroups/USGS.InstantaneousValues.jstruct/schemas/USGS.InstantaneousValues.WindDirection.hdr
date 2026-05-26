@@ -1,0 +1,16 @@
+content-disposition:USGS.InstantaneousValues.WindDirection
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.InstantaneousValues.jstruct/schemas/USGS.InstantaneousValues.WindDirection/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.InstantaneousValues.jstruct/schemas/USGS.InstantaneousValues.WindDirection/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:USGS.InstantaneousValues.WindDirection
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.InstantaneousValues.jstruct/schemas/USGS.InstantaneousValues.WindDirection
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.InstantaneousValues.jstruct/schemas/USGS.InstantaneousValues.WindDirection/versions
+xregistry-xid:/schemagroups/USGS.InstantaneousValues.jstruct/schemas/USGS.InstantaneousValues.WindDirection

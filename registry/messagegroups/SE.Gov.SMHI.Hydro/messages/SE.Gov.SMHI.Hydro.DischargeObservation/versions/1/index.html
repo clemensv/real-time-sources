@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/SE.Gov.SMHI.Hydro.jstruct/schemas/SE.Gov.SMHI.Hydro.DischargeObservation",
+  "description": "A current measurement from the Swedish Meteorological and Hydrological Institute (SMHI) for one monitoring site. It carries river discharge observations when the upstream feed reports a new or refreshed value.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://opendata-download-hydroobs.smhi.se"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "SE.Gov.SMHI.Hydro.DischargeObservation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "SE.Gov.SMHI.Hydro.DischargeObservation",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "DischargeObservation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.DischargeObservation/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.DischargeObservation/versions/1"
+}

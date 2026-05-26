@@ -1,0 +1,16 @@
+{
+  "ancestor": "1",
+  "contenttype": "application/json",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "format": "Avro/1.11.3",
+  "isdefault": true,
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.WaterLevelObservation/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "schemaid": "NL.RWS.Waterwebservices.WaterLevelObservation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.WaterLevelObservation",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.WaterLevelObservation/versions",
+  "xid": "/schemagroups/NL.RWS.Waterwebservices.avro/schemas/NL.RWS.Waterwebservices.WaterLevelObservation"
+}

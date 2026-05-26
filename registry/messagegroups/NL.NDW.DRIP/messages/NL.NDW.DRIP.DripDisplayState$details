@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/NL.NDW.jstruct/schemas/NL.NDW.DRIP.DripDisplayState",
+  "description": "Current display state of a Dynamic Route Information Panel (DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text, pictogram codes, and operational state of the sign.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://opendata.ndw.nu/dynamische_route_informatie_paneel.xml.gz"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "drips/{vms_controller_id}/{vms_index}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "NL.NDW.DRIP.DripDisplayState"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "NL.NDW.DRIP.DripDisplayState",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripDisplayState/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "DripDisplayState",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripDisplayState",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripDisplayState/versions",
+  "xid": "/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripDisplayState"
+}

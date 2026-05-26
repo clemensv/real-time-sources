@@ -1,0 +1,149 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/schemas/Blitzortung/Lightning/LightningStroke",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "additionalProperties": false,
+  "definitions": {
+    "DetectorParticipation": {
+      "additionalProperties": false,
+      "description": "One detector entry expanded from the upstream sta object on a live stroke. The public feed exposes integer status flags per station, but the public documentation does not currently publish a bit-level meaning for those status codes, so this contract preserves the upstream integer verbatim.",
+      "name": "DetectorParticipation",
+      "properties": {
+        "station_id": {
+          "description": "Detector station identifier from the key of the upstream sta object.",
+          "minimum": 0,
+          "type": "int32"
+        },
+        "status": {
+          "description": "Opaque integer status flag from the value of the upstream sta object. The public live feed exposes the value, but the public documentation reviewed during implementation does not publish a stable bit-level interpretation.",
+          "minimum": 0,
+          "type": "int32"
+        }
+      },
+      "required": [
+        "station_id",
+        "status"
+      ],
+      "type": "object"
+    }
+  },
+  "description": "One located lightning stroke from the public LightningMaps / Blitzortung live websocket feed. The stroke identity is the tuple of source_id and stroke_id because the upstream browser client tracks the last seen stroke id separately for each source stream.",
+  "name": "LightningStroke",
+  "properties": {
+    "accuracy_diameter_m": {
+      "altnames": {
+        "lightningmaps-live": "dev"
+      },
+      "description": "Estimated accuracy diameter in meters from the upstream dev field. The public LightningMaps client renders an accuracy circle with radius dev/2, which indicates the value is expressed as a diameter rather than a raw algorithm score.",
+      "minimum": 0,
+      "symbol": "m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "meter"
+    },
+    "detector_participations": {
+      "altnames": {
+        "lightningmaps-live": "sta"
+      },
+      "description": "Detector participation entries expanded from the upstream sta object when the client asks the public live feed to include station details. An empty array means the upstream batch did not include detector participation details for this stroke.",
+      "items": {
+        "type": {
+          "$ref": "/definitions/DetectorParticipation"
+        }
+      },
+      "type": "array"
+    },
+    "event_time": {
+      "description": "ISO-8601 UTC timestamp derived from the upstream time field, which the public live websocket emits in Unix epoch milliseconds.",
+      "type": "string"
+    },
+    "event_timestamp_ms": {
+      "altnames": {
+        "lightningmaps-live": "time"
+      },
+      "description": "Original upstream time value in Unix epoch milliseconds from the public live websocket.",
+      "minimum": "0",
+      "type": "int64"
+    },
+    "geohash5": {
+      "description": "5-character geohash of the located stroke (~40 km cell at the equator), derived in the bridge from latitude and longitude. Used as the {geohash5} MQTT topic segment for geographic wildcards.",
+      "pattern": "^[0-9b-hjkmnp-z]{5}$",
+      "type": "string"
+    },
+    "geohash7": {
+      "description": "7-character geohash of the located stroke (~153 m cell), derived from latitude and longitude. Used as the {geohash7} MQTT topic segment for fine-grained geographic wildcards.",
+      "pattern": "^[0-9b-hjkmnp-z]{7}$",
+      "type": "string"
+    },
+    "latitude": {
+      "altnames": {
+        "lightningmaps-live": "lat"
+      },
+      "description": "Latitude of the located lightning stroke in decimal degrees from the upstream lat field.",
+      "maximum": 90,
+      "minimum": -90,
+      "type": "double"
+    },
+    "longitude": {
+      "altnames": {
+        "lightningmaps-live": "lon"
+      },
+      "description": "Longitude of the located lightning stroke in decimal degrees from the upstream lon field.",
+      "maximum": 180,
+      "minimum": -180,
+      "type": "double"
+    },
+    "server_delay_ms": {
+      "altnames": {
+        "lightningmaps-live": "del"
+      },
+      "description": "Delay between the upstream server receiving or computing the stroke and sending it to the live client, in milliseconds, from the public del field.",
+      "minimum": 0,
+      "symbol": "ms",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "millisecond"
+    },
+    "server_id": {
+      "altnames": {
+        "lightningmaps-live": "srv"
+      },
+      "description": "Upstream server identifier from the srv field that produced the current live batch. The public documentation reviewed during implementation does not publish a stable human-readable enumeration for these ids.",
+      "minimum": 0,
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "source_id": {
+      "altnames": {
+        "lightningmaps-live": "src"
+      },
+      "description": "Upstream live-source identifier from the src field. The public LightningMaps websocket treats stroke ids as source-scoped, so this field is part of the stable event identity.",
+      "minimum": 0,
+      "type": "int32"
+    },
+    "stroke_id": {
+      "altnames": {
+        "lightningmaps-live": "id"
+      },
+      "description": "Source-scoped stroke identifier from the upstream id field, stringified so the Kafka key and CloudEvents subject can be resolved directly from the payload.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_id",
+    "stroke_id",
+    "event_time",
+    "event_timestamp_ms",
+    "latitude",
+    "longitude",
+    "detector_participations",
+    "geohash5",
+    "geohash7"
+  ],
+  "type": "object"
+}

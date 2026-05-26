@@ -1,0 +1,27 @@
+{
+  "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source.",
+  "doc": "Hourly Dutch national air quality index value for a station.",
+  "fields": [
+    {
+      "description": "Reference details for one station, monitoring site, or forecast area in the Luchtmeetnet NL source.",
+      "doc": "Stable Luchtmeetnet station code identifying the station for which the LKI value was calculated.",
+      "name": "station_number",
+      "type": "string"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source.",
+      "doc": "Luchtkwaliteitsindex value on the Dutch 1 to 11 scale.",
+      "name": "value",
+      "type": "int"
+    },
+    {
+      "description": "Measurement payload for pollutant concentration measurements in the Luchtmeetnet NL source.",
+      "doc": "Timestamp for the hourly LKI value, encoded as an ISO 8601 date-time string with timezone offset.",
+      "name": "timestamp_measured",
+      "type": "string"
+    }
+  ],
+  "name": "LKI",
+  "namespace": "nl.rivm.luchtmeetnet",
+  "type": "record"
+}

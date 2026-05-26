@@ -1,0 +1,144 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/be/irail/StationBoard",
+  "$root": "/definitions/be/irail/StationBoard",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "be": {
+      "irail": {
+        "Departure": {
+          "description": "A single scheduled departure from a Belgian railway station with real-time status. Represents a train service leaving the station at a scheduled time, possibly with a delay. The departure is identified by the combination of origin station, date, and vehicle identifier encoded in the departure connection URI.",
+          "name": "Departure",
+          "properties": {
+            "delay_seconds": {
+              "description": "Current delay in seconds relative to the scheduled departure time. 0 indicates the train is on time. Negative values do not occur.",
+              "type": "int32"
+            },
+            "departure_connection_uri": {
+              "description": "Stable linked-data URI uniquely identifying this departure. Composed of the origin station UIC code, date, and vehicle short name. Example: 'http://irail.be/connections/8814001/20260407/IC2117'. This URI can be used to post occupancy feedback.",
+              "type": "string"
+            },
+            "destination_name": {
+              "description": "Display name of the destination station. Example: 'Antwerp-Central'.",
+              "type": "string"
+            },
+            "destination_station_id": {
+              "description": "Nine-digit UIC-derived numeric identifier of the destination station, extracted from the stationinfo.id field by stripping the 'BE.NMBS.' prefix. Example: '008821006' for Antwerp-Central.",
+              "type": "string"
+            },
+            "has_left": {
+              "description": "True if the train has already departed from this station. Converted from the iRail 'left' field where '1' means departed.",
+              "type": "boolean"
+            },
+            "is_canceled": {
+              "description": "True if this departure has been canceled by NMBS/SNCB. Converted from the iRail 'canceled' field where '1' means canceled.",
+              "type": "boolean"
+            },
+            "is_extra_stop": {
+              "description": "True if this stop was added to the original schedule by traffic control and is not part of the normal timetable. Converted from the iRail 'isExtra' field.",
+              "type": "boolean"
+            },
+            "is_normal_platform": {
+              "description": "True if the assigned platform is the normally scheduled platform for this service. False indicates a platform change. Converted from the iRail platforminfo.normal field where '1' means normal.",
+              "type": "boolean"
+            },
+            "occupancy": {
+              "description": "Crowd-sourced occupancy estimate for this train. Based on aggregated user feedback submitted through the iRail occupancy API.",
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "unknown"
+              ],
+              "type": "string"
+            },
+            "platform": {
+              "description": "Platform number or name from which the train departs. Null if platform has not been assigned yet.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "scheduled_time": {
+              "description": "Scheduled departure time in ISO 8601 UTC format, converted from the iRail Unix timestamp. Example: '2026-04-07T14:00:00Z'.",
+              "type": "string"
+            },
+            "vehicle_id": {
+              "description": "Full iRail vehicle identifier including the NMBS prefix. Example: 'BE.NMBS.IC2117'. Encodes the train type and number.",
+              "type": "string"
+            },
+            "vehicle_number": {
+              "description": "Numeric part of the vehicle identifier. Example: '2117' for IC 2117.",
+              "type": "string"
+            },
+            "vehicle_short_name": {
+              "description": "Human-readable short name of the train service. Example: 'IC 2117'. Includes the service type abbreviation and number separated by a space.",
+              "type": "string"
+            },
+            "vehicle_type": {
+              "description": "NMBS/SNCB train service type abbreviation. Common values: 'IC' (InterCity), 'S' (S-trein/suburban), 'L' (Local), 'P' (Peak-hour), 'THA' (Thalys), 'EUR' (Eurostar), 'EXT' (Extra).",
+              "type": "string"
+            }
+          },
+          "required": [
+            "destination_station_id",
+            "destination_name",
+            "scheduled_time",
+            "delay_seconds",
+            "is_canceled",
+            "has_left",
+            "is_extra_stop",
+            "vehicle_id",
+            "vehicle_short_name",
+            "vehicle_type",
+            "vehicle_number",
+            "platform",
+            "is_normal_platform",
+            "occupancy",
+            "departure_connection_uri"
+          ],
+          "type": "object"
+        },
+        "StationBoard": {
+          "description": "A real-time departure board snapshot for a Belgian railway station from the iRail liveboard API. Contains all currently scheduled departures from the station with real-time delay information, platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled periodically and each event replaces the previous board state for the same station.",
+          "name": "StationBoard",
+          "properties": {
+            "departure_count": {
+              "description": "Number of departures in this board snapshot. Matches the length of the departures array.",
+              "type": "int32"
+            },
+            "departures": {
+              "description": "Array of departure entries currently shown on the station's departure board. Each entry represents a train service scheduled to depart from this station, enriched with real-time delay and cancellation information.",
+              "items": {
+                "type": {
+                  "$ref": "/definitions/be/irail/Departure"
+                }
+              },
+              "type": "array"
+            },
+            "retrieved_at": {
+              "description": "ISO 8601 UTC timestamp when this board was retrieved from the iRail API. Converted from the iRail response timestamp field.",
+              "type": "string"
+            },
+            "station_id": {
+              "description": "Nine-digit UIC-derived numeric identifier of the station this board belongs to. Matches the station_id in the Station schema.",
+              "type": "string"
+            },
+            "station_name": {
+              "description": "Display name of the station this board belongs to.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "station_id",
+            "station_name",
+            "retrieved_at",
+            "departure_count",
+            "departures"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "StationBoard"
+}

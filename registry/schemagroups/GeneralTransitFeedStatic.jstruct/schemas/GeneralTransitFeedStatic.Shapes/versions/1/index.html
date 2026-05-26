@@ -1,0 +1,44 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/Shapes",
+  "$root": "/definitions/GeneralTransitFeedStatic/Shapes",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "Shapes": {
+        "description": "Defines shapes.",
+        "name": "Shapes",
+        "properties": {
+          "shapeDistTraveled": {
+            "default": null,
+            "description": "Actual distance traveled along the shape from the first shape point to the specified shape point.",
+            "type": "double"
+          },
+          "shapeId": {
+            "description": "Identifies a shape.",
+            "type": "string"
+          },
+          "shapePtLat": {
+            "description": "Latitude of a shape point.",
+            "type": "double"
+          },
+          "shapePtLon": {
+            "description": "Longitude of a shape point.",
+            "type": "double"
+          },
+          "shapePtSequence": {
+            "description": "Sequence in which the shape points connect to form the shape.",
+            "type": "int32"
+          }
+        },
+        "required": [
+          "shapeId",
+          "shapePtLat",
+          "shapePtLon",
+          "shapePtSequence"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "Shapes"
+}

@@ -1,0 +1,39 @@
+{
+  "$id": "https://example.com/schemas/GeneralTransitFeedStatic/BookingRules",
+  "$root": "/definitions/GeneralTransitFeedStatic/BookingRules",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "GeneralTransitFeedStatic": {
+      "BookingRules": {
+        "description": "Defines booking rules.",
+        "name": "BookingRules",
+        "properties": {
+          "bookingRuleDesc": {
+            "default": null,
+            "description": "Description of the booking rule.",
+            "type": "string"
+          },
+          "bookingRuleId": {
+            "description": "Identifies a booking rule.",
+            "type": "string"
+          },
+          "bookingRuleName": {
+            "description": "Name of the booking rule.",
+            "type": "string"
+          },
+          "bookingRuleUrl": {
+            "default": null,
+            "description": "URL of a web page about the booking rule.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "bookingRuleId",
+          "bookingRuleName"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "name": "BookingRules"
+}

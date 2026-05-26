@@ -1,0 +1,146 @@
+{
+  "dk.dmi.oceanObs.OceanObservation": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.oceanObs.OceanObservation",
+    "description": "A single oceanographic observation. Parameters are sealev_dvr (sea level vs DVR90 datum, cm), sealev_ln (sea level vs local zero, cm), sea_reg (registered sea level by Kystdirektoratet, cm), and tw (water temperature, deg C). 10-minute cadence.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}/{parameter_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "dk.dmi.oceanObs.OceanObservation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "dk.dmi.oceanObs.OceanObservation",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "OceanObservation",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation/versions",
+    "xid": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation"
+  },
+  "dk.dmi.oceanObs.OceanStation": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.oceanObs.OceanStation",
+    "description": "Reference data for an oceanographic observation station (tide gauge or other coastal sensor). Owners include DMI and Kystdirektoratet (Danish Coastal Authority).",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "dk.dmi.oceanObs.OceanStation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "dk.dmi.oceanObs.OceanStation",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "OceanStation",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation/versions",
+    "xid": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation"
+  },
+  "dk.dmi.oceanObs.TidewaterPrediction": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.oceanObs.TidewaterPrediction",
+    "description": "A deterministic tidewater (sea-level) prediction for one station and one forecast horizon. predictionType is typically '10minutes'; predictions are issued forward ~30 days.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "dk.dmi.oceanObs.TidewaterPrediction"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "dk.dmi.oceanObs.TidewaterPrediction",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "TidewaterPrediction",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction/versions",
+    "xid": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction"
+  },
+  "dk.dmi.oceanObs.TidewaterStation": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/dk.dmi.jstruct/schemas/dk.dmi.oceanObs.TidewaterStation",
+    "description": "Reference data for a station/grid-point at which DMI publishes tidewater (sea-level) predictions. The set partially overlaps physical tide gauges but also includes prediction-only grid points (e.g. Faroes).",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "dk.dmi.oceanObs.TidewaterStation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "dk.dmi.oceanObs.TidewaterStation",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "TidewaterStation",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation/versions",
+    "xid": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/schemas/uk/kcl/laqn/Measurement",
+  "$root": "/definitions/uk/kcl/laqn/Measurement",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "uk": {
+      "kcl": {
+        "laqn": {
+          "Measurement": {
+            "description": "LAQN hourly pollutant measurement for a site and species at a GMT timestamp.",
+            "name": "Measurement",
+            "properties": {
+              "measurement_date_gmt": {
+                "altnames": [
+                  "@MeasurementDateGMT"
+                ],
+                "description": "Measurement timestamp in GMT, encoded by LAQN as YYYY-MM-DD HH:MM:SS.",
+                "type": "string"
+              },
+              "site_code": {
+                "altnames": [
+                  "@SiteCode"
+                ],
+                "description": "Stable LAQN site code for the monitoring site that produced the measurement.",
+                "type": "string"
+              },
+              "species_code": {
+                "altnames": [
+                  "@SpeciesCode"
+                ],
+                "description": "Stable LAQN pollutant code for the measured species.",
+                "type": "string"
+              },
+              "value": {
+                "altnames": [
+                  "@Value"
+                ],
+                "description": "Measured pollutant concentration as a decimal number. The bridge omits records for timestamps where the upstream API reports an empty value.",
+                "type": "double"
+              }
+            },
+            "required": [
+              "site_code",
+              "species_code",
+              "measurement_date_gmt",
+              "value"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "Measurement"
+}

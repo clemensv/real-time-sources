@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/gov.cbp.borderwait.jstruct/schemas/gov.cbp.borderwait.WaitTime",
+  "description": "Current wait times at a US land border port of entry, flattened from the CBP nested lane structure. Reports delay in minutes and number of open lanes for each combination of traveler category (passenger vehicle, pedestrian, commercial vehicle) and lane type (standard, SENTRI/NEXUS, Ready Lane, FAST). Wait times are updated approximately every hour by CBP officers at each port.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://bwt.cbp.gov"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{port_number}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "gov.cbp.borderwait.WaitTime"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "gov.cbp.borderwait.WaitTime",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WaitTime",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.WaitTime/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/gov.cbp.borderwait/messages/gov.cbp.borderwait.WaitTime/versions/1"
+}

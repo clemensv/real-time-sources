@@ -1,0 +1,42 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/FI.SYKE.Hydrology/messages/FI.SYKE.Hydrology.WaterLevelObservation",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "FI.SYKE.Hydrology.amqp.WaterLevelObservation",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WaterLevelObservation",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "basin": {
+          "description": "Routing property for AMQP subscription filters (basin).",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{basin}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/FI.SYKE.Hydrology.amqp/messages/FI.SYKE.Hydrology.amqp.WaterLevelObservation/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/FI.SYKE.Hydrology.amqp/messages/FI.SYKE.Hydrology.amqp.WaterLevelObservation/versions/1"
+  }
+}

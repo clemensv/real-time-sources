@@ -1,0 +1,178 @@
+{
+  "$id": "https://opendata.meteo.be/schemas/BE/Gov/KMI/Weather/WeatherObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current environmental measurement from the Royal Meteorological Institute of Belgium (KMI/IRM). It carries weather observations when the upstream feed reports a new or refreshed value.",
+  "name": "WeatherObservation",
+  "properties": {
+    "humidity_rel_shelter_avg": {
+      "description": "Average relative humidity measured in the shelter during the observation period.",
+      "symbol": "%",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "percent"
+    },
+    "observation_time": {
+      "description": "Observation timestamp in UTC from the feature property `timestamp`.",
+      "type": "datetime"
+    },
+    "precip_quantity": {
+      "description": "Precipitation quantity reported for the 10-minute observation period.",
+      "symbol": "mm",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "mm"
+    },
+    "pressure": {
+      "description": "Station-level atmospheric pressure reported by the automatic weather station.",
+      "symbol": "hPa",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "hPa"
+    },
+    "region": {
+      "description": "Normalized routing field 'region' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "short_wave_from_sky_avg": {
+      "description": "Average downward shortwave radiation from the sky during the observation period.",
+      "symbol": "W/m²",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "W/m2"
+    },
+    "station_code": {
+      "description": "KMI/RMI automatic weather station code from the `code` property of the reporting observation feature.",
+      "type": "string"
+    },
+    "sun_duration": {
+      "description": "Sunshine duration accumulated during the 10-minute observation period.",
+      "symbol": "min",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "min"
+    },
+    "sun_int_avg": {
+      "description": "Average direct sunshine intensity during the observation period.",
+      "symbol": "W/m²",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "W/m2"
+    },
+    "temp_dry_shelter_avg": {
+      "description": "Average air temperature measured in the 2 m dry shelter during the observation period.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "temp_grass_pt100_avg": {
+      "description": "Average grass-level temperature measured by the Pt100 sensor during the observation period.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "temp_soil_avg": {
+      "description": "Average soil surface temperature during the observation period.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "temp_soil_avg_10cm": {
+      "description": "Average soil temperature measured at 10 cm depth during the observation period.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "temp_soil_avg_20cm": {
+      "description": "Average soil temperature measured at 20 cm depth during the observation period.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "temp_soil_avg_50cm": {
+      "description": "Average soil temperature measured at 50 cm depth during the observation period.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "temp_soil_avg_5cm": {
+      "description": "Average soil temperature measured at 5 cm depth during the observation period.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "wind_direction": {
+      "description": "Wind direction in degrees from which the wind is blowing.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "degree"
+    },
+    "wind_gusts_speed": {
+      "description": "Maximum wind gust speed observed during the 10-minute period.",
+      "symbol": "m/s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m/s"
+    },
+    "wind_speed_10m": {
+      "description": "Wind speed measured at 10 m above ground level.",
+      "symbol": "m/s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m/s"
+    },
+    "wind_speed_avg_30m": {
+      "description": "Average wind speed measured at 30 m above ground level.",
+      "symbol": "m/s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m/s"
+    }
+  },
+  "required": [
+    "station_code",
+    "observation_time"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/JP.JMA.Tsunami.jstruct/schemas/JP.JMA.Tsunami.TsunamiAlert",
+    "description": "JMA Bosai active tsunami alert telemetry from list.json enriched with detail bulletin coastal forecasts.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "jp.jma.tsunami/{event_id}/{serial}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "JP.JMA.Tsunami.TsunamiAlert"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "JP.JMA.Tsunami.TsunamiAlert",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "TsunamiAlert",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Tsunami/messages/JP.JMA.Tsunami.TsunamiAlert/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/JP.JMA.Tsunami/messages/JP.JMA.Tsunami.TsunamiAlert/versions/1"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "$id": "https://example.com/schemas/CZ/Gov/CHMI/Hydro/WaterLevelObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Measurement payload for water level and discharge observations in the ČHMÚ Hydrological Data source.",
+  "name": "WaterLevelObservation",
+  "properties": {
+    "discharge": {
+      "description": "Current streamflow or discharge reported for the station.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "discharge_timestamp": {
+      "description": "Time associated with the discharge measurement.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "station_id": {
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Human-readable name of the monitoring station.",
+      "type": "string"
+    },
+    "stream_name": {
+      "description": "Name of the watercourse / stream the station observes (Czech: 'tok', e.g. 'Vltava', 'Labe', 'Morava'). Sourced by the bridge from the CHMI hydrology station catalog and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {stream_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.",
+      "type": "string"
+    },
+    "water_level": {
+      "description": "Current water level reported for the station.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "water_level_timestamp": {
+      "description": "Time associated with the water-level measurement.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "water_temperature": {
+      "description": "Current water temperature reported for the station.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "water_temperature_timestamp": {
+      "description": "Time associated with the water-temperature measurement.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name",
+    "stream_name"
+  ],
+  "type": "object"
+}

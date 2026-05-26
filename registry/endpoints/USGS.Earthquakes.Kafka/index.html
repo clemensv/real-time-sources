@@ -1,0 +1,31 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "endpointid": "USGS.Earthquakes.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/USGS.Earthquakes"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/USGS.Earthquakes.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{net}/{code}",
+      "topic": "usgs-earthquakes"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/USGS.Earthquakes.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/USGS.Earthquakes.Kafka"
+}

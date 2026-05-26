@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/USGS.Sites.jstruct/schemas/USGS.Sites.SiteTimeseries",
+  "description": "A reference record for one United States streamgages and other monitoring site published by the U.S. Geological Survey (USGS) Water Services API. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{source_uri}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "USGS.Sites.SiteTimeseries"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "USGS.Sites.SiteTimeseries",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "SiteTimeseries",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/USGS.SiteTimeseries/messages/USGS.Sites.SiteTimeseries/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/USGS.SiteTimeseries/messages/USGS.Sites.SiteTimeseries/versions/1"
+}

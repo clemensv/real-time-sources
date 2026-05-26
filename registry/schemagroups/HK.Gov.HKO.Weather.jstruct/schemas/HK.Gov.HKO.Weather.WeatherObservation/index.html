@@ -1,0 +1,72 @@
+{
+  "$id": "https://data.weather.gov.hk/schemas/HK/Gov/HKO/Weather/WeatherObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current environmental measurement from the Hong Kong Observatory. It carries weather observations when the upstream feed reports a new or refreshed value.",
+  "name": "WeatherObservation",
+  "properties": {
+    "district": {
+      "description": "Normalized routing field 'district' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "humidity": {
+      "description": "Relative humidity, currently only from Hong Kong Observatory headquarters.",
+      "symbol": "%",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "percent"
+    },
+    "observation_time": {
+      "description": "ISO 8601 timestamp of the observation including Hong Kong timezone offset (+08:00), from the updateTime field.",
+      "type": "datetime"
+    },
+    "place_id": {
+      "description": "URL-safe slug identifier for the place, matching the Kafka key.",
+      "type": "string"
+    },
+    "place_name": {
+      "description": "Original English place name from the HKO API.",
+      "type": "string"
+    },
+    "rainfall_max": {
+      "description": "Maximum rainfall in the past hour from district-level rain gauges.",
+      "symbol": "mm",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "mm"
+    },
+    "temperature": {
+      "description": "Air temperature from automatic weather stations.",
+      "symbol": "°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "uv_description": {
+      "description": "HKO descriptive UV level: 'low', 'moderate', 'high', 'very high', 'extreme'.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "uv_index": {
+      "description": "UV index during the past hour, currently only from King's Park.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "1"
+    }
+  },
+  "required": [
+    "place_id",
+    "place_name",
+    "observation_time"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,33 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "description": "Kafka producer endpoint for USGS Instantaneous Values CloudEvents on the `usgs-iv` topic keyed by `{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}`.",
+  "endpointid": "USGS.Timeseries.Kafka",
+  "envelope": "CloudEvents/1.0",
+  "envelopeoptions": {
+    "format": "application/cloudevents+json",
+    "mode": "structured"
+  },
+  "epoch": 1,
+  "messagegroups": [
+    "/messagegroups/USGS.SiteTimeseries",
+    "/messagegroups/USGS.InstantaneousValues"
+  ],
+  "messagesurl": "https://clemensv.github.io/real-time-sources/registry/endpoints/USGS.Timeseries.Kafka/messages",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "protocol": "KAFKA",
+  "protocoloptions": {
+    "acks": 1,
+    "deployed": false,
+    "keyserializer": "org.apache.kafka.common.serialization.StringSerializer",
+    "options": {
+      "key": "{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}",
+      "topic": "usgs-iv"
+    },
+    "valueserializer": "org.apache.kafka.common.serialization.StringSerializer"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/endpoints/USGS.Timeseries.Kafka",
+  "usage": [
+    "producer"
+  ],
+  "xid": "/endpoints/USGS.Timeseries.Kafka"
+}

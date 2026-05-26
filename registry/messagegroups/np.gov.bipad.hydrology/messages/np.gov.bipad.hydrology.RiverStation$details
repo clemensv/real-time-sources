@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/np.gov.bipad.hydrology.jstruct/schemas/np.gov.bipad.hydrology.RiverStation",
+  "description": "A reference record for one river monitoring stations in Nepal published by Nepal's BIPAD Portal. It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "{feedurl}"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "np.gov.bipad.hydrology.RiverStation"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "np.gov.bipad.hydrology.RiverStation",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.RiverStation/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "RiverStation",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.RiverStation",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.RiverStation/versions",
+  "xid": "/messagegroups/np.gov.bipad.hydrology/messages/np.gov.bipad.hydrology.RiverStation"
+}

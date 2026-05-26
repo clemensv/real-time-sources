@@ -1,0 +1,17 @@
+content-disposition:jp.tepco.denkiyoho.PeakDemandForecast
+content-length:1499
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.PeakDemandForecast/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:Avro/1.11.3
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.PeakDemandForecast/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:jp.tepco.denkiyoho.PeakDemandForecast
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.PeakDemandForecast
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.PeakDemandForecast/versions
+xregistry-xid:/schemagroups/jp.tepco.denkiyoho.avro/schemas/jp.tepco.denkiyoho.PeakDemandForecast

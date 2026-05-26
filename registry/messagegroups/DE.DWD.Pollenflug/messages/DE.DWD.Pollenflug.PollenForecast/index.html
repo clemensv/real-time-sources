@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/DE.DWD.Pollenflug.jstruct/schemas/DE.DWD.Pollenflug.PollenForecast",
+  "description": "A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries pollen exposure forecasts by region and plant type for the period published by the upstream source.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://opendata.dwd.de/climate_environment/health/alerts/"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{region_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "DE.DWD.Pollenflug.PollenForecast"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "DE.DWD.Pollenflug.PollenForecast",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "PollenForecast",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast/versions",
+  "xid": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast"
+}

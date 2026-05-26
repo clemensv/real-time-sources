@@ -1,0 +1,364 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/no/entur/EstimatedVehicleJourney",
+  "$root": "/definitions/no/entur/EstimatedVehicleJourney",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "no": {
+      "entur": {
+        "EstimatedCall": {
+          "description": "A single estimated call at a stop within an EstimatedVehicleJourney. Contains real-time arrival and departure time predictions alongside timetabled times, stop cancellation flags, and boarding activity for a specific stop point in the journey.",
+          "name": "EstimatedCall",
+          "properties": {
+            "aimed_arrival_time": {
+              "altnames": {
+                "xml": "AimedArrivalTime"
+              },
+              "description": "Timetabled (aimed) arrival time at this stop in ISO 8601 format, from AimedArrivalTime.",
+              "type": [
+                "datetime",
+                "null"
+              ]
+            },
+            "aimed_departure_time": {
+              "altnames": {
+                "xml": "AimedDepartureTime"
+              },
+              "description": "Timetabled (aimed) departure time at this stop in ISO 8601 format, from AimedDepartureTime.",
+              "type": [
+                "datetime",
+                "null"
+              ]
+            },
+            "arrival_boarding_activity": {
+              "altenums": [
+                "boarding",
+                "noBoarding",
+                "passthru"
+              ],
+              "altnames": {
+                "xml": "ArrivalBoardingActivity"
+              },
+              "description": "SIRI ArrivalBoardingActivity indicating whether passengers may board at arrival.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "arrival_status": {
+              "altenums": [
+                "onTime",
+                "early",
+                "delayed",
+                "cancelled",
+                "arrived",
+                "noReport"
+              ],
+              "altnames": {
+                "xml": "ArrivalStatus"
+              },
+              "description": "SIRI ArrivalStatus describing the current arrival state at this stop.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "departure_boarding_activity": {
+              "altenums": [
+                "boarding",
+                "noBoarding",
+                "passthru"
+              ],
+              "altnames": {
+                "xml": "DepartureBoardingActivity"
+              },
+              "description": "SIRI DepartureBoardingActivity indicating whether passengers may board at departure.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "departure_platform_name": {
+              "altnames": {
+                "xml": "DeparturePlatformName"
+              },
+              "description": "Platform or track identifier for the departure at this stop, from DeparturePlatformName.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "departure_status": {
+              "altenums": [
+                "onTime",
+                "early",
+                "delayed",
+                "cancelled",
+                "departed",
+                "noReport"
+              ],
+              "altnames": {
+                "xml": "DepartureStatus"
+              },
+              "description": "SIRI DepartureStatus describing the current departure state at this stop.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "expected_arrival_time": {
+              "altnames": {
+                "xml": "ExpectedArrivalTime"
+              },
+              "description": "Real-time expected arrival time at this stop in ISO 8601 format, from ExpectedArrivalTime.",
+              "type": [
+                "datetime",
+                "null"
+              ]
+            },
+            "expected_departure_time": {
+              "altnames": {
+                "xml": "ExpectedDepartureTime"
+              },
+              "description": "Real-time expected departure time at this stop in ISO 8601 format, from ExpectedDepartureTime.",
+              "type": [
+                "datetime",
+                "null"
+              ]
+            },
+            "is_cancellation": {
+              "altnames": {
+                "xml": "Cancellation"
+              },
+              "description": "True if this individual stop call is cancelled. Corresponds to the SIRI Cancellation element on the EstimatedCall.",
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "is_extra_stop": {
+              "altnames": {
+                "xml": "ExtraCall"
+              },
+              "description": "True if this stop was added outside the planned timetable, i.e. an extra call (SIRI ExtraCall).",
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "order": {
+              "altnames": {
+                "xml": "Order"
+              },
+              "description": "1-based sequence order of this call within the journey, from the SIRI Order element.",
+              "minimum": 1,
+              "type": "int32"
+            },
+            "stop_point_name": {
+              "altnames": {
+                "xml": "StopPointName"
+              },
+              "description": "Public-facing stop name displayed to passengers, from StopPointName.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "stop_point_ref": {
+              "altnames": {
+                "xml": "StopPointRef"
+              },
+              "description": "NSR Quay or StopPoint identifier for this call, from the SIRI StopPointRef element. Example: NSR:Quay:1234.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "stop_point_ref",
+            "order"
+          ],
+          "type": "object"
+        },
+        "EstimatedVehicleJourney": {
+          "description": "Real-time estimated timetable update for a vehicle journey from the Entur SIRI-ET feed (GET /realtime/v1/rest/et). Contains updated arrival and departure times for each stop along the journey, cancellation flags, and extra journey markers. Uses incremental requestorId polling to receive only changed journeys since the last poll.",
+          "name": "EstimatedVehicleJourney",
+          "properties": {
+            "data_source": {
+              "altnames": {
+                "xml": "DataSource"
+              },
+              "description": "Operator codespace originating this data record, from the SIRI DataSource element. Example: RUT.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "destination_name": {
+              "altnames": {
+                "xml": "DestinationName"
+              },
+              "description": "Human-readable name of the destination stop or place for this journey.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "direction_ref": {
+              "altnames": {
+                "xml": "DirectionRef"
+              },
+              "description": "Direction reference for this journey, e.g. Outbound or Inbound.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "estimated_calls": {
+              "description": "Ordered list of estimated arrival and departure times for each stop along the journey. May be a partial list if is_complete_stop_sequence is false.",
+              "items": {
+                "$ref": "/definitions/no/entur/EstimatedCall"
+              },
+              "type": "array"
+            },
+            "is_cancellation": {
+              "altnames": {
+                "xml": "Cancellation"
+              },
+              "default": false,
+              "description": "True if the entire journey is cancelled. Corresponds to the SIRI Cancellation element on the EstimatedVehicleJourney. Defaults to false.",
+              "type": "boolean"
+            },
+            "is_complete_stop_sequence": {
+              "altnames": {
+                "xml": "IsCompleteStopSequence"
+              },
+              "description": "True if the EstimatedCalls list covers all stops in the journey sequence (SIRI IsCompleteStopSequence). False means the list is a partial update.",
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "is_extra_journey": {
+              "altnames": {
+                "xml": "ExtraJourney"
+              },
+              "description": "True if this is an extra journey added outside the planned timetable (SIRI ExtraJourney).",
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "line_ref": {
+              "altnames": {
+                "xml": "LineRef"
+              },
+              "description": "NeTEx Line reference identifying the line this journey belongs to. Example: RUT:Line:1.",
+              "type": "string"
+            },
+            "monitored": {
+              "altnames": {
+                "xml": "Monitored"
+              },
+              "description": "True if this journey is being actively tracked by an AVL system.",
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "operating_day": {
+              "altnames": {
+                "xml": "DataFrameRef"
+              },
+              "description": "ISO 8601 calendar date string representing the operating day on which this journey runs, extracted from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "type": "string"
+            },
+            "operator_ref": {
+              "altnames": {
+                "xml": "OperatorRef"
+              },
+              "description": "NeTEx Operator or codespace reference identifying the operator responsible for this journey. Example: RUT.",
+              "type": "string"
+            },
+            "origin_name": {
+              "altnames": {
+                "xml": "OriginName"
+              },
+              "description": "Human-readable name of the origin stop or place for this journey.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "published_line_name": {
+              "altnames": {
+                "xml": "PublishedLineName"
+              },
+              "description": "Public-facing line number or name displayed to passengers. Example: 31.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "recorded_at_time": {
+              "altnames": {
+                "xml": "RecordedAtTime"
+              },
+              "description": "ISO 8601 UTC timestamp when this update was recorded by the source system (SIRI RecordedAtTime).",
+              "type": [
+                "datetime",
+                "null"
+              ]
+            },
+            "route_ref": {
+              "altnames": {
+                "xml": "RouteRef"
+              },
+              "description": "NeTEx Route reference for this journey, if available.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "service_journey_id": {
+              "altnames": {
+                "xml": "DatedVehicleJourneyRef"
+              },
+              "description": "NeTEx ServiceJourney identifier extracted from FramedVehicleJourneyRef/DatedVehicleJourneyRef. Uniquely identifies the planned vehicle journey within the NeTEx codespace. Example: RUT:ServiceJourney:1-1234.",
+              "type": "string"
+            },
+            "vehicle_mode": {
+              "altenums": [
+                "bus",
+                "tram",
+                "rail",
+                "ferry",
+                "metro",
+                "water",
+                "air",
+                "coach",
+                "taxi"
+              ],
+              "altnames": {
+                "xml": "VehicleMode"
+              },
+              "description": "SIRI VehicleMode describing the mode of transport. Known values: bus, tram, rail, ferry, metro, water, air, coach, taxi.",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "service_journey_id",
+            "operating_day",
+            "line_ref",
+            "operator_ref",
+            "is_cancellation",
+            "estimated_calls"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "EstimatedVehicleJourney"
+}

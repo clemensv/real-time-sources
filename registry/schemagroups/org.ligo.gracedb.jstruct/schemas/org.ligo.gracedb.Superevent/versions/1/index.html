@@ -1,0 +1,148 @@
+{
+  "$id": "https://gracedb.ligo.org/schemas/org/ligo/gracedb/Superevent",
+  "$root": "/definitions/org/ligo/gracedb/Superevent",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "org": {
+      "ligo": {
+        "gracedb": {
+          "Superevent": {
+            "description": "A gravitational wave candidate superevent from the LIGO/Virgo/KAGRA collaboration, published via GraceDB. A superevent aggregates one or more pipeline detections into a single candidate and carries significance, classification, and alert-lifecycle metadata.",
+            "name": "Superevent",
+            "properties": {
+              "category": {
+                "description": "Category of the superevent. 'Production' for real observing-run candidates, 'MDC' for mock data challenge injections, 'Test' for engineering/test events.",
+                "type": "string"
+              },
+              "created": {
+                "description": "ISO-8601 UTC timestamp when the superevent was first created in GraceDB, e.g. '2026-04-08 23:59:34 UTC'.",
+                "type": "string"
+              },
+              "em_type": {
+                "description": "Identifier of the associated electromagnetic event from an external trigger (e.g. a Fermi GBM or Swift trigger ID). Null if no external EM association exists.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "far": {
+                "description": "False alarm rate in Hz. Lower values indicate a more significant event. For example, 1e-14 Hz corresponds to roughly one false alarm per 3 million years.",
+                "type": "double"
+              },
+              "far_is_upper_limit": {
+                "description": "Whether the reported FAR value is an upper limit rather than an exact estimate. True indicates the actual false alarm rate may be lower. Null if no preferred event has been set.",
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "group": {
+                "description": "Physics group of the preferred event: 'CBC' (compact binary coalescence), 'Burst' (unmodeled transient), 'Test', or 'unknown' when GraceDB has not supplied preferred-event group data.",
+                "type": "string"
+              },
+              "gw_id": {
+                "description": "Official gravitational wave event name assigned after confirmation, e.g. 'GW200115'. Null if the event has not been confirmed or named.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "instruments": {
+                "description": "Comma-separated list of detector instruments that contributed to the preferred event, e.g. 'H1,L1,V1' for LIGO Hanford, LIGO Livingston, and Virgo. Null if no preferred event has been set.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "labels_json": {
+                "description": "JSON-encoded array of label strings attached to this superevent, e.g. '[\"EM_READY\",\"GCN_PRELIM_SENT\",\"SKYMAP_READY\"]'. Labels track alert lifecycle: EM_READY (electromagnetic follow-up viable), GCN_PRELIM_SENT (GCN preliminary notice sent), SKYMAP_READY (sky localization map available), EMBRIGHT_READY (source classification available), PASTRO_READY (probability of astrophysical origin available), ADVOK/ADVNO (advocate approval/rejection), SIGNIF_LOCKED (significance frozen), DQR_REQUEST (data quality review requested), HIGH_PROFILE (high-profile candidate), RAVEN_ALERT (external trigger coincidence found).",
+                "type": "string"
+              },
+              "nevents": {
+                "description": "Number of pipeline events aggregated into this superevent. Null if the preferred event data is not available.",
+                "type": [
+                  "int32",
+                  "null"
+                ]
+              },
+              "pipeline": {
+                "description": "Name of the detection pipeline that produced the preferred event, e.g. 'gstlal', 'MBTAOnline', 'SPIIR', 'PyCBC'. Null if no preferred event has been set.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "preferred_event_id": {
+                "description": "GraceDB event ID of the preferred pipeline event (the best detection) associated with this superevent, e.g. 'M632680'. Null if no preferred event has been selected.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "search": {
+                "description": "Search type of the preferred event: 'AllSky' (standard all-sky search), 'MDC' (mock data challenge), 'BBH' (binary black hole targeted), 'EarlyWarning' (pre-merger alert). Null if no preferred event has been set.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "self_uri": {
+                "description": "HATEOAS self link for the superevent resource in the GraceDB REST API, e.g. 'https://gracedb.ligo.org/api/superevents/MS260408x/'.",
+                "type": "string"
+              },
+              "space_coinc_far": {
+                "description": "Space-and-time-coincidence false alarm rate in Hz from the RAVEN pipeline, incorporating both temporal and spatial overlap with an external trigger. Null if no external coincidence was evaluated.",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              },
+              "submitter": {
+                "description": "Username or service account that submitted the superevent to GraceDB, e.g. 'read-cvmfs-emfollow'.",
+                "type": "string"
+              },
+              "superevent_id": {
+                "description": "Unique identifier for the superevent assigned by GraceDB, e.g. 'S240414a' for production events or 'MS260408x' for MDC (mock data challenge) events.",
+                "type": "string"
+              },
+              "t_0": {
+                "description": "GPS time (seconds since 1980-01-06T00:00:00 UTC) of the central trigger time for this superevent.",
+                "type": "double"
+              },
+              "t_end": {
+                "description": "GPS time (seconds since 1980-01-06T00:00:00 UTC) marking the end of the superevent time window.",
+                "type": "double"
+              },
+              "t_start": {
+                "description": "GPS time (seconds since 1980-01-06T00:00:00 UTC) marking the start of the superevent time window.",
+                "type": "double"
+              },
+              "time_coinc_far": {
+                "description": "Time-coincidence false alarm rate in Hz from the RAVEN pipeline, representing the probability of a temporal coincidence with an external trigger. Null if no external coincidence was evaluated.",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "superevent_id",
+              "category",
+              "group",
+              "created",
+              "t_start",
+              "t_0",
+              "t_end",
+              "far",
+              "labels_json",
+              "submitter",
+              "self_uri"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "Superevent"
+}

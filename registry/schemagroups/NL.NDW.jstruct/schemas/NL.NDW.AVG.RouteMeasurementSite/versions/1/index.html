@@ -1,0 +1,85 @@
+{
+  "$id": "https://opendata.ndw.nu/schemas/NL/NDW/AVG/RouteMeasurementSite",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference record for a route (section) measurement site from the Dutch NDW DATEX II measurement_current feed. Covers a road segment between two coordinates used for travel time computation.",
+  "name": "RouteMeasurementSite",
+  "properties": {
+    "end_latitude": {
+      "description": "WGS84 latitude of the route end point in decimal degrees.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "end_longitude": {
+      "description": "WGS84 longitude of the route end point in decimal degrees.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "length_metres": {
+      "description": "Length of the route section in metres, from the DATEX II length element.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "measurement_site_id": {
+      "description": "Unique identifier of the NDW route measurement site, from the DATEX II measurementSiteRecord id attribute.",
+      "type": "string"
+    },
+    "measurement_site_type": {
+      "description": "Measurement method type, from the DATEX II measurementEquipmentTypeUsed element. Example values: detectLoop, floatingCar.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "name": {
+      "description": "Human-readable name of the route measurement site from the DATEX II measurementSiteName element.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "period": {
+      "description": "Measurement aggregation period in seconds, from the DATEX II measurementSpecificCharacteristics period element.",
+      "type": [
+        "int32",
+        "null"
+      ],
+      "unit": "s"
+    },
+    "road_name": {
+      "description": "Road identifier for the route section. Example values: A1, A10, N44.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "start_latitude": {
+      "description": "WGS84 latitude of the route start point in decimal degrees.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "start_longitude": {
+      "description": "WGS84 longitude of the route start point in decimal degrees.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    }
+  },
+  "required": [
+    "measurement_site_id"
+  ],
+  "type": "object"
+}

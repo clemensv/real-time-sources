@@ -1,0 +1,13 @@
+content-disposition:GeneralTransitFeedRealTime.Alert.Alert
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Alert.Alert/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2024-10-18T13:48:05.926645Z
+xregistry-epoch:1
+xregistry-format:Avro
+xregistry-isdefault:true
+xregistry-modifiedat:2024-10-18T13:48:05.926645Z
+xregistry-schemaid:GeneralTransitFeedRealTime.Alert.Alert
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Alert.Alert/versions/1
+xregistry-versionid:1
+xregistry-xid:/schemagroups/GeneralTransitFeedRealTime.avro/schemas/GeneralTransitFeedRealTime.Alert.Alert/versions/1

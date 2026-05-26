@@ -1,0 +1,37 @@
+{
+  "description": "Payload record for equipment status events in the USGS Instantaneous Values source.",
+  "doc": "USGS equipment alarm status data. Parameter code 99235.",
+  "fields": [
+    {
+      "doc": "{\"description\": \"USGS site number.\"}",
+      "name": "site_no",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Date and time of the measurement in ISO-8601 format.\"}",
+      "name": "datetime",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Status of equipment alarm as codes.\"}",
+      "name": "status",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "doc": "{\"description\": \"Parameter code.\"}",
+      "name": "parameter_cd",
+      "type": "string"
+    },
+    {
+      "doc": "{\"description\": \"Timeseries code.\"}",
+      "name": "timeseries_cd",
+      "type": "string"
+    }
+  ],
+  "name": "EquipmentStatus",
+  "namespace": "USGS.InstantaneousValues",
+  "type": "record"
+}

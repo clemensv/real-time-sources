@@ -1,0 +1,76 @@
+{
+  "$id": "https://example.com/schemas/Bluesky/Graph/Follow",
+  "$root": "/definitions/Bluesky/Graph/Follow",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Bluesky": {
+      "Graph": {
+        "Follow": {
+          "description": "A follow relationship between users",
+          "name": "Follow",
+          "properties": {
+            "cid": {
+              "description": "Content Identifier of the follow",
+              "type": "string"
+            },
+            "collection": {
+              "description": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.",
+              "type": "string"
+            },
+            "created_at": {
+              "description": "ISO 8601 timestamp of follow creation",
+              "type": "string"
+            },
+            "did": {
+              "description": "DID of the follower",
+              "type": "string"
+            },
+            "handle": {
+              "default": null,
+              "description": "Handle of the follower",
+              "type": "string"
+            },
+            "indexed_at": {
+              "description": "ISO 8601 timestamp of indexing",
+              "type": "string"
+            },
+            "lang": {
+              "description": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.",
+              "type": "string"
+            },
+            "seq": {
+              "description": "Firehose sequence number",
+              "type": "int64"
+            },
+            "subject": {
+              "description": "DID of the followed user",
+              "type": "string"
+            },
+            "subject_handle": {
+              "default": null,
+              "description": "Handle of the followed user",
+              "type": "string"
+            },
+            "uri": {
+              "description": "AT-URI of the follow record",
+              "type": "string"
+            }
+          },
+          "required": [
+            "uri",
+            "cid",
+            "did",
+            "subject",
+            "created_at",
+            "indexed_at",
+            "seq",
+            "collection",
+            "lang"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "Follow"
+}

@@ -1,0 +1,148 @@
+{
+  "$id": "https://example.com/schemas/fr/gouv/transport/bison_fute/RoadEvent",
+  "$root": "/definitions/fr/gouv/transport/bison_fute/RoadEvent",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "fr": {
+      "gouv": {
+        "transport": {
+          "bison_fute": {
+            "RoadEvent": {
+              "description": "Real-time road situation record from the French national non-conceded road network. Published by Bison Futé (TIPI) as a SituationPublication snapshot. Each record represents a traffic incident, construction works, lane management, obstruction, or other event affecting road conditions. Record types include Accident, ConstructionWorks, MaintenanceWorks, RoadOrCarriagewayOrLaneManagement, AbnormalTraffic, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, AnimalPresenceObstruction, InfrastructureDamageObstruction, GeneralNetworkManagement, ReroutingManagement, SpeedManagement, WeatherRelatedRoadConditions, OperatorAction, GeneralInstructionOrMessageToRoadUsers, and RoadsideServiceDisruption.",
+              "name": "RoadEvent",
+              "properties": {
+                "creation_time": {
+                  "description": "ISO 8601 timestamp when the situation record was first created, from the situationRecordCreationTime element.",
+                  "type": "string"
+                },
+                "description": {
+                  "description": "Human-readable description of the event from the generalPublicComment element with commentType 'description'. Null when no description comment is provided.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "direction": {
+                  "description": "Direction of traffic affected by the event from the tpegDirection element. Possible values: 'bothWays', 'positive', 'negative'. Null when direction is not specified.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "latitude": {
+                  "description": "WGS84 latitude of the event location from the DATEX II pointCoordinates element. Null when no coordinates are provided in the situation record.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                },
+                "location_description": {
+                  "description": "Human-readable description of the event location from the generalPublicComment element with commentType 'locationDescriptor'. When multiple location descriptors exist, they are concatenated with ' | '. Null when no location comment is provided.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "longitude": {
+                  "description": "WGS84 longitude of the event location from the DATEX II pointCoordinates element. Null when no coordinates are provided in the situation record.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                },
+                "observation_time": {
+                  "description": "ISO 8601 timestamp of the most recent observation of this situation, from the situationRecordObservationTime element. Null when not provided.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "overall_end_time": {
+                  "description": "ISO 8601 end time of the event validity period from the overallEndTime element. Null when the event has no defined end time (open-ended).",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "overall_start_time": {
+                  "description": "ISO 8601 start time of the event validity period from the overallStartTime element. Null when the validity period is not defined.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "probability": {
+                  "description": "Probability of occurrence of the event from the probabilityOfOccurrence element. Possible values: 'certain', 'probable', 'riskOf'. Null when not specified.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "record_id": {
+                  "description": "Unique identifier of this specific situation record within the parent situation (e.g. '230814-001797-1'). Each situation may contain multiple records.",
+                  "type": "string"
+                },
+                "record_type": {
+                  "description": "DATEX II xsi:type of the situation record, indicating the category of road event. Known values: Accident, AbnormalTraffic, ConstructionWorks, MaintenanceWorks, RoadOrCarriagewayOrLaneManagement, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, AnimalPresenceObstruction, InfrastructureDamageObstruction, GeneralNetworkManagement, ReroutingManagement, SpeedManagement, WeatherRelatedRoadConditions, OperatorAction, GeneralInstructionOrMessageToRoadUsers, RoadsideServiceDisruption.",
+                  "type": "string"
+                },
+                "road_number": {
+                  "description": "Road identifier (e.g. 'N20', 'A10', 'D906') from the linearElement/roadNumber or tpegOtherPointDescriptor linkName element. Null when no road number is available.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "severity": {
+                  "description": "Overall severity of the parent situation as published in the overallSeverity element. Possible values include 'low', 'medium', 'high', 'highest'. Null when severity is not provided.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "situation_id": {
+                  "description": "Unique identifier of the parent DATEX II situation element (e.g. '230814-001797'). Stable across version updates of the same situation.",
+                  "type": "string"
+                },
+                "source_name": {
+                  "description": "Name of the organization or directorate that published this situation record, from the source/sourceIdentification element. Null when not specified.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "town_name": {
+                  "description": "Name of the nearest town from the tpegOtherPointDescriptor townName element. Null when no town name is provided.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "validity_status": {
+                  "description": "Validity status of the situation record from the validity/validityStatus element (e.g. 'definedByValidityTimeSpec', 'active'). Null when not provided.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "version": {
+                  "description": "Version number of the parent situation, incremented each time the situation is updated by the publisher.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "situation_id",
+                "record_id",
+                "version",
+                "record_type",
+                "creation_time"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "RoadEvent"
+}

@@ -1,0 +1,46 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Observation",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "be.irceline.Timeseries.amqp.Observation",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Observation",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "pollutant": {
+          "description": "Routing attribute `pollutant` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{pollutant}"
+        },
+        "region": {
+          "description": "Routing attribute `region` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{region}"
+        },
+        "station_id": {
+          "description": "Routing attribute `station_id` used in the MQTT topic hierarchy and AMQP subscription filters.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{timeseries_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/be.irceline.Timeseries.amqp/messages/be.irceline.Timeseries.amqp.Observation/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/be.irceline.Timeseries.amqp/messages/be.irceline.Timeseries.amqp.Observation/versions/1"
+  }
+}

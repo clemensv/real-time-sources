@@ -1,0 +1,830 @@
+{
+  "IO.AISstream.AddressedBinaryMessage": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AddressedBinaryMessage",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.AddressedBinaryMessage"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.AddressedBinaryMessage",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.AddressedBinaryMessage/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "AddressedBinaryMessage",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.AddressedBinaryMessage",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.AddressedBinaryMessage/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.AddressedBinaryMessage"
+  },
+  "IO.AISstream.AddressedSafetyMessage": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AddressedSafetyMessage",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.AddressedSafetyMessage"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.AddressedSafetyMessage",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.AddressedSafetyMessage/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "AddressedSafetyMessage",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.AddressedSafetyMessage",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.AddressedSafetyMessage/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.AddressedSafetyMessage"
+  },
+  "IO.AISstream.AidsToNavigationReport": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AidsToNavigationReport",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.AidsToNavigationReport"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.AidsToNavigationReport",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.AidsToNavigationReport/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "AidsToNavigationReport",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.AidsToNavigationReport",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.AidsToNavigationReport/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.AidsToNavigationReport"
+  },
+  "IO.AISstream.AssignedModeCommand": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.AssignedModeCommand",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.AssignedModeCommand"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.AssignedModeCommand",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.AssignedModeCommand/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "AssignedModeCommand",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.AssignedModeCommand",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.AssignedModeCommand/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.AssignedModeCommand"
+  },
+  "IO.AISstream.BaseStationReport": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BaseStationReport",
+    "description": "A reference record from AISStream public AIS firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.BaseStationReport"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.BaseStationReport",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.BaseStationReport/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "BaseStationReport",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.BaseStationReport",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.BaseStationReport/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.BaseStationReport"
+  },
+  "IO.AISstream.BinaryAcknowledge": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BinaryAcknowledge",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.BinaryAcknowledge"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.BinaryAcknowledge",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.BinaryAcknowledge/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "BinaryAcknowledge",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.BinaryAcknowledge",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.BinaryAcknowledge/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.BinaryAcknowledge"
+  },
+  "IO.AISstream.BinaryBroadcastMessage": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.BinaryBroadcastMessage",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.BinaryBroadcastMessage"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.BinaryBroadcastMessage",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.BinaryBroadcastMessage/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "BinaryBroadcastMessage",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.BinaryBroadcastMessage",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.BinaryBroadcastMessage/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.BinaryBroadcastMessage"
+  },
+  "IO.AISstream.ChannelManagement": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ChannelManagement",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.ChannelManagement"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.ChannelManagement",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.ChannelManagement/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "ChannelManagement",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.ChannelManagement",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.ChannelManagement/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.ChannelManagement"
+  },
+  "IO.AISstream.CoordinatedUTCInquiry": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.CoordinatedUTCInquiry",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.CoordinatedUTCInquiry"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.CoordinatedUTCInquiry",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.CoordinatedUTCInquiry/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "CoordinatedUTCInquiry",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.CoordinatedUTCInquiry",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.CoordinatedUTCInquiry/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.CoordinatedUTCInquiry"
+  },
+  "IO.AISstream.DataLinkManagementMessage": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.DataLinkManagementMessage",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.DataLinkManagementMessage"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.DataLinkManagementMessage",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.DataLinkManagementMessage/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "DataLinkManagementMessage",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.DataLinkManagementMessage",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.DataLinkManagementMessage/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.DataLinkManagementMessage"
+  },
+  "IO.AISstream.ExtendedClassBPositionReport": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ExtendedClassBPositionReport",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.ExtendedClassBPositionReport"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.ExtendedClassBPositionReport",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.ExtendedClassBPositionReport/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "ExtendedClassBPositionReport",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.ExtendedClassBPositionReport",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.ExtendedClassBPositionReport/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.ExtendedClassBPositionReport"
+  },
+  "IO.AISstream.GnssBroadcastBinaryMessage": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.GnssBroadcastBinaryMessage",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.GnssBroadcastBinaryMessage"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.GnssBroadcastBinaryMessage",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.GnssBroadcastBinaryMessage/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "GnssBroadcastBinaryMessage",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.GnssBroadcastBinaryMessage",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.GnssBroadcastBinaryMessage/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.GnssBroadcastBinaryMessage"
+  },
+  "IO.AISstream.GroupAssignmentCommand": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.GroupAssignmentCommand",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.GroupAssignmentCommand"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.GroupAssignmentCommand",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.GroupAssignmentCommand/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "GroupAssignmentCommand",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.GroupAssignmentCommand",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.GroupAssignmentCommand/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.GroupAssignmentCommand"
+  },
+  "IO.AISstream.Interrogation": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.Interrogation",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.Interrogation"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.Interrogation",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.Interrogation/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Interrogation",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.Interrogation",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.Interrogation/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.Interrogation"
+  },
+  "IO.AISstream.LongRangeAisBroadcastMessage": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.LongRangeAisBroadcastMessage",
+    "description": "A vehicle or vessel update from AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from the upstream feed.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.LongRangeAisBroadcastMessage"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.LongRangeAisBroadcastMessage",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.LongRangeAisBroadcastMessage/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "LongRangeAisBroadcastMessage",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.LongRangeAisBroadcastMessage",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.LongRangeAisBroadcastMessage/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.LongRangeAisBroadcastMessage"
+  },
+  "IO.AISstream.MultiSlotBinaryMessage": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.MultiSlotBinaryMessage",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.MultiSlotBinaryMessage"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.MultiSlotBinaryMessage",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.MultiSlotBinaryMessage/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "MultiSlotBinaryMessage",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.MultiSlotBinaryMessage",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.MultiSlotBinaryMessage/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.MultiSlotBinaryMessage"
+  },
+  "IO.AISstream.PositionReport": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.PositionReport",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.PositionReport"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.PositionReport",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.PositionReport/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "PositionReport",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.PositionReport",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.PositionReport/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.PositionReport"
+  },
+  "IO.AISstream.SafetyBroadcastMessage": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.SafetyBroadcastMessage",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.SafetyBroadcastMessage"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.SafetyBroadcastMessage",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.SafetyBroadcastMessage/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "SafetyBroadcastMessage",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.SafetyBroadcastMessage",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.SafetyBroadcastMessage/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.SafetyBroadcastMessage"
+  },
+  "IO.AISstream.ShipStaticData": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.ShipStaticData",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.ShipStaticData"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.ShipStaticData",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.ShipStaticData/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "ShipStaticData",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.ShipStaticData",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.ShipStaticData/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.ShipStaticData"
+  },
+  "IO.AISstream.SingleSlotBinaryMessage": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.SingleSlotBinaryMessage",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.SingleSlotBinaryMessage"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.SingleSlotBinaryMessage",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.SingleSlotBinaryMessage/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "SingleSlotBinaryMessage",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.SingleSlotBinaryMessage",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.SingleSlotBinaryMessage/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.SingleSlotBinaryMessage"
+  },
+  "IO.AISstream.StandardClassBPositionReport": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StandardClassBPositionReport",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.StandardClassBPositionReport"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.StandardClassBPositionReport",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.StandardClassBPositionReport/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "StandardClassBPositionReport",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.StandardClassBPositionReport",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.StandardClassBPositionReport/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.StandardClassBPositionReport"
+  },
+  "IO.AISstream.StandardSearchAndRescueAircraftReport": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StandardSearchAndRescueAircraftReport",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.StandardSearchAndRescueAircraftReport"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.StandardSearchAndRescueAircraftReport",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.StandardSearchAndRescueAircraftReport/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "StandardSearchAndRescueAircraftReport",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.StandardSearchAndRescueAircraftReport",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.StandardSearchAndRescueAircraftReport/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.StandardSearchAndRescueAircraftReport"
+  },
+  "IO.AISstream.StaticDataReport": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/IO.AISstream.jstruct/schemas/IO.AISstream.StaticDataReport",
+    "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "wss://stream.aisstream.io/v0/stream"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{mmsi}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "IO.AISstream.StaticDataReport"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "IO.AISstream.StaticDataReport",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.StaticDataReport/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "StaticDataReport",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.StaticDataReport",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/IO.AISstream/messages/IO.AISstream.StaticDataReport/versions",
+    "xid": "/messagegroups/IO.AISstream/messages/IO.AISstream.StaticDataReport"
+  }
+}

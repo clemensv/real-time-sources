@@ -1,0 +1,58 @@
+{
+  "$id": "https://example.com/schemas/Microsoft/OpenData/US/NOAA/AirPressure",
+  "$root": "/definitions/Microsoft/OpenData/US/NOAA/AirPressure",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Microsoft": {
+      "OpenData": {
+        "US": {
+          "NOAA": {
+            "AirPressure": {
+              "name": "AirPressure",
+              "properties": {
+                "max_pressure_exceeded": {
+                  "description": "Flag indicating if the maximum expected air pressure was exceeded",
+                  "type": "boolean"
+                },
+                "min_pressure_exceeded": {
+                  "description": "Flag indicating if the minimum expected air pressure was exceeded",
+                  "type": "boolean"
+                },
+                "rate_of_change_exceeded": {
+                  "description": "Flag indicating if the rate of change tolerance limit was exceeded",
+                  "type": "boolean"
+                },
+                "region": {
+                  "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa.",
+                  "type": "string"
+                },
+                "station_id": {
+                  "description": "{\"description\": \"7 character station ID, or a currents station ID.\"}",
+                  "type": "string"
+                },
+                "timestamp": {
+                  "description": "{\"description\": \"Timestamp of the air pressure measurement\"}",
+                  "type": "string"
+                },
+                "value": {
+                  "description": "{\"description\": \"Value of the air pressure\"}",
+                  "type": "double"
+                }
+              },
+              "required": [
+                "station_id",
+                "timestamp",
+                "value",
+                "max_pressure_exceeded",
+                "min_pressure_exceeded",
+                "rate_of_change_exceeded"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "AirPressure"
+}

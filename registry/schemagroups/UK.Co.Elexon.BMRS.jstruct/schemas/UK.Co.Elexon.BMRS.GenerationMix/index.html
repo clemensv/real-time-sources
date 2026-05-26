@@ -1,0 +1,174 @@
+{
+  "$id": "https://data.elexon.co.uk/schemas/UK/Co/Elexon/BMRS/GenerationMix",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Half-hourly generation outturn summary for the GB electricity system from the Elexon BMRS API. Each record represents one settlement period and contains the generation output in megawatts (MW) broken down by fuel type, including domestic generation (biomass, CCGT, coal, nuclear, wind, OCGT, oil, hydro, pumped storage) and interconnector imports (France IFA, France IFA2, Netherlands BritNed, Belgium Nemo, Ireland EWIC, Norway NSL, Denmark Viking Link). Sourced from the BMRS /generation/outturn/summary endpoint.",
+  "name": "GenerationMix",
+  "properties": {
+    "biomass_mw": {
+      "description": "Generation output from biomass-fuelled power stations in megawatts (MW). Biomass includes dedicated biomass plants and biomass co-firing units.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "ccgt_mw": {
+      "description": "Generation output from combined cycle gas turbine (CCGT) power stations in megawatts (MW). CCGT is the primary gas-fired generation technology in GB.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "coal_mw": {
+      "description": "Generation output from coal-fired power stations in megawatts (MW).",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "intelec_mw": {
+      "description": "Net import via the East-West Interconnector (EWIC) to Ireland in megawatts (MW). Positive values indicate import to GB.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "intfr_mw": {
+      "description": "Net import via the France interconnector (IFA) in megawatts (MW). Positive values indicate import to GB.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "intifa2_mw": {
+      "description": "Net import via the IFA2 interconnector to France in megawatts (MW). Positive values indicate import to GB.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "intned_mw": {
+      "description": "Net import via the Netherlands interconnector (BritNed) in megawatts (MW). Positive values indicate import to GB.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "intnem_mw": {
+      "description": "Net import via the Belgium interconnector (Nemo Link) in megawatts (MW). Positive values indicate import to GB.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "intnsl_mw": {
+      "description": "Net import via the North Sea Link interconnector to Norway in megawatts (MW). Positive values indicate import to GB.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "intvkl_mw": {
+      "description": "Net import via the Viking Link interconnector to Denmark in megawatts (MW). Positive values indicate import to GB.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "npshyd_mw": {
+      "description": "Generation output from non-pumped-storage hydroelectric power stations in megawatts (MW).",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "nuclear_mw": {
+      "description": "Generation output from nuclear power stations in megawatts (MW).",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "ocgt_mw": {
+      "description": "Generation output from open cycle gas turbine (OCGT) power stations in megawatts (MW). OCGT units are typically used for peaking and reserve.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "oil_mw": {
+      "description": "Generation output from oil-fired power stations in megawatts (MW).",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "other_mw": {
+      "description": "Generation output from other fuel types not individually categorised in megawatts (MW).",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "ps_mw": {
+      "description": "Generation output from pumped storage hydroelectric power stations in megawatts (MW). PS units can act as both generation and demand.",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    },
+    "settlement_period": {
+      "description": "GB electricity settlement period number (1-50). Each settlement period is 30 minutes long, starting at midnight UTC. Period 1 covers 00:00-00:30, period 2 covers 00:30-01:00, and so on.",
+      "type": "int32"
+    },
+    "start_time": {
+      "description": "UTC start time of the settlement period as reported by the BMRS generation outturn summary endpoint.",
+      "type": "datetime"
+    },
+    "wind_mw": {
+      "description": "Generation output from wind farms (onshore and offshore combined) in megawatts (MW).",
+      "symbol": "MW",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "MW"
+    }
+  },
+  "required": [
+    "settlement_period",
+    "start_time"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,49 @@
+{
+  "description": "Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source.",
+  "doc": "Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source.",
+  "fields": [
+    {
+      "name": "station_id",
+      "type": "string"
+    },
+    {
+      "name": "station_name",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "name": "river",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "voivodeship",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "default": null,
+      "name": "longitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "name": "latitude",
+      "type": [
+        "null",
+        "double"
+      ]
+    }
+  ],
+  "name": "Station",
+  "namespace": "PL.Gov.IMGW.Hydro",
+  "type": "record"
+}

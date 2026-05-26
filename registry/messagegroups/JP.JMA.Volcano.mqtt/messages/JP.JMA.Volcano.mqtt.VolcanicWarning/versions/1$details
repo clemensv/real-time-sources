@@ -1,0 +1,19 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/JP.JMA.Volcano/messages/JP.JMA.Volcano.VolcanicWarning",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "JP.JMA.Volcano.mqtt.VolcanicWarning",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "VolcanicWarning",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": false,
+    "topic_name": "weather/jp/jma/jma-bosai-volcano/{prefecture}/{volcano_code}/{event}"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Volcano.mqtt/messages/JP.JMA.Volcano.mqtt.VolcanicWarning/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/JP.JMA.Volcano.mqtt/messages/JP.JMA.Volcano.mqtt.VolcanicWarning/versions/1"
+}

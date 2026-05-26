@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/DE.DWD.CDC.jstruct/schemas/DE.DWD.CDC.Wind10Min",
+  "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://opendata.dwd.de"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{station_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "DE.DWD.CDC.Wind10Min"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "DE.DWD.CDC.Wind10Min",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Wind10Min",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Wind10Min/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Wind10Min/versions/1"
+}

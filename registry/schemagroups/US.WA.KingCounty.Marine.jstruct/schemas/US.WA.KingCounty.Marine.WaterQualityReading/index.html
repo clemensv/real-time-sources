@@ -1,0 +1,222 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/king-county-marine/schemas/US.WA.KingCounty.Marine.WaterQualityReading.json",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from King County Metro marine feeds. It carries marine transit schedule and status updates for King County water-taxi routes and sailings.",
+  "name": "WaterQualityReading",
+  "properties": {
+    "air_humidity_pct": {
+      "description": "Relative humidity percentage.",
+      "symbol": "%",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "P1"
+    },
+    "air_pressure_in_hg": {
+      "description": "Air pressure in inches of mercury.",
+      "symbol": "inHg",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "[in_i'Hg]"
+    },
+    "air_temperature_f": {
+      "description": "Air temperature in degrees Fahrenheit.",
+      "symbol": "Â°F",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "[degF]"
+    },
+    "chlorophyll_stddev_ug_l": {
+      "description": "Standard deviation of chlorophyll fluorescence in micrograms per liter.",
+      "symbol": "Âµg/L",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "ug/L"
+    },
+    "chlorophyll_ug_l": {
+      "description": "Chlorophyll fluorescence or chlorophyll concentration in micrograms per liter.",
+      "symbol": "Âµg/L",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "ug/L"
+    },
+    "conductivity_s_m": {
+      "description": "Electrical conductivity in siemens per meter.",
+      "symbol": "S/m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "S/m"
+    },
+    "dissolved_oxygen_mg_l": {
+      "description": "Dissolved oxygen concentration in milligrams per liter.",
+      "symbol": "mg/L",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "mg/L"
+    },
+    "dissolved_oxygen_saturation_pct": {
+      "description": "Dissolved oxygen saturation as a percentage.",
+      "symbol": "%",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "P1"
+    },
+    "nitrate_mg_l": {
+      "description": "Nitrate or nitrate-plus-nitrite concentration in milligrams per liter.",
+      "symbol": "mg/L",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "mg/L"
+    },
+    "nitrate_umol": {
+      "description": "Nitrate or nitrate-plus-nitrite concentration in micromoles.",
+      "symbol": "Âµmol",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "umol"
+    },
+    "observation_time": {
+      "description": "Observation timestamp normalized to UTC ISO 8601 form.",
+      "type": "string"
+    },
+    "ph": {
+      "description": "Measured pH value.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "photosynthetically_active_radiation_umol_s_m2": {
+      "description": "Photosynthetically active radiation in micromoles per second per square meter.",
+      "symbol": "Âµmol/s/mÂ²",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "umol/s/m2"
+    },
+    "pressure_dbar": {
+      "description": "Water pressure in decibar as published by the raw datasets.",
+      "symbol": "dbar",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "dbar"
+    },
+    "salinity_psu": {
+      "description": "Salinity in practical salinity units.",
+      "symbol": "PSU",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "PSU"
+    },
+    "sensor_battery_v": {
+      "description": "Sensor or sonde battery voltage in volts.",
+      "symbol": "V",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "V"
+    },
+    "specific_conductivity_s_m": {
+      "description": "Specific conductivity in siemens per meter.",
+      "symbol": "S/m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "S/m"
+    },
+    "station_id": {
+      "description": "Stable bridge identifier for the buoy or mooring dataset.",
+      "type": "string"
+    },
+    "station_name": {
+      "description": "Human-readable station name derived from the dataset title.",
+      "type": "string"
+    },
+    "system_battery_v": {
+      "description": "System battery voltage in volts.",
+      "symbol": "V",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "V"
+    },
+    "turbidity_ntu": {
+      "description": "Turbidity in nephelometric turbidity units.",
+      "symbol": "NTU",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "NTU"
+    },
+    "turbidity_stddev_ntu": {
+      "description": "Standard deviation of turbidity in nephelometric turbidity units.",
+      "symbol": "NTU",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "NTU"
+    },
+    "water_temperature_c": {
+      "description": "Water temperature in degrees Celsius.",
+      "symbol": "Â°C",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "Cel"
+    },
+    "wind_direction_deg": {
+      "description": "Wind direction in degrees at the buoy surface.",
+      "symbol": "Â°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "wind_speed_m_s": {
+      "description": "Wind speed in meters per second at the buoy surface.",
+      "symbol": "m/s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m/s"
+    }
+  },
+  "required": [
+    "station_id",
+    "station_name",
+    "observation_time"
+  ],
+  "type": "object"
+}

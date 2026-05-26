@@ -1,0 +1,74 @@
+{
+  "JP.JMA.Warning.Office": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/JP.JMA.Warning.jstruct/schemas/JP.JMA.Warning.Office",
+    "description": "JMA Bosai warning office reference data from area.json offices.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "jp.jma.warning/{office_code}/{area_code}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "JP.JMA.Warning.Office"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "JP.JMA.Warning.Office",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.Office/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Office",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.Office",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.Office/versions",
+    "xid": "/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.Office"
+  },
+  "JP.JMA.Warning.WeatherWarning": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/JP.JMA.Warning.jstruct/schemas/JP.JMA.Warning.WeatherWarning",
+    "description": "JMA Bosai weather warning/advisory telemetry for one forecast area within an office bulletin.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "{feedurl}"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "jp.jma.warning/{office_code}/{area_code}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "JP.JMA.Warning.WeatherWarning"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "JP.JMA.Warning.WeatherWarning",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.WeatherWarning/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherWarning",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.WeatherWarning",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.WeatherWarning/versions",
+    "xid": "/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.WeatherWarning"
+  }
+}

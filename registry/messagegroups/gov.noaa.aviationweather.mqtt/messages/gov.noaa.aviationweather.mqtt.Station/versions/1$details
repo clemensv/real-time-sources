@@ -1,0 +1,37 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Station",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://aviationweather.gov"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{icao_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "gov.noaa.aviationweather.Station"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "gov.noaa.aviationweather.mqtt.Station",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Station",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": true,
+    "topic_name": "aviation/intl/noaa/aviationweather/{icao_id}/info"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/gov.noaa.aviationweather.mqtt/messages/gov.noaa.aviationweather.mqtt.Station/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/gov.noaa.aviationweather.mqtt/messages/gov.noaa.aviationweather.mqtt.Station/versions/1"
+}

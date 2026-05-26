@@ -1,0 +1,107 @@
+{
+  "$id": "https://xceed.me/schemas/xceed/Event",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Scheduled nightlife or live-entertainment event record as published by the Xceed Open Event API v1 /events endpoint. Xceed is a European nightlife and ticketing platform covering clubs, bars, parties, and festivals. Each event has a stable UUID assigned by Xceed, a human-readable slug, schedule timestamps, a cover image, an optional external ticket sales link, and an embedded venue object describing the physical location.",
+  "name": "Event",
+  "properties": {
+    "cover_url": {
+      "altnames": {
+        "json": "coverUrl"
+      },
+      "description": "HTTPS URL pointing to the event's main banner or cover image hosted on the Xceed CDN. Returned as 'coverUrl' in the /events response. Suitable for display in listings and detail views. May be null if no image has been uploaded.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ending_time": {
+      "altnames": {
+        "json": "endingTime"
+      },
+      "description": "Scheduled end time of the event expressed as a UTC datetime. Derived from the 'endingTime' UNIX epoch seconds integer in the /events response. May be null if the organiser has not specified an end time.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "event_id": {
+      "altnames": {
+        "json": "id"
+      },
+      "description": "Stable UUID assigned by Xceed to uniquely identify this event across all API versions. Returned as the 'id' field in the /events response. Used as the CloudEvents subject and Kafka key.",
+      "type": "string"
+    },
+    "external_sales_url": {
+      "altnames": {
+        "json": "externalSalesUrl"
+      },
+      "description": "HTTPS URL pointing to an external ticket vendor or the event organiser's own sales page, when tickets are not sold directly through the Xceed platform. Returned as 'externalSalesUrl' in the /events response. Null when tickets are sold via Xceed admissions.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "legacy_id": {
+      "altnames": {
+        "json": "legacyId"
+      },
+      "description": "Legacy numeric integer identifier for the event from an earlier Xceed system version. Returned as 'legacyId' in the /events response. May be null for events that were created natively in the current UUID-based system.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "name": {
+      "description": "Human-readable display name of the event as entered by the event organiser on the Xceed platform. Examples: 'Techno Warehouse Party', 'Club Night with DJ X', 'Summer Festival Opening'. Returned as 'name' in the /events response.",
+      "type": "string"
+    },
+    "slug": {
+      "description": "URL-friendly string identifier for the event, derived from the event name and suitable for use in Xceed web URLs. Returned as 'slug' in the /events response. Example: 'techno-warehouse-party-2024'. May be null for draft or unlisted events.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "starting_time": {
+      "altnames": {
+        "json": "startingTime"
+      },
+      "description": "Scheduled start time of the event expressed as a UTC datetime. Derived from the 'startingTime' UNIX epoch seconds integer in the /events response. Represents when the event doors open or the event officially begins.",
+      "type": "datetime"
+    },
+    "venue_city": {
+      "description": "City in which the venue is located, as stored in the Xceed venue record. Extracted from 'venue.city' or 'venue.location.city' in the /events response. Null if venue or city information is unavailable.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "venue_country_code": {
+      "description": "ISO 3166-1 alpha-2 country code indicating the country where the venue is located. Extracted from 'venue.countryCode' or the venue location object in the /events response. Examples: 'DE', 'GB', 'ES', 'FR'. Null if country information is unavailable.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "venue_id": {
+      "description": "UUID assigned by Xceed to uniquely identify the venue where this event takes place. Extracted from the nested 'venue.id' field in the /events response. Null if venue information is not available for this event.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "venue_name": {
+      "description": "Display name of the venue as listed on the Xceed platform. Extracted from 'venue.name' in the /events response. Examples: 'Berghain', 'Fabric', 'Pacha Barcelona'. Null if venue information is not attached to this event.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "event_id",
+    "name",
+    "starting_time"
+  ],
+  "type": "object"
+}

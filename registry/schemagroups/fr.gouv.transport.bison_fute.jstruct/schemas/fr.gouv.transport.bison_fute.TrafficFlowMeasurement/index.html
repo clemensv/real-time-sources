@@ -1,0 +1,63 @@
+{
+  "$id": "https://example.com/schemas/fr/gouv/transport/bison_fute/TrafficFlowMeasurement",
+  "$root": "/definitions/fr/gouv/transport/bison_fute/TrafficFlowMeasurement",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "fr": {
+      "gouv": {
+        "transport": {
+          "bison_fute": {
+            "TrafficFlowMeasurement": {
+              "description": "Real-time traffic flow and speed measurement from a DATEX II measurement site on the French national non-conceded road network. Published by Bison Futé (TIPI) as a MeasuredDataPublication snapshot every 6 minutes.",
+              "name": "TrafficFlowMeasurement",
+              "properties": {
+                "average_speed": {
+                  "description": "Average speed of vehicles in kilometres per hour at the measurement site during the aggregation interval, from the DATEX II TrafficSpeed/averageVehicleSpeed/speed element. Null when speed data is not available for this site in the current snapshot.",
+                  "type": [
+                    "double",
+                    "null"
+                  ]
+                },
+                "input_values_flow": {
+                  "description": "Number of individual vehicle observations used to compute the vehicle flow rate, from the numberOfInputValuesUsed attribute on the vehicleFlow element. Null when flow data is not present.",
+                  "type": [
+                    "int32",
+                    "null"
+                  ]
+                },
+                "input_values_speed": {
+                  "description": "Number of individual vehicle observations used to compute the average speed, from the numberOfInputValuesUsed attribute on the averageVehicleSpeed element. Null when speed data is not present.",
+                  "type": [
+                    "int32",
+                    "null"
+                  ]
+                },
+                "measurement_time": {
+                  "description": "ISO 8601 timestamp of the measurement, taken from the measurementTimeDefault element in the DATEX II siteMeasurements block. Represents the end of the aggregation interval.",
+                  "type": "string"
+                },
+                "site_id": {
+                  "description": "Unique identifier of the DATEX II measurement site record, as declared in the measurementSiteReference element (e.g. 'MUM76.h1', 'MB631.B8'). Stable across publication snapshots.",
+                  "type": "string"
+                },
+                "vehicle_flow_rate": {
+                  "description": "Number of vehicles per hour passing the measurement site during the aggregation interval, from the DATEX II TrafficFlow/vehicleFlowRate element. Null when flow data is not available for this site in the current snapshot.",
+                  "type": [
+                    "int32",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "site_id",
+                "measurement_time"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "TrafficFlowMeasurement"
+}

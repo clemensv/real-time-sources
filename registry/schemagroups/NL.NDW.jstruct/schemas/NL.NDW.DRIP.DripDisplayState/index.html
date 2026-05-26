@@ -1,0 +1,54 @@
+{
+  "$id": "https://opendata.ndw.nu/schemas/NL/NDW/DRIP/DripDisplayState",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Current display state of a Dynamic Route Information Panel (DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text, pictogram codes, and operational state of the sign.",
+  "name": "DripDisplayState",
+  "properties": {
+    "active": {
+      "description": "Whether the DRIP sign is currently displaying content. Derived from the DATEX II vmsWorking or displayActive element.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "pictogram_code": {
+      "description": "Pictogram code displayed on the sign, from the DATEX II pictogramDisplayAreaSettings/vmsPicktogramDisplayCharacteristics/vmsPicktogramDescription element.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "publication_time": {
+      "description": "ISO 8601 UTC timestamp when this display state was published, from the DATEX II publicationTime element.",
+      "type": "string"
+    },
+    "state": {
+      "description": "Operational state of the DRIP sign, from the DATEX II vmsUnitFault or operationalState element. Example values: working, fault, maintenance.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "vms_controller_id": {
+      "description": "Unique identifier of the VMS controller unit, from the DATEX II vmsUnitRecord id attribute.",
+      "type": "string"
+    },
+    "vms_index": {
+      "description": "Index of the individual VMS sign within the controller unit, converted to string.",
+      "type": "string"
+    },
+    "vms_text": {
+      "description": "Concatenated text from all display panels of the sign, from the DATEX II displayedText/vmsText/vmsTextLine elements.",
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "vms_controller_id",
+    "vms_index",
+    "publication_time"
+  ],
+  "type": "object"
+}

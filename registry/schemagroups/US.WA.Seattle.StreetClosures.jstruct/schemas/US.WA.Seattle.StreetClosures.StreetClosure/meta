@@ -1,0 +1,12 @@
+{
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "defaultversionid": "1",
+  "defaultversionsticky": false,
+  "defaultversionurl": "https://clemensv.github.io/real-time-sources/registry/schemagroups/US.WA.Seattle.StreetClosures.jstruct/schemas/US.WA.Seattle.StreetClosures.StreetClosure/versions/1",
+  "epoch": 1,
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "readonly": false,
+  "schemaid": "US.WA.Seattle.StreetClosures.StreetClosure",
+  "self": "https://clemensv.github.io/real-time-sources/registry/schemagroups/US.WA.Seattle.StreetClosures.jstruct/schemas/US.WA.Seattle.StreetClosures.StreetClosure/meta",
+  "xid": "/schemagroups/US.WA.Seattle.StreetClosures.jstruct/schemas/US.WA.Seattle.StreetClosures.StreetClosure/meta"
+}

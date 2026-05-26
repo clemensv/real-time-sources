@@ -1,0 +1,43 @@
+{
+  "Gov.NIFC.Wildfires.amqp.WildfireIncident": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/Gov.NIFC.Wildfires/messages/Gov.NIFC.Wildfires.WildfireIncident",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "Gov.NIFC.Wildfires.amqp.WildfireIncident",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Gov.NIFC.Wildfires.amqp/messages/Gov.NIFC.Wildfires.amqp.WildfireIncident/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WildfireIncident",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "state": {
+          "description": "Two-letter US state or territory routing segment.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{state}"
+        },
+        "status": {
+          "description": "Incident lifecycle status routing segment: active, contained, controlled, or out.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{status}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject matching the IRWIN CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{irwin_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Gov.NIFC.Wildfires.amqp/messages/Gov.NIFC.Wildfires.amqp.WildfireIncident",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Gov.NIFC.Wildfires.amqp/messages/Gov.NIFC.Wildfires.amqp.WildfireIncident/versions",
+    "xid": "/messagegroups/Gov.NIFC.Wildfires.amqp/messages/Gov.NIFC.Wildfires.amqp.WildfireIncident"
+  }
+}

@@ -1,0 +1,17 @@
+content-disposition:USGS.InstantaneousValues.Turbidity
+content-length:1339
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Turbidity/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:Avro/1.11.3
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Turbidity/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:USGS.InstantaneousValues.Turbidity
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Turbidity
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Turbidity/versions
+xregistry-xid:/schemagroups/USGS.InstantaneousValues.avro/schemas/USGS.InstantaneousValues.Turbidity

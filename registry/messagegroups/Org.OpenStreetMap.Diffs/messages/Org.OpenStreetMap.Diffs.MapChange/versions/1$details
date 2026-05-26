@@ -1,0 +1,33 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/Org.OpenStreetMap.Diffs.jstruct/schemas/Org.OpenStreetMap.Diffs.MapChange",
+  "description": "An individual element change from the OpenStreetMap minutely replication diff feed. Each event represents a single create, modify, or delete operation on a node, way, or relation in the OSM database. The diff files are OsmChange XML documents published every 60 seconds at https://planet.openstreetmap.org/replication/minute/.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://planet.openstreetmap.org/replication/minute"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{element_type}/{element_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "Org.OpenStreetMap.Diffs.MapChange"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Org.OpenStreetMap.Diffs.MapChange",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "MapChange",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange/versions/1"
+}

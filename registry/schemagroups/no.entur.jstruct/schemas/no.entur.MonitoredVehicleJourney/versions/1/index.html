@@ -1,0 +1,225 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/no/entur/MonitoredVehicleJourney",
+  "$root": "/definitions/no/entur/MonitoredVehicleJourney",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "no": {
+      "entur": {
+        "MonitoredVehicleJourney": {
+          "description": "Real-time vehicle monitoring update from the Entur SIRI-VM feed (GET /realtime/v1/rest/vm). Contains the current geographic position of a vehicle, its bearing, delay, occupancy status, and the next monitored call. Uses incremental requestorId polling for efficient change delivery.",
+          "name": "MonitoredVehicleJourney",
+          "properties": {
+            "bearing": {
+              "altnames": {
+                "xml": "Bearing"
+              },
+              "description": "Compass bearing in degrees (0-360) indicating the direction of travel, from the SIRI Bearing element.",
+              "maximum": 360,
+              "minimum": 0,
+              "type": [
+                "double",
+                "null"
+              ],
+              "unit": "degrees"
+            },
+            "delay_seconds": {
+              "altnames": {
+                "xml": "Delay"
+              },
+              "description": "Current delay in integer seconds, parsed from the ISO 8601 Duration value in the SIRI Delay element. Positive values indicate lateness; negative values indicate running early.",
+              "type": [
+                "int32",
+                "null"
+              ],
+              "unit": "s"
+            },
+            "destination_name": {
+              "altnames": {
+                "xml": "DestinationName"
+              },
+              "description": "Human-readable name of the destination stop or place for this journey.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "direction_ref": {
+              "altnames": {
+                "xml": "DirectionRef"
+              },
+              "description": "Direction reference for this journey, e.g. Outbound or Inbound.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "latitude": {
+              "altnames": {
+                "xml": "Latitude"
+              },
+              "description": "WGS84 latitude of the vehicle's current position in decimal degrees, from VehicleLocation/Latitude.",
+              "maximum": 90,
+              "minimum": -90,
+              "type": [
+                "double",
+                "null"
+              ],
+              "unit": "degrees"
+            },
+            "line_ref": {
+              "altnames": {
+                "xml": "LineRef"
+              },
+              "description": "NeTEx Line reference identifying the line this journey belongs to. Example: RUT:Line:1.",
+              "type": "string"
+            },
+            "longitude": {
+              "altnames": {
+                "xml": "Longitude"
+              },
+              "description": "WGS84 longitude of the vehicle's current position in decimal degrees, from VehicleLocation/Longitude.",
+              "maximum": 180,
+              "minimum": -180,
+              "type": [
+                "double",
+                "null"
+              ],
+              "unit": "degrees"
+            },
+            "monitored": {
+              "altnames": {
+                "xml": "Monitored"
+              },
+              "description": "True if this journey is being actively tracked by an AVL system, from the SIRI Monitored element.",
+              "type": "boolean"
+            },
+            "occupancy_status": {
+              "altenums": [
+                "full",
+                "standingRoomOnly",
+                "passengerCapacityLimitReached",
+                "seatsAvailable",
+                "empty",
+                "notAcceptingPassengers"
+              ],
+              "altnames": {
+                "xml": "OccupancyStatus"
+              },
+              "description": "Passenger occupancy status of the vehicle from the SIRI OccupancyStatus element.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "operating_day": {
+              "altnames": {
+                "xml": "DataFrameRef"
+              },
+              "description": "ISO 8601 calendar date string for the operating day of this journey, from FramedVehicleJourneyRef/DataFrameRef. Example: 2024-01-01.",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "type": "string"
+            },
+            "operator_ref": {
+              "altnames": {
+                "xml": "OperatorRef"
+              },
+              "description": "NeTEx Operator or codespace reference for the operator running this journey. Example: RUT.",
+              "type": "string"
+            },
+            "origin_name": {
+              "altnames": {
+                "xml": "OriginName"
+              },
+              "description": "Human-readable name of the origin stop or place for this journey.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "progress_status": {
+              "altenums": [
+                "inProgress",
+                "notExpected",
+                "notRun",
+                "cancelled"
+              ],
+              "altnames": {
+                "xml": "ProgressStatus"
+              },
+              "description": "Journey progress status from the SIRI ProgressStatus element indicating whether the journey is running normally or has been cancelled/skipped.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "published_line_name": {
+              "altnames": {
+                "xml": "PublishedLineName"
+              },
+              "description": "Public-facing line number or name displayed to passengers. Example: 31.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "recorded_at_time": {
+              "altnames": {
+                "xml": "RecordedAtTime"
+              },
+              "description": "ISO 8601 UTC timestamp from the parent VehicleActivity/RecordedAtTime element indicating when this position was recorded.",
+              "type": "datetime"
+            },
+            "service_journey_id": {
+              "altnames": {
+                "xml": "DatedVehicleJourneyRef"
+              },
+              "description": "NeTEx ServiceJourney identifier extracted from FramedVehicleJourneyRef/DatedVehicleJourneyRef. Uniquely identifies the planned vehicle journey. Example: RUT:ServiceJourney:1-1234.",
+              "type": "string"
+            },
+            "vehicle_mode": {
+              "altenums": [
+                "bus",
+                "tram",
+                "rail",
+                "ferry",
+                "metro",
+                "water",
+                "air",
+                "coach",
+                "taxi"
+              ],
+              "altnames": {
+                "xml": "VehicleMode"
+              },
+              "description": "SIRI VehicleMode describing the mode of transport. Known values: bus, tram, rail, ferry, metro, water, air, coach, taxi.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "vehicle_ref": {
+              "altnames": {
+                "xml": "VehicleRef"
+              },
+              "description": "Vehicle identifier from the SIRI VehicleRef element. Identifies the physical vehicle (e.g. bus number), not the journey. Not used as a Kafka key.",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "service_journey_id",
+            "operating_day",
+            "recorded_at_time",
+            "line_ref",
+            "operator_ref",
+            "monitored"
+          ],
+          "type": "object"
+        }
+      }
+    }
+  },
+  "name": "MonitoredVehicleJourney"
+}

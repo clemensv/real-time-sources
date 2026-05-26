@@ -1,0 +1,24 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/AU.Gov.Emergency.Wildfires/messages/AU.Gov.Emergency.Wildfires.FireIncident",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "AU.Gov.Emergency.Wildfires.amqp.FireIncident",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "FireIncident",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{state}/{incident_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/AU.Gov.Emergency.Wildfires.amqp/messages/AU.Gov.Emergency.Wildfires.amqp.FireIncident/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/AU.Gov.Emergency.Wildfires.amqp/messages/AU.Gov.Emergency.Wildfires.amqp.FireIncident/versions/1"
+}

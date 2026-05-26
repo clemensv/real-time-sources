@@ -1,0 +1,38 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/uk.kcl.laqn.species/messages/uk.kcl.laqn.Species",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "uk.kcl.laqn.species.amqp.Species",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Species",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "borough": {
+        "description": "Routing attribute `borough` used in the MQTT topic hierarchy and AMQP subscription filters.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{borough}"
+      },
+      "site_code": {
+        "description": "Routing attribute `site_code` used in the MQTT topic hierarchy and AMQP subscription filters.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{site_code}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject matching the CloudEvent subject and Kafka key.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{species_code}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/uk.kcl.laqn.species.amqp/messages/uk.kcl.laqn.species.amqp.Species/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/uk.kcl.laqn.species.amqp/messages/uk.kcl.laqn.species.amqp.Species/versions/1"
+}

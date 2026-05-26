@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/NO.Kystverket.AIS.jstruct/schemas/NO.Kystverket.AIS.StaticVoyageData",
+  "description": "A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "urn:ais:kystverket:tcp"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{mmsi}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "NO.Kystverket.AIS.StaticVoyageData"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "NO.Kystverket.AIS.StaticVoyageData",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.StaticVoyageData/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "StaticVoyageData",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.StaticVoyageData",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.StaticVoyageData/versions",
+  "xid": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.StaticVoyageData"
+}

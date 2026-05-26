@@ -1,0 +1,148 @@
+{
+  "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/tolls/TollRate",
+  "$root": "/definitions/us/wa/wsdot/tolls/TollRate",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "us": {
+      "wa": {
+        "wsdot": {
+          "tolls": {
+            "TollRate": {
+              "description": "Current toll rate for a WSDOT tolled route segment. WSDOT operates dynamic tolling on SR 99, I-405, and SR 167.",
+              "name": "TollRate",
+              "properties": {
+                "current_message": {
+                  "altnames": {
+                    "json": "CurrentMessage"
+                  },
+                  "description": "Optional status message.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "current_toll": {
+                  "altnames": {
+                    "json": "CurrentToll"
+                  },
+                  "description": "Current toll in cents.",
+                  "type": "int32"
+                },
+                "end_latitude": {
+                  "altnames": {
+                    "json": "EndLatitude"
+                  },
+                  "description": "End latitude.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "end_location_name": {
+                  "altnames": {
+                    "json": "EndLocationName"
+                  },
+                  "description": "End location name.",
+                  "type": "string"
+                },
+                "end_longitude": {
+                  "altnames": {
+                    "json": "EndLongitude"
+                  },
+                  "description": "End longitude.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "end_milepost": {
+                  "altnames": {
+                    "json": "EndMilepost"
+                  },
+                  "description": "End milepost.",
+                  "type": "double"
+                },
+                "start_latitude": {
+                  "altnames": {
+                    "json": "StartLatitude"
+                  },
+                  "description": "Start latitude.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "start_location_name": {
+                  "altnames": {
+                    "json": "StartLocationName"
+                  },
+                  "description": "Start location name.",
+                  "type": "string"
+                },
+                "start_longitude": {
+                  "altnames": {
+                    "json": "StartLongitude"
+                  },
+                  "description": "Start longitude.",
+                  "symbol": "°",
+                  "type": "double",
+                  "unit": "deg"
+                },
+                "start_milepost": {
+                  "altnames": {
+                    "json": "StartMilepost"
+                  },
+                  "description": "Start milepost.",
+                  "type": "double"
+                },
+                "state_route": {
+                  "altnames": {
+                    "json": "StateRoute"
+                  },
+                  "description": "State route number.",
+                  "type": "string"
+                },
+                "time_updated": {
+                  "altnames": {
+                    "json": "TimeUpdated"
+                  },
+                  "description": "ISO 8601 UTC timestamp.",
+                  "type": "string"
+                },
+                "travel_direction": {
+                  "altnames": {
+                    "json": "TravelDirection"
+                  },
+                  "description": "Travel direction: N, S, E, W.",
+                  "type": "string"
+                },
+                "trip_name": {
+                  "altnames": {
+                    "json": "TripName"
+                  },
+                  "description": "Tolled route segment identifier.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "trip_name",
+                "state_route",
+                "travel_direction",
+                "current_toll",
+                "current_message",
+                "time_updated",
+                "start_location_name",
+                "start_latitude",
+                "start_longitude",
+                "start_milepost",
+                "end_location_name",
+                "end_latitude",
+                "end_longitude",
+                "end_milepost"
+              ],
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "TollRate"
+}

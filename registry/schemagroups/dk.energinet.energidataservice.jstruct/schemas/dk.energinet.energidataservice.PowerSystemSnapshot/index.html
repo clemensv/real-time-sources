@@ -1,0 +1,214 @@
+{
+  "$id": "https://example.com/schemas/dk/energinet/energidataservice/PowerSystemSnapshot",
+  "$root": "/definitions/dk/energinet/energidataservice/PowerSystemSnapshot",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "dk": {
+      "energinet": {
+        "energidataservice": {
+          "PowerSystemSnapshot": {
+            "description": "Minute-by-minute snapshot of the Danish power system from Energi Data Service (Energinet). Published by the PowerSystemRightNow dataset at approximately 1-minute intervals.",
+            "name": "PowerSystemSnapshot",
+            "properties": {
+              "afrr_activated_dk1": {
+                "description": "Automatic Frequency Restoration Reserve (aFRR) activated in price area DK1, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'aFRR_ActivatedDK1'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "afrr_activated_dk2": {
+                "description": "Automatic Frequency Restoration Reserve (aFRR) activated in price area DK2, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'aFRR_ActivatedDK2'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "co2_emission": {
+                "description": "CO2 emission intensity of electricity consumed in Denmark at the time of the snapshot, measured in grams of CO2 per kWh (g/kWh). Sourced from 'CO2Emission'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "g/kWh"
+              },
+              "exchange_bornholm_se": {
+                "description": "Electricity exchange flow on the Bornholm–Sweden interconnector, in megawatts (MW). Positive = import to Bornholm, negative = export from Bornholm. Sourced from 'Exchange_Bornholm_SE'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "exchange_dk1_de": {
+                "description": "Electricity exchange flow on the DK1–Germany interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_DE'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "exchange_dk1_dk2": {
+                "description": "Electricity exchange flow on the DK1–DK2 (Great Belt) interconnector, in megawatts (MW). Positive = flow from DK1 to DK2, negative = flow from DK2 to DK1. Sourced from 'Exchange_DK1_DK2'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "exchange_dk1_gb": {
+                "description": "Electricity exchange flow on the DK1–Great Britain (Viking Link) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_GB'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "exchange_dk1_nl": {
+                "description": "Electricity exchange flow on the DK1–Netherlands (COBRAcable) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_NL'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "exchange_dk1_no": {
+                "description": "Electricity exchange flow on the DK1–Norway (Skagerrak) interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_NO'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "exchange_dk1_se": {
+                "description": "Electricity exchange flow on the DK1–Sweden interconnector, in megawatts (MW). Positive = import to DK1, negative = export from DK1. Sourced from 'Exchange_DK1_SE'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "exchange_dk2_de": {
+                "description": "Electricity exchange flow on the DK2–Germany (Kontek) interconnector, in megawatts (MW). Positive = import to DK2, negative = export from DK2. Sourced from 'Exchange_DK2_DE'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "exchange_dk2_se": {
+                "description": "Electricity exchange flow on the DK2–Sweden (Øresund) interconnector, in megawatts (MW). Positive = import to DK2, negative = export from DK2. Sourced from 'Exchange_DK2_SE'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "exchange_sum": {
+                "description": "Net total cross-border electricity exchange for all Danish interconnectors, in megawatts (MW). Positive values indicate net import; negative values indicate net export. Sourced from 'Exchange_Sum'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "imbalance_dk1": {
+                "description": "Net power imbalance in price area DK1, in megawatts (MW). Represents the difference between scheduled and actual generation/consumption. Sourced from 'ImbalanceDK1'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "imbalance_dk2": {
+                "description": "Net power imbalance in price area DK2, in megawatts (MW). Represents the difference between scheduled and actual generation/consumption. Sourced from 'ImbalanceDK2'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "mfrr_activated_dk1": {
+                "description": "Manual Frequency Restoration Reserve (mFRR) activated in price area DK1, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'mFRR_ActivatedDK1'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "mfrr_activated_dk2": {
+                "description": "Manual Frequency Restoration Reserve (mFRR) activated in price area DK2, in megawatts (MW). Positive = upward regulation, negative = downward regulation. Sourced from 'mFRR_ActivatedDK2'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "minutes1_dk": {
+                "description": "Danish local-time timestamp of the snapshot rounded to the nearest minute, in ISO 8601 format. Sourced from the PowerSystemRightNow 'Minutes1DK' field.",
+                "type": "string"
+              },
+              "minutes1_utc": {
+                "description": "UTC timestamp of the snapshot rounded to the nearest minute, in ISO 8601 format. Sourced from the PowerSystemRightNow 'Minutes1UTC' field.",
+                "type": "string"
+              },
+              "offshore_wind_power": {
+                "description": "Total offshore wind power production in Denmark, in megawatts (MW). Sourced from 'OffshoreWindPower'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "onshore_wind_power": {
+                "description": "Total onshore wind power production in Denmark, in megawatts (MW). Sourced from 'OnshoreWindPower'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "price_area": {
+                "description": "Price area code. Set to 'DK' for system-wide power system snapshots that cover the entire Danish grid (both DK1 and DK2).",
+                "type": "string"
+              },
+              "production_ge_100mw": {
+                "description": "Total electricity production from centralized power plants with capacity \u003e= 100 MW, in megawatts (MW). Sourced from 'ProductionGe100MW'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "production_lt_100mw": {
+                "description": "Total electricity production from decentralized power plants with capacity \u003c 100 MW, in megawatts (MW). Sourced from 'ProductionLt100MW'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              },
+              "solar_power": {
+                "description": "Estimated total solar photovoltaic power production in Denmark, in megawatts (MW). Sourced from 'SolarPower'.",
+                "type": [
+                  "double",
+                  "null"
+                ],
+                "unit": "MW"
+              }
+            },
+            "required": [
+              "minutes1_utc",
+              "minutes1_dk",
+              "price_area"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "PowerSystemSnapshot"
+}

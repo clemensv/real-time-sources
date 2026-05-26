@@ -1,0 +1,38 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/Billetto.Events.jstruct/schemas/Billetto.Events.Event",
+  "description": "A public ticketed event from the Billetto platform, including title, schedule, venue, organizer, pricing, and ticket availability status.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://billetto.dk/api/v3/public/events"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{event_id}"
+    },
+    "time": {
+      "required": false,
+      "type": "timestamp",
+      "value": "{startdate}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "Billetto.Events.Event"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Billetto.Events.Event",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Event",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Billetto.Events/messages/Billetto.Events.Event/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/Billetto.Events/messages/Billetto.Events.Event/versions/1"
+}

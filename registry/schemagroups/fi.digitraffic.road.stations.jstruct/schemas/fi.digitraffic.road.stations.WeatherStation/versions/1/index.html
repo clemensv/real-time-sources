@@ -1,0 +1,173 @@
+{
+  "$id": "https://fintraffic.fi/schemas/fi/digitraffic/road/stations/WeatherStation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.",
+  "name": "WeatherStation",
+  "properties": {
+    "altitude": {
+      "description": "Station altitude in meters above sea level. Null or 0.0 if altitude data is not available.",
+      "type": [
+        "double",
+        "null"
+      ]
+    },
+    "carriageway": {
+      "description": "Carriageway type at the station location. Values include \"DUAL_CARRIAGEWAY_RIGHT_IN_INCREASING_DIRECTION\", \"DUAL_CARRIAGEWAY_LEFT_IN_INCREASING_DIRECTION\", \"ONE_CARRIAGEWAY\". Null if not specified.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "collection_interval": {
+      "description": "Data collection interval in seconds. Typical value is 300 (5 minutes) for road weather stations.",
+      "type": "int32"
+    },
+    "collection_status": {
+      "description": "Current data collection status. Values: \"GATHERING\" (actively collecting), \"REMOVED_TEMPORARILY\", \"REMOVED_PERMANENTLY\".",
+      "type": "string"
+    },
+    "contract_area": {
+      "description": "Road maintenance contract area name (e.g. \"Espoo 19-24\"). Identifies the maintenance contract responsible for the road section. Null if not assigned.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contract_area_code": {
+      "description": "Numeric code for the maintenance contract area (e.g. 142). Null if not assigned.",
+      "type": [
+        "int32",
+        "null"
+      ]
+    },
+    "data_updated_time": {
+      "description": "ISO 8601 UTC timestamp when the station metadata was last updated. Null if not tracked.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "distance_from_section_start": {
+      "description": "Distance from the start of the road section in meters.",
+      "type": "int32"
+    },
+    "latitude": {
+      "description": "Station latitude in WGS84 (EPSG:4326) decimal degrees.",
+      "type": "double"
+    },
+    "livi_id": {
+      "description": "Legacy identifier from the Finnish Transport Infrastructure Agency. Null if not assigned.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "longitude": {
+      "description": "Station longitude in WGS84 (EPSG:4326) decimal degrees.",
+      "type": "double"
+    },
+    "master": {
+      "description": "Whether this is a master station. Master stations are the primary data source; non-master stations may be auxiliary or backup installations at the same location.",
+      "type": "boolean"
+    },
+    "municipality": {
+      "description": "Name of the Finnish municipality where the station is located.",
+      "type": "string"
+    },
+    "municipality_code": {
+      "description": "Finnish municipality code as defined by Statistics Finland.",
+      "type": "int32"
+    },
+    "name": {
+      "description": "Internal station name used by Fintraffic, typically encoding road type, municipality and area (e.g. \"kt51_Espoo_Kivenlahti\"). Not intended for display.",
+      "type": "string"
+    },
+    "names_en": {
+      "description": "English display name for the station (e.g. \"Road 51 Espoo, Kivenlahti\"). Null if no translation available.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "names_fi": {
+      "description": "Finnish display name for the station (e.g. \"Tie 51 Espoo, Kivenlahti\").",
+      "type": "string"
+    },
+    "names_sv": {
+      "description": "Swedish display name for the station (e.g. \"Väg 51 Esbo, Stensvik\"). Null if no translation available.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "province": {
+      "description": "Name of the Finnish province (maakunta) where the station is located.",
+      "type": "string"
+    },
+    "province_code": {
+      "description": "Finnish province code as defined by Statistics Finland.",
+      "type": "int32"
+    },
+    "road_number": {
+      "description": "Finnish road number where the station is installed.",
+      "type": "int32"
+    },
+    "road_section": {
+      "description": "Road section number within the road.",
+      "type": "int32"
+    },
+    "sensors": {
+      "description": "Array of sensor identifiers available at this station. Each ID corresponds to a sensor producing WeatherSensorData telemetry. Common sensors: ILMA (1, air temp), TIE_1 (3, road surface temp), KASTEPISTE (9, dew point), KESKITUULI (16, avg wind), ILMAN_KOSTEUS (19, humidity). Full list at /api/weather/v1/sensors.",
+      "items": {
+        "description": "A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.",
+        "type": "int32"
+      },
+      "type": "array"
+    },
+    "side": {
+      "description": "Side of the road. Values: \"LEFT\", \"RIGHT\", \"BETWEEN\", \"UNKNOWN\". Null if not specified.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "start_time": {
+      "description": "ISO 8601 UTC timestamp when the station started collecting data.",
+      "type": "string"
+    },
+    "state": {
+      "description": "Operational state of the station hardware. Null if state information is not available from the upstream API.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "station_id": {
+      "description": "Road weather station numeric identifier as assigned by Fintraffic (e.g. 1012). Uniqueness scope is road weather stations. Corresponds to the station_id in WeatherSensorData telemetry events.",
+      "type": "int32"
+    },
+    "station_type": {
+      "description": "Weather station type code indicating the hardware configuration (e.g. \"RWS_200\" for a Rosa RWS-200 station). Determines available sensor capabilities.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "name",
+    "longitude",
+    "latitude",
+    "municipality",
+    "municipality_code",
+    "province",
+    "province_code",
+    "road_number",
+    "road_section",
+    "station_type",
+    "master",
+    "collection_status",
+    "collection_interval",
+    "start_time",
+    "sensors"
+  ],
+  "type": "object"
+}

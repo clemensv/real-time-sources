@@ -1,0 +1,42 @@
+{
+  "1": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.WeatherStation",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "fi.digitraffic.road.amqp.WeatherStation",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WeatherStation",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "station_id": {
+          "description": "Road weather station identifier.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "message-annotations": {
+        "x-opt-partition-key": {
+          "description": "Service Bus / Event Hubs partition key for weather station reference records.",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject for road weather station reference records.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeatherStation/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.WeatherStation/versions/1"
+  }
+}

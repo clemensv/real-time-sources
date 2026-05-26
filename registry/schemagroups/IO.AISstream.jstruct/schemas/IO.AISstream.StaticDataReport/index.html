@@ -1,0 +1,128 @@
+{
+  "$id": "https://example.com/schemas/IO/AISstream/StaticDataReport",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.",
+  "name": "StaticDataReport",
+  "properties": {
+    "MessageID": {
+      "description": "Provider field for message i d in this record.",
+      "type": "int32"
+    },
+    "PartNumber": {
+      "description": "Provider field for part number in this record.",
+      "type": "boolean"
+    },
+    "RepeatIndicator": {
+      "description": "Provider field for repeat indicator in this record.",
+      "type": "int32"
+    },
+    "ReportA": {
+      "description": "Provider field for report a in this record.",
+      "name": "ReportA",
+      "properties": {
+        "Name": {
+          "description": "Human-readable name of the resource.",
+          "type": "string"
+        },
+        "Valid": {
+          "description": "Provider field for valid in this record.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Valid",
+        "Name"
+      ],
+      "type": "object"
+    },
+    "ReportB": {
+      "description": "Provider field for report b in this record.",
+      "name": "ReportB",
+      "properties": {
+        "CallSign": {
+          "description": "Provider field for call sign in this record.",
+          "type": "string"
+        },
+        "Dimension": {
+          "description": "Provider field for dimension in this record.",
+          "name": "Dimension",
+          "properties": {
+            "A": {
+              "description": "Provider field for a in this record.",
+              "type": "int32"
+            },
+            "B": {
+              "description": "Provider field for b in this record.",
+              "type": "int32"
+            },
+            "C": {
+              "description": "Provider field for c in this record.",
+              "type": "int32"
+            },
+            "D": {
+              "description": "Provider field for d in this record.",
+              "type": "int32"
+            }
+          },
+          "required": [
+            "A",
+            "B",
+            "C",
+            "D"
+          ],
+          "type": "object"
+        },
+        "FixType": {
+          "description": "Provider field for fix type in this record.",
+          "type": "int32"
+        },
+        "ShipType": {
+          "description": "Provider field for ship type in this record.",
+          "type": "int32"
+        },
+        "Spare": {
+          "description": "Provider field for spare in this record.",
+          "type": "int32"
+        },
+        "Valid": {
+          "description": "Provider field for valid in this record.",
+          "type": "boolean"
+        },
+        "VenderIDModel": {
+          "description": "Provider field for vender i d model in this record.",
+          "type": "int32"
+        },
+        "VenderIDSerial": {
+          "description": "Provider field for vender i d serial in this record.",
+          "type": "int32"
+        },
+        "VendorIDName": {
+          "description": "Provider field for vendor i d name in this record.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "Valid"
+      ],
+      "type": "object"
+    },
+    "Reserved": {
+      "description": "Provider field for reserved in this record.",
+      "type": "int32"
+    },
+    "UserID": {
+      "description": "Provider field for user i d in this record.",
+      "type": "int32"
+    },
+    "Valid": {
+      "description": "Provider field for valid in this record.",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "MessageID",
+    "UserID",
+    "Valid"
+  ],
+  "type": "object"
+}

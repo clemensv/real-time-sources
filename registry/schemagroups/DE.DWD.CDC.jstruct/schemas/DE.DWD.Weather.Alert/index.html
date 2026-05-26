@@ -1,0 +1,84 @@
+{
+  "$id": "https://example.com/DE/DWD/Weather.schema.json",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A weather or environmental alert from Germany's Deutscher Wetterdienst (DWD). It fires when the upstream source publishes or updates a warning that may affect the covered area.",
+  "name": "Alert",
+  "properties": {
+    "area_desc": {
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "string"
+    },
+    "certainty": {
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "string"
+    },
+    "description": {
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "string"
+    },
+    "effective": {
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "string"
+    },
+    "event": {
+      "description": "Provider event type, warning type, or product event category.",
+      "type": "string"
+    },
+    "expires": {
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "string"
+    },
+    "geocodes": {
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "string"
+    },
+    "headline": {
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "string"
+    },
+    "identifier": {
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "string"
+    },
+    "msg_type": {
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "string"
+    },
+    "onset": {
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "string"
+    },
+    "sender": {
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "string"
+    },
+    "sent": {
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "string"
+    },
+    "severity": {
+      "description": "Provider severity level for a warning or alert.",
+      "type": "string"
+    },
+    "state": {
+      "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "status": {
+      "description": "Provider status value for the station, product, warning, or measurement.",
+      "type": "string"
+    },
+    "urgency": {
+      "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "identifier",
+    "sender",
+    "sent",
+    "severity",
+    "event"
+  ],
+  "type": "object"
+}

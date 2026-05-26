@@ -1,0 +1,33 @@
+{
+  "$id": "https://services.swpc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/SWPC/GoesProtonFlux",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Five-minute resolution integral proton flux measurement from the GOES primary satellite SEISS/SGPS (Space Environment In-Situ Suite / Solar and Galactic Proton Sensor) instrument, as reported by the SWPC goes/primary/integral-protons-7-day endpoint. Four energy thresholds are reported. The \u003e= 10 MeV channel is used for the official NOAA S-scale solar radiation storm classification (S1-S5).",
+  "name": "GoesProtonFlux",
+  "properties": {
+    "energy": {
+      "description": "Proton energy threshold identifier: '\u003e=10 MeV' (NOAA S-scale metric), '\u003e=50 MeV', '\u003e=100 MeV', or '\u003e=500 MeV'. Higher thresholds indicate more energetic and penetrating radiation.",
+      "type": "string"
+    },
+    "flux": {
+      "description": "Integral proton flux above the specified energy threshold, in particle flux units (pfu = protons/cm²/sr/s). An S1 minor radiation storm is declared when \u003e= 10 MeV flux exceeds 10 pfu. S5 extreme: \u003e= 100,000 pfu.",
+      "symbol": "pfu",
+      "type": "double",
+      "unit": "pfu"
+    },
+    "satellite": {
+      "description": "GOES satellite number providing the measurement (e.g., 19 for GOES-19).",
+      "type": "integer"
+    },
+    "time_tag": {
+      "description": "UTC date-time of the proton flux measurement in ISO 8601 format.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "time_tag",
+    "satellite",
+    "flux",
+    "energy"
+  ],
+  "type": "object"
+}

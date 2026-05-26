@@ -1,0 +1,19 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareAttributes",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "GeneralTransitFeedStatic.FareAttributes.mqtt",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "FareAttributes",
+  "protocol": "MQTT/5.0",
+  "protocoloptions": {
+    "qos": 1,
+    "retain": true,
+    "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/fare-attributes/{row_id}"
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/GeneralTransitFeedStatic.mqtt/messages/GeneralTransitFeedStatic.FareAttributes.mqtt/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/GeneralTransitFeedStatic.mqtt/messages/GeneralTransitFeedStatic.FareAttributes.mqtt/versions/1"
+}

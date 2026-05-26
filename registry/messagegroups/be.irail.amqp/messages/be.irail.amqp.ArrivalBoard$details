@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/be.irail/messages/be.irail.ArrivalBoard",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "be.irail.amqp.ArrivalBoard",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/be.irail.amqp/messages/be.irail.amqp.ArrivalBoard/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "ArrivalBoard",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {},
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Service Bus/Event Hubs partition key. Mirrors the CloudEvents subject and Kafka key so events for the same entity route consistently across transports.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{station_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/be.irail.amqp/messages/be.irail.amqp.ArrivalBoard",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/be.irail.amqp/messages/be.irail.amqp.ArrivalBoard/versions",
+  "xid": "/messagegroups/be.irail.amqp/messages/be.irail.amqp.ArrivalBoard"
+}

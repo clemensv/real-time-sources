@@ -1,0 +1,74 @@
+{
+  "es.madrid.informo.MeasurementPoint": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/es.madrid.informo.jstruct/schemas/es.madrid.informo.MeasurementPoint",
+    "description": "A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://informo.madrid.es/informo/tmadrid/pm.xml"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{sensor_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "es.madrid.informo.MeasurementPoint"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "es.madrid.informo.MeasurementPoint",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/es.madrid.informo/messages/es.madrid.informo.MeasurementPoint/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "MeasurementPoint",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/es.madrid.informo/messages/es.madrid.informo.MeasurementPoint",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/es.madrid.informo/messages/es.madrid.informo.MeasurementPoint/versions",
+    "xid": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.MeasurementPoint"
+  },
+  "es.madrid.informo.TrafficReading": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/es.madrid.informo.jstruct/schemas/es.madrid.informo.TrafficReading",
+    "description": "A current transport measurement or status update from Madrid open traffic sensor feeds. It carries traffic intensity and occupancy measurements when the upstream feed reports a new or refreshed value.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://informo.madrid.es/informo/tmadrid/pm.xml"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{sensor_id}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "es.madrid.informo.TrafficReading"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "es.madrid.informo.TrafficReading",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/es.madrid.informo/messages/es.madrid.informo.TrafficReading/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "TrafficReading",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/es.madrid.informo/messages/es.madrid.informo.TrafficReading",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/es.madrid.informo/messages/es.madrid.informo.TrafficReading/versions",
+    "xid": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.TrafficReading"
+  }
+}

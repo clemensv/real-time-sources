@@ -1,0 +1,43 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://api.weather.gov"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{state}/{severity}/{event_type}/{alert_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "WeatherAlert",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {},
+    "properties": {
+      "subject": {
+        "description": "AMQP subject matching the CloudEvents subject for this transport variant.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{state}/{severity}/{event_type}/{alert_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert/versions/1",
+  "versionid": "1",
+  "xid": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp/messages/Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert/versions/1"
+}

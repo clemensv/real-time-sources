@@ -1,0 +1,109 @@
+{
+  "$id": "https://www.ndbc.noaa.gov/schemas/Microsoft/OpenData/US/NOAA/NDBC/BuoyDetailedWaveSummary",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Detailed wave-summary record from the NDBC .spec realtime2 product. Each record summarizes significant wave height together with swell and wind-wave components, qualitative steepness, and mean wave direction for one station timestamp.",
+  "name": "BuoyDetailedWaveSummary",
+  "properties": {
+    "average_wave_period": {
+      "description": "Average wave period from the APD column. Unit: seconds.",
+      "symbol": "s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "s"
+    },
+    "mean_wave_direction": {
+      "description": "Mean wave direction from the MWD column, measured clockwise from true north. Unit: degrees true.",
+      "symbol": "°",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "deg"
+    },
+    "region": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa-ndbc.",
+      "type": "string"
+    },
+    "significant_wave_height": {
+      "description": "Significant wave height from the WVHT column, representing the average height of the highest one-third of waves during the sampling period. Unit: meters.",
+      "symbol": "m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "station_id": {
+      "description": "NDBC station identifier for the station publishing the .spec realtime2 file.",
+      "type": "string"
+    },
+    "steepness": {
+      "description": "Wave steepness category from the STEEPNESS column, for example SWELL, AVERAGE, or VERY_STEEP.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "swell_direction": {
+      "description": "Swell direction from the SwD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "swell_height": {
+      "description": "Swell-wave height from the SwH column. Unit: meters.",
+      "symbol": "m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "swell_period": {
+      "description": "Swell-wave period from the SwP column. Unit: seconds.",
+      "symbol": "s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "s"
+    },
+    "timestamp": {
+      "description": "Observation timestamp in UTC, constructed from the YYYY MM DD hh mm columns in the NDBC .spec realtime2 file.",
+      "type": "datetime"
+    },
+    "wind_wave_direction": {
+      "description": "Wind-wave direction from the WWD column. Live NDBC .spec files currently publish this field as a compass code such as E, SE, or ESE rather than a numeric degree value.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "wind_wave_height": {
+      "description": "Wind-wave height from the WWH column. Unit: meters.",
+      "symbol": "m",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "m"
+    },
+    "wind_wave_period": {
+      "description": "Wind-wave period from the WWP column. Unit: seconds.",
+      "symbol": "s",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "s"
+    }
+  },
+  "required": [
+    "station_id",
+    "timestamp"
+  ],
+  "type": "object"
+}

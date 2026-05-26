@@ -1,0 +1,35 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Alert.Alert",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "GeneralTransitFeedRealTime.Alert.Alert.amqp",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/GeneralTransitFeedRealTime.amqp/messages/GeneralTransitFeedRealTime.Alert.Alert.amqp/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Alert",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Partition key mirrors the CloudEvents subject.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{agencyid}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP subject mirrors the CloudEvents subject.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{agencyid}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/GeneralTransitFeedRealTime.amqp/messages/GeneralTransitFeedRealTime.Alert.Alert.amqp",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/GeneralTransitFeedRealTime.amqp/messages/GeneralTransitFeedRealTime.Alert.Alert.amqp/versions",
+  "xid": "/messagegroups/GeneralTransitFeedRealTime.amqp/messages/GeneralTransitFeedRealTime.Alert.Alert.amqp"
+}

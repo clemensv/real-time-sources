@@ -1,0 +1,41 @@
+{
+  "$id": "https://example.com/schemas/NL/RWS/Waterwebservices/Station",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Reference details for one monitoring station or site in the RWS Waterwebservices source.",
+  "name": "Station",
+  "properties": {
+    "coordinate_system": {
+      "altnames": {
+        "lang:nl": "Coordinatenstelsel"
+      },
+      "description": "Provider-supplied coordinate system value for this record.",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "Latitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "longitude": {
+      "description": "Longitude of the station in WGS 84 coordinates.",
+      "type": "double"
+    },
+    "name": {
+      "altnames": {
+        "lang:nl": "Naam"
+      },
+      "description": "Human-readable name of the station, site, or location.",
+      "type": "string"
+    },
+    "station_code": {
+      "description": "Provider code identifying the station.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_code",
+    "name",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

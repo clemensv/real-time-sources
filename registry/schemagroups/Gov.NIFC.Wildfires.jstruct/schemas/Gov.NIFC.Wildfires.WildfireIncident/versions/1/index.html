@@ -1,0 +1,230 @@
+{
+  "$id": "https://example.com/schemas/Gov/NIFC/Wildfires/WildfireIncident",
+  "$root": "/definitions/Gov/NIFC/Wildfires/WildfireIncident",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "Gov": {
+      "NIFC": {
+        "Wildfires": {
+          "WildfireIncident": {
+            "description": "Active wildfire incident data from the National Interagency Fire Center (NIFC) IRWIN system, published via ArcGIS Feature Service.",
+            "name": "WildfireIncident",
+            "properties": {
+              "calculated_acres": {
+                "description": "GIS-calculated fire area in acres, derived from perimeter mapping when available.",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              },
+              "containment_datetime": {
+                "description": "Date and time the fire was fully contained, in ISO 8601 format. Null if not yet contained.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "control_datetime": {
+                "description": "Date and time the fire was declared under control, in ISO 8601 format. Null if not yet controlled.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "daily_acres": {
+                "description": "Most recently reported fire size in acres from the daily situation report.",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              },
+              "discovery_acres": {
+                "description": "Size of the fire in acres at the time of initial discovery.",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              },
+              "fatalities": {
+                "description": "Number of fatalities reported in connection with the incident.",
+                "type": [
+                  "int32",
+                  "null"
+                ]
+              },
+              "final_acres": {
+                "description": "Final fire size in acres after the fire is declared out.",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              },
+              "fire_cause": {
+                "description": "General cause of the fire (e.g. 'Natural', 'Human', 'Undetermined').",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fire_cause_general": {
+                "description": "Specific fire cause category when known (e.g. 'Lightning', 'Arson', 'Equipment Use').",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fire_discovery_datetime": {
+                "description": "Date and time when the fire was first discovered, in ISO 8601 format. Converted from ArcGIS epoch milliseconds.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fire_mgmt_complexity": {
+                "description": "Complexity level of the fire management effort, typically a Type designation (e.g. 'Type 1' for the most complex).",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fire_out_datetime": {
+                "description": "Date and time the fire was declared out, in ISO 8601 format. Null if the fire is still active.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "gacc": {
+                "description": "Geographic Area Coordination Center responsible for the incident (e.g. 'NWCC', 'OSCC', 'EACC'). GACCs coordinate wildfire management resources across regions.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "incident_management_organization": {
+                "description": "Name or type of the incident management organization or team managing the fire.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "incident_name": {
+                "description": "The name assigned to the wildfire incident (e.g. 'Pinnacle', 'Backbone').",
+                "type": "string"
+              },
+              "incident_type_category": {
+                "description": "Category of the incident type: WF (Wildfire), RX (Prescribed Fire), or other NWCG-defined categories.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "incident_type_kind": {
+                "description": "Kind of incident from NWCG classification (e.g. 'FI' for Fire).",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "injuries": {
+                "description": "Number of injuries reported in connection with the incident.",
+                "type": [
+                  "int32",
+                  "null"
+                ]
+              },
+              "irwin_id": {
+                "description": "IRWIN incident identifier, a globally unique GUID assigned by the Integrated Reporting of Wildland-Fire Information (IRWIN) system. Primary key for wildfire incidents.",
+                "type": "string"
+              },
+              "latitude": {
+                "description": "Latitude of the fire incident point of origin in decimal degrees (WGS 84).",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              },
+              "longitude": {
+                "description": "Longitude of the fire incident point of origin in decimal degrees (WGS 84).",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              },
+              "modified_on_datetime": {
+                "description": "Date and time when the incident record was last modified in the IRWIN system, in ISO 8601 format.",
+                "type": "string"
+              },
+              "other_structures_destroyed": {
+                "description": "Number of non-residential structures (outbuildings, commercial, etc.) destroyed by the fire.",
+                "type": [
+                  "int32",
+                  "null"
+                ]
+              },
+              "percent_contained": {
+                "description": "Percentage of the fire perimeter that is contained (0-100). Null if not reported.",
+                "type": [
+                  "double",
+                  "null"
+                ]
+              },
+              "poo_county": {
+                "description": "County where the point of origin of the fire is located (e.g. 'Curry', 'Kings').",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "poo_state": {
+                "description": "US state or territory where the point of origin is located, as a two-letter code prefixed with 'US-' (e.g. 'US-OR', 'US-CA').",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "residences_destroyed": {
+                "description": "Number of residential structures destroyed by the fire.",
+                "type": [
+                  "int32",
+                  "null"
+                ]
+              },
+              "state": {
+                "description": "Lowercase two-letter US state or territory code used as the {state} routing segment, derived from the IRWIN POOState value.",
+                "type": "string"
+              },
+              "status": {
+                "description": "Normalized wildfire lifecycle status used as the {status} routing segment. Values are active, contained, controlled, or out, derived from containment, control, and fire-out timestamps.",
+                "type": "string"
+              },
+              "total_incident_personnel": {
+                "description": "Total number of personnel assigned to the incident including all resources.",
+                "type": [
+                  "int32",
+                  "null"
+                ]
+              },
+              "unique_fire_identifier": {
+                "description": "Unique fire identifier string assigned by the dispatching agency (e.g. '2025-ORRSF-000389'). May be null for incidents not yet assigned.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "irwin_id",
+              "state",
+              "status",
+              "incident_name",
+              "modified_on_datetime"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "WildfireIncident"
+}

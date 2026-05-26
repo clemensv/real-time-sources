@@ -1,0 +1,63 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/schemas/uk/kcl/laqn/Species",
+  "$root": "/definitions/uk/kcl/laqn/Species",
+  "$schema": "https://json-structure.org/meta/core/v0/#",
+  "definitions": {
+    "uk": {
+      "kcl": {
+        "laqn": {
+          "Species": {
+            "description": "LAQN pollutant reference data, including descriptive text and health guidance for a pollutant code.",
+            "name": "Species",
+            "properties": {
+              "description": {
+                "altnames": [
+                  "@Description"
+                ],
+                "description": "LAQN explanatory description of the pollutant and how it is formed or encountered.",
+                "type": "string"
+              },
+              "health_effect": {
+                "altnames": [
+                  "@HealthEffect"
+                ],
+                "description": "LAQN health effect guidance describing the health impacts associated with exposure to the pollutant.",
+                "type": "string"
+              },
+              "link": {
+                "altnames": [
+                  "@Link"
+                ],
+                "description": "HTTP URL to the LAQN or LondonAir guidance page with more detailed information about the pollutant.",
+                "type": "string"
+              },
+              "species_code": {
+                "altnames": [
+                  "@SpeciesCode"
+                ],
+                "description": "Stable LAQN pollutant code, such as NO2, PM10, PM25, O3, SO2, or CO.",
+                "type": "string"
+              },
+              "species_name": {
+                "altnames": [
+                  "@SpeciesName"
+                ],
+                "description": "Human-readable pollutant name published by LAQN for the pollutant code.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "species_code",
+              "species_name",
+              "description",
+              "health_effect",
+              "link"
+            ],
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "name": "Species"
+}

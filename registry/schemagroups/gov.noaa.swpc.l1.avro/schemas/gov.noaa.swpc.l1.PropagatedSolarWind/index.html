@@ -1,0 +1,127 @@
+{
+  "doc": "One minute-resolution solar-wind observation at L1 with forward-propagated Earth-arrival timestamp. Fuses plasma (speed/density/temperature), magnetic-field (Bx/By/Bz/Bt in GSM), and velocity vector (Vx/Vy/Vz in GSM) into one row per time_tag. Avro mirror of the JsonStructure PropagatedSolarWind schema - keep field semantics in sync.",
+  "fields": [
+    {
+      "doc": "Stable channel identifier for the source spacecraft at L1; synthesized by the bridge (not present in upstream payload — SWPC does not currently disclose source spacecraft per row in the propagated-solar-wind feed). Defaults to 'dscovr'; bridge exposes an override for operators who know the active spacecraft has switched to 'ace'.",
+      "name": "spacecraft",
+      "type": {
+        "doc": "Stable channel identifier for the source spacecraft at L1. 'dscovr' for the operational primary (NOAA Deep Space Climate Observatory, operational since 2016), 'ace' for the backup (NASA Advanced Composition Explorer, engaged when DSCOVR is unavailable). Used as CloudEvent subject, Kafka key, MQTT topic placeholder, AMQP subject, and x-opt-partition-key annotation.",
+        "name": "Spacecraft",
+        "symbols": [
+          "dscovr",
+          "ace"
+        ],
+        "type": "enum"
+      }
+    },
+    {
+      "doc": "Wall-clock time the upstream observation was taken at L1, encoded as Unix milliseconds since 1970-01-01T00:00:00Z. Upstream emits in 'YYYY-MM-DD HH:MM:SS.fff' form with implicit UTC; bridge normalises to UTC ms for Avro encoding. Minute-aligned.",
+      "name": "time_tag",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "long"
+      }
+    },
+    {
+      "doc": "Predicted Earth-arrival time of the solar-wind parcel observed at L1 at time_tag, computed by SWPC from observed bulk speed and L1-to-Earth distance. Typically 30-60 minutes after time_tag. Unix milliseconds since 1970-01-01T00:00:00Z.",
+      "name": "propagated_time_tag",
+      "type": {
+        "logicalType": "timestamp-millis",
+        "type": "long"
+      }
+    },
+    {
+      "default": null,
+      "doc": "Bulk solar-wind speed at L1. Quiet 300-500, high-speed streams to 800, CME shock fronts \u003e2000. Null on plasma-instrument gaps. Unit: km/s.",
+      "name": "speed",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Proton number density at L1. Quiet 1-10, CME sheath crossings to 50-100. Null on plasma-instrument gaps. Unit: particles per cubic centimetre.",
+      "name": "density",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Proton temperature at L1 in kelvin. Quiet ~10^5, high-speed streams ~5x10^5, shocked sheath plasma \u003e10^6. Null on plasma-instrument gaps.",
+      "name": "temperature",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Bx component of IMF at L1 in GSM coordinates (Sun-Earth axis). Reported in nanotesla; consumers should treat the unit as nT. Null on magnetometer gaps (routine on DSCOVR).",
+      "name": "bx",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "By component of IMF at L1 in GSM coordinates (orbital-direction axis). Reported in nanotesla. Null on magnetometer gaps.",
+      "name": "by",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Bz component of IMF at L1 in GSM coordinates (perpendicular to ecliptic, positive north). Single most operationally important field: sustained southward Bz (Bz \u003c -10 nT for \u003e= 30 minutes) drives geomagnetic storms via dayside reconnection. Principal input to Dst/Kp/Ap forecasts. Wire values are nanotesla (nT). Null on magnetometer gaps.",
+      "name": "bz",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Total IMF magnitude at L1: Bt = sqrt(Bx^2 + By^2 + Bz^2). Always non-negative. Reported in nanotesla. Null when any component is null.",
+      "name": "bt",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Vx component of solar-wind bulk velocity at L1 in GSM (radial, negative because flow is anti-sunward). When present, |Vx| ≈ `speed` (the bulk speed is dominated by the radial component). DSCOVR typically does not measure this reliably; upstream emits null for Vx/Vy/Vz on the majority of rows. Unit: km/s.",
+      "name": "vx",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Vy component of solar-wind bulk velocity at L1 in GSM (dawn-dusk). Typically small. DSCOVR usually emits null. Unit: km/s.",
+      "name": "vy",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Vz component of solar-wind bulk velocity at L1 in GSM (north-south). Typically small. DSCOVR usually emits null. Unit: km/s.",
+      "name": "vz",
+      "type": [
+        "null",
+        "double"
+      ]
+    }
+  ],
+  "name": "PropagatedSolarWind",
+  "namespace": "gov.noaa.swpc.l1",
+  "type": "record"
+}

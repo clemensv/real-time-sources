@@ -1,0 +1,72 @@
+{
+  "DE.Waters.Hydrology.amqp.Station": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/DE.Waters.Hydrology/messages/DE.Waters.Hydrology.Station",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "DE.Waters.Hydrology.amqp.Station",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Waters.Hydrology.amqp/messages/DE.Waters.Hydrology.amqp.Station/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Station",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "water_body": {
+          "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (water_body).",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{water_body}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Waters.Hydrology.amqp/messages/DE.Waters.Hydrology.amqp.Station",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Waters.Hydrology.amqp/messages/DE.Waters.Hydrology.amqp.Station/versions",
+    "xid": "/messagegroups/DE.Waters.Hydrology.amqp/messages/DE.Waters.Hydrology.amqp.Station"
+  },
+  "DE.Waters.Hydrology.amqp.WaterLevelObservation": {
+    "ancestor": "1",
+    "basemessageuri": "/messagegroups/DE.Waters.Hydrology/messages/DE.Waters.Hydrology.WaterLevelObservation",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "DE.Waters.Hydrology.amqp.WaterLevelObservation",
+    "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Waters.Hydrology.amqp/messages/DE.Waters.Hydrology.amqp.WaterLevelObservation/meta",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "WaterLevelObservation",
+    "protocol": "AMQP/1.0",
+    "protocoloptions": {
+      "application-properties": {
+        "water_body": {
+          "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (water_body).",
+          "required": false,
+          "type": "uritemplate",
+          "value": "{water_body}"
+        }
+      },
+      "properties": {
+        "subject": {
+          "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key.",
+          "required": true,
+          "type": "uritemplate",
+          "value": "{station_id}"
+        }
+      }
+    },
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Waters.Hydrology.amqp/messages/DE.Waters.Hydrology.amqp.WaterLevelObservation",
+    "versionid": "1",
+    "versionscount": 1,
+    "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/DE.Waters.Hydrology.amqp/messages/DE.Waters.Hydrology.amqp.WaterLevelObservation/versions",
+    "xid": "/messagegroups/DE.Waters.Hydrology.amqp/messages/DE.Waters.Hydrology.amqp.WaterLevelObservation"
+  }
+}

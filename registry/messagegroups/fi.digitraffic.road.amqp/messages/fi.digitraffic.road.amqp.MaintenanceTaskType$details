@@ -1,0 +1,43 @@
+{
+  "ancestor": "1",
+  "basemessageuri": "/messagegroups/fi.digitraffic.road.maintenance.tasks/messages/fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "fi.digitraffic.road.amqp.MaintenanceTaskType",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTaskType/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "MaintenanceTaskType",
+  "protocol": "AMQP/1.0",
+  "protocoloptions": {
+    "application-properties": {
+      "task_id": {
+        "description": "Maintenance task type identifier (e.g. 'PLOUGHING_AND_SLUSH_REMOVAL'). Allows Service Bus filters to route by task type.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{task_id}"
+      }
+    },
+    "message-annotations": {
+      "x-opt-partition-key": {
+        "description": "Service Bus / Event Hubs partition key for maintenance task type reference records.",
+        "required": false,
+        "type": "uritemplate",
+        "value": "{task_id}"
+      }
+    },
+    "properties": {
+      "subject": {
+        "description": "AMQP message subject for maintenance task type reference records.",
+        "required": true,
+        "type": "uritemplate",
+        "value": "{task_id}"
+      }
+    }
+  },
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTaskType",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTaskType/versions",
+  "xid": "/messagegroups/fi.digitraffic.road.amqp/messages/fi.digitraffic.road.amqp.MaintenanceTaskType"
+}

@@ -1,0 +1,33 @@
+{
+  "$id": "https://opendata.dwd.de/schemas/DE/DWD/Radar/RadarProductCatalog",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.",
+  "name": "RadarProductCatalog",
+  "properties": {
+    "description": {
+      "description": "Optional human-readable description of the radar product as configured by the bridge. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata.",
+      "type": "string"
+    },
+    "file_url": {
+      "description": "Absolute HTTPS URL of the DWD Open Data directory that holds all files for this radar product. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing, so consumers can enumerate current and historical product files without credentials. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/radar/composite/wn/'.",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Normalized routing field 'kind' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    },
+    "product": {
+      "description": "Short identifier of the DWD radar composite product family (for example 'wn', 'rv', 'rs', 'dmax', 'hg', 'hx', 'pg', 'vii', 'hymecng'). Derived from the first-level directory name under https://opendata.dwd.de/weather/radar/composite/. All RadarFileProduct events for files inside this directory carry the same product value.",
+      "type": "string"
+    },
+    "state": {
+      "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "product",
+    "file_url"
+  ],
+  "type": "object"
+}

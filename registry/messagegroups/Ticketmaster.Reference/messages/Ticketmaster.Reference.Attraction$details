@@ -1,0 +1,36 @@
+{
+  "ancestor": "1",
+  "createdat": "2026-05-26T16:29:08.079200634Z",
+  "dataschemaformat": "JsonStructure/draft-02",
+  "dataschemauri": "/schemagroups/Ticketmaster.jstruct/schemas/Ticketmaster.Reference.Attraction",
+  "description": "Reference data for a Ticketmaster attraction (performer, artist, sports team, or production). Emitted at bridge startup and refreshed periodically. Carries stable attraction identifier, name, and classification.",
+  "envelope": "CloudEvents/1.0",
+  "envelopemetadata": {
+    "source": {
+      "required": true,
+      "type": "uritemplate",
+      "value": "https://app.ticketmaster.com/discovery/v2/attractions"
+    },
+    "subject": {
+      "required": false,
+      "type": "uritemplate",
+      "value": "{entity_id}"
+    },
+    "type": {
+      "required": true,
+      "type": "string",
+      "value": "Ticketmaster.Reference.Attraction"
+    }
+  },
+  "epoch": 1,
+  "isdefault": true,
+  "messageid": "Ticketmaster.Reference.Attraction",
+  "metaurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Attraction/meta",
+  "modifiedat": "2026-05-26T16:29:08.079200634Z",
+  "name": "Attraction",
+  "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Attraction",
+  "versionid": "1",
+  "versionscount": 1,
+  "versionsurl": "https://clemensv.github.io/real-time-sources/registry/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Attraction/versions",
+  "xid": "/messagegroups/Ticketmaster.Reference/messages/Ticketmaster.Reference.Attraction"
+}

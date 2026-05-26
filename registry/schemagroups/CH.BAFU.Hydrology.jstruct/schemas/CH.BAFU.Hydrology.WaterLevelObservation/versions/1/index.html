@@ -1,0 +1,57 @@
+{
+  "$id": "https://example.com/schemas/CH/BAFU/Hydrology/WaterLevelObservation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "Measurement payload for water level, discharge, and water temperature observations in the BAFU Hydrology source.",
+  "name": "WaterLevelObservation",
+  "properties": {
+    "discharge": {
+      "description": "Current streamflow or discharge reported for the station.",
+      "type": "double"
+    },
+    "discharge_timestamp": {
+      "description": "Time associated with the discharge measurement.",
+      "type": "datetime"
+    },
+    "discharge_unit": {
+      "description": "Unit used for the discharge value.",
+      "type": "string"
+    },
+    "station_id": {
+      "description": "Stable identifier assigned by the upstream provider for the monitoring station or site.",
+      "type": "string"
+    },
+    "water_body_name": {
+      "description": "Name of the water body the station observes (BAFU/FOEN 'water-body-name' field, e.g. 'Rhein', 'Aare', 'Bodensee'). Sourced by the bridge from the station catalog (existenz.ch /apiv1/hydro/locations endpoint, details.water-body-name) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river / lake. Used as the {water_body_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.",
+      "type": "string"
+    },
+    "water_level": {
+      "description": "Current water level reported for the station.",
+      "type": "double"
+    },
+    "water_level_timestamp": {
+      "description": "Time associated with the water-level measurement.",
+      "type": "datetime"
+    },
+    "water_level_unit": {
+      "description": "Unit used for the water-level value.",
+      "type": "string"
+    },
+    "water_temperature": {
+      "description": "Current water temperature reported for the station.",
+      "type": "double"
+    },
+    "water_temperature_timestamp": {
+      "description": "Time associated with the water-temperature measurement.",
+      "type": "datetime"
+    },
+    "water_temperature_unit": {
+      "description": "Unit used for the water-temperature value.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "water_body_name"
+  ],
+  "type": "object"
+}

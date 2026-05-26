@@ -1,0 +1,82 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/dmi/schemas/dk/dmi/lightning/Strike",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A single triangulated lightning strike. See https://opendatadocs.dmi.govcloud.dk/en/Data/Lightning_Data. observed timestamps have microsecond precision; location accuracy is approximately +/- 500-2000 m.",
+  "name": "LightningStrike",
+  "properties": {
+    "amp": {
+      "description": "Signed peak current.",
+      "type": [
+        "double",
+        "null"
+      ],
+      "unit": "kA"
+    },
+    "created": {
+      "description": "Timestamp when DMI ingested the strike.",
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "latitude": {
+      "description": "Strike latitude (decimal degrees, WGS84).",
+      "maximum": 90,
+      "minimum": -90,
+      "type": "double",
+      "unit": "deg"
+    },
+    "longitude": {
+      "description": "Strike longitude (decimal degrees, WGS84).",
+      "maximum": 180,
+      "minimum": -180,
+      "type": "double",
+      "unit": "deg"
+    },
+    "observed": {
+      "description": "Strike timestamp (UTC, microsecond precision).",
+      "type": "datetime"
+    },
+    "sensors": {
+      "description": "Comma-separated list of sensor IDs that contributed to triangulation (may include third-party sensors not in the Sensor catalog).",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "strike_id": {
+      "altnames": {
+        "json": "id"
+      },
+      "description": "Stable DMI-assigned strike identifier (e.g. 'u1xrxj10262553824830001-03').",
+      "type": "string"
+    },
+    "strokes": {
+      "description": "Number of return strokes.",
+      "minimum": 1,
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "type": {
+      "altenums": {
+        "descriptions": {
+          "0": "Cloud-to-ground negative (CG-)",
+          "1": "Cloud-to-ground positive (CG+)",
+          "2": "Cloud-to-cloud (CC)"
+        }
+      },
+      "description": "Strike type code.",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "strike_id",
+    "observed",
+    "type",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

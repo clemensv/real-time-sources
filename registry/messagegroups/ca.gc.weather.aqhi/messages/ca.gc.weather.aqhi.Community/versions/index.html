@@ -1,0 +1,35 @@
+{
+  "1": {
+    "ancestor": "1",
+    "createdat": "2026-05-26T16:29:08.079200634Z",
+    "dataschemaformat": "JsonStructure/draft-02",
+    "dataschemauri": "/schemagroups/ca.gc.weather.aqhi.jstruct/schemas/ca.gc.weather.aqhi.Community",
+    "description": "Reference data for a Canadian Air Quality Health Index reporting community, including its stable CGNDB identifier and current upstream feed URLs.",
+    "envelope": "CloudEvents/1.0",
+    "envelopemetadata": {
+      "source": {
+        "required": true,
+        "type": "uritemplate",
+        "value": "https://dd.weather.gc.ca/today/air_quality/aqhi/"
+      },
+      "subject": {
+        "required": false,
+        "type": "uritemplate",
+        "value": "{province}/{community_name}"
+      },
+      "type": {
+        "required": true,
+        "type": "string",
+        "value": "ca.gc.weather.aqhi.Community"
+      }
+    },
+    "epoch": 1,
+    "isdefault": true,
+    "messageid": "ca.gc.weather.aqhi.Community",
+    "modifiedat": "2026-05-26T16:29:08.079200634Z",
+    "name": "Community",
+    "self": "https://clemensv.github.io/real-time-sources/registry/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Community/versions/1",
+    "versionid": "1",
+    "xid": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Community/versions/1"
+  }
+}

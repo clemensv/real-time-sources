@@ -1,0 +1,86 @@
+{
+  "$id": "https://github.com/clemensv/real-time-sources/dmi/schemas/dk/dmi/oceanObs/TidewaterStation",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "A station or virtual grid point at which DMI publishes tidewater (sea-level) predictions. The catalog includes both physical tide gauges and prediction-only points.",
+  "name": "TidewaterStation",
+  "properties": {
+    "country": {
+      "altenums": {
+        "lang:en": {
+          "DNK": "Denmark",
+          "FRO": "Faroe Islands",
+          "GRL": "Greenland"
+        }
+      },
+      "description": "ISO 3166-1 alpha-3 country code.",
+      "enum": [
+        "DNK",
+        "GRL",
+        "FRO"
+      ],
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "latitude": {
+      "description": "Prediction-point latitude (decimal degrees, WGS84).",
+      "maximum": 90,
+      "minimum": -90,
+      "type": "double",
+      "unit": "deg"
+    },
+    "longitude": {
+      "description": "Prediction-point longitude (decimal degrees, WGS84).",
+      "maximum": 180,
+      "minimum": -180,
+      "type": "double",
+      "unit": "deg"
+    },
+    "name": {
+      "description": "Human-readable station name where available.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "owner": {
+      "description": "Operating agency.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "station_id": {
+      "altnames": {
+        "json": "stationId"
+      },
+      "description": "Stable identifier of the tidewater prediction station/grid-point.",
+      "type": "string"
+    },
+    "valid_from": {
+      "altnames": {
+        "json": "validFrom"
+      },
+      "type": [
+        "datetime",
+        "null"
+      ]
+    },
+    "valid_to": {
+      "altnames": {
+        "json": "validTo"
+      },
+      "type": [
+        "datetime",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "station_id",
+    "latitude",
+    "longitude"
+  ],
+  "type": "object"
+}

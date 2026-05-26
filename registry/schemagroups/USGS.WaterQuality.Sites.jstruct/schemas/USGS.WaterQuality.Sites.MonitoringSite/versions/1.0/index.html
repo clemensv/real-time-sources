@@ -1,0 +1,58 @@
+{
+  "$id": "gov.usgs.waterservices.wq.MonitoringSite",
+  "$schema": "https://json-structure.org/meta/extended/v0/#",
+  "description": "USGS water quality monitoring site. Describes a physical surface-water or groundwater monitoring location equipped with continuous water quality sensors. Site metadata is extracted from the WaterML 2.0 JSON response sourceInfo block returned by the USGS Instantaneous Values Service.",
+  "name": "MonitoringSite",
+  "properties": {
+    "agency_code": {
+      "description": "Code identifying the agency responsible for the site. Typically 'USGS' for United States Geological Survey.",
+      "type": "string"
+    },
+    "county_code": {
+      "description": "Five-digit FIPS county code for the county where the site is located (e.g. '24031' for Montgomery County, MD).",
+      "type": "string"
+    },
+    "huc_code": {
+      "description": "Hydrologic Unit Code (HUC) identifying the watershed or drainage basin containing the site.",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "Decimal latitude of the monitoring site in the WGS84 (EPSG:4326) coordinate reference system.",
+      "type": "double"
+    },
+    "longitude": {
+      "description": "Decimal longitude of the monitoring site in the WGS84 (EPSG:4326) coordinate reference system.",
+      "type": "double"
+    },
+    "parameter_code": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for usgs-nwis-wq.",
+      "type": "string"
+    },
+    "site_name": {
+      "description": "Official USGS station name describing the monitoring location (e.g. 'POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA').",
+      "type": "string"
+    },
+    "site_number": {
+      "description": "USGS site identification number. A unique 8-to-15-digit number assigned by the USGS to each monitoring location (e.g. '01646500').",
+      "type": "string"
+    },
+    "site_type": {
+      "description": "USGS site type code indicating the category of the monitoring location. Common values include 'ST' (stream), 'LK' (lake), 'GW' (groundwater), 'ES' (estuary).",
+      "type": "string"
+    },
+    "state": {
+      "description": "Stable routing axis used by MQTT and AMQP transport templates for usgs-nwis-wq.",
+      "type": "string"
+    },
+    "state_code": {
+      "description": "Two-digit FIPS state code for the state or territory where the site is located (e.g. '24' for Maryland).",
+      "type": "string"
+    }
+  },
+  "required": [
+    "site_number",
+    "site_name",
+    "agency_code"
+  ],
+  "type": "object"
+}

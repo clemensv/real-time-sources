@@ -1,0 +1,64 @@
+{
+  "description": "A transport update from Dutch road-traffic open data feeds. It carries road traffic measurements and situation updates for Dutch road network sites and traffic situations.",
+  "doc": "Travel time measurement for a road segment from the NDW DATEX II traveltime feed.",
+  "fields": [
+    {
+      "doc": "Unique identifier of the NDW measurement site.",
+      "name": "site_id",
+      "type": "string"
+    },
+    {
+      "doc": "Timestamp of the measurement in ISO 8601 format (UTC).",
+      "name": "measurement_time",
+      "type": "string"
+    },
+    {
+      "default": null,
+      "doc": "Actual measured travel time in seconds. Null when data error.",
+      "name": "duration",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Static reference (free-flow) travel time in seconds. Null when unavailable.",
+      "name": "reference_duration",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Accuracy percentage (0-100).",
+      "name": "accuracy",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Supplier-calculated data quality percentage (0-100).",
+      "name": "data_quality",
+      "type": [
+        "null",
+        "double"
+      ]
+    },
+    {
+      "default": null,
+      "doc": "Number of individual vehicle travel times used in the calculation.",
+      "name": "number_of_input_values",
+      "type": [
+        "null",
+        "int"
+      ]
+    }
+  ],
+  "name": "TravelTime",
+  "namespace": "nl.ndw.traffic",
+  "type": "record"
+}

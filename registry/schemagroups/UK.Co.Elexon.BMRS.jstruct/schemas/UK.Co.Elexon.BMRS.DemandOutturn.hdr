@@ -1,0 +1,16 @@
+content-disposition:UK.Co.Elexon.BMRS.DemandOutturn
+content-location:https://clemensv.github.io/real-time-sources/registry/schemagroups/UK.Co.Elexon.BMRS.jstruct/schemas/UK.Co.Elexon.BMRS.DemandOutturn/versions/1
+content-type:application/json
+xregistry-ancestor:1
+xregistry-createdat:2026-05-26T16:29:08.079200634Z
+xregistry-epoch:1
+xregistry-format:JsonStructure/draft-02
+xregistry-isdefault:true
+xregistry-metaurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/UK.Co.Elexon.BMRS.jstruct/schemas/UK.Co.Elexon.BMRS.DemandOutturn/meta
+xregistry-modifiedat:2026-05-26T16:29:08.079200634Z
+xregistry-schemaid:UK.Co.Elexon.BMRS.DemandOutturn
+xregistry-self:https://clemensv.github.io/real-time-sources/registry/schemagroups/UK.Co.Elexon.BMRS.jstruct/schemas/UK.Co.Elexon.BMRS.DemandOutturn
+xregistry-versionid:1
+xregistry-versionscount:1
+xregistry-versionsurl:https://clemensv.github.io/real-time-sources/registry/schemagroups/UK.Co.Elexon.BMRS.jstruct/schemas/UK.Co.Elexon.BMRS.DemandOutturn/versions
+xregistry-xid:/schemagroups/UK.Co.Elexon.BMRS.jstruct/schemas/UK.Co.Elexon.BMRS.DemandOutturn
