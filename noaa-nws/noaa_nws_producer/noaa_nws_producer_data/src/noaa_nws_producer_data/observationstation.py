@@ -11,6 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+import avro.schema
+import avro.io
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -27,7 +29,13 @@ class ObservationStation:
         forecast_zone (typing.Optional[str])
         county (typing.Optional[str])
         fire_weather_zone (typing.Optional[str])
+        state (typing.Optional[str])
+        zone_id (typing.Optional[str])
     """
+    
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
+        "{\"type\": \"record\", \"name\": \"ObservationStation\", \"doc\": \"NWS surface weather observation station reference data from the api.weather.gov /stations endpoint. Each station represents a fixed automated or manual observing site in the US.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Station identifier, typically a 4-character ICAO code such as 'KJFK' or a cooperative observer ID.\"}, {\"name\": \"name\", \"type\": \"string\", \"doc\": \"Human-readable station name, e.g. 'New York, Kennedy International Airport'.\"}, {\"name\": \"elevation_m\", \"type\": [\"double\", \"null\"], \"doc\": \"Station elevation above mean sea level.\", \"default\": null}, {\"name\": \"time_zone\", \"type\": [\"string\", \"null\"], \"doc\": \"IANA timezone of the station, e.g. 'America/New_York'.\", \"default\": null}, {\"name\": \"forecast_zone\", \"type\": [\"string\", \"null\"], \"doc\": \"NWS forecast zone identifier associated with this station.\", \"default\": null}, {\"name\": \"county\", \"type\": [\"string\", \"null\"], \"doc\": \"NWS county zone identifier for the station's location.\", \"default\": null}, {\"name\": \"fire_weather_zone\", \"type\": [\"string\", \"null\"], \"doc\": \"NWS fire weather zone identifier for the station's location.\", \"default\": null}, {\"name\": \"state\", \"type\": [\"null\", \"string\"], \"doc\": \"Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.\", \"default\": null}, {\"name\": \"zone_id\", \"type\": [\"null\", \"string\"], \"doc\": \"Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering.\", \"default\": null}]}"
+    )
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
@@ -37,6 +45,8 @@ class ObservationStation:
     forecast_zone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="forecast_zone"))
     county: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="county"))
     fire_weather_zone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fire_weather_zone"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
+    zone_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="zone_id"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'ObservationStation':
@@ -50,6 +60,41 @@ class ObservationStation:
             The dataclass representation of the dataclass.
         """
         return cls(**data)
+    @classmethod
+    def from_avro_dict(cls, data: dict) -> 'ObservationStation':
+        """
+        Converts a dictionary from Avro deserialization to a dataclass instance.
+        Handles conversion of string representations back to Python types for
+        extended logical types.
+        
+        Args:
+            data: The dictionary from Avro deserialization.
+        
+        Returns:
+            The dataclass representation.
+        """
+        # Convert string values back to Python types for Avro string-based logical types
+        converted = data.copy()
+        if 'station_id' in converted and converted['station_id'] is not None:
+            value = converted['station_id']
+        if 'name' in converted and converted['name'] is not None:
+            value = converted['name']
+        if 'elevation_m' in converted and converted['elevation_m'] is not None:
+            value = converted['elevation_m']
+        if 'time_zone' in converted and converted['time_zone'] is not None:
+            value = converted['time_zone']
+        if 'forecast_zone' in converted and converted['forecast_zone'] is not None:
+            value = converted['forecast_zone']
+        if 'county' in converted and converted['county'] is not None:
+            value = converted['county']
+        if 'fire_weather_zone' in converted and converted['fire_weather_zone'] is not None:
+            value = converted['fire_weather_zone']
+        if 'state' in converted and converted['state'] is not None:
+            value = converted['state']
+        if 'zone_id' in converted and converted['zone_id'] is not None:
+            value = converted['zone_id']
+        
+        return cls(**converted)
 
     def to_serializer_dict(self) -> dict:
         """
@@ -73,6 +118,22 @@ class ObservationStation:
             return k[:-1] if k.endswith('_') else k
         return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
 
+    def to_avro_dict(self) -> dict:
+        """
+        Converts the dataclass to a dictionary suitable for Avro serialization.
+        Handles conversion of Python types to Avro-compatible string representations
+        for extended logical types.
+
+        Returns:
+            The dictionary representation suitable for Avro serialization.
+        """
+        result = self.to_serializer_dict()
+        converted = result.copy()
+        
+        # Convert specific fields based on their source types
+        
+        return converted
+
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
@@ -81,6 +142,8 @@ class ObservationStation:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
                     'application/json': Encodes the data to JSON format.
+                    'avro/binary': Encodes the data to Avro binary format.
+                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
@@ -92,6 +155,13 @@ class ObservationStation:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+            # Convert to Avro binary format using the embedded schema
+            writer = avro.io.DatumWriter(self.AvroType)
+            with io.BytesIO() as stream:
+                encoder = avro.io.BinaryEncoder(stream)
+                writer.write(self.to_avro_dict(), encoder)
+                result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -121,6 +191,8 @@ class ObservationStation:
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
+                    'avro/binary': Attempts to decode the data from Avro binary format.
+                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
         Returns:
@@ -145,6 +217,16 @@ class ObservationStation:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+            if isinstance(data, bytes):
+                # Decode from Avro binary format using the embedded schema
+                reader = avro.io.DatumReader(cls.AvroType)
+                with io.BytesIO(data) as stream:
+                    decoder = avro.io.BinaryDecoder(stream)
+                    _record = reader.read(decoder)
+                    return ObservationStation.from_avro_dict(_record)
+            else:
+                raise NotImplementedError('Data is not of a supported type for Avro deserialization')
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -163,11 +245,13 @@ class ObservationStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='teosoypnomrnxghabtnv',
-            name='fqrojcvftgiwaceecexk',
-            elevation_m=float(81.15610428049982),
-            time_zone='fjkskdvjlpambrizwjvx',
-            forecast_zone='batljwxvvqktmfpnpodz',
-            county='rbqekzpmyvfcmrazmyhl',
-            fire_weather_zone='ajhrkbuohfwocjoacqxc'
+            station_id='ntjkckhazriwbwmzsyyz',
+            name='jmpfnhefncjnpzxyhaof',
+            elevation_m=float(54.00538747801412),
+            time_zone='utjtgjfxvxwamjjwtsrj',
+            forecast_zone='wbutcyiuvfcvxjhxxlph',
+            county='pqkbolunhlgdwrvjdrgj',
+            fire_weather_zone='wzpmdgfspsgceoshmdht',
+            state='fanjjozstvubbmwuntjm',
+            zone_id='ufqeixkijatwyegacyli'
         )

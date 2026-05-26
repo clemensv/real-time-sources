@@ -28,13 +28,15 @@ class Test_ObservationStation(unittest.TestCase):
         Create instance of ObservationStation for testing
         """
         instance = ObservationStation(
-            station_id='teosoypnomrnxghabtnv',
-            name='fqrojcvftgiwaceecexk',
-            elevation_m=float(81.15610428049982),
-            time_zone='fjkskdvjlpambrizwjvx',
-            forecast_zone='batljwxvvqktmfpnpodz',
-            county='rbqekzpmyvfcmrazmyhl',
-            fire_weather_zone='ajhrkbuohfwocjoacqxc'
+            station_id='ntjkckhazriwbwmzsyyz',
+            name='jmpfnhefncjnpzxyhaof',
+            elevation_m=float(54.00538747801412),
+            time_zone='utjtgjfxvxwamjjwtsrj',
+            forecast_zone='wbutcyiuvfcvxjhxxlph',
+            county='pqkbolunhlgdwrvjdrgj',
+            fire_weather_zone='wzpmdgfspsgceoshmdht',
+            state='fanjjozstvubbmwuntjm',
+            zone_id='ufqeixkijatwyegacyli'
         )
         return instance
 
@@ -43,7 +45,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'teosoypnomrnxghabtnv'
+        test_value = 'ntjkckhazriwbwmzsyyz'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +53,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'fqrojcvftgiwaceecexk'
+        test_value = 'jmpfnhefncjnpzxyhaof'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -59,7 +61,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test elevation_m property
         """
-        test_value = float(81.15610428049982)
+        test_value = float(54.00538747801412)
         self.instance.elevation_m = test_value
         self.assertEqual(self.instance.elevation_m, test_value)
     
@@ -67,7 +69,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test time_zone property
         """
-        test_value = 'fjkskdvjlpambrizwjvx'
+        test_value = 'utjtgjfxvxwamjjwtsrj'
         self.instance.time_zone = test_value
         self.assertEqual(self.instance.time_zone, test_value)
     
@@ -75,7 +77,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test forecast_zone property
         """
-        test_value = 'batljwxvvqktmfpnpodz'
+        test_value = 'wbutcyiuvfcvxjhxxlph'
         self.instance.forecast_zone = test_value
         self.assertEqual(self.instance.forecast_zone, test_value)
     
@@ -83,7 +85,7 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test county property
         """
-        test_value = 'rbqekzpmyvfcmrazmyhl'
+        test_value = 'pqkbolunhlgdwrvjdrgj'
         self.instance.county = test_value
         self.assertEqual(self.instance.county, test_value)
     
@@ -91,10 +93,35 @@ class Test_ObservationStation(unittest.TestCase):
         """
         Test fire_weather_zone property
         """
-        test_value = 'ajhrkbuohfwocjoacqxc'
+        test_value = 'wzpmdgfspsgceoshmdht'
         self.instance.fire_weather_zone = test_value
         self.assertEqual(self.instance.fire_weather_zone, test_value)
     
+    def test_state_property(self):
+        """
+        Test state property
+        """
+        test_value = 'fanjjozstvubbmwuntjm'
+        self.instance.state = test_value
+        self.assertEqual(self.instance.state, test_value)
+    
+    def test_zone_id_property(self):
+        """
+        Test zone_id property
+        """
+        test_value = 'ufqeixkijatwyegacyli'
+        self.instance.zone_id = test_value
+        self.assertEqual(self.instance.zone_id, test_value)
+    
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = ObservationStation.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

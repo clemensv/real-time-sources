@@ -12,6 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
+import avro.schema
+import avro.io
 import datetime
 
 
@@ -36,7 +38,13 @@ class WeatherObservation:
         relative_humidity (typing.Optional[float])
         wind_chill (typing.Optional[float])
         heat_index (typing.Optional[float])
+        state (typing.Optional[str])
+        zone_id (typing.Optional[str])
     """
+    
+    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
+        "{\"type\": \"record\", \"name\": \"WeatherObservation\", \"doc\": \"Latest weather observation from a NWS surface station. Observations are fetched from the api.weather.gov /stations/{stationId}/observations/latest endpoint. Measurement values are extracted from NWS quantity objects (unitCode + value + qualityControl).\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"ICAO or cooperative observer station identifier.\"}, {\"name\": \"timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}, \"doc\": \"UTC timestamp of the observation.\"}, {\"name\": \"text_description\", \"type\": [\"string\", \"null\"], \"doc\": \"Brief text summary of current conditions, e.g. 'Clear', 'Mostly Cloudy', 'Rain'.\", \"default\": null}, {\"name\": \"temperature\", \"type\": [\"double\", \"null\"], \"doc\": \"Air temperature at the time of observation.\", \"default\": null}, {\"name\": \"dewpoint\", \"type\": [\"double\", \"null\"], \"doc\": \"Dew point temperature.\", \"default\": null}, {\"name\": \"wind_direction\", \"type\": [\"double\", \"null\"], \"doc\": \"Wind direction in degrees from which the wind is blowing.\", \"default\": null}, {\"name\": \"wind_speed\", \"type\": [\"double\", \"null\"], \"doc\": \"Sustained wind speed.\", \"default\": null}, {\"name\": \"wind_gust\", \"type\": [\"double\", \"null\"], \"doc\": \"Peak wind gust speed, null if no gusts observed.\", \"default\": null}, {\"name\": \"barometric_pressure\", \"type\": [\"double\", \"null\"], \"doc\": \"Station barometric pressure (not reduced to sea level).\", \"default\": null}, {\"name\": \"sea_level_pressure\", \"type\": [\"double\", \"null\"], \"doc\": \"Atmospheric pressure reduced to mean sea level.\", \"default\": null}, {\"name\": \"visibility\", \"type\": [\"double\", \"null\"], \"doc\": \"Horizontal visibility.\", \"default\": null}, {\"name\": \"relative_humidity\", \"type\": [\"double\", \"null\"], \"doc\": \"Relative humidity percentage.\", \"default\": null}, {\"name\": \"wind_chill\", \"type\": [\"double\", \"null\"], \"doc\": \"Calculated wind chill temperature, null when conditions do not warrant it.\", \"default\": null}, {\"name\": \"heat_index\", \"type\": [\"double\", \"null\"], \"doc\": \"Calculated heat index temperature, null when conditions do not warrant it.\", \"default\": null}, {\"name\": \"state\", \"type\": [\"null\", \"string\"], \"doc\": \"Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.\", \"default\": null}, {\"name\": \"zone_id\", \"type\": [\"null\", \"string\"], \"doc\": \"Normalized routing field 'zone_id' added for MQTT/AMQP subscriber filtering.\", \"default\": null}]}"
+    )
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
@@ -53,6 +61,8 @@ class WeatherObservation:
     relative_humidity: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="relative_humidity"))
     wind_chill: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_chill"))
     heat_index: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="heat_index"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
+    zone_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="zone_id"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherObservation':
@@ -66,6 +76,57 @@ class WeatherObservation:
             The dataclass representation of the dataclass.
         """
         return cls(**data)
+    @classmethod
+    def from_avro_dict(cls, data: dict) -> 'WeatherObservation':
+        """
+        Converts a dictionary from Avro deserialization to a dataclass instance.
+        Handles conversion of string representations back to Python types for
+        extended logical types.
+        
+        Args:
+            data: The dictionary from Avro deserialization.
+        
+        Returns:
+            The dataclass representation.
+        """
+        # Convert string values back to Python types for Avro string-based logical types
+        converted = data.copy()
+        if 'station_id' in converted and converted['station_id'] is not None:
+            value = converted['station_id']
+        if 'timestamp' in converted and converted['timestamp'] is not None:
+            value = converted['timestamp']
+            if isinstance(value, str):
+                converted['timestamp'] = datetime.datetime.fromisoformat(value)
+        if 'text_description' in converted and converted['text_description'] is not None:
+            value = converted['text_description']
+        if 'temperature' in converted and converted['temperature'] is not None:
+            value = converted['temperature']
+        if 'dewpoint' in converted and converted['dewpoint'] is not None:
+            value = converted['dewpoint']
+        if 'wind_direction' in converted and converted['wind_direction'] is not None:
+            value = converted['wind_direction']
+        if 'wind_speed' in converted and converted['wind_speed'] is not None:
+            value = converted['wind_speed']
+        if 'wind_gust' in converted and converted['wind_gust'] is not None:
+            value = converted['wind_gust']
+        if 'barometric_pressure' in converted and converted['barometric_pressure'] is not None:
+            value = converted['barometric_pressure']
+        if 'sea_level_pressure' in converted and converted['sea_level_pressure'] is not None:
+            value = converted['sea_level_pressure']
+        if 'visibility' in converted and converted['visibility'] is not None:
+            value = converted['visibility']
+        if 'relative_humidity' in converted and converted['relative_humidity'] is not None:
+            value = converted['relative_humidity']
+        if 'wind_chill' in converted and converted['wind_chill'] is not None:
+            value = converted['wind_chill']
+        if 'heat_index' in converted and converted['heat_index'] is not None:
+            value = converted['heat_index']
+        if 'state' in converted and converted['state'] is not None:
+            value = converted['state']
+        if 'zone_id' in converted and converted['zone_id'] is not None:
+            value = converted['zone_id']
+        
+        return cls(**converted)
 
     def to_serializer_dict(self) -> dict:
         """
@@ -89,6 +150,26 @@ class WeatherObservation:
             return k[:-1] if k.endswith('_') else k
         return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
 
+    def to_avro_dict(self) -> dict:
+        """
+        Converts the dataclass to a dictionary suitable for Avro serialization.
+        Handles conversion of Python types to Avro-compatible string representations
+        for extended logical types.
+
+        Returns:
+            The dictionary representation suitable for Avro serialization.
+        """
+        result = self.to_serializer_dict()
+        converted = result.copy()
+        
+        # Convert specific fields based on their source types
+        if 'timestamp' in converted and converted['timestamp'] is not None:
+            value = converted['timestamp']
+            if isinstance(value, datetime.datetime):
+                converted['timestamp'] = value.isoformat()
+        
+        return converted
+
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
@@ -97,6 +178,8 @@ class WeatherObservation:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
                     'application/json': Encodes the data to JSON format.
+                    'avro/binary': Encodes the data to Avro binary format.
+                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
@@ -108,6 +191,13 @@ class WeatherObservation:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+            # Convert to Avro binary format using the embedded schema
+            writer = avro.io.DatumWriter(self.AvroType)
+            with io.BytesIO() as stream:
+                encoder = avro.io.BinaryEncoder(stream)
+                writer.write(self.to_avro_dict(), encoder)
+                result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -137,6 +227,8 @@ class WeatherObservation:
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
+                    'avro/binary': Attempts to decode the data from Avro binary format.
+                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
         Returns:
@@ -161,6 +253,16 @@ class WeatherObservation:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
+        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
+            if isinstance(data, bytes):
+                # Decode from Avro binary format using the embedded schema
+                reader = avro.io.DatumReader(cls.AvroType)
+                with io.BytesIO(data) as stream:
+                    decoder = avro.io.BinaryDecoder(stream)
+                    _record = reader.read(decoder)
+                    return WeatherObservation.from_avro_dict(_record)
+            else:
+                raise NotImplementedError('Data is not of a supported type for Avro deserialization')
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -179,18 +281,20 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='dwbifwicejkutjxtsptg',
+            station_id='qsfmltzjhyulnhbcmhkm',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            text_description='jegaiivgfgfomlherque',
-            temperature=float(30.084451967886807),
-            dewpoint=float(48.458174868887994),
-            wind_direction=float(73.6972475154212),
-            wind_speed=float(3.808810601692314),
-            wind_gust=float(64.91391939827173),
-            barometric_pressure=float(38.32110332139147),
-            sea_level_pressure=float(48.574195326262505),
-            visibility=float(77.62064013338957),
-            relative_humidity=float(65.762592972788),
-            wind_chill=float(52.119710568379396),
-            heat_index=float(35.1926020968477)
+            text_description='cnhvgrnermehwblgkdrk',
+            temperature=float(64.21626527660327),
+            dewpoint=float(69.20499765973696),
+            wind_direction=float(28.540569150106833),
+            wind_speed=float(75.2491318469585),
+            wind_gust=float(20.091569771840177),
+            barometric_pressure=float(38.77580191117912),
+            sea_level_pressure=float(44.456133319454786),
+            visibility=float(82.33705408129539),
+            relative_humidity=float(85.84774955292647),
+            wind_chill=float(77.92065901366605),
+            heat_index=float(68.01546122749372),
+            state='vmreniygbyprbpghrxsp',
+            zone_id='yolyibzwgbrqijopgwia'
         )

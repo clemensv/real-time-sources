@@ -163,11 +163,11 @@ class Zone:
             An instance of the dataclass.
         """
         return cls(
-            zone_id='tewhfdnyktmabqbsidiv',
-            name='sjidkkygafgvztbadgxz',
-            type='hlogrhkjlktbzjjfnezq',
-            state='xyiaiyozhjiedciyekhy',
-            forecast_office='csdgpuzrdrxkmgbaclrv',
-            timezone='ywtohdkkutoyesdrlkcx',
-            radar_station='zydgxzwkhujrzphdbvpm'
+            zone_id='swkrhoxdidvxpteeyjrv',
+            name='apyprzftnpgbzcyfheqp',
+            type='bakcejwlypidwublxbtl',
+            state='tofrxptdqrtirzzfjwxu',
+            forecast_office='ccneagskevflqvrewyyc',
+            timezone='edjbkpbxmtvswdccgdsd',
+            radar_station='epxtjfncapcyqqnpfwhb'
         )

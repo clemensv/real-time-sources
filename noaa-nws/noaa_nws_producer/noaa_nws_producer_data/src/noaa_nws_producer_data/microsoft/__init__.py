@@ -1,3 +1,3 @@
-from .opendata import Zone, WeatherAlert
+from .opendata import WeatherAlert, Zone
 
-__all__ = ["Zone", "WeatherAlert"]
+__all__ = ["WeatherAlert", "Zone"]

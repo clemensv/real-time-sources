@@ -1,3 +1,3 @@
-from .nws import Zone, WeatherAlert
+from .nws import WeatherAlert, Zone
 
-__all__ = ["Zone", "WeatherAlert"]
+__all__ = ["WeatherAlert", "Zone"]

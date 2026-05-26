@@ -29,8 +29,8 @@ class Test_SeverityEnum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(SeverityEnum.Extreme.value, "Extreme")
-        self.assertEqual(SeverityEnum.Severe.value, "Severe")
-        self.assertEqual(SeverityEnum.Moderate.value, "Moderate")
-        self.assertEqual(SeverityEnum.Minor.value, "Minor")
-        self.assertEqual(SeverityEnum.Unknown.value, "Unknown")
+        self.assertEqual(SeverityEnum.Extreme.value, 'Extreme')
+        self.assertEqual(SeverityEnum.Severe.value, 'Severe')
+        self.assertEqual(SeverityEnum.Moderate.value, 'Moderate')
+        self.assertEqual(SeverityEnum.Minor.value, 'Minor')
+        self.assertEqual(SeverityEnum.Unknown.value, 'Unknown')
