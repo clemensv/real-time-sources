@@ -28,15 +28,15 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         Create instance of DoseRateMeasurement for testing
         """
         instance = DoseRateMeasurement(
-            station_id='uuugqsfbrdeywqslbjag',
-            state='lthqdlczakgojrpwhhlt',
-            start_measure='iqfkvrolxyagmvqiabma',
-            end_measure='gmwmenllxbrvlaqvnkjz',
-            value=float(53.04505538431174),
-            value_cosmic=float(15.1124567263879),
-            value_terrestrial=float(47.069230506694026),
-            validated=int(30),
-            nuclide='hzcsdbelsgjhxilscvug'
+            station_id='hihgmdcgryzljzlbyyzt',
+            start_measure='vafnegxmweqqxcscpzgr',
+            end_measure='rysowodqbzaprvtryhcp',
+            value=float(47.81583580572195),
+            value_cosmic=float(55.4621037052584),
+            value_terrestrial=float(31.6445990287329),
+            validated=int(59),
+            nuclide='ppekoofkoelmeuvixrfw',
+            canton='qwcvsatiuqamzkwdljiv'
         )
         return instance
 
@@ -45,23 +45,15 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'uuugqsfbrdeywqslbjag'
+        test_value = 'hihgmdcgryzljzlbyyzt'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
-    
-    def test_state_property(self):
-        """
-        Test state property
-        """
-        test_value = 'lthqdlczakgojrpwhhlt'
-        self.instance.state = test_value
-        self.assertEqual(self.instance.state, test_value)
     
     def test_start_measure_property(self):
         """
         Test start_measure property
         """
-        test_value = 'iqfkvrolxyagmvqiabma'
+        test_value = 'vafnegxmweqqxcscpzgr'
         self.instance.start_measure = test_value
         self.assertEqual(self.instance.start_measure, test_value)
     
@@ -69,7 +61,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test end_measure property
         """
-        test_value = 'gmwmenllxbrvlaqvnkjz'
+        test_value = 'rysowodqbzaprvtryhcp'
         self.instance.end_measure = test_value
         self.assertEqual(self.instance.end_measure, test_value)
     
@@ -77,7 +69,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(53.04505538431174)
+        test_value = float(47.81583580572195)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -85,7 +77,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test value_cosmic property
         """
-        test_value = float(15.1124567263879)
+        test_value = float(55.4621037052584)
         self.instance.value_cosmic = test_value
         self.assertEqual(self.instance.value_cosmic, test_value)
     
@@ -93,7 +85,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test value_terrestrial property
         """
-        test_value = float(47.069230506694026)
+        test_value = float(31.6445990287329)
         self.instance.value_terrestrial = test_value
         self.assertEqual(self.instance.value_terrestrial, test_value)
     
@@ -101,7 +93,7 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test validated property
         """
-        test_value = int(30)
+        test_value = int(59)
         self.instance.validated = test_value
         self.assertEqual(self.instance.validated, test_value)
     
@@ -109,9 +101,17 @@ class Test_DoseRateMeasurement(unittest.TestCase):
         """
         Test nuclide property
         """
-        test_value = 'hzcsdbelsgjhxilscvug'
+        test_value = 'ppekoofkoelmeuvixrfw'
         self.instance.nuclide = test_value
         self.assertEqual(self.instance.nuclide, test_value)
+    
+    def test_canton_property(self):
+        """
+        Test canton property
+        """
+        test_value = 'qwcvsatiuqamzkwdljiv'
+        self.instance.canton = test_value
+        self.assertEqual(self.instance.canton, test_value)
     
     def test_to_byte_array_json(self):
         """

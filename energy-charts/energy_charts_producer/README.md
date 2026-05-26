@@ -1,6 +1,6 @@
 
 
-# Energy-charts-producer Kafka Producer# Energy-charts-producer Event Dispatcher for Apache Kafka
+# Energy_charts_producer Kafka Producer# Energy_charts_producer Event Dispatcher for Apache Kafka
 
 
 
@@ -15,7 +15,11 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - InfoEnergyChartsEventDispatcher
+3. [Quick Start](#quick-start)    - InfoEnergyChartsEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    InfoEnergyChartsMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    InfoEnergyChartsAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +43,14 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - InfoEnergyChartsProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- InfoEnergyChartsMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- InfoEnergyChartsAmqpProducersolution for event-driven applications.
 
 
 
@@ -86,7 +98,7 @@ Initializes the dispatcher.
 
 ```python
 
-from energy-charts-producer import InfoEnergyChartsProducer```python
+from energy_charts_producer import InfoEnergyChartsProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -191,6 +203,82 @@ info_energy_charts_dispatcher.info_energy_charts_public_power_async = info_energ
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsMqttProducer- `data`: The event data of type `energy_charts_producer_data.PublicPower`.
+
+
+
+Producer for `info.energy_charts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_public_power_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PublicPower) ->
+None:
+
+```python    # Process the event data
+
+InfoEnergyChartsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_mqtt_dispatcher.info_energy_charts_public_power_async = info_energy_charts_public_power_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsAmqpProducer- `data`: The event data of type `energy_charts_producer_data.PublicPower`.
+
+
+
+Producer for `info.energy_charts.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_public_power_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PublicPower) ->
+None:
+
+```python    # Process the event data
+
+InfoEnergyChartsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_amqp_dispatcher.info_energy_charts_public_power_async = info_energy_charts_public_power_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -248,6 +336,80 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 info_energy_charts_dispatcher.info_energy_charts_spot_price_async = info_energy_charts_spot_price_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsMqttProducer- `data`: The event data of type `energy_charts_producer_data.SpotPrice`.
+
+
+
+Producer for `info.energy_charts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_spot_price_event(record: ConsumerRecord, cloud_event: CloudEvent, data: SpotPrice) -> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_mqtt_dispatcher.info_energy_charts_spot_price_async = info_energy_charts_spot_price_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsAmqpProducer- `data`: The event data of type `energy_charts_producer_data.SpotPrice`.
+
+
+
+Producer for `info.energy_charts.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_spot_price_event(record: ConsumerRecord, cloud_event: CloudEvent, data: SpotPrice) -> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_amqp_dispatcher.info_energy_charts_spot_price_async = info_energy_charts_spot_price_event
 
 **Parameters:**```
 
@@ -311,6 +473,218 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 info_energy_charts_dispatcher.info_energy_charts_grid_signal_async = info_energy_charts_grid_signal_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsMqttProducer- `data`: The event data of type `energy_charts_producer_data.GridSignal`.
+
+
+
+Producer for `info.energy_charts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_grid_signal_event(record: ConsumerRecord, cloud_event: CloudEvent, data: GridSignal) ->
+None:
+
+```python    # Process the event data
+
+InfoEnergyChartsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_mqtt_dispatcher.info_energy_charts_grid_signal_async = info_energy_charts_grid_signal_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsAmqpProducer- `data`: The event data of type `energy_charts_producer_data.GridSignal`.
+
+
+
+Producer for `info.energy_charts.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_grid_signal_event(record: ConsumerRecord, cloud_event: CloudEvent, data: GridSignal) ->
+None:
+
+```python    # Process the event data
+
+InfoEnergyChartsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_amqp_dispatcher.info_energy_charts_grid_signal_async = info_energy_charts_grid_signal_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `info_energy_charts_info_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'info_energy_charts_info_async:  Callable[[ConsumerRecord, CloudEvent, Info],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `info.energy_charts.Info`: Retained reference information for MQTT/AMQP topic discovery.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsProducer- `data`: The event data of type `energy_charts_producer_data.Info`.
+
+
+
+Producer for `info.energy_charts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_dispatcher.info_energy_charts_info_async = info_energy_charts_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsMqttProducer- `data`: The event data of type `energy_charts_producer_data.Info`.
+
+
+
+Producer for `info.energy_charts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_mqtt_dispatcher.info_energy_charts_info_async = info_energy_charts_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsAmqpProducer- `data`: The event data of type `energy_charts_producer_data.Info`.
+
+
+
+Producer for `info.energy_charts.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_amqp_dispatcher.info_energy_charts_info_async = info_energy_charts_info_event
 
 **Parameters:**```
 
@@ -624,6 +998,2233 @@ await producer.send_info_energy_charts_grid_signal_batch(```
         GridSignal(...),
 
         GridSignal(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_info_energy_charts_info`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_info_energy_charts_info(
+
+    self,##### `_process_event`
+
+    data: Info,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `info.energy_charts.Info` message. Retained reference information for MQTT/AMQP topic discovery.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Info`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_info_energy_charts_info(
+
+    data=Info(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `info.energy_charts.Info` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_info_energy_charts_info_batch(```
+
+    messages=[
+
+        Info(...),Initializes the runner with a Kafka consumer.
+
+        Info(...),
+
+        Info(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### InfoEnergyChartsMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`InfoEnergyChartsMqttEventDispatcher` handles events for the info.energy_charts.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from energy_charts_producer import InfoEnergyChartsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = InfoEnergyChartsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_info_energy_charts_public_power(```python
+
+    data=PublicPower(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The InfoEnergyChartsMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = InfoEnergyChartsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `info_energy_charts_mqtt_public_power_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'info_energy_charts_mqtt_public_power_async:  Callable[[ConsumerRecord, CloudEvent,
+PublicPower], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `info.energy_charts.mqtt.PublicPower`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsProducer- `data`: The event data of type `energy_charts_producer_data.PublicPower`.
+
+
+
+Producer for `info.energy_charts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_mqtt_public_power_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PublicPower)
+-> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_dispatcher.info_energy_charts_mqtt_public_power_async = info_energy_charts_mqtt_public_power_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsMqttProducer- `data`: The event data of type `energy_charts_producer_data.PublicPower`.
+
+
+
+Producer for `info.energy_charts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_mqtt_public_power_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PublicPower)
+-> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_mqtt_dispatcher.info_energy_charts_mqtt_public_power_async =
+info_energy_charts_mqtt_public_power_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsAmqpProducer- `data`: The event data of type `energy_charts_producer_data.PublicPower`.
+
+
+
+Producer for `info.energy_charts.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_mqtt_public_power_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PublicPower)
+-> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_amqp_dispatcher.info_energy_charts_mqtt_public_power_async =
+info_energy_charts_mqtt_public_power_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `info_energy_charts_mqtt_spot_price_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'info_energy_charts_mqtt_spot_price_async:  Callable[[ConsumerRecord, CloudEvent,
+SpotPrice], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `info.energy_charts.mqtt.SpotPrice`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsProducer- `data`: The event data of type `energy_charts_producer_data.SpotPrice`.
+
+
+
+Producer for `info.energy_charts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_mqtt_spot_price_event(record: ConsumerRecord, cloud_event: CloudEvent, data: SpotPrice) ->
+None:
+
+```python    # Process the event data
+
+InfoEnergyChartsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_dispatcher.info_energy_charts_mqtt_spot_price_async = info_energy_charts_mqtt_spot_price_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsMqttProducer- `data`: The event data of type `energy_charts_producer_data.SpotPrice`.
+
+
+
+Producer for `info.energy_charts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_mqtt_spot_price_event(record: ConsumerRecord, cloud_event: CloudEvent, data: SpotPrice) ->
+None:
+
+```python    # Process the event data
+
+InfoEnergyChartsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_mqtt_dispatcher.info_energy_charts_mqtt_spot_price_async = info_energy_charts_mqtt_spot_price_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsAmqpProducer- `data`: The event data of type `energy_charts_producer_data.SpotPrice`.
+
+
+
+Producer for `info.energy_charts.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_mqtt_spot_price_event(record: ConsumerRecord, cloud_event: CloudEvent, data: SpotPrice) ->
+None:
+
+```python    # Process the event data
+
+InfoEnergyChartsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_amqp_dispatcher.info_energy_charts_mqtt_spot_price_async = info_energy_charts_mqtt_spot_price_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `info_energy_charts_mqtt_grid_signal_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'info_energy_charts_mqtt_grid_signal_async:  Callable[[ConsumerRecord, CloudEvent,
+GridSignal], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `info.energy_charts.mqtt.GridSignal`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsProducer- `data`: The event data of type `energy_charts_producer_data.GridSignal`.
+
+
+
+Producer for `info.energy_charts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_mqtt_grid_signal_event(record: ConsumerRecord, cloud_event: CloudEvent, data: GridSignal)
+-> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_dispatcher.info_energy_charts_mqtt_grid_signal_async = info_energy_charts_mqtt_grid_signal_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsMqttProducer- `data`: The event data of type `energy_charts_producer_data.GridSignal`.
+
+
+
+Producer for `info.energy_charts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_mqtt_grid_signal_event(record: ConsumerRecord, cloud_event: CloudEvent, data: GridSignal)
+-> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_mqtt_dispatcher.info_energy_charts_mqtt_grid_signal_async = info_energy_charts_mqtt_grid_signal_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsAmqpProducer- `data`: The event data of type `energy_charts_producer_data.GridSignal`.
+
+
+
+Producer for `info.energy_charts.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_mqtt_grid_signal_event(record: ConsumerRecord, cloud_event: CloudEvent, data: GridSignal)
+-> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_amqp_dispatcher.info_energy_charts_mqtt_grid_signal_async = info_energy_charts_mqtt_grid_signal_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `info_energy_charts_mqtt_info_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'info_energy_charts_mqtt_info_async:  Callable[[ConsumerRecord, CloudEvent, Info],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `info.energy_charts.mqtt.Info`: Retained reference information for MQTT/AMQP topic
+discovery.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsProducer- `data`: The event data of type `energy_charts_producer_data.Info`.
+
+
+
+Producer for `info.energy_charts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_dispatcher.info_energy_charts_mqtt_info_async = info_energy_charts_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsMqttProducer- `data`: The event data of type `energy_charts_producer_data.Info`.
+
+
+
+Producer for `info.energy_charts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_mqtt_dispatcher.info_energy_charts_mqtt_info_async = info_energy_charts_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsAmqpProducer- `data`: The event data of type `energy_charts_producer_data.Info`.
+
+
+
+Producer for `info.energy_charts.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_mqtt_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_amqp_dispatcher.info_energy_charts_mqtt_info_async = info_energy_charts_mqtt_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_info_energy_charts_mqtt_public_power`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_info_energy_charts_mqtt_public_power(
+
+    self,##### `_process_event`
+
+    data: PublicPower,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `info.energy_charts.mqtt.PublicPower` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PublicPower`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_info_energy_charts_mqtt_public_power(
+
+    data=PublicPower(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `info.energy_charts.mqtt.PublicPower` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_info_energy_charts_mqtt_public_power_batch(```
+
+    messages=[
+
+        PublicPower(...),Initializes the runner with a Kafka consumer.
+
+        PublicPower(...),
+
+        PublicPower(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_info_energy_charts_mqtt_spot_price`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_info_energy_charts_mqtt_spot_price(
+
+    self,##### `_process_event`
+
+    data: SpotPrice,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `info.energy_charts.mqtt.SpotPrice` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `SpotPrice`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_info_energy_charts_mqtt_spot_price(
+
+    data=SpotPrice(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `info.energy_charts.mqtt.SpotPrice` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_info_energy_charts_mqtt_spot_price_batch(```
+
+    messages=[
+
+        SpotPrice(...),Initializes the runner with a Kafka consumer.
+
+        SpotPrice(...),
+
+        SpotPrice(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_info_energy_charts_mqtt_grid_signal`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_info_energy_charts_mqtt_grid_signal(
+
+    self,##### `_process_event`
+
+    data: GridSignal,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `info.energy_charts.mqtt.GridSignal` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `GridSignal`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_info_energy_charts_mqtt_grid_signal(
+
+    data=GridSignal(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `info.energy_charts.mqtt.GridSignal` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_info_energy_charts_mqtt_grid_signal_batch(```
+
+    messages=[
+
+        GridSignal(...),Initializes the runner with a Kafka consumer.
+
+        GridSignal(...),
+
+        GridSignal(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_info_energy_charts_mqtt_info`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_info_energy_charts_mqtt_info(
+
+    self,##### `_process_event`
+
+    data: Info,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `info.energy_charts.mqtt.Info` message. Retained reference information for MQTT/AMQP topic discovery.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Info`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_info_energy_charts_mqtt_info(
+
+    data=Info(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `info.energy_charts.mqtt.Info` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_info_energy_charts_mqtt_info_batch(```
+
+    messages=[
+
+        Info(...),Initializes the runner with a Kafka consumer.
+
+        Info(...),
+
+        Info(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### InfoEnergyChartsAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`InfoEnergyChartsAmqpEventDispatcher` handles events for the info.energy_charts.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from energy_charts_producer import InfoEnergyChartsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = InfoEnergyChartsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_info_energy_charts_public_power(```python
+
+    data=PublicPower(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The InfoEnergyChartsAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = InfoEnergyChartsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `info_energy_charts_amqp_public_power_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'info_energy_charts_amqp_public_power_async:  Callable[[ConsumerRecord, CloudEvent,
+PublicPower], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `info.energy_charts.amqp.PublicPower`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsProducer- `data`: The event data of type `energy_charts_producer_data.PublicPower`.
+
+
+
+Producer for `info.energy_charts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_amqp_public_power_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PublicPower)
+-> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_dispatcher.info_energy_charts_amqp_public_power_async = info_energy_charts_amqp_public_power_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsMqttProducer- `data`: The event data of type `energy_charts_producer_data.PublicPower`.
+
+
+
+Producer for `info.energy_charts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_amqp_public_power_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PublicPower)
+-> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_mqtt_dispatcher.info_energy_charts_amqp_public_power_async =
+info_energy_charts_amqp_public_power_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsAmqpProducer- `data`: The event data of type `energy_charts_producer_data.PublicPower`.
+
+
+
+Producer for `info.energy_charts.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_amqp_public_power_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PublicPower)
+-> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_amqp_dispatcher.info_energy_charts_amqp_public_power_async =
+info_energy_charts_amqp_public_power_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `info_energy_charts_amqp_spot_price_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'info_energy_charts_amqp_spot_price_async:  Callable[[ConsumerRecord, CloudEvent,
+SpotPrice], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `info.energy_charts.amqp.SpotPrice`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsProducer- `data`: The event data of type `energy_charts_producer_data.SpotPrice`.
+
+
+
+Producer for `info.energy_charts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_amqp_spot_price_event(record: ConsumerRecord, cloud_event: CloudEvent, data: SpotPrice) ->
+None:
+
+```python    # Process the event data
+
+InfoEnergyChartsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_dispatcher.info_energy_charts_amqp_spot_price_async = info_energy_charts_amqp_spot_price_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsMqttProducer- `data`: The event data of type `energy_charts_producer_data.SpotPrice`.
+
+
+
+Producer for `info.energy_charts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_amqp_spot_price_event(record: ConsumerRecord, cloud_event: CloudEvent, data: SpotPrice) ->
+None:
+
+```python    # Process the event data
+
+InfoEnergyChartsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_mqtt_dispatcher.info_energy_charts_amqp_spot_price_async = info_energy_charts_amqp_spot_price_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsAmqpProducer- `data`: The event data of type `energy_charts_producer_data.SpotPrice`.
+
+
+
+Producer for `info.energy_charts.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_amqp_spot_price_event(record: ConsumerRecord, cloud_event: CloudEvent, data: SpotPrice) ->
+None:
+
+```python    # Process the event data
+
+InfoEnergyChartsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_amqp_dispatcher.info_energy_charts_amqp_spot_price_async = info_energy_charts_amqp_spot_price_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `info_energy_charts_amqp_grid_signal_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'info_energy_charts_amqp_grid_signal_async:  Callable[[ConsumerRecord, CloudEvent,
+GridSignal], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `info.energy_charts.amqp.GridSignal`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsProducer- `data`: The event data of type `energy_charts_producer_data.GridSignal`.
+
+
+
+Producer for `info.energy_charts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_amqp_grid_signal_event(record: ConsumerRecord, cloud_event: CloudEvent, data: GridSignal)
+-> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_dispatcher.info_energy_charts_amqp_grid_signal_async = info_energy_charts_amqp_grid_signal_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsMqttProducer- `data`: The event data of type `energy_charts_producer_data.GridSignal`.
+
+
+
+Producer for `info.energy_charts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_amqp_grid_signal_event(record: ConsumerRecord, cloud_event: CloudEvent, data: GridSignal)
+-> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_mqtt_dispatcher.info_energy_charts_amqp_grid_signal_async = info_energy_charts_amqp_grid_signal_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsAmqpProducer- `data`: The event data of type `energy_charts_producer_data.GridSignal`.
+
+
+
+Producer for `info.energy_charts.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_amqp_grid_signal_event(record: ConsumerRecord, cloud_event: CloudEvent, data: GridSignal)
+-> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_amqp_dispatcher.info_energy_charts_amqp_grid_signal_async = info_energy_charts_amqp_grid_signal_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `info_energy_charts_amqp_info_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'info_energy_charts_amqp_info_async:  Callable[[ConsumerRecord, CloudEvent, Info],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `info.energy_charts.amqp.Info`: Retained reference information for MQTT/AMQP topic
+discovery.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsProducer- `data`: The event data of type `energy_charts_producer_data.Info`.
+
+
+
+Producer for `info.energy_charts` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_dispatcher.info_energy_charts_amqp_info_async = info_energy_charts_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsMqttProducer- `data`: The event data of type `energy_charts_producer_data.Info`.
+
+
+
+Producer for `info.energy_charts.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_mqtt_dispatcher.info_energy_charts_amqp_info_async = info_energy_charts_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### InfoEnergyChartsAmqpProducer- `data`: The event data of type `energy_charts_producer_data.Info`.
+
+
+
+Producer for `info.energy_charts.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def info_energy_charts_amqp_info_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Info) -> None:
+
+```python    # Process the event data
+
+InfoEnergyChartsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+info_energy_charts_amqp_dispatcher.info_energy_charts_amqp_info_async = info_energy_charts_amqp_info_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_info_energy_charts_amqp_public_power`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_info_energy_charts_amqp_public_power(
+
+    self,##### `_process_event`
+
+    data: PublicPower,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `info.energy_charts.amqp.PublicPower` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PublicPower`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_info_energy_charts_amqp_public_power(
+
+    data=PublicPower(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `info.energy_charts.amqp.PublicPower` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_info_energy_charts_amqp_public_power_batch(```
+
+    messages=[
+
+        PublicPower(...),Initializes the runner with a Kafka consumer.
+
+        PublicPower(...),
+
+        PublicPower(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_info_energy_charts_amqp_spot_price`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_info_energy_charts_amqp_spot_price(
+
+    self,##### `_process_event`
+
+    data: SpotPrice,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `info.energy_charts.amqp.SpotPrice` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `SpotPrice`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_info_energy_charts_amqp_spot_price(
+
+    data=SpotPrice(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `info.energy_charts.amqp.SpotPrice` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_info_energy_charts_amqp_spot_price_batch(```
+
+    messages=[
+
+        SpotPrice(...),Initializes the runner with a Kafka consumer.
+
+        SpotPrice(...),
+
+        SpotPrice(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_info_energy_charts_amqp_grid_signal`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_info_energy_charts_amqp_grid_signal(
+
+    self,##### `_process_event`
+
+    data: GridSignal,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `info.energy_charts.amqp.GridSignal` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `GridSignal`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_info_energy_charts_amqp_grid_signal(
+
+    data=GridSignal(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `info.energy_charts.amqp.GridSignal` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_info_energy_charts_amqp_grid_signal_batch(```
+
+    messages=[
+
+        GridSignal(...),Initializes the runner with a Kafka consumer.
+
+        GridSignal(...),
+
+        GridSignal(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_info_energy_charts_amqp_info`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_info_energy_charts_amqp_info(
+
+    self,##### `_process_event`
+
+    data: Info,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `info.energy_charts.amqp.Info` message. Retained reference information for MQTT/AMQP topic discovery.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Info`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_info_energy_charts_amqp_info(
+
+    data=Info(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `info.energy_charts.amqp.Info` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_info_energy_charts_amqp_info_batch(```
+
+    messages=[
+
+        Info(...),Initializes the runner with a Kafka consumer.
+
+        Info(...),
+
+        Info(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

@@ -1,26 +1,15 @@
+# Regenerate Kafka, MQTT, and AMQP producers from the source xRegistry manifest.
 . (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
-
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$projectRoot = $scriptDir
-$xregFile = Join-Path $projectRoot "xreg\energidataservice_dk.xreg.json"
-$outputDir = Join-Path $projectRoot "energidataservice_dk_producer"
-
-Write-Host "Generating Energi Data Service producer from xRegistry definitions..." -ForegroundColor Cyan
-Write-Host "  xRegistry file: $xregFile" -ForegroundColor Gray
-Write-Host "  Output directory: $outputDir" -ForegroundColor Gray
-
-if (Test-Path $outputDir) {
-    Write-Host "  Cleaning existing output directory..." -ForegroundColor Yellow
-    Remove-Item -Path $outputDir -Recurse -Force
+$xregFile = Join-Path $scriptDir "xreg\energidataservice_dk.xreg.json"
+foreach ($output in @("energidataservice_dk_producer", "energidataservice_dk_mqtt_producer", "energidataservice_dk_amqp_producer")) {
+  $outputDir = Join-Path $scriptDir $output
+  if (Test-Path $outputDir) { Remove-Item -Path $outputDir -Recurse -Force }
 }
-
-Write-Host "  Generating Kafka producer code..." -ForegroundColor Cyan
-xrcg generate --style kafkaproducer --language py --projectname energidataservice-dk-producer --definitions $xregFile --output $outputDir
-
-if ($LASTEXITCODE -eq 0) {
-    Write-Host "Producer generation completed successfully" -ForegroundColor Green
-} else {
-    Write-Host "Producer generation failed with exit code: $LASTEXITCODE" -ForegroundColor Red
-    exit 1
-}
+xrcg generate --style kafkaproducer --language py --definitions $xregFile --projectname energidataservice_dk_producer --output (Join-Path $scriptDir "energidataservice_dk_producer")
+if ($LASTEXITCODE -ne 0) { throw "Kafka producer generation failed" }
+xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint dk.energinet.energidataservice.Mqtt --projectname energidataservice_dk_mqtt_producer --output (Join-Path $scriptDir "energidataservice_dk_mqtt_producer")
+if ($LASTEXITCODE -ne 0) { throw "MQTT producer generation failed" }
+xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint dk.energinet.energidataservice.Amqp --projectname energidataservice_dk_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir "energidataservice_dk_amqp_producer")
+if ($LASTEXITCODE -ne 0) { throw "AMQP producer generation failed" }

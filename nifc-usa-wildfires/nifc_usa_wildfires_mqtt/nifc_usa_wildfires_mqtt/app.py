@@ -1,0 +1,40 @@
+
+"""MQTT feeder for NIFC USA wildfire incident events."""
+from __future__ import annotations
+import argparse, asyncio, dataclasses, logging, os
+from typing import Optional
+from urllib.parse import urlparse
+import paho.mqtt.client as mqtt
+from paho.mqtt.client import CallbackAPIVersion, MQTTv5
+from nifc_usa_wildfires.nifc_usa_wildfires import NIFCWildfirePoller, SOURCE_URI
+from nifc_usa_wildfires_mqtt_producer_data.gov.nifc.wildfires.wildfireincident import WildfireIncident
+from nifc_usa_wildfires_mqtt_producer_mqtt_client.client import GovNIFCWildfiresMqttMqttClient
+logger=logging.getLogger(__name__)
+def _parse(url):
+ p=urlparse(url if '://' in url else f'mqtt://{url}'); tls=(p.scheme or 'mqtt').lower() in ('mqtts','ssl','tls'); return p.hostname or 'localhost', p.port or (8883 if tls else 1883), tls
+def _sample():
+ return [WildfireIncident(irwin_id='sample-irwin-001', state='ca', status='active', incident_name='Sample Fire', unique_fire_identifier='2026-CANIF-000001', incident_type_category='WF', incident_type_kind='FI', fire_discovery_datetime='2026-01-01T00:00:00+00:00', daily_acres=100.0, calculated_acres=None, discovery_acres=10.0, percent_contained=0.0, poo_state='US-CA', poo_county='Sample', latitude=38.5, longitude=-121.5, fire_cause='Undetermined', fire_cause_general=None, gacc='ONCC', total_incident_personnel=None, incident_management_organization=None, fire_mgmt_complexity=None, residences_destroyed=None, other_structures_destroyed=None, injuries=None, fatalities=None, containment_datetime=None, control_datetime=None, fire_out_datetime=None, final_acres=None, modified_on_datetime='2026-01-01T01:00:00+00:00')]
+def _to_mqtt(i): return WildfireIncident(**dataclasses.asdict(i))
+async def feed(host,port,*,username:Optional[str]=None,password:Optional[str]=None,tls=False,client_id:Optional[str]=None,once=False,content_mode='binary',polling_interval=300):
+ paho=mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, client_id=client_id or '', protocol=MQTTv5)
+ if username: paho.username_pw_set(username,password or '')
+ if tls: paho.tls_set()
+ client=GovNIFCWildfiresMqttMqttClient(client=paho, content_mode=content_mode, loop=asyncio.get_running_loop())
+ await client.connect(host,port)
+ try:
+  while True:
+   if os.getenv('NIFC_USA_WILDFIRES_SAMPLE_MODE','').lower() in ('1','true','yes'): incidents=_sample()
+   else:
+    poller=NIFCWildfirePoller(); incidents=[_to_mqtt(poller.parse_incident(f)) for f in await poller.fetch_incidents() if poller.parse_incident(f)]
+   for i in incidents:
+    await client.publish_gov_nifc_wildfires_mqtt_wildfire_incident(source_uri=SOURCE_URI, irwin_id=i.irwin_id, modified_on_datetime=i.modified_on_datetime, state=i.state, status=i.status, data=i)
+   logger.info('Published %d NIFC wildfire incidents to MQTT',len(incidents))
+   if once: break
+   await asyncio.sleep(max(1,polling_interval))
+ finally: await client.disconnect()
+def main():
+ logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s'); ap=argparse.ArgumentParser(); ap.add_argument('command',nargs='?',default='feed'); ap.add_argument('--broker-url',default=os.getenv('MQTT_BROKER_URL','mqtt://localhost:1883')); ap.add_argument('--username',default=os.getenv('MQTT_USERNAME','')); ap.add_argument('--password',default=os.getenv('MQTT_PASSWORD','')); ap.add_argument('--client-id',default=os.getenv('MQTT_CLIENT_ID','')); ap.add_argument('--content-mode',choices=('binary','structured'),default=os.getenv('MQTT_CONTENT_MODE','binary')); ap.add_argument('--polling-interval',type=int,default=int(os.getenv('POLLING_INTERVAL','300'))); ap.add_argument('--once',action='store_true',default=os.getenv('ONCE_MODE','').lower() in ('1','true','yes'))
+ a=ap.parse_args();
+ if a.command!='feed': ap.error("only the 'feed' command is supported")
+ host,port,tls=_parse(a.broker_url); asyncio.run(feed(host,port,username=a.username or None,password=a.password or None,tls=tls,client_id=a.client_id or None,content_mode=a.content_mode,polling_interval=a.polling_interval,once=a.once))
+if __name__=='__main__': main()

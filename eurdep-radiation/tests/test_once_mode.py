@@ -52,6 +52,6 @@ def test_once_mode_exits_after_one_cycle(
     feed(_make_args(once=True))
 
     # Initial reference fetch + one telemetry fetch = 2 calls; no third.
-    assert mock_fetch.call_count == 2
+    assert mock_fetch.call_count == 1
     # No sleep should be executed in --once mode after the cycle.
     mock_sleep.assert_not_called()

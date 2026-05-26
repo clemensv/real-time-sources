@@ -29,32 +29,32 @@ class Test_DemandOutturn(unittest.TestCase):
         Create instance of DemandOutturn for testing
         """
         instance = DemandOutturn(
-            settlement_period=int(18),
-            settlement_date='vcttjrcwurfjkmxrmlzq',
+            settlement_period=int(2),
+            settlement_date='qspugzzoyvrtcbwvyujv',
             start_time=datetime.datetime.now(datetime.timezone.utc),
             publish_time=datetime.datetime.now(datetime.timezone.utc),
-            initial_demand_outturn_mw=float(8.832253389568711),
-            initial_transmission_system_demand_outturn_mw=float(47.615121884621445)
+            initial_demand_outturn_mw=float(44.61456066406928),
+            initial_transmission_system_demand_outturn_mw=float(73.69313498869057)
         )
         return instance
 
-    
+
     def test_settlement_period_property(self):
         """
         Test settlement_period property
         """
-        test_value = int(18)
+        test_value = int(2)
         self.instance.settlement_period = test_value
         self.assertEqual(self.instance.settlement_period, test_value)
-    
+
     def test_settlement_date_property(self):
         """
         Test settlement_date property
         """
-        test_value = 'vcttjrcwurfjkmxrmlzq'
+        test_value = 'qspugzzoyvrtcbwvyujv'
         self.instance.settlement_date = test_value
         self.assertEqual(self.instance.settlement_date, test_value)
-    
+
     def test_start_time_property(self):
         """
         Test start_time property
@@ -62,7 +62,7 @@ class Test_DemandOutturn(unittest.TestCase):
         test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
-    
+
     def test_publish_time_property(self):
         """
         Test publish_time property
@@ -70,23 +70,23 @@ class Test_DemandOutturn(unittest.TestCase):
         test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.publish_time = test_value
         self.assertEqual(self.instance.publish_time, test_value)
-    
+
     def test_initial_demand_outturn_mw_property(self):
         """
         Test initial_demand_outturn_mw property
         """
-        test_value = float(8.832253389568711)
+        test_value = float(44.61456066406928)
         self.instance.initial_demand_outturn_mw = test_value
         self.assertEqual(self.instance.initial_demand_outturn_mw, test_value)
-    
+
     def test_initial_transmission_system_demand_outturn_mw_property(self):
         """
         Test initial_transmission_system_demand_outturn_mw property
         """
-        test_value = float(47.615121884621445)
+        test_value = float(73.69313498869057)
         self.instance.initial_transmission_system_demand_outturn_mw = test_value
         self.assertEqual(self.instance.initial_transmission_system_demand_outturn_mw, test_value)
-    
+
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

@@ -362,3 +362,8 @@ distinct postal codes, and organizer IDs vary with the active publisher set.
 - [List all public events](https://api.billetto.com/reference/list-public-events)
 - [Billetto API documentation](https://api.billetto.com/docs)
 - [Billetto main site](https://billetto.dk)
+
+
+## Transports
+
+This source now ships Kafka plus MQTT and AMQP companion feeders. MQTT publishes binary-mode CloudEvents into the documented topic tree for wildcard subscribers and retained last-known-value use cases. AMQP publishes the same CloudEvents to a broker address for queue/topic consumers. Deployment templates include `azure-template.json`, `azure-template-with-eventhub.json`, `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, `azure-template-amqp.json`, and `azure-template-with-servicebus.json`. Dockerfiles: `Dockerfile`, `Dockerfile.mqtt`, `Dockerfile.amqp`.

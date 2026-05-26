@@ -1,34 +1,36 @@
 """ DoseRateMeasurement dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class DoseRateMeasurement:
     """
-    A one-hour averaged ambient gamma dose rate measurement from a BfS ODL station.
+    A one-hour averaged ambient gamma dose rate measurement from a BfS ODL station. The gross dose rate value is the total ambient dose equivalent rate H*(10) at 1 meter above ground, expressed in microsieverts per hour (µSv/h). It may be decomposed into a cosmic component (secondary cosmic radiation, altitude-dependent) and a terrestrial component (naturally occurring radionuclides in soil, geology-dependent). Normal background levels in Germany range from approximately 0.05 to 0.18 µSv/h depending on local geology and altitude.
+    
     Attributes:
-        station_id (str): Nine-digit station identifier (Kennziffer) of the measuring probe.
-        start_measure (str): Start of the measurement period in ISO 8601 UTC.
-        end_measure (str): End of the measurement period in ISO 8601 UTC.
-        value (typing.Optional[float]): Gross ambient gamma dose rate in µSv/h. Null if not reported.
-        value_cosmic (typing.Optional[float]): Cosmic radiation component in µSv/h. Null when not computed.
-        value_terrestrial (typing.Optional[float]): Terrestrial radiation component in µSv/h. Null when not computed.
-        validated (int): Data validation flag. 1 = validated, 0 = preliminary.
-        nuclide (str): Nuclide identifier, typically 'Gamma-ODL-Brutto'."""
+        station_id (str)
+        start_measure (str)
+        end_measure (str)
+        value (typing.Optional[float])
+        value_cosmic (typing.Optional[float])
+        value_terrestrial (typing.Optional[float])
+        validated (int)
+        nuclide (str)
+        canton (str)
+    """
+    
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     start_measure: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start_measure"))
@@ -38,21 +40,7 @@ class DoseRateMeasurement:
     value_terrestrial: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value_terrestrial"))
     validated: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="validated"))
     nuclide: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="nuclide"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"DoseRateMeasurement\", \"namespace\": \"de.bfs.odl\", \"doc\": \"A one-hour averaged ambient gamma dose rate measurement from a BfS ODL station.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Nine-digit station identifier (Kennziffer) of the measuring probe.\"}, {\"name\": \"start_measure\", \"type\": \"string\", \"doc\": \"Start of the measurement period in ISO 8601 UTC.\"}, {\"name\": \"end_measure\", \"type\": \"string\", \"doc\": \"End of the measurement period in ISO 8601 UTC.\"}, {\"name\": \"value\", \"type\": [\"null\", \"double\"], \"doc\": \"Gross ambient gamma dose rate in \u00b5Sv/h. Null if not reported.\", \"default\": null}, {\"name\": \"value_cosmic\", \"type\": [\"null\", \"double\"], \"doc\": \"Cosmic radiation component in \u00b5Sv/h. Null when not computed.\", \"default\": null}, {\"name\": \"value_terrestrial\", \"type\": [\"null\", \"double\"], \"doc\": \"Terrestrial radiation component in \u00b5Sv/h. Null when not computed.\", \"default\": null}, {\"name\": \"validated\", \"type\": \"int\", \"doc\": \"Data validation flag. 1 = validated, 0 = preliminary.\"}, {\"name\": \"nuclide\", \"type\": \"string\", \"doc\": \"Nuclide identifier, typically 'Gamma-ODL-Brutto'.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.station_id=str(self.station_id)
-        self.start_measure=str(self.start_measure)
-        self.end_measure=str(self.end_measure)
-        self.value=float(self.value) if self.value else None
-        self.value_cosmic=float(self.value_cosmic) if self.value_cosmic else None
-        self.value_terrestrial=float(self.value_terrestrial) if self.value_terrestrial else None
-        self.validated=int(self.validated)
-        self.nuclide=str(self.nuclide)
+    canton: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="canton"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'DoseRateMeasurement':
@@ -63,7 +51,7 @@ class DoseRateMeasurement:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -82,7 +70,7 @@ class DoseRateMeasurement:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -96,8 +84,6 @@ class DoseRateMeasurement:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -110,12 +96,6 @@ class DoseRateMeasurement:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -144,10 +124,6 @@ class DoseRateMeasurement:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -173,18 +149,6 @@ class DoseRateMeasurement:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return DoseRateMeasurement.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -192,5 +156,24 @@ class DoseRateMeasurement:
                 return DoseRateMeasurement.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'DoseRateMeasurement':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            station_id='dfggkryonnwvjbasdgfw',
+            start_measure='tdagqtghxwxhqjtjqnlp',
+            end_measure='kjsuozxedncywtvnjcvk',
+            value=float(84.8974453337415),
+            value_cosmic=float(98.341472964917),
+            value_terrestrial=float(16.86751796387793),
+            validated=int(36),
+            nuclide='ncqhwhpnetbskhtuiswv',
+            canton='qsgxxewadtzjajqfmgbx'
+        )

@@ -1,0 +1,20 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "energidataservice-dk-mqtt"
+version = "0.1.0"
+description = "energidataservice-dk MQTT companion feeder"
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+paho-mqtt = ">=2.1.0"
+energidataservice_dk_mqtt_producer_data = {path = "../energidataservice_dk_mqtt_producer/energidataservice_dk_mqtt_producer_data"}
+energidataservice_dk_mqtt_producer_mqtt_client = {path = "../energidataservice_dk_mqtt_producer/energidataservice_dk_mqtt_producer_mqtt_client"}
+
+[tool.poetry.scripts]
+energidataservice-dk-mqtt = "energidataservice_dk_mqtt:main"

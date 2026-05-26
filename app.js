@@ -111,14 +111,15 @@ const SOURCES = [
   { id: "irail", name: "iRail", cat: "Railway", key: false, desc: "Belgium — ~600 NMBS/SNCB stations, departures, delays", notebook: true, mqtt: true },
 
   // ── Nightlife and Live Entertainment ──
-  { id: "xceed", name: "Xceed", cat: "Nightlife", key: false, desc: "Europe — clubs, bars, parties, festivals — event schedules" },
+  { id: "xceed", name: "Xceed", cat: "Nightlife", key: false, desc: "Europe — clubs, bars, parties, festivals — event schedules", mqtt: true, amqp: true },
 
   // ── Energy and Infrastructure ──
   { id: "carbon-intensity", name: "Carbon Intensity UK", cat: "Energy", key: false, desc: "United Kingdom — national grid carbon intensity", notebook: true },
-  { id: "elexon-bmrs", name: "Elexon BMRS", cat: "Energy", key: false, desc: "Great Britain — electricity market, generation, demand", notebook: true },
-  { id: "energidataservice-dk", name: "Energi Data Service", cat: "Energy", key: false, desc: "Denmark — power system, spot prices, CO₂", notebook: true },
-  { id: "energy-charts", name: "Energy-Charts", cat: "Energy", key: false, desc: "Europe — 40+ countries, electricity generation & prices", notebook: true },
+  { id: "elexon-bmrs", name: "Elexon BMRS", cat: "Energy", key: false, desc: "Great Britain — electricity market, generation, demand", notebook: true, mqtt: true, amqp: true },
+  { id: "energidataservice-dk", name: "Energi Data Service", cat: "Energy", key: false, desc: "Denmark — power system, spot prices, CO₂", notebook: true, mqtt: true, amqp: true },
+  { id: "energy-charts", name: "Energy-Charts", cat: "Energy", key: false, desc: "Europe — 40+ countries, electricity generation & prices", notebook: true, mqtt: true, amqp: true },
   { id: "entsoe", name: "ENTSO-E", cat: "Energy", key: true, desc: "Europe — electricity generation, prices, load, flows (requires token)", mqtt: true, amqp: true },
+  { id: "tepco-denkiyoho", name: "TEPCO Denkiyoho", cat: "Energy", key: false, desc: "Japan / Kanto — TEPCO electricity supply, hourly forecast, 5-min actuals + solar", mqtt: true, amqp: true },
 
   // ── Social Media and News ──
   { id: "bluesky", name: "Bluesky Firehose", cat: "Social", key: false, desc: "Global — posts, likes, reposts, follows" },
@@ -127,9 +128,9 @@ const SOURCES = [
   { id: "wikimedia-eventstreams", name: "Wikimedia EventStreams", cat: "Social", key: false, desc: "Global — Wikipedia, Wikidata, Commons recent changes" },
 
   // ── Public Events ──
-  { id: "billetto", name: "Billetto", cat: "Public Events", key: false, desc: "Europe — pan-European ticketed public events" },
-  { id: "fienta", name: "Fienta", cat: "Public Events", key: false, desc: "Europe — ticketed public events with sale-status signals" },
-  { id: "ticketmaster", name: "Ticketmaster", cat: "Public Events", key: true, desc: "Global — concerts, sports, theater, arts via Discovery API" },
+  { id: "billetto", name: "Billetto", cat: "Public Events", key: false, desc: "Europe — pan-European ticketed public events", mqtt: true, amqp: true },
+  { id: "fienta", name: "Fienta", cat: "Public Events", key: false, desc: "Europe — ticketed public events with sale-status signals", mqtt: true, amqp: true },
+  { id: "ticketmaster", name: "Ticketmaster", cat: "Public Events", key: true, desc: "Global — concerts, sports, theater, arts via Discovery API", mqtt: true, amqp: true },
 
   // ── Scientific Research ──
   { id: "gracedb", name: "GraceDB", cat: "Science", key: false, desc: "Global — LIGO/Virgo/KAGRA gravitational wave candidates", notebook: true, mqtt: true },
