@@ -1,4 +1,4 @@
-# NDW Road Traffic Events
+# NDW Road Traffic feeder Events
 
 NDW Road Traffic publishes traffic flow, signs, travel-time, and situation updates from the Dutch National Data Warehouse for Traffic Information (NDW) for Dutch road network measurement sites and situations. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
 
@@ -8,7 +8,6 @@ NDW Road Traffic publishes traffic flow, signs, travel-time, and situation updat
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 13 telemetry event types.
 - **Identity:** `measurement-sites/{measurement_site_id}`, `drips/{vms_controller_id}/{vms_index}`, `msi-signs/{sign_id}`, `situations/{situation_record_id}` identifies the resource each event is about.
-- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -764,12 +763,10 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
-- Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
+No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
 
 ## References
 
 - xRegistry manifest: [`xreg/ndw-road-traffic.xreg.json`](xreg/ndw-road-traffic.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
-- https://opendata.ndw.nu/: <https://opendata.ndw.nu/>

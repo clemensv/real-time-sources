@@ -1,71 +1,148 @@
-# NDW Road Traffic
+# NDW Road Traffic feeder
 
-Real-time road traffic data from the Dutch [Nationaal Dataportaal Wegverkeer (NDW)](https://www.ndw.nu/), the Netherlands national road traffic data platform. Provides live traffic speed, travel time, Dynamic Route Information Panel (DRIP) signs, Matrix Signal Installation (MSI) lane signals, and situation events (road works, bridge openings, temporary closures, speed limits, safety messages) for the Dutch national road network (rijkswegen and provinciale wegen).
+This feeder turns the upstream NDW Road Traffic feed into a real-time CloudEvents stream over KAFKA / MQTT / AMQP.
 
-## Data Sources
+Companion docs:
 
-All data feeds are DATEX II XML files published as gzip-compressed files at [https://opendata.ndw.nu/](https://opendata.ndw.nu/):
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-| Feed | Format | Update Frequency | Description |
-|------|--------|-----------------|-------------|
-| `measurement_current.xml.gz` | DATEX II v3 | Static/periodic | Measurement site reference catalog (point and route sites) |
-| `trafficspeed.xml.gz` | DATEX II v2 | ~1 min | Traffic speed and flow at fixed measurement points |
-| `traveltime.xml.gz` | DATEX II v2 | ~1 min | Travel times on route sections |
-| `dynamische_route_informatie_paneel.xml.gz` | DATEX II v3 | ~1 min | DRIP (Dynamic Route Information Panel) signs |
-| `Matrixsignaalinformatie.xml.gz` | DATEX II v3 | ~1 min | MSI (Matrix Signal Installation) lane signals |
-| `planningsfeed_wegwerkzaamheden_en_evenementen.xml.gz` | DATEX II v3 | ~5 min | Planned roadworks and events |
-| `planningsfeed_brugopeningen.xml.gz` | DATEX II v3 | ~5 min | Bridge opening events |
-| `tijdelijke_verkeersmaatregelen_afsluitingen.xml.gz` | DATEX II v3 | ~5 min | Temporary road closures |
-| `tijdelijke_verkeersmaatregelen_maximum_snelheden.xml.gz` | DATEX II v3 | ~5 min | Temporary speed limits |
-| `veiligheidsgerelateerde_berichten_srti.xml.gz` | DATEX II v3 | ~5 min | Safety-related traffic information |
+## Why this bridge
 
-## Event Model
+NDW Road Traffic publishes operational real-time data that is useful across hazard and mobility analytics workflows, but each consumer otherwise has to build and operate its own source connector, transport adapter, and schema normalization.
 
-### NL.NDW.AVG (Measurement Sites and Observations)
+This bridge provides one reusable feed for common scenarios:
 
-| Event Type | Subject/Key | Description |
-|-----------|-------------|-------------|
-| `NL.NDW.AVG.PointMeasurementSite` | `measurement-sites/{measurement_site_id}` | Reference: fixed sensor site metadata |
-| `NL.NDW.AVG.RouteMeasurementSite` | `measurement-sites/{measurement_site_id}` | Reference: route section site metadata |
-| `NL.NDW.AVG.TrafficObservation` | `measurement-sites/{measurement_site_id}` | Live speed and flow measurement |
-| `NL.NDW.AVG.TravelTimeObservation` | `measurement-sites/{measurement_site_id}` | Live travel time measurement |
+- **Operations dashboards** — power near-real-time fleet, traffic, or incident views.
+- **Streaming analytics** — ingest directly into Eventhouse, ADX, or a lakehouse pipeline.
+- **Cross-source correlation** — join this stream with weather, hydrology, and public-safety feeds in this repository.
+- **Alerting and automation** — trigger rules based on stable CloudEvents payloads and keys.
+- **Research and reporting** — keep a reproducible event archive for retrospective analysis.
 
-### NL.NDW.DRIP (Dynamic Route Information Panels)
+## Overview
 
-| Event Type | Subject/Key | Description |
-|-----------|-------------|-------------|
-| `NL.NDW.DRIP.DripSign` | `drips/{vms_controller_id}/{vms_index}` | Reference: DRIP sign installation |
-| `NL.NDW.DRIP.DripDisplayState` | `drips/{vms_controller_id}/{vms_index}` | Live sign display content |
+**NDW Road Traffic** in this repository is a streaming bridge and ships in the transport variants below:
 
-### NL.NDW.MSI (Matrix Signal Installations)
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-ndw-road-traffic` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Fabric Event Streams) | Topic(s): `ndw-road-traffic`, key = `drips/{vms_controller_id}/{vms_index}`, `measurement-sites/{measurement_site_id}`, `msi-signs/{sign_id}`, `situations/{situation_record_id}` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-ndw-road-traffic-mqtt` | MQTT 5.0 broker (incl. Azure Event Grid MQTT and Fabric Real-Time Hub MQTT source) | Unified Namespace topic tree `traffic/nl/ndw/ndw-road-traffic/drips/{road}/{vms_controller_id}/{vms_index}/display-state` |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-ndw-road-traffic-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0, Artemis, Qpid Dispatch, Azure Service Bus/Event Hubs) | AMQP node `ndw-road-traffic`, CloudEvents binary mode |
 
-| Event Type | Subject/Key | Description |
-|-----------|-------------|-------------|
-| `NL.NDW.MSI.MsiSign` | `msi-signs/{sign_id}` | Reference: MSI lane signal installation |
-| `NL.NDW.MSI.MsiDisplayState` | `msi-signs/{sign_id}` | Live displayed image/speed limit |
+All variants share:
 
-### NL.NDW.Situations (Traffic Situations)
+- The xRegistry contract (`xreg/ndw-road-traffic.xreg.json`).
+- A common upstream acquisition path and normalized event payloads.
+- Stable CloudEvents subject/key identity derived from source-native identifiers.
 
-| Event Type | Subject/Key | Description |
-|-----------|-------------|-------------|
-| `NL.NDW.Situations.Roadwork` | `situations/{situation_record_id}` | Roadwork and maintenance events |
-| `NL.NDW.Situations.BridgeOpening` | `situations/{situation_record_id}` | Bridge opening events |
-| `NL.NDW.Situations.TemporaryClosure` | `situations/{situation_record_id}` | Temporary road closures |
-| `NL.NDW.Situations.TemporarySpeedLimit` | `situations/{situation_record_id}` | Temporary speed limits |
-| `NL.NDW.Situations.SafetyRelatedMessage` | `situations/{situation_record_id}` | Safety-related traffic information |
+## Key features
 
-## Links
+- Real-time source ingestion for **Netherlands — national road traffic, DATEX II XML**.
+- Contract-first CloudEvents output with JsonStructure schemas.
+- Transport variants aligned to the same core event model.
+- Deployment-ready container images for local, Azure, and Fabric-aligned topologies.
 
-- [NDW Open Data Portal](https://www.ndw.nu/pagina/en/77/open_data)
-- [NDW Data Catalog](https://opendata.ndw.nu/)
-- [DATEX II Standard](https://www.datex2.eu/)
+## Repository layout
 
+```text
+ndw-road-traffic/
+  xreg/                           # xRegistry contracts
+  kql/
+  ndw_road_traffic/
+  ndw_road_traffic_amqp/
+  ndw_road_traffic_amqp_producer/
+  ndw_road_traffic_mqtt/
+  ndw_road_traffic_mqtt_producer/
+  ndw_road_traffic_producer/
+  tests/
+  Dockerfile
+  Dockerfile.mqtt
+  Dockerfile.amqp
+```
 
-## MQTT and AMQP companion feeders
+## Prerequisites
 
-This source now ships separate MQTT and AMQP companion containers in addition to the Kafka/Event Hubs feeder. The MQTT container publishes binary-mode CloudEvents to the UNS topic templates declared in `xreg/`; the AMQP container publishes the same CloudEvents to an AMQP 1.0 address named `ndw-road-traffic` by default.
+- Docker 20.10+ (or any OCI-compatible runtime).
+- Network access to the upstream data endpoint(s).
+- Network access to your target broker (Kafka, MQTT, or AMQP).
 
-- MQTT image: `ghcr.io/clemensv/real-time-sources-ndw-road-traffic-mqtt:latest`
-- AMQP image: `ghcr.io/clemensv/real-time-sources-ndw-road-traffic-amqp:latest`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `infra/azure-template-amqp.json`, `infra/azure-template-with-servicebus.json`
+This source is handled as a streaming feeder in this batch; no notebook runtime section is included.
+
+## Quick start with Docker
+
+### Kafka
+
+```bash
+docker run --rm \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-ndw-road-traffic:latest
+```
+
+### MQTT (Unified Namespace)
+
+```bash
+docker run --rm \
+  -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+  -e MQTT_USERNAME='<username>' \
+  -e MQTT_PASSWORD='<password>' \
+  ghcr.io/clemensv/real-time-sources-ndw-road-traffic-mqtt:latest
+```
+
+Topics follow the contract templates in [EVENTS.md](EVENTS.md); primary template: `traffic/nl/ndw/ndw-road-traffic/drips/{road}/{vms_controller_id}/{vms_index}/display-state`.
+
+### AMQP 1.0
+
+```bash
+docker run --rm \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/ndw-road-traffic' \
+  ghcr.io/clemensv/real-time-sources-ndw-road-traffic-amqp:latest
+```
+
+## Configuration reference
+
+The complete environment-variable contract per image is documented in [CONTAINER.md](CONTAINER.md), including connection-string mode, direct broker parameters, authentication options, and transport-specific knobs.
+
+## Data model
+
+This source exposes **13 event type(s)** across **4 base message group(s)**:
+
+- `NL.NDW.AVG.PointMeasurementSite`
+- `NL.NDW.AVG.RouteMeasurementSite`
+- `NL.NDW.AVG.TrafficObservation`
+- `NL.NDW.AVG.TravelTimeObservation`
+- `NL.NDW.DRIP.DripSign`
+- `NL.NDW.DRIP.DripDisplayState`
+- `NL.NDW.MSI.MsiSign`
+- `NL.NDW.MSI.MsiDisplayState`
+- `NL.NDW.Situations.Roadwork`
+- `NL.NDW.Situations.BridgeOpening`
+- `NL.NDW.Situations.TemporaryClosure`
+- `NL.NDW.Situations.TemporarySpeedLimit`
+- … plus 1 more event type(s)
+
+See [EVENTS.md](EVENTS.md) for the full field-level schema contract and routing metadata.
+
+## Deploying into Microsoft Fabric
+
+This source is documented as a streaming feeder for this rollout. Use the **Fabric ACI feeder** model to host the container and route into a Fabric Event Stream custom endpoint, then materialize into Eventhouse with the checked-in KQL assets.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#ndw-road-traffic/fabric-aci)
+
+## Deploying into Azure Container Instances
+
+The following ARM templates exist in this source folder:
+
+- **azure-template-mqtt.json** (mqtt)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndw-road-traffic%2Fazure-template-mqtt.json)
+- **azure-template-with-eventgrid-mqtt.json** (with eventgrid mqtt)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndw-road-traffic%2Fazure-template-with-eventgrid-mqtt.json)
+- **azure-template-with-eventhub.json** (with eventhub)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndw-road-traffic%2Fazure-template-with-eventhub.json)
+- **azure-template.json** (default (BYO Event Hubs/Kafka))
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fndw-road-traffic%2Fazure-template.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before writing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for the full env-var matrix and auth variants.
+- Choose Fabric ACI or direct Azure deployment based on your runtime target.
