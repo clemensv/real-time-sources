@@ -773,7 +773,7 @@
         "DE.Autobahn.RoadworkAppeared.mqtt": {
           "messageid": "DE.Autobahn.RoadworkAppeared.mqtt",
           "name": "RoadworkAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkAppeared",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/roadwork/{identifier}/appeared",
@@ -784,7 +784,7 @@
         "DE.Autobahn.RoadworkUpdated.mqtt": {
           "messageid": "DE.Autobahn.RoadworkUpdated.mqtt",
           "name": "RoadworkUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkUpdated",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/roadwork/{identifier}/updated",
@@ -795,7 +795,7 @@
         "DE.Autobahn.RoadworkResolved.mqtt": {
           "messageid": "DE.Autobahn.RoadworkResolved.mqtt",
           "name": "RoadworkResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkResolved",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/roadwork/{identifier}/resolved",
@@ -806,7 +806,7 @@
         "DE.Autobahn.ShortTermRoadworkAppeared.mqtt": {
           "messageid": "DE.Autobahn.ShortTermRoadworkAppeared.mqtt",
           "name": "ShortTermRoadworkAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkAppeared",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/short-term-roadwork/{identifier}/appeared",
@@ -817,7 +817,7 @@
         "DE.Autobahn.ShortTermRoadworkUpdated.mqtt": {
           "messageid": "DE.Autobahn.ShortTermRoadworkUpdated.mqtt",
           "name": "ShortTermRoadworkUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkUpdated",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/short-term-roadwork/{identifier}/updated",
@@ -828,7 +828,7 @@
         "DE.Autobahn.ShortTermRoadworkResolved.mqtt": {
           "messageid": "DE.Autobahn.ShortTermRoadworkResolved.mqtt",
           "name": "ShortTermRoadworkResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkResolved",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/short-term-roadwork/{identifier}/resolved",
@@ -839,7 +839,7 @@
         "DE.Autobahn.ClosureAppeared.mqtt": {
           "messageid": "DE.Autobahn.ClosureAppeared.mqtt",
           "name": "ClosureAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureAppeared",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/closure/{identifier}/appeared",
@@ -850,7 +850,7 @@
         "DE.Autobahn.ClosureUpdated.mqtt": {
           "messageid": "DE.Autobahn.ClosureUpdated.mqtt",
           "name": "ClosureUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureUpdated",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/closure/{identifier}/updated",
@@ -861,7 +861,7 @@
         "DE.Autobahn.ClosureResolved.mqtt": {
           "messageid": "DE.Autobahn.ClosureResolved.mqtt",
           "name": "ClosureResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureResolved",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/closure/{identifier}/resolved",
@@ -872,7 +872,7 @@
         "DE.Autobahn.EntryExitClosureAppeared.mqtt": {
           "messageid": "DE.Autobahn.EntryExitClosureAppeared.mqtt",
           "name": "EntryExitClosureAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureAppeared",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/entry-exit-closure/{identifier}/appeared",
@@ -883,7 +883,7 @@
         "DE.Autobahn.EntryExitClosureUpdated.mqtt": {
           "messageid": "DE.Autobahn.EntryExitClosureUpdated.mqtt",
           "name": "EntryExitClosureUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureUpdated",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/entry-exit-closure/{identifier}/updated",
@@ -894,7 +894,7 @@
         "DE.Autobahn.EntryExitClosureResolved.mqtt": {
           "messageid": "DE.Autobahn.EntryExitClosureResolved.mqtt",
           "name": "EntryExitClosureResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureResolved",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/entry-exit-closure/{identifier}/resolved",
@@ -905,7 +905,7 @@
         "DE.Autobahn.WarningAppeared.mqtt": {
           "messageid": "DE.Autobahn.WarningAppeared.mqtt",
           "name": "WarningAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningAppeared",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/warning/{identifier}/appeared",
@@ -916,7 +916,7 @@
         "DE.Autobahn.WarningUpdated.mqtt": {
           "messageid": "DE.Autobahn.WarningUpdated.mqtt",
           "name": "WarningUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningUpdated",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/warning/{identifier}/updated",
@@ -927,7 +927,7 @@
         "DE.Autobahn.WarningResolved.mqtt": {
           "messageid": "DE.Autobahn.WarningResolved.mqtt",
           "name": "WarningResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningResolved",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/warning/{identifier}/resolved",
@@ -938,7 +938,7 @@
         "DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt": {
           "messageid": "DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt",
           "name": "WeightLimit35RestrictionAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionAppeared",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/weight-limit-3-5/{identifier}/appeared",
@@ -949,7 +949,7 @@
         "DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt": {
           "messageid": "DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt",
           "name": "WeightLimit35RestrictionUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionUpdated",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/weight-limit-3-5/{identifier}/updated",
@@ -960,7 +960,7 @@
         "DE.Autobahn.WeightLimit35RestrictionResolved.mqtt": {
           "messageid": "DE.Autobahn.WeightLimit35RestrictionResolved.mqtt",
           "name": "WeightLimit35RestrictionResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionResolved",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/weight-limit-3-5/{identifier}/resolved",
@@ -971,7 +971,7 @@
         "DE.Autobahn.WebcamAppeared.mqtt": {
           "messageid": "DE.Autobahn.WebcamAppeared.mqtt",
           "name": "WebcamAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamAppeared",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/webcam/{identifier}/appeared",
@@ -982,7 +982,7 @@
         "DE.Autobahn.WebcamUpdated.mqtt": {
           "messageid": "DE.Autobahn.WebcamUpdated.mqtt",
           "name": "WebcamUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamUpdated",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/webcam/{identifier}/updated",
@@ -993,7 +993,7 @@
         "DE.Autobahn.WebcamResolved.mqtt": {
           "messageid": "DE.Autobahn.WebcamResolved.mqtt",
           "name": "WebcamResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamResolved",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/webcam/{identifier}/resolved",
@@ -1004,7 +1004,7 @@
         "DE.Autobahn.ParkingLorryAppeared.mqtt": {
           "messageid": "DE.Autobahn.ParkingLorryAppeared.mqtt",
           "name": "ParkingLorryAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryAppeared",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/parking-lorry/{identifier}/appeared",
@@ -1015,7 +1015,7 @@
         "DE.Autobahn.ParkingLorryUpdated.mqtt": {
           "messageid": "DE.Autobahn.ParkingLorryUpdated.mqtt",
           "name": "ParkingLorryUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryUpdated",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/parking-lorry/{identifier}/updated",
@@ -1026,7 +1026,7 @@
         "DE.Autobahn.ParkingLorryResolved.mqtt": {
           "messageid": "DE.Autobahn.ParkingLorryResolved.mqtt",
           "name": "ParkingLorryResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryResolved",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/parking-lorry/{identifier}/resolved",
@@ -1037,7 +1037,7 @@
         "DE.Autobahn.ElectricChargingStationAppeared.mqtt": {
           "messageid": "DE.Autobahn.ElectricChargingStationAppeared.mqtt",
           "name": "ElectricChargingStationAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationAppeared",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/electric-charging-station/{identifier}/appeared",
@@ -1048,7 +1048,7 @@
         "DE.Autobahn.ElectricChargingStationUpdated.mqtt": {
           "messageid": "DE.Autobahn.ElectricChargingStationUpdated.mqtt",
           "name": "ElectricChargingStationUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationUpdated",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/electric-charging-station/{identifier}/updated",
@@ -1059,7 +1059,7 @@
         "DE.Autobahn.ElectricChargingStationResolved.mqtt": {
           "messageid": "DE.Autobahn.ElectricChargingStationResolved.mqtt",
           "name": "ElectricChargingStationResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationResolved",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/electric-charging-station/{identifier}/resolved",
@@ -1070,7 +1070,7 @@
         "DE.Autobahn.StrongElectricChargingStationAppeared.mqtt": {
           "messageid": "DE.Autobahn.StrongElectricChargingStationAppeared.mqtt",
           "name": "StrongElectricChargingStationAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationAppeared",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/strong-electric-charging-station/{identifier}/appeared",
@@ -1081,7 +1081,7 @@
         "DE.Autobahn.StrongElectricChargingStationUpdated.mqtt": {
           "messageid": "DE.Autobahn.StrongElectricChargingStationUpdated.mqtt",
           "name": "StrongElectricChargingStationUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationUpdated",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/strong-electric-charging-station/{identifier}/updated",
@@ -1092,7 +1092,7 @@
         "DE.Autobahn.StrongElectricChargingStationResolved.mqtt": {
           "messageid": "DE.Autobahn.StrongElectricChargingStationResolved.mqtt",
           "name": "StrongElectricChargingStationResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationResolved",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/de/autobahn/autobahn/{road}/strong-electric-charging-station/{identifier}/resolved",
@@ -1107,7 +1107,7 @@
       "messages": {
         "DE.Autobahn.amqp.RoadworkAppeared": {
           "name": "RoadworkAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkAppeared",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1117,14 +1117,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1136,7 +1136,7 @@
         },
         "DE.Autobahn.amqp.RoadworkUpdated": {
           "name": "RoadworkUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkUpdated",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1146,14 +1146,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1165,7 +1165,7 @@
         },
         "DE.Autobahn.amqp.RoadworkResolved": {
           "name": "RoadworkResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.RoadworkResolved",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1175,14 +1175,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1194,7 +1194,7 @@
         },
         "DE.Autobahn.amqp.ShortTermRoadworkAppeared": {
           "name": "ShortTermRoadworkAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkAppeared",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1204,14 +1204,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1223,7 +1223,7 @@
         },
         "DE.Autobahn.amqp.ShortTermRoadworkUpdated": {
           "name": "ShortTermRoadworkUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkUpdated",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1233,14 +1233,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1252,7 +1252,7 @@
         },
         "DE.Autobahn.amqp.ShortTermRoadworkResolved": {
           "name": "ShortTermRoadworkResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ShortTermRoadworkResolved",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1262,14 +1262,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1281,7 +1281,7 @@
         },
         "DE.Autobahn.amqp.ClosureAppeared": {
           "name": "ClosureAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureAppeared",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1291,14 +1291,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1310,7 +1310,7 @@
         },
         "DE.Autobahn.amqp.ClosureUpdated": {
           "name": "ClosureUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureUpdated",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1320,14 +1320,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1339,7 +1339,7 @@
         },
         "DE.Autobahn.amqp.ClosureResolved": {
           "name": "ClosureResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ClosureResolved",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1349,14 +1349,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1368,7 +1368,7 @@
         },
         "DE.Autobahn.amqp.EntryExitClosureAppeared": {
           "name": "EntryExitClosureAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureAppeared",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1378,14 +1378,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1397,7 +1397,7 @@
         },
         "DE.Autobahn.amqp.EntryExitClosureUpdated": {
           "name": "EntryExitClosureUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureUpdated",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1407,14 +1407,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1426,7 +1426,7 @@
         },
         "DE.Autobahn.amqp.EntryExitClosureResolved": {
           "name": "EntryExitClosureResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.EntryExitClosureResolved",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1436,14 +1436,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1455,7 +1455,7 @@
         },
         "DE.Autobahn.amqp.WarningAppeared": {
           "name": "WarningAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningAppeared",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1465,14 +1465,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1484,7 +1484,7 @@
         },
         "DE.Autobahn.amqp.WarningUpdated": {
           "name": "WarningUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningUpdated",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1494,14 +1494,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1513,7 +1513,7 @@
         },
         "DE.Autobahn.amqp.WarningResolved": {
           "name": "WarningResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WarningResolved",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1523,14 +1523,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1542,7 +1542,7 @@
         },
         "DE.Autobahn.amqp.WeightLimit35RestrictionAppeared": {
           "name": "WeightLimit35RestrictionAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionAppeared",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1552,14 +1552,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1571,7 +1571,7 @@
         },
         "DE.Autobahn.amqp.WeightLimit35RestrictionUpdated": {
           "name": "WeightLimit35RestrictionUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionUpdated",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1581,14 +1581,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1600,7 +1600,7 @@
         },
         "DE.Autobahn.amqp.WeightLimit35RestrictionResolved": {
           "name": "WeightLimit35RestrictionResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WeightLimit35RestrictionResolved",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1610,14 +1610,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1629,7 +1629,7 @@
         },
         "DE.Autobahn.amqp.WebcamAppeared": {
           "name": "WebcamAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamAppeared",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1639,14 +1639,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1658,7 +1658,7 @@
         },
         "DE.Autobahn.amqp.WebcamUpdated": {
           "name": "WebcamUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamUpdated",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1668,14 +1668,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1687,7 +1687,7 @@
         },
         "DE.Autobahn.amqp.WebcamResolved": {
           "name": "WebcamResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.WebcamResolved",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1697,14 +1697,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1716,7 +1716,7 @@
         },
         "DE.Autobahn.amqp.ParkingLorryAppeared": {
           "name": "ParkingLorryAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryAppeared",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1726,14 +1726,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1745,7 +1745,7 @@
         },
         "DE.Autobahn.amqp.ParkingLorryUpdated": {
           "name": "ParkingLorryUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryUpdated",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1755,14 +1755,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1774,7 +1774,7 @@
         },
         "DE.Autobahn.amqp.ParkingLorryResolved": {
           "name": "ParkingLorryResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ParkingLorryResolved",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1784,14 +1784,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1803,7 +1803,7 @@
         },
         "DE.Autobahn.amqp.ElectricChargingStationAppeared": {
           "name": "ElectricChargingStationAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationAppeared",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1813,14 +1813,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1832,7 +1832,7 @@
         },
         "DE.Autobahn.amqp.ElectricChargingStationUpdated": {
           "name": "ElectricChargingStationUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationUpdated",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1842,14 +1842,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1861,7 +1861,7 @@
         },
         "DE.Autobahn.amqp.ElectricChargingStationResolved": {
           "name": "ElectricChargingStationResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.ElectricChargingStationResolved",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1871,14 +1871,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1890,7 +1890,7 @@
         },
         "DE.Autobahn.amqp.StrongElectricChargingStationAppeared": {
           "name": "StrongElectricChargingStationAppeared",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationAppeared",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationAppeared",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1900,14 +1900,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1919,7 +1919,7 @@
         },
         "DE.Autobahn.amqp.StrongElectricChargingStationUpdated": {
           "name": "StrongElectricChargingStationUpdated",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationUpdated",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationUpdated",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1929,14 +1929,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",
@@ -1948,7 +1948,7 @@
         },
         "DE.Autobahn.amqp.StrongElectricChargingStationResolved": {
           "name": "StrongElectricChargingStationResolved",
-          "basemessageurl": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationResolved",
+          "basemessageuri": "/messagegroups/DE.Autobahn/messages/DE.Autobahn.StrongElectricChargingStationResolved",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1958,14 +1958,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road": {
                 "type": "uritemplate",
                 "value": "{road}",
                 "description": "AMQP application property mirroring the road routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{identifier}",

@@ -116,7 +116,7 @@
       "messages": {
         "NL.RWS.Waterwebservices.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.Station",
+          "basemessageuri": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/nl/rws/rws-waterwebservices/{station_code}/info",
@@ -126,7 +126,7 @@
         },
         "NL.RWS.Waterwebservices.mqtt.WaterLevelObservation": {
           "name": "WaterLevelObservation",
-          "basemessageurl": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.WaterLevelObservation",
+          "basemessageuri": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.WaterLevelObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/nl/rws/rws-waterwebservices/{station_code}/water-level",
@@ -142,7 +142,7 @@
       "messages": {
         "NL.RWS.Waterwebservices.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.Station",
+          "basemessageuri": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -156,7 +156,7 @@
         },
         "NL.RWS.Waterwebservices.amqp.WaterLevelObservation": {
           "name": "WaterLevelObservation",
-          "basemessageurl": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.WaterLevelObservation",
+          "basemessageuri": "/messagegroups/NL.RWS.Waterwebservices/messages/NL.RWS.Waterwebservices.WaterLevelObservation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

@@ -138,7 +138,7 @@
       "messages": {
         "be.irail.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/be.irail/messages/be.irail.Station",
+          "basemessageuri": "/messagegroups/be.irail/messages/be.irail.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/be/irail/irail/{station_id}/info",
@@ -148,7 +148,7 @@
         },
         "be.irail.mqtt.StationBoard": {
           "name": "StationBoard",
-          "basemessageurl": "/messagegroups/be.irail/messages/be.irail.StationBoard",
+          "basemessageuri": "/messagegroups/be.irail/messages/be.irail.StationBoard",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/be/irail/irail/{station_id}/station-board",
@@ -159,7 +159,7 @@
         },
         "be.irail.mqtt.ArrivalBoard": {
           "name": "ArrivalBoard",
-          "basemessageurl": "/messagegroups/be.irail/messages/be.irail.ArrivalBoard",
+          "basemessageuri": "/messagegroups/be.irail/messages/be.irail.ArrivalBoard",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/be/irail/irail/{station_id}/arrival-board",
@@ -175,7 +175,7 @@
       "messages": {
         "be.irail.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/be.irail/messages/be.irail.Station",
+          "basemessageuri": "/messagegroups/be.irail/messages/be.irail.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -185,8 +185,8 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {},
-            "message_annotations": {
+            "application-properties": {},
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -198,7 +198,7 @@
         },
         "be.irail.amqp.StationBoard": {
           "name": "StationBoard",
-          "basemessageurl": "/messagegroups/be.irail/messages/be.irail.StationBoard",
+          "basemessageuri": "/messagegroups/be.irail/messages/be.irail.StationBoard",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -208,8 +208,8 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {},
-            "message_annotations": {
+            "application-properties": {},
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",
@@ -221,7 +221,7 @@
         },
         "be.irail.amqp.ArrivalBoard": {
           "name": "ArrivalBoard",
-          "basemessageurl": "/messagegroups/be.irail/messages/be.irail.ArrivalBoard",
+          "basemessageuri": "/messagegroups/be.irail/messages/be.irail.ArrivalBoard",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -231,8 +231,8 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {},
-            "message_annotations": {
+            "application-properties": {},
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}",

@@ -22,11 +22,11 @@ def _ptr(doc: Mapping[str, Any], ref: str) -> Any:
     return obj
 
 def _resolve_message(doc: Mapping[str, Any], message: Mapping[str, Any]) -> dict[str, Any]:
-    base = message.get("basemessageurl")
+    base = message.get("basemessageuri")
     if not base:
         return dict(message)
     merged = _resolve_message(doc, _ptr(doc, base))
-    merged.update({k: v for k, v in message.items() if k != "basemessageurl"})
+    merged.update({k: v for k, v in message.items() if k != "basemessageuri"})
     return merged
 
 def _root_schema(schema: dict[str, Any]) -> dict[str, Any]:

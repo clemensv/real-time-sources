@@ -80,28 +80,24 @@
           "modifiedat": "2024-11-14T12:00:00",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "Bluesky.Feed.Post",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{firehoseurl}",
               "description": "Source Firehose URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
               "description": "Decentralized Identifier",
@@ -120,28 +116,24 @@
           "modifiedat": "2024-11-14T12:00:01",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "Bluesky.Feed.Like",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{firehoseurl}",
               "description": "Source Firehose URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
               "description": "Decentralized Identifier",
@@ -160,28 +152,24 @@
           "modifiedat": "2024-11-14T12:00:02",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "Bluesky.Feed.Repost",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{firehoseurl}",
               "description": "Source Firehose URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
               "description": "Decentralized Identifier",
@@ -200,28 +188,24 @@
           "modifiedat": "2024-11-14T12:00:03",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "Bluesky.Graph.Follow",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{firehoseurl}",
               "description": "Source Firehose URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
               "description": "Decentralized Identifier",
@@ -240,28 +224,24 @@
           "modifiedat": "2024-11-14T12:00:04",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "Bluesky.Graph.Block",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{firehoseurl}",
               "description": "Source Firehose URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
               "description": "Decentralized Identifier",
@@ -280,28 +260,24 @@
           "modifiedat": "2024-11-14T12:00:05",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "Bluesky.Actor.Profile",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{firehoseurl}",
               "description": "Source Firehose URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{did}",
               "description": "Decentralized Identifier",
@@ -321,7 +297,7 @@
         "Bluesky.Feed.Post.mqtt": {
           "messageid": "Bluesky.Feed.Post.mqtt",
           "name": "Post",
-          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Post",
+          "basemessageuri": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Post",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "social/intl/bluesky/bluesky/{collection}/{lang}/{did}/post",
@@ -332,7 +308,7 @@
         "Bluesky.Feed.Like.mqtt": {
           "messageid": "Bluesky.Feed.Like.mqtt",
           "name": "Like",
-          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Like",
+          "basemessageuri": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Like",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "social/intl/bluesky/bluesky/{collection}/{lang}/{did}/like",
@@ -343,7 +319,7 @@
         "Bluesky.Feed.Repost.mqtt": {
           "messageid": "Bluesky.Feed.Repost.mqtt",
           "name": "Repost",
-          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Repost",
+          "basemessageuri": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Repost",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "social/intl/bluesky/bluesky/{collection}/{lang}/{did}/repost",
@@ -354,7 +330,7 @@
         "Bluesky.Graph.Follow.mqtt": {
           "messageid": "Bluesky.Graph.Follow.mqtt",
           "name": "Follow",
-          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Follow",
+          "basemessageuri": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Follow",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "social/intl/bluesky/bluesky/{collection}/{lang}/{did}/follow",
@@ -365,7 +341,7 @@
         "Bluesky.Graph.Block.mqtt": {
           "messageid": "Bluesky.Graph.Block.mqtt",
           "name": "Block",
-          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Block",
+          "basemessageuri": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Block",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "social/intl/bluesky/bluesky/{collection}/{lang}/{did}/block",
@@ -376,7 +352,7 @@
         "Bluesky.Actor.Profile.mqtt": {
           "messageid": "Bluesky.Actor.Profile.mqtt",
           "name": "Profile",
-          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Actor.Profile",
+          "basemessageuri": "/messagegroups/BlueskyFirehose/messages/Bluesky.Actor.Profile",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "social/intl/bluesky/bluesky/{collection}/{lang}/{did}/profile",
@@ -391,7 +367,7 @@
       "messages": {
         "BlueskyFirehose.amqp.Post": {
           "name": "Post",
-          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Post",
+          "basemessageuri": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Post",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -405,7 +381,7 @@
         },
         "BlueskyFirehose.amqp.Like": {
           "name": "Like",
-          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Like",
+          "basemessageuri": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Like",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -419,7 +395,7 @@
         },
         "BlueskyFirehose.amqp.Repost": {
           "name": "Repost",
-          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Repost",
+          "basemessageuri": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Repost",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -433,7 +409,7 @@
         },
         "BlueskyFirehose.amqp.Follow": {
           "name": "Follow",
-          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Follow",
+          "basemessageuri": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Follow",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -447,7 +423,7 @@
         },
         "BlueskyFirehose.amqp.Block": {
           "name": "Block",
-          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Block",
+          "basemessageuri": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Block",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -461,7 +437,7 @@
         },
         "BlueskyFirehose.amqp.Profile": {
           "name": "Profile",
-          "basemessageurl": "/messagegroups/BlueskyFirehose/messages/Bluesky.Actor.Profile",
+          "basemessageuri": "/messagegroups/BlueskyFirehose/messages/Bluesky.Actor.Profile",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

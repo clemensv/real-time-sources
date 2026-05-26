@@ -4372,11 +4372,11 @@ def _resolve_json_pointer(document: Dict[str, Any], pointer: str) -> Any:
 
 
 def _resolve_message(document: Dict[str, Any], message: Dict[str, Any]) -> Dict[str, Any]:
-    base_url = message.get('basemessageurl')
+    base_url = message.get('basemessageuri')
     if not base_url:
         return dict(message)
     base = _resolve_message(document, _resolve_json_pointer(document, base_url))
-    base.update({k: v for k, v in message.items() if k != 'basemessageurl'})
+    base.update({k: v for k, v in message.items() if k != 'basemessageuri'})
     return base
 
 

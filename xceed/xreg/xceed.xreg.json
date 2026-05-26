@@ -107,28 +107,24 @@
           "dataschemauri": "#/schemagroups/xceed.jstruct/schemas/xceed.Event",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents specification version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "xceed.Event",
               "description": "CloudEvents type identifier for an Xceed event record"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Base URL of the Xceed Open Event API feed"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "required": true,
               "value": "{event_id}",
@@ -151,28 +147,24 @@
           "dataschemauri": "#/schemagroups/xceed.jstruct/schemas/xceed.EventAdmission",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents specification version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "xceed.EventAdmission",
               "description": "CloudEvents type identifier for an Xceed admission record"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Base URL of the Xceed public offer API feed"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "required": true,
               "value": "{event_id}/{admission_id}",
@@ -187,7 +179,7 @@
       "messages": {
         "xceed.mqtt.Event": {
           "name": "Event",
-          "basemessageurl": "/messagegroups/xceed/messages/xceed.Event",
+          "basemessageuri": "/messagegroups/xceed/messages/xceed.Event",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "civic-events/intl/xceed/xceed/{city}/{event_id}/event",
@@ -202,7 +194,7 @@
       "messages": {
         "xceed.amqp.Event": {
           "name": "Event",
-          "basemessageurl": "/messagegroups/xceed/messages/xceed.Event",
+          "basemessageuri": "/messagegroups/xceed/messages/xceed.Event",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -212,7 +204,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{event_id}",
@@ -228,7 +220,7 @@
       "messages": {
         "xceed.admissions.mqtt.EventAdmission": {
           "name": "EventAdmission",
-          "basemessageurl": "/messagegroups/xceed.admissions/messages/xceed.EventAdmission",
+          "basemessageuri": "/messagegroups/xceed.admissions/messages/xceed.EventAdmission",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "civic-events/intl/xceed/xceed/admissions/{event_id}/{admission_id}/admission",
@@ -243,7 +235,7 @@
       "messages": {
         "xceed.admissions.amqp.EventAdmission": {
           "name": "EventAdmission",
-          "basemessageurl": "/messagegroups/xceed.admissions/messages/xceed.EventAdmission",
+          "basemessageuri": "/messagegroups/xceed.admissions/messages/xceed.EventAdmission",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -253,7 +245,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{event_id}/{admission_id}",

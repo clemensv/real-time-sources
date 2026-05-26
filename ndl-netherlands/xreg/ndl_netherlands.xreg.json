@@ -163,7 +163,7 @@
       "messages": {
         "NL.NDW.Traffic.TrafficSpeed.mqtt": {
           "name": "TrafficSpeed",
-          "basemessageurl": "/messagegroups/NL.NDW.Traffic.Measurements/messages/NL.NDW.Traffic.TrafficSpeed",
+          "basemessageuri": "/messagegroups/NL.NDW.Traffic.Measurements/messages/NL.NDW.Traffic.TrafficSpeed",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndl/ndl-netherlands/{road}/{site_id}/speed",
@@ -173,7 +173,7 @@
         },
         "NL.NDW.Traffic.TravelTime.mqtt": {
           "name": "TravelTime",
-          "basemessageurl": "/messagegroups/NL.NDW.Traffic.Measurements/messages/NL.NDW.Traffic.TravelTime",
+          "basemessageuri": "/messagegroups/NL.NDW.Traffic.Measurements/messages/NL.NDW.Traffic.TravelTime",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndl/ndl-netherlands/{road}/{site_id}/travel-time",
@@ -188,7 +188,7 @@
       "messages": {
         "NL.NDW.Traffic.TrafficSituation.mqtt": {
           "name": "TrafficSituation",
-          "basemessageurl": "/messagegroups/NL.NDW.Traffic.Situations/messages/NL.NDW.Traffic.TrafficSituation",
+          "basemessageuri": "/messagegroups/NL.NDW.Traffic.Situations/messages/NL.NDW.Traffic.TrafficSituation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndl/ndl-netherlands/situations/{road}/{situation_id}/event",
@@ -203,7 +203,7 @@
       "messages": {
         "NL.NDW.Traffic.TrafficSpeed.amqp": {
           "name": "TrafficSpeed",
-          "basemessageurl": "/messagegroups/NL.NDW.Traffic.Measurements/messages/NL.NDW.Traffic.TrafficSpeed",
+          "basemessageuri": "/messagegroups/NL.NDW.Traffic.Measurements/messages/NL.NDW.Traffic.TrafficSpeed",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -213,7 +213,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{site_id}",
@@ -224,7 +224,7 @@
         },
         "NL.NDW.Traffic.TravelTime.amqp": {
           "name": "TravelTime",
-          "basemessageurl": "/messagegroups/NL.NDW.Traffic.Measurements/messages/NL.NDW.Traffic.TravelTime",
+          "basemessageuri": "/messagegroups/NL.NDW.Traffic.Measurements/messages/NL.NDW.Traffic.TravelTime",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -234,7 +234,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{site_id}",
@@ -250,7 +250,7 @@
       "messages": {
         "NL.NDW.Traffic.TrafficSituation.amqp": {
           "name": "TrafficSituation",
-          "basemessageurl": "/messagegroups/NL.NDW.Traffic.Situations/messages/NL.NDW.Traffic.TrafficSituation",
+          "basemessageuri": "/messagegroups/NL.NDW.Traffic.Situations/messages/NL.NDW.Traffic.TrafficSituation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -260,7 +260,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{situation_id}",

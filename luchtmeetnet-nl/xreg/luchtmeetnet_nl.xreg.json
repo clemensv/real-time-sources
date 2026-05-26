@@ -183,7 +183,7 @@
       "messages": {
         "nl.rivm.luchtmeetnet.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Station",
+          "basemessageuri": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/{region}/{station_number}/{formula}/info",
@@ -193,7 +193,7 @@
         },
         "nl.rivm.luchtmeetnet.mqtt.Measurement": {
           "name": "Measurement",
-          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Measurement",
+          "basemessageuri": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Measurement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/{region}/{station_number}/{formula}/measurement",
@@ -203,7 +203,7 @@
         },
         "nl.rivm.luchtmeetnet.mqtt.LKI": {
           "name": "LKI",
-          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.LKI",
+          "basemessageuri": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.LKI",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/{region}/{station_number}/{formula}/lki",
@@ -218,7 +218,7 @@
       "messages": {
         "nl.rivm.luchtmeetnet.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Station",
+          "basemessageuri": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -228,7 +228,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
@@ -244,7 +244,7 @@
         },
         "nl.rivm.luchtmeetnet.amqp.Measurement": {
           "name": "Measurement",
-          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Measurement",
+          "basemessageuri": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.Measurement",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -254,7 +254,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
@@ -270,7 +270,7 @@
         },
         "nl.rivm.luchtmeetnet.amqp.LKI": {
           "name": "LKI",
-          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.LKI",
+          "basemessageuri": "/messagegroups/nl.rivm.luchtmeetnet/messages/nl.rivm.luchtmeetnet.LKI",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -280,7 +280,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
@@ -301,7 +301,7 @@
       "messages": {
         "nl.rivm.luchtmeetnet.components.mqtt.Component": {
           "name": "Component",
-          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet.components/messages/nl.rivm.luchtmeetnet.components.Component",
+          "basemessageuri": "/messagegroups/nl.rivm.luchtmeetnet.components/messages/nl.rivm.luchtmeetnet.components.Component",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/{region}/{station_number}/{formula}/component",
@@ -316,7 +316,7 @@
       "messages": {
         "nl.rivm.luchtmeetnet.components.amqp.Component": {
           "name": "Component",
-          "basemessageurl": "/messagegroups/nl.rivm.luchtmeetnet.components/messages/nl.rivm.luchtmeetnet.components.Component",
+          "basemessageuri": "/messagegroups/nl.rivm.luchtmeetnet.components/messages/nl.rivm.luchtmeetnet.components.Component",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -326,7 +326,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",

@@ -164,7 +164,7 @@
       "messages": {
         "be.irceline.Stations.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/be.irceline.Stations/messages/be.irceline.Station",
+          "basemessageuri": "/messagegroups/be.irceline.Stations/messages/be.irceline.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/be/irceline/irceline-belgium/{region}/{station_id}/info",
@@ -179,7 +179,7 @@
       "messages": {
         "be.irceline.Stations.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/be.irceline.Stations/messages/be.irceline.Station",
+          "basemessageuri": "/messagegroups/be.irceline.Stations/messages/be.irceline.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -189,7 +189,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
@@ -210,7 +210,7 @@
       "messages": {
         "be.irceline.Timeseries.mqtt.Timeseries": {
           "name": "Timeseries",
-          "basemessageurl": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Timeseries",
+          "basemessageuri": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Timeseries",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/be/irceline/irceline-belgium/{region}/{station_id}/{pollutant}/timeseries",
@@ -220,7 +220,7 @@
         },
         "be.irceline.Timeseries.mqtt.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Observation",
+          "basemessageuri": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Observation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/be/irceline/irceline-belgium/{region}/{station_id}/{pollutant}/observation",
@@ -235,7 +235,7 @@
       "messages": {
         "be.irceline.Timeseries.amqp.Timeseries": {
           "name": "Timeseries",
-          "basemessageurl": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Timeseries",
+          "basemessageuri": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Timeseries",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -245,7 +245,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",
@@ -266,7 +266,7 @@
         },
         "be.irceline.Timeseries.amqp.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Observation",
+          "basemessageuri": "/messagegroups/be.irceline.Timeseries/messages/be.irceline.Observation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -276,7 +276,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "region": {
                 "type": "uritemplate",
                 "value": "{region}",

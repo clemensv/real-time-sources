@@ -190,7 +190,7 @@
       "messages": {
         "no.entur.mqtt.EstimatedVehicleJourney": {
           "name": "EstimatedVehicleJourney",
-          "basemessageurl": "/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney",
+          "basemessageuri": "/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/no/entur/entur-norway/et/{operator_ref}/{line_ref}/{service_journey_id}/estimated-vehicle-journey",
@@ -200,7 +200,7 @@
         },
         "no.entur.mqtt.MonitoredVehicleJourney": {
           "name": "MonitoredVehicleJourney",
-          "basemessageurl": "/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney",
+          "basemessageuri": "/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/no/entur/entur-norway/vm/{operator_ref}/{line_ref}/{service_journey_id}/monitored-vehicle-journey",
@@ -210,7 +210,7 @@
         },
         "no.entur.mqtt.PtSituationElement": {
           "name": "PtSituationElement",
-          "basemessageurl": "/messagegroups/no.entur.situations/messages/no.entur.PtSituationElement",
+          "basemessageuri": "/messagegroups/no.entur.situations/messages/no.entur.PtSituationElement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/no/entur/entur-norway/sx/{severity}/{situation_number}/situation",
@@ -225,7 +225,7 @@
       "messages": {
         "no.entur.amqp.EstimatedVehicleJourney": {
           "name": "EstimatedVehicleJourney",
-          "basemessageurl": "/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney",
+          "basemessageuri": "/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -235,7 +235,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "operating_day": {
                 "type": "uritemplate",
                 "value": "{operating_day}",
@@ -257,7 +257,7 @@
                 "description": "AMQP application property mirroring the line_ref routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "journeys/{operating_day}/{service_journey_id}",
@@ -269,7 +269,7 @@
         },
         "no.entur.amqp.MonitoredVehicleJourney": {
           "name": "MonitoredVehicleJourney",
-          "basemessageurl": "/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney",
+          "basemessageuri": "/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -279,7 +279,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "operating_day": {
                 "type": "uritemplate",
                 "value": "{operating_day}",
@@ -301,7 +301,7 @@
                 "description": "AMQP application property mirroring the line_ref routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "journeys/{operating_day}/{service_journey_id}",
@@ -313,7 +313,7 @@
         },
         "no.entur.amqp.PtSituationElement": {
           "name": "PtSituationElement",
-          "basemessageurl": "/messagegroups/no.entur.situations/messages/no.entur.PtSituationElement",
+          "basemessageuri": "/messagegroups/no.entur.situations/messages/no.entur.PtSituationElement",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -323,7 +323,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "situation_number": {
                 "type": "uritemplate",
                 "value": "{situation_number}",
@@ -335,7 +335,7 @@
                 "description": "AMQP application property mirroring the severity routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "situations/{situation_number}",

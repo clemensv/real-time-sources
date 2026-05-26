@@ -356,7 +356,7 @@
       "messages": {
         "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.mqtt": {
           "name": "GoesXrayFlux",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "space-weather/us/noaa/noaa-goes/{satellite}/xrs/{event}",
@@ -366,7 +366,7 @@
         },
         "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.mqtt": {
           "name": "GoesProtonFlux",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "space-weather/us/noaa/noaa-goes/{satellite}/sgps/{event}",
@@ -376,7 +376,7 @@
         },
         "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.mqtt": {
           "name": "GoesElectronFlux",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "space-weather/us/noaa/noaa-goes/{satellite}/exis/{event}",
@@ -386,7 +386,7 @@
         },
         "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.mqtt": {
           "name": "GoesMagnetometer",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "space-weather/us/noaa/noaa-goes/{satellite}/magnetometer/{event}",
@@ -396,7 +396,7 @@
         },
         "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt": {
           "name": "SpaceWeatherAlert",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Alerts/messages/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Alerts/messages/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "space-weather/us/noaa/noaa-goes/alerts/{product_id}/alert",
@@ -406,7 +406,7 @@
         },
         "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.mqtt": {
           "name": "XrayFlare",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.SolarFlares/messages/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.SolarFlares/messages/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "space-weather/us/noaa/noaa-goes/flares/{flare_class}/{begin_time}/flare",
@@ -421,7 +421,7 @@
       "messages": {
         "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.amqp": {
           "name": "GoesXrayFlux",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -431,7 +431,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "event": {
                 "type": "uritemplate",
                 "value": "{event}",
@@ -442,7 +442,7 @@
         },
         "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.amqp": {
           "name": "GoesProtonFlux",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -452,7 +452,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "event": {
                 "type": "uritemplate",
                 "value": "{event}",
@@ -463,7 +463,7 @@
         },
         "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.amqp": {
           "name": "GoesElectronFlux",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -473,7 +473,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "event": {
                 "type": "uritemplate",
                 "value": "{event}",
@@ -484,7 +484,7 @@
         },
         "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp": {
           "name": "GoesMagnetometer",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -494,7 +494,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "event": {
                 "type": "uritemplate",
                 "value": "{event}",
@@ -505,7 +505,7 @@
         },
         "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.amqp": {
           "name": "SpaceWeatherAlert",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Alerts/messages/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Alerts/messages/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -515,12 +515,12 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         },
         "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp": {
           "name": "XrayFlare",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.SolarFlares/messages/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.SolarFlares/messages/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -530,7 +530,7 @@
                 "description": "AMQP message subject mirroring the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "flare_class": {
                 "type": "uritemplate",
                 "value": "{flare_class}",

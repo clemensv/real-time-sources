@@ -118,7 +118,7 @@
       "messages": {
         "at.geosphere.tawes.mqtt.WeatherStation": {
           "name": "WeatherStation",
-          "basemessageurl": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation",
+          "basemessageuri": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation",
           "envelopemetadata": {
             "type": {
               "value": "at.geosphere.tawes.WeatherStation"
@@ -141,7 +141,7 @@
         },
         "at.geosphere.tawes.mqtt.WeatherObservation": {
           "name": "WeatherObservation",
-          "basemessageurl": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherObservation",
+          "basemessageuri": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherObservation",
           "envelopemetadata": {
             "type": {
               "value": "at.geosphere.tawes.WeatherObservation"
@@ -169,7 +169,7 @@
       "messages": {
         "at.geosphere.tawes.amqp.WeatherStation": {
           "name": "WeatherStation",
-          "basemessageurl": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation",
+          "basemessageuri": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherStation",
           "envelopemetadata": {
             "type": {
               "value": "at.geosphere.tawes.WeatherStation"
@@ -192,7 +192,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "bundesland": {
                 "type": "uritemplate",
                 "value": "{bundesland}",
@@ -203,7 +203,7 @@
         },
         "at.geosphere.tawes.amqp.WeatherObservation": {
           "name": "WeatherObservation",
-          "basemessageurl": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherObservation",
+          "basemessageuri": "/messagegroups/at.geosphere.tawes/messages/at.geosphere.tawes.WeatherObservation",
           "envelopemetadata": {
             "type": {
               "value": "at.geosphere.tawes.WeatherObservation"
@@ -226,7 +226,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "bundesland": {
                 "type": "uritemplate",
                 "value": "{bundesland}",

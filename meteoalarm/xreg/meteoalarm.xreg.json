@@ -95,7 +95,7 @@
       "messages": {
         "Meteoalarm.Warnings.mqtt.WeatherWarning": {
           "name": "WeatherWarning",
-          "basemessageurl": "/messagegroups/Meteoalarm.Warnings/messages/Meteoalarm.WeatherWarning",
+          "basemessageuri": "/messagegroups/Meteoalarm.Warnings/messages/Meteoalarm.WeatherWarning",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/intl/meteoalarm/meteoalarm/{country}/{severity}/{awareness_type}/{identifier}/warning",
@@ -110,7 +110,7 @@
       "messages": {
         "Meteoalarm.Warnings.amqp.WeatherWarning": {
           "name": "WeatherWarning",
-          "basemessageurl": "/messagegroups/Meteoalarm.Warnings/messages/Meteoalarm.WeatherWarning",
+          "basemessageuri": "/messagegroups/Meteoalarm.Warnings/messages/Meteoalarm.WeatherWarning",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -120,7 +120,7 @@
                 "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for cross-transport correlation."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "country": {
                 "type": "uritemplate",
                 "value": "{country}",

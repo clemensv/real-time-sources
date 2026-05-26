@@ -93,14 +93,14 @@
       "messages": {
         "Microsoft.OpenData.RssFeeds.mqtt.FeedItem": {
           "name": "FeedItem",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "news/intl/rss/rss/{feed_slug}/{item}",
             "qos": 1,
             "retain": false
           },
-          "basemessage": "/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem"
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem"
         }
       }
     },
@@ -109,7 +109,7 @@
       "messages": {
         "Microsoft.OpenData.RssFeeds.amqp.FeedItem": {
           "name": "FeedItem",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.RssFeeds/messages/Microsoft.OpenData.RssFeeds.FeedItem",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

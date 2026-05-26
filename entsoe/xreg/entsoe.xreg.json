@@ -363,7 +363,7 @@
       "messages": {
         "eu.entsoe.transparency.ByDomain.mqtt.DayAheadPrices": {
           "name": "DayAheadPrices",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.DayAheadPrices",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.DayAheadPrices",
           "protocol": "MQTT/5.0",
           "description": "MQTT/UNS binary CloudEvents variant for DayAheadPrices. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.",
           "protocoloptions": {
@@ -392,7 +392,7 @@
         },
         "eu.entsoe.transparency.ByDomain.mqtt.ActualTotalLoad": {
           "name": "ActualTotalLoad",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ActualTotalLoad",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ActualTotalLoad",
           "protocol": "MQTT/5.0",
           "description": "MQTT/UNS binary CloudEvents variant for ActualTotalLoad. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.",
           "protocoloptions": {
@@ -421,7 +421,7 @@
         },
         "eu.entsoe.transparency.ByDomain.mqtt.LoadForecastMargin": {
           "name": "LoadForecastMargin",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.LoadForecastMargin",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.LoadForecastMargin",
           "protocol": "MQTT/5.0",
           "description": "MQTT/UNS binary CloudEvents variant for LoadForecastMargin. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.",
           "protocoloptions": {
@@ -450,7 +450,7 @@
         },
         "eu.entsoe.transparency.ByDomain.mqtt.GenerationForecast": {
           "name": "GenerationForecast",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.GenerationForecast",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.GenerationForecast",
           "protocol": "MQTT/5.0",
           "description": "MQTT/UNS binary CloudEvents variant for GenerationForecast. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.",
           "protocoloptions": {
@@ -479,7 +479,7 @@
         },
         "eu.entsoe.transparency.ByDomain.mqtt.ReservoirFillingInformation": {
           "name": "ReservoirFillingInformation",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ReservoirFillingInformation",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ReservoirFillingInformation",
           "protocol": "MQTT/5.0",
           "description": "MQTT/UNS binary CloudEvents variant for ReservoirFillingInformation. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.",
           "protocoloptions": {
@@ -508,7 +508,7 @@
         },
         "eu.entsoe.transparency.ByDomain.mqtt.ActualGeneration": {
           "name": "ActualGeneration",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ActualGeneration",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ActualGeneration",
           "protocol": "MQTT/5.0",
           "description": "MQTT/UNS binary CloudEvents variant for ActualGeneration. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.",
           "protocoloptions": {
@@ -542,7 +542,7 @@
       "messages": {
         "eu.entsoe.transparency.ByDomainPsrType.mqtt.ActualGenerationPerType": {
           "name": "ActualGenerationPerType",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.ActualGenerationPerType",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.ActualGenerationPerType",
           "protocol": "MQTT/5.0",
           "description": "MQTT/UNS binary CloudEvents variant for ActualGenerationPerType. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.",
           "protocoloptions": {
@@ -571,7 +571,7 @@
         },
         "eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarForecast": {
           "name": "WindSolarForecast",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.WindSolarForecast",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.WindSolarForecast",
           "protocol": "MQTT/5.0",
           "description": "MQTT/UNS binary CloudEvents variant for WindSolarForecast. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.",
           "protocoloptions": {
@@ -600,7 +600,7 @@
         },
         "eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarGeneration": {
           "name": "WindSolarGeneration",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.WindSolarGeneration",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.WindSolarGeneration",
           "protocol": "MQTT/5.0",
           "description": "MQTT/UNS binary CloudEvents variant for WindSolarGeneration. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.",
           "protocoloptions": {
@@ -629,7 +629,7 @@
         },
         "eu.entsoe.transparency.ByDomainPsrType.mqtt.InstalledGenerationCapacityPerType": {
           "name": "InstalledGenerationCapacityPerType",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.InstalledGenerationCapacityPerType",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.InstalledGenerationCapacityPerType",
           "protocol": "MQTT/5.0",
           "description": "MQTT/UNS binary CloudEvents variant for InstalledGenerationCapacityPerType. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.",
           "protocoloptions": {
@@ -663,7 +663,7 @@
       "messages": {
         "eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows": {
           "name": "CrossBorderPhysicalFlows",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.CrossBorder/messages/eu.entsoe.transparency.CrossBorderPhysicalFlows",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.CrossBorder/messages/eu.entsoe.transparency.CrossBorderPhysicalFlows",
           "protocol": "MQTT/5.0",
           "description": "MQTT/UNS binary CloudEvents variant for CrossBorderPhysicalFlows. ENTSO-E poll cycles emit individual market time-series points; retain is false so a retained slot never misrepresents an old forecast or historical MTU point as current state.",
           "protocoloptions": {
@@ -697,7 +697,7 @@
       "messages": {
         "eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices": {
           "name": "DayAheadPrices",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.DayAheadPrices",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.DayAheadPrices",
           "protocol": "AMQP/1.0",
           "description": "AMQP 1.0 binary CloudEvents variant for DayAheadPrices, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}.",
           "protocoloptions": {
@@ -708,19 +708,19 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "DayAheadPrices",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
@@ -749,7 +749,7 @@
         },
         "eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad": {
           "name": "ActualTotalLoad",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ActualTotalLoad",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ActualTotalLoad",
           "protocol": "AMQP/1.0",
           "description": "AMQP 1.0 binary CloudEvents variant for ActualTotalLoad, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}.",
           "protocoloptions": {
@@ -760,19 +760,19 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "ActualTotalLoad",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
@@ -801,7 +801,7 @@
         },
         "eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin": {
           "name": "LoadForecastMargin",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.LoadForecastMargin",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.LoadForecastMargin",
           "protocol": "AMQP/1.0",
           "description": "AMQP 1.0 binary CloudEvents variant for LoadForecastMargin, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}.",
           "protocoloptions": {
@@ -812,19 +812,19 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "LoadForecastMargin",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
@@ -853,7 +853,7 @@
         },
         "eu.entsoe.transparency.ByDomain.amqp.GenerationForecast": {
           "name": "GenerationForecast",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.GenerationForecast",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.GenerationForecast",
           "protocol": "AMQP/1.0",
           "description": "AMQP 1.0 binary CloudEvents variant for GenerationForecast, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}.",
           "protocoloptions": {
@@ -864,19 +864,19 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "GenerationForecast",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
@@ -905,7 +905,7 @@
         },
         "eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation": {
           "name": "ReservoirFillingInformation",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ReservoirFillingInformation",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ReservoirFillingInformation",
           "protocol": "AMQP/1.0",
           "description": "AMQP 1.0 binary CloudEvents variant for ReservoirFillingInformation, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}.",
           "protocoloptions": {
@@ -916,19 +916,19 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "ReservoirFillingInformation",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
@@ -957,7 +957,7 @@
         },
         "eu.entsoe.transparency.ByDomain.amqp.ActualGeneration": {
           "name": "ActualGeneration",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ActualGeneration",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomain/messages/eu.entsoe.transparency.ActualGeneration",
           "protocol": "AMQP/1.0",
           "description": "AMQP 1.0 binary CloudEvents variant for ActualGeneration, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}.",
           "protocoloptions": {
@@ -968,19 +968,19 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "ActualGeneration",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
@@ -1014,7 +1014,7 @@
       "messages": {
         "eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType": {
           "name": "ActualGenerationPerType",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.ActualGenerationPerType",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.ActualGenerationPerType",
           "protocol": "AMQP/1.0",
           "description": "AMQP 1.0 binary CloudEvents variant for ActualGenerationPerType, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}/{psrType}.",
           "protocoloptions": {
@@ -1025,24 +1025,24 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "psrType": {
+              "psr-type": {
                 "type": "uritemplate",
                 "value": "{psrType}",
                 "description": "ENTSO-E routing axis `psrType` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "ActualGenerationPerType",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}/{psrType}",
@@ -1071,7 +1071,7 @@
         },
         "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast": {
           "name": "WindSolarForecast",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.WindSolarForecast",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.WindSolarForecast",
           "protocol": "AMQP/1.0",
           "description": "AMQP 1.0 binary CloudEvents variant for WindSolarForecast, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}/{psrType}.",
           "protocoloptions": {
@@ -1082,24 +1082,24 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "psrType": {
+              "psr-type": {
                 "type": "uritemplate",
                 "value": "{psrType}",
                 "description": "ENTSO-E routing axis `psrType` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "WindSolarForecast",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}/{psrType}",
@@ -1128,7 +1128,7 @@
         },
         "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration": {
           "name": "WindSolarGeneration",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.WindSolarGeneration",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.WindSolarGeneration",
           "protocol": "AMQP/1.0",
           "description": "AMQP 1.0 binary CloudEvents variant for WindSolarGeneration, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}/{psrType}.",
           "protocoloptions": {
@@ -1139,24 +1139,24 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "psrType": {
+              "psr-type": {
                 "type": "uritemplate",
                 "value": "{psrType}",
                 "description": "ENTSO-E routing axis `psrType` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "WindSolarGeneration",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}/{psrType}",
@@ -1185,7 +1185,7 @@
         },
         "eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType": {
           "name": "InstalledGenerationCapacityPerType",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.InstalledGenerationCapacityPerType",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.ByDomainPsrType/messages/eu.entsoe.transparency.InstalledGenerationCapacityPerType",
           "protocol": "AMQP/1.0",
           "description": "AMQP 1.0 binary CloudEvents variant for InstalledGenerationCapacityPerType, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}/{psrType}.",
           "protocoloptions": {
@@ -1196,24 +1196,24 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "psrType": {
+              "psr-type": {
                 "type": "uritemplate",
                 "value": "{psrType}",
                 "description": "ENTSO-E routing axis `psrType` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "InstalledGenerationCapacityPerType",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}/{psrType}",
@@ -1247,7 +1247,7 @@
       "messages": {
         "eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows": {
           "name": "CrossBorderPhysicalFlows",
-          "basemessageurl": "#/messagegroups/eu.entsoe.transparency.CrossBorder/messages/eu.entsoe.transparency.CrossBorderPhysicalFlows",
+          "basemessageuri": "#/messagegroups/eu.entsoe.transparency.CrossBorder/messages/eu.entsoe.transparency.CrossBorderPhysicalFlows",
           "protocol": "AMQP/1.0",
           "description": "AMQP 1.0 binary CloudEvents variant for CrossBorderPhysicalFlows, sent to the `entsoe` AMQP address. The CloudEvent subject and Azure x-opt-partition-key mirror the Kafka key template {inDomain}/{outDomain}.",
           "protocoloptions": {
@@ -1258,24 +1258,24 @@
                 "description": "AMQP message subject — stable ENTSO-E identity tuple matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
-              "inDomain": {
+            "application-properties": {
+              "in-domain": {
                 "type": "uritemplate",
                 "value": "{inDomain}",
                 "description": "ENTSO-E routing axis `inDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "outDomain": {
+              "out-domain": {
                 "type": "uritemplate",
                 "value": "{outDomain}",
                 "description": "ENTSO-E routing axis `outDomain` copied from the payload for AMQP broker filters without decoding JSON."
               },
-              "eventType": {
+              "event-type": {
                 "type": "string",
                 "value": "CrossBorderPhysicalFlows",
                 "description": "Short ENTSO-E event family name for AMQP broker filters; mirrors the CloudEvents type suffix."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{inDomain}/{outDomain}",

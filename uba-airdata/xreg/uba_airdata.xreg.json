@@ -167,7 +167,7 @@
       "messages": {
         "de.uba.airdata.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Station",
+          "basemessageuri": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/at/uba/uba-airdata/{bundesland}/{station_id}/{component_id}/info",
@@ -177,7 +177,7 @@
         },
         "de.uba.airdata.mqtt.Measure": {
           "name": "Measure",
-          "basemessageurl": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Measure",
+          "basemessageuri": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Measure",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/at/uba/uba-airdata/{bundesland}/{station_id}/{component_id}/measure",
@@ -192,7 +192,7 @@
       "messages": {
         "de.uba.airdata.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Station",
+          "basemessageuri": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -202,7 +202,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "bundesland": {
                 "type": "uritemplate",
                 "value": "{bundesland}",
@@ -218,7 +218,7 @@
         },
         "de.uba.airdata.amqp.Measure": {
           "name": "Measure",
-          "basemessageurl": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Measure",
+          "basemessageuri": "/messagegroups/de.uba.airdata/messages/de.uba.airdata.Measure",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -228,7 +228,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "bundesland": {
                 "type": "uritemplate",
                 "value": "{bundesland}",
@@ -249,7 +249,7 @@
       "messages": {
         "de.uba.airdata.components.mqtt.Component": {
           "name": "Component",
-          "basemessageurl": "/messagegroups/de.uba.airdata.components/messages/de.uba.airdata.components.Component",
+          "basemessageuri": "/messagegroups/de.uba.airdata.components/messages/de.uba.airdata.components.Component",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/at/uba/uba-airdata/{bundesland}/{station_id}/{component_id}/component",
@@ -264,7 +264,7 @@
       "messages": {
         "de.uba.airdata.components.amqp.Component": {
           "name": "Component",
-          "basemessageurl": "/messagegroups/de.uba.airdata.components/messages/de.uba.airdata.components.Component",
+          "basemessageuri": "/messagegroups/de.uba.airdata.components/messages/de.uba.airdata.components.Component",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -274,7 +274,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "bundesland": {
                 "type": "uritemplate",
                 "value": "{bundesland}",

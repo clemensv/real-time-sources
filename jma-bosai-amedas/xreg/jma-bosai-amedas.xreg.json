@@ -116,7 +116,7 @@
       "messages": {
         "JP.JMA.Amedas.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Station",
+          "basemessageuri": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "weather/jp/jma/jma-bosai-amedas/{prefecture}/{station_code}/{event}",
@@ -126,7 +126,7 @@
         },
         "JP.JMA.Amedas.mqtt.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation",
+          "basemessageuri": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "weather/jp/jma/jma-bosai-amedas/{prefecture}/{station_code}/{event}",
@@ -141,7 +141,7 @@
       "messages": {
         "JP.JMA.Amedas.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Station",
+          "basemessageuri": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -151,7 +151,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "prefecture": {
                 "type": "uritemplate",
                 "value": "{prefecture}",
@@ -167,7 +167,7 @@
         },
         "JP.JMA.Amedas.amqp.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation",
+          "basemessageuri": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -177,7 +177,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "prefecture": {
                 "type": "uritemplate",
                 "value": "{prefecture}",

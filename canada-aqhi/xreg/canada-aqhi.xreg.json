@@ -138,7 +138,7 @@
       "messages": {
         "ca.gc.weather.aqhi.mqtt.Community": {
           "name": "Community",
-          "basemessageurl": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Community",
+          "basemessageuri": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Community",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/ca/eccc/canada-aqhi/{province}/{community_name}/info",
@@ -148,7 +148,7 @@
         },
         "ca.gc.weather.aqhi.mqtt.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Observation",
+          "basemessageuri": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Observation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/ca/eccc/canada-aqhi/{province}/{community_name}/observation",
@@ -158,7 +158,7 @@
         },
         "ca.gc.weather.aqhi.mqtt.Forecast": {
           "name": "Forecast",
-          "basemessageurl": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Forecast",
+          "basemessageuri": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Forecast",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/ca/eccc/canada-aqhi/{province}/{community_name}/forecast",
@@ -173,7 +173,7 @@
       "messages": {
         "ca.gc.weather.aqhi.amqp.Community": {
           "name": "Community",
-          "basemessageurl": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Community",
+          "basemessageuri": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Community",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -183,7 +183,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "province": {
                 "type": "uritemplate",
                 "value": "{province}",
@@ -199,7 +199,7 @@
         },
         "ca.gc.weather.aqhi.amqp.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Observation",
+          "basemessageuri": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Observation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -209,7 +209,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "province": {
                 "type": "uritemplate",
                 "value": "{province}",
@@ -225,7 +225,7 @@
         },
         "ca.gc.weather.aqhi.amqp.Forecast": {
           "name": "Forecast",
-          "basemessageurl": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Forecast",
+          "basemessageuri": "/messagegroups/ca.gc.weather.aqhi/messages/ca.gc.weather.aqhi.Forecast",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -235,7 +235,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "province": {
                 "type": "uritemplate",
                 "value": "{province}",

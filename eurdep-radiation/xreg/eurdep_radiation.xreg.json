@@ -116,7 +116,7 @@
       "messages": {
         "eu.jrc.eurdep.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.Station",
+          "basemessageuri": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "radiation/intl/eurdep/eurdep-radiation/{country}/{station_id}/info",
@@ -126,7 +126,7 @@
         },
         "eu.jrc.eurdep.mqtt.DoseRateReading": {
           "name": "DoseRateReading",
-          "basemessageurl": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.DoseRateReading",
+          "basemessageuri": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.DoseRateReading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "radiation/intl/eurdep/eurdep-radiation/{country}/{station_id}/dose-rate",
@@ -141,7 +141,7 @@
       "messages": {
         "eu.jrc.eurdep.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.Station",
+          "basemessageuri": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -151,7 +151,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key station identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "country": {
                 "type": "uritemplate",
                 "value": "{country}",
@@ -162,7 +162,7 @@
         },
         "eu.jrc.eurdep.amqp.DoseRateReading": {
           "name": "DoseRateReading",
-          "basemessageurl": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.DoseRateReading",
+          "basemessageuri": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.DoseRateReading",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -172,7 +172,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key station identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "country": {
                 "type": "uritemplate",
                 "value": "{country}",

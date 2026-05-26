@@ -43,11 +43,11 @@ def resolve_pointer(document: Mapping[str, Any], pointer: str) -> Any:
     return cur
 
 def resolve_message(document: Mapping[str, Any], message: Mapping[str, Any]) -> Dict[str, Any]:
-    base_url = message.get('basemessageurl')
+    base_url = message.get('basemessageuri')
     if not base_url:
         return dict(message)
     base = resolve_message(document, resolve_pointer(document, str(base_url)))
-    base.update({k:v for k,v in message.items() if k != 'basemessageurl'})
+    base.update({k:v for k,v in message.items() if k != 'basemessageuri'})
     return base
 
 def render(template: str | None, context: Mapping[str, Any]) -> str:

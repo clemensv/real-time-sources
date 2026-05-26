@@ -100,7 +100,7 @@
       "messages": {
         "NWS.WeatherAlert.Minor.mqtt": {
           "name": "WeatherAlertMinor",
-          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "basemessageuri": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/us/noaa/nws-alerts/{state}/minor/{event_type}/{alert_id}/alert",
@@ -110,7 +110,7 @@
         },
         "NWS.WeatherAlert.Moderate.mqtt": {
           "name": "WeatherAlertModerate",
-          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "basemessageuri": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/us/noaa/nws-alerts/{state}/moderate/{event_type}/{alert_id}/alert",
@@ -120,7 +120,7 @@
         },
         "NWS.WeatherAlert.Severe.mqtt": {
           "name": "WeatherAlertSevere",
-          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "basemessageuri": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/us/noaa/nws-alerts/{state}/severe/{event_type}/{alert_id}/alert",
@@ -130,7 +130,7 @@
         },
         "NWS.WeatherAlert.Extreme.mqtt": {
           "name": "WeatherAlertExtreme",
-          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "basemessageuri": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/us/noaa/nws-alerts/{state}/extreme/{event_type}/{alert_id}/alert",
@@ -140,7 +140,7 @@
         },
         "NWS.WeatherAlert.Unknown.mqtt": {
           "name": "WeatherAlertUnknown",
-          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "basemessageuri": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/us/noaa/nws-alerts/{state}/unknown/{event_type}/{alert_id}/alert",
@@ -155,7 +155,7 @@
       "messages": {
         "NWS.Alerts.amqp.WeatherAlertMinor": {
           "name": "WeatherAlertMinor",
-          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "basemessageuri": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -165,7 +165,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -177,7 +177,7 @@
                 "description": "AMQP application property mirroring the event_type routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{alert_id}",
@@ -189,7 +189,7 @@
         },
         "NWS.Alerts.amqp.WeatherAlertModerate": {
           "name": "WeatherAlertModerate",
-          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "basemessageuri": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -199,7 +199,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -211,7 +211,7 @@
                 "description": "AMQP application property mirroring the event_type routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{alert_id}",
@@ -223,7 +223,7 @@
         },
         "NWS.Alerts.amqp.WeatherAlertSevere": {
           "name": "WeatherAlertSevere",
-          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "basemessageuri": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -233,7 +233,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -245,7 +245,7 @@
                 "description": "AMQP application property mirroring the event_type routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{alert_id}",
@@ -257,7 +257,7 @@
         },
         "NWS.Alerts.amqp.WeatherAlertExtreme": {
           "name": "WeatherAlertExtreme",
-          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "basemessageuri": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -267,7 +267,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -279,7 +279,7 @@
                 "description": "AMQP application property mirroring the event_type routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{alert_id}",
@@ -291,7 +291,7 @@
         },
         "NWS.Alerts.amqp.WeatherAlertUnknown": {
           "name": "WeatherAlertUnknown",
-          "basemessageurl": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
+          "basemessageuri": "/messagegroups/NWS.Alerts/messages/NWS.WeatherAlert",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -301,7 +301,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -313,7 +313,7 @@
                 "description": "AMQP application property mirroring the event_type routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{alert_id}",

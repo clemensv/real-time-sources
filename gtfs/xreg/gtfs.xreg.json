@@ -83,28 +83,24 @@
           "modifiedat": "2024-10-18T13:47:59.337832",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -123,28 +119,24 @@
           "modifiedat": "2024-10-18T13:48:03.055635",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedRealTime.Trip.TripUpdate",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -163,28 +155,24 @@
           "modifiedat": "2024-10-18T13:48:06.866474",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedRealTime.Alert.Alert",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -211,28 +199,24 @@
           "modifiedat": "2024-10-18T13:48:10.562674",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Agency",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -251,28 +235,24 @@
           "modifiedat": "2024-10-18T13:48:14.315902",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Areas",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -291,28 +271,24 @@
           "modifiedat": "2024-10-18T13:48:18.288847",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Attributions",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -331,28 +307,24 @@
           "modifiedat": "2024-10-18T13:48:22.082873",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeed.BookingRules",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -371,28 +343,24 @@
           "modifiedat": "2024-10-18T13:48:25.724208",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FareAttributes",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -411,28 +379,24 @@
           "modifiedat": "2024-10-18T13:48:29.398475",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FareLegRules",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -451,28 +415,24 @@
           "modifiedat": "2024-10-18T13:48:33.091812",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FareMedia",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -491,28 +451,24 @@
           "modifiedat": "2024-10-18T13:48:37.0343",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FareProducts",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -531,28 +487,24 @@
           "modifiedat": "2024-10-18T13:48:40.694694",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FareRules",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -571,28 +523,24 @@
           "modifiedat": "2024-10-18T13:48:44.324811",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FareTransferRules",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -611,28 +559,24 @@
           "modifiedat": "2024-10-18T13:48:47.945429",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.FeedInfo",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -651,28 +595,24 @@
           "modifiedat": "2024-10-18T13:48:51.614352",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Frequencies",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -691,28 +631,24 @@
           "modifiedat": "2024-10-18T13:48:55.302761",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Levels",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -731,28 +667,24 @@
           "modifiedat": "2024-10-18T13:48:59.028822",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.LocationGeoJson",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -771,28 +703,24 @@
           "modifiedat": "2024-10-18T13:49:02.667532",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.LocationGroups",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -811,28 +739,24 @@
           "modifiedat": "2024-10-18T13:49:06.377213",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.LocationGroupStores",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -851,28 +775,24 @@
           "modifiedat": "2024-10-18T13:49:10.032314",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Networks",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -891,28 +811,24 @@
           "modifiedat": "2024-10-18T13:49:13.685178",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Pathways",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -931,28 +847,24 @@
           "modifiedat": "2024-10-18T13:49:17.370844",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.RouteNetworks",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -971,28 +883,24 @@
           "modifiedat": "2024-10-18T13:49:21.04418",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Routes",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1011,28 +919,24 @@
           "modifiedat": "2024-10-18T13:49:24.754104",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Shapes",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1051,28 +955,24 @@
           "modifiedat": "2024-10-18T13:49:28.442943",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.StopAreas",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1091,28 +991,24 @@
           "modifiedat": "2024-10-18T13:49:32.095692",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Stops",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1131,28 +1027,24 @@
           "modifiedat": "2024-10-18T13:49:35.782623",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.StopTimes",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1171,28 +1063,24 @@
           "modifiedat": "2024-10-18T13:49:39.508891",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Timeframes",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1211,28 +1099,24 @@
           "modifiedat": "2024-10-18T13:49:43.183866",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Transfers",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1251,28 +1135,24 @@
           "modifiedat": "2024-10-18T13:49:46.884005",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Translations",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1291,28 +1171,24 @@
           "modifiedat": "2024-10-18T13:49:50.614938",
           "envelopemetadata": {
             "specversion": {
-              "name": "specversion",
               "type": "string",
               "required": true,
               "value": "1.0",
               "description": "CloudEvents version"
             },
             "type": {
-              "name": "type",
               "type": "string",
               "required": true,
               "value": "GeneralTransitFeedStatic.Trips",
               "description": "Event type"
             },
             "source": {
-              "name": "source",
               "type": "uritemplate",
               "required": true,
               "value": "{feedurl}",
               "description": "Source Feed URL"
             },
             "subject": {
-              "name": "subject",
               "type": "uritemplate",
               "value": "{agencyid}",
               "description": "Provider name",
@@ -1330,7 +1206,7 @@
       "messages": {
         "GeneralTransitFeedRealTime.Vehicle.VehiclePosition.mqtt": {
           "name": "VehiclePosition",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/{route_id}/vehicle/{vehicle_id}",
@@ -1340,7 +1216,7 @@
         },
         "GeneralTransitFeedRealTime.Trip.TripUpdate.mqtt": {
           "name": "TripUpdate",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Trip.TripUpdate",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Trip.TripUpdate",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/{route_id}/trip-update/{trip_id}",
@@ -1350,7 +1226,7 @@
         },
         "GeneralTransitFeedRealTime.Alert.Alert.mqtt": {
           "name": "Alert",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Alert.Alert",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Alert.Alert",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/{route_id}/alert/{alert_id}",
@@ -1365,7 +1241,7 @@
       "messages": {
         "GeneralTransitFeedStatic.Agency.mqtt": {
           "name": "Agency",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Agency",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Agency",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/agency/{row_id}",
@@ -1375,7 +1251,7 @@
         },
         "GeneralTransitFeedStatic.Areas.mqtt": {
           "name": "Areas",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Areas",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Areas",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/areas/{row_id}",
@@ -1385,7 +1261,7 @@
         },
         "GeneralTransitFeedStatic.Attributions.mqtt": {
           "name": "Attributions",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Attributions",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Attributions",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/attributions/{row_id}",
@@ -1395,7 +1271,7 @@
         },
         "GeneralTransitFeed.BookingRules.mqtt": {
           "name": "BookingRules",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeed.BookingRules",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeed.BookingRules",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/booking-rules/{row_id}",
@@ -1405,7 +1281,7 @@
         },
         "GeneralTransitFeedStatic.FareAttributes.mqtt": {
           "name": "FareAttributes",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareAttributes",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareAttributes",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/fare-attributes/{row_id}",
@@ -1415,7 +1291,7 @@
         },
         "GeneralTransitFeedStatic.FareLegRules.mqtt": {
           "name": "FareLegRules",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareLegRules",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareLegRules",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/fare-leg-rules/{row_id}",
@@ -1425,7 +1301,7 @@
         },
         "GeneralTransitFeedStatic.FareMedia.mqtt": {
           "name": "FareMedia",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareMedia",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareMedia",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/fare-media/{row_id}",
@@ -1435,7 +1311,7 @@
         },
         "GeneralTransitFeedStatic.FareProducts.mqtt": {
           "name": "FareProducts",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareProducts",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareProducts",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/fare-products/{row_id}",
@@ -1445,7 +1321,7 @@
         },
         "GeneralTransitFeedStatic.FareRules.mqtt": {
           "name": "FareRules",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareRules",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareRules",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/fare-rules/{row_id}",
@@ -1455,7 +1331,7 @@
         },
         "GeneralTransitFeedStatic.FareTransferRules.mqtt": {
           "name": "FareTransferRules",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareTransferRules",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareTransferRules",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/fare-transfer-rules/{row_id}",
@@ -1465,7 +1341,7 @@
         },
         "GeneralTransitFeedStatic.FeedInfo.mqtt": {
           "name": "FeedInfo",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FeedInfo",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FeedInfo",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/feed-info/{row_id}",
@@ -1475,7 +1351,7 @@
         },
         "GeneralTransitFeedStatic.Frequencies.mqtt": {
           "name": "Frequencies",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Frequencies",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Frequencies",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/frequencies/{row_id}",
@@ -1485,7 +1361,7 @@
         },
         "GeneralTransitFeedStatic.Levels.mqtt": {
           "name": "Levels",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Levels",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Levels",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/levels/{row_id}",
@@ -1495,7 +1371,7 @@
         },
         "GeneralTransitFeedStatic.LocationGeoJson.mqtt": {
           "name": "LocationGeoJson",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGeoJson",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGeoJson",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/location-geo-json/{row_id}",
@@ -1505,7 +1381,7 @@
         },
         "GeneralTransitFeedStatic.LocationGroups.mqtt": {
           "name": "LocationGroups",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGroups",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGroups",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/location-groups/{row_id}",
@@ -1515,7 +1391,7 @@
         },
         "GeneralTransitFeedStatic.LocationGroupStores.mqtt": {
           "name": "LocationGroupStores",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGroupStores",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGroupStores",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/location-group-stores/{row_id}",
@@ -1525,7 +1401,7 @@
         },
         "GeneralTransitFeedStatic.Networks.mqtt": {
           "name": "Networks",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Networks",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Networks",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/networks/{row_id}",
@@ -1535,7 +1411,7 @@
         },
         "GeneralTransitFeedStatic.Pathways.mqtt": {
           "name": "Pathways",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Pathways",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Pathways",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/pathways/{row_id}",
@@ -1545,7 +1421,7 @@
         },
         "GeneralTransitFeedStatic.RouteNetworks.mqtt": {
           "name": "RouteNetworks",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.RouteNetworks",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.RouteNetworks",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/route-networks/{row_id}",
@@ -1555,7 +1431,7 @@
         },
         "GeneralTransitFeedStatic.Routes.mqtt": {
           "name": "Routes",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Routes",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Routes",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/routes/{row_id}",
@@ -1565,7 +1441,7 @@
         },
         "GeneralTransitFeedStatic.Shapes.mqtt": {
           "name": "Shapes",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Shapes",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Shapes",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/shapes/{row_id}",
@@ -1575,7 +1451,7 @@
         },
         "GeneralTransitFeedStatic.StopAreas.mqtt": {
           "name": "StopAreas",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.StopAreas",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.StopAreas",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/stop-areas/{row_id}",
@@ -1585,7 +1461,7 @@
         },
         "GeneralTransitFeedStatic.Stops.mqtt": {
           "name": "Stops",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Stops",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Stops",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/stops/{row_id}",
@@ -1595,7 +1471,7 @@
         },
         "GeneralTransitFeedStatic.StopTimes.mqtt": {
           "name": "StopTimes",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.StopTimes",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.StopTimes",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/stop-times/{row_id}",
@@ -1605,7 +1481,7 @@
         },
         "GeneralTransitFeedStatic.Timeframes.mqtt": {
           "name": "Timeframes",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Timeframes",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Timeframes",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/timeframes/{row_id}",
@@ -1615,7 +1491,7 @@
         },
         "GeneralTransitFeedStatic.Transfers.mqtt": {
           "name": "Transfers",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Transfers",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Transfers",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/transfers/{row_id}",
@@ -1625,7 +1501,7 @@
         },
         "GeneralTransitFeedStatic.Translations.mqtt": {
           "name": "Translations",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Translations",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Translations",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/translations/{row_id}",
@@ -1635,7 +1511,7 @@
         },
         "GeneralTransitFeedStatic.Trips.mqtt": {
           "name": "Trips",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Trips",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Trips",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/intl/gtfs/gtfs/{agencyid}/static/trips/{row_id}",
@@ -1650,7 +1526,7 @@
       "messages": {
         "GeneralTransitFeedRealTime.Vehicle.VehiclePosition.amqp": {
           "name": "VehiclePosition",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Vehicle.VehiclePosition",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1660,7 +1536,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1671,7 +1547,7 @@
         },
         "GeneralTransitFeedRealTime.Trip.TripUpdate.amqp": {
           "name": "TripUpdate",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Trip.TripUpdate",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Trip.TripUpdate",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1681,7 +1557,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1692,7 +1568,7 @@
         },
         "GeneralTransitFeedRealTime.Alert.Alert.amqp": {
           "name": "Alert",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Alert.Alert",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedRealTime/messages/GeneralTransitFeedRealTime.Alert.Alert",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1702,7 +1578,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1718,7 +1594,7 @@
       "messages": {
         "GeneralTransitFeedStatic.Agency.amqp": {
           "name": "Agency",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Agency",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Agency",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1728,7 +1604,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1739,7 +1615,7 @@
         },
         "GeneralTransitFeedStatic.Areas.amqp": {
           "name": "Areas",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Areas",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Areas",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1749,7 +1625,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1760,7 +1636,7 @@
         },
         "GeneralTransitFeedStatic.Attributions.amqp": {
           "name": "Attributions",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Attributions",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Attributions",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1770,7 +1646,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1781,7 +1657,7 @@
         },
         "GeneralTransitFeed.BookingRules.amqp": {
           "name": "BookingRules",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeed.BookingRules",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeed.BookingRules",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1791,7 +1667,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1802,7 +1678,7 @@
         },
         "GeneralTransitFeedStatic.FareAttributes.amqp": {
           "name": "FareAttributes",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareAttributes",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareAttributes",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1812,7 +1688,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1823,7 +1699,7 @@
         },
         "GeneralTransitFeedStatic.FareLegRules.amqp": {
           "name": "FareLegRules",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareLegRules",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareLegRules",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1833,7 +1709,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1844,7 +1720,7 @@
         },
         "GeneralTransitFeedStatic.FareMedia.amqp": {
           "name": "FareMedia",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareMedia",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareMedia",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1854,7 +1730,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1865,7 +1741,7 @@
         },
         "GeneralTransitFeedStatic.FareProducts.amqp": {
           "name": "FareProducts",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareProducts",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareProducts",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1875,7 +1751,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1886,7 +1762,7 @@
         },
         "GeneralTransitFeedStatic.FareRules.amqp": {
           "name": "FareRules",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareRules",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareRules",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1896,7 +1772,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1907,7 +1783,7 @@
         },
         "GeneralTransitFeedStatic.FareTransferRules.amqp": {
           "name": "FareTransferRules",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareTransferRules",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FareTransferRules",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1917,7 +1793,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1928,7 +1804,7 @@
         },
         "GeneralTransitFeedStatic.FeedInfo.amqp": {
           "name": "FeedInfo",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FeedInfo",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.FeedInfo",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1938,7 +1814,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1949,7 +1825,7 @@
         },
         "GeneralTransitFeedStatic.Frequencies.amqp": {
           "name": "Frequencies",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Frequencies",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Frequencies",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1959,7 +1835,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1970,7 +1846,7 @@
         },
         "GeneralTransitFeedStatic.Levels.amqp": {
           "name": "Levels",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Levels",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Levels",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1980,7 +1856,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -1991,7 +1867,7 @@
         },
         "GeneralTransitFeedStatic.LocationGeoJson.amqp": {
           "name": "LocationGeoJson",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGeoJson",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGeoJson",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2001,7 +1877,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2012,7 +1888,7 @@
         },
         "GeneralTransitFeedStatic.LocationGroups.amqp": {
           "name": "LocationGroups",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGroups",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGroups",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2022,7 +1898,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2033,7 +1909,7 @@
         },
         "GeneralTransitFeedStatic.LocationGroupStores.amqp": {
           "name": "LocationGroupStores",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGroupStores",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.LocationGroupStores",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2043,7 +1919,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2054,7 +1930,7 @@
         },
         "GeneralTransitFeedStatic.Networks.amqp": {
           "name": "Networks",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Networks",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Networks",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2064,7 +1940,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2075,7 +1951,7 @@
         },
         "GeneralTransitFeedStatic.Pathways.amqp": {
           "name": "Pathways",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Pathways",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Pathways",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2085,7 +1961,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2096,7 +1972,7 @@
         },
         "GeneralTransitFeedStatic.RouteNetworks.amqp": {
           "name": "RouteNetworks",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.RouteNetworks",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.RouteNetworks",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2106,7 +1982,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2117,7 +1993,7 @@
         },
         "GeneralTransitFeedStatic.Routes.amqp": {
           "name": "Routes",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Routes",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Routes",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2127,7 +2003,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2138,7 +2014,7 @@
         },
         "GeneralTransitFeedStatic.Shapes.amqp": {
           "name": "Shapes",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Shapes",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Shapes",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2148,7 +2024,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2159,7 +2035,7 @@
         },
         "GeneralTransitFeedStatic.StopAreas.amqp": {
           "name": "StopAreas",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.StopAreas",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.StopAreas",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2169,7 +2045,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2180,7 +2056,7 @@
         },
         "GeneralTransitFeedStatic.Stops.amqp": {
           "name": "Stops",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Stops",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Stops",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2190,7 +2066,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2201,7 +2077,7 @@
         },
         "GeneralTransitFeedStatic.StopTimes.amqp": {
           "name": "StopTimes",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.StopTimes",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.StopTimes",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2211,7 +2087,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2222,7 +2098,7 @@
         },
         "GeneralTransitFeedStatic.Timeframes.amqp": {
           "name": "Timeframes",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Timeframes",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Timeframes",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2232,7 +2108,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2243,7 +2119,7 @@
         },
         "GeneralTransitFeedStatic.Transfers.amqp": {
           "name": "Transfers",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Transfers",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Transfers",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2253,7 +2129,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2264,7 +2140,7 @@
         },
         "GeneralTransitFeedStatic.Translations.amqp": {
           "name": "Translations",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Translations",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Translations",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2274,7 +2150,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",
@@ -2285,7 +2161,7 @@
         },
         "GeneralTransitFeedStatic.Trips.amqp": {
           "name": "Trips",
-          "basemessageurl": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Trips",
+          "basemessageuri": "/messagegroups/GeneralTransitFeedStatic/messages/GeneralTransitFeedStatic.Trips",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -2295,7 +2171,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{agencyid}",

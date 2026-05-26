@@ -118,7 +118,7 @@
       "messages": {
         "ie.gov.opw.waterlevel.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.Station",
+          "basemessageuri": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/ie/opw/ireland-opw-waterlevel/{basin}/{station_ref}/info",
@@ -128,7 +128,7 @@
         },
         "ie.gov.opw.waterlevel.mqtt.WaterLevelReading": {
           "name": "WaterLevelReading",
-          "basemessageurl": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.WaterLevelReading",
+          "basemessageuri": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.WaterLevelReading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/ie/opw/ireland-opw-waterlevel/{basin}/{station_ref}/water-level",
@@ -143,7 +143,7 @@
       "messages": {
         "ie.gov.opw.waterlevel.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.Station",
+          "basemessageuri": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -153,14 +153,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "basin": {
                 "type": "uritemplate",
                 "value": "{basin}",
                 "description": "Routing property for AMQP subscription filters (basin)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_ref}",
@@ -171,7 +171,7 @@
         },
         "ie.gov.opw.waterlevel.amqp.WaterLevelReading": {
           "name": "WaterLevelReading",
-          "basemessageurl": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.WaterLevelReading",
+          "basemessageuri": "/messagegroups/ie.gov.opw.waterlevel/messages/ie.gov.opw.waterlevel.WaterLevelReading",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -181,14 +181,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "basin": {
                 "type": "uritemplate",
                 "value": "{basin}",
                 "description": "Routing property for AMQP subscription filters (basin)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_ref}",

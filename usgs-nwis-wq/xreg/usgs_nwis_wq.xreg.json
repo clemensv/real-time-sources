@@ -147,7 +147,7 @@
       "messages": {
         "USGS.WaterQuality.Sites.mqtt.MonitoringSite": {
           "name": "MonitoringSite",
-          "basemessageurl": "/messagegroups/USGS.WaterQuality.Sites/messages/USGS.WaterQuality.Sites.MonitoringSite",
+          "basemessageuri": "/messagegroups/USGS.WaterQuality.Sites/messages/USGS.WaterQuality.Sites.MonitoringSite",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-nwis-wq/{state}/{site_number}/info",
@@ -162,7 +162,7 @@
       "messages": {
         "USGS.WaterQuality.Sites.amqp.MonitoringSite": {
           "name": "MonitoringSite",
-          "basemessageurl": "/messagegroups/USGS.WaterQuality.Sites/messages/USGS.WaterQuality.Sites.MonitoringSite",
+          "basemessageuri": "/messagegroups/USGS.WaterQuality.Sites/messages/USGS.WaterQuality.Sites.MonitoringSite",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -172,14 +172,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
                 "description": "Routing property for AMQP subscription filters (state)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{site_number}",
@@ -195,7 +195,7 @@
       "messages": {
         "USGS.WaterQuality.Readings.mqtt.WaterQualityReading": {
           "name": "WaterQualityReading",
-          "basemessageurl": "/messagegroups/USGS.WaterQuality.Readings/messages/USGS.WaterQuality.Readings.WaterQualityReading",
+          "basemessageuri": "/messagegroups/USGS.WaterQuality.Readings/messages/USGS.WaterQuality.Readings.WaterQualityReading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-nwis-wq/{state}/{site_number}/{parameter_code}/water-quality",
@@ -210,7 +210,7 @@
       "messages": {
         "USGS.WaterQuality.Readings.amqp.WaterQualityReading": {
           "name": "WaterQualityReading",
-          "basemessageurl": "/messagegroups/USGS.WaterQuality.Readings/messages/USGS.WaterQuality.Readings.WaterQualityReading",
+          "basemessageuri": "/messagegroups/USGS.WaterQuality.Readings/messages/USGS.WaterQuality.Readings.WaterQualityReading",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -220,7 +220,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -232,7 +232,7 @@
                 "description": "Routing property for AMQP subscription filters (parameter_code)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{site_number}/{parameter_code}",

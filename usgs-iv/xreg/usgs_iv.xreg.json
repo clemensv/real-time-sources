@@ -777,7 +777,7 @@
       "messages": {
         "USGS.Sites.mqtt.Site": {
           "name": "Site",
-          "basemessageurl": "/messagegroups/USGS.Sites/messages/USGS.Sites.Site",
+          "basemessageuri": "/messagegroups/USGS.Sites/messages/USGS.Sites.Site",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/info",
@@ -793,7 +793,7 @@
       "messages": {
         "USGS.SiteTimeseries.mqtt.SiteTimeseries": {
           "name": "SiteTimeseries",
-          "basemessageurl": "/messagegroups/USGS.SiteTimeseries/messages/USGS.Sites.SiteTimeseries",
+          "basemessageuri": "/messagegroups/USGS.SiteTimeseries/messages/USGS.Sites.SiteTimeseries",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/timeseries",
@@ -809,7 +809,7 @@
       "messages": {
         "USGS.InstantaneousValues.mqtt.OtherParameter": {
           "name": "OtherParameter",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.OtherParameter",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.OtherParameter",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -820,7 +820,7 @@
         },
         "USGS.InstantaneousValues.mqtt.Precipitation": {
           "name": "Precipitation",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Precipitation",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Precipitation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -831,7 +831,7 @@
         },
         "USGS.InstantaneousValues.mqtt.Streamflow": {
           "name": "Streamflow",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Streamflow",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Streamflow",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -842,7 +842,7 @@
         },
         "USGS.InstantaneousValues.mqtt.GageHeight": {
           "name": "GageHeight",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GageHeight",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GageHeight",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -853,7 +853,7 @@
         },
         "USGS.InstantaneousValues.mqtt.WaterTemperature": {
           "name": "WaterTemperature",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterTemperature",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterTemperature",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -864,7 +864,7 @@
         },
         "USGS.InstantaneousValues.mqtt.DissolvedOxygen": {
           "name": "DissolvedOxygen",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.DissolvedOxygen",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.DissolvedOxygen",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -875,7 +875,7 @@
         },
         "USGS.InstantaneousValues.mqtt.pH": {
           "name": "pH",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.pH",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.pH",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -886,7 +886,7 @@
         },
         "USGS.InstantaneousValues.mqtt.SpecificConductance": {
           "name": "SpecificConductance",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.SpecificConductance",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.SpecificConductance",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -897,7 +897,7 @@
         },
         "USGS.InstantaneousValues.mqtt.Turbidity": {
           "name": "Turbidity",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Turbidity",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Turbidity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -908,7 +908,7 @@
         },
         "USGS.InstantaneousValues.mqtt.AirTemperature": {
           "name": "AirTemperature",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.AirTemperature",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.AirTemperature",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -919,7 +919,7 @@
         },
         "USGS.InstantaneousValues.mqtt.WindSpeed": {
           "name": "WindSpeed",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindSpeed",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindSpeed",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -930,7 +930,7 @@
         },
         "USGS.InstantaneousValues.mqtt.WindDirection": {
           "name": "WindDirection",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindDirection",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindDirection",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -941,7 +941,7 @@
         },
         "USGS.InstantaneousValues.mqtt.RelativeHumidity": {
           "name": "RelativeHumidity",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.RelativeHumidity",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.RelativeHumidity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -952,7 +952,7 @@
         },
         "USGS.InstantaneousValues.mqtt.BarometricPressure": {
           "name": "BarometricPressure",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.BarometricPressure",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.BarometricPressure",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -963,7 +963,7 @@
         },
         "USGS.InstantaneousValues.mqtt.TurbidityFNU": {
           "name": "TurbidityFNU",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TurbidityFNU",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TurbidityFNU",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -974,7 +974,7 @@
         },
         "USGS.InstantaneousValues.mqtt.fDOM": {
           "name": "fDOM",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.fDOM",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.fDOM",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -985,7 +985,7 @@
         },
         "USGS.InstantaneousValues.mqtt.ReservoirStorage": {
           "name": "ReservoirStorage",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.ReservoirStorage",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.ReservoirStorage",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -996,7 +996,7 @@
         },
         "USGS.InstantaneousValues.mqtt.LakeElevationNGVD29": {
           "name": "LakeElevationNGVD29",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNGVD29",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNGVD29",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -1007,7 +1007,7 @@
         },
         "USGS.InstantaneousValues.mqtt.WaterDepth": {
           "name": "WaterDepth",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterDepth",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterDepth",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -1018,7 +1018,7 @@
         },
         "USGS.InstantaneousValues.mqtt.EquipmentStatus": {
           "name": "EquipmentStatus",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EquipmentStatus",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EquipmentStatus",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -1029,7 +1029,7 @@
         },
         "USGS.InstantaneousValues.mqtt.TidallyFilteredDischarge": {
           "name": "TidallyFilteredDischarge",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TidallyFilteredDischarge",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TidallyFilteredDischarge",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -1040,7 +1040,7 @@
         },
         "USGS.InstantaneousValues.mqtt.WaterVelocity": {
           "name": "WaterVelocity",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterVelocity",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterVelocity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -1051,7 +1051,7 @@
         },
         "USGS.InstantaneousValues.mqtt.EstuaryElevationNGVD29": {
           "name": "EstuaryElevationNGVD29",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EstuaryElevationNGVD29",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EstuaryElevationNGVD29",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -1062,7 +1062,7 @@
         },
         "USGS.InstantaneousValues.mqtt.LakeElevationNAVD88": {
           "name": "LakeElevationNAVD88",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNAVD88",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNAVD88",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -1073,7 +1073,7 @@
         },
         "USGS.InstantaneousValues.mqtt.Salinity": {
           "name": "Salinity",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Salinity",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Salinity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -1084,7 +1084,7 @@
         },
         "USGS.InstantaneousValues.mqtt.GateOpening": {
           "name": "GateOpening",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GateOpening",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GateOpening",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usgs/usgs-iv/{site_no}/{parameter_cd}/{timeseries_cd}/observation",
@@ -1100,7 +1100,7 @@
       "messages": {
         "USGS.Sites.amqp.Site": {
           "name": "Site",
-          "basemessageurl": "/messagegroups/USGS.Sites/messages/USGS.Sites.Site",
+          "basemessageuri": "/messagegroups/USGS.Sites/messages/USGS.Sites.Site",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1119,7 +1119,7 @@
       "messages": {
         "USGS.SiteTimeseries.amqp.SiteTimeseries": {
           "name": "SiteTimeseries",
-          "basemessageurl": "/messagegroups/USGS.SiteTimeseries/messages/USGS.Sites.SiteTimeseries",
+          "basemessageuri": "/messagegroups/USGS.SiteTimeseries/messages/USGS.Sites.SiteTimeseries",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1138,7 +1138,7 @@
       "messages": {
         "USGS.InstantaneousValues.amqp.OtherParameter": {
           "name": "OtherParameter",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.OtherParameter",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.OtherParameter",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1152,7 +1152,7 @@
         },
         "USGS.InstantaneousValues.amqp.Precipitation": {
           "name": "Precipitation",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Precipitation",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Precipitation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1166,7 +1166,7 @@
         },
         "USGS.InstantaneousValues.amqp.Streamflow": {
           "name": "Streamflow",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Streamflow",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Streamflow",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1180,7 +1180,7 @@
         },
         "USGS.InstantaneousValues.amqp.GageHeight": {
           "name": "GageHeight",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GageHeight",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GageHeight",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1194,7 +1194,7 @@
         },
         "USGS.InstantaneousValues.amqp.WaterTemperature": {
           "name": "WaterTemperature",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterTemperature",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterTemperature",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1208,7 +1208,7 @@
         },
         "USGS.InstantaneousValues.amqp.DissolvedOxygen": {
           "name": "DissolvedOxygen",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.DissolvedOxygen",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.DissolvedOxygen",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1222,7 +1222,7 @@
         },
         "USGS.InstantaneousValues.amqp.pH": {
           "name": "pH",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.pH",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.pH",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1236,7 +1236,7 @@
         },
         "USGS.InstantaneousValues.amqp.SpecificConductance": {
           "name": "SpecificConductance",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.SpecificConductance",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.SpecificConductance",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1250,7 +1250,7 @@
         },
         "USGS.InstantaneousValues.amqp.Turbidity": {
           "name": "Turbidity",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Turbidity",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Turbidity",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1264,7 +1264,7 @@
         },
         "USGS.InstantaneousValues.amqp.AirTemperature": {
           "name": "AirTemperature",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.AirTemperature",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.AirTemperature",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1278,7 +1278,7 @@
         },
         "USGS.InstantaneousValues.amqp.WindSpeed": {
           "name": "WindSpeed",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindSpeed",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindSpeed",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1292,7 +1292,7 @@
         },
         "USGS.InstantaneousValues.amqp.WindDirection": {
           "name": "WindDirection",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindDirection",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WindDirection",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1306,7 +1306,7 @@
         },
         "USGS.InstantaneousValues.amqp.RelativeHumidity": {
           "name": "RelativeHumidity",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.RelativeHumidity",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.RelativeHumidity",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1320,7 +1320,7 @@
         },
         "USGS.InstantaneousValues.amqp.BarometricPressure": {
           "name": "BarometricPressure",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.BarometricPressure",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.BarometricPressure",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1334,7 +1334,7 @@
         },
         "USGS.InstantaneousValues.amqp.TurbidityFNU": {
           "name": "TurbidityFNU",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TurbidityFNU",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TurbidityFNU",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1348,7 +1348,7 @@
         },
         "USGS.InstantaneousValues.amqp.fDOM": {
           "name": "fDOM",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.fDOM",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.fDOM",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1362,7 +1362,7 @@
         },
         "USGS.InstantaneousValues.amqp.ReservoirStorage": {
           "name": "ReservoirStorage",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.ReservoirStorage",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.ReservoirStorage",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1376,7 +1376,7 @@
         },
         "USGS.InstantaneousValues.amqp.LakeElevationNGVD29": {
           "name": "LakeElevationNGVD29",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNGVD29",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNGVD29",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1390,7 +1390,7 @@
         },
         "USGS.InstantaneousValues.amqp.WaterDepth": {
           "name": "WaterDepth",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterDepth",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterDepth",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1404,7 +1404,7 @@
         },
         "USGS.InstantaneousValues.amqp.EquipmentStatus": {
           "name": "EquipmentStatus",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EquipmentStatus",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EquipmentStatus",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1418,7 +1418,7 @@
         },
         "USGS.InstantaneousValues.amqp.TidallyFilteredDischarge": {
           "name": "TidallyFilteredDischarge",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TidallyFilteredDischarge",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.TidallyFilteredDischarge",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1432,7 +1432,7 @@
         },
         "USGS.InstantaneousValues.amqp.WaterVelocity": {
           "name": "WaterVelocity",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterVelocity",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.WaterVelocity",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1446,7 +1446,7 @@
         },
         "USGS.InstantaneousValues.amqp.EstuaryElevationNGVD29": {
           "name": "EstuaryElevationNGVD29",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EstuaryElevationNGVD29",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.EstuaryElevationNGVD29",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1460,7 +1460,7 @@
         },
         "USGS.InstantaneousValues.amqp.LakeElevationNAVD88": {
           "name": "LakeElevationNAVD88",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNAVD88",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.LakeElevationNAVD88",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1474,7 +1474,7 @@
         },
         "USGS.InstantaneousValues.amqp.Salinity": {
           "name": "Salinity",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Salinity",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.Salinity",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -1488,7 +1488,7 @@
         },
         "USGS.InstantaneousValues.amqp.GateOpening": {
           "name": "GateOpening",
-          "basemessageurl": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GateOpening",
+          "basemessageuri": "/messagegroups/USGS.InstantaneousValues/messages/USGS.InstantaneousValues.GateOpening",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

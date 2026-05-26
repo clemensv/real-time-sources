@@ -157,7 +157,7 @@
       "messages": {
         "AU.Gov.BOM.Weather.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.Station",
+          "basemessageuri": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.Station",
           "envelopemetadata": {
             "type": {
               "value": "AU.Gov.BOM.Weather.Station"
@@ -179,7 +179,7 @@
         },
         "AU.Gov.BOM.Weather.mqtt.WeatherObservation": {
           "name": "WeatherObservation",
-          "basemessageurl": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.WeatherObservation",
+          "basemessageuri": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.WeatherObservation",
           "envelopemetadata": {
             "type": {
               "value": "AU.Gov.BOM.Weather.WeatherObservation"
@@ -206,7 +206,7 @@
       "messages": {
         "AU.Gov.BOM.Weather.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.Station",
+          "basemessageuri": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.Station",
           "envelopemetadata": {
             "type": {
               "value": "AU.Gov.BOM.Weather.Station"
@@ -228,7 +228,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -239,7 +239,7 @@
         },
         "AU.Gov.BOM.Weather.amqp.WeatherObservation": {
           "name": "WeatherObservation",
-          "basemessageurl": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.WeatherObservation",
+          "basemessageuri": "/messagegroups/AU.Gov.BOM.Weather/messages/AU.Gov.BOM.Weather.WeatherObservation",
           "envelopemetadata": {
             "type": {
               "value": "AU.Gov.BOM.Weather.WeatherObservation"
@@ -261,7 +261,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -277,7 +277,7 @@
       "messages": {
         "AU.Gov.BOM.Warning.mqtt.WarningBulletin": {
           "name": "WarningBulletin",
-          "basemessageurl": "/messagegroups/AU.Gov.BOM.Warning/messages/AU.Gov.BOM.Warning.WarningBulletin",
+          "basemessageuri": "/messagegroups/AU.Gov.BOM.Warning/messages/AU.Gov.BOM.Warning.WarningBulletin",
           "envelopemetadata": {
             "type": {
               "value": "AU.Gov.BOM.Warning.WarningBulletin"
@@ -304,7 +304,7 @@
       "messages": {
         "AU.Gov.BOM.Warning.amqp.WarningBulletin": {
           "name": "WarningBulletin",
-          "basemessageurl": "/messagegroups/AU.Gov.BOM.Warning/messages/AU.Gov.BOM.Warning.WarningBulletin",
+          "basemessageuri": "/messagegroups/AU.Gov.BOM.Warning/messages/AU.Gov.BOM.Warning.WarningBulletin",
           "envelopemetadata": {
             "type": {
               "value": "AU.Gov.BOM.Warning.WarningBulletin"
@@ -326,7 +326,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         }
       }

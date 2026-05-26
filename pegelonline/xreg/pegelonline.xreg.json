@@ -118,26 +118,18 @@
       "messages": {
         "de.wsv.pegelonline.kafka.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
+          "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{station_id}",
-              "description": "Kafka partition key — stable station identifier matching the CloudEvent subject."
-            }
+          "protocoloptions": {
+            "key": "{station_id}"
           }
         },
         "de.wsv.pegelonline.kafka.CurrentMeasurement": {
           "name": "CurrentMeasurement",
-          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
+          "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{station_id}",
-              "description": "Kafka partition key — stable station identifier matching the CloudEvent subject."
-            }
+          "protocoloptions": {
+            "key": "{station_id}"
           }
         }
       }
@@ -147,7 +139,7 @@
       "messages": {
         "de.wsv.pegelonline.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
+          "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info",
@@ -157,7 +149,7 @@
         },
         "de.wsv.pegelonline.mqtt.CurrentMeasurement": {
           "name": "CurrentMeasurement",
-          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
+          "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level",
@@ -172,7 +164,7 @@
       "messages": {
         "de.wsv.pegelonline.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
+          "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -182,7 +174,7 @@
                 "description": "AMQP message subject — stable station identifier matching the CloudEvent subject so SB/EH consumers can correlate."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "water_shortname": {
                 "type": "uritemplate",
                 "value": "{water_shortname}",
@@ -193,7 +185,7 @@
         },
         "de.wsv.pegelonline.amqp.CurrentMeasurement": {
           "name": "CurrentMeasurement",
-          "basemessageurl": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
+          "basemessageuri": "/messagegroups/de.wsv.pegelonline/messages/de.wsv.pegelonline.CurrentMeasurement",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -203,7 +195,7 @@
                 "description": "AMQP message subject — stable station identifier matching the CloudEvent subject so SB/EH consumers can correlate."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "water_shortname": {
                 "type": "uritemplate",
                 "value": "{water_shortname}",

@@ -165,7 +165,7 @@
       "messages": {
         "uk.gov.tfl.road.mqtt.RoadCorridor": {
           "name": "RoadCorridor",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadCorridor",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadCorridor",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/corridor",
@@ -175,7 +175,7 @@
         },
         "uk.gov.tfl.road.mqtt.RoadStatus": {
           "name": "RoadStatus",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadStatus",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadStatus",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/gb/tfl/tfl-road-traffic/roads/{road_id}/status",
@@ -185,7 +185,7 @@
         },
         "uk.gov.tfl.road.mqtt.RoadDisruptionSerious": {
           "name": "RoadDisruptionSerious",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/serious/{disruption_id}",
@@ -195,7 +195,7 @@
         },
         "uk.gov.tfl.road.mqtt.RoadDisruptionSevere": {
           "name": "RoadDisruptionSevere",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/severe/{disruption_id}",
@@ -205,7 +205,7 @@
         },
         "uk.gov.tfl.road.mqtt.RoadDisruptionModerate": {
           "name": "RoadDisruptionModerate",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/moderate/{disruption_id}",
@@ -215,7 +215,7 @@
         },
         "uk.gov.tfl.road.mqtt.RoadDisruptionMinor": {
           "name": "RoadDisruptionMinor",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/minor/{disruption_id}",
@@ -225,7 +225,7 @@
         },
         "uk.gov.tfl.road.mqtt.RoadDisruptionInformation": {
           "name": "RoadDisruptionInformation",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/information/{disruption_id}",
@@ -235,7 +235,7 @@
         },
         "uk.gov.tfl.road.mqtt.RoadDisruptionClosure": {
           "name": "RoadDisruptionClosure",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/gb/tfl/tfl-road-traffic/disruptions/{road_id}/closure/{disruption_id}",
@@ -250,7 +250,7 @@
       "messages": {
         "uk.gov.tfl.road.amqp.RoadCorridor": {
           "name": "RoadCorridor",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadCorridor",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadCorridor",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -260,14 +260,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road_id": {
                 "type": "uritemplate",
                 "value": "{road_id}",
                 "description": "AMQP application property mirroring the road_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "roads/{road_id}",
@@ -279,7 +279,7 @@
         },
         "uk.gov.tfl.road.amqp.RoadStatus": {
           "name": "RoadStatus",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadStatus",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.corridors/messages/uk.gov.tfl.road.RoadStatus",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -289,14 +289,14 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road_id": {
                 "type": "uritemplate",
                 "value": "{road_id}",
                 "description": "AMQP application property mirroring the road_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "roads/{road_id}",
@@ -308,7 +308,7 @@
         },
         "uk.gov.tfl.road.amqp.RoadDisruptionSerious": {
           "name": "RoadDisruptionSerious",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -318,7 +318,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road_id": {
                 "type": "uritemplate",
                 "value": "{road_id}",
@@ -335,7 +335,7 @@
                 "description": "AMQP application property mirroring the disruption_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
@@ -347,7 +347,7 @@
         },
         "uk.gov.tfl.road.amqp.RoadDisruptionSevere": {
           "name": "RoadDisruptionSevere",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -357,7 +357,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road_id": {
                 "type": "uritemplate",
                 "value": "{road_id}",
@@ -374,7 +374,7 @@
                 "description": "AMQP application property mirroring the disruption_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
@@ -386,7 +386,7 @@
         },
         "uk.gov.tfl.road.amqp.RoadDisruptionModerate": {
           "name": "RoadDisruptionModerate",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -396,7 +396,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road_id": {
                 "type": "uritemplate",
                 "value": "{road_id}",
@@ -413,7 +413,7 @@
                 "description": "AMQP application property mirroring the disruption_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
@@ -425,7 +425,7 @@
         },
         "uk.gov.tfl.road.amqp.RoadDisruptionMinor": {
           "name": "RoadDisruptionMinor",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -435,7 +435,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road_id": {
                 "type": "uritemplate",
                 "value": "{road_id}",
@@ -452,7 +452,7 @@
                 "description": "AMQP application property mirroring the disruption_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
@@ -464,7 +464,7 @@
         },
         "uk.gov.tfl.road.amqp.RoadDisruptionInformation": {
           "name": "RoadDisruptionInformation",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -474,7 +474,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road_id": {
                 "type": "uritemplate",
                 "value": "{road_id}",
@@ -491,7 +491,7 @@
                 "description": "AMQP application property mirroring the disruption_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",
@@ -503,7 +503,7 @@
         },
         "uk.gov.tfl.road.amqp.RoadDisruptionClosure": {
           "name": "RoadDisruptionClosure",
-          "basemessageurl": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
+          "basemessageuri": "/messagegroups/uk.gov.tfl.road.disruptions/messages/uk.gov.tfl.road.RoadDisruption",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -513,7 +513,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "road_id": {
                 "type": "uritemplate",
                 "value": "{road_id}",
@@ -530,7 +530,7 @@
                 "description": "AMQP application property mirroring the disruption_id routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "disruptions/{road_id}/{severity}/{disruption_id}",

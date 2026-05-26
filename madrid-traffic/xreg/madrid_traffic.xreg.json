@@ -115,7 +115,7 @@
       "messages": {
         "es.madrid.informo.MeasurementPoint.mqtt": {
           "name": "MeasurementPoint",
-          "basemessageurl": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.MeasurementPoint",
+          "basemessageuri": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.MeasurementPoint",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/es/madrid/madrid-traffic/{district}/{sensor_id}/info",
@@ -125,7 +125,7 @@
         },
         "es.madrid.informo.TrafficReading.mqtt": {
           "name": "TrafficReading",
-          "basemessageurl": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.TrafficReading",
+          "basemessageuri": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.TrafficReading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/es/madrid/madrid-traffic/{district}/{sensor_id}/reading",
@@ -140,7 +140,7 @@
       "messages": {
         "es.madrid.informo.MeasurementPoint.amqp": {
           "name": "MeasurementPoint",
-          "basemessageurl": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.MeasurementPoint",
+          "basemessageuri": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.MeasurementPoint",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -150,7 +150,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{sensor_id}",
@@ -161,7 +161,7 @@
         },
         "es.madrid.informo.TrafficReading.amqp": {
           "name": "TrafficReading",
-          "basemessageurl": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.TrafficReading",
+          "basemessageuri": "/messagegroups/es.madrid.informo/messages/es.madrid.informo.TrafficReading",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -171,7 +171,7 @@
                 "description": "AMQP subject mirrors the CloudEvents subject."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{sensor_id}",

@@ -112,7 +112,7 @@
       "messages": {
         "gov.usda.nrcs.snotel.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.Station",
+          "basemessageuri": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usda/snotel/{state}/{station_triplet}/info",
@@ -122,7 +122,7 @@
         },
         "gov.usda.nrcs.snotel.mqtt.SnowObservation": {
           "name": "SnowObservation",
-          "basemessageurl": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.SnowObservation",
+          "basemessageuri": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.SnowObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/usda/snotel/{state}/{station_triplet}/snow-observation",
@@ -137,7 +137,7 @@
       "messages": {
         "gov.usda.nrcs.snotel.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.Station",
+          "basemessageuri": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -147,14 +147,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
                 "description": "Routing property for AMQP subscription filters (state)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_triplet}",
@@ -165,7 +165,7 @@
         },
         "gov.usda.nrcs.snotel.amqp.SnowObservation": {
           "name": "SnowObservation",
-          "basemessageurl": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.SnowObservation",
+          "basemessageuri": "/messagegroups/gov.usda.nrcs.snotel/messages/gov.usda.nrcs.snotel.SnowObservation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -175,14 +175,14 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
                 "description": "Routing property for AMQP subscription filters (state)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_triplet}",

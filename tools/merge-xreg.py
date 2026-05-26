@@ -33,7 +33,6 @@ from __future__ import annotations
 
 import argparse
 import glob
-import hashlib
 import json
 import sys
 from pathlib import Path
@@ -41,59 +40,6 @@ from pathlib import Path
 COLLECTION_KEYS = ("endpoints", "messagegroups", "schemagroups")
 
 DEFAULT_PATTERN = "*/xreg/*.xreg.json"
-
-_MAX_ID_LEN = 63  # xrserver silently truncates collection keys to 64 chars
-
-
-def _shorten_id(full_id: str) -> str:
-    """Return *full_id* unchanged if ≤ _MAX_ID_LEN chars.
-
-    Otherwise produce a deterministic short form:
-    ``<first 56 chars>~<6-char hex SHA256 prefix>``
-    which is exactly 63 chars and collision-resistant.
-    """
-    if len(full_id) <= _MAX_ID_LEN:
-        return full_id
-    digest = hashlib.sha256(full_id.encode()).hexdigest()[:6]
-    return full_id[:56] + "~" + digest
-
-
-def _apply_id_limits(messagegroups: dict) -> dict:
-    """Shorten message IDs that exceed _MAX_ID_LEN to avoid xrserver truncation.
-
-    xrserver has a bug where collection-listing map keys are silently truncated
-    to 64 characters, but entity lookup requires the full ID — causing 404s
-    during ``xr download``.  The fix is to ensure all IDs are ≤ 63 chars
-    before import so the server never needs to truncate.
-
-    Also rewrites all ``basemessageuri`` references to use the shortened IDs.
-    """
-    # Build old→new rename map
-    renames: dict[str, str] = {}
-    for mg in messagegroups.values():
-        messages = mg.get("messages", {})
-        for old_id in list(messages.keys()):
-            new_id = _shorten_id(old_id)
-            if new_id != old_id:
-                renames[old_id] = new_id
-                msg = messages.pop(old_id)
-                msg["messageid"] = new_id
-                messages[new_id] = msg
-
-    if not renames:
-        return messagegroups
-
-    # Rewrite basemessageuri references (/messagegroups/<mg>/messages/<old_id>)
-    for mg in messagegroups.values():
-        for msg in mg.get("messages", {}).values():
-            uri = msg.get("basemessageuri", "")
-            if isinstance(uri, str):
-                for old, new in renames.items():
-                    uri = uri.replace(f"/messages/{old}", f"/messages/{new}")
-                msg["basemessageuri"] = uri
-
-    return messagegroups
-
 
 def _normalize_refs(obj: object) -> object:
     """Recursively replace '#/'-prefixed XID references with absolute '/' XIDs.
@@ -276,7 +222,6 @@ def merge(pattern: str, repo_root: Path) -> dict:
     # Fix deprecated / renamed attributes before returning
     if "messagegroups" in combined:
         _normalize_message_attrs(combined["messagegroups"])
-        _apply_id_limits(combined["messagegroups"])
 
     # Drop empty collections so the import body is clean
     return {k: v for k, v in combined.items() if v}

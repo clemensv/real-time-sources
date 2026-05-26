@@ -116,7 +116,7 @@
       "messages": {
         "HK.Gov.EPD.AQHI.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.Station",
+          "basemessageuri": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/hk/epd/hongkong-epd/{district}/{station_id}/info",
@@ -126,7 +126,7 @@
         },
         "HK.Gov.EPD.AQHI.mqtt.AQHIReading": {
           "name": "AQHIReading",
-          "basemessageurl": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.AQHIReading",
+          "basemessageuri": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.AQHIReading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/hk/epd/hongkong-epd/{district}/{station_id}/aqhi",
@@ -141,7 +141,7 @@
       "messages": {
         "HK.Gov.EPD.AQHI.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.Station",
+          "basemessageuri": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -151,7 +151,7 @@
                 "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for cross-transport correlation."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "district": {
                 "type": "uritemplate",
                 "value": "{district}",
@@ -162,7 +162,7 @@
         },
         "HK.Gov.EPD.AQHI.amqp.AQHIReading": {
           "name": "AQHIReading",
-          "basemessageurl": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.AQHIReading",
+          "basemessageuri": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.AQHIReading",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -172,7 +172,7 @@
                 "description": "AMQP message subject — stable entity identifier matching the CloudEvent subject and Kafka key for cross-transport correlation."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "district": {
                 "type": "uritemplate",
                 "value": "{district}",

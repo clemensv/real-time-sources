@@ -12,6 +12,7 @@ packages = [{ include = "digitraffic_road_amqp" }]
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
 python-qpid-proton = ">=0.40.0"
+paho-mqtt = ">=1.6.1"
 requests = ">=2.31.0"
 cloudevents = ">=1.11.0,<2.0.0"
 dataclasses-json = ">=0.6.7"

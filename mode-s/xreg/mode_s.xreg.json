@@ -32,10 +32,8 @@
       },
       "protocoloptions": {
         "deployed": false,
-        "options": {
-          "qos": 0,
-          "retain": false
-        }
+        "qos": 0,
+        "retain": false
       },
       "messagegroups": [
         "#/messagegroups/Mode_S.mqtt"
@@ -208,69 +206,57 @@
       "description": "MQTT/5.0 non-retained per-record Mode-S firehose. Each Downlink Format family (DF17/18 ADS-B, DF4 altitude reply, DF5 identity reply, DF11 all-call/acquisition reply, DF20/21 Comm-B) gets a dedicated topic so subscribers can wildcard per family. QoS 0, retain=false.",
       "messages": {
         "Mode_S.ADSB.mqtt": {
-          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.ADSB",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.ADSB",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "options": {
-              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df17-adsb",
-              "qos": 0,
-              "retain": false
-            }
+            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df17-adsb",
+            "qos": 0,
+            "retain": false
           }
         },
         "Mode_S.AltitudeReply.mqtt": {
-          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "options": {
-              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude",
-              "qos": 0,
-              "retain": false
-            }
+            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude",
+            "qos": 0,
+            "retain": false
           }
         },
         "Mode_S.IdentityReply.mqtt": {
-          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "options": {
-              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df5-identity",
-              "qos": 0,
-              "retain": false
-            }
+            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df5-identity",
+            "qos": 0,
+            "retain": false
           }
         },
         "Mode_S.AcquisitionReply.mqtt": {
-          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "options": {
-              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df11-acquisition",
-              "qos": 0,
-              "retain": false
-            }
+            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df11-acquisition",
+            "qos": 0,
+            "retain": false
           }
         },
         "Mode_S.CommBAltitude.mqtt": {
-          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "options": {
-              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df20-comm-b",
-              "qos": 0,
-              "retain": false
-            }
+            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df20-comm-b",
+            "qos": 0,
+            "retain": false
           }
         },
         "Mode_S.CommBIdentity.mqtt": {
-          "basemessageurl": "#/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
-            "options": {
-              "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b",
-              "qos": 0,
-              "retain": false
-            }
+            "topic": "aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b",
+            "qos": 0,
+            "retain": false
           }
         }
       }
@@ -280,7 +266,7 @@
       "messages": {
         "Mode_S.amqp.ADSB": {
           "name": "ADSB",
-          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.ADSB",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.ADSB",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -290,7 +276,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "msg_type": {
                 "type": "uritemplate",
                 "value": "{msg_type}",
@@ -301,7 +287,7 @@
         },
         "Mode_S.amqp.AltitudeReply": {
           "name": "AltitudeReply",
-          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -311,7 +297,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "msg_type": {
                 "type": "uritemplate",
                 "value": "{msg_type}",
@@ -322,7 +308,7 @@
         },
         "Mode_S.amqp.IdentityReply": {
           "name": "IdentityReply",
-          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -332,7 +318,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "msg_type": {
                 "type": "uritemplate",
                 "value": "{msg_type}",
@@ -343,7 +329,7 @@
         },
         "Mode_S.amqp.AcquisitionReply": {
           "name": "AcquisitionReply",
-          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -353,7 +339,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "msg_type": {
                 "type": "uritemplate",
                 "value": "{msg_type}",
@@ -364,7 +350,7 @@
         },
         "Mode_S.amqp.CommBAltitude": {
           "name": "CommBAltitude",
-          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -374,7 +360,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "msg_type": {
                 "type": "uritemplate",
                 "value": "{msg_type}",
@@ -385,7 +371,7 @@
         },
         "Mode_S.amqp.CommBIdentity": {
           "name": "CommBIdentity",
-          "basemessageurl": "/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -395,7 +381,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "msg_type": {
                 "type": "uritemplate",
                 "value": "{msg_type}",

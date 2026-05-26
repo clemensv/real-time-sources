@@ -179,7 +179,7 @@
       "messages": {
         "JP.TEPCO.Denkiyoho.mqtt.SupplyCapacity": {
           "name": "SupplyCapacity",
-          "basemessageurl": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.SupplyCapacity",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.SupplyCapacity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/jp/tepco/tepco-denkiyoho/jp-tepco/supply-capacity",
@@ -189,7 +189,7 @@
         },
         "JP.TEPCO.Denkiyoho.mqtt.PeakDemandForecast": {
           "name": "PeakDemandForecast",
-          "basemessageurl": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.PeakDemandForecast",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.PeakDemandForecast",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/jp/tepco/tepco-denkiyoho/jp-tepco/peak-demand-forecast",
@@ -199,7 +199,7 @@
         },
         "JP.TEPCO.Denkiyoho.mqtt.DemandActual": {
           "name": "DemandActual",
-          "basemessageurl": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandActual",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandActual",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/jp/tepco/tepco-denkiyoho/jp-tepco/demand-actual",
@@ -209,7 +209,7 @@
         },
         "JP.TEPCO.Denkiyoho.mqtt.DemandForecast": {
           "name": "DemandForecast",
-          "basemessageurl": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandForecast",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandForecast",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/jp/tepco/tepco-denkiyoho/jp-tepco/demand-forecast",
@@ -219,7 +219,7 @@
         },
         "JP.TEPCO.Denkiyoho.mqtt.Info": {
           "name": "Info",
-          "basemessageurl": "/messagegroups/JP.TEPCO.Denkiyoho/messages/JP.TEPCO.Denkiyoho.Info",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/JP.TEPCO.Denkiyoho.Info",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/jp/tepco/tepco-denkiyoho/jp-tepco/info",
@@ -234,7 +234,7 @@
       "messages": {
         "JP.TEPCO.Denkiyoho.amqp.SupplyCapacity": {
           "name": "SupplyCapacity",
-          "basemessageurl": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.SupplyCapacity",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.SupplyCapacity",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -244,7 +244,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "jp.tepco.denkiyoho/{date}/{time}",
@@ -255,7 +255,7 @@
         },
         "JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast": {
           "name": "PeakDemandForecast",
-          "basemessageurl": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.PeakDemandForecast",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.PeakDemandForecast",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -265,7 +265,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "jp.tepco.denkiyoho/{date}/{time}",
@@ -276,7 +276,7 @@
         },
         "JP.TEPCO.Denkiyoho.amqp.DemandActual": {
           "name": "DemandActual",
-          "basemessageurl": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandActual",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandActual",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -286,7 +286,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "jp.tepco.denkiyoho/{date}/{time}",
@@ -297,7 +297,7 @@
         },
         "JP.TEPCO.Denkiyoho.amqp.DemandForecast": {
           "name": "DemandForecast",
-          "basemessageurl": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandForecast",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandForecast",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -307,7 +307,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "jp.tepco.denkiyoho/{date}/{time}",
@@ -318,7 +318,7 @@
         },
         "JP.TEPCO.Denkiyoho.amqp.Info": {
           "name": "Info",
-          "basemessageurl": "/messagegroups/JP.TEPCO.Denkiyoho/messages/JP.TEPCO.Denkiyoho.Info",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/JP.TEPCO.Denkiyoho.Info",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -328,7 +328,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{area_code}",

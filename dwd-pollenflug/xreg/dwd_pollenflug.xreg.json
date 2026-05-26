@@ -116,7 +116,7 @@
       "messages": {
         "DE.DWD.Pollenflug.mqtt.Region": {
           "name": "Region",
-          "basemessageurl": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.Region",
+          "basemessageuri": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.Region",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Pollenflug.Region"
@@ -138,7 +138,7 @@
         },
         "DE.DWD.Pollenflug.mqtt.PollenForecast": {
           "name": "PollenForecast",
-          "basemessageurl": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast",
+          "basemessageuri": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Pollenflug.PollenForecast"
@@ -165,7 +165,7 @@
       "messages": {
         "DE.DWD.Pollenflug.amqp.Region": {
           "name": "Region",
-          "basemessageurl": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.Region",
+          "basemessageuri": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.Region",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Pollenflug.Region"
@@ -187,12 +187,12 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         },
         "DE.DWD.Pollenflug.amqp.PollenForecast": {
           "name": "PollenForecast",
-          "basemessageurl": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast",
+          "basemessageuri": "/messagegroups/DE.DWD.Pollenflug/messages/DE.DWD.Pollenflug.PollenForecast",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Pollenflug.PollenForecast"
@@ -214,7 +214,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         }
       }

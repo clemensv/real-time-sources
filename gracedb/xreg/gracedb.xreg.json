@@ -100,7 +100,7 @@
       "messages": {
         "org.ligo.gracedb.mqtt.Superevent": {
           "name": "Superevent",
-          "basemessageurl": "/messagegroups/org.ligo.gracedb/messages/org.ligo.gracedb.Superevent",
+          "basemessageuri": "/messagegroups/org.ligo.gracedb/messages/org.ligo.gracedb.Superevent",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "seismic/intl/ligo/gracedb/{category}/{group}/{superevent_id}/superevent",
@@ -115,7 +115,7 @@
       "messages": {
         "org.ligo.gracedb.amqp.Superevent": {
           "name": "Superevent",
-          "basemessageurl": "/messagegroups/org.ligo.gracedb/messages/org.ligo.gracedb.Superevent",
+          "basemessageuri": "/messagegroups/org.ligo.gracedb/messages/org.ligo.gracedb.Superevent",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

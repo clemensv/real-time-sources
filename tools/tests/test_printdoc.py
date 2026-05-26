@@ -49,8 +49,8 @@ def manifest():
         },
         "messagegroups": {
             "example": {"description": "Base messages.", "messages": {"example.Created": base_msg}},
-            "example.mqtt": {"description": "MQTT bindings.", "messages": {"example.mqtt.Created": {"name": "Created", "basemessageurl": "/messagegroups/example/messages/example.Created", "protocol": "MQTT/5.0", "protocoloptions": {"topic_name": "factory/{id}/created", "qos": 1, "retain": True}}}},
-            "example.amqp": {"messages": {"example.amqp.Created": {"name": "Created", "basemessageurl": "/messagegroups/example/messages/example.Created", "protocol": "AMQP/1.0", "protocoloptions": {"address": "events/{id}", "durable": False}}}},
+            "example.mqtt": {"description": "MQTT bindings.", "messages": {"example.mqtt.Created": {"name": "Created", "basemessageuri": "/messagegroups/example/messages/example.Created", "protocol": "MQTT/5.0", "protocoloptions": {"topic_name": "factory/{id}/created", "qos": 1, "retain": True}}}},
+            "example.amqp": {"messages": {"example.amqp.Created": {"name": "Created", "basemessageuri": "/messagegroups/example/messages/example.Created", "protocol": "AMQP/1.0", "protocoloptions": {"address": "events/{id}", "durable": False}}}},
         },
         "schemagroups": {"example.jstruct": {"schemas": {"example.Created": {"name": "Created", "format": "JsonStructure/draft-02", "defaultversionid": "1", "versions": {"1": {"format": "JsonStructure/draft-02", "schema": schema}}}}}},
     }

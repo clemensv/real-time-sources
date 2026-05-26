@@ -117,7 +117,7 @@
       "messages": {
         "org.EAWS.ALBINA.mqtt.AvalancheBulletin": {
           "name": "AvalancheBulletin",
-          "basemessageurl": "/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheBulletin",
+          "basemessageuri": "/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheBulletin",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/at/eaws/eaws-albina/{country}/{region_id}/{danger_level}/bulletin",
@@ -132,7 +132,7 @@
       "messages": {
         "org.EAWS.ALBINA.amqp.AvalancheBulletin": {
           "name": "AvalancheBulletin",
-          "basemessageurl": "/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheBulletin",
+          "basemessageuri": "/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheBulletin",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -142,7 +142,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "country": {
                 "type": "uritemplate",
                 "value": "{country}",
@@ -154,7 +154,7 @@
                 "description": "AMQP application property mirroring the danger_level routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{region_id}",

@@ -98,7 +98,7 @@
       "messages": {
         "NINA.Warnings.mqtt.CivilWarning": {
           "name": "CivilWarning",
-          "basemessageurl": "/messagegroups/NINA.Warnings/messages/NINA.CivilWarning",
+          "basemessageuri": "/messagegroups/NINA.Warnings/messages/NINA.CivilWarning",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/de/nina/nina-bbk/{state}/{severity}/{warning_id}/warning",
@@ -113,7 +113,7 @@
       "messages": {
         "NINA.Warnings.amqp.CivilWarning": {
           "name": "CivilWarning",
-          "basemessageurl": "/messagegroups/NINA.Warnings/messages/NINA.CivilWarning",
+          "basemessageuri": "/messagegroups/NINA.Warnings/messages/NINA.CivilWarning",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -123,7 +123,7 @@
                 "description": "AMQP message subject. Mirrors the CloudEvents subject and Kafka key for stable per-entity routing."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -135,7 +135,7 @@
                 "description": "AMQP application property mirroring the severity routing axis from the Kafka subject/MQTT topic for broker-side filtering."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{warning_id}",

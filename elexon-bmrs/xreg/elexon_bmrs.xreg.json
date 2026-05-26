@@ -135,7 +135,7 @@
       "messages": {
         "UK.Co.Elexon.BMRS.mqtt.GenerationMix": {
           "name": "GenerationMix",
-          "basemessageurl": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.GenerationMix",
+          "basemessageuri": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.GenerationMix",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/gb/elexon/elexon-bmrs/gb/{settlement_date}/{settlement_period}/generation-mix",
@@ -145,7 +145,7 @@
         },
         "UK.Co.Elexon.BMRS.mqtt.DemandOutturn": {
           "name": "DemandOutturn",
-          "basemessageurl": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.DemandOutturn",
+          "basemessageuri": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.DemandOutturn",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/gb/elexon/elexon-bmrs/gb/{settlement_date}/{settlement_period}/demand-outturn",
@@ -155,7 +155,7 @@
         },
         "UK.Co.Elexon.BMRS.mqtt.Info": {
           "name": "Info",
-          "basemessageurl": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.Info",
+          "basemessageuri": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.Info",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/gb/elexon/elexon-bmrs/gb/{settlement_date}/{settlement_period}/info",
@@ -170,7 +170,7 @@
       "messages": {
         "UK.Co.Elexon.BMRS.amqp.GenerationMix": {
           "name": "GenerationMix",
-          "basemessageurl": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.GenerationMix",
+          "basemessageuri": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.GenerationMix",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -180,7 +180,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{settlement_period}",
@@ -191,7 +191,7 @@
         },
         "UK.Co.Elexon.BMRS.amqp.DemandOutturn": {
           "name": "DemandOutturn",
-          "basemessageurl": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.DemandOutturn",
+          "basemessageuri": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.DemandOutturn",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -201,7 +201,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{settlement_period}",
@@ -212,7 +212,7 @@
         },
         "UK.Co.Elexon.BMRS.amqp.Info": {
           "name": "Info",
-          "basemessageurl": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.Info",
+          "basemessageuri": "/messagegroups/UK.Co.Elexon.BMRS/messages/UK.Co.Elexon.BMRS.Info",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -222,7 +222,7 @@
                 "description": "AMQP subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{settlement_period}",

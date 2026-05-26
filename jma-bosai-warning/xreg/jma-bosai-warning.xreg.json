@@ -163,7 +163,7 @@
       "messages": {
         "JP.JMA.Warning.mqtt.Office": {
           "name": "Office",
-          "basemessageurl": "/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.Office",
+          "basemessageuri": "/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.Office",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}",
@@ -173,7 +173,7 @@
         },
         "JP.JMA.Warning.mqtt.WeatherWarning": {
           "name": "WeatherWarning",
-          "basemessageurl": "/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.WeatherWarning",
+          "basemessageuri": "/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.WeatherWarning",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{office_code}/{area_code}/{event}",
@@ -183,7 +183,7 @@
         },
         "JP.JMA.Warning.mqtt.TsunamiAlert": {
           "name": "TsunamiAlert",
-          "basemessageurl": "/messagegroups/JP.JMA.Tsunami/messages/JP.JMA.Tsunami.TsunamiAlert",
+          "basemessageuri": "/messagegroups/JP.JMA.Tsunami/messages/JP.JMA.Tsunami.TsunamiAlert",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/jp/jma/jma-bosai-warning/{prefecture}/{severity}/{event_id}/{serial}/tsunami",
@@ -198,7 +198,7 @@
       "messages": {
         "JP.JMA.Warning.amqp.Office": {
           "name": "Office",
-          "basemessageurl": "/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.Office",
+          "basemessageuri": "/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.Office",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -212,7 +212,7 @@
         },
         "JP.JMA.Warning.amqp.WeatherWarning": {
           "name": "WeatherWarning",
-          "basemessageurl": "/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.WeatherWarning",
+          "basemessageuri": "/messagegroups/JP.JMA.Warning/messages/JP.JMA.Warning.WeatherWarning",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -226,7 +226,7 @@
         },
         "JP.JMA.Warning.amqp.TsunamiAlert": {
           "name": "TsunamiAlert",
-          "basemessageurl": "/messagegroups/JP.JMA.Tsunami/messages/JP.JMA.Tsunami.TsunamiAlert",
+          "basemessageuri": "/messagegroups/JP.JMA.Tsunami/messages/JP.JMA.Tsunami.TsunamiAlert",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

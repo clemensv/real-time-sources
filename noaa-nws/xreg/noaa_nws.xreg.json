@@ -200,7 +200,7 @@
       "messages": {
         "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.WeatherAlert": {
           "name": "WeatherAlert",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
           "envelopemetadata": {
             "type": {
               "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
@@ -227,7 +227,7 @@
       "messages": {
         "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert": {
           "name": "WeatherAlert",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Alerts/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherAlert",
           "envelopemetadata": {
             "type": {
               "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
@@ -249,7 +249,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         }
       }
@@ -259,7 +259,7 @@
       "messages": {
         "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.ObservationStation": {
           "name": "ObservationStation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
           "envelopemetadata": {
             "type": {
               "value": "Microsoft.OpenData.US.NOAA.NWS.ObservationStation"
@@ -281,7 +281,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.WeatherObservation": {
           "name": "WeatherObservation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
           "envelopemetadata": {
             "type": {
               "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"
@@ -308,7 +308,7 @@
       "messages": {
         "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.ObservationStation": {
           "name": "ObservationStation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.ObservationStation",
           "envelopemetadata": {
             "type": {
               "value": "Microsoft.OpenData.US.NOAA.NWS.ObservationStation"
@@ -330,7 +330,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -346,7 +346,7 @@
         },
         "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation": {
           "name": "WeatherObservation",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA.NWS.Observations/messages/Microsoft.OpenData.US.NOAA.NWS.WeatherObservation",
           "envelopemetadata": {
             "type": {
               "value": "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"
@@ -368,7 +368,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",

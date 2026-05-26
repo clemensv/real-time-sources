@@ -412,7 +412,7 @@
       "messages": {
         "DE.DWD.CDC.mqtt.StationMetadata": {
           "name": "StationMetadata",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.StationMetadata",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.StationMetadata",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.StationMetadata"
@@ -434,7 +434,7 @@
         },
         "DE.DWD.CDC.mqtt.AirTemperature10Min": {
           "name": "AirTemperature10Min",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.AirTemperature10Min",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.AirTemperature10Min",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.AirTemperature10Min"
@@ -456,7 +456,7 @@
         },
         "DE.DWD.CDC.mqtt.Precipitation10Min": {
           "name": "Precipitation10Min",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Precipitation10Min",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Precipitation10Min",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.Precipitation10Min"
@@ -478,7 +478,7 @@
         },
         "DE.DWD.CDC.mqtt.Wind10Min": {
           "name": "Wind10Min",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Wind10Min",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Wind10Min",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.Wind10Min"
@@ -500,7 +500,7 @@
         },
         "DE.DWD.CDC.mqtt.Solar10Min": {
           "name": "Solar10Min",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Solar10Min",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Solar10Min",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.Solar10Min"
@@ -522,7 +522,7 @@
         },
         "DE.DWD.CDC.mqtt.HourlyObservation": {
           "name": "HourlyObservation",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.HourlyObservation",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.HourlyObservation",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.HourlyObservation"
@@ -544,7 +544,7 @@
         },
         "DE.DWD.CDC.mqtt.ExtremeWind10Min": {
           "name": "ExtremeWind10Min",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeWind10Min",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeWind10Min",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.ExtremeWind10Min"
@@ -566,7 +566,7 @@
         },
         "DE.DWD.CDC.mqtt.ExtremeTemperature10Min": {
           "name": "ExtremeTemperature10Min",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeTemperature10Min",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeTemperature10Min",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.ExtremeTemperature10Min"
@@ -593,7 +593,7 @@
       "messages": {
         "DE.DWD.CDC.amqp.StationMetadata": {
           "name": "StationMetadata",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.StationMetadata",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.StationMetadata",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.StationMetadata"
@@ -615,7 +615,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -626,7 +626,7 @@
         },
         "DE.DWD.CDC.amqp.AirTemperature10Min": {
           "name": "AirTemperature10Min",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.AirTemperature10Min",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.AirTemperature10Min",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.AirTemperature10Min"
@@ -648,7 +648,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -659,7 +659,7 @@
         },
         "DE.DWD.CDC.amqp.Precipitation10Min": {
           "name": "Precipitation10Min",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Precipitation10Min",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Precipitation10Min",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.Precipitation10Min"
@@ -681,7 +681,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -692,7 +692,7 @@
         },
         "DE.DWD.CDC.amqp.Wind10Min": {
           "name": "Wind10Min",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Wind10Min",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Wind10Min",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.Wind10Min"
@@ -714,7 +714,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -725,7 +725,7 @@
         },
         "DE.DWD.CDC.amqp.Solar10Min": {
           "name": "Solar10Min",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Solar10Min",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.Solar10Min",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.Solar10Min"
@@ -747,7 +747,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -758,7 +758,7 @@
         },
         "DE.DWD.CDC.amqp.HourlyObservation": {
           "name": "HourlyObservation",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.HourlyObservation",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.HourlyObservation",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.HourlyObservation"
@@ -780,7 +780,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -791,7 +791,7 @@
         },
         "DE.DWD.CDC.amqp.ExtremeWind10Min": {
           "name": "ExtremeWind10Min",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeWind10Min",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeWind10Min",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.ExtremeWind10Min"
@@ -813,7 +813,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -824,7 +824,7 @@
         },
         "DE.DWD.CDC.amqp.ExtremeTemperature10Min": {
           "name": "ExtremeTemperature10Min",
-          "basemessageurl": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeTemperature10Min",
+          "basemessageuri": "/messagegroups/DE.DWD.CDC/messages/DE.DWD.CDC.ExtremeTemperature10Min",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.CDC.ExtremeTemperature10Min"
@@ -846,7 +846,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "state": {
                 "type": "uritemplate",
                 "value": "{state}",
@@ -862,7 +862,7 @@
       "messages": {
         "DE.DWD.Weather.mqtt.Alert": {
           "name": "Alert",
-          "basemessageurl": "/messagegroups/DE.DWD.Weather/messages/DE.DWD.Weather.Alert",
+          "basemessageuri": "/messagegroups/DE.DWD.Weather/messages/DE.DWD.Weather.Alert",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Weather.Alert"
@@ -889,7 +889,7 @@
       "messages": {
         "DE.DWD.Weather.amqp.Alert": {
           "name": "Alert",
-          "basemessageurl": "/messagegroups/DE.DWD.Weather/messages/DE.DWD.Weather.Alert",
+          "basemessageuri": "/messagegroups/DE.DWD.Weather/messages/DE.DWD.Weather.Alert",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Weather.Alert"
@@ -911,7 +911,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         }
       }
@@ -921,7 +921,7 @@
       "messages": {
         "DE.DWD.Radar.mqtt.RadarProductCatalog": {
           "name": "RadarProductCatalog",
-          "basemessageurl": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarProductCatalog",
+          "basemessageuri": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarProductCatalog",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Radar.RadarProductCatalog"
@@ -943,7 +943,7 @@
         },
         "DE.DWD.Radar.mqtt.RadarFileProduct": {
           "name": "RadarFileProduct",
-          "basemessageurl": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarFileProduct",
+          "basemessageuri": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarFileProduct",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Radar.RadarFileProduct"
@@ -970,7 +970,7 @@
       "messages": {
         "DE.DWD.Radar.amqp.RadarProductCatalog": {
           "name": "RadarProductCatalog",
-          "basemessageurl": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarProductCatalog",
+          "basemessageuri": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarProductCatalog",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Radar.RadarProductCatalog"
@@ -992,12 +992,12 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         },
         "DE.DWD.Radar.amqp.RadarFileProduct": {
           "name": "RadarFileProduct",
-          "basemessageurl": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarFileProduct",
+          "basemessageuri": "/messagegroups/DE.DWD.Radar/messages/DE.DWD.Radar.RadarFileProduct",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Radar.RadarFileProduct"
@@ -1019,7 +1019,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         }
       }
@@ -1029,7 +1029,7 @@
       "messages": {
         "DE.DWD.Forecast.mqtt.ForecastModelCatalog": {
           "name": "ForecastModelCatalog",
-          "basemessageurl": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.ForecastModelCatalog",
+          "basemessageuri": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.ForecastModelCatalog",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Forecast.ForecastModelCatalog"
@@ -1051,7 +1051,7 @@
         },
         "DE.DWD.Forecast.mqtt.IconD2ForecastFile": {
           "name": "IconD2ForecastFile",
-          "basemessageurl": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.IconD2ForecastFile",
+          "basemessageuri": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.IconD2ForecastFile",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Forecast.IconD2ForecastFile"
@@ -1078,7 +1078,7 @@
       "messages": {
         "DE.DWD.Forecast.amqp.ForecastModelCatalog": {
           "name": "ForecastModelCatalog",
-          "basemessageurl": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.ForecastModelCatalog",
+          "basemessageuri": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.ForecastModelCatalog",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Forecast.ForecastModelCatalog"
@@ -1100,12 +1100,12 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         },
         "DE.DWD.Forecast.amqp.IconD2ForecastFile": {
           "name": "IconD2ForecastFile",
-          "basemessageurl": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.IconD2ForecastFile",
+          "basemessageuri": "/messagegroups/DE.DWD.Forecast/messages/DE.DWD.Forecast.IconD2ForecastFile",
           "envelopemetadata": {
             "type": {
               "value": "DE.DWD.Forecast.IconD2ForecastFile"
@@ -1127,7 +1127,7 @@
                 "description": "AMQP subject matching the CloudEvents subject for this transport variant."
               }
             },
-            "application_properties": {}
+            "application-properties": {}
           }
         }
       }

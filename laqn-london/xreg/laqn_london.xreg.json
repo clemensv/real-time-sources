@@ -183,7 +183,7 @@
       "messages": {
         "uk.kcl.laqn.mqtt.Site": {
           "name": "Site",
-          "basemessageurl": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Site",
+          "basemessageuri": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Site",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/gb/london/laqn-london/{borough}/{site_code}/{species_code}/info",
@@ -193,7 +193,7 @@
         },
         "uk.kcl.laqn.mqtt.Measurement": {
           "name": "Measurement",
-          "basemessageurl": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Measurement",
+          "basemessageuri": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Measurement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/gb/london/laqn-london/{borough}/{site_code}/{species_code}/measurement",
@@ -203,7 +203,7 @@
         },
         "uk.kcl.laqn.mqtt.DailyIndex": {
           "name": "DailyIndex",
-          "basemessageurl": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.DailyIndex",
+          "basemessageuri": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.DailyIndex",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/gb/london/laqn-london/{borough}/{site_code}/{species_code}/daily-index",
@@ -218,7 +218,7 @@
       "messages": {
         "uk.kcl.laqn.amqp.Site": {
           "name": "Site",
-          "basemessageurl": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Site",
+          "basemessageuri": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Site",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -228,7 +228,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "borough": {
                 "type": "uritemplate",
                 "value": "{borough}",
@@ -244,7 +244,7 @@
         },
         "uk.kcl.laqn.amqp.Measurement": {
           "name": "Measurement",
-          "basemessageurl": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Measurement",
+          "basemessageuri": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.Measurement",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -254,7 +254,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "borough": {
                 "type": "uritemplate",
                 "value": "{borough}",
@@ -270,7 +270,7 @@
         },
         "uk.kcl.laqn.amqp.DailyIndex": {
           "name": "DailyIndex",
-          "basemessageurl": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.DailyIndex",
+          "basemessageuri": "/messagegroups/uk.kcl.laqn/messages/uk.kcl.laqn.DailyIndex",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -280,7 +280,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "borough": {
                 "type": "uritemplate",
                 "value": "{borough}",
@@ -301,7 +301,7 @@
       "messages": {
         "uk.kcl.laqn.species.mqtt.Species": {
           "name": "Species",
-          "basemessageurl": "/messagegroups/uk.kcl.laqn.species/messages/uk.kcl.laqn.Species",
+          "basemessageuri": "/messagegroups/uk.kcl.laqn.species/messages/uk.kcl.laqn.Species",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/gb/london/laqn-london/{borough}/{site_code}/{species_code}/species",
@@ -316,7 +316,7 @@
       "messages": {
         "uk.kcl.laqn.species.amqp.Species": {
           "name": "Species",
-          "basemessageurl": "/messagegroups/uk.kcl.laqn.species/messages/uk.kcl.laqn.Species",
+          "basemessageuri": "/messagegroups/uk.kcl.laqn.species/messages/uk.kcl.laqn.Species",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -326,7 +326,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "borough": {
                 "type": "uritemplate",
                 "value": "{borough}",

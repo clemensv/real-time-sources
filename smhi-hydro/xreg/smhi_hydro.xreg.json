@@ -116,7 +116,7 @@
       "messages": {
         "SE.Gov.SMHI.Hydro.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.Station",
+          "basemessageuri": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/se/smhi/smhi-hydro/{catchment_name}/{station_id}/info",
@@ -126,7 +126,7 @@
         },
         "SE.Gov.SMHI.Hydro.mqtt.DischargeObservation": {
           "name": "DischargeObservation",
-          "basemessageurl": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.DischargeObservation",
+          "basemessageuri": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.DischargeObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/se/smhi/smhi-hydro/{catchment_name}/{station_id}/discharge",
@@ -141,7 +141,7 @@
       "messages": {
         "SE.Gov.SMHI.Hydro.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.Station",
+          "basemessageuri": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -151,7 +151,7 @@
                 "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "catchment_name": {
                 "type": "uritemplate",
                 "value": "{catchment_name}",
@@ -162,7 +162,7 @@
         },
         "SE.Gov.SMHI.Hydro.amqp.DischargeObservation": {
           "name": "DischargeObservation",
-          "basemessageurl": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.DischargeObservation",
+          "basemessageuri": "/messagegroups/SE.Gov.SMHI.Hydro/messages/SE.Gov.SMHI.Hydro.DischargeObservation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -172,7 +172,7 @@
                 "description": "AMQP message subject — stable domain identifier matching the CloudEvent subject and Kafka key."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "catchment_name": {
                 "type": "uritemplate",
                 "value": "{catchment_name}",

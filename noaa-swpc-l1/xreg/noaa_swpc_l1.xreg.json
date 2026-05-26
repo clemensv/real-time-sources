@@ -99,14 +99,10 @@
       "messages": {
         "gov.noaa.swpc.l1.kafka.PropagatedSolarWind": {
           "name": "PropagatedSolarWind",
-          "basemessageurl": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
+          "basemessageuri": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
           "protocol": "KAFKA",
-          "protocolmetadata": {
-            "key": {
-              "type": "uritemplate",
-              "value": "{spacecraft}",
-              "description": "Kafka partition key — stable spacecraft channel identifier (`dscovr` for the operational primary; `ace` reserved for backup). Matches the CloudEvent `subject` exactly so the partition assignment is deterministic per channel."
-            }
+          "protocoloptions": {
+            "key": "{spacecraft}"
           }
         }
       }
@@ -116,7 +112,7 @@
       "messages": {
         "gov.noaa.swpc.l1.mqtt.PropagatedSolarWind": {
           "name": "PropagatedSolarWind",
-          "basemessageurl": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
+          "basemessageuri": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "space-weather/us/noaa-swpc/l1/{spacecraft}/propagated-solar-wind",
@@ -131,7 +127,7 @@
       "messages": {
         "gov.noaa.swpc.l1.amqp.PropagatedSolarWind": {
           "name": "PropagatedSolarWind",
-          "basemessageurl": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
+          "basemessageuri": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -141,7 +137,7 @@
                 "description": "AMQP message subject — stable spacecraft channel identifier matching the CloudEvent subject so SB/EH consumers can correlate."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{spacecraft}",

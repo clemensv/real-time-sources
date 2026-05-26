@@ -98,7 +98,7 @@
       "messages": {
         "gov.ca.water.cdec.mqtt.ReservoirReading": {
           "name": "ReservoirReading",
-          "basemessageurl": "/messagegroups/gov.ca.water.cdec/messages/gov.ca.water.cdec.ReservoirReading",
+          "basemessageuri": "/messagegroups/gov.ca.water.cdec/messages/gov.ca.water.cdec.ReservoirReading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/us/cdec/cdec-reservoirs/{basin}/{station_id}/{sensor_num}/reservoir-reading",
@@ -113,7 +113,7 @@
       "messages": {
         "gov.ca.water.cdec.amqp.ReservoirReading": {
           "name": "ReservoirReading",
-          "basemessageurl": "/messagegroups/gov.ca.water.cdec/messages/gov.ca.water.cdec.ReservoirReading",
+          "basemessageuri": "/messagegroups/gov.ca.water.cdec/messages/gov.ca.water.cdec.ReservoirReading",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -123,7 +123,7 @@
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
               }
             },
-            "application_properties": {
+            "application-properties": {
               "basin": {
                 "type": "uritemplate",
                 "value": "{basin}",
@@ -135,7 +135,7 @@
                 "description": "Routing property for AMQP subscription filters (sensor_num)."
               }
             },
-            "message_annotations": {
+            "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "{station_id}/{sensor_num}",
