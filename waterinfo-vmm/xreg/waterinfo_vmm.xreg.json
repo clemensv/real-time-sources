@@ -116,7 +116,7 @@
       "messages": {
         "BE.Vlaanderen.Waterinfo.VMM.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.Station",
+          "basemessageuri": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/be/vmm/waterinfo-vmm/{water_body}/{station_no}/info",
@@ -126,7 +126,7 @@
         },
         "BE.Vlaanderen.Waterinfo.VMM.mqtt.WaterLevelReading": {
           "name": "WaterLevelReading",
-          "basemessageurl": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+          "basemessageuri": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/be/vmm/waterinfo-vmm/{water_body}/{station_no}/water-level",
@@ -141,7 +141,7 @@
       "messages": {
         "BE.Vlaanderen.Waterinfo.VMM.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.Station",
+          "basemessageuri": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -169,7 +169,7 @@
         },
         "BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading": {
           "name": "WaterLevelReading",
-          "basemessageurl": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+          "basemessageuri": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

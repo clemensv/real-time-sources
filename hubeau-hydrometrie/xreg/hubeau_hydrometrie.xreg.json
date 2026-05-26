@@ -116,7 +116,7 @@
       "messages": {
         "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+          "basemessageuri": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/fr/hubeau/hubeau-hydrometrie/{basin}/{code_station}/info",
@@ -126,7 +126,7 @@
         },
         "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+          "basemessageuri": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/fr/hubeau/hubeau-hydrometrie/{basin}/{code_station}/observation",
@@ -141,7 +141,7 @@
       "messages": {
         "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+          "basemessageuri": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -169,7 +169,7 @@
         },
         "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+          "basemessageuri": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

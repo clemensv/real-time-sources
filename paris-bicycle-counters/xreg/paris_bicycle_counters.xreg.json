@@ -131,7 +131,7 @@
       "messages": {
         "FR.Paris.OpenData.Velo.mqtt.Counter": {
           "name": "Counter",
-          "basemessageurl": "/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.Counter",
+          "basemessageuri": "/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.Counter",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fr/paris/paris-bicycle-counters/{counter_id}/info",
@@ -141,7 +141,7 @@
         },
         "FR.Paris.OpenData.Velo.mqtt.BicycleCount": {
           "name": "BicycleCount",
-          "basemessageurl": "/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.BicycleCount",
+          "basemessageuri": "/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.BicycleCount",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fr/paris/paris-bicycle-counters/{counter_id}/count",
@@ -156,7 +156,7 @@
       "messages": {
         "FR.Paris.OpenData.Velo.amqp.Counter": {
           "name": "Counter",
-          "basemessageurl": "/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.Counter",
+          "basemessageuri": "/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.Counter",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -179,7 +179,7 @@
         },
         "FR.Paris.OpenData.Velo.amqp.BicycleCount": {
           "name": "BicycleCount",
-          "basemessageurl": "/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.BicycleCount",
+          "basemessageuri": "/messagegroups/FR.Paris.OpenData.Velo/messages/FR.Paris.OpenData.Velo.BicycleCount",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

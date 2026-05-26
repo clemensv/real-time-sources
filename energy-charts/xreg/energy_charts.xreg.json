@@ -153,7 +153,7 @@
       "messages": {
         "info.energy_charts.mqtt.PublicPower": {
           "name": "PublicPower",
-          "basemessageurl": "/messagegroups/info.energy_charts/messages/info.energy_charts.PublicPower",
+          "basemessageuri": "/messagegroups/info.energy_charts/messages/info.energy_charts.PublicPower",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/de/energy-charts/energy-charts/{country}/public-power",
@@ -163,7 +163,7 @@
         },
         "info.energy_charts.mqtt.SpotPrice": {
           "name": "SpotPrice",
-          "basemessageurl": "/messagegroups/info.energy_charts/messages/info.energy_charts.SpotPrice",
+          "basemessageuri": "/messagegroups/info.energy_charts/messages/info.energy_charts.SpotPrice",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/de/energy-charts/energy-charts/{country}/spot-price",
@@ -173,7 +173,7 @@
         },
         "info.energy_charts.mqtt.GridSignal": {
           "name": "GridSignal",
-          "basemessageurl": "/messagegroups/info.energy_charts/messages/info.energy_charts.GridSignal",
+          "basemessageuri": "/messagegroups/info.energy_charts/messages/info.energy_charts.GridSignal",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/de/energy-charts/energy-charts/{country}/grid-signal",
@@ -183,7 +183,7 @@
         },
         "info.energy_charts.mqtt.Info": {
           "name": "Info",
-          "basemessageurl": "/messagegroups/info.energy_charts/messages/info.energy_charts.Info",
+          "basemessageuri": "/messagegroups/info.energy_charts/messages/info.energy_charts.Info",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "energy/de/energy-charts/energy-charts/{country}/info",
@@ -198,7 +198,7 @@
       "messages": {
         "info.energy_charts.amqp.PublicPower": {
           "name": "PublicPower",
-          "basemessageurl": "/messagegroups/info.energy_charts/messages/info.energy_charts.PublicPower",
+          "basemessageuri": "/messagegroups/info.energy_charts/messages/info.energy_charts.PublicPower",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -219,7 +219,7 @@
         },
         "info.energy_charts.amqp.SpotPrice": {
           "name": "SpotPrice",
-          "basemessageurl": "/messagegroups/info.energy_charts/messages/info.energy_charts.SpotPrice",
+          "basemessageuri": "/messagegroups/info.energy_charts/messages/info.energy_charts.SpotPrice",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -240,7 +240,7 @@
         },
         "info.energy_charts.amqp.GridSignal": {
           "name": "GridSignal",
-          "basemessageurl": "/messagegroups/info.energy_charts/messages/info.energy_charts.GridSignal",
+          "basemessageuri": "/messagegroups/info.energy_charts/messages/info.energy_charts.GridSignal",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -261,7 +261,7 @@
         },
         "info.energy_charts.amqp.Info": {
           "name": "Info",
-          "basemessageurl": "/messagegroups/info.energy_charts/messages/info.energy_charts.Info",
+          "basemessageuri": "/messagegroups/info.energy_charts/messages/info.energy_charts.Info",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

@@ -130,7 +130,7 @@
       "messages": {
         "gov.noaa.aviationweather.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Station",
+          "basemessageuri": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Station",
           "envelopemetadata": {
             "type": {
               "value": "gov.noaa.aviationweather.Station"
@@ -152,7 +152,7 @@
         },
         "gov.noaa.aviationweather.mqtt.Metar": {
           "name": "Metar",
-          "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Metar",
+          "basemessageuri": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Metar",
           "envelopemetadata": {
             "type": {
               "value": "gov.noaa.aviationweather.Metar"
@@ -174,7 +174,7 @@
         },
         "gov.noaa.aviationweather.mqtt.Sigmet": {
           "name": "Sigmet",
-          "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Sigmet",
+          "basemessageuri": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Sigmet",
           "envelopemetadata": {
             "type": {
               "value": "gov.noaa.aviationweather.Sigmet"
@@ -201,7 +201,7 @@
       "messages": {
         "gov.noaa.aviationweather.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Station",
+          "basemessageuri": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Station",
           "envelopemetadata": {
             "type": {
               "value": "gov.noaa.aviationweather.Station"
@@ -228,7 +228,7 @@
         },
         "gov.noaa.aviationweather.amqp.Metar": {
           "name": "Metar",
-          "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Metar",
+          "basemessageuri": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Metar",
           "envelopemetadata": {
             "type": {
               "value": "gov.noaa.aviationweather.Metar"
@@ -255,7 +255,7 @@
         },
         "gov.noaa.aviationweather.amqp.Sigmet": {
           "name": "Sigmet",
-          "basemessageurl": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Sigmet",
+          "basemessageuri": "/messagegroups/gov.noaa.aviationweather/messages/gov.noaa.aviationweather.Sigmet",
           "envelopemetadata": {
             "type": {
               "value": "gov.noaa.aviationweather.Sigmet"

@@ -206,7 +206,7 @@
       "messages": {
         "NO.Kystverket.AIS.mqtt.PositionReport": {
           "name": "PositionReport",
-          "basemessageurl": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReport",
+          "basemessageuri": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReport",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/no/kystverket/kystverket-ais/{flag}/{ship_type}/{geohash5}/{mmsi}/position-report",
@@ -216,7 +216,7 @@
         },
         "NO.Kystverket.AIS.mqtt.ShipStatic": {
           "name": "ShipStatic",
-          "basemessageurl": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.ShipStatic",
+          "basemessageuri": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.ShipStatic",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/no/kystverket/kystverket-ais/{flag}/{ship_type}/{geohash5}/{mmsi}/static",
@@ -226,7 +226,7 @@
         },
         "NO.Kystverket.AIS.mqtt.AidToNavigation": {
           "name": "AidToNavigation",
-          "basemessageurl": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.AidToNavigation",
+          "basemessageuri": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.AidToNavigation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/no/kystverket/kystverket-ais/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation",
@@ -241,7 +241,7 @@
       "messages": {
         "NO.Kystverket.AIS.amqp.PositionReport": {
           "name": "PositionReport",
-          "basemessageurl": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReport",
+          "basemessageuri": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.PositionReport",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -272,7 +272,7 @@
         },
         "NO.Kystverket.AIS.amqp.ShipStatic": {
           "name": "ShipStatic",
-          "basemessageurl": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.ShipStatic",
+          "basemessageuri": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.ShipStatic",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -303,7 +303,7 @@
         },
         "NO.Kystverket.AIS.amqp.AidToNavigation": {
           "name": "AidToNavigation",
-          "basemessageurl": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.AidToNavigation",
+          "basemessageuri": "/messagegroups/NO.Kystverket.AIS/messages/NO.Kystverket.AIS.AidToNavigation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

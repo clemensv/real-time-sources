@@ -102,7 +102,7 @@
       "messages": {
         "Gov.NIFC.Wildfires.mqtt.WildfireIncident": {
           "name": "WildfireIncident",
-          "basemessageurl": "/messagegroups/Gov.NIFC.Wildfires/messages/Gov.NIFC.Wildfires.WildfireIncident",
+          "basemessageuri": "/messagegroups/Gov.NIFC.Wildfires/messages/Gov.NIFC.Wildfires.WildfireIncident",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "wildfire/us/nifc/nifc-usa-wildfires/{state}/{status}/{irwin_id}/incident",
@@ -118,7 +118,7 @@
       "messages": {
         "Gov.NIFC.Wildfires.amqp.WildfireIncident": {
           "name": "WildfireIncident",
-          "basemessageurl": "/messagegroups/Gov.NIFC.Wildfires/messages/Gov.NIFC.Wildfires.WildfireIncident",
+          "basemessageuri": "/messagegroups/Gov.NIFC.Wildfires/messages/Gov.NIFC.Wildfires.WildfireIncident",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

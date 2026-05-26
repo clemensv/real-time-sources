@@ -249,7 +249,7 @@ def emit_mock_corpus(adapter: MqttToAmqpAdapter) -> None:
     jstruct_group = next(v for k, v in manifest["schemagroups"].items() if k.endswith(".jstruct"))
     amqp_group = next(v for k, v in manifest["messagegroups"].items() if k.endswith(".amqp"))
     for message_name, message in amqp_group["messages"].items():
-        base = message["basemessageurl"].strip("/").split("/")
+        base = message["basemessageuri"].strip("/").split("/")
         base_msg = manifest["messagegroups"][base[1]]["messages"][base[3]]
         schema_name = base_msg["dataschemauri"].split("/")[-1]
         schema_entry = jstruct_group["schemas"][schema_name]["versions"]["1"]["schema"]

@@ -113,7 +113,7 @@
       "messages": {
         "US.EPA.UVIndex.mqtt.HourlyForecast": {
           "name": "HourlyForecast",
-          "basemessageurl": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.HourlyForecast",
+          "basemessageuri": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.HourlyForecast",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/hourly/{forecast_hour}",
@@ -125,7 +125,7 @@
         },
         "US.EPA.UVIndex.mqtt.DailyForecast": {
           "name": "DailyForecast",
-          "basemessageurl": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.DailyForecast",
+          "basemessageuri": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.DailyForecast",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "uv/us/epa/epa-uv/{state}/{city_slug}/{location_id}/daily/{forecast_date}",
@@ -142,7 +142,7 @@
       "messages": {
         "US.EPA.UVIndex.amqp.HourlyForecast": {
           "name": "HourlyForecast",
-          "basemessageurl": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.HourlyForecast",
+          "basemessageuri": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.HourlyForecast",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -174,7 +174,7 @@
         },
         "US.EPA.UVIndex.amqp.DailyForecast": {
           "name": "DailyForecast",
-          "basemessageurl": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.DailyForecast",
+          "basemessageuri": "/messagegroups/US.EPA.UVIndex/messages/US.EPA.UVIndex.DailyForecast",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

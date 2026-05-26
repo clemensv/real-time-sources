@@ -97,7 +97,7 @@
       "messages": {
         "jp.go.jma.WeatherBulletins.mqtt.WeatherBulletin": {
           "name": "WeatherBulletin",
-          "basemessageurl": "/messagegroups/jp.go.jma.WeatherBulletins/messages/jp.go.jma.WeatherBulletin",
+          "basemessageuri": "/messagegroups/jp.go.jma.WeatherBulletins/messages/jp.go.jma.WeatherBulletin",
           "envelopemetadata": {
             "type": {
               "value": "jp.go.jma.WeatherBulletin"
@@ -124,7 +124,7 @@
       "messages": {
         "jp.go.jma.WeatherBulletins.amqp.WeatherBulletin": {
           "name": "WeatherBulletin",
-          "basemessageurl": "/messagegroups/jp.go.jma.WeatherBulletins/messages/jp.go.jma.WeatherBulletin",
+          "basemessageuri": "/messagegroups/jp.go.jma.WeatherBulletins/messages/jp.go.jma.WeatherBulletin",
           "envelopemetadata": {
             "type": {
               "value": "jp.go.jma.WeatherBulletin"

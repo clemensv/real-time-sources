@@ -57,7 +57,7 @@ def _iter_events():
     for g,gv in m.get('messagegroups',{}).items():
         if not g.endswith('.mqtt'): continue
         for mid,msg in gv.get('messages',{}).items():
-            base=msg.get('basemessageurl','').split('/messages/')[-1]
+            base=msg.get('basemessageuri','').split('/messages/')[-1]
             sh=msg.get('name') or mid.split('.')[-1]
             yield sh, _sample(schemas[base]), msg['protocoloptions']['topic_name']
 

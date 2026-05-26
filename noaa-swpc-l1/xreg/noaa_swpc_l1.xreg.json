@@ -99,7 +99,7 @@
       "messages": {
         "gov.noaa.swpc.l1.kafka.PropagatedSolarWind": {
           "name": "PropagatedSolarWind",
-          "basemessageurl": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
+          "basemessageuri": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -116,7 +116,7 @@
       "messages": {
         "gov.noaa.swpc.l1.mqtt.PropagatedSolarWind": {
           "name": "PropagatedSolarWind",
-          "basemessageurl": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
+          "basemessageuri": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "space-weather/us/noaa-swpc/l1/{spacecraft}/propagated-solar-wind",
@@ -131,7 +131,7 @@
       "messages": {
         "gov.noaa.swpc.l1.amqp.PropagatedSolarWind": {
           "name": "PropagatedSolarWind",
-          "basemessageurl": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
+          "basemessageuri": "/messagegroups/gov.noaa.swpc.l1/messages/gov.noaa.swpc.l1.PropagatedSolarWind",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

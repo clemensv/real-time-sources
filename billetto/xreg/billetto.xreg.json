@@ -103,7 +103,7 @@
       "messages": {
         "Billetto.Events.mqtt.Event": {
           "name": "Event",
-          "basemessageurl": "/messagegroups/Billetto.Events/messages/Billetto.Events.Event",
+          "basemessageuri": "/messagegroups/Billetto.Events/messages/Billetto.Events.Event",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "civic-events/intl/billetto/billetto/{country}/{city}/{category}/{event_id}/event",
@@ -118,7 +118,7 @@
       "messages": {
         "Billetto.Events.amqp.Event": {
           "name": "Event",
-          "basemessageurl": "/messagegroups/Billetto.Events/messages/Billetto.Events.Event",
+          "basemessageuri": "/messagegroups/Billetto.Events/messages/Billetto.Events.Event",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

@@ -118,7 +118,7 @@
       "messages": {
         "fi.fmi.opendata.airquality.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Station",
+          "basemessageuri": "/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "weather/fi/fmi/fmi-finland/{region}/{fmisid}/info",
@@ -128,7 +128,7 @@
         },
         "fi.fmi.opendata.airquality.mqtt.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Observation",
+          "basemessageuri": "/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Observation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "weather/fi/fmi/fmi-finland/{region}/{fmisid}/observation",
@@ -143,7 +143,7 @@
       "messages": {
         "fi.fmi.opendata.airquality.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Station",
+          "basemessageuri": "/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -164,7 +164,7 @@
         },
         "fi.fmi.opendata.airquality.amqp.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Observation",
+          "basemessageuri": "/messagegroups/fi.fmi.opendata.airquality/messages/fi.fmi.opendata.airquality.Observation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

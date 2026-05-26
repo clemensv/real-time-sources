@@ -411,7 +411,7 @@
       "messages": {
         "NL.NDW.AVG.PointMeasurementSite.mqtt": {
           "name": "PointMeasurementSite",
-          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.PointMeasurementSite",
+          "basemessageuri": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.PointMeasurementSite",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndw/ndw-road-traffic/{road}/measurement-sites/{measurement_site_id}/info",
@@ -421,7 +421,7 @@
         },
         "NL.NDW.AVG.RouteMeasurementSite.mqtt": {
           "name": "RouteMeasurementSite",
-          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.RouteMeasurementSite",
+          "basemessageuri": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.RouteMeasurementSite",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndw/ndw-road-traffic/{road}/measurement-sites/{measurement_site_id}/info",
@@ -431,7 +431,7 @@
         },
         "NL.NDW.AVG.TrafficObservation.mqtt": {
           "name": "TrafficObservation",
-          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TrafficObservation",
+          "basemessageuri": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TrafficObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndw/ndw-road-traffic/{road}/measurement-sites/{measurement_site_id}/traffic-observation",
@@ -441,7 +441,7 @@
         },
         "NL.NDW.AVG.TravelTimeObservation.mqtt": {
           "name": "TravelTimeObservation",
-          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TravelTimeObservation",
+          "basemessageuri": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TravelTimeObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndw/ndw-road-traffic/{road}/measurement-sites/{measurement_site_id}/travel-time",
@@ -456,7 +456,7 @@
       "messages": {
         "NL.NDW.DRIP.DripSign.mqtt": {
           "name": "DripSign",
-          "basemessageurl": "/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripSign",
+          "basemessageuri": "/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripSign",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndw/ndw-road-traffic/drips/{road}/{vms_controller_id}/{vms_index}/info",
@@ -466,7 +466,7 @@
         },
         "NL.NDW.DRIP.DripDisplayState.mqtt": {
           "name": "DripDisplayState",
-          "basemessageurl": "/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripDisplayState",
+          "basemessageuri": "/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripDisplayState",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndw/ndw-road-traffic/drips/{road}/{vms_controller_id}/{vms_index}/display-state",
@@ -481,7 +481,7 @@
       "messages": {
         "NL.NDW.MSI.MsiSign.mqtt": {
           "name": "MsiSign",
-          "basemessageurl": "/messagegroups/NL.NDW.MSI/messages/NL.NDW.MSI.MsiSign",
+          "basemessageuri": "/messagegroups/NL.NDW.MSI/messages/NL.NDW.MSI.MsiSign",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndw/ndw-road-traffic/msi-signs/{road}/{sign_id}/info",
@@ -491,7 +491,7 @@
         },
         "NL.NDW.MSI.MsiDisplayState.mqtt": {
           "name": "MsiDisplayState",
-          "basemessageurl": "/messagegroups/NL.NDW.MSI/messages/NL.NDW.MSI.MsiDisplayState",
+          "basemessageuri": "/messagegroups/NL.NDW.MSI/messages/NL.NDW.MSI.MsiDisplayState",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndw/ndw-road-traffic/msi-signs/{road}/{sign_id}/display-state",
@@ -506,7 +506,7 @@
       "messages": {
         "NL.NDW.Situations.Roadwork.mqtt": {
           "name": "Roadwork",
-          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork",
+          "basemessageuri": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndw/ndw-road-traffic/situations/{road}/{situation_record_id}/roadwork",
@@ -516,7 +516,7 @@
         },
         "NL.NDW.Situations.BridgeOpening.mqtt": {
           "name": "BridgeOpening",
-          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening",
+          "basemessageuri": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndw/ndw-road-traffic/situations/{road}/{situation_record_id}/bridge-opening",
@@ -526,7 +526,7 @@
         },
         "NL.NDW.Situations.TemporaryClosure.mqtt": {
           "name": "TemporaryClosure",
-          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporaryClosure",
+          "basemessageuri": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporaryClosure",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndw/ndw-road-traffic/situations/{road}/{situation_record_id}/temporary-closure",
@@ -536,7 +536,7 @@
         },
         "NL.NDW.Situations.TemporarySpeedLimit.mqtt": {
           "name": "TemporarySpeedLimit",
-          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporarySpeedLimit",
+          "basemessageuri": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporarySpeedLimit",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndw/ndw-road-traffic/situations/{road}/{situation_record_id}/temporary-speed-limit",
@@ -546,7 +546,7 @@
         },
         "NL.NDW.Situations.SafetyRelatedMessage.mqtt": {
           "name": "SafetyRelatedMessage",
-          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage",
+          "basemessageuri": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/nl/ndw/ndw-road-traffic/situations/{road}/{situation_record_id}/safety-related-message",
@@ -561,7 +561,7 @@
       "messages": {
         "NL.NDW.AVG.PointMeasurementSite.amqp": {
           "name": "PointMeasurementSite",
-          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.PointMeasurementSite",
+          "basemessageuri": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.PointMeasurementSite",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -582,7 +582,7 @@
         },
         "NL.NDW.AVG.RouteMeasurementSite.amqp": {
           "name": "RouteMeasurementSite",
-          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.RouteMeasurementSite",
+          "basemessageuri": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.RouteMeasurementSite",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -603,7 +603,7 @@
         },
         "NL.NDW.AVG.TrafficObservation.amqp": {
           "name": "TrafficObservation",
-          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TrafficObservation",
+          "basemessageuri": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TrafficObservation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -624,7 +624,7 @@
         },
         "NL.NDW.AVG.TravelTimeObservation.amqp": {
           "name": "TravelTimeObservation",
-          "basemessageurl": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TravelTimeObservation",
+          "basemessageuri": "/messagegroups/NL.NDW.AVG/messages/NL.NDW.AVG.TravelTimeObservation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -650,7 +650,7 @@
       "messages": {
         "NL.NDW.DRIP.DripSign.amqp": {
           "name": "DripSign",
-          "basemessageurl": "/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripSign",
+          "basemessageuri": "/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripSign",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -671,7 +671,7 @@
         },
         "NL.NDW.DRIP.DripDisplayState.amqp": {
           "name": "DripDisplayState",
-          "basemessageurl": "/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripDisplayState",
+          "basemessageuri": "/messagegroups/NL.NDW.DRIP/messages/NL.NDW.DRIP.DripDisplayState",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -697,7 +697,7 @@
       "messages": {
         "NL.NDW.MSI.MsiSign.amqp": {
           "name": "MsiSign",
-          "basemessageurl": "/messagegroups/NL.NDW.MSI/messages/NL.NDW.MSI.MsiSign",
+          "basemessageuri": "/messagegroups/NL.NDW.MSI/messages/NL.NDW.MSI.MsiSign",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -718,7 +718,7 @@
         },
         "NL.NDW.MSI.MsiDisplayState.amqp": {
           "name": "MsiDisplayState",
-          "basemessageurl": "/messagegroups/NL.NDW.MSI/messages/NL.NDW.MSI.MsiDisplayState",
+          "basemessageuri": "/messagegroups/NL.NDW.MSI/messages/NL.NDW.MSI.MsiDisplayState",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -744,7 +744,7 @@
       "messages": {
         "NL.NDW.Situations.Roadwork.amqp": {
           "name": "Roadwork",
-          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork",
+          "basemessageuri": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.Roadwork",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -765,7 +765,7 @@
         },
         "NL.NDW.Situations.BridgeOpening.amqp": {
           "name": "BridgeOpening",
-          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening",
+          "basemessageuri": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.BridgeOpening",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -786,7 +786,7 @@
         },
         "NL.NDW.Situations.TemporaryClosure.amqp": {
           "name": "TemporaryClosure",
-          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporaryClosure",
+          "basemessageuri": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporaryClosure",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -807,7 +807,7 @@
         },
         "NL.NDW.Situations.TemporarySpeedLimit.amqp": {
           "name": "TemporarySpeedLimit",
-          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporarySpeedLimit",
+          "basemessageuri": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.TemporarySpeedLimit",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -828,7 +828,7 @@
         },
         "NL.NDW.Situations.SafetyRelatedMessage.amqp": {
           "name": "SafetyRelatedMessage",
-          "basemessageurl": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage",
+          "basemessageuri": "/messagegroups/NL.NDW.Situations/messages/NL.NDW.Situations.SafetyRelatedMessage",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

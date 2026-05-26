@@ -111,7 +111,7 @@
       "messages": {
         "gov.usgs.geomag.mqtt.Observatory": {
           "name": "Observatory",
-          "basemessageurl": "/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.Observatory",
+          "basemessageuri": "/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.Observatory",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "space-weather/us/usgs/usgs-geomag/{iaga_code}/info",
@@ -121,7 +121,7 @@
         },
         "gov.usgs.geomag.mqtt.MagneticFieldReading": {
           "name": "MagneticFieldReading",
-          "basemessageurl": "/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.MagneticFieldReading",
+          "basemessageuri": "/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.MagneticFieldReading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "space-weather/us/usgs/usgs-geomag/{iaga_code}/reading",
@@ -137,7 +137,7 @@
       "messages": {
         "gov.usgs.geomag.amqp.Observatory": {
           "name": "Observatory",
-          "basemessageurl": "/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.Observatory",
+          "basemessageuri": "/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.Observatory",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -151,7 +151,7 @@
         },
         "gov.usgs.geomag.amqp.MagneticFieldReading": {
           "name": "MagneticFieldReading",
-          "basemessageurl": "/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.MagneticFieldReading",
+          "basemessageuri": "/messagegroups/gov.usgs.geomag/messages/gov.usgs.geomag.MagneticFieldReading",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

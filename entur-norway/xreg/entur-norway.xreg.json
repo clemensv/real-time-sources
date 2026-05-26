@@ -190,7 +190,7 @@
       "messages": {
         "no.entur.mqtt.EstimatedVehicleJourney": {
           "name": "EstimatedVehicleJourney",
-          "basemessageurl": "/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney",
+          "basemessageuri": "/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/no/entur/entur-norway/et/{operator_ref}/{line_ref}/{service_journey_id}/estimated-vehicle-journey",
@@ -200,7 +200,7 @@
         },
         "no.entur.mqtt.MonitoredVehicleJourney": {
           "name": "MonitoredVehicleJourney",
-          "basemessageurl": "/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney",
+          "basemessageuri": "/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/no/entur/entur-norway/vm/{operator_ref}/{line_ref}/{service_journey_id}/monitored-vehicle-journey",
@@ -210,7 +210,7 @@
         },
         "no.entur.mqtt.PtSituationElement": {
           "name": "PtSituationElement",
-          "basemessageurl": "/messagegroups/no.entur.situations/messages/no.entur.PtSituationElement",
+          "basemessageuri": "/messagegroups/no.entur.situations/messages/no.entur.PtSituationElement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "transit/no/entur/entur-norway/sx/{severity}/{situation_number}/situation",
@@ -225,7 +225,7 @@
       "messages": {
         "no.entur.amqp.EstimatedVehicleJourney": {
           "name": "EstimatedVehicleJourney",
-          "basemessageurl": "/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney",
+          "basemessageuri": "/messagegroups/no.entur.journeys/messages/no.entur.EstimatedVehicleJourney",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -269,7 +269,7 @@
         },
         "no.entur.amqp.MonitoredVehicleJourney": {
           "name": "MonitoredVehicleJourney",
-          "basemessageurl": "/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney",
+          "basemessageuri": "/messagegroups/no.entur.journeys/messages/no.entur.MonitoredVehicleJourney",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -313,7 +313,7 @@
         },
         "no.entur.amqp.PtSituationElement": {
           "name": "PtSituationElement",
-          "basemessageurl": "/messagegroups/no.entur.situations/messages/no.entur.PtSituationElement",
+          "basemessageuri": "/messagegroups/no.entur.situations/messages/no.entur.PtSituationElement",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

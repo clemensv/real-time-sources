@@ -322,7 +322,7 @@
       "messages": {
         "Microsoft.OpenData.US.NOAA.mqtt.WaterLevel": {
           "name": "WaterLevel",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.WaterLevel",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.WaterLevel",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/water-level",
@@ -332,7 +332,7 @@
         },
         "Microsoft.OpenData.US.NOAA.mqtt.Predictions": {
           "name": "Predictions",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Predictions",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Predictions",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/predictions",
@@ -342,7 +342,7 @@
         },
         "Microsoft.OpenData.US.NOAA.mqtt.AirPressure": {
           "name": "AirPressure",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.AirPressure",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.AirPressure",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/air-pressure",
@@ -352,7 +352,7 @@
         },
         "Microsoft.OpenData.US.NOAA.mqtt.AirTemperature": {
           "name": "AirTemperature",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.AirTemperature",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.AirTemperature",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/air-temperature",
@@ -362,7 +362,7 @@
         },
         "Microsoft.OpenData.US.NOAA.mqtt.WaterTemperature": {
           "name": "WaterTemperature",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.WaterTemperature",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.WaterTemperature",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/water-temperature",
@@ -372,7 +372,7 @@
         },
         "Microsoft.OpenData.US.NOAA.mqtt.Wind": {
           "name": "Wind",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Wind",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Wind",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/wind",
@@ -382,7 +382,7 @@
         },
         "Microsoft.OpenData.US.NOAA.mqtt.Humidity": {
           "name": "Humidity",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Humidity",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Humidity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/humidity",
@@ -392,7 +392,7 @@
         },
         "Microsoft.OpenData.US.NOAA.mqtt.Conductivity": {
           "name": "Conductivity",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Conductivity",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Conductivity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/conductivity",
@@ -402,7 +402,7 @@
         },
         "Microsoft.OpenData.US.NOAA.mqtt.Salinity": {
           "name": "Salinity",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Salinity",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Salinity",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/salinity",
@@ -412,7 +412,7 @@
         },
         "Microsoft.OpenData.US.NOAA.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Station",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/info",
@@ -422,7 +422,7 @@
         },
         "Microsoft.OpenData.US.NOAA.mqtt.Visibility": {
           "name": "Visibility",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Visibility",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Visibility",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/visibility",
@@ -432,7 +432,7 @@
         },
         "Microsoft.OpenData.US.NOAA.mqtt.Currents": {
           "name": "Currents",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Currents",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Currents",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/currents",
@@ -442,7 +442,7 @@
         },
         "Microsoft.OpenData.US.NOAA.mqtt.CurrentPredictions": {
           "name": "CurrentPredictions",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.CurrentPredictions",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.CurrentPredictions",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/us/noaa/noaa/{region}/{station_id}/current-predictions",
@@ -457,7 +457,7 @@
       "messages": {
         "Microsoft.OpenData.US.NOAA.amqp.WaterLevel": {
           "name": "WaterLevel",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.WaterLevel",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.WaterLevel",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -485,7 +485,7 @@
         },
         "Microsoft.OpenData.US.NOAA.amqp.Predictions": {
           "name": "Predictions",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Predictions",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Predictions",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -513,7 +513,7 @@
         },
         "Microsoft.OpenData.US.NOAA.amqp.AirPressure": {
           "name": "AirPressure",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.AirPressure",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.AirPressure",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -541,7 +541,7 @@
         },
         "Microsoft.OpenData.US.NOAA.amqp.AirTemperature": {
           "name": "AirTemperature",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.AirTemperature",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.AirTemperature",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -569,7 +569,7 @@
         },
         "Microsoft.OpenData.US.NOAA.amqp.WaterTemperature": {
           "name": "WaterTemperature",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.WaterTemperature",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.WaterTemperature",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -597,7 +597,7 @@
         },
         "Microsoft.OpenData.US.NOAA.amqp.Wind": {
           "name": "Wind",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Wind",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Wind",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -625,7 +625,7 @@
         },
         "Microsoft.OpenData.US.NOAA.amqp.Humidity": {
           "name": "Humidity",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Humidity",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Humidity",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -653,7 +653,7 @@
         },
         "Microsoft.OpenData.US.NOAA.amqp.Conductivity": {
           "name": "Conductivity",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Conductivity",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Conductivity",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -681,7 +681,7 @@
         },
         "Microsoft.OpenData.US.NOAA.amqp.Salinity": {
           "name": "Salinity",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Salinity",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Salinity",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -709,7 +709,7 @@
         },
         "Microsoft.OpenData.US.NOAA.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Station",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -737,7 +737,7 @@
         },
         "Microsoft.OpenData.US.NOAA.amqp.Visibility": {
           "name": "Visibility",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Visibility",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Visibility",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -765,7 +765,7 @@
         },
         "Microsoft.OpenData.US.NOAA.amqp.Currents": {
           "name": "Currents",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Currents",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.Currents",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -793,7 +793,7 @@
         },
         "Microsoft.OpenData.US.NOAA.amqp.CurrentPredictions": {
           "name": "CurrentPredictions",
-          "basemessageurl": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.CurrentPredictions",
+          "basemessageuri": "/messagegroups/Microsoft.OpenData.US.NOAA/messages/Microsoft.OpenData.US.NOAA.CurrentPredictions",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

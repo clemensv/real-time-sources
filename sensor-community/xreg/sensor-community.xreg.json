@@ -116,7 +116,7 @@
       "messages": {
         "io.sensor.community.mqtt.SensorInfo": {
           "name": "SensorInfo",
-          "basemessageurl": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorInfo",
+          "basemessageuri": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorInfo",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/intl/sensor-community/sensor-community/{country}/{geohash5}/{sensor_id}/info",
@@ -126,7 +126,7 @@
         },
         "io.sensor.community.mqtt.SensorReading": {
           "name": "SensorReading",
-          "basemessageurl": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorReading",
+          "basemessageuri": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorReading",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "air-quality/intl/sensor-community/sensor-community/{country}/{geohash5}/{sensor_id}/reading",
@@ -141,7 +141,7 @@
       "messages": {
         "io.sensor.community.amqp.SensorInfo": {
           "name": "SensorInfo",
-          "basemessageurl": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorInfo",
+          "basemessageuri": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorInfo",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -167,7 +167,7 @@
         },
         "io.sensor.community.amqp.SensorReading": {
           "name": "SensorReading",
-          "basemessageurl": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorReading",
+          "basemessageuri": "/messagegroups/io.sensor.community/messages/io.sensor.community.SensorReading",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

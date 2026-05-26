@@ -93,7 +93,7 @@
       "messages": {
         "Blitzortung.Lightning.mqtt.LightningStroke": {
           "name": "LightningStroke",
-          "basemessageurl": "/messagegroups/Blitzortung.Lightning/messages/Blitzortung.Lightning.LightningStroke",
+          "basemessageuri": "/messagegroups/Blitzortung.Lightning/messages/Blitzortung.Lightning.LightningStroke",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "weather/intl/blitzortung/blitzortung/{geohash5}/{geohash7}/{stroke_id}/stroke",
@@ -108,7 +108,7 @@
       "messages": {
         "Blitzortung.Lightning.amqp.LightningStroke": {
           "name": "LightningStroke",
-          "basemessageurl": "/messagegroups/Blitzortung.Lightning/messages/Blitzortung.Lightning.LightningStroke",
+          "basemessageuri": "/messagegroups/Blitzortung.Lightning/messages/Blitzortung.Lightning.LightningStroke",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

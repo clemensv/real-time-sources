@@ -138,7 +138,7 @@
       "messages": {
         "Org.OpenStreetMap.Diffs.mqtt.Node": {
           "name": "Node",
-          "basemessageurl": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
+          "basemessageuri": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
           "protocol": "MQTT/5.0",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
@@ -161,7 +161,7 @@
         },
         "Org.OpenStreetMap.Diffs.mqtt.Way": {
           "name": "Way",
-          "basemessageurl": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
+          "basemessageuri": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
           "protocol": "MQTT/5.0",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
@@ -184,7 +184,7 @@
         },
         "Org.OpenStreetMap.Diffs.mqtt.Relation": {
           "name": "Relation",
-          "basemessageurl": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
+          "basemessageuri": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
           "protocol": "MQTT/5.0",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
@@ -207,7 +207,7 @@
         },
         "Org.OpenStreetMap.Diffs.mqtt.ReplicationState": {
           "name": "ReplicationState",
-          "basemessageurl": "/messagegroups/Org.OpenStreetMap.Diffs.State/messages/Org.OpenStreetMap.Diffs.ReplicationState",
+          "basemessageuri": "/messagegroups/Org.OpenStreetMap.Diffs.State/messages/Org.OpenStreetMap.Diffs.ReplicationState",
           "protocol": "MQTT/5.0",
           "envelope": "CloudEvents/1.0",
           "envelopemetadata": {
@@ -235,7 +235,7 @@
       "messages": {
         "Org.OpenStreetMap.Diffs.amqp.MapChange": {
           "name": "MapChange",
-          "basemessageurl": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
+          "basemessageuri": "/messagegroups/Org.OpenStreetMap.Diffs/messages/Org.OpenStreetMap.Diffs.MapChange",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -249,7 +249,7 @@
         },
         "Org.OpenStreetMap.Diffs.amqp.ReplicationState": {
           "name": "ReplicationState",
-          "basemessageurl": "/messagegroups/Org.OpenStreetMap.Diffs.State/messages/Org.OpenStreetMap.Diffs.ReplicationState",
+          "basemessageuri": "/messagegroups/Org.OpenStreetMap.Diffs.State/messages/Org.OpenStreetMap.Diffs.ReplicationState",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

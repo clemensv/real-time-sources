@@ -599,7 +599,7 @@
       "messages": {
         "IO.AISstream.amqp.PositionReport": {
           "name": "PositionReport",
-          "basemessageurl": "/messagegroups/IO.AISstream.mqtt/messages/IO.AISstream.mqtt.PositionReport",
+          "basemessageuri": "/messagegroups/IO.AISstream.mqtt/messages/IO.AISstream.mqtt.PositionReport",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -630,7 +630,7 @@
         },
         "IO.AISstream.amqp.ShipStatic": {
           "name": "ShipStatic",
-          "basemessageurl": "/messagegroups/IO.AISstream.mqtt/messages/IO.AISstream.mqtt.ShipStatic",
+          "basemessageuri": "/messagegroups/IO.AISstream.mqtt/messages/IO.AISstream.mqtt.ShipStatic",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -661,7 +661,7 @@
         },
         "IO.AISstream.amqp.AidToNavigation": {
           "name": "AidToNavigation",
-          "basemessageurl": "/messagegroups/IO.AISstream.mqtt/messages/IO.AISstream.mqtt.AidToNavigation",
+          "basemessageuri": "/messagegroups/IO.AISstream.mqtt/messages/IO.AISstream.mqtt.AidToNavigation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

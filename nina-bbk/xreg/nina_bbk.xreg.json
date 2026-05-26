@@ -98,7 +98,7 @@
       "messages": {
         "NINA.Warnings.mqtt.CivilWarning": {
           "name": "CivilWarning",
-          "basemessageurl": "/messagegroups/NINA.Warnings/messages/NINA.CivilWarning",
+          "basemessageuri": "/messagegroups/NINA.Warnings/messages/NINA.CivilWarning",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/de/nina/nina-bbk/{state}/{severity}/{warning_id}/warning",
@@ -113,7 +113,7 @@
       "messages": {
         "NINA.Warnings.amqp.CivilWarning": {
           "name": "CivilWarning",
-          "basemessageurl": "/messagegroups/NINA.Warnings/messages/NINA.CivilWarning",
+          "basemessageuri": "/messagegroups/NINA.Warnings/messages/NINA.CivilWarning",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

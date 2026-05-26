@@ -225,7 +225,7 @@
       "messages": {
         "dk.dmi.metObs.kafka.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsStation",
+          "basemessageuri": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsStation",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -237,7 +237,7 @@
         },
         "dk.dmi.metObs.kafka.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation",
+          "basemessageuri": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -253,7 +253,7 @@
       "messages": {
         "dk.dmi.oceanObs.kafka.Station": {
           "name": "OceanStation",
-          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation",
+          "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -264,7 +264,7 @@
         },
         "dk.dmi.oceanObs.kafka.TidewaterStation": {
           "name": "TidewaterStation",
-          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation",
+          "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -275,7 +275,7 @@
         },
         "dk.dmi.oceanObs.kafka.Observation": {
           "name": "OceanObservation",
-          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation",
+          "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -286,7 +286,7 @@
         },
         "dk.dmi.oceanObs.kafka.TidewaterPrediction": {
           "name": "TidewaterPrediction",
-          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction",
+          "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -301,7 +301,7 @@
       "messages": {
         "dk.dmi.lightning.kafka.Sensor": {
           "name": "LightningSensor",
-          "basemessageurl": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningSensor",
+          "basemessageuri": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningSensor",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -312,7 +312,7 @@
         },
         "dk.dmi.lightning.kafka.Strike": {
           "name": "LightningStrike",
-          "basemessageurl": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningStrike",
+          "basemessageuri": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningStrike",
           "protocol": "KAFKA",
           "protocolmetadata": {
             "key": {
@@ -328,7 +328,7 @@
       "messages": {
         "dk.dmi.metObs.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsStation",
+          "basemessageuri": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsStation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
@@ -350,7 +350,7 @@
         },
         "dk.dmi.metObs.mqtt.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation",
+          "basemessageuri": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
@@ -376,7 +376,7 @@
       "messages": {
         "dk.dmi.oceanObs.mqtt.Station": {
           "name": "OceanStation",
-          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation",
+          "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
@@ -397,7 +397,7 @@
         },
         "dk.dmi.oceanObs.mqtt.TidewaterStation": {
           "name": "TidewaterStation",
-          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation",
+          "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
@@ -418,7 +418,7 @@
         },
         "dk.dmi.oceanObs.mqtt.Observation": {
           "name": "OceanObservation",
-          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation",
+          "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {
@@ -439,7 +439,7 @@
         },
         "dk.dmi.oceanObs.mqtt.TidewaterPrediction": {
           "name": "TidewaterPrediction",
-          "basemessageurl": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction",
+          "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "properties": {

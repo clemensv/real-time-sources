@@ -129,7 +129,7 @@ def main() -> int:
         mqtt_msgs[msg_id] = OrderedDict([
             ("messageid", msg_id),
             ("name", ce_type.split(".")[-1]),
-            ("basemessageurl", f"/messagegroups/BlueskyFirehose/messages/{ce_type}"),
+            ("basemessageuri", f"/messagegroups/BlueskyFirehose/messages/{ce_type}"),
             ("protocol", "MQTT/5.0"),
             ("protocoloptions", OrderedDict([
                 ("topic_name", topic),

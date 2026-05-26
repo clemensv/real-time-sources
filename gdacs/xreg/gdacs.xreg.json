@@ -98,7 +98,7 @@
       "messages": {
         "GDACS.Alerts.mqtt.DisasterAlert": {
           "name": "DisasterAlert",
-          "basemessageurl": "/messagegroups/GDACS.Alerts/messages/GDACS.DisasterAlert",
+          "basemessageuri": "/messagegroups/GDACS.Alerts/messages/GDACS.DisasterAlert",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "alerts/intl/gdacs/gdacs/{event_type}/{alert_color}/{country}/{event_id}/alert",
@@ -113,7 +113,7 @@
       "messages": {
         "GDACS.Alerts.amqp.DisasterAlert": {
           "name": "DisasterAlert",
-          "basemessageurl": "/messagegroups/GDACS.Alerts/messages/GDACS.DisasterAlert",
+          "basemessageuri": "/messagegroups/GDACS.Alerts/messages/GDACS.DisasterAlert",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

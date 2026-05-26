@@ -180,7 +180,7 @@
       "messages": {
         "net.vatsim.mqtt.PilotPosition": {
           "name": "PilotPosition",
-          "basemessageurl": "/messagegroups/net.vatsim.pilots/messages/net.vatsim.PilotPosition",
+          "basemessageuri": "/messagegroups/net.vatsim.pilots/messages/net.vatsim.PilotPosition",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "aviation-network/intl/vatsim/vatsim/pilots/{callsign}/pilot-position",
@@ -190,7 +190,7 @@
         },
         "net.vatsim.mqtt.ControllerPosition": {
           "name": "ControllerPosition",
-          "basemessageurl": "/messagegroups/net.vatsim.controllers/messages/net.vatsim.ControllerPosition",
+          "basemessageuri": "/messagegroups/net.vatsim.controllers/messages/net.vatsim.ControllerPosition",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "aviation-network/intl/vatsim/vatsim/controllers/{callsign}/controller-position",
@@ -200,7 +200,7 @@
         },
         "net.vatsim.mqtt.FacilityStatus": {
           "name": "FacilityStatus",
-          "basemessageurl": "/messagegroups/net.vatsim.status/messages/net.vatsim.NetworkStatus",
+          "basemessageuri": "/messagegroups/net.vatsim.status/messages/net.vatsim.NetworkStatus",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "aviation-network/intl/vatsim/vatsim/facilities/{facility}/facility-status",
@@ -215,7 +215,7 @@
       "messages": {
         "net.vatsim.amqp.PilotPosition": {
           "name": "PilotPosition",
-          "basemessageurl": "/messagegroups/net.vatsim.pilots/messages/net.vatsim.PilotPosition",
+          "basemessageuri": "/messagegroups/net.vatsim.pilots/messages/net.vatsim.PilotPosition",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -230,7 +230,7 @@
         },
         "net.vatsim.amqp.ControllerPosition": {
           "name": "ControllerPosition",
-          "basemessageurl": "/messagegroups/net.vatsim.controllers/messages/net.vatsim.ControllerPosition",
+          "basemessageuri": "/messagegroups/net.vatsim.controllers/messages/net.vatsim.ControllerPosition",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -245,7 +245,7 @@
         },
         "net.vatsim.amqp.FacilityStatus": {
           "name": "FacilityStatus",
-          "basemessageurl": "/messagegroups/net.vatsim.status/messages/net.vatsim.NetworkStatus",
+          "basemessageuri": "/messagegroups/net.vatsim.status/messages/net.vatsim.NetworkStatus",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

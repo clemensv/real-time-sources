@@ -116,7 +116,7 @@
       "messages": {
         "CA.Gov.ECCC.Hydro.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Station",
+          "basemessageuri": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/ca/eccc/canada-eccc-wateroffice/{basin}/{station_number}/info",
@@ -126,7 +126,7 @@
         },
         "CA.Gov.ECCC.Hydro.mqtt.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Observation",
+          "basemessageuri": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Observation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "hydro/ca/eccc/canada-eccc-wateroffice/{basin}/{station_number}/observation",
@@ -141,7 +141,7 @@
       "messages": {
         "CA.Gov.ECCC.Hydro.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Station",
+          "basemessageuri": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -169,7 +169,7 @@
         },
         "CA.Gov.ECCC.Hydro.amqp.Observation": {
           "name": "Observation",
-          "basemessageurl": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Observation",
+          "basemessageuri": "/messagegroups/CA.Gov.ECCC.Hydro/messages/CA.Gov.ECCC.Hydro.Observation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

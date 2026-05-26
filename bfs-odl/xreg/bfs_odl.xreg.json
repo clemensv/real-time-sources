@@ -71,7 +71,7 @@
       "messages": {
         "de.bfs.odl.mqtt.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.Station",
+          "basemessageuri": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.Station",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "radiation/de/bfs/bfs-odl/{state}/{station_id}/info",
@@ -81,7 +81,7 @@
         },
         "de.bfs.odl.mqtt.DoseRateMeasurement": {
           "name": "DoseRateMeasurement",
-          "basemessageurl": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.DoseRateMeasurement",
+          "basemessageuri": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.DoseRateMeasurement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "radiation/de/bfs/bfs-odl/{state}/{station_id}/dose-rate",
@@ -140,7 +140,7 @@
       "messages": {
         "de.bfs.odl.amqp.Station": {
           "name": "Station",
-          "basemessageurl": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.Station",
+          "basemessageuri": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.Station",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -154,7 +154,7 @@
         },
         "de.bfs.odl.amqp.DoseRateMeasurement": {
           "name": "DoseRateMeasurement",
-          "basemessageurl": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.DoseRateMeasurement",
+          "basemessageuri": "/messagegroups/de.bfs.odl/messages/de.bfs.odl.DoseRateMeasurement",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

@@ -96,7 +96,7 @@
       "messages": {
         "JP.JMA.Quake.mqtt.EarthquakeReport": {
           "name": "EarthquakeReport",
-          "basemessageurl": "/messagegroups/JP.JMA.Quake/messages/JP.JMA.Quake.EarthquakeReport",
+          "basemessageuri": "/messagegroups/JP.JMA.Quake/messages/JP.JMA.Quake.EarthquakeReport",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "seismic/jp/jma/jma-bosai-quake/{prefecture}/{magnitude_bucket}/{event_id}/{serial}/report",
@@ -111,7 +111,7 @@
       "messages": {
         "JP.JMA.Quake.amqp.EarthquakeReport": {
           "name": "EarthquakeReport",
-          "basemessageurl": "/messagegroups/JP.JMA.Quake/messages/JP.JMA.Quake.EarthquakeReport",
+          "basemessageuri": "/messagegroups/JP.JMA.Quake/messages/JP.JMA.Quake.EarthquakeReport",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
