@@ -21,6 +21,50 @@
         "#/messagegroups/PL.Gov.IMGW.Hydro"
       ],
       "description": "Kafka producer endpoint for IMGW-PIB Hydrological Data CloudEvents on the `imgw-hydro` topic keyed by `{station_id}`."
+    },
+    "PL.Gov.IMGW.Hydro.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/PL.Gov.IMGW.Hydro.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for imgw-hydro CloudEvents using the documented UNS topic hierarchy."
+    },
+    "PL.Gov.IMGW.Hydro.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/imgw-hydro"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/PL.Gov.IMGW.Hydro.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for imgw-hydro CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -66,6 +110,92 @@
         }
       },
       "description": "Events from IMGW-PIB Hydrological Data covering Polish hydrological monitoring stations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
+    },
+    "PL.Gov.IMGW.Hydro.mqtt": {
+      "description": "MQTT 5 variant of imgw-hydro events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "PL.Gov.IMGW.Hydro.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/PL.Gov.IMGW.Hydro/messages/PL.Gov.IMGW.Hydro.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/pl/imgw/imgw-hydro/{basin}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "PL.Gov.IMGW.Hydro.mqtt.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "basemessageurl": "/messagegroups/PL.Gov.IMGW.Hydro/messages/PL.Gov.IMGW.Hydro.WaterLevelObservation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/pl/imgw/imgw-hydro/{basin}/{station_id}/water-level",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "PL.Gov.IMGW.Hydro.amqp": {
+      "description": "AMQP 1.0 variant of imgw-hydro events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "PL.Gov.IMGW.Hydro.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/PL.Gov.IMGW.Hydro/messages/PL.Gov.IMGW.Hydro.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "Routing property for AMQP subscription filters (basin)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "PL.Gov.IMGW.Hydro.amqp.WaterLevelObservation": {
+          "name": "WaterLevelObservation",
+          "basemessageurl": "/messagegroups/PL.Gov.IMGW.Hydro/messages/PL.Gov.IMGW.Hydro.WaterLevelObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "Routing property for AMQP subscription filters (basin)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -134,6 +264,10 @@
                       "null"
                     ],
                     "description": "Latitude of the station in WGS 84 coordinates."
+                  },
+                  "basin": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro."
                   }
                 },
                 "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/Station",
@@ -267,6 +401,10 @@
                       "lang:pl": "zjawisko_zarastania"
                     },
                     "description": "Provider code identifying the overgrowth."
+                  },
+                  "basin": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro."
                   }
                 },
                 "$id": "https://example.com/schemas/PL/Gov/IMGW/Hydro/WaterLevelObservation",

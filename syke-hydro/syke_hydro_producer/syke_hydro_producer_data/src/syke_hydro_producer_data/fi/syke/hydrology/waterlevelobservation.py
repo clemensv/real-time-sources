@@ -21,7 +21,7 @@ import datetime
 @dataclass
 class WaterLevelObservation:
     """
-    WaterLevelObservation
+    Measurement payload for observations in the SYKE Hydrology source.
     Attributes:
         station_id (str): 
         water_level (typing.Optional[float]): 
@@ -40,7 +40,7 @@ class WaterLevelObservation:
     discharge_timestamp: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}], \"namespace\": \"FI.SYKE.Hydrology\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"Measurement payload for observations in the SYKE Hydrology source.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}], \"namespace\": \"FI.SYKE.Hydrology\", \"description\": \"Measurement payload for observations in the SYKE Hydrology source.\"}"), avro.name.Names()
     )
 
     def __post_init__(self):

@@ -19,7 +19,7 @@ import avro.io
 @dataclass
 class Station:
     """
-    Station
+    Reference details for one monitoring station or site in the SYKE Hydrology source.
     
     Attributes:
         station_id (str)
@@ -29,10 +29,11 @@ class Station:
         municipality (typing.Optional[str])
         latitude (float)
         longitude (float)
+        basin (typing.Optional[str])
     """
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Station\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"river_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_area_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"municipality\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}]}"
+        "{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Reference details for one monitoring station or site in the SYKE Hydrology source.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Stable identifier assigned by the upstream provider for the monitoring station or site.\"}, {\"name\": \"name\", \"type\": \"string\", \"doc\": \"Human-readable name of the station, site, or location.\"}, {\"name\": \"river_name\", \"type\": [\"null\", \"string\"], \"doc\": \"Name of the river or watercourse observed at the station.\", \"default\": null}, {\"name\": \"water_area_name\", \"type\": [\"null\", \"string\"], \"doc\": \"Human-readable name of the water area.\", \"default\": null}, {\"name\": \"municipality\", \"type\": [\"null\", \"string\"], \"doc\": \"Provider-supplied municipality value for this record.\", \"default\": null}, {\"name\": \"latitude\", \"type\": \"double\", \"doc\": \"Latitude of the station in WGS 84 coordinates.\"}, {\"name\": \"longitude\", \"type\": \"double\", \"doc\": \"Longitude of the station in WGS 84 coordinates.\"}, {\"name\": \"basin\", \"type\": [\"null\", \"string\"], \"doc\": \"Stable routing axis used by MQTT and AMQP transport templates for syke-hydro.\", \"default\": null}]}"
     )
     
     
@@ -43,6 +44,7 @@ class Station:
     municipality: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="municipality"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    basin: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="basin"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':
@@ -85,6 +87,8 @@ class Station:
             value = converted['latitude']
         if 'longitude' in converted and converted['longitude'] is not None:
             value = converted['longitude']
+        if 'basin' in converted and converted['basin'] is not None:
+            value = converted['basin']
         
         return cls(**converted)
 
@@ -237,11 +241,12 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='alieospknauojhibkxfu',
-            name='jbwwnmnhayvbfpfvmwjj',
-            river_name='daxbuupanpqawexuwvzn',
-            water_area_name='grcytachmwymqotbfbfc',
-            municipality='rfzxbwjintuzpccmsmgf',
-            latitude=float(8.922424128764728),
-            longitude=float(76.93555007169456)
+            station_id='kdpwajuepnvrkicuzdxw',
+            name='tgdxhznonijgpgckfnug',
+            river_name='zdjyqbdzxexotsnjymrm',
+            water_area_name='ftleglwqbqtfjquwjkjj',
+            municipality='mphkhuuwlvljexlcgsds',
+            latitude=float(34.949284711707605),
+            longitude=float(77.41755516350588),
+            basin='ccyfakgujogutfsyvnbx'
         )

@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from canada_eccc_wateroffice_producer_kafka_producer.producer import CAGovECCCHydroEventProducer
+from canada_eccc_wateroffice_producer_kafka_producer.producer import CAGovECCCHydroMqttEventProducer
+from canada_eccc_wateroffice_producer_kafka_producer.producer import CAGovECCCHydroAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +74,54 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'CA.Gov.ECCC.Hydro.Observation' event to Kafka topic.
     await cagov_eccchydro_event_producer.send_ca_gov_eccc_hydro_observation(_station_number = 'TODO: replace me', data = _observation)
     print(f"Sent 'CA.Gov.ECCC.Hydro.Observation' event: {_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        cagov_eccchydro_mqtt_event_producer = CAGovECCCHydroMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        cagov_eccchydro_mqtt_event_producer = CAGovECCCHydroMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- CA.Gov.ECCC.Hydro.mqtt.Station ----
+    # TODO: Supply event data for the CA.Gov.ECCC.Hydro.mqtt.Station event
+    _station = Station()
+
+    # sends the 'CA.Gov.ECCC.Hydro.mqtt.Station' event to Kafka topic.
+    await cagov_eccchydro_mqtt_event_producer.send_ca_gov_eccc_hydro_mqtt_station(_station_number = 'TODO: replace me', data = _station)
+    print(f"Sent 'CA.Gov.ECCC.Hydro.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- CA.Gov.ECCC.Hydro.mqtt.Observation ----
+    # TODO: Supply event data for the CA.Gov.ECCC.Hydro.mqtt.Observation event
+    _observation = Observation()
+
+    # sends the 'CA.Gov.ECCC.Hydro.mqtt.Observation' event to Kafka topic.
+    await cagov_eccchydro_mqtt_event_producer.send_ca_gov_eccc_hydro_mqtt_observation(_station_number = 'TODO: replace me', data = _observation)
+    print(f"Sent 'CA.Gov.ECCC.Hydro.mqtt.Observation' event: {_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        cagov_eccchydro_amqp_event_producer = CAGovECCCHydroAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        cagov_eccchydro_amqp_event_producer = CAGovECCCHydroAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- CA.Gov.ECCC.Hydro.amqp.Station ----
+    # TODO: Supply event data for the CA.Gov.ECCC.Hydro.amqp.Station event
+    _station = Station()
+
+    # sends the 'CA.Gov.ECCC.Hydro.amqp.Station' event to Kafka topic.
+    await cagov_eccchydro_amqp_event_producer.send_ca_gov_eccc_hydro_amqp_station(_station_number = 'TODO: replace me', data = _station)
+    print(f"Sent 'CA.Gov.ECCC.Hydro.amqp.Station' event: {_station.to_json()}")
+
+    # ---- CA.Gov.ECCC.Hydro.amqp.Observation ----
+    # TODO: Supply event data for the CA.Gov.ECCC.Hydro.amqp.Observation event
+    _observation = Observation()
+
+    # sends the 'CA.Gov.ECCC.Hydro.amqp.Observation' event to Kafka topic.
+    await cagov_eccchydro_amqp_event_producer.send_ca_gov_eccc_hydro_amqp_observation(_station_number = 'TODO: replace me', data = _observation)
+    print(f"Sent 'CA.Gov.ECCC.Hydro.amqp.Observation' event: {_observation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

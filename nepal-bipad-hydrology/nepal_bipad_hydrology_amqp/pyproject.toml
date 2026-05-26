@@ -1,0 +1,15 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "nepal-bipad-hydrology-amqp"
+version = "0.1.0"
+packages = [{include = "nepal_bipad_hydrology_amqp"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+azure-identity = ">=1.17.0"
+dataclasses_json = ">=0.6.7"
+nepal_bipad_hydrology_amqp_producer_data = {path = "../nepal_bipad_hydrology_amqp_producer/nepal_bipad_hydrology_amqp_producer_data"}
+nepal_bipad_hydrology_amqp_producer_amqp_producer = {path = "../nepal_bipad_hydrology_amqp_producer/nepal_bipad_hydrology_amqp_producer_amqp_producer"}

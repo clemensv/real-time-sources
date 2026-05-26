@@ -29,10 +29,10 @@ class Test_Reading(unittest.TestCase):
         Create instance of Reading for testing
         """
         instance = Reading(
-            station_reference='qwhpkvkvbatrktlqsjwr',
+            station_reference='fzxiwhjtikjvonflokyh',
             date_time=datetime.datetime.now(datetime.timezone.utc),
-            measure='pkttlogepdjcxzlrsmmq',
-            value=float(97.27729835026001)
+            measure='lkkbhpxcgwlcwdcfjafy',
+            value=float(96.50353398877282)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Reading(unittest.TestCase):
         """
         Test station_reference property
         """
-        test_value = 'qwhpkvkvbatrktlqsjwr'
+        test_value = 'fzxiwhjtikjvonflokyh'
         self.instance.station_reference = test_value
         self.assertEqual(self.instance.station_reference, test_value)
     
@@ -57,7 +57,7 @@ class Test_Reading(unittest.TestCase):
         """
         Test measure property
         """
-        test_value = 'pkttlogepdjcxzlrsmmq'
+        test_value = 'lkkbhpxcgwlcwdcfjafy'
         self.instance.measure = test_value
         self.assertEqual(self.instance.measure, test_value)
     
@@ -65,7 +65,7 @@ class Test_Reading(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(97.27729835026001)
+        test_value = float(96.50353398877282)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     

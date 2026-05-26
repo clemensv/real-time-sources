@@ -33,6 +33,8 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from syke_hydro_producer_kafka_producer.producer import FISYKEHydrologyEventProducer
+from syke_hydro_producer_kafka_producer.producer import FISYKEHydrologyMqttEventProducer
+from syke_hydro_producer_kafka_producer.producer import FISYKEHydrologyAmqpEventProducer
 
 # imports for the data classes for each event
 
@@ -72,6 +74,54 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'FI.SYKE.Hydrology.WaterLevelObservation' event to Kafka topic.
     await fisykehydrology_event_producer.send_fi_syke_hydrology_water_level_observation(_station_id = 'TODO: replace me', data = _water_level_observation)
     print(f"Sent 'FI.SYKE.Hydrology.WaterLevelObservation' event: {_water_level_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fisykehydrology_mqtt_event_producer = FISYKEHydrologyMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fisykehydrology_mqtt_event_producer = FISYKEHydrologyMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- FI.SYKE.Hydrology.mqtt.Station ----
+    # TODO: Supply event data for the FI.SYKE.Hydrology.mqtt.Station event
+    _station = Station()
+
+    # sends the 'FI.SYKE.Hydrology.mqtt.Station' event to Kafka topic.
+    await fisykehydrology_mqtt_event_producer.send_fi_syke_hydrology_mqtt_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'FI.SYKE.Hydrology.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- FI.SYKE.Hydrology.mqtt.WaterLevelObservation ----
+    # TODO: Supply event data for the FI.SYKE.Hydrology.mqtt.WaterLevelObservation event
+    _water_level_observation = WaterLevelObservation()
+
+    # sends the 'FI.SYKE.Hydrology.mqtt.WaterLevelObservation' event to Kafka topic.
+    await fisykehydrology_mqtt_event_producer.send_fi_syke_hydrology_mqtt_water_level_observation(_station_id = 'TODO: replace me', data = _water_level_observation)
+    print(f"Sent 'FI.SYKE.Hydrology.mqtt.WaterLevelObservation' event: {_water_level_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fisykehydrology_amqp_event_producer = FISYKEHydrologyAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fisykehydrology_amqp_event_producer = FISYKEHydrologyAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- FI.SYKE.Hydrology.amqp.Station ----
+    # TODO: Supply event data for the FI.SYKE.Hydrology.amqp.Station event
+    _station = Station()
+
+    # sends the 'FI.SYKE.Hydrology.amqp.Station' event to Kafka topic.
+    await fisykehydrology_amqp_event_producer.send_fi_syke_hydrology_amqp_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'FI.SYKE.Hydrology.amqp.Station' event: {_station.to_json()}")
+
+    # ---- FI.SYKE.Hydrology.amqp.WaterLevelObservation ----
+    # TODO: Supply event data for the FI.SYKE.Hydrology.amqp.WaterLevelObservation event
+    _water_level_observation = WaterLevelObservation()
+
+    # sends the 'FI.SYKE.Hydrology.amqp.WaterLevelObservation' event to Kafka topic.
+    await fisykehydrology_amqp_event_producer.send_fi_syke_hydrology_amqp_water_level_observation(_station_id = 'TODO: replace me', data = _water_level_observation)
+    print(f"Sent 'FI.SYKE.Hydrology.amqp.WaterLevelObservation' event: {_water_level_observation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

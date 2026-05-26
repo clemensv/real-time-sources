@@ -29,18 +29,19 @@ class Test_WaterLevelObservation(unittest.TestCase):
         Create instance of WaterLevelObservation for testing
         """
         instance = WaterLevelObservation(
-            station_id='cdafdqomlvagtfynedwb',
-            station_name='znhkslcawnutnbmotxch',
-            river='zjslebfbqcqaiuzoeukx',
-            voivodeship='itqrwvzzhwgtddchdllf',
-            water_level=float(41.27744730950619),
+            station_id='hvpnxuutnsgssvhqcaia',
+            station_name='oaabxraxhjueehmeswzg',
+            river='piamejusjhaebeeunzsq',
+            voivodeship='tvqetgeqvifdnebrzgdk',
+            water_level=float(85.26334311781724),
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            water_temperature=float(30.064855087632793),
+            water_temperature=float(71.89362638039799),
             water_temperature_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(76.8259091108544),
+            discharge=float(4.3682306843945025),
             discharge_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            ice_phenomenon_code='eiwghegbxlibpeihrmwl',
-            overgrowth_code='fcjpneewbmgnvahivocw'
+            ice_phenomenon_code='wdlypkfalbdvsehrzece',
+            overgrowth_code='mblxzgjnxqgrsswbrtzs',
+            basin='etnsotllhdzeobeykhld'
         )
         return instance
 
@@ -49,7 +50,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'cdafdqomlvagtfynedwb'
+        test_value = 'hvpnxuutnsgssvhqcaia'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -57,7 +58,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'znhkslcawnutnbmotxch'
+        test_value = 'oaabxraxhjueehmeswzg'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -65,7 +66,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test river property
         """
-        test_value = 'zjslebfbqcqaiuzoeukx'
+        test_value = 'piamejusjhaebeeunzsq'
         self.instance.river = test_value
         self.assertEqual(self.instance.river, test_value)
     
@@ -73,7 +74,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test voivodeship property
         """
-        test_value = 'itqrwvzzhwgtddchdllf'
+        test_value = 'tvqetgeqvifdnebrzgdk'
         self.instance.voivodeship = test_value
         self.assertEqual(self.instance.voivodeship, test_value)
     
@@ -81,7 +82,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_level property
         """
-        test_value = float(41.27744730950619)
+        test_value = float(85.26334311781724)
         self.instance.water_level = test_value
         self.assertEqual(self.instance.water_level, test_value)
     
@@ -97,7 +98,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_temperature property
         """
-        test_value = float(30.064855087632793)
+        test_value = float(71.89362638039799)
         self.instance.water_temperature = test_value
         self.assertEqual(self.instance.water_temperature, test_value)
     
@@ -113,7 +114,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test discharge property
         """
-        test_value = float(76.8259091108544)
+        test_value = float(4.3682306843945025)
         self.instance.discharge = test_value
         self.assertEqual(self.instance.discharge, test_value)
     
@@ -129,7 +130,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test ice_phenomenon_code property
         """
-        test_value = 'eiwghegbxlibpeihrmwl'
+        test_value = 'wdlypkfalbdvsehrzece'
         self.instance.ice_phenomenon_code = test_value
         self.assertEqual(self.instance.ice_phenomenon_code, test_value)
     
@@ -137,10 +138,27 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test overgrowth_code property
         """
-        test_value = 'fcjpneewbmgnvahivocw'
+        test_value = 'mblxzgjnxqgrsswbrtzs'
         self.instance.overgrowth_code = test_value
         self.assertEqual(self.instance.overgrowth_code, test_value)
     
+    def test_basin_property(self):
+        """
+        Test basin property
+        """
+        test_value = 'etnsotllhdzeobeykhld'
+        self.instance.basin = test_value
+        self.assertEqual(self.instance.basin, test_value)
+    
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = WaterLevelObservation.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

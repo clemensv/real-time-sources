@@ -28,6 +28,7 @@ class SnowObservation:
         snow_depth (typing.Optional[float])
         precipitation (typing.Optional[float])
         air_temperature (typing.Optional[float])
+        state (typing.Optional[str])
     """
     
     
@@ -37,6 +38,7 @@ class SnowObservation:
     snow_depth: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="snow_depth"))
     precipitation: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation"))
     air_temperature: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'SnowObservation':
@@ -163,10 +165,11 @@ class SnowObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_triplet='sqppkuirwdsbbclthilm',
+            station_triplet='oolzlqwdagwmmnncitrw',
             date_time=datetime.datetime.now(datetime.timezone.utc),
-            snow_water_equivalent=float(59.806860375272585),
-            snow_depth=float(94.76258657827115),
-            precipitation=float(20.231901861999766),
-            air_temperature=float(55.150797448682894)
+            snow_water_equivalent=float(30.537273287538536),
+            snow_depth=float(65.91576316751951),
+            precipitation=float(11.429539586478343),
+            air_temperature=float(15.542660738002612),
+            state='drhkskeefddubldrpryh'
         )

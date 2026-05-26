@@ -1,0 +1,15 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/uk-ea-flood-monitoring" \
+      org.opencontainers.image.title="uk-ea-flood-monitoring → MQTT/UNS bridge" \
+      org.opencontainers.image.description="Publishes uk-ea-flood-monitoring CloudEvents over MQTT 5.0 into the documented Unified Namespace topic tree." \
+      org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/uk-ea-flood-monitoring/CONTAINER.md" \
+      org.opencontainers.image.license="MIT"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY . /app
+RUN pip install --no-cache-dir ./uk_ea_flood_monitoring_mqtt_producer/uk_ea_flood_monitoring_mqtt_producer_data \
+ && pip install --no-cache-dir ./uk_ea_flood_monitoring_mqtt_producer/uk_ea_flood_monitoring_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./uk_ea_flood_monitoring_mqtt
+ENV MQTT_BROKER_URL=""
+CMD ["python", "-m", "uk_ea_flood_monitoring_mqtt", "feed"]

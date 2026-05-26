@@ -65,3 +65,10 @@ This source can also be hosted as a scheduled Microsoft Fabric notebook via
 [`tools/deploy-fabric/deploy-feeder-notebook.ps1`](../tools/deploy-fabric/deploy-feeder-notebook.ps1),
 which deploys [`notebook/ireland-opw-waterlevel-feed.ipynb`](notebook/ireland-opw-waterlevel-feed.ipynb)
 into a Fabric workspace alongside an Eventhouse and Event Stream.
+
+
+## MQTT and AMQP companion feeders
+
+This source now ships transport-split Kafka, MQTT, and AMQP containers. The MQTT image (`ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel-mqtt:latest`) publishes retained MQTT 5 binary-mode CloudEvents on `hydro/ie/opw/ireland-opw-waterlevel/...`. The AMQP image (`ghcr.io/clemensv/real-time-sources-ireland-opw-waterlevel-amqp:latest`) publishes the same CloudEvents to a broker address or Azure Service Bus queue.
+
+Deployment templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`, and `azure-template-with-servicebus.json`.

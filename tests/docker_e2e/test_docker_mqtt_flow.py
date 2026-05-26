@@ -5196,6 +5196,59 @@ class TestTepcoDenkiyohoMqttDockerFlow:
             broker.kill(); network.remove()
 
 
+class TestCanadaEcccWaterofficeMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(0)
+
+class TestCdecReservoirsMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(1)
+
+class TestHubeauHydrometrieMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(2)
+
+class TestImgwHydroMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(3)
+
+class TestIrelandOpwWaterlevelMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(4)
+
+class TestNepalBipadHydrologyMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(5)
+
+class TestNoaaNdbcMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(6)
+
+class TestNoaaMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(7)
+
+class TestSnotelMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(8)
+
+class TestSykeHydroMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(9)
+
+class TestUkEaFloodMonitoringMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(10)
+
+class TestUsgsNwisWqMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(11)
+
+class TestWaterinfoVmmMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(12)
+
+
 class TestFrenchRoadTrafficMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_french_road_traffic, french_road_traffic_mqtt_image):
         _run_mqtt_contract_flow('french-road-traffic', french_road_traffic_mqtt_image, mosquitto_french_road_traffic, timeout=240)
