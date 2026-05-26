@@ -4,8 +4,8 @@ Digitraffic Road publishes road traffic measurements and status updates from Fin
 
 ## At a glance
 
-- **Event types:** 10 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 10 documented event types (30 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 2 reference/catalog event types and 8 telemetry event types.
 - **Identity:** `{station_id}/{sensor_id}`, `{situation_id}`, `{domain}`, `{station_id}`, `{task_id}` identifies the resource each event is about.
 - **Operations:** Reference/catalog events are documented as startup emissions, with periodic refresh when the source supports it.
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `traffic/fi/fintraffic/digitraffic-road/+/+/tms-sensor-data`, `traffic/fi/fintraffic/digitraffic-road/+/+/weather-sensor-data`, `traffic/fi/fintraffic/digitraffic-road/messages/+/traffic-announcement`, `traffic/fi/fintraffic/digitraffic-road/messages/+/road-work`, `traffic/fi/fintraffic/digitraffic-road/messages/+/weight-restriction`, `traffic/fi/fintraffic/digitraffic-road/messages/+/exempted-transport`, `traffic/fi/fintraffic/digitraffic-road/maintenance/+/tracking`, `traffic/fi/fintraffic/digitraffic-road/stations/+/tms-station`, `traffic/fi/fintraffic/digitraffic-road/stations/+/weather-station`, `traffic/fi/fintraffic/digitraffic-road/maintenance-tasks/+/task-type`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('traffic/fi/fintraffic/digitraffic-road/+/+/tms-sensor-data', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `digitraffic-road`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/digitraffic-road')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,6 +77,8 @@ Each event identifies the real-world resource with `{station_id}/{sensor_id}`. `
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `digitraffic-road-sensors`, key `{station_id}/{sensor_id}` |
+| `MQTT/5.0` | topic `traffic/fi/fintraffic/digitraffic-road/{station_id}/{sensor_id}/tms-sensor-data`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-road`, message subject `{station_id}/{sensor_id}`; application properties station_id `{station_id}`, sensor_id `{sensor_id}` |
 
 #### Payload
 
@@ -96,6 +126,8 @@ Each event identifies the real-world resource with `{station_id}/{sensor_id}`. `
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `digitraffic-road-sensors`, key `{station_id}/{sensor_id}` |
+| `MQTT/5.0` | topic `traffic/fi/fintraffic/digitraffic-road/{station_id}/{sensor_id}/weather-sensor-data`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-road`, message subject `{station_id}/{sensor_id}`; application properties station_id `{station_id}`, sensor_id `{sensor_id}` |
 
 #### Payload
 
@@ -139,6 +171,8 @@ Each event identifies the real-world resource with `{situation_id}`. `{situation
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `digitraffic-road-messages`, key `{situation_id}` |
+| `MQTT/5.0` | topic `traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/traffic-announcement`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-road`, message subject `{situation_id}` |
 
 #### Payload
 
@@ -216,6 +250,8 @@ Each event identifies the real-world resource with `{situation_id}`. `{situation
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `digitraffic-road-messages`, key `{situation_id}` |
+| `MQTT/5.0` | topic `traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/road-work`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-road`, message subject `{situation_id}` |
 
 #### Payload
 
@@ -293,6 +329,8 @@ Each event identifies the real-world resource with `{situation_id}`. `{situation
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `digitraffic-road-messages`, key `{situation_id}` |
+| `MQTT/5.0` | topic `traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/weight-restriction`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-road`, message subject `{situation_id}` |
 
 #### Payload
 
@@ -370,6 +408,8 @@ Each event identifies the real-world resource with `{situation_id}`. `{situation
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `digitraffic-road-messages`, key `{situation_id}` |
+| `MQTT/5.0` | topic `traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/exempted-transport`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-road`, message subject `{situation_id}` |
 
 #### Payload
 
@@ -447,6 +487,8 @@ Each event identifies the real-world resource with `{domain}`. `{domain}` is dat
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `digitraffic-road-maintenance`, key `{domain}` |
+| `MQTT/5.0` | topic `traffic/fi/fintraffic/digitraffic-road/maintenance/{domain}/tracking`, retain `false`, QoS `0` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-road`, message subject `{domain}`; application properties domain `{domain}` |
 
 #### Payload
 
@@ -498,6 +540,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `digitraffic-road-sensors`, key `{station_id}` |
+| `MQTT/5.0` | topic `traffic/fi/fintraffic/digitraffic-road/stations/{station_id}/tms-station`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-road`, message subject `{station_id}`; application properties station_id `{station_id}` |
 
 #### Payload
 
@@ -572,7 +616,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
 
 ### Weather Station
 
@@ -591,6 +635,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `digitraffic-road-sensors`, key `{station_id}` |
+| `MQTT/5.0` | topic `traffic/fi/fintraffic/digitraffic-road/stations/{station_id}/weather-station`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-road`, message subject `{station_id}`; application properties station_id `{station_id}` |
 
 #### Payload
 
@@ -665,7 +711,7 @@ Synthetic example values are generated deterministically from the schema: consta
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
 
 ### Maintenance Task Type
 
@@ -684,6 +730,8 @@ Each event identifies the real-world resource with `{task_id}`. `{task_id}` is u
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `digitraffic-road-maintenance`, key `{task_id}` |
+| `MQTT/5.0` | topic `traffic/fi/fintraffic/digitraffic-road/maintenance-tasks/{task_id}/task-type`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/digitraffic-road`, message subject `{task_id}`; application properties task_id `{task_id}` |
 
 #### Payload
 

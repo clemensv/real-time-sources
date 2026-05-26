@@ -755,7 +755,9 @@
     "cat": "Transport",
     "key": false,
     "desc": "Finland — TMS sensors, road weather, traffic messages",
-    "kql": true
+    "kql": true,
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "french-road-traffic",

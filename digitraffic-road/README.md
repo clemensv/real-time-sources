@@ -1,84 +1,206 @@
-# Digitraffic Road — Finnish Road Traffic Data
+# Digitraffic Road feeder
 
-Real-time road traffic data from the Finnish national road network operated by
-Fintraffic. Telemetry is streamed via the Digitraffic MQTT service at
-`wss://tie.digitraffic.fi/mqtt` and includes TMS sensor readings, road weather
-sensor readings, traffic messages (incidents, road works, weight restrictions,
-exempted transports), and maintenance vehicle tracking. Station metadata and
-maintenance task type catalogs are fetched as reference data from the
-Digitraffic REST API at startup.
+This feeder turns the Finnish national [Digitraffic Road](https://www.digitraffic.fi/en/road-traffic/) stream into real-time CloudEvents over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
-## Data Source
+Companion docs:
 
-- **Publisher**: Fintraffic
-- **Documentation**: https://www.digitraffic.fi/en/road-traffic/
-- **Protocol**: MQTT over WebSocket (telemetry), REST (reference data)
-- **Auth**: None
-- **License**: Creative Commons 4.0 BY
-- **Update Frequency**: Real-time (sub-second via MQTT); reference data at startup
+- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
 
-## Event Types
+> [!CAUTION]
+> **Creative Commons 4.0 BY attribution is required when you use this data.** Use this exact attribution text in downstream products and documentation: **"Licensed materials from the Finnish Transport Infrastructure Agency (Väylävirasto) and the Finnish Transport and Communications Agency (Traficom) Digitraffic service, www.digitraffic.fi"**
 
-### Reference Data (emitted at startup from REST API)
+## Why this bridge
 
-| Type | Description |
-|---|---|
-| `fi.digitraffic.road.stations.TmsStation` | TMS station metadata (location, road address, sensors, free-flow speeds) |
-| `fi.digitraffic.road.stations.WeatherStation` | Road weather station metadata (location, road address, sensors, collection interval) |
-| `fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType` | Maintenance task type catalog (multilingual names) |
+Digitraffic Road exposes Finland's national road traffic network as a live MQTT-over-WebSocket feed at `wss://tie.digitraffic.fi/mqtt` plus reference-data REST endpoints under `https://tie.digitraffic.fi/api/`. The source covers automatic traffic measurement stations, road weather stations, traffic announcements, road works, weight restrictions, exempted transports, and maintenance vehicle tracking.
 
-### Telemetry (streamed continuously from MQTT)
+This bridge turns that upstream stream into a production-friendly event source so consumers can subscribe on their messaging fabric of choice instead of writing and operating their own long-lived MQTT client, REST bootstrap, gzip/base64 decoding, CloudEvents wrapping, and transport-specific publishing.
 
-| Type | Description |
-|---|---|
-| `fi.digitraffic.road.sensors.TmsSensorData` | Traffic measurement (speed, vehicle count) from a TMS station |
-| `fi.digitraffic.road.sensors.WeatherSensorData` | Road weather measurement (temperature, wind, humidity) from a weather station |
-| `fi.digitraffic.road.messages.TrafficAnnouncement` | Traffic incident or lane closure announcement |
-| `fi.digitraffic.road.messages.RoadWork` | Active or planned road work with phases and restrictions |
-| `fi.digitraffic.road.messages.WeightRestriction` | Weight restriction on a road or bridge |
-| `fi.digitraffic.road.messages.ExemptedTransport` | Oversize or heavy transport advance notice |
-| `fi.digitraffic.road.maintenance.MaintenanceTracking` | Maintenance vehicle position and task report |
+Typical consumers include:
 
-See [EVENTS.md](EVENTS.md) for full payload documentation.
+- **Traffic operations centers** — live road-network monitoring, congestion dashboards, and hazard response.
+- **Winter maintenance and contractor analytics** — route, task, and vehicle tracking for maintenance fleets.
+- **Logistics and fleet planning** — weather, flow, and incident awareness for routing decisions.
+- **Microsoft Fabric / Eventhouse / ADX pipelines** — queryable real-time telemetry and reference data.
+- **Research and public-interest applications** — reproducible ingest of Finnish road traffic data.
 
-## Running
+## Overview
 
-```shell
-python -m digitraffic_road stream \
-    --kafka-bootstrap-servers localhost:9092 \
-    --kafka-topic-sensors digitraffic-road-sensors \
-    --kafka-topic-messages digitraffic-road-messages \
-    --kafka-topic-maintenance digitraffic-road-maintenance
+**Digitraffic Road** is a streaming bridge: it keeps an open connection to `tie.digitraffic.fi` for telemetry and fetches reference catalogs from the REST API at startup. The source ships in three transport variants:
+
+| Variant | Container image | Transport | Default delivery shape |
+|---|---|---|---|
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-digitraffic-road:latest` | Apache Kafka 2.x compatible (including Azure Event Hubs and Microsoft Fabric Event Streams) | Three Kafka topics, JSON CloudEvents, keys aligned to source identity (`{station_id}`, `{station_id}/{sensor_id}`, `{situation_id}`, `{domain}`, `{task_id}`) |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-digitraffic-road-mqtt:latest` | MQTT 5.0 broker / Unified Namespace | Topic tree under `traffic/fi/fintraffic/digitraffic-road/...`, telemetry non-retained, reference data retained |
+| **AMQP** | `ghcr.io/clemensv/real-time-sources-digitraffic-road-amqp:latest` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs) | Single AMQP node, binary or structured CloudEvents, SASL PLAIN or Microsoft Entra ID |
+
+All three variants share:
+
+- The same upstream Digitraffic Road data source.
+- The same xRegistry contract in `xreg/digitraffic-road.xreg.json`.
+- The same ten event types: three reference-data types and seven live telemetry types.
+
+## Key features
+
+- **No API key required** — the upstream Digitraffic Road road-traffic feed is open.
+- **Streaming telemetry + reference bootstrap** — station catalogs and maintenance task types are emitted first, then live telemetry flows continuously.
+- **Ten event types** spanning stations, sensors, traffic messages, and maintenance tracking.
+- **Three transport targets** with the same source semantics: Kafka, MQTT/UNS, and AMQP 1.0.
+- **Selective subscriptions** via `DIGITRAFFIC_ROAD_SUBSCRIBE` (`tms`, `weather`, `traffic-messages`, `maintenance`).
+- **Station filtering** for sensor families via `DIGITRAFFIC_ROAD_STATION_FILTER`.
+- **Azure-ready packaging** with published images and ARM templates for Event Hubs, Event Grid MQTT, and Service Bus.
+
+## Repository layout
+
+```text
+digitraffic-road/
+  xreg/digitraffic-road.xreg.json   # shared xRegistry contract
+  digitraffic_road/                 # Kafka feeder application
+  digitraffic_road_mqtt/            # MQTT/UNS feeder application
+  digitraffic_road_amqp/            # AMQP 1.0 feeder application
+  digitraffic_road_producer/        # xRegistry-generated Kafka producer
+  digitraffic_road_mqtt_producer/   # xRegistry-generated MQTT producer
+  digitraffic_road_amqp_producer/   # xRegistry-generated AMQP producer
+  Dockerfile                        # Kafka image
+  Dockerfile.mqtt                   # MQTT image
+  Dockerfile.amqp                   # AMQP image
+  kql/digitraffic-road.kql          # Eventhouse / KQL schema
+  tests/                            # unit + integration tests
 ```
 
-Or with a connection string (topics configured via env vars):
+## Prerequisites
 
-```shell
-python -m digitraffic_road stream \
-    -c "BootstrapServer=localhost:9092"
+- Docker 20.10+ (or another OCI-compatible runtime).
+- Outbound HTTPS / WSS access to `tie.digitraffic.fi` on port 443.
+- Network access to your target Kafka broker, MQTT broker, or AMQP 1.0 broker.
+
+This is a pure streaming feeder. It does **not** require a persistent state file or mounted host volume.
+
+## Quick start with Docker
+
+### Kafka
+
+```bash
+docker run --rm \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-digitraffic-road:latest
 ```
 
-Use `python -m digitraffic_road probe` to inspect live MQTT messages.
+You can also target a plain Kafka broker with explicit bootstrap servers and topics:
 
-See [CONTAINER.md](CONTAINER.md) for Docker deployment.
+```bash
+docker run --rm \
+  -e KAFKA_BOOTSTRAP_SERVERS="broker:9092" \
+  -e KAFKA_TOPIC_SENSORS="digitraffic-road-sensors" \
+  -e KAFKA_TOPIC_MESSAGES="digitraffic-road-messages" \
+  -e KAFKA_TOPIC_MAINTENANCE="digitraffic-road-maintenance" \
+  -e KAFKA_ENABLE_TLS=false \
+  ghcr.io/clemensv/real-time-sources-digitraffic-road:latest
+```
+
+### MQTT (Unified Namespace)
+
+```bash
+docker run --rm \
+  -e MQTT_BROKER_URL="mqtts://<broker-host>:8883" \
+  -e MQTT_AUTH_MODE=userpass \
+  -e MQTT_USERNAME="<username>" \
+  -e MQTT_PASSWORD="<password>" \
+  ghcr.io/clemensv/real-time-sources-digitraffic-road-mqtt:latest
+```
+
+Topics published include:
+
+```text
+traffic/fi/fintraffic/digitraffic-road/{station_id}/{sensor_id}/tms-sensor-data
+traffic/fi/fintraffic/digitraffic-road/{station_id}/{sensor_id}/weather-sensor-data
+traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/traffic-announcement
+traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/road-work
+traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/weight-restriction
+traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/exempted-transport
+traffic/fi/fintraffic/digitraffic-road/maintenance/{domain}/tracking
+traffic/fi/fintraffic/digitraffic-road/stations/{station_id}/tms-station
+traffic/fi/fintraffic/digitraffic-road/stations/{station_id}/weather-station
+traffic/fi/fintraffic/digitraffic-road/maintenance-tasks/{task_id}/task-type
+```
+
+### AMQP 1.0
+
+```bash
+docker run --rm \
+  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/digitraffic-road' \
+  ghcr.io/clemensv/real-time-sources-digitraffic-road-amqp:latest
+```
+
+For Azure Service Bus with Microsoft Entra ID:
+
+```bash
+docker run --rm \
+  -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+  -e AMQP_PORT=5671 \
+  -e AMQP_TLS=true \
+  -e AMQP_ADDRESS='digitraffic-road' \
+  -e AMQP_AUTH_MODE=entra \
+  -e AMQP_ENTRA_CLIENT_ID='<managed-identity-client-id>' \
+  ghcr.io/clemensv/real-time-sources-digitraffic-road-amqp:latest
+```
+
+## Configuration reference
+
+The full environment-variable matrix for Kafka, MQTT, and AMQP images lives in [CONTAINER.md](CONTAINER.md). Runtime entry points are:
+
+- `python -m digitraffic_road feed`
+- `python -m digitraffic_road_mqtt feed`
+- `python -m digitraffic_road_amqp feed`
+
+## Event families
+
+### Reference data (emitted at startup)
+
+| Event type | Description |
+|---|---|
+| `fi.digitraffic.road.stations.TmsStation` | Automatic traffic measurement station metadata |
+| `fi.digitraffic.road.stations.WeatherStation` | Road weather station metadata |
+| `fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType` | Maintenance task-type catalog |
+
+### Telemetry (streamed continuously)
+
+| Event type | Description |
+|---|---|
+| `fi.digitraffic.road.sensors.TmsSensorData` | TMS sensor measurements such as vehicle count, speed, and occupancy |
+| `fi.digitraffic.road.sensors.WeatherSensorData` | Weather measurements such as temperature, wind, and humidity |
+| `fi.digitraffic.road.messages.TrafficAnnouncement` | Traffic incidents and hazard announcements |
+| `fi.digitraffic.road.messages.RoadWork` | Planned or active road works |
+| `fi.digitraffic.road.messages.WeightRestriction` | Weight restrictions on roads or bridges |
+| `fi.digitraffic.road.messages.ExemptedTransport` | Oversize / heavy transport notices |
+| `fi.digitraffic.road.maintenance.MaintenanceTracking` | Maintenance vehicle position and active task tracking |
 
 ## Deploying into Azure Container Instances
 
-You can deploy this bridge directly to Azure Container Instances. Two deployment
-options are available:
+Five one-click deployment templates are available:
 
-### Option 1: Bring your own Event Hub
-
-Deploy the container and provide your own Azure Event Hubs or Fabric Event
-Streams connection string. The template creates a storage account and file share
-for persistent state.
+### Kafka — bring your own Event Hub / Kafka
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-road%2Fazure-template.json)
 
-### Option 2: Deploy with a new Event Hub
-
-Deploy the container together with a new Event Hub namespace (Standard SKU, 1
-throughput unit) and event hub. The connection string is automatically
-configured.
+### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-road%2Fazure-template-with-eventhub.json)
+
+### MQTT — bring your own broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-road%2Fazure-template-mqtt.json)
+
+### MQTT — provision an Event Grid namespace
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-road%2Fazure-template-with-eventgrid-mqtt.json)
+
+### AMQP — provision a new Azure Service Bus namespace
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fdigitraffic-road%2Fazure-template-with-servicebus.json)
+
+## Next steps
+
+- Review [EVENTS.md](EVENTS.md) before writing consumers.
+- Use [CONTAINER.md](CONTAINER.md) for the full container and environment-variable contract.
+- Consult the upstream Digitraffic Road documentation at <https://www.digitraffic.fi/en/road-traffic/>.
