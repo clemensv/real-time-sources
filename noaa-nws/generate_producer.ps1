@@ -37,3 +37,23 @@ if ($LASTEXITCODE -eq 0) {
 
 & (Join-Path $PSScriptRoot "generate_mqtt_producer.ps1")
 & (Join-Path $PSScriptRoot "generate_amqp_producer.ps1")
+
+# Post-fix: expose flat schema classes (xrcg only auto-exports those it
+# nests under the microsoft/ subpackage). Append any missing flat classes
+# so the kafka producer's `from noaa_nws_producer_data import X` imports
+# resolve.
+$dataInit = Join-Path $projectRoot "noaa_nws_producer\noaa_nws_producer_data\src\noaa_nws_producer_data\__init__.py"
+if (Test-Path $dataInit) {
+    $content = Get-Content $dataInit -Raw
+    $flatClasses = @('ObservationStation', 'WeatherObservation')
+    foreach ($cls in $flatClasses) {
+        $module = $cls.ToLower()
+        $modPath = Join-Path $projectRoot "noaa_nws_producer\noaa_nws_producer_data\src\noaa_nws_producer_data\$module.py"
+        if ((Test-Path $modPath) -and ($content -notmatch "from \.$module import $cls")) {
+            $content = $content -replace '(__all__ = \[)', "from .$module import $cls`n`$1"
+            $content = $content -replace '(__all__ = \[[^\]]*?)\]', "`$1, `"$cls`"]"
+        }
+    }
+    Set-Content -Path $dataInit -Value $content -NoNewline
+}
+

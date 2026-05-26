@@ -14,12 +14,12 @@ from marshmallow import fields
 import json
 import avro.schema
 import avro.io
-from noaa_nws_producer_data.urgencyenum import UrgencyEnum
-from noaa_nws_producer_data.statusenum import StatusEnum
-from noaa_nws_producer_data.severityenum import SeverityEnum
-from noaa_nws_producer_data.messagetypeenum import MessageTypeenum
 from noaa_nws_producer_data.categoryenum import CategoryEnum
+from noaa_nws_producer_data.urgencyenum import UrgencyEnum
+from noaa_nws_producer_data.messagetypeenum import MessageTypeenum
 from noaa_nws_producer_data.certaintyenum import CertaintyEnum
+from noaa_nws_producer_data.severityenum import SeverityEnum
+from noaa_nws_producer_data.statusenum import StatusEnum
 import datetime
 
 
@@ -307,8 +307,8 @@ class WeatherAlert:
             An instance of the dataclass.
         """
         return cls(
-            alert_id='dxoasnufvcrwobbwecfp',
-            area_desc='wnluawvnlbelpclwdvcs',
+            alert_id='wxqtvjxewiutlogizyoe',
+            area_desc='bzrgvjyipdmeymcxqeiv',
             sent=datetime.datetime.now(datetime.timezone.utc),
             effective=datetime.datetime.now(datetime.timezone.utc),
             expires=datetime.datetime.now(datetime.timezone.utc),
@@ -318,11 +318,11 @@ class WeatherAlert:
             severity=SeverityEnum.Extreme,
             certainty=CertaintyEnum.Observed,
             urgency=UrgencyEnum.Immediate,
-            event='tkllkkpqlehcmqrgwqqv',
-            sender_name='twynejrxsaboiyrjgjdn',
-            headline='jcvmungmhmejobiqjgka',
-            description='izsaogtmczctucpuutwm',
-            zone_id='wrxmlmogjqqbykizkhcn',
-            state='pcjnopeabyzfxwcbzbwi',
-            event_type='cmuyykctusnfsjokzvlt'
+            event='vxsiddltxwfnoqgdiflw',
+            sender_name='lxetkugzbtsorzksmpfz',
+            headline='vqbruhrtykmfuqulkbpv',
+            description='vrsvurnfoclypjbgfdou',
+            zone_id='grlyjrtdgpekhrnczxko',
+            state='zrpcunetfqvkzhmvqgbs',
+            event_type='oqunhkmhaqwpvthsqnxx'
         )

@@ -1,4 +1,4 @@
-from .weatheralert import WeatherAlert
 from .zone import Zone
+from .weatheralert import WeatherAlert
 
-__all__ = ["WeatherAlert", "Zone"]
+__all__ = ["Zone", "WeatherAlert"]
