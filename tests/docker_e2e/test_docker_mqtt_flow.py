@@ -5201,6 +5201,21 @@ class TestFrenchRoadTrafficMqttDockerFlow:
         _run_mqtt_contract_flow('french-road-traffic', french_road_traffic_mqtt_image, mosquitto_french_road_traffic, timeout=240)
 
 @pytest.fixture(scope='module')
+def french_road_traffic_mqtt_image():
+    return build_image('french-road-traffic', dockerfile='Dockerfile.mqtt', tag='test-french-road-traffic-mqtt')
+
+@pytest.fixture()
+def mosquitto_french_road_traffic():
+    container, network, host_port = _generic_mosquitto('french-road-traffic-mqtt-e2e', 'french-road-traffic-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'french-road-traffic-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+@pytest.fixture(scope='module')
 def gtfs_mqtt_image():
     return build_image('gtfs', dockerfile='Dockerfile.mqtt', tag='test-gtfs-mqtt')
 
