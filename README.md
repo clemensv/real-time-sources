@@ -714,3 +714,20 @@ Binary release available.
 ## AMQP companion feeders for maritime and tracking sources
 
 AMQP 1.0 companion images and Service Bus deployment templates are available for `kystverket-ais`, `king-county-marine`, `vatsim`, `mode-s`, and `aisstream` via each source's `Dockerfile.amqp`, `azure-template-with-servicebus.json`, and container documentation.
+
+
+### B1 hydro/maritime MQTT + AMQP companions
+
+- `canada-eccc-wateroffice`: MQTT image/deploy templates and AMQP image/Service Bus template added.
+- `cdec-reservoirs`: MQTT image/deploy templates and AMQP image/Service Bus template added.
+- `hubeau-hydrometrie`: MQTT image/deploy templates and AMQP image/Service Bus template added.
+- `imgw-hydro`: MQTT image/deploy templates and AMQP image/Service Bus template added.
+- `ireland-opw-waterlevel`: MQTT image/deploy templates and AMQP image/Service Bus template added.
+- `nepal-bipad-hydrology`: MQTT image/deploy templates and AMQP image/Service Bus template added.
+- `noaa-ndbc`: MQTT image/deploy templates and AMQP image/Service Bus template added.
+- `noaa`: MQTT image/deploy templates and AMQP image/Service Bus template added.
+- `snotel`: MQTT image/deploy templates and AMQP image/Service Bus template added.
+- `syke-hydro`: MQTT image/deploy templates and AMQP image/Service Bus template added.
+- `uk-ea-flood-monitoring`: MQTT image/deploy templates and AMQP image/Service Bus template added.
+- `usgs-nwis-wq`: MQTT image/deploy templates and AMQP image/Service Bus template added.
+- `waterinfo-vmm`: MQTT image/deploy templates and AMQP image/Service Bus template added.

@@ -1,0 +1,15 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/ireland-opw-waterlevel" \
+      org.opencontainers.image.title="ireland-opw-waterlevel → MQTT/UNS bridge" \
+      org.opencontainers.image.description="Publishes ireland-opw-waterlevel CloudEvents over MQTT 5.0 into the documented Unified Namespace topic tree." \
+      org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/ireland-opw-waterlevel/CONTAINER.md" \
+      org.opencontainers.image.license="MIT"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY . /app
+RUN pip install --no-cache-dir ./ireland_opw_waterlevel_mqtt_producer/ireland_opw_waterlevel_mqtt_producer_data \
+ && pip install --no-cache-dir ./ireland_opw_waterlevel_mqtt_producer/ireland_opw_waterlevel_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./ireland_opw_waterlevel_mqtt
+ENV MQTT_BROKER_URL=""
+CMD ["python", "-m", "ireland_opw_waterlevel_mqtt", "feed"]

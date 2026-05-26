@@ -4843,7 +4843,7 @@ def mosquitto_jma_bosai_warning():
 
 class TestJmaBosaiWarningMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_jma_bosai_warning, jma_bosai_warning_mqtt_image):
-        _run_mqtt_contract_flow('jma-bosai-warning', jma_bosai_warning_mqtt_image, mosquitto_jma_bosai_warning, extra_env={'JMA_BOSAI_WARNING_MOCK': 'true', 'JMA_WARNING_OFFICE_CODES': '130000'}, timeout=900)
+        _run_mqtt_contract_flow('jma-bosai-warning', jma_bosai_warning_mqtt_image, mosquitto_jma_bosai_warning, timeout=900)
 
 
 @pytest.fixture(scope='module')
@@ -5194,6 +5194,59 @@ class TestTepcoDenkiyohoMqttDockerFlow:
         finally:
             if feeder is not None: feeder.remove(force=True)
             broker.kill(); network.remove()
+
+
+class TestCanadaEcccWaterofficeMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(0)
+
+class TestCdecReservoirsMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(1)
+
+class TestHubeauHydrometrieMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(2)
+
+class TestImgwHydroMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(3)
+
+class TestIrelandOpwWaterlevelMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(4)
+
+class TestNepalBipadHydrologyMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(5)
+
+class TestNoaaNdbcMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(6)
+
+class TestNoaaMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(7)
+
+class TestSnotelMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(8)
+
+class TestSykeHydroMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(9)
+
+class TestUkEaFloodMonitoringMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(10)
+
+class TestUsgsNwisWqMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(11)
+
+class TestWaterinfoVmmMqttDockerFlow:
+    def test_emits_retained_uns_topics(self):
+        _run_b1_mqtt_flow(12)
 
 
 class TestJmaBosaiAmedasMqttDockerFlow:

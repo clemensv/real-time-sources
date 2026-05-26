@@ -1,0 +1,15 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "canada-eccc-wateroffice-amqp"
+version = "0.1.0"
+packages = [{include = "canada_eccc_wateroffice_amqp"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+azure-identity = ">=1.17.0"
+dataclasses_json = ">=0.6.7"
+canada_eccc_wateroffice_amqp_producer_data = {path = "../canada_eccc_wateroffice_amqp_producer/canada_eccc_wateroffice_amqp_producer_data"}
+canada_eccc_wateroffice_amqp_producer_amqp_producer = {path = "../canada_eccc_wateroffice_amqp_producer/canada_eccc_wateroffice_amqp_producer_amqp_producer"}

@@ -29,18 +29,19 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         Create instance of BuoyOceanographicObservation for testing
         """
         instance = BuoyOceanographicObservation(
-            station_id='ghhqeuhdckdzxukguiuh',
+            station_id='zwazzbgejxvhfzvxtfeb',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            depth=float(79.32842548720697),
-            ocean_temperature=float(64.36182650326148),
-            conductivity=float(49.666597680110684),
-            salinity=float(22.07703692119104),
-            oxygen_saturation=float(3.3610458884420935),
-            oxygen_concentration=float(44.318798317121924),
-            chlorophyll_concentration=float(57.1240037769907),
-            turbidity=float(60.61824619820037),
-            ph=float(91.09544819298056),
-            redox_potential=float(23.36882456782461)
+            depth=float(94.77649903305735),
+            ocean_temperature=float(2.324698768189526),
+            conductivity=float(30.065378639415506),
+            salinity=float(56.153057480079326),
+            oxygen_saturation=float(52.45421410643414),
+            oxygen_concentration=float(53.87911310383936),
+            chlorophyll_concentration=float(29.89429980063999),
+            turbidity=float(48.644136506636926),
+            ph=float(22.652782857375588),
+            redox_potential=float(85.36195424038927),
+            region='azkamqzbiefntiniutnm'
         )
         return instance
 
@@ -49,7 +50,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'ghhqeuhdckdzxukguiuh'
+        test_value = 'zwazzbgejxvhfzvxtfeb'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -65,7 +66,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test depth property
         """
-        test_value = float(79.32842548720697)
+        test_value = float(94.77649903305735)
         self.instance.depth = test_value
         self.assertEqual(self.instance.depth, test_value)
     
@@ -73,7 +74,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test ocean_temperature property
         """
-        test_value = float(64.36182650326148)
+        test_value = float(2.324698768189526)
         self.instance.ocean_temperature = test_value
         self.assertEqual(self.instance.ocean_temperature, test_value)
     
@@ -81,7 +82,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test conductivity property
         """
-        test_value = float(49.666597680110684)
+        test_value = float(30.065378639415506)
         self.instance.conductivity = test_value
         self.assertEqual(self.instance.conductivity, test_value)
     
@@ -89,7 +90,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test salinity property
         """
-        test_value = float(22.07703692119104)
+        test_value = float(56.153057480079326)
         self.instance.salinity = test_value
         self.assertEqual(self.instance.salinity, test_value)
     
@@ -97,7 +98,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test oxygen_saturation property
         """
-        test_value = float(3.3610458884420935)
+        test_value = float(52.45421410643414)
         self.instance.oxygen_saturation = test_value
         self.assertEqual(self.instance.oxygen_saturation, test_value)
     
@@ -105,7 +106,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test oxygen_concentration property
         """
-        test_value = float(44.318798317121924)
+        test_value = float(53.87911310383936)
         self.instance.oxygen_concentration = test_value
         self.assertEqual(self.instance.oxygen_concentration, test_value)
     
@@ -113,7 +114,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test chlorophyll_concentration property
         """
-        test_value = float(57.1240037769907)
+        test_value = float(29.89429980063999)
         self.instance.chlorophyll_concentration = test_value
         self.assertEqual(self.instance.chlorophyll_concentration, test_value)
     
@@ -121,7 +122,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test turbidity property
         """
-        test_value = float(60.61824619820037)
+        test_value = float(48.644136506636926)
         self.instance.turbidity = test_value
         self.assertEqual(self.instance.turbidity, test_value)
     
@@ -129,7 +130,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test ph property
         """
-        test_value = float(91.09544819298056)
+        test_value = float(22.652782857375588)
         self.instance.ph = test_value
         self.assertEqual(self.instance.ph, test_value)
     
@@ -137,10 +138,27 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test redox_potential property
         """
-        test_value = float(23.36882456782461)
+        test_value = float(85.36195424038927)
         self.instance.redox_potential = test_value
         self.assertEqual(self.instance.redox_potential, test_value)
     
+    def test_region_property(self):
+        """
+        Test region property
+        """
+        test_value = 'azkamqzbiefntiniutnm'
+        self.instance.region = test_value
+        self.assertEqual(self.instance.region, test_value)
+    
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = BuoyOceanographicObservation.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

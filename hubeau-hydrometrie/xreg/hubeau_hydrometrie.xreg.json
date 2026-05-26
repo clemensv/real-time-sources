@@ -21,6 +21,50 @@
         "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie"
       ],
       "description": "Kafka producer endpoint for Hub'Eau Hydrométrie CloudEvents on the `hubeau-hydrometrie` topic keyed by `{code_station}`."
+    },
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for hubeau-hydrometrie CloudEvents using the documented UNS topic hierarchy."
+    },
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/hubeau-hydrometrie"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for hubeau-hydrometrie CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -66,6 +110,92 @@
         }
       },
       "description": "Events from Hub'Eau Hydrométrie covering French hydrometric monitoring stations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
+    },
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt": {
+      "description": "MQTT 5 variant of hubeau-hydrometrie events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/fr/hubeau/hubeau-hydrometrie/{basin}/{code_station}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/fr/hubeau/hubeau-hydrometrie/{basin}/{code_station}/observation",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp": {
+      "description": "AMQP 1.0 variant of hubeau-hydrometrie events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{code_station}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "Routing property for AMQP subscription filters (basin)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{code_station}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Observation": {
+          "name": "Observation",
+          "basemessageurl": "/messagegroups/FR.Gov.Eaufrance.HubEau.Hydrometrie/messages/FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{code_station}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "basin": {
+                "type": "uritemplate",
+                "value": "{basin}",
+                "description": "Routing property for AMQP subscription filters (basin)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{code_station}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -146,6 +276,10 @@
                       "null"
                     ],
                     "description": "Date when the station began operating, when the upstream catalog provides it."
+                  },
+                  "basin": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie."
                   }
                 },
                 "$id": "https://example.com/schemas/FR/Gov/Eaufrance/HubEau/Hydrometrie/Station",
@@ -201,6 +335,10 @@
                       "null"
                     ],
                     "description": "Provider quality label describing how Hub'Eau qualifies the observation."
+                  },
+                  "basin": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for hubeau-hydrometrie."
                   }
                 },
                 "$id": "https://example.com/schemas/FR/Gov/Eaufrance/HubEau/Hydrometrie/Observation",

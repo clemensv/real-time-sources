@@ -21,6 +21,50 @@
         "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM"
       ],
       "description": "Kafka producer endpoint for Waterinfo VMM CloudEvents on the `waterinfo-vmm` topic keyed by `{station_no}`."
+    },
+    "BE.Vlaanderen.Waterinfo.VMM.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for waterinfo-vmm CloudEvents using the documented UNS topic hierarchy."
+    },
+    "BE.Vlaanderen.Waterinfo.VMM.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/waterinfo-vmm"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/BE.Vlaanderen.Waterinfo.VMM.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for waterinfo-vmm CloudEvents on the configured broker address."
     }
   },
   "messagegroups": {
@@ -66,6 +110,92 @@
         }
       },
       "description": "Events from Waterinfo VMM covering Flemish water monitoring locations and their current measurements. Use the reference records to identify stations and the measurement records for the latest observations."
+    },
+    "BE.Vlaanderen.Waterinfo.VMM.mqtt": {
+      "description": "MQTT 5 variant of waterinfo-vmm events with UNS topics for wildcard subscribers.",
+      "messages": {
+        "BE.Vlaanderen.Waterinfo.VMM.mqtt.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.Station",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/be/vmm/waterinfo-vmm/{water_body}/{station_no}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "BE.Vlaanderen.Waterinfo.VMM.mqtt.WaterLevelReading": {
+          "name": "WaterLevelReading",
+          "basemessageurl": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "hydro/be/vmm/waterinfo-vmm/{water_body}/{station_no}/water-level",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "BE.Vlaanderen.Waterinfo.VMM.amqp": {
+      "description": "AMQP 1.0 variant of waterinfo-vmm events for queue-oriented consumers and Azure Service Bus.",
+      "messages": {
+        "BE.Vlaanderen.Waterinfo.VMM.amqp.Station": {
+          "name": "Station",
+          "basemessageurl": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.Station",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_no}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "water_body": {
+                "type": "uritemplate",
+                "value": "{water_body}",
+                "description": "Routing property for AMQP subscription filters (water_body)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_no}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        },
+        "BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading": {
+          "name": "WaterLevelReading",
+          "basemessageurl": "/messagegroups/BE.Vlaanderen.Waterinfo.VMM/messages/BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_no}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity."
+              }
+            },
+            "application_properties": {
+              "water_body": {
+                "type": "uritemplate",
+                "value": "{water_body}",
+                "description": "Routing property for AMQP subscription filters (water_body)."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_no}",
+                "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -136,6 +266,10 @@
                       "null"
                     ],
                     "description": "Provider-supplied ts unitname value for this record."
+                  },
+                  "water_body": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for waterinfo-vmm."
                   }
                 },
                 "$id": "https://example.com/schemas/BE/Vlaanderen/Waterinfo/VMM/Station",
@@ -189,6 +323,10 @@
                   "parameter_name": {
                     "type": "string",
                     "description": "Plain-language name of the measured parameter."
+                  },
+                  "water_body": {
+                    "type": "string",
+                    "description": "Stable routing axis used by MQTT and AMQP transport templates for waterinfo-vmm."
                   }
                 },
                 "$id": "https://example.com/schemas/BE/Vlaanderen/Waterinfo/VMM/WaterLevelReading",

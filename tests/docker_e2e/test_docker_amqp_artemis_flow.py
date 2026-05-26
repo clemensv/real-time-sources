@@ -518,3 +518,117 @@ class TestSmhiHydroAmqpArtemisFlow:
 class TestWalloniaIssepAmqpArtemisFlow:
     def test_emits_cloudevents_to_amqp_queue(self):
         _run_generic_amqp_artemis_flow(*HYDRO_AMQP_SOURCES[6])
+
+
+# ---------------------------------------------------------------------------
+# B1 hydro/maritime AMQP companions (Artemis, mock-mode)
+# ---------------------------------------------------------------------------
+
+B1_AMQP_SOURCES = [('canada-eccc-wateroffice', 'test-canada-eccc-wateroffice-amqp', ['CA.Gov.ECCC.Hydro.Observation', 'CA.Gov.ECCC.Hydro.Station']), ('cdec-reservoirs', 'test-cdec-reservoirs-amqp', ['gov.ca.water.cdec.ReservoirReading']), ('hubeau-hydrometrie', 'test-hubeau-hydrometrie-amqp', ['FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation', 'FR.Gov.Eaufrance.HubEau.Hydrometrie.Station']), ('imgw-hydro', 'test-imgw-hydro-amqp', ['PL.Gov.IMGW.Hydro.Station', 'PL.Gov.IMGW.Hydro.WaterLevelObservation']), ('ireland-opw-waterlevel', 'test-ireland-opw-waterlevel-amqp', ['ie.gov.opw.waterlevel.Station', 'ie.gov.opw.waterlevel.WaterLevelReading']), ('nepal-bipad-hydrology', 'test-nepal-bipad-hydrology-amqp', ['np.gov.bipad.hydrology.RiverStation', 'np.gov.bipad.hydrology.WaterLevelReading']), ('noaa-ndbc', 'test-noaa-ndbc-amqp', ['Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoyStation', 'Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement']), ('noaa', 'test-noaa-amqp', ['Microsoft.OpenData.US.NOAA.AirPressure', 'Microsoft.OpenData.US.NOAA.AirTemperature', 'Microsoft.OpenData.US.NOAA.Conductivity', 'Microsoft.OpenData.US.NOAA.CurrentPredictions', 'Microsoft.OpenData.US.NOAA.Currents', 'Microsoft.OpenData.US.NOAA.Humidity', 'Microsoft.OpenData.US.NOAA.Predictions', 'Microsoft.OpenData.US.NOAA.Salinity', 'Microsoft.OpenData.US.NOAA.Station', 'Microsoft.OpenData.US.NOAA.Visibility', 'Microsoft.OpenData.US.NOAA.WaterLevel', 'Microsoft.OpenData.US.NOAA.WaterTemperature', 'Microsoft.OpenData.US.NOAA.Wind']), ('snotel', 'test-snotel-amqp', ['gov.usda.nrcs.snotel.SnowObservation', 'gov.usda.nrcs.snotel.Station']), ('syke-hydro', 'test-syke-hydro-amqp', ['FI.SYKE.Hydrology.Station', 'FI.SYKE.Hydrology.WaterLevelObservation']), ('uk-ea-flood-monitoring', 'test-uk-ea-flood-monitoring-amqp', ['UK.Gov.Environment.EA.FloodMonitoring.Reading', 'UK.Gov.Environment.EA.FloodMonitoring.Station']), ('usgs-nwis-wq', 'test-usgs-nwis-wq-amqp', ['USGS.WaterQuality.Readings.WaterQualityReading', 'USGS.WaterQuality.Sites.MonitoringSite']), ('waterinfo-vmm', 'test-waterinfo-vmm-amqp', ['BE.Vlaanderen.Waterinfo.VMM.Station', 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading'])]
+
+
+def _run_b1_amqp_artemis_flow(index: int) -> None:
+    source_dir, image_tag, expected_types = B1_AMQP_SOURCES[index]
+    queue = source_dir
+    client = docker.from_env()
+    image = build_image(source_dir, dockerfile='Dockerfile.amqp', tag=image_tag)
+    network = client.networks.create(f'{source_dir}-b1-amqp-e2e', driver='bridge')
+    host_port = _find_free_port()
+    broker = None
+    try:
+        broker = client.containers.run(ARTEMIS_IMAGE, name=f'{source_dir}-b1-amqp-e2e-broker', detach=True, remove=True, network=network.name, ports={'5672/tcp': host_port}, environment={'ARTEMIS_USER': ARTEMIS_USER, 'ARTEMIS_PASSWORD': ARTEMIS_PASSWORD, 'ANONYMOUS_LOGIN': 'false', 'EXTRA_ARGS': f'--queues {queue}'})
+        deadline = time.time() + 90
+        while time.time() < deadline:
+            try:
+                with closing(socket.create_connection(('127.0.0.1', host_port), timeout=1)):
+                    logs = broker.logs().decode('utf-8', errors='replace')
+                    if 'Server is now live' in logs or ('AMQP' in logs and 'started' in logs.lower()): break
+            except OSError: pass
+            time.sleep(2)
+        time.sleep(3)
+        feeder = client.containers.run(image.id, detach=True, remove=False, network=network.name, environment={'AMQP_HOST': f'{source_dir}-b1-amqp-e2e-broker', 'AMQP_PORT': '5672', 'AMQP_ADDRESS': queue, 'AMQP_USERNAME': ARTEMIS_USER, 'AMQP_PASSWORD': ARTEMIS_PASSWORD, 'AMQP_AUTH_MODE': 'password', 'MOCK_MODE': 'true', 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1'})
+        try:
+            result = feeder.wait(timeout=300); logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs[-4000:]}"
+        finally:
+            feeder.remove(force=True)
+        messages = _receive_messages('127.0.0.1', host_port, queue, ARTEMIS_USER, ARTEMIS_PASSWORD, expected=len(expected_types), timeout=30)
+        assert messages, f'No AMQP messages received for {source_dir}'
+        seen = {_extract_ce_attrs(m).get('type') for m in messages}
+        assert set(expected_types).issubset(seen), (source_dir, seen, expected_types)
+        for m in messages[: min(3, len(messages))]:
+            ce = _extract_ce_attrs(m)
+            for required in ('id','source','type','subject','specversion'):
+                assert required in ce, ce
+            assert isinstance(_body_to_obj(m), dict)
+    finally:
+        if broker is not None:
+            try: broker.kill()
+            except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestCanadaEcccWaterofficeAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_b1_amqp_artemis_flow(0)
+
+
+class TestCdecReservoirsAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_b1_amqp_artemis_flow(1)
+
+
+class TestHubeauHydrometrieAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_b1_amqp_artemis_flow(2)
+
+
+class TestImgwHydroAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_b1_amqp_artemis_flow(3)
+
+
+class TestIrelandOpwWaterlevelAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_b1_amqp_artemis_flow(4)
+
+
+class TestNepalBipadHydrologyAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_b1_amqp_artemis_flow(5)
+
+
+class TestNoaaNdbcAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_b1_amqp_artemis_flow(6)
+
+
+class TestNoaaAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_b1_amqp_artemis_flow(7)
+
+
+class TestSnotelAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_b1_amqp_artemis_flow(8)
+
+
+class TestSykeHydroAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_b1_amqp_artemis_flow(9)
+
+
+class TestUkEaFloodMonitoringAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_b1_amqp_artemis_flow(10)
+
+
+class TestUsgsNwisWqAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_b1_amqp_artemis_flow(11)
+
+
+class TestWaterinfoVmmAmqpArtemisFlow:
+    def test_emits_cloudevents_to_amqp_queue(self):
+        _run_b1_amqp_artemis_flow(12)
+

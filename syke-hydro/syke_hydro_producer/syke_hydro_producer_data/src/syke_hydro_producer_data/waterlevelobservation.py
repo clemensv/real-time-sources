@@ -21,7 +21,7 @@ import datetime
 @dataclass
 class WaterLevelObservation:
     """
-    WaterLevelObservation
+    Measurement payload for water level and discharge observations in the SYKE Hydrology source.
     
     Attributes:
         station_id (str)
@@ -31,10 +31,11 @@ class WaterLevelObservation:
         discharge (typing.Optional[float])
         discharge_unit (typing.Optional[str])
         discharge_timestamp (typing.Optional[datetime.datetime])
+        basin (typing.Optional[str])
     """
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"water_level\", \"type\": [\"double\", \"null\"], \"doc\": \"Water level reading value in centimetres. Null when the station does not report a water level in the current polling window.\", \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"string\", \"null\"], \"doc\": \"Unit of measurement for water_level. Constant 'cm' when present, null when water_level is null.\", \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [{\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}, \"null\"], \"doc\": \"RFC3339 UTC timestamp (with 'Z' suffix) of the water level observation, derived from the SYKE 'Aika' field. Null when no water level is available.\", \"default\": null}, {\"name\": \"discharge\", \"type\": [\"double\", \"null\"], \"doc\": \"Discharge (flow) reading value in cubic metres per second. Null for stations that do not measure discharge.\", \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"string\", \"null\"], \"doc\": \"Unit of measurement for discharge. Constant 'm3/s' when present, null when discharge is null.\", \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [{\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}, \"null\"], \"doc\": \"RFC3339 UTC timestamp (with 'Z' suffix) of the discharge observation, derived from the SYKE 'Aika' field. Null when no discharge is available.\", \"default\": null}]}"
+        "{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"Measurement payload for water level and discharge observations in the SYKE Hydrology source.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Stable identifier assigned by the upstream provider for the monitoring station or site.\"}, {\"name\": \"water_level\", \"type\": [\"double\", \"null\"], \"doc\": \"Water level reading value in centimetres. Null when the station does not report a water level in the current polling window.\", \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"string\", \"null\"], \"doc\": \"Unit of measurement for water_level. Constant 'cm' when present, null when water_level is null.\", \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [{\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}, \"null\"], \"doc\": \"RFC3339 UTC timestamp (with 'Z' suffix) of the water level observation, derived from the SYKE 'Aika' field. Null when no water level is available.\", \"default\": null}, {\"name\": \"discharge\", \"type\": [\"double\", \"null\"], \"doc\": \"Discharge (flow) reading value in cubic metres per second. Null for stations that do not measure discharge.\", \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"string\", \"null\"], \"doc\": \"Unit of measurement for discharge. Constant 'm3/s' when present, null when discharge is null.\", \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [{\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}, \"null\"], \"doc\": \"RFC3339 UTC timestamp (with 'Z' suffix) of the discharge observation, derived from the SYKE 'Aika' field. Null when no discharge is available.\", \"default\": null}, {\"name\": \"basin\", \"type\": [\"null\", \"string\"], \"doc\": \"Stable routing axis used by MQTT and AMQP transport templates for syke-hydro.\", \"default\": null}]}"
     )
     
     
@@ -45,6 +46,7 @@ class WaterLevelObservation:
     discharge: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge"))
     discharge_unit: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_unit"))
     discharge_timestamp: typing.Optional[datetime.datetime]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="discharge_timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    basin: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="basin"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WaterLevelObservation':
@@ -87,6 +89,8 @@ class WaterLevelObservation:
             value = converted['discharge_unit']
         if 'discharge_timestamp' in converted and converted['discharge_timestamp'] is not None:
             value = converted['discharge_timestamp']
+        if 'basin' in converted and converted['basin'] is not None:
+            value = converted['basin']
         
         return cls(**converted)
 
@@ -239,11 +243,12 @@ class WaterLevelObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='utdnwuppmpefqnhxmcky',
-            water_level=float(75.73429458079931),
-            water_level_unit='evvdxcefydldzaryyaah',
+            station_id='qptplgyivrtnmlbuclwn',
+            water_level=float(14.497867667696497),
+            water_level_unit='jgybjywcitcvvradgijy',
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(85.90402029472514),
-            discharge_unit='uxujhlxkrzwlsaxvjwer',
-            discharge_timestamp=datetime.datetime.now(datetime.timezone.utc)
+            discharge=float(56.04344460734243),
+            discharge_unit='tutzzkktnumzceenbdng',
+            discharge_timestamp=datetime.datetime.now(datetime.timezone.utc),
+            basin='zfeblzdyxpvbluklkgbs'
         )

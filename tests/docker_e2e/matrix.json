@@ -860,6 +860,162 @@
       "module": "tepco_denkiyoho_amqp"
     },
     {
+      "dir": "canada-eccc-wateroffice",
+      "image": "canada-eccc-wateroffice-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "canada_eccc_wateroffice_mqtt"
+    },
+    {
+      "dir": "canada-eccc-wateroffice",
+      "image": "canada-eccc-wateroffice-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "canada_eccc_wateroffice_amqp"
+    },
+    {
+      "dir": "cdec-reservoirs",
+      "image": "cdec-reservoirs-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "cdec_reservoirs_mqtt"
+    },
+    {
+      "dir": "cdec-reservoirs",
+      "image": "cdec-reservoirs-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "cdec_reservoirs_amqp"
+    },
+    {
+      "dir": "hubeau-hydrometrie",
+      "image": "hubeau-hydrometrie-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "hubeau_hydrometrie_mqtt"
+    },
+    {
+      "dir": "hubeau-hydrometrie",
+      "image": "hubeau-hydrometrie-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "hubeau_hydrometrie_amqp"
+    },
+    {
+      "dir": "imgw-hydro",
+      "image": "imgw-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "imgw_hydro_mqtt"
+    },
+    {
+      "dir": "imgw-hydro",
+      "image": "imgw-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "imgw_hydro_amqp"
+    },
+    {
+      "dir": "ireland-opw-waterlevel",
+      "image": "ireland-opw-waterlevel-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "ireland_opw_waterlevel_mqtt"
+    },
+    {
+      "dir": "ireland-opw-waterlevel",
+      "image": "ireland-opw-waterlevel-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "ireland_opw_waterlevel_amqp"
+    },
+    {
+      "dir": "nepal-bipad-hydrology",
+      "image": "nepal-bipad-hydrology-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "nepal_bipad_hydrology_mqtt"
+    },
+    {
+      "dir": "nepal-bipad-hydrology",
+      "image": "nepal-bipad-hydrology-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "nepal_bipad_hydrology_amqp"
+    },
+    {
+      "dir": "noaa-ndbc",
+      "image": "noaa-ndbc-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "noaa_ndbc_mqtt"
+    },
+    {
+      "dir": "noaa-ndbc",
+      "image": "noaa-ndbc-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "noaa_ndbc_amqp"
+    },
+    {
+      "dir": "noaa",
+      "image": "noaa-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "noaa_mqtt"
+    },
+    {
+      "dir": "noaa",
+      "image": "noaa-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "noaa_amqp"
+    },
+    {
+      "dir": "snotel",
+      "image": "snotel-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "snotel_mqtt"
+    },
+    {
+      "dir": "snotel",
+      "image": "snotel-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "snotel_amqp"
+    },
+    {
+      "dir": "syke-hydro",
+      "image": "syke-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "syke_hydro_mqtt"
+    },
+    {
+      "dir": "syke-hydro",
+      "image": "syke-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "syke_hydro_amqp"
+    },
+    {
+      "dir": "uk-ea-flood-monitoring",
+      "image": "uk-ea-flood-monitoring-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "uk_ea_flood_monitoring_mqtt"
+    },
+    {
+      "dir": "uk-ea-flood-monitoring",
+      "image": "uk-ea-flood-monitoring-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "uk_ea_flood_monitoring_amqp"
+    },
+    {
+      "dir": "usgs-nwis-wq",
+      "image": "usgs-nwis-wq-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "usgs_nwis_wq_mqtt"
+    },
+    {
+      "dir": "usgs-nwis-wq",
+      "image": "usgs-nwis-wq-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "usgs_nwis_wq_amqp"
+    },
+    {
+      "dir": "waterinfo-vmm",
+      "image": "waterinfo-vmm-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "waterinfo_vmm_mqtt"
+    },
+    {
+      "dir": "waterinfo-vmm",
+      "image": "waterinfo-vmm-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "waterinfo_vmm_amqp"
+    },
+    {
       "dir": "jma-bosai-amedas",
       "image": "jma-bosai-amedas-kafka",
       "file": "Dockerfile",
@@ -1805,6 +1961,279 @@
       "image": "tepco-denkiyoho-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestTepcoDenkiyohoAmqpDockerFlow"
+    },
+    {
+      "dir": "canada-eccc-wateroffice",
+      "image": "canada-eccc-wateroffice-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestCanadaEcccWaterofficeMqttDockerFlow"
+    },
+    {
+      "dir": "canada-eccc-wateroffice",
+      "image": "canada-eccc-wateroffice-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestCanadaEcccWaterofficeAmqpArtemisFlow"
+    },
+    {
+      "dir": "cdec-reservoirs",
+      "image": "cdec-reservoirs-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestCdecReservoirsMqttDockerFlow"
+    },
+    {
+      "dir": "cdec-reservoirs",
+      "image": "cdec-reservoirs-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestCdecReservoirsAmqpArtemisFlow"
+    },
+    {
+      "dir": "hubeau-hydrometrie",
+      "image": "hubeau-hydrometrie-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestHubeauHydrometrieMqttDockerFlow"
+    },
+    {
+      "dir": "hubeau-hydrometrie",
+      "image": "hubeau-hydrometrie-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestHubeauHydrometrieAmqpArtemisFlow"
+    },
+    {
+      "dir": "imgw-hydro",
+      "image": "imgw-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestImgwHydroMqttDockerFlow"
+    },
+    {
+      "dir": "imgw-hydro",
+      "image": "imgw-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestImgwHydroAmqpArtemisFlow"
+    },
+    {
+      "dir": "ireland-opw-waterlevel",
+      "image": "ireland-opw-waterlevel-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestIrelandOpwWaterlevelMqttDockerFlow"
+    },
+    {
+      "dir": "ireland-opw-waterlevel",
+      "image": "ireland-opw-waterlevel-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestIrelandOpwWaterlevelAmqpArtemisFlow"
+    },
+    {
+      "dir": "nepal-bipad-hydrology",
+      "image": "nepal-bipad-hydrology-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNepalBipadHydrologyMqttDockerFlow"
+    },
+    {
+      "dir": "nepal-bipad-hydrology",
+      "image": "nepal-bipad-hydrology-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestNepalBipadHydrologyAmqpArtemisFlow"
+    },
+    {
+      "dir": "noaa-ndbc",
+      "image": "noaa-ndbc-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNoaaNdbcMqttDockerFlow"
+    },
+    {
+      "dir": "noaa-ndbc",
+      "image": "noaa-ndbc-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestNoaaNdbcAmqpArtemisFlow"
+    },
+    {
+      "dir": "noaa",
+      "image": "noaa-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestNoaaMqttDockerFlow"
+    },
+    {
+      "dir": "noaa",
+      "image": "noaa-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestNoaaAmqpArtemisFlow"
+    },
+    {
+      "dir": "snotel",
+      "image": "snotel-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestSnotelMqttDockerFlow"
+    },
+    {
+      "dir": "snotel",
+      "image": "snotel-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestSnotelAmqpArtemisFlow"
+    },
+    {
+      "dir": "syke-hydro",
+      "image": "syke-hydro-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestSykeHydroMqttDockerFlow"
+    },
+    {
+      "dir": "syke-hydro",
+      "image": "syke-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestSykeHydroAmqpArtemisFlow"
+    },
+    {
+      "dir": "uk-ea-flood-monitoring",
+      "image": "uk-ea-flood-monitoring-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestUkEaFloodMonitoringMqttDockerFlow"
+    },
+    {
+      "dir": "uk-ea-flood-monitoring",
+      "image": "uk-ea-flood-monitoring-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestUkEaFloodMonitoringAmqpArtemisFlow"
+    },
+    {
+      "dir": "usgs-nwis-wq",
+      "image": "usgs-nwis-wq-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestUsgsNwisWqMqttDockerFlow"
+    },
+    {
+      "dir": "usgs-nwis-wq",
+      "image": "usgs-nwis-wq-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestUsgsNwisWqAmqpArtemisFlow"
+    },
+    {
+      "dir": "waterinfo-vmm",
+      "image": "waterinfo-vmm-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestWaterinfoVmmMqttDockerFlow"
+    },
+    {
+      "dir": "waterinfo-vmm",
+      "image": "waterinfo-vmm-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestWaterinfoVmmAmqpArtemisFlow"
+    },
+    {
+      "dir": "canada-eccc-wateroffice",
+      "image": "canada-eccc-wateroffice-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestCanadaEcccWaterofficeAmqpDockerFlow"
+    },
+    {
+      "dir": "cdec-reservoirs",
+      "image": "cdec-reservoirs-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestCdecReservoirsAmqpDockerFlow"
+    },
+    {
+      "dir": "hubeau-hydrometrie",
+      "image": "hubeau-hydrometrie-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestHubeauHydrometrieAmqpDockerFlow"
+    },
+    {
+      "dir": "imgw-hydro",
+      "image": "imgw-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestImgwHydroAmqpDockerFlow"
+    },
+    {
+      "dir": "ireland-opw-waterlevel",
+      "image": "ireland-opw-waterlevel-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestIrelandOpwWaterlevelAmqpDockerFlow"
+    },
+    {
+      "dir": "nepal-bipad-hydrology",
+      "image": "nepal-bipad-hydrology-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNepalBipadHydrologyAmqpDockerFlow"
+    },
+    {
+      "dir": "noaa-ndbc",
+      "image": "noaa-ndbc-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNoaaNdbcAmqpDockerFlow"
+    },
+    {
+      "dir": "noaa",
+      "image": "noaa-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestNoaaAmqpDockerFlow"
+    },
+    {
+      "dir": "snotel",
+      "image": "snotel-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestSnotelAmqpDockerFlow"
+    },
+    {
+      "dir": "syke-hydro",
+      "image": "syke-hydro-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestSykeHydroAmqpDockerFlow"
+    },
+    {
+      "dir": "uk-ea-flood-monitoring",
+      "image": "uk-ea-flood-monitoring-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestUkEaFloodMonitoringAmqpDockerFlow"
+    },
+    {
+      "dir": "usgs-nwis-wq",
+      "image": "usgs-nwis-wq-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestUsgsNwisWqAmqpDockerFlow"
+    },
+    {
+      "dir": "waterinfo-vmm",
+      "image": "waterinfo-vmm-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestWaterinfoVmmAmqpDockerFlow"
     },
     {
       "dir": "jma-bosai-amedas",

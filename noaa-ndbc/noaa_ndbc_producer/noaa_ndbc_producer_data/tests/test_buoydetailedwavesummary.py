@@ -29,18 +29,19 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         Create instance of BuoyDetailedWaveSummary for testing
         """
         instance = BuoyDetailedWaveSummary(
-            station_id='ztamrufjdimurwcydueq',
+            station_id='cyrbdesiqinmgovqkavq',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            significant_wave_height=float(26.465562577907555),
-            swell_height=float(18.77930655433494),
-            swell_period=float(58.26616805061582),
-            wind_wave_height=float(46.13613255977547),
-            wind_wave_period=float(63.75338594321784),
-            swell_direction='zmnbnhbkxpessudfgdii',
-            wind_wave_direction='bhcxkoffiprerohqhneg',
-            steepness='hercrrlcvkatrqqnrrpf',
-            average_wave_period=float(52.95293399179872),
-            mean_wave_direction=float(68.82114531415931)
+            significant_wave_height=float(37.905496833725515),
+            swell_height=float(4.224934338890085),
+            swell_period=float(75.2206447273858),
+            wind_wave_height=float(59.59573657481053),
+            wind_wave_period=float(81.82586907648279),
+            swell_direction='ecsplhhzlogaqmxjhfxm',
+            wind_wave_direction='nshcthowkqovyacqlqio',
+            steepness='gvpwbbhiulyjvztkcopd',
+            average_wave_period=float(58.03084277265129),
+            mean_wave_direction=float(4.2421570136677245),
+            region='zdapxyzpxhfiytcahhzy'
         )
         return instance
 
@@ -49,7 +50,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'ztamrufjdimurwcydueq'
+        test_value = 'cyrbdesiqinmgovqkavq'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -65,7 +66,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test significant_wave_height property
         """
-        test_value = float(26.465562577907555)
+        test_value = float(37.905496833725515)
         self.instance.significant_wave_height = test_value
         self.assertEqual(self.instance.significant_wave_height, test_value)
     
@@ -73,7 +74,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test swell_height property
         """
-        test_value = float(18.77930655433494)
+        test_value = float(4.224934338890085)
         self.instance.swell_height = test_value
         self.assertEqual(self.instance.swell_height, test_value)
     
@@ -81,7 +82,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test swell_period property
         """
-        test_value = float(58.26616805061582)
+        test_value = float(75.2206447273858)
         self.instance.swell_period = test_value
         self.assertEqual(self.instance.swell_period, test_value)
     
@@ -89,7 +90,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test wind_wave_height property
         """
-        test_value = float(46.13613255977547)
+        test_value = float(59.59573657481053)
         self.instance.wind_wave_height = test_value
         self.assertEqual(self.instance.wind_wave_height, test_value)
     
@@ -97,7 +98,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test wind_wave_period property
         """
-        test_value = float(63.75338594321784)
+        test_value = float(81.82586907648279)
         self.instance.wind_wave_period = test_value
         self.assertEqual(self.instance.wind_wave_period, test_value)
     
@@ -105,7 +106,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test swell_direction property
         """
-        test_value = 'zmnbnhbkxpessudfgdii'
+        test_value = 'ecsplhhzlogaqmxjhfxm'
         self.instance.swell_direction = test_value
         self.assertEqual(self.instance.swell_direction, test_value)
     
@@ -113,7 +114,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test wind_wave_direction property
         """
-        test_value = 'bhcxkoffiprerohqhneg'
+        test_value = 'nshcthowkqovyacqlqio'
         self.instance.wind_wave_direction = test_value
         self.assertEqual(self.instance.wind_wave_direction, test_value)
     
@@ -121,7 +122,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test steepness property
         """
-        test_value = 'hercrrlcvkatrqqnrrpf'
+        test_value = 'gvpwbbhiulyjvztkcopd'
         self.instance.steepness = test_value
         self.assertEqual(self.instance.steepness, test_value)
     
@@ -129,7 +130,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test average_wave_period property
         """
-        test_value = float(52.95293399179872)
+        test_value = float(58.03084277265129)
         self.instance.average_wave_period = test_value
         self.assertEqual(self.instance.average_wave_period, test_value)
     
@@ -137,10 +138,27 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test mean_wave_direction property
         """
-        test_value = float(68.82114531415931)
+        test_value = float(4.2421570136677245)
         self.instance.mean_wave_direction = test_value
         self.assertEqual(self.instance.mean_wave_direction, test_value)
     
+    def test_region_property(self):
+        """
+        Test region property
+        """
+        test_value = 'zdapxyzpxhfiytcahhzy'
+        self.instance.region = test_value
+        self.assertEqual(self.instance.region, test_value)
+    
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = BuoyDetailedWaveSummary.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type
