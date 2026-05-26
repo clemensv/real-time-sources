@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import time
+import json
 import logging
 import argparse
 from datetime import datetime, timezone
@@ -21,16 +22,73 @@ from wsdot_producer_data.us.wa.wsdot.tolls.tollrate import TollRate
 from wsdot_producer_data.us.wa.wsdot.cvrestrictions.commercialvehiclerestriction import CommercialVehicleRestriction
 from wsdot_producer_data.us.wa.wsdot.border.bordercrossing import BorderCrossing
 from wsdot_producer_data.us.wa.wsdot.ferries.vessellocation import VesselLocation
-from wsdot_producer_kafka_producer.producer import (
-    UsWaWsdotBorderEventProducer,
-    UsWaWsdotCvrestrictionsEventProducer,
-    UsWaWsdotFerriesEventProducer,
-    UsWaWsdotMountainpassEventProducer,
-    UsWaWsdotTollsEventProducer,
-    UsWaWsdotTrafficEventProducer,
-    UsWaWsdotTraveltimesEventProducer,
-    UsWaWsdotWeatherEventProducer,
-)
+from cloudevents.http import CloudEvent
+from cloudevents.kafka import to_binary, to_structured
+from wsdot_producer_kafka_producer.producer import UsWaWsdotTrafficEventProducer
+
+
+class _WsdotEventProducer:
+    def __init__(self, producer: Producer, topic: str, content_mode: str = "structured"):
+        self.producer = producer
+        self.topic = topic
+        self.content_mode = content_mode
+
+    @staticmethod
+    def _map_key(event: CloudEvent, data: Any, key_mapper, default_key: str):
+        if key_mapper:
+            return key_mapper(event, data)
+        return default_key or f"{event['type']}:{event['source']}-{event.get('subject', '')}"
+
+    def _send(self, event_type: str, source: str, subject: str, key: str, data: Any, content_type: str, flush_producer: bool, key_mapper) -> None:
+        event = CloudEvent.create({"type": event_type, "source": source, "subject": subject, "datacontenttype": content_type}, data)
+        if self.content_mode == "structured":
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self._map_key(x, data, key_mapper, key))
+            message.headers["content-type"] = b"application/cloudevents+json"
+        else:
+            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self._map_key(x, data, key_mapper, key))
+        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
+        if flush_producer:
+            self.producer.flush()
+
+
+class UsWaWsdotTraveltimesEventProducer(_WsdotEventProducer):
+    def send_us_wa_wsdot_traveltimes_travel_time_route(self, _feedurl: str, _travel_time_id: str, data: TravelTimeRoute, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        self._send("us.wa.wsdot.traveltimes.TravelTimeRoute", _feedurl, _travel_time_id, _travel_time_id, data, content_type, flush_producer, key_mapper)
+
+
+class UsWaWsdotMountainpassEventProducer(_WsdotEventProducer):
+    def send_us_wa_wsdot_mountainpass_mountain_pass_condition(self, _feedurl: str, _mountain_pass_id: str, data: MountainPassCondition, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        self._send("us.wa.wsdot.mountainpass.MountainPassCondition", _feedurl, _mountain_pass_id, _mountain_pass_id, data, content_type, flush_producer, key_mapper)
+
+
+class UsWaWsdotWeatherEventProducer(_WsdotEventProducer):
+    def send_us_wa_wsdot_weather_weather_station(self, _feedurl: str, _station_id: str, data: WeatherStation, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        self._send("us.wa.wsdot.weather.WeatherStation", _feedurl, _station_id, _station_id, data, content_type, flush_producer, key_mapper)
+
+    def send_us_wa_wsdot_weather_weather_reading(self, _feedurl: str, _station_id: str, data: WeatherReading, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        self._send("us.wa.wsdot.weather.WeatherReading", _feedurl, _station_id, _station_id, data, content_type, flush_producer, key_mapper)
+
+
+class UsWaWsdotTollsEventProducer(_WsdotEventProducer):
+    def send_us_wa_wsdot_tolls_toll_rate(self, _feedurl: str, _trip_name: str, data: TollRate, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        self._send("us.wa.wsdot.tolls.TollRate", _feedurl, _trip_name, _trip_name, data, content_type, flush_producer, key_mapper)
+
+
+class UsWaWsdotCvrestrictionsEventProducer(_WsdotEventProducer):
+    def send_us_wa_wsdot_cvrestrictions_commercial_vehicle_restriction(self, _feedurl: str, _state_route_id: str, _bridge_number: str, data: CommercialVehicleRestriction, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        subject = f"{_state_route_id}/{_bridge_number}"
+        self._send("us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction", _feedurl, subject, subject, data, content_type, flush_producer, key_mapper)
+
+
+class UsWaWsdotBorderEventProducer(_WsdotEventProducer):
+    def send_us_wa_wsdot_border_border_crossing(self, _feedurl: str, _crossing_name: str, data: BorderCrossing, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        self._send("us.wa.wsdot.border.BorderCrossing", _feedurl, _crossing_name, _crossing_name, data, content_type, flush_producer, key_mapper)
+
+
+class UsWaWsdotFerriesEventProducer(_WsdotEventProducer):
+    def send_us_wa_wsdot_ferries_vessel_location(self, _feedurl: str, _vessel_id: str, data: VesselLocation, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        self._send("us.wa.wsdot.ferries.VesselLocation", _feedurl, _vessel_id, _vessel_id, data, content_type, flush_producer, key_mapper)
+
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
