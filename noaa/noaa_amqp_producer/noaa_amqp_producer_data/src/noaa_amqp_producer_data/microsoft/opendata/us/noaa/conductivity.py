@@ -163,11 +163,11 @@ class Conductivity:
             An instance of the dataclass.
         """
         return cls(
-            station_id='buvoyxhproawapxzytro',
-            timestamp='infnjhbdajbxnyescecs',
-            value=float(88.09372506808698),
+            station_id='oouwrehjhqfpkfjypxjn',
+            timestamp='bbgrujzkdurdbffgpiln',
+            value=float(98.17176232970326),
             max_conductivity_exceeded=False,
             min_conductivity_exceeded=False,
-            rate_of_change_exceeded=True,
-            region='lhihhvwdvkbxnoguhqdn'
+            rate_of_change_exceeded=False,
+            region='fkqsmexnidouueubelzs'
         )

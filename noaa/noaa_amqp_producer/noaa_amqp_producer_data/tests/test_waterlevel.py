@@ -9,7 +9,7 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from noaa_amqp_producer_data.microsoft.opendata.us.noaa.waterlevel import WaterLevel
-from noaa_amqp_producer_data.microsoft.opendata.us.noaa.unnamedclass import UnnamedClass
+from noaa_amqp_producer_data.microsoft.opendata.us.noaa.qualityenum import QualityEnum
 
 
 class Test_WaterLevel(unittest.TestCase):
@@ -29,16 +29,16 @@ class Test_WaterLevel(unittest.TestCase):
         Create instance of WaterLevel for testing
         """
         instance = WaterLevel(
-            station_id='czzvlymbtntntjkysizk',
-            timestamp='oxrxyvuendmecbcfxijm',
-            value=float(88.75125201200534),
-            stddev=float(73.45383675053831),
+            station_id='yyqqhxrzlgzjdabrqgpb',
+            timestamp='qtoubaxvifrpxyjbevqa',
+            value=float(80.61021575381598),
+            stddev=float(83.39164859460665),
             outside_sigma_band=False,
-            flat_tolerance_limit=True,
-            rate_of_change_limit=True,
+            flat_tolerance_limit=False,
+            rate_of_change_limit=False,
             max_min_expected_height=False,
-            quality=None,
-            region='rudkreyxauxhsmgxnnvn'
+            quality=QualityEnum.Preliminary,
+            region='xuazxzgacdhutxrdegcn'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'czzvlymbtntntjkysizk'
+        test_value = 'yyqqhxrzlgzjdabrqgpb'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -55,7 +55,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'oxrxyvuendmecbcfxijm'
+        test_value = 'qtoubaxvifrpxyjbevqa'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -63,7 +63,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(88.75125201200534)
+        test_value = float(80.61021575381598)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -71,7 +71,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test stddev property
         """
-        test_value = float(73.45383675053831)
+        test_value = float(83.39164859460665)
         self.instance.stddev = test_value
         self.assertEqual(self.instance.stddev, test_value)
     
@@ -87,7 +87,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test flat_tolerance_limit property
         """
-        test_value = True
+        test_value = False
         self.instance.flat_tolerance_limit = test_value
         self.assertEqual(self.instance.flat_tolerance_limit, test_value)
     
@@ -95,7 +95,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test rate_of_change_limit property
         """
-        test_value = True
+        test_value = False
         self.instance.rate_of_change_limit = test_value
         self.assertEqual(self.instance.rate_of_change_limit, test_value)
     
@@ -111,7 +111,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test quality property
         """
-        test_value = None
+        test_value = QualityEnum.Preliminary
         self.instance.quality = test_value
         self.assertEqual(self.instance.quality, test_value)
     
@@ -119,7 +119,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'rudkreyxauxhsmgxnnvn'
+        test_value = 'xuazxzgacdhutxrdegcn'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

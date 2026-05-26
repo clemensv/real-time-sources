@@ -155,5 +155,5 @@ class Floodlevels:
             An instance of the dataclass.
         """
         return cls(
-            self_='rabuxlrniwsankofbucy'
+            self_='secnthhiededdriuviyo'
         )

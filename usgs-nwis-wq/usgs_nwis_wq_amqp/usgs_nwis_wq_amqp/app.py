@@ -74,14 +74,17 @@ def _build_producer(cls, host, port, address, tls, content_mode, auth_mode, user
     return cls(host=host, address=address, port=port, username=username, password=password, content_mode=content_mode, use_tls=tls)
 
 def feed(host, port, address='usgs-nwis-wq', username=None, password=None, tls=False, content_mode='binary', auth_mode='password', entra_audience='https://servicebus.azure.net/.default', entra_client_id=None, sas_key_name=None, sas_key=None, once=False):
-    cls=next(obj for obj in globals().values() if isinstance(obj,type) and obj.__name__.endswith('AmqpProducer'))
-    producer=_build_producer(cls, host, port, address, tls, content_mode, auth_mode, username, password, entra_audience, entra_client_id, sas_key_name, sas_key)
-    try:
-        for method in [getattr(producer,n) for n in dir(producer) if n.startswith('send_') and not n.endswith('_batch')]:
-            method(**_required_call_kwargs(method, usgs_nwis_wq_amqp_producer_data))
-    finally:
-        close=getattr(producer,'close',None)
-        if close: close()
+    producer_classes=[obj for obj in globals().values() if isinstance(obj,type) and obj.__name__.endswith('AmqpProducer')]
+    if not producer_classes:
+        raise RuntimeError('No generated AMQP producers found')
+    for cls in producer_classes:
+        producer=_build_producer(cls, host, port, address, tls, content_mode, auth_mode, username, password, entra_audience, entra_client_id, sas_key_name, sas_key)
+        try:
+            for method in [getattr(producer,n) for n in dir(producer) if n.startswith('send_') and not n.endswith('_batch')]:
+                method(**_required_call_kwargs(method, usgs_nwis_wq_amqp_producer_data))
+        finally:
+            close=getattr(producer,'close',None)
+            if close: close()
 
 def _parse_broker_url(url):
     parsed=urlparse(url if '://' in url else f'amqp://{url}')

@@ -28,11 +28,11 @@ class Test_Salinity(unittest.TestCase):
         Create instance of Salinity for testing
         """
         instance = Salinity(
-            station_id='owhfupmcddezbhnmqslq',
-            timestamp='tfauoxhohrmxcrfkguom',
-            salinity=float(24.108051794639408),
-            grams_per_kg=float(67.89132889764092),
-            region='etjxfhfdjgyqtwjcqbmc'
+            station_id='tlboxqyouzpnzihjhhuj',
+            timestamp='ljwomjjjrsfgqkpdqxvy',
+            salinity=float(64.91876446378096),
+            grams_per_kg=float(0.5815611093438311),
+            region='rehgqmndgybucvoospvx'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'owhfupmcddezbhnmqslq'
+        test_value = 'tlboxqyouzpnzihjhhuj'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'tfauoxhohrmxcrfkguom'
+        test_value = 'ljwomjjjrsfgqkpdqxvy'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -57,7 +57,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test salinity property
         """
-        test_value = float(24.108051794639408)
+        test_value = float(64.91876446378096)
         self.instance.salinity = test_value
         self.assertEqual(self.instance.salinity, test_value)
     
@@ -65,7 +65,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test grams_per_kg property
         """
-        test_value = float(67.89132889764092)
+        test_value = float(0.5815611093438311)
         self.instance.grams_per_kg = test_value
         self.assertEqual(self.instance.grams_per_kg, test_value)
     
@@ -73,7 +73,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'etjxfhfdjgyqtwjcqbmc'
+        test_value = 'rehgqmndgybucvoospvx'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

@@ -157,8 +157,8 @@ class Predictions:
             An instance of the dataclass.
         """
         return cls(
-            station_id='lyqsltejzhexegbzhzuv',
-            timestamp='xgmruavdqjgxctgyjfwz',
-            value=float(90.56395122887342),
-            region='qcyvncxmzalvlwyqehgo'
+            station_id='gblukrgkeqeqjqmflnkf',
+            timestamp='bxvecvmznwprvffbubve',
+            value=float(66.85234966518952),
+            region='dzbbyqeezmwtsmjugpqr'
         )

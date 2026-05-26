@@ -28,13 +28,13 @@ class Test_WaterTemperature(unittest.TestCase):
         Create instance of WaterTemperature for testing
         """
         instance = WaterTemperature(
-            station_id='vhhfbcsjwiykgerrzaud',
-            timestamp='iriaegrrigtoclozgpit',
-            value=float(29.371001530622863),
-            max_temp_exceeded=False,
-            min_temp_exceeded=False,
+            station_id='arzpkxfsabdxnotdbezo',
+            timestamp='gfwglfposvcwvmrgwyop',
+            value=float(89.2340149593168),
+            max_temp_exceeded=True,
+            min_temp_exceeded=True,
             rate_of_change_exceeded=False,
-            region='efoseornadhbpvizuvjt'
+            region='kifxnjrhtzcqxkqhnwlz'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'vhhfbcsjwiykgerrzaud'
+        test_value = 'arzpkxfsabdxnotdbezo'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'iriaegrrigtoclozgpit'
+        test_value = 'gfwglfposvcwvmrgwyop'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(29.371001530622863)
+        test_value = float(89.2340149593168)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test max_temp_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.max_temp_exceeded = test_value
         self.assertEqual(self.instance.max_temp_exceeded, test_value)
     
@@ -75,7 +75,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test min_temp_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.min_temp_exceeded = test_value
         self.assertEqual(self.instance.min_temp_exceeded, test_value)
     
@@ -91,7 +91,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'efoseornadhbpvizuvjt'
+        test_value = 'kifxnjrhtzcqxkqhnwlz'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

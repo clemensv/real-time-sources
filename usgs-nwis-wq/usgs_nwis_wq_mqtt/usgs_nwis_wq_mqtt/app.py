@@ -75,13 +75,16 @@ async def feed(host, port, username=None, password=None, tls=False, client_id=No
     paho_client=mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, client_id=client_id or '', protocol=MQTTv5)
     if username: paho_client.username_pw_set(username, password or '')
     if tls: paho_client.tls_set()
-    client_cls=next(obj for obj in globals().values() if isinstance(obj,type) and obj.__name__.endswith('MqttClient'))
-    client=client_cls(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())
-    await client.connect(host, port)
+    client_classes=[obj for obj in globals().values() if isinstance(obj,type) and obj.__name__.endswith('MqttClient')]
+    if not client_classes:
+        raise RuntimeError('No generated MQTT clients found')
+    clients=[cls(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop()) for cls in client_classes]
+    await clients[0].connect(host, port)
     try:
-        await _publish_mock(client)
+        for client in clients:
+            await _publish_mock(client)
     finally:
-        await client.disconnect()
+        await clients[0].disconnect()
 
 def _parse_broker_url(url):
     parsed=urlparse(url if '://' in url else f'mqtt://{url}')

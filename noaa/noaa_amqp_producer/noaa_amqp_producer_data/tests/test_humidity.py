@@ -28,13 +28,13 @@ class Test_Humidity(unittest.TestCase):
         Create instance of Humidity for testing
         """
         instance = Humidity(
-            station_id='navgqyytbmoflibrkkwj',
-            timestamp='fyioriflxzzllvmqfcdb',
-            value=float(48.62752585205327),
+            station_id='tkmdworuqdgzmpqilkzx',
+            timestamp='nqaohygzbrevzhaiifwx',
+            value=float(53.51673476121873),
             max_humidity_exceeded=False,
             min_humidity_exceeded=True,
             rate_of_change_exceeded=True,
-            region='akiiarfsrhxdmdaxnftk'
+            region='cmtqfbckklgubourcxzw'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'navgqyytbmoflibrkkwj'
+        test_value = 'tkmdworuqdgzmpqilkzx'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'fyioriflxzzllvmqfcdb'
+        test_value = 'nqaohygzbrevzhaiifwx'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(48.62752585205327)
+        test_value = float(53.51673476121873)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -91,7 +91,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'akiiarfsrhxdmdaxnftk'
+        test_value = 'cmtqfbckklgubourcxzw'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

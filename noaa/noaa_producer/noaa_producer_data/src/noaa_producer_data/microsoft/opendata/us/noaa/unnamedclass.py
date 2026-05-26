@@ -21,13 +21,20 @@ class UnnamedClass:
     """
     Referenced nested object from the NOAA Tides and Currents station metadata schema.
     
+    Attributes:
+        self_ (str)
+        region (typing.Optional[str])
+        station_id (typing.Optional[str])
     """
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"Root\", \"doc\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"fields\": []}"
+        "{\"type\": \"record\", \"name\": \"Root\", \"doc\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"fields\": [{\"name\": \"self\", \"type\": \"string\"}, {\"name\": \"region\", \"type\": [\"null\", \"string\"], \"doc\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\", \"default\": null}, {\"name\": \"station_id\", \"type\": [\"null\", \"string\"], \"doc\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\", \"default\": null}]}"
     )
     
     
+    self_: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="self"))
+    region: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
+    station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'UnnamedClass':
@@ -40,6 +47,8 @@ class UnnamedClass:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'self' in data:
+            data['self_'] = data.pop('self')
         return cls(**data)
     @classmethod
     def from_avro_dict(cls, data: dict) -> 'UnnamedClass':
@@ -56,6 +65,14 @@ class UnnamedClass:
         """
         # Convert string values back to Python types for Avro string-based logical types
         converted = data.copy()
+        if 'self' in converted and converted['self'] is not None:
+            value = converted['self']
+        if 'self' in converted:
+            converted['self_'] = converted.pop('self')
+        if 'region' in converted and converted['region'] is not None:
+            value = converted['region']
+        if 'station_id' in converted and converted['station_id'] is not None:
+            value = converted['station_id']
         
         return cls(**converted)
 
@@ -194,6 +211,8 @@ class UnnamedClass:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
+                if 'self' in _record:
+                    _record['self_'] = _record.pop('self')
                 return UnnamedClass.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
@@ -208,4 +227,7 @@ class UnnamedClass:
             An instance of the dataclass.
         """
         return cls(
+            self_='hrxxkpagtxlrgenatbdg',
+            region='fyxytgffpblyoifyeoht',
+            station_id='kupwqzqurwqnfauzppjy'
         )

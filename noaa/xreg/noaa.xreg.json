@@ -888,8 +888,12 @@
                                 "description": "{\"description\": \"Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\"}"
                               },
                               "quality": {
-                                "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "type": "string",
+                                "enum": [
+                                  "Preliminary",
+                                  "Verified"
+                                ],
+                                "description": "Quality Assurance/Quality Control level reported by NOAA for the water level measurement."
                               },
                               "region": {
                                 "type": "string",
@@ -1647,39 +1651,119 @@
                               },
                               "details": {
                                 "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "properties": {
+                                  "self": {
+                                    "type": "string"
+                                  },
+                                  "region": {
+                                    "type": "string",
+                                    "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
+                                  },
+                                  "station_id": {
+                                    "type": "string",
+                                    "description": "Stable routing axis used by MQTT and AMQP transport templates for noaa."
+                                  }
+                                },
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                                "required": [
+                                  "self"
+                                ]
                               },
                               "sensors": {
                                 "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "properties": {
+                                  "self": {
+                                    "type": "string"
+                                  }
+                                },
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                                "required": [
+                                  "self"
+                                ]
                               },
                               "floodlevels": {
                                 "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "properties": {
+                                  "self": {
+                                    "type": "string"
+                                  }
+                                },
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                                "required": [
+                                  "self"
+                                ]
                               },
                               "datums": {
                                 "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "properties": {
+                                  "self": {
+                                    "type": "string"
+                                  }
+                                },
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                                "required": [
+                                  "self"
+                                ]
                               },
                               "supersededdatums": {
                                 "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "properties": {
+                                  "self": {
+                                    "type": "string"
+                                  }
+                                },
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                                "required": [
+                                  "self"
+                                ]
                               },
                               "harmonicConstituents": {
                                 "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "properties": {
+                                  "self": {
+                                    "type": "string"
+                                  }
+                                },
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                                "required": [
+                                  "self"
+                                ]
                               },
                               "benchmarks": {
                                 "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "properties": {
+                                  "self": {
+                                    "type": "string"
+                                  }
+                                },
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                                "required": [
+                                  "self"
+                                ]
                               },
                               "tidePredOffsets": {
                                 "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "properties": {
+                                  "self": {
+                                    "type": "string"
+                                  }
+                                },
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                                "required": [
+                                  "self"
+                                ]
                               },
                               "ofsMapOffsets": {
                                 "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "properties": {
+                                  "self": {
+                                    "type": "string"
+                                  }
+                                },
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                                "required": [
+                                  "self"
+                                ]
                               },
                               "state": {
                                 "type": "string",
@@ -1703,7 +1787,15 @@
                               },
                               "nearby": {
                                 "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "properties": {
+                                  "self": {
+                                    "type": "string"
+                                  }
+                                },
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                                "required": [
+                                  "self"
+                                ]
                               },
                               "forecast": {
                                 "type": "boolean",
@@ -1747,15 +1839,39 @@
                               },
                               "products": {
                                 "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "properties": {
+                                  "self": {
+                                    "type": "string"
+                                  }
+                                },
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                                "required": [
+                                  "self"
+                                ]
                               },
                               "disclaimers": {
                                 "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "properties": {
+                                  "self": {
+                                    "type": "string"
+                                  }
+                                },
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                                "required": [
+                                  "self"
+                                ]
                               },
                               "notices": {
                                 "type": "object",
-                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema."
+                                "properties": {
+                                  "self": {
+                                    "type": "string"
+                                  }
+                                },
+                                "description": "Referenced nested object from the NOAA Tides and Currents station metadata schema.",
+                                "required": [
+                                  "self"
+                                ]
                               },
                               "self": {
                                 "type": "string",

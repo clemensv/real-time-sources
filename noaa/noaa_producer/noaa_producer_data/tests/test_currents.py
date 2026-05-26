@@ -28,12 +28,12 @@ class Test_Currents(unittest.TestCase):
         Create instance of Currents for testing
         """
         instance = Currents(
-            station_id='ixmelhbfsmimukisikpv',
-            timestamp='kfilwksxltecuffvsohh',
-            speed=float(53.65388022803683),
-            direction_degrees=float(26.47782112731828),
-            bin='ivmqycditzwwrltvqriu',
-            region='vfisiiuceypxjipppnkv'
+            station_id='ajzcfdzzdlpssihgysfn',
+            timestamp='jfgxzwjlmhjfrdpsnsek',
+            speed=float(75.16506260087932),
+            direction_degrees=float(92.53474980075201),
+            bin='cknslftirjpcdmhgzibi',
+            region='jwrkcjmslzxgjdfnerxy'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'ixmelhbfsmimukisikpv'
+        test_value = 'ajzcfdzzdlpssihgysfn'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'kfilwksxltecuffvsohh'
+        test_value = 'jfgxzwjlmhjfrdpsnsek'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -58,7 +58,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test speed property
         """
-        test_value = float(53.65388022803683)
+        test_value = float(75.16506260087932)
         self.instance.speed = test_value
         self.assertEqual(self.instance.speed, test_value)
     
@@ -66,7 +66,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test direction_degrees property
         """
-        test_value = float(26.47782112731828)
+        test_value = float(92.53474980075201)
         self.instance.direction_degrees = test_value
         self.assertEqual(self.instance.direction_degrees, test_value)
     
@@ -74,7 +74,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test bin property
         """
-        test_value = 'ivmqycditzwwrltvqriu'
+        test_value = 'cknslftirjpcdmhgzibi'
         self.instance.bin = test_value
         self.assertEqual(self.instance.bin, test_value)
     
@@ -82,7 +82,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'vfisiiuceypxjipppnkv'
+        test_value = 'jwrkcjmslzxgjdfnerxy'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

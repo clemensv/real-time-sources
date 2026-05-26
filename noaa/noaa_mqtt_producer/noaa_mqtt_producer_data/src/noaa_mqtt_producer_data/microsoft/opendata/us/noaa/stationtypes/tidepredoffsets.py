@@ -155,5 +155,5 @@ class TidePredOffsets:
             An instance of the dataclass.
         """
         return cls(
-            self_='rjhggvervtjcpwtsodas'
+            self_='lxvdzdrbielupljylgug'
         )

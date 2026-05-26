@@ -28,7 +28,7 @@ class Test_Benchmarks(unittest.TestCase):
         Create instance of Benchmarks for testing
         """
         instance = Benchmarks(
-            self_='viyguvkcdhjqmcjczyym'
+            self_='udkjzwyewnrkbwiemqgs'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_Benchmarks(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'viyguvkcdhjqmcjczyym'
+        test_value = 'udkjzwyewnrkbwiemqgs'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     

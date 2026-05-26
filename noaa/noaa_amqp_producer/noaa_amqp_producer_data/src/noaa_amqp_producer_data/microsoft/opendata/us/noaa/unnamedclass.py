@@ -19,9 +19,16 @@ class UnnamedClass:
     """
     Referenced nested object from the NOAA Tides and Currents station metadata schema.
     
+    Attributes:
+        self_ (str)
+        region (typing.Optional[str])
+        station_id (typing.Optional[str])
     """
     
     
+    self_: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="self"))
+    region: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
+    station_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'UnnamedClass':
@@ -34,6 +41,8 @@ class UnnamedClass:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'self' in data:
+            data['self_'] = data.pop('self')
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -134,6 +143,8 @@ class UnnamedClass:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
+                if 'self' in _record:
+                    _record['self_'] = _record.pop('self')
                 return UnnamedClass.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
@@ -148,4 +159,7 @@ class UnnamedClass:
             An instance of the dataclass.
         """
         return cls(
+            self_='btncmgqtqswojumowayr',
+            region='sgedufdvcreyctqjwgqp',
+            station_id='zabgromlgijctulsynjs'
         )

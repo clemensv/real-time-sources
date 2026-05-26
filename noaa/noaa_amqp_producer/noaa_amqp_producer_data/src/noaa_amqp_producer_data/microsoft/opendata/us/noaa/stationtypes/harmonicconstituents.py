@@ -155,5 +155,5 @@ class HarmonicConstituents:
             An instance of the dataclass.
         """
         return cls(
-            self_='vdqluaxpdfjfiqukujjr'
+            self_='ftvsngkqoavgztxkrjvb'
         )

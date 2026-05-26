@@ -28,7 +28,7 @@ class Test_Notices(unittest.TestCase):
         Create instance of Notices for testing
         """
         instance = Notices(
-            self_='tseyfsoibpyiqvujamnx'
+            self_='gyvxlhvufflifhypjyuo'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_Notices(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'tseyfsoibpyiqvujamnx'
+        test_value = 'gyvxlhvufflifhypjyuo'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     

@@ -11,7 +11,7 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from noaa_amqp_producer_data.microsoft.opendata.us.noaa.unnamedclass import UnnamedClass
+from noaa_amqp_producer_data.microsoft.opendata.us.noaa.qualityenum import QualityEnum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -29,7 +29,7 @@ class WaterLevel:
         flat_tolerance_limit (bool)
         rate_of_change_limit (bool)
         max_min_expected_height (bool)
-        quality (UnnamedClass)
+        quality (QualityEnum)
         region (typing.Optional[str])
     """
     
@@ -42,7 +42,7 @@ class WaterLevel:
     flat_tolerance_limit: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="flat_tolerance_limit"))
     rate_of_change_limit: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rate_of_change_limit"))
     max_min_expected_height: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="max_min_expected_height"))
-    quality: UnnamedClass=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality"))
+    quality: QualityEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality"))
     region: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
 
     @classmethod
@@ -170,14 +170,14 @@ class WaterLevel:
             An instance of the dataclass.
         """
         return cls(
-            station_id='czzvlymbtntntjkysizk',
-            timestamp='oxrxyvuendmecbcfxijm',
-            value=float(88.75125201200534),
-            stddev=float(73.45383675053831),
+            station_id='yyqqhxrzlgzjdabrqgpb',
+            timestamp='qtoubaxvifrpxyjbevqa',
+            value=float(80.61021575381598),
+            stddev=float(83.39164859460665),
             outside_sigma_band=False,
-            flat_tolerance_limit=True,
-            rate_of_change_limit=True,
+            flat_tolerance_limit=False,
+            rate_of_change_limit=False,
             max_min_expected_height=False,
-            quality=None,
-            region='rudkreyxauxhsmgxnnvn'
+            quality=QualityEnum.Preliminary,
+            region='xuazxzgacdhutxrdegcn'
         )

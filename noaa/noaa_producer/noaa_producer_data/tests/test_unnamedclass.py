@@ -28,9 +28,36 @@ class Test_UnnamedClass(unittest.TestCase):
         Create instance of UnnamedClass for testing
         """
         instance = UnnamedClass(
+            self_='hrxxkpagtxlrgenatbdg',
+            region='fyxytgffpblyoifyeoht',
+            station_id='kupwqzqurwqnfauzppjy'
         )
         return instance
 
+    
+    def test_self__property(self):
+        """
+        Test self_ property
+        """
+        test_value = 'hrxxkpagtxlrgenatbdg'
+        self.instance.self_ = test_value
+        self.assertEqual(self.instance.self_, test_value)
+    
+    def test_region_property(self):
+        """
+        Test region property
+        """
+        test_value = 'fyxytgffpblyoifyeoht'
+        self.instance.region = test_value
+        self.assertEqual(self.instance.region, test_value)
+    
+    def test_station_id_property(self):
+        """
+        Test station_id property
+        """
+        test_value = 'kupwqzqurwqnfauzppjy'
+        self.instance.station_id = test_value
+        self.assertEqual(self.instance.station_id, test_value)
     
     def test_to_byte_array_avro(self):
         """
