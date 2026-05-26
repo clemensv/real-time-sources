@@ -1,0 +1,137 @@
+name: Build xRegistry Viewer
+
+# Builds the xregistry/viewer Angular SPA with the base-href set to
+# /real-time-sources/registry-viewer/, patches public/config.json to
+# point at this repo's static registry export, and publishes the
+# `dist/xregistry-viewer/` output to the ghpages branch under
+# `registry-viewer/`.
+#
+# Triggers:
+#   - workflow_dispatch (manual, with optional viewer ref override)
+#   - schedule weekly (Mondays 07:00 UTC) to pick up upstream updates
+#   - push on this workflow file (so changes here are picked up)
+
+on:
+  workflow_dispatch:
+    inputs:
+      viewer_ref:
+        description: 'xregistry/viewer ref to build (branch/tag/SHA)'
+        required: false
+        default: 'main'
+  schedule:
+    - cron: '0 7 * * 1'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-xregistry-viewer.yml'
+
+concurrency:
+  group: ghpages
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  VIEWER_REF: ${{ github.event.inputs.viewer_ref || 'main' }}
+  BASE_HREF: /real-time-sources/registry-viewer/
+  REGISTRY_URL: https://clemensv.github.io/real-time-sources/registry
+
+jobs:
+  build-viewer:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout xregistry/viewer ─────────────────────────────────────
+      - name: Checkout xregistry/viewer
+        uses: actions/checkout@v4
+        with:
+          repository: xregistry/viewer
+          ref: ${{ env.VIEWER_REF }}
+          path: viewer
+
+      # ── 2. Node + install ────────────────────────────────────────────────
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: viewer/package-lock.json
+
+      - name: Install dependencies
+        working-directory: viewer
+        run: npm ci --no-audit --no-fund
+
+      # ── 3. Patch public/config.json ──────────────────────────────────────
+      # Runtime config — read by the SPA at startup. We point apiEndpoints
+      # at our static registry export and align baseUrl with the deploy path.
+      - name: Patch viewer config
+        working-directory: viewer
+        run: |
+          python3 - <<'PY'
+          import json, pathlib
+          p = pathlib.Path('public/config.json')
+          cfg = json.loads(p.read_text())
+          cfg['apiEndpoints'] = ["${{ env.REGISTRY_URL }}"]
+          cfg['baseUrl'] = "/real-time-sources/registry-viewer"
+          p.write_text(json.dumps(cfg, indent=2) + "\n")
+          print(json.dumps(cfg, indent=2))
+          PY
+
+      # ── 4. Build with subpath base-href ──────────────────────────────────
+      - name: Build viewer (production)
+        working-directory: viewer
+        run: |
+          npx nx build --configuration production \
+            --base-href="${BASE_HREF}" \
+            --deploy-url="${BASE_HREF}"
+
+      # ── 5. SPA fallback for GitHub Pages (deep links) ────────────────────
+      - name: Add SPA 404 fallback
+        run: |
+          set -euo pipefail
+          OUT=viewer/dist/xregistry-viewer
+          if [ ! -d "$OUT" ]; then
+            # Some Angular versions emit dist/xregistry-viewer/browser/
+            OUT=$(find viewer/dist -maxdepth 3 -name index.html -printf '%h\n' | head -1)
+          fi
+          echo "Static output: $OUT"
+          cp "$OUT/index.html" "$OUT/404.html"
+          echo "OUT_DIR=$OUT" >> "$GITHUB_ENV"
+
+      # ── 6. Push to ghpages/registry-viewer/ ──────────────────────────────
+      - name: Checkout ghpages
+        uses: actions/checkout@v4
+        with:
+          ref: ghpages
+          path: ghpages
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync viewer to ghpages
+        run: |
+          rm -rf ghpages/registry-viewer
+          mkdir -p ghpages/registry-viewer
+          cp -r "$OUT_DIR"/. ghpages/registry-viewer/
+
+      - name: Check for changes
+        id: diff
+        working-directory: ghpages
+        run: |
+          git add registry-viewer/ 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        working-directory: ghpages
+        env:
+          REF: ${{ env.VIEWER_REF }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update xRegistry viewer (xregistry/viewer@${REF}) [$(date -u +%Y-%m-%dT%H:%M:%SZ)]"
+          git push origin ghpages
