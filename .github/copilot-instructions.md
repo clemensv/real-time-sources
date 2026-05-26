@@ -172,6 +172,22 @@ KAFKA_ENABLE_TLS=false
 - Root `README.md` — organized by topic category; add new sources to the
   appropriate section.
 
+**Gold-standard reference docs.** The `pegelonline` source is the
+canonical template for per-source documentation in this repo. When
+authoring or revising a `README.md`, `CONTAINER.md`, or `EVENTS.md`
+for any other source, mirror the structure, tone, headings, callout
+usage, link-triangle pattern (cross-links between the three docs at
+the top), Fabric-before-Azure deployment ordering, and image-contract
+table from:
+
+- `pegelonline/README.md`
+- `pegelonline/CONTAINER.md`
+- `pegelonline/EVENTS.md`
+
+Deviate only when the source genuinely requires it (e.g. streaming
+transports have no polling cadence to document). Do not invent a
+different docs shape per source.
+
 ## Fabric Notebook Hosting (required for poll-based sources)
 
 Every poll-based source ships a Fabric notebook feeder under
