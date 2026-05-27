@@ -242,7 +242,8 @@ def main():
     subparsers.add_parser("list", help="List places from current weather")
     feed_parser = subparsers.add_parser("feed", help="Feed data to Kafka")
     feed_parser.add_argument("--once", action="store_true",
-                             help="Run a single polling cycle and exit (for scheduled hosts).")
+                             default=os.environ.get("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+                             help="Run a single polling cycle and exit (also via ONCE_MODE env var; for scheduled hosts).")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO)
     api = HKOWeatherAPI(polling_interval=args.polling_interval)
