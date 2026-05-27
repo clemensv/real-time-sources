@@ -177,7 +177,7 @@ Two hosting models are supported. **Use the deploy buttons on the [project porta
 
 A scheduled Fabric Notebook ([`notebook/pegelonline-feed.ipynb`](notebook/pegelonline-feed.ipynb)) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `pegelonline` package and both generated producer sub-packages. The Event Stream custom endpoint connection string is looked up at runtime via the public Fabric Topology API using the workspace identity — no secrets in the notebook, no separate container host to manage. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/pegelonline/`.
 
-Deploy with `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source pegelonline -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>` (the portal button wraps this for you). Best fit for the default 60-second polling cadence; the notebook executes on a Fabric schedule (default every 5 minutes) and writes a per-run diagnostic log to OneLake.
+Deploy with `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source pegelonline -Workspace <fabric-workspace>` (the portal button wraps this for you). Best fit for the default 60-second polling cadence; the notebook executes on a Fabric schedule (default every 5 minutes) and writes a per-run diagnostic log to OneLake.
 
 [![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#pegelonline/fabric-notebook)
 
@@ -185,7 +185,7 @@ Deploy with `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source pegelonline 
 
 A long-running Azure Container Instance hosts one of the three container images and writes into the same Fabric Event Stream custom endpoint. Use this when you want continuous polling, real-time MQTT/UNS publishing, or the AMQP transport — anything that does not fit the notebook scheduling model.
 
-Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source pegelonline -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with the [`kql/pegelonline.kql`](kql/pegelonline.kql) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
+Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source pegelonline -Workspace <fabric-workspace>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with the [`kql/pegelonline.kql`](kql/pegelonline.kql) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#pegelonline/fabric-aci)
 

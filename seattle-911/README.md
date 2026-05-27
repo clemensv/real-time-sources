@@ -155,7 +155,7 @@ Two hosting models are supported. **Use the deploy buttons on the [project porta
 
 A scheduled Fabric Notebook ([`notebook/`](notebook/)) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `seattle_911` package and the generated producer sub-packages. The Event Stream custom endpoint connection string is looked up at runtime via the public Fabric Topology API using the workspace identity — no secrets in the notebook, no separate container host to manage. Resume state lives in OneLake under `/lakehouse/default/Files/feeder-state/seattle-911/`.
 
-Deploy with `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source seattle-911 -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>` (the portal button wraps this for you). Best fit for the dataset's ~5-minute refresh cadence; the notebook executes on a Fabric schedule and writes a per-run diagnostic log to OneLake.
+Deploy with `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source seattle-911 -Workspace <fabric-workspace>` (the portal button wraps this for you). Best fit for the dataset's ~5-minute refresh cadence; the notebook executes on a Fabric schedule and writes a per-run diagnostic log to OneLake.
 
 [![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#seattle-911/fabric-notebook)
 
@@ -163,7 +163,7 @@ Deploy with `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source seattle-911 
 
 A long-running Azure Container Instance hosts one of the three container images and writes into the same Fabric Event Stream custom endpoint. Use this when you want continuous MQTT publishing for a Unified Namespace, the AMQP transport, or always-on Kafka delivery rather than the notebook's scheduled execution.
 
-Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source seattle-911 -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
+Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source seattle-911 -Workspace <fabric-workspace>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#seattle-911/fabric-aci)
 

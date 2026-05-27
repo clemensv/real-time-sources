@@ -131,7 +131,7 @@ NDL Netherlands supports both Fabric hosting models via the source card on the [
 
 Because this source is poll-based and ships a notebook asset (`notebook/`), you can run scheduled ingestion in-Fabric with:
 
-`tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source ndl-netherlands -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>`
+`tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source ndl-netherlands -Workspace <fabric-workspace>`
 
 [![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#ndl-netherlands/fabric-notebook)
 
@@ -139,7 +139,7 @@ Because this source is poll-based and ships a notebook asset (`notebook/`), you 
 
 For always-on execution, deploy a long-running Azure Container Instance feeder with:
 
-`tools/deploy-fabric/deploy-fabric-aci.ps1 -Source ndl-netherlands -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>`
+`tools/deploy-fabric/deploy-fabric-aci.ps1 -Source ndl-netherlands -Workspace <fabric-workspace>`
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#ndl-netherlands/fabric-aci)
 
