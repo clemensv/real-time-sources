@@ -78,26 +78,21 @@ jobs:
           set -euo pipefail
           if [ "$EVENT_NAME" = "pull_request" ]; then
             git fetch origin "$PR_BASE_SHA" --depth=1 || true
-            files=$(git diff --name-only "$PR_BASE_SHA" "$PR_HEAD_SHA")
+            git diff --name-only "$PR_BASE_SHA" "$PR_HEAD_SHA" > changed-files.txt
           elif [ "$EVENT_NAME" = "push" ] && [ -n "${BEFORE_SHA:-}" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
-            files=$(git diff --name-only "$BEFORE_SHA" "$AFTER_SHA")
+            git diff --name-only "$BEFORE_SHA" "$AFTER_SHA" > changed-files.txt
           else
-            files=""
+            : > changed-files.txt
           fi
-          {
-            echo "files<<EOF_FILES"
-            echo "$files"
-            echo "EOF_FILES"
-          } >> "$GITHUB_OUTPUT"
-          echo "[changed] $(echo "$files" | wc -l) file(s):"
-          echo "$files" | head -50 || true
+          echo "[changed] $(wc -l < changed-files.txt) file(s):"
+          head -50 changed-files.txt || true
 
       - name: Scope container matrix
         id: scope
         env:
           EVENT_NAME: ${{ github.event_name }}
           REF_TYPE: ${{ github.ref_type }}
-          CHANGED_FILES: ${{ steps.changed.outputs.files }}
+          CHANGED_FILES_PATH: changed-files.txt
           ALL_BASE_JSON: ${{ steps.get-dockerfiles.outputs.all_base }}
           ALL_TRANSPORT_JSON: ${{ steps.get-dockerfiles.outputs.all_transport }}
         run: python3 tools/ci/discover_container_matrix.py

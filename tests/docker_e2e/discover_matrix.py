@@ -262,15 +262,21 @@ def scope_additive_infra(
     return extra, blockers
 
 
+def _load_changed_files() -> list[str]:
+    path = os.environ.get("CHANGED_FILES_PATH", "").strip()
+    if path and os.path.isfile(path):
+        with open(path, "r", encoding="utf-8", errors="ignore") as fh:
+            raw = fh.read()
+    else:
+        raw = os.environ.get("CHANGED_FILES", "")
+    return [line.strip() for line in raw.splitlines() if line.strip()]
+
+
 def main() -> int:
     matrix = json.loads(MATRIX_PATH.read_text())
     event = os.environ.get("EVENT_NAME", "")
     base_sha = os.environ.get("BASE_SHA", "").strip()
-    changed = [
-        line.strip()
-        for line in os.environ.get("CHANGED_FILES", "").splitlines()
-        if line.strip()
-    ]
+    changed = _load_changed_files()
 
     force_full = event in ("workflow_dispatch", "schedule") or not changed
     reason = (
