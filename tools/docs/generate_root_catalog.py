@@ -48,42 +48,52 @@ CATEGORY_MAP = {
     "Science":                              ("Scientific Research",                     "🔬", 140),
 }
 
-# Region prefix → flag emoji (matched against desc up to " — ")
+# Region prefix → ISO-3166-1 alpha-2 country code (for flagcdn img URL)
 FLAG = {
-    "Switzerland": "🇨🇭", "Canada": "🇨🇦", "California": "🇺🇸", "Czech Republic": "🇨🇿",
-    "Germany": "🇩🇪", "France": "🇫🇷", "Poland": "🇵🇱", "Ireland": "🇮🇪",
-    "Nepal": "🇳🇵", "United States": "🇺🇸", "Norway": "🇳🇴", "Sweden": "🇸🇪",
-    "Finland": "🇫🇮", "Denmark": "🇩🇰", "Netherlands": "🇳🇱", "Belgium": "🇧🇪",
-    "Austria": "🇦🇹", "Italy": "🇮🇹", "Spain": "🇪🇸", "Portugal": "🇵🇹",
-    "United Kingdom": "🇬🇧", "Japan": "🇯🇵", "Australia": "🇦🇺", "New Zealand": "🇳🇿",
-    "Brazil": "🇧🇷", "Mexico": "🇲🇽", "India": "🇮🇳", "China": "🇨🇳",
-    "South Korea": "🇰🇷", "Singapore": "🇸🇬", "Taiwan": "🇹🇼",
-    "Slovenia": "🇸🇮", "Slovakia": "🇸🇰", "Hungary": "🇭🇺", "Romania": "🇷🇴",
-    "Bulgaria": "🇧🇬", "Greece": "🇬🇷", "Croatia": "🇭🇷", "Estonia": "🇪🇪",
-    "Latvia": "🇱🇻", "Lithuania": "🇱🇹", "Iceland": "🇮🇸", "Russia": "🇷🇺",
-    "Ukraine": "🇺🇦", "Turkey": "🇹🇷", "Israel": "🇮🇱", "South Africa": "🇿🇦",
-    "Washington State": "🇺🇸", "Washington State / Puget Sound": "🇺🇸",
-    "Europe": "🇪🇺", "European Union": "🇪🇺",
-    "Global": "🌐", "International": "🌐", "Worldwide": "🌐",
+    "Switzerland": "ch", "Canada": "ca", "California": "us", "Czech Republic": "cz",
+    "Germany": "de", "France": "fr", "Poland": "pl", "Ireland": "ie",
+    "Nepal": "np", "United States": "us", "Norway": "no", "Sweden": "se",
+    "Finland": "fi", "Denmark": "dk", "Netherlands": "nl", "Belgium": "be",
+    "Austria": "at", "Italy": "it", "Spain": "es", "Portugal": "pt",
+    "United Kingdom": "gb", "Japan": "jp", "Australia": "au", "New Zealand": "nz",
+    "Brazil": "br", "Mexico": "mx", "India": "in", "China": "cn",
+    "South Korea": "kr", "Singapore": "sg", "Taiwan": "tw",
+    "Slovenia": "si", "Slovakia": "sk", "Hungary": "hu", "Romania": "ro",
+    "Bulgaria": "bg", "Greece": "gr", "Croatia": "hr", "Estonia": "ee",
+    "Latvia": "lv", "Lithuania": "lt", "Iceland": "is", "Russia": "ru",
+    "Ukraine": "ua", "Turkey": "tr", "Israel": "il", "South Africa": "za",
+    "Washington State": "us", "Washington State / Puget Sound": "us",
+    "Europe": "eu", "European Union": "eu",
+    "Global": "un", "International": "un", "Worldwide": "un",
 }
 
-# Per-source flag overrides for sources whose desc prefix doesn't map cleanly
+# Per-source country-code overrides for sources whose desc prefix doesn't map cleanly
 FLAG_BY_ID = {
-    "snotel": "🇺🇸", "uk-ea-flood-monitoring": "🇬🇧", "waterinfo-vmm": "🇧🇪",
-    "aviationweather": "🇺🇸", "blitzortung": "🌐", "hko-hong-kong": "🇭🇰",
-    "noaa-goes": "🇺🇸", "noaa-swpc-l1": "🇺🇸", "hongkong-epd": "🇭🇰",
-    "laqn-london": "🇬🇧", "sensor-community": "🌐", "wallonia-issep": "🇧🇪",
-    "eaws-albina": "🇦🇹", "gdacs": "🌐", "ptwc-tsunami": "🌐",
-    "seattle-911": "🇺🇸", "usgs-earthquakes": "🇺🇸", "aisstream": "🌐",
-    "digitraffic-maritime": "🇫🇮", "kystverket-ais": "🇳🇴", "mode-s": "🌐",
-    "vatsim": "🌐", "gtfs": "🌐", "madrid-traffic": "🇪🇸",
-    "nextbus": "🇺🇸", "paris-bicycle-counters": "🇫🇷",
-    "seattle-street-closures": "🇺🇸", "tfl-road-traffic": "🇬🇧",
-    "tokyo-docomo-bikeshare": "🇯🇵", "cbp-border-wait": "🇺🇸",
-    "elexon-bmrs": "🇬🇧", "tepco-denkiyoho": "🇯🇵",
-    "bluesky": "🌐", "wikimedia-osm-diffs": "🌐", "rss": "🌐",
-    "wikimedia-eventstreams": "🌐", "ticketmaster": "🌐", "gracedb": "🌐",
+    "snotel": "us", "uk-ea-flood-monitoring": "gb", "waterinfo-vmm": "be",
+    "aviationweather": "us", "blitzortung": "un", "hko-hong-kong": "hk",
+    "noaa-goes": "us", "noaa-swpc-l1": "us", "hongkong-epd": "hk",
+    "laqn-london": "gb", "sensor-community": "un", "wallonia-issep": "be",
+    "eaws-albina": "at", "gdacs": "un", "ptwc-tsunami": "un",
+    "seattle-911": "us", "usgs-earthquakes": "us", "aisstream": "un",
+    "digitraffic-maritime": "fi", "kystverket-ais": "no", "mode-s": "un",
+    "vatsim": "un", "gtfs": "un", "madrid-traffic": "es",
+    "nextbus": "us", "paris-bicycle-counters": "fr",
+    "seattle-street-closures": "us", "tfl-road-traffic": "gb",
+    "tokyo-docomo-bikeshare": "jp", "cbp-border-wait": "us",
+    "elexon-bmrs": "gb", "tepco-denkiyoho": "jp",
+    "bluesky": "un", "wikimedia-osm-diffs": "un", "rss": "un",
+    "wikimedia-eventstreams": "un", "ticketmaster": "un", "gracedb": "un",
 }
+
+
+def flag_img(cc: str, region: str = "") -> str:
+    """Render a flag as an inline image. cc is ISO alpha-2 (or 'un'/'eu')."""
+    cc = (cc or "un").lower()
+    alt = region or cc.upper()
+    return (
+        f'<img align="middle" alt="{alt}" title="{alt}" '
+        f'src="https://flagcdn.com/20x15/{cc}.png" width="20" height="15">'
+    )
 
 # Color palette (shields.io hex without #)
 C_KAFKA = "231f20"; C_MQTT = "660066"; C_AMQP = "1a4a78"; C_OFF = "eaeef2"
@@ -140,13 +150,13 @@ def parse_xreg(source_dir: Path) -> dict:
 
 
 def derive_region(desc: str, source_id: str = "") -> tuple[str, str]:
-    """Return (flag, region_text) from desc prefix before ' — '."""
+    """Return (country_code, region_text) from desc prefix before ' — '."""
     if not desc:
-        return (FLAG_BY_ID.get(source_id, "🌐"), "")
+        return (FLAG_BY_ID.get(source_id, "un"), "")
     region = desc.split(" — ")[0].strip() if " — " in desc else desc.split("—")[0].strip()
     region = region.split(",")[0].strip()
-    flag = FLAG.get(region) or FLAG_BY_ID.get(source_id, "🌐")
-    return (flag, region)
+    cc = FLAG.get(region) or FLAG_BY_ID.get(source_id, "un")
+    return (cc, region)
 
 
 def derive_scope(desc: str) -> str:
@@ -241,7 +251,8 @@ def render_source(entry: dict, upstream: dict, xreg_info: dict) -> str:
     sid = entry["id"]
     name = entry["name"]
     desc = entry.get("desc", "")
-    flag, region = derive_region(desc, sid)
+    cc, region = derive_region(desc, sid)
+    flag = flag_img(cc, region)
     scope = derive_scope(desc)
 
     tp = transport_pills(xreg_info["transports"])
@@ -261,12 +272,12 @@ def render_source(entry: dict, upstream: dict, xreg_info: dict) -> str:
     up_entry = upstream.get(sid) or {}
     if up_entry.get("homepage"):
         hp = up_entry["homepage"]
-        host = re.sub(r"^https?://(www\\.)?", "", hp).split("/")[0]
-        upstream_link = f' &nbsp;·&nbsp; ↗ [{host}]({hp})'
+        host = re.sub(r"^https?://(www\.)?", "", hp).split("/")[0]
+        upstream_link = f' &nbsp;·&nbsp; ↗ <a href="{hp}">{host}</a>'
 
     # Sidebar rows
     sidebar_rows = [
-        ("🌍", "Region",     f"{flag} {region or '—'}"),
+        ("🌍", "Region",     f'{flag} &nbsp;{region or "—"}'),
         ("🔌", "Transports", transport_label),
         ("📍", "Kafka key",  key_text),
         ("📦", "Events",     f"{len(events)} type(s)" if events else "—"),
@@ -280,9 +291,13 @@ def render_source(entry: dict, upstream: dict, xreg_info: dict) -> str:
         for e, l, v in sidebar_rows
     ) + "\n</table>"
 
+    # Compact summary: only fixed-width pill elements + name so the
+    # disclosure marker stays inline and columns align across all cards.
+    # Scope is shown as small text after the pills (wraps cleanly if long);
+    # the build badge is already in the sidebar so we don't repeat it here.
     summary = (
-        f'{flag} <b>{name}</b> &nbsp;&nbsp; {tp} &nbsp;'
-        f'<sub>{scope}</sub>&nbsp; {cp} &nbsp; {bb}'
+        f'{flag} &nbsp;<b>{name}</b> &nbsp; {tp} &nbsp; {cp}'
+        f'<sub>&nbsp;&nbsp;{scope}</sub>'
     )
 
     body = (
@@ -291,9 +306,9 @@ def render_source(entry: dict, upstream: dict, xreg_info: dict) -> str:
         f'<sub><b>📍 keyed by</b> {key_text} &nbsp; · &nbsp; '
         f'<b>📦 events</b> {events_text}</sub>\n\n'
         f'<sub><b>DEPLOY</b></sub><br>\n{chips}\n\n'
-        f'<sub>📘 [README]({sid}/README.md) &nbsp;·&nbsp; '
-        f'📑 [EVENTS]({sid}/EVENTS.md) &nbsp;·&nbsp; '
-        f'🐳 [CONTAINER]({sid}/CONTAINER.md){upstream_link}</sub>\n'
+        f'<sub>📘 <a href="{sid}/README.md">README</a> &nbsp;·&nbsp; '
+        f'📑 <a href="{sid}/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; '
+        f'🐳 <a href="{sid}/CONTAINER.md">CONTAINER</a>{upstream_link}</sub>\n'
     )
 
     return (
