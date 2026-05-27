@@ -271,10 +271,10 @@ async function selectSource(s) {
     $btnFabricNotebook.onclick = () => openDeployForm(s, "fabric-notebook");
   }
 
-  // fetch and render CONTAINER.md
+  // fetch and render README.md
   $content.innerHTML = '<div class="loading-indicator">Loading documentation…</div>';
   try {
-    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/CONTAINER.md`;
+    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/README.md`;
     const resp = await fetch(url);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     let md = await resp.text();
