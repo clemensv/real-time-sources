@@ -1,249 +1,255 @@
-# PegelOnline feeder
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/de.png" alt="DE" width="64" height="48"><br>
+<sub><b>🇩🇪 Germany</b></sub>
+</td>
+<td valign="middle">
 
-This feeder turns the German [WSV PegelOnline](https://www.pegelonline.wsv.de/) REST API into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
+# Pegelonline — German Federal Waterways Hydrology
 
-<!-- upstream-links:begin -->
-## Upstream
+<sub><b>WSV PegelOnline</b> · ~1,200 federal gauges · polled every 60 s · <a href="https://www.pegelonline.wsv.de/">upstream</a> · <a href="https://www.pegelonline.wsv.de/webservice/dokuRestapi">REST API docs</a></sub>
 
-- Home page: <https://www.pegelonline.wsv.de/>
-- API / data documentation: <https://www.pegelonline.wsv.de/webservice/dokuRestapi>
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square">
+<img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square">
+<img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-6_templates-0078d4?style=flat-square">
+<img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square">
+<img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
-<!-- upstream-links:end -->
+> **Real-time water-level CloudEvents for every federally administered inland and coastal gauge in Germany** — Rhine, Elbe, Danube, Weser, Main, Mosel, Oder, Kiel Canal. Reference station catalog + live measurements, keyed by `{station_id}`, identical schemas across Kafka, MQTT 5.0 (UNS), and AMQP 1.0.
 
-Companion docs:
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources/#pegelonline) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources/#pegelonline/fabric-notebook) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/pegelonline.kql) &nbsp;·&nbsp;
+[🗺️ **Fabric Map**](fabric/README.md)
 
-- [CONTAINER.md](CONTAINER.md) — published container images, environment variables, and one-click Azure deployments.
-- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and per-transport routing.
+</td></tr></table>
+<!-- source-hero:end -->
 
-## Why this bridge
+## At a glance
 
-The German Federal Waterways and Shipping Administration (Wasserstraßen-
-und Schifffahrtsverwaltung des Bundes, **WSV**) publishes
-[PegelOnline](https://www.pegelonline.wsv.de/), the canonical real-time
-water-level feed for every federally administered inland and coastal
-gauge in Germany — over **1,200 stations** on rivers, canals and
-estuaries including the Rhine, Elbe, Danube, Weser, Main, Mosel, Oder
-and Kiel Canal. The data is free, open, and the authoritative source
-that downstream consumers (flood agencies, ports, ship pilots,
-hydropower operators, insurers) build on.
+<table align="right">
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle">🇩🇪 Germany (federal waterways)</td></tr>
+<tr><td valign="middle">🏛️</td><td valign="middle"><b>Authority</b></td><td valign="middle"><a href="https://www.wsv.bund.de/">Wasserstraßen- und Schifffahrtsverwaltung des Bundes (WSV)</a></td></tr>
+<tr><td valign="middle">📊</td><td valign="middle"><b>Coverage</b></td><td valign="middle">~1,200 stations on rivers, canals, estuaries</td></tr>
+<tr><td valign="middle">⏱️</td><td valign="middle"><b>Cadence</b></td><td valign="middle">15-minute upstream sampling, 60-second poll</td></tr>
+<tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT 5.0 · AMQP 1.0</td></tr>
+<tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
+<tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle"><code>Station</code> · <code>CurrentMeasurement</code></td></tr>
+<tr><td valign="middle">📜</td><td valign="middle"><b>License</b></td><td valign="middle"><a href="https://www.govdata.de/dl-de/by-2-0">DL-DE→BY 2.0</a> (open)</td></tr>
+<tr><td valign="middle">🔐</td><td valign="middle"><b>Auth</b></td><td valign="middle">None — public REST</td></tr>
+</table>
 
-This bridge turns that REST API into a first-class real-time event
-stream so you can stop polling REST endpoints from inside your
-business systems and start subscribing to a topic:
+The bridge turns the German [WSV PegelOnline](https://www.pegelonline.wsv.de/)
+REST API into a real-time CloudEvents stream that consumers can subscribe to
+instead of polling REST themselves. It handles the boring parts — ETag-aware
+polling, per-station dedupe state, JsonStructure-validated payloads, identity
+plumbing, retries — and ships as three drop-in transport variants.
 
-- **Flood early warning and civil protection** — react to rising
-  gauges within one polling cycle (default 60 s) across an entire
-  river basin, drive alerts and dashboards.
-- **Inland shipping operations** — Rhine, Mosel and Elbe cargo
-  scheduling depends on minimum-fairway-depth thresholds at named
-  gauges (Kaub, Maxau, Emmerich, …); stream the values directly into
-  voyage-planning, ETA prediction and demurrage workflows.
-- **Hydropower and water-management dispatch** — bid into intraday
-  electricity markets with up-to-the-minute headwater and tailwater
-  readings; feed real-time inflows into reservoir-control SCADA.
-- **Environmental compliance and research** — long-running, dedupe-
-  aware ingestion into Microsoft Fabric Eventhouse / Azure Data
-  Explorer / a data lake for low-flow analysis, climate-impact studies
-  and statutory reporting.
-- **Insurance and risk** — drive parametric flood triggers and live
-  exposure dashboards from the same feed the public authorities use.
+**Who uses it.** Flood early-warning and civil protection (react to rising
+gauges within one poll cycle across a basin); inland shipping operations
+(Rhine, Mosel, Elbe fairway-depth thresholds at Kaub, Maxau, Emmerich, …);
+hydropower and water-management dispatch (intraday market bidding with
+up-to-the-minute headwater/tailwater); environmental compliance and research
+(long-running dedupe-aware ingestion into Fabric Eventhouse / ADX / lakes);
+insurance and risk (parametric flood triggers, live exposure dashboards).
 
-The bridge does the boring work — REST polling with ETag awareness,
-state-file dedupe, JSON-Structure–validated CloudEvents, identity
-plumbing, retries — so the consumer just subscribes.
+## 60-second quick start
 
-## Overview
+```bash
+docker run --rm \
+  -v "$PWD/state:/state" \
+  -e STATE_FILE=/state/pegelonline.json \
+  -e CONNECTION_STRING="Endpoint=sb://<ns>.servicebus.windows.net/;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=pegelonline" \
+  ghcr.io/clemensv/real-time-sources-pegelonline-kafka:latest
+```
 
-**PegelOnline** is a bridge that polls the German WSV PegelOnline REST API
-and re-emits both the station catalog and the live water-level measurements
-as CloudEvents. The source ships in three transport variants from a single
-upstream poller:
+That's it. The first cycle emits ~1,200 `Station` reference events; every
+subsequent 60 s cycle emits only the gauges with new measurements (typically
+~50–200 events). Mount `./state` to persist dedupe across restarts.
 
-| Variant | Container image | Transport | Default delivery shape |
+MQTT and AMQP variants take the same form — see
+[CONTAINER.md](CONTAINER.md) for the per-transport env-var matrix.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A[WSV PegelOnline<br/>REST API] -->|HTTPS poll<br/>ETag-aware| B[pegelonline_core<br/>poller + dedupe]
+    B -->|Station ref| C{{xRegistry contract<br/>pegelonline.xreg.json}}
+    B -->|CurrentMeasurement| C
+    C --> D[pegelonline_kafka]
+    C --> E[pegelonline_mqtt]
+    C --> F[pegelonline_amqp]
+    D -->|key=station_id<br/>ce_* headers| K[(Kafka /<br/>Event Hubs /<br/>Fabric Event Stream)]
+    E -->|UNS topic tree<br/>QoS 1, retained| M[(MQTT 5.0 broker /<br/>Event Grid namespace)]
+    F -->|AMQP message<br/>Entra ID via CBS| Q[(Service Bus /<br/>Event Hubs AMQP /<br/>Artemis)]
+```
+
+All three variants share the upstream poller (`pegelonline_core`), the
+xRegistry contract (`xreg/pegelonline.xreg.json`), and the CloudEvents
+schemas — switching transport never changes the data model.
+
+## Sample event
+
+<details>
+<summary><b><code>de.wsv.pegelonline.CurrentMeasurement</code></b> — live water-level reading (click to expand)</summary>
+
+```json
+{
+  "specversion": "1.0",
+  "type": "de.wsv.pegelonline.CurrentMeasurement",
+  "source": "https://www.pegelonline.wsv.de/webservices/rest-api/v2",
+  "id": "01985f6c-2f55-7c4f-9d2a-3a8e64c4e2a1",
+  "time": "2026-05-27T07:30:00Z",
+  "subject": "stations/MAXAU/water-level",
+  "datacontenttype": "application/json",
+  "data": {
+    "station_id": "MAXAU",
+    "station_uuid": "85d52e5a-d92a-4d97-8d62-cf2b91d6f0ff",
+    "water_shortname": "RHEIN",
+    "timestamp": "2026-05-27T07:30:00+02:00",
+    "value": 482.0,
+    "unit": "cm",
+    "state_mnw": "above",
+    "state_mhw": "below",
+    "trend": 1
+  }
+}
+```
+
+The Kafka record carries the same JSON in the value, the CloudEvents
+attributes as `ce_*` headers (binary content mode), and the Kafka key
+set to `MAXAU` (the `{station_id}` template). On MQTT the same JSON
+is published to `hydro/de/wsv/pegelonline/RHEIN/MAXAU/water-level`
+(QoS 1, retained, CloudEvents attributes as MQTT 5 user properties).
+On AMQP the same JSON is the application body with the CloudEvents
+attributes as `cloudEvents:*` application properties.
+
+See [EVENTS.md](EVENTS.md) for the full schemas of both event types
+(`Station` and `CurrentMeasurement`) and the JsonStructure constraints.
+
+</details>
+
+## Transport variants
+
+| Variant | Container image | Targets | Wire shape |
 |---|---|---|---|
-| **Kafka** | `ghcr.io/clemensv/real-time-sources-pegelonline-kafka` | Apache Kafka 2.x compatible (incl. Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud) | One topic, JSON CloudEvents (binary mode), key = `{station_id}` |
-| **MQTT** | `ghcr.io/clemensv/real-time-sources-pegelonline-mqtt` | MQTT 5.0 broker (incl. Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric Real-Time Hub MQTT broker) | Unified-Namespace topic tree under `hydro/de/wsv/pegelonline/{water}/{station}/...`, JSON body, CloudEvent attributes as MQTT 5 user properties, retained at QoS 1 |
-| **AMQP** | `ghcr.io/clemensv/real-time-sources-pegelonline-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs, Azure Service Bus emulator) | Single AMQP node (queue/topic), binary CloudEvents, SASL PLAIN for generic brokers, Microsoft Entra ID via AMQP CBS for Service Bus / Event Hubs, or SAS-token CBS for the emulator and SAS-only namespaces |
+| **🟥 Kafka** | `ghcr.io/clemensv/real-time-sources-pegelonline-kafka` | Apache Kafka 2.x · Azure Event Hubs · Fabric Event Streams · Confluent · Redpanda · Aiven · MSK | Single topic, binary CloudEvents (`ce_*` headers), key = `{station_id}` |
+| **🟪 MQTT** | `ghcr.io/clemensv/real-time-sources-pegelonline-mqtt` | Mosquitto · EMQX · HiveMQ · Azure Event Grid namespace · Fabric Real-Time Hub MQTT broker | UNS tree `hydro/de/wsv/pegelonline/{water}/{station}/...`, QoS 1, retained, CloudEvents as MQTT 5 user properties |
+| **🟦 AMQP** | `ghcr.io/clemensv/real-time-sources-pegelonline-amqp` | Azure Service Bus · Azure Event Hubs (AMQP surface) · ActiveMQ Artemis · Qpid · RabbitMQ AMQP 1.0 plugin | Single AMQP node, binary CloudEvents, SASL PLAIN or Entra ID via AMQP CBS (no SAS-key rotation) |
 
-All three variants share:
+## Deploy
 
-* The upstream poller (`pegelonline_core`).
-* The xRegistry contract (`xreg/pegelonline.xreg.json`).
-* The CloudEvents schemas for the `Station` reference event and the
-  `CurrentMeasurement` telemetry event.
+| Target | One-click | Best for |
+|---|---|---|
+| **Azure → Event Hubs (Kafka)** | [🚀 Portal](https://clemensv.github.io/real-time-sources/#pegelonline) | Greenfield Azure deployments wanting Kafka semantics |
+| **Azure → Service Bus (AMQP, Entra ID)** | [🚀 Portal](https://clemensv.github.io/real-time-sources/#pegelonline) | Existing Service Bus topologies, no SAS-key minting |
+| **Azure → Event Grid namespace (MQTT)** | [🚀 Portal](https://clemensv.github.io/real-time-sources/#pegelonline) | UNS / industrial IoT topologies |
+| **Azure → Fabric Event Stream** | [🚀 Portal](https://clemensv.github.io/real-time-sources/#pegelonline) | Direct ingest into Fabric Eventhouse |
+| **Fabric Notebook (no Azure subscription)** | [📓 Portal](https://clemensv.github.io/real-time-sources/#pegelonline/fabric-notebook) | Low-volume polling fully inside Fabric. Recommended for the default 60 s cadence — the notebook runs on Fabric schedule, dedupe state lives in OneLake, no container host to manage |
+| **Self-hosted (laptop, k8s, ACA, Cloud Run, ECS)** | [🐳 CONTAINER.md](CONTAINER.md) | Anything else |
 
-## Key features
-- **Station catalog** emitted at startup as reference CloudEvents and
-  refreshed periodically — consumers learn the universe of gauges
-  without a separate metadata fetch.
-- **Live water-level measurements** with ETag-aware polling and per-
-  station dedupe state, so only genuinely new readings are republished.
-- **Three transport binaries** with identical configuration knobs
-  upstream (polling interval, state file, once-mode) — switch transport
-  without changing the data model.
-- **Azure Event Hubs / Microsoft Fabric Event Streams** ready via standard
-  connection strings (Kafka variant).
-- **Unified Namespace** ready out of the box with retained MQTT 5.0
-  binary CloudEvents (MQTT variant).
-- **Azure Service Bus / Event Hubs over AMQP 1.0 with Microsoft Entra
-  ID** (no SAS-key rotation) via the AMQP variant's CBS put-token flow,
-  plus SAS-token CBS for the Service Bus emulator and SAS-only
-  namespaces.
+The portal buttons wrap `tools/deploy-fabric/deploy-feeder-notebook.ps1`
+(notebook) or the ARM templates in this directory (ACI). Both routes
+end up writing to the same KQL update policies from
+[`kql/pegelonline.kql`](kql/pegelonline.kql); a Fabric Eventhouse is
+created if it doesn't already exist.
+
+## Configuration
+
+<details>
+<summary>Full environment-variable reference (click to expand)</summary>
+
+| Variable | Variant | Purpose | Default |
+|---|---|---|---|
+| `CONNECTION_STRING` | Kafka | Kafka 2.x SASL/PLAIN over TLS, or Azure Event Hubs / Fabric Event Stream connection string | required |
+| `MQTT_BROKER_URL` | MQTT | `mqtts://host:8883` or `mqtt://host:1883` | required |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | MQTT | Username/password for SASL or Event Grid SAS | optional |
+| `MQTT_AAD_*` | MQTT | Entra ID JWT enhanced auth for Event Grid namespace | optional |
+| `AMQP_BROKER_URL` | AMQP | `amqp[s]://[user[:pass]@]host[:port]/<entity>` | required (or Entra/CBS env) |
+| `AMQP_CBS_*` | AMQP | Entra ID for Service Bus / Event Hubs CBS put-token | optional |
+| `STATE_FILE` | all | Path to dedupe state file (mount a volume!) | `/state/pegelonline.json` |
+| `POLL_INTERVAL_SECONDS` | all | Upstream poll cadence | `60` |
+| `STATIONS_REFRESH_SECONDS` | all | Station-catalog re-emit cadence | `3600` |
+| `ONCE` | all | Run a single poll cycle and exit (for cron/Fabric notebook) | `false` |
+| `LOG_LEVEL` | all | `DEBUG` / `INFO` / `WARNING` / `ERROR` | `INFO` |
+
+The full per-deployment-shape env-var matrix (Entra ID via CBS or
+OAUTH2-JWT, SAS-token CBS, Service Bus emulator, etc.) lives in
+[CONTAINER.md](CONTAINER.md). The runtime entry point for every image
+is `python -m pegelonline_{kafka,mqtt,amqp} feed`; the image's default
+`CMD` invokes it for you.
+
+</details>
+
+## Data model
+
+Two event types, both in message group `de.wsv.pegelonline`:
+
+- **`Station`** — reference event, emitted at startup and refreshed every
+  `STATIONS_REFRESH_SECONDS`. Carries the station identity, river/water
+  body name, geo coordinates, gauge zero / PNP datum, and the long-name
+  used by WSV publications. Subject: `stations/{station_id}/info`.
+- **`CurrentMeasurement`** — telemetry event, emitted per gauge per poll
+  cycle whenever the upstream value or timestamp has changed. Carries
+  the timestamp, value, unit, trend, and threshold-state flags
+  (above/below MNW, MHW, etc.). Subject: `stations/{station_id}/water-level`.
+
+Both events are keyed by `{station_id}` so a consumer joining a
+`Station`-keyed KTable with a `CurrentMeasurement`-keyed stream always
+sees the temporally consistent station metadata for each measurement —
+see [Streamifying reference data for temporal consistency with
+telemetry events](https://vasters.com/clemens/2024/10/30/streamifying-reference-data-for-temporal-consistency-with-telemetry-events)
+for the design rationale.
+
+The complete JsonStructure schemas (with units, validation constraints,
+and Avro round-trip) are in [EVENTS.md](EVENTS.md).
 
 ## Repository layout
 
 ```text
 pegelonline/
-  xreg/pegelonline.xreg.json     # shared xRegistry contract
-  pegelonline_core/              # transport-agnostic poller
-  pegelonline_kafka/             # Kafka feeder application
-  pegelonline_mqtt/              # MQTT/UNS feeder application
-  pegelonline_amqp/              # AMQP 1.0 feeder application
-  pegelonline_producer/          # xRegistry-generated Kafka producer
-  pegelonline_mqtt_producer/     # xRegistry-generated MQTT producer
-  pegelonline_amqp_producer/     # xRegistry-generated AMQP producer
-  Dockerfile.kafka               # builds the Kafka feeder image
-  Dockerfile.mqtt                # builds the MQTT feeder image
-  Dockerfile.amqp                # builds the AMQP feeder image
-  tests/                         # unit + integration tests
+├── xreg/pegelonline.xreg.json     # shared xRegistry contract
+├── pegelonline_core/              # transport-agnostic poller
+├── pegelonline_kafka/             # Kafka feeder application
+├── pegelonline_mqtt/              # MQTT/UNS feeder application
+├── pegelonline_amqp/              # AMQP 1.0 feeder application
+├── pegelonline_producer/          # xRegistry-generated Kafka producer
+├── pegelonline_mqtt_producer/     # xRegistry-generated MQTT producer
+├── pegelonline_amqp_producer/     # xRegistry-generated AMQP producer
+├── kql/pegelonline.kql            # Eventhouse table + update policies
+├── notebook/pegelonline-feed.ipynb # Fabric Notebook feeder
+├── fabric/                        # 8-layer Fabric Map
+├── Dockerfile.kafka               # builds the Kafka feeder image
+├── Dockerfile.mqtt                # builds the MQTT feeder image
+├── Dockerfile.amqp                # builds the AMQP feeder image
+└── tests/                         # unit + integration tests
 ```
 
-## Prerequisites
+## Prerequisites (for self-hosted runs)
 
 - Docker 20.10+ (or any OCI-compatible runtime).
-- Outbound HTTPS to `pegelonline.wsv.de` (the upstream REST API; no credentials required).
+- Outbound HTTPS to `pegelonline.wsv.de` — no credentials required.
 - Network access to your target Kafka broker, MQTT broker, or AMQP 1.0 peer.
-- A writable host directory mounted into the container at `/state` to persist the dedupe state file across restarts. Without it, dedupe restarts cold on every container start, and "long-running, dedupe-aware ingestion" only holds for the lifetime of one container.
+- A writable host directory mounted at `/state` so dedupe state survives
+  restarts. **Without it, dedupe restarts cold on every container start.**
 
-## Quick start with Docker
+---
 
-> [!IMPORTANT]
-> Always mount a volume for `STATE_FILE`. The default path lives inside the container's home directory and is lost on restart, which silently disables cross-restart deduplication. The examples below mount the host directory `./state` into `/state` and point `STATE_FILE` at it.
-
-### Kafka
-
-```bash
-docker run --rm \
-  -v "$PWD/state:/state" \
-  -e STATE_FILE=/state/pegelonline.json \
-  -e CONNECTION_STRING="<event-hubs-connection-string>" \
-  ghcr.io/clemensv/real-time-sources-pegelonline-kafka:latest
-```
-
-Replace `<event-hubs-connection-string>` with a connection string from your Azure Event Hubs namespace, Microsoft Fabric Event Stream custom endpoint, or any Kafka 2.x broker that accepts the same SASL-PLAIN-over-TLS shape.
-
-### MQTT (Unified Namespace)
-
-```bash
-docker run --rm \
-  -v "$PWD/state:/state" \
-  -e STATE_FILE=/state/pegelonline.json \
-  -e MQTT_BROKER_URL=mqtts://<broker-host>:8883 \
-  -e MQTT_USERNAME=<username> \
-  -e MQTT_PASSWORD=<password> \
-  ghcr.io/clemensv/real-time-sources-pegelonline-mqtt:latest
-```
-
-Topics published (retained, QoS 1):
-
-```text
-hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info          # Station reference
-hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level   # CurrentMeasurement telemetry
-```
-
-### AMQP 1.0
-
-```bash
-docker run --rm \
-  -v "$PWD/state:/state" \
-  -e STATE_FILE=/state/pegelonline.json \
-  -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/pegelonline' \
-  ghcr.io/clemensv/real-time-sources-pegelonline-amqp:latest
-```
-
-For Azure Service Bus or Event Hubs with Microsoft Entra ID, the Service Bus emulator, or SAS-only namespaces, see [CONTAINER.md](CONTAINER.md#using-the-amqp-image) for the full environment-variable matrix.
-
-## Configuration reference
-
-The complete list of environment variables for every variant (Kafka, MQTT, AMQP), every authentication mode (SASL PLAIN, Microsoft Entra ID via CBS or OAUTH2-JWT, SAS-token CBS), and every Azure deployment shape lives in [CONTAINER.md](CONTAINER.md). The runtime entry point for every image is `python -m pegelonline_{kafka,mqtt,amqp} feed`; the image's default `CMD` invokes it for you.
-
-## Deploying into Microsoft Fabric
-
-PegelOnline targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), an attached Eventhouse / KQL database materializes the contract from [`kql/pegelonline.kql`](kql/pegelonline.kql), and the bundled 8-layer Fabric Map ([`fabric/`](fabric/README.md)) visualizes the live state of every gauge on a basemap with river geometry.
-
-Two hosting models are supported. **Use the deploy buttons on the [project portal](https://clemensv.github.io/real-time-sources/#pegelonline)** to launch either; both deploy buttons walk you through the same Fabric workspace selection and follow-up steps.
-
-### Fabric Notebook feeder (recommended for low-volume polling)
-
-A scheduled Fabric Notebook ([`notebook/pegelonline-feed.ipynb`](notebook/pegelonline-feed.ipynb)) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `pegelonline` package and both generated producer sub-packages. The Event Stream custom endpoint connection string is looked up at runtime via the public Fabric Topology API using the workspace identity — no secrets in the notebook, no separate container host to manage. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/pegelonline/`.
-
-Deploy with `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source pegelonline -WorkspaceId <id> -CapacityId <id>` (the portal button wraps this for you). Best fit for the default 60-second polling cadence; the notebook executes on a Fabric schedule (default every 5 minutes) and writes a per-run diagnostic log to OneLake.
-
-[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#pegelonline/fabric-notebook)
-
-### Fabric ACI feeder (recommended for high-volume / always-on)
-
-A long-running Azure Container Instance hosts one of the three container images and writes into the same Fabric Event Stream custom endpoint. Use this when you want continuous polling, real-time MQTT/UNS publishing, or the AMQP transport — anything that does not fit the notebook scheduling model.
-
-Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source pegelonline -WorkspaceId <id> -CapacityId <id>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with the [`kql/pegelonline.kql`](kql/pegelonline.kql) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
-
-[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#pegelonline/fabric-aci)
-
-### Fabric Map visualization (optional, post-deploy)
-
-After either hosting model has events flowing, run [`fabric/post-deploy.ps1`](fabric/README.md) (or `tools/deploy-fabric/deploy-fabric.ps1 -Source pegelonline`) to ingest the curated river geometry into the `RiverSegments` table and wire the 8 Kusto-backed layers (hydrological state, navigation state, 1h/3h/6h/24h trend, data freshness, station labels) onto a blank Fabric Map item. The map updates live as new measurements arrive.
-
-## Deploying into Azure Container Instances
-
-Five one-click deployment templates are available — one per realistic Azure target. These templates host the container directly in Azure (without a Fabric workspace) and target an Azure Event Hubs namespace, an MQTT broker, or an AMQP 1.0 peer. All templates create a storage account and file share for persistent dedupe state.
-
-### Kafka — bring your own Event Hub / Kafka
-
-Deploy the Kafka container with your own Azure Event Hubs or Fabric Event
-Stream connection string.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template.json)
-
-### Kafka — provision a new Event Hub
-
-Deploy the Kafka container together with a new Event Hubs namespace
-(Standard SKU, 1 throughput unit) and event hub. The connection string
-is wired automatically.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-with-eventhub.json)
-
-### MQTT — bring your own broker
-
-Deploy the MQTT container against an existing MQTT 5 broker. You
-provide the `mqtts://` URL and optional credentials.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-mqtt.json)
-
-### MQTT — provision a new Event Grid namespace MQTT broker
-
-Deploy the MQTT container together with a new
-[Azure Event Grid namespace](https://learn.microsoft.com/azure/event-grid/mqtt-overview)
-with the MQTT broker enabled, a topic space rooted at `hydro/#`, a
-user-assigned managed identity, and the **EventGrid TopicSpaces
-Publisher** role assignment. The feeder authenticates with MQTT v5
-enhanced authentication (`OAUTH2-JWT`).
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-with-eventgrid-mqtt.json)
-
-### AMQP — provision a new Azure Service Bus namespace
-
-Deploy the AMQP container together with a new
-[Azure Service Bus Standard namespace](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview)
-with a queue named `pegelonline`, a user-assigned managed identity, and
-the **Azure Service Bus Data Sender** role assignment. The feeder
-authenticates via AMQP CBS put-token with Microsoft Entra ID — no SAS
-key rotation required.
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-with-servicebus.json)
-
-## Next steps
-
-- Pick a hosting model: a [Fabric Notebook or Fabric ACI feeder](#deploying-into-microsoft-fabric) if your destination is a Fabric workspace; a [direct Azure deployment](#deploying-into-azure-container-instances) if you target Event Hubs, an MQTT broker, or AMQP without Fabric.
-- Review the [event contract and schemas](EVENTS.md) before writing a consumer.
-- Look up authentication modes and the full environment-variable matrix in [CONTAINER.md](CONTAINER.md).
-- The upstream API surface, terms of use, and station coverage are documented at the [WSV PegelOnline portal](https://www.pegelonline.wsv.de/).
+<sub>
+📚 <a href="../README.md">← Back to catalog</a> &nbsp;·&nbsp;
+🌐 <a href="https://clemensv.github.io/real-time-sources/#pegelonline">Portal entry</a> &nbsp;·&nbsp;
+📑 <a href="EVENTS.md">EVENTS.md</a> &nbsp;·&nbsp;
+🐳 <a href="CONTAINER.md">CONTAINER.md</a> &nbsp;·&nbsp;
+🗄️ <a href="kql/pegelonline.kql">KQL schema</a> &nbsp;·&nbsp;
+🗺️ <a href="fabric/README.md">Fabric Map</a> &nbsp;·&nbsp;
+↗ <a href="https://www.pegelonline.wsv.de/">pegelonline.wsv.de</a> &nbsp;·&nbsp;
+📖 <a href="https://www.pegelonline.wsv.de/webservice/dokuRestapi">REST API docs</a>
+</sub>
