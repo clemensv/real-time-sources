@@ -105,10 +105,6 @@ jobs:
       - name: Install test dependencies
         run: pip install -r tests/docker_e2e/requirements.txt
 
-      - name: Build Docker image
-        run: |
-          docker build -t test-${{ matrix.image || matrix.module }} -f ./${{ matrix.dir }}/${{ matrix.file || 'Dockerfile' }} ./${{ matrix.dir }}
-
       - name: Run Kafka flow test
         run: |
           pytest tests/docker_e2e/${{ matrix.test_file || 'test_docker_kafka_flow.py' }} \
