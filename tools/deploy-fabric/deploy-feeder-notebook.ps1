@@ -365,7 +365,18 @@ Write-Host "  Polling interval: $PollingInterval s (once-mode=$OnceMode)" -Foreg
 if (-not $SkipInfra) {
     Write-Step "A" "Setting up Fabric infra via deploy-fabric.ps1..."
     $deployFabric = Join-Path $PSScriptRoot "deploy-fabric.ps1"
-    if (-not (Test-Path $deployFabric)) { throw "deploy-fabric.ps1 not found alongside this script." }
+    if (-not (Test-Path $deployFabric)) {
+        # Script was likely fetched standalone (e.g. into Cloud Shell). Pull
+        # the sibling deploy-fabric.ps1 from the same repo/branch.
+        $rawDfUrl = "https://raw.githubusercontent.com/$Repo/$Branch/tools/deploy-fabric/deploy-fabric.ps1"
+        $deployFabric = Join-Path $TempDir "deploy-fabric.ps1"
+        Write-Host "deploy-fabric.ps1 not alongside script; downloading from $rawDfUrl" -ForegroundColor DarkYellow
+        try {
+            Invoke-WebRequest -Uri $rawDfUrl -OutFile $deployFabric -UseBasicParsing
+        } catch {
+            throw "deploy-fabric.ps1 not found alongside this script and could not be downloaded from $rawDfUrl. Error: $($_.Exception.Message)"
+        }
+    }
 
     $fwdArgs = @{
         Source        = $Source
