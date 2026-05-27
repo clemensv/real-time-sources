@@ -2,1427 +2,1427 @@
   "_comment": "Authoritative matrix for .github/workflows/test-docker-e2e.yml. The discover job filters this list against changed paths so per-feeder PRs run only the affected feeder's job. Infra changes (tests/docker_e2e/**, .github/workflows/test-docker-e2e.yml, tools/**, this file) force the full matrix.",
   "build": [
     {
-      "dir": "blitzortung",
+      "dir": "feeders/blitzortung",
       "module": "blitzortung"
     },
     {
-      "dir": "blitzortung",
+      "dir": "feeders/blitzortung",
       "image": "blitzortung-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "blitzortung_mqtt"
     },
     {
-      "dir": "kystverket-ais",
+      "dir": "feeders/kystverket-ais",
       "module": "kystverket_ais"
     },
     {
-      "dir": "kystverket-ais",
+      "dir": "feeders/kystverket-ais",
       "image": "kystverket-ais-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "kystverket_ais_mqtt"
     },
     {
-      "dir": "bluesky",
+      "dir": "feeders/bluesky",
       "module": "bluesky"
     },
     {
-      "dir": "bluesky",
+      "dir": "feeders/bluesky",
       "image": "bluesky-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "bluesky_mqtt"
     },
     {
-      "dir": "aisstream",
+      "dir": "feeders/aisstream",
       "image": "aisstream-kafka",
       "file": "Dockerfile",
       "module": "aisstream"
     },
     {
-      "dir": "aisstream",
+      "dir": "feeders/aisstream",
       "image": "aisstream-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "aisstream_mqtt"
     },
     {
-      "dir": "bfs-odl",
+      "dir": "feeders/bfs-odl",
       "module": "bfs_odl"
     },
     {
-      "dir": "bfs-odl",
+      "dir": "feeders/bfs-odl",
       "image": "bfs-odl-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "bfs_odl_mqtt"
     },
     {
-      "dir": "bfs-odl",
+      "dir": "feeders/bfs-odl",
       "image": "bfs-odl-amqp",
       "file": "Dockerfile.amqp",
       "module": "bfs_odl_amqp"
     },
     {
-      "dir": "canada-aqhi",
+      "dir": "feeders/canada-aqhi",
       "module": "canada_aqhi"
     },
     {
-      "dir": "chmi-hydro",
+      "dir": "feeders/chmi-hydro",
       "module": "chmi_hydro"
     },
     {
-      "dir": "chmi-hydro",
+      "dir": "feeders/chmi-hydro",
       "image": "chmi-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "chmi_hydro_mqtt"
     },
     {
-      "dir": "bafu-hydro",
+      "dir": "feeders/bafu-hydro",
       "image": "bafu-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "bafu_hydro_mqtt"
     },
     {
-      "dir": "nve-hydro",
+      "dir": "feeders/nve-hydro",
       "image": "nve-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "nve_hydro_mqtt"
     },
     {
-      "dir": "wallonia-issep",
+      "dir": "feeders/wallonia-issep",
       "image": "wallonia-issep-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "wallonia_issep_mqtt"
     },
     {
-      "dir": "german-waters",
+      "dir": "feeders/german-waters",
       "image": "german-waters-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "german_waters_mqtt"
     },
     {
-      "dir": "defra-aurn",
+      "dir": "feeders/defra-aurn",
       "module": "defra_aurn"
     },
     {
-      "dir": "epa-uv",
+      "dir": "feeders/epa-uv",
       "module": "epa_uv"
     },
     {
-      "dir": "fienta",
+      "dir": "feeders/fienta",
       "module": "fienta"
     },
     {
-      "dir": "fmi-finland",
+      "dir": "feeders/fmi-finland",
       "module": "fmi_finland"
     },
     {
-      "dir": "hongkong-epd",
+      "dir": "feeders/hongkong-epd",
       "module": "hongkong_epd"
     },
     {
-      "dir": "hongkong-epd",
+      "dir": "feeders/hongkong-epd",
       "image": "hongkong-epd-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "hongkong_epd_mqtt"
     },
     {
-      "dir": "irail",
+      "dir": "feeders/irail",
       "module": "irail"
     },
     {
-      "dir": "irceline-belgium",
+      "dir": "feeders/irceline-belgium",
       "module": "irceline_belgium"
     },
     {
-      "dir": "gtfs",
+      "dir": "feeders/gtfs",
       "module": "gtfs_rt_bridge"
     },
     {
-      "dir": "hubeau-hydrometrie",
+      "dir": "feeders/hubeau-hydrometrie",
       "module": "hubeau_hydrometrie"
     },
     {
-      "dir": "imgw-hydro",
+      "dir": "feeders/imgw-hydro",
       "module": "imgw_hydro"
     },
     {
-      "dir": "king-county-marine",
+      "dir": "feeders/king-county-marine",
       "module": "king_county_marine"
     },
     {
-      "dir": "laqn-london",
+      "dir": "feeders/laqn-london",
       "module": "laqn_london"
     },
     {
-      "dir": "luchtmeetnet-nl",
+      "dir": "feeders/luchtmeetnet-nl",
       "module": "luchtmeetnet_nl"
     },
     {
-      "dir": "mode-s",
+      "dir": "feeders/mode-s",
       "module": "mode_s_kafka_bridge"
     },
     {
-      "dir": "noaa",
+      "dir": "feeders/noaa",
       "module": "noaa"
     },
     {
-      "dir": "noaa-goes",
+      "dir": "feeders/noaa-goes",
       "module": "noaa_goes"
     },
     {
-      "dir": "noaa-ndbc",
+      "dir": "feeders/noaa-ndbc",
       "module": "noaa_ndbc"
     },
     {
-      "dir": "noaa-nws",
+      "dir": "feeders/noaa-nws",
       "module": "noaa_nws"
     },
     {
-      "dir": "pegelonline",
+      "dir": "feeders/pegelonline",
       "image": "pegelonline-kafka",
       "file": "Dockerfile.kafka",
       "module": "pegelonline_kafka"
     },
     {
-      "dir": "pegelonline",
+      "dir": "feeders/pegelonline",
       "image": "pegelonline-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "pegelonline_mqtt"
     },
     {
-      "dir": "pegelonline",
+      "dir": "feeders/pegelonline",
       "image": "pegelonline-amqp",
       "file": "Dockerfile.amqp",
       "module": "pegelonline_amqp"
     },
     {
-      "dir": "rss",
+      "dir": "feeders/rss",
       "module": "rssbridge"
     },
     {
-      "dir": "rws-waterwebservices",
+      "dir": "feeders/rws-waterwebservices",
       "module": "rws_waterwebservices"
     },
     {
-      "dir": "seattle-911",
+      "dir": "feeders/seattle-911",
       "module": "seattle_911"
     },
     {
-      "dir": "seattle-street-closures",
+      "dir": "feeders/seattle-street-closures",
       "module": "seattle_street_closures"
     },
     {
-      "dir": "sensor-community",
+      "dir": "feeders/sensor-community",
       "module": "sensor_community"
     },
     {
-      "dir": "smhi-hydro",
+      "dir": "feeders/smhi-hydro",
       "module": "smhi_hydro"
     },
     {
-      "dir": "smhi-hydro",
+      "dir": "feeders/smhi-hydro",
       "image": "smhi-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "smhi_hydro_mqtt"
     },
     {
-      "dir": "uk-ea-flood-monitoring",
+      "dir": "feeders/uk-ea-flood-monitoring",
       "module": "uk_ea_flood_monitoring"
     },
     {
-      "dir": "uba-airdata",
+      "dir": "feeders/uba-airdata",
       "module": "uba_airdata"
     },
     {
-      "dir": "usgs-earthquakes",
+      "dir": "feeders/usgs-earthquakes",
       "module": "usgs_earthquakes"
     },
     {
-      "dir": "usgs-iv",
+      "dir": "feeders/usgs-iv",
       "module": "usgs_iv"
     },
     {
-      "dir": "waterinfo-vmm",
+      "dir": "feeders/waterinfo-vmm",
       "module": "waterinfo_vmm"
     },
     {
-      "dir": "wsdot",
+      "dir": "feeders/wsdot",
       "module": "wsdot"
     },
     {
-      "dir": "wikimedia-osm-diffs",
+      "dir": "feeders/wikimedia-osm-diffs",
       "image": "wikimedia-osm-diffs-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "wikimedia_osm_diffs_mqtt"
     },
     {
-      "dir": "xceed",
+      "dir": "feeders/xceed",
       "module": "xceed"
     },
     {
-      "dir": "autobahn",
+      "dir": "feeders/autobahn",
       "image": "autobahn-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "autobahn_mqtt"
     },
     {
-      "dir": "mode-s",
+      "dir": "feeders/mode-s",
       "image": "mode-s-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "mode_s_mqtt"
     },
     {
-      "dir": "wikimedia-eventstreams",
+      "dir": "feeders/wikimedia-eventstreams",
       "image": "wikimedia-eventstreams-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "wikimedia_eventstreams_mqtt"
     },
     {
-      "dir": "nws-alerts",
+      "dir": "feeders/nws-alerts",
       "image": "nws-alerts-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "nws_alerts_mqtt"
     },
     {
-      "dir": "tfl-road-traffic",
+      "dir": "feeders/tfl-road-traffic",
       "image": "tfl-road-traffic-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "tfl_road_traffic_mqtt"
     },
     {
-      "dir": "rws-waterwebservices",
+      "dir": "feeders/rws-waterwebservices",
       "image": "rws-waterwebservices-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "rws_waterwebservices_mqtt"
     },
     {
-      "dir": "epa-uv",
+      "dir": "feeders/epa-uv",
       "image": "epa-uv-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "epa_uv_mqtt"
     },
     {
-      "dir": "usgs-geomag",
+      "dir": "feeders/usgs-geomag",
       "image": "usgs-geomag-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "usgs_geomag_mqtt"
     },
     {
-      "dir": "seattle-911",
+      "dir": "feeders/seattle-911",
       "image": "seattle-911-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "seattle_911_mqtt"
     },
     {
-      "dir": "irail",
+      "dir": "feeders/irail",
       "image": "irail-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "irail_mqtt"
     },
     {
-      "dir": "cbp-border-wait",
+      "dir": "feeders/cbp-border-wait",
       "image": "cbp-border-wait-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "cbp_border_wait_mqtt"
     },
     {
-      "dir": "carbon-intensity",
+      "dir": "feeders/carbon-intensity",
       "image": "carbon-intensity-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "carbon_intensity_mqtt"
     },
     {
-      "dir": "paris-bicycle-counters",
+      "dir": "feeders/paris-bicycle-counters",
       "image": "paris-bicycle-counters-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "paris_bicycle_counters_mqtt"
     },
     {
-      "dir": "australia-wildfires",
+      "dir": "feeders/australia-wildfires",
       "image": "australia-wildfires-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "australia_wildfires_mqtt"
     },
     {
-      "dir": "king-county-marine",
+      "dir": "feeders/king-county-marine",
       "image": "king-county-marine-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "king_county_marine_mqtt"
     },
     {
-      "dir": "inpe-deter-brazil",
+      "dir": "feeders/inpe-deter-brazil",
       "module": "inpe_deter_brazil"
     },
     {
-      "dir": "inpe-deter-brazil",
+      "dir": "feeders/inpe-deter-brazil",
       "image": "inpe-deter-brazil-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "inpe_deter_brazil_mqtt"
     },
     {
-      "dir": "usgs-iv",
+      "dir": "feeders/usgs-iv",
       "image": "usgs-iv-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "usgs_iv_mqtt"
     },
     {
-      "dir": "rss",
+      "dir": "feeders/rss",
       "image": "rss-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "rssbridge_mqtt"
     },
     {
-      "dir": "usgs-earthquakes",
+      "dir": "feeders/usgs-earthquakes",
       "image": "usgs-earthquakes-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "usgs_earthquakes_mqtt"
     },
     {
-      "dir": "eaws-albina",
+      "dir": "feeders/eaws-albina",
       "module": "eaws_albina"
     },
     {
-      "dir": "eaws-albina",
+      "dir": "feeders/eaws-albina",
       "image": "eaws-albina-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "eaws_albina_mqtt"
     },
     {
-      "dir": "gdacs",
+      "dir": "feeders/gdacs",
       "module": "gdacs"
     },
     {
-      "dir": "gdacs",
+      "dir": "feeders/gdacs",
       "image": "gdacs-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "gdacs_mqtt"
     },
     {
-      "dir": "meteoalarm",
+      "dir": "feeders/meteoalarm",
       "module": "meteoalarm"
     },
     {
-      "dir": "meteoalarm",
+      "dir": "feeders/meteoalarm",
       "image": "meteoalarm-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "meteoalarm_mqtt"
     },
     {
-      "dir": "ptwc-tsunami",
+      "dir": "feeders/ptwc-tsunami",
       "module": "ptwc_tsunami"
     },
     {
-      "dir": "ptwc-tsunami",
+      "dir": "feeders/ptwc-tsunami",
       "image": "ptwc-tsunami-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "ptwc_tsunami_mqtt"
     },
     {
-      "dir": "nina-bbk",
+      "dir": "feeders/nina-bbk",
       "module": "nina_bbk"
     },
     {
-      "dir": "nina-bbk",
+      "dir": "feeders/nina-bbk",
       "image": "nina-bbk-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "nina_bbk_mqtt"
     },
     {
-      "dir": "jma-bosai-warning",
+      "dir": "feeders/jma-bosai-warning",
       "module": "jma_bosai_warning"
     },
     {
-      "dir": "jma-bosai-warning",
+      "dir": "feeders/jma-bosai-warning",
       "image": "jma-bosai-warning-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "jma_bosai_warning_mqtt"
     },
     {
-      "dir": "jma-bosai-quake",
+      "dir": "feeders/jma-bosai-quake",
       "module": "jma_bosai_quake"
     },
     {
-      "dir": "jma-bosai-quake",
+      "dir": "feeders/jma-bosai-quake",
       "image": "jma-bosai-quake-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "jma_bosai_quake_mqtt"
     },
     {
-      "dir": "gracedb",
+      "dir": "feeders/gracedb",
       "module": "gracedb"
     },
     {
-      "dir": "gracedb",
+      "dir": "feeders/gracedb",
       "image": "gracedb-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "gracedb_mqtt"
     },
     {
-      "dir": "vatsim",
+      "dir": "feeders/vatsim",
       "module": "vatsim"
     },
     {
-      "dir": "vatsim",
+      "dir": "feeders/vatsim",
       "image": "vatsim-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "vatsim_mqtt"
     },
     {
-      "dir": "entur-norway",
+      "dir": "feeders/entur-norway",
       "module": "entur_norway"
     },
     {
-      "dir": "entur-norway",
+      "dir": "feeders/entur-norway",
       "image": "entur-norway-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "entur_norway_mqtt"
     },
     {
-      "dir": "entsoe",
+      "dir": "feeders/entsoe",
       "image": "entsoe-kafka",
       "file": "Dockerfile.kafka",
       "module": "entsoe_kafka"
     },
     {
-      "dir": "entsoe",
+      "dir": "feeders/entsoe",
       "image": "entsoe-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "entsoe_mqtt"
     },
     {
-      "dir": "entsoe",
+      "dir": "feeders/entsoe",
       "image": "entsoe-amqp",
       "file": "Dockerfile.amqp",
       "module": "entsoe_amqp"
     },
     {
-      "dir": "bafu-hydro",
+      "dir": "feeders/bafu-hydro",
       "image": "bafu-hydro-amqp",
       "file": "Dockerfile.amqp",
       "module": "bafu_hydro_amqp"
     },
     {
-      "dir": "chmi-hydro",
+      "dir": "feeders/chmi-hydro",
       "image": "chmi-hydro-amqp",
       "file": "Dockerfile.amqp",
       "module": "chmi_hydro_amqp"
     },
     {
-      "dir": "german-waters",
+      "dir": "feeders/german-waters",
       "image": "german-waters-amqp",
       "file": "Dockerfile.amqp",
       "module": "german_waters_amqp"
     },
     {
-      "dir": "nve-hydro",
+      "dir": "feeders/nve-hydro",
       "image": "nve-hydro-amqp",
       "file": "Dockerfile.amqp",
       "module": "nve_hydro_amqp"
     },
     {
-      "dir": "rws-waterwebservices",
+      "dir": "feeders/rws-waterwebservices",
       "image": "rws-waterwebservices-amqp",
       "file": "Dockerfile.amqp",
       "module": "rws_waterwebservices_amqp"
     },
     {
-      "dir": "smhi-hydro",
+      "dir": "feeders/smhi-hydro",
       "image": "smhi-hydro-amqp",
       "file": "Dockerfile.amqp",
       "module": "smhi_hydro_amqp"
     },
     {
-      "dir": "wallonia-issep",
+      "dir": "feeders/wallonia-issep",
       "image": "wallonia-issep-amqp",
       "file": "Dockerfile.amqp",
       "module": "wallonia_issep_amqp"
     },
     {
-      "dir": "kystverket-ais",
+      "dir": "feeders/kystverket-ais",
       "image": "kystverket-ais-amqp",
       "file": "Dockerfile.amqp",
       "module": "kystverket_ais_amqp"
     },
     {
-      "dir": "king-county-marine",
+      "dir": "feeders/king-county-marine",
       "image": "king-county-marine-amqp",
       "file": "Dockerfile.amqp",
       "module": "king_county_marine_amqp"
     },
     {
-      "dir": "vatsim",
+      "dir": "feeders/vatsim",
       "image": "vatsim-amqp",
       "file": "Dockerfile.amqp",
       "module": "vatsim_amqp"
     },
     {
-      "dir": "mode-s",
+      "dir": "feeders/mode-s",
       "image": "mode-s-amqp",
       "file": "Dockerfile.amqp",
       "module": "mode_s_amqp"
     },
     {
-      "dir": "aisstream",
+      "dir": "feeders/aisstream",
       "image": "aisstream-amqp",
       "file": "Dockerfile.amqp",
       "module": "aisstream_amqp"
     },
     {
-      "dir": "australia-wildfires",
+      "dir": "feeders/australia-wildfires",
       "image": "australia-wildfires-amqp",
       "file": "Dockerfile.amqp",
       "module": "australia_wildfires_amqp"
     },
     {
-      "dir": "carbon-intensity",
+      "dir": "feeders/carbon-intensity",
       "image": "carbon-intensity-amqp",
       "file": "Dockerfile.amqp",
       "module": "carbon_intensity_amqp"
     },
     {
-      "dir": "rss",
+      "dir": "feeders/rss",
       "image": "rss-amqp",
       "file": "Dockerfile.amqp",
       "module": "rssbridge_amqp"
     },
     {
-      "dir": "wikimedia-eventstreams",
+      "dir": "feeders/wikimedia-eventstreams",
       "image": "wikimedia-eventstreams-amqp",
       "file": "Dockerfile.amqp",
       "module": "wikimedia_eventstreams_amqp"
     },
     {
-      "dir": "wikimedia-osm-diffs",
+      "dir": "feeders/wikimedia-osm-diffs",
       "image": "wikimedia-osm-diffs-amqp",
       "file": "Dockerfile.amqp",
       "module": "wikimedia_osm_diffs_amqp"
     },
     {
-      "dir": "bluesky",
+      "dir": "feeders/bluesky",
       "image": "bluesky-amqp",
       "file": "Dockerfile.amqp",
       "module": "bluesky_amqp"
     },
     {
-      "dir": "epa-uv",
+      "dir": "feeders/epa-uv",
       "image": "epa-uv-amqp",
       "file": "Dockerfile.amqp",
       "module": "epa_uv_amqp"
     },
     {
-      "dir": "hongkong-epd",
+      "dir": "feeders/hongkong-epd",
       "image": "hongkong-epd-amqp",
       "file": "Dockerfile.amqp",
       "module": "hongkong_epd_amqp"
     },
     {
-      "dir": "meteoalarm",
+      "dir": "feeders/meteoalarm",
       "image": "meteoalarm-amqp",
       "file": "Dockerfile.amqp",
       "module": "meteoalarm_amqp"
     },
     {
-      "dir": "nws-alerts",
+      "dir": "feeders/nws-alerts",
       "image": "nws-alerts-amqp",
       "file": "Dockerfile.amqp",
       "module": "nws_alerts_amqp"
     },
     {
-      "dir": "ptwc-tsunami",
+      "dir": "feeders/ptwc-tsunami",
       "image": "ptwc-tsunami-amqp",
       "file": "Dockerfile.amqp",
       "module": "ptwc_tsunami_amqp"
     },
     {
-      "dir": "nina-bbk",
+      "dir": "feeders/nina-bbk",
       "image": "nina-bbk-amqp",
       "file": "Dockerfile.amqp",
       "module": "nina_bbk_amqp"
     },
     {
-      "dir": "gdacs",
+      "dir": "feeders/gdacs",
       "image": "gdacs-amqp",
       "file": "Dockerfile.amqp",
       "module": "gdacs_amqp"
     },
     {
-      "dir": "eaws-albina",
+      "dir": "feeders/eaws-albina",
       "image": "eaws-albina-amqp",
       "file": "Dockerfile.amqp",
       "module": "eaws_albina_amqp"
     },
     {
-      "dir": "cbp-border-wait",
+      "dir": "feeders/cbp-border-wait",
       "image": "cbp-border-wait-amqp",
       "file": "Dockerfile.amqp",
       "module": "cbp_border_wait_amqp"
     },
     {
-      "dir": "seattle-911",
+      "dir": "feeders/seattle-911",
       "image": "seattle-911-amqp",
       "file": "Dockerfile.amqp",
       "module": "seattle_911_amqp"
     },
     {
-      "dir": "autobahn",
+      "dir": "feeders/autobahn",
       "image": "autobahn-amqp",
       "file": "Dockerfile.amqp",
       "module": "autobahn_amqp"
     },
     {
-      "dir": "tfl-road-traffic",
+      "dir": "feeders/tfl-road-traffic",
       "image": "tfl-road-traffic-amqp",
       "file": "Dockerfile.amqp",
       "module": "tfl_road_traffic_amqp"
     },
     {
-      "dir": "entur-norway",
+      "dir": "feeders/entur-norway",
       "image": "entur-norway-amqp",
       "file": "Dockerfile.amqp",
       "module": "entur_norway_amqp"
     },
     {
-      "dir": "irail",
+      "dir": "feeders/irail",
       "image": "irail-amqp",
       "file": "Dockerfile.amqp",
       "module": "irail_amqp"
     },
     {
-      "dir": "paris-bicycle-counters",
+      "dir": "feeders/paris-bicycle-counters",
       "image": "paris-bicycle-counters-amqp",
       "file": "Dockerfile.amqp",
       "module": "paris_bicycle_counters_amqp"
     },
     {
-      "dir": "usgs-earthquakes",
+      "dir": "feeders/usgs-earthquakes",
       "image": "usgs-earthquakes-amqp",
       "file": "Dockerfile.amqp",
       "module": "usgs_earthquakes_amqp"
     },
     {
-      "dir": "usgs-geomag",
+      "dir": "feeders/usgs-geomag",
       "image": "usgs-geomag-amqp",
       "file": "Dockerfile.amqp",
       "module": "usgs_geomag_amqp"
     },
     {
-      "dir": "usgs-iv",
+      "dir": "feeders/usgs-iv",
       "image": "usgs-iv-amqp",
       "file": "Dockerfile.amqp",
       "module": "usgs_iv_amqp"
     },
     {
-      "dir": "jma-bosai-quake",
+      "dir": "feeders/jma-bosai-quake",
       "image": "jma-bosai-quake-amqp",
       "file": "Dockerfile.amqp",
       "module": "jma_bosai_quake_amqp"
     },
     {
-      "dir": "jma-bosai-warning",
+      "dir": "feeders/jma-bosai-warning",
       "image": "jma-bosai-warning-amqp",
       "file": "Dockerfile.amqp",
       "module": "jma_bosai_warning_amqp"
     },
     {
-      "dir": "blitzortung",
+      "dir": "feeders/blitzortung",
       "image": "blitzortung-amqp",
       "file": "Dockerfile.amqp",
       "module": "blitzortung_amqp"
     },
     {
-      "dir": "gracedb",
+      "dir": "feeders/gracedb",
       "image": "gracedb-amqp",
       "file": "Dockerfile.amqp",
       "module": "gracedb_amqp"
     },
     {
-      "dir": "inpe-deter-brazil",
+      "dir": "feeders/inpe-deter-brazil",
       "image": "inpe-deter-brazil-amqp",
       "file": "Dockerfile.amqp",
       "module": "inpe_deter_brazil_amqp"
     },
     {
-      "dir": "eurdep-radiation",
+      "dir": "feeders/eurdep-radiation",
       "image": "eurdep-radiation-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "eurdep_radiation_mqtt"
     },
     {
-      "dir": "eurdep-radiation",
+      "dir": "feeders/eurdep-radiation",
       "image": "eurdep-radiation-amqp",
       "file": "Dockerfile.amqp",
       "module": "eurdep_radiation_amqp"
     },
     {
-      "dir": "nifc-usa-wildfires",
+      "dir": "feeders/nifc-usa-wildfires",
       "image": "nifc-usa-wildfires-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "nifc_usa_wildfires_mqtt"
     },
     {
-      "dir": "nifc-usa-wildfires",
+      "dir": "feeders/nifc-usa-wildfires",
       "image": "nifc-usa-wildfires-amqp",
       "file": "Dockerfile.amqp",
       "module": "nifc_usa_wildfires_amqp"
     },
     {
-      "dir": "xceed",
+      "dir": "feeders/xceed",
       "image": "xceed-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "xceed_mqtt"
     },
     {
-      "dir": "xceed",
+      "dir": "feeders/xceed",
       "image": "xceed-amqp",
       "file": "Dockerfile.amqp",
       "module": "xceed_amqp"
     },
     {
-      "dir": "elexon-bmrs",
+      "dir": "feeders/elexon-bmrs",
       "image": "elexon-bmrs-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "elexon_bmrs_mqtt"
     },
     {
-      "dir": "elexon-bmrs",
+      "dir": "feeders/elexon-bmrs",
       "image": "elexon-bmrs-amqp",
       "file": "Dockerfile.amqp",
       "module": "elexon_bmrs_amqp"
     },
     {
-      "dir": "energidataservice-dk",
+      "dir": "feeders/energidataservice-dk",
       "image": "energidataservice-dk-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "energidataservice_dk_mqtt"
     },
     {
-      "dir": "energidataservice-dk",
+      "dir": "feeders/energidataservice-dk",
       "image": "energidataservice-dk-amqp",
       "file": "Dockerfile.amqp",
       "module": "energidataservice_dk_amqp"
     },
     {
-      "dir": "energy-charts",
+      "dir": "feeders/energy-charts",
       "image": "energy-charts-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "energy_charts_mqtt"
     },
     {
-      "dir": "energy-charts",
+      "dir": "feeders/energy-charts",
       "image": "energy-charts-amqp",
       "file": "Dockerfile.amqp",
       "module": "energy_charts_amqp"
     },
     {
-      "dir": "billetto",
+      "dir": "feeders/billetto",
       "image": "billetto-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "billetto_mqtt"
     },
     {
-      "dir": "billetto",
+      "dir": "feeders/billetto",
       "image": "billetto-amqp",
       "file": "Dockerfile.amqp",
       "module": "billetto_amqp"
     },
     {
-      "dir": "fienta",
+      "dir": "feeders/fienta",
       "image": "fienta-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "fienta_mqtt"
     },
     {
-      "dir": "fienta",
+      "dir": "feeders/fienta",
       "image": "fienta-amqp",
       "file": "Dockerfile.amqp",
       "module": "fienta_amqp"
     },
     {
-      "dir": "ticketmaster",
+      "dir": "feeders/ticketmaster",
       "image": "ticketmaster-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "ticketmaster_mqtt"
     },
     {
-      "dir": "ticketmaster",
+      "dir": "feeders/ticketmaster",
       "image": "ticketmaster-amqp",
       "file": "Dockerfile.amqp",
       "module": "ticketmaster_amqp"
     },
     {
-      "dir": "tepco-denkiyoho",
+      "dir": "feeders/tepco-denkiyoho",
       "image": "tepco-denkiyoho-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "tepco_denkiyoho_mqtt"
     },
     {
-      "dir": "tepco-denkiyoho",
+      "dir": "feeders/tepco-denkiyoho",
       "image": "tepco-denkiyoho-amqp",
       "file": "Dockerfile.amqp",
       "module": "tepco_denkiyoho_amqp"
     },
     {
-      "dir": "canada-eccc-wateroffice",
+      "dir": "feeders/canada-eccc-wateroffice",
       "image": "canada-eccc-wateroffice-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "canada_eccc_wateroffice_mqtt"
     },
     {
-      "dir": "canada-eccc-wateroffice",
+      "dir": "feeders/canada-eccc-wateroffice",
       "image": "canada-eccc-wateroffice-amqp",
       "file": "Dockerfile.amqp",
       "module": "canada_eccc_wateroffice_amqp"
     },
     {
-      "dir": "cdec-reservoirs",
+      "dir": "feeders/cdec-reservoirs",
       "image": "cdec-reservoirs-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "cdec_reservoirs_mqtt"
     },
     {
-      "dir": "cdec-reservoirs",
+      "dir": "feeders/cdec-reservoirs",
       "image": "cdec-reservoirs-amqp",
       "file": "Dockerfile.amqp",
       "module": "cdec_reservoirs_amqp"
     },
     {
-      "dir": "hubeau-hydrometrie",
+      "dir": "feeders/hubeau-hydrometrie",
       "image": "hubeau-hydrometrie-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "hubeau_hydrometrie_mqtt"
     },
     {
-      "dir": "hubeau-hydrometrie",
+      "dir": "feeders/hubeau-hydrometrie",
       "image": "hubeau-hydrometrie-amqp",
       "file": "Dockerfile.amqp",
       "module": "hubeau_hydrometrie_amqp"
     },
     {
-      "dir": "imgw-hydro",
+      "dir": "feeders/imgw-hydro",
       "image": "imgw-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "imgw_hydro_mqtt"
     },
     {
-      "dir": "imgw-hydro",
+      "dir": "feeders/imgw-hydro",
       "image": "imgw-hydro-amqp",
       "file": "Dockerfile.amqp",
       "module": "imgw_hydro_amqp"
     },
     {
-      "dir": "ireland-opw-waterlevel",
+      "dir": "feeders/ireland-opw-waterlevel",
       "image": "ireland-opw-waterlevel-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "ireland_opw_waterlevel_mqtt"
     },
     {
-      "dir": "ireland-opw-waterlevel",
+      "dir": "feeders/ireland-opw-waterlevel",
       "image": "ireland-opw-waterlevel-amqp",
       "file": "Dockerfile.amqp",
       "module": "ireland_opw_waterlevel_amqp"
     },
     {
-      "dir": "nepal-bipad-hydrology",
+      "dir": "feeders/nepal-bipad-hydrology",
       "image": "nepal-bipad-hydrology-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "nepal_bipad_hydrology_mqtt"
     },
     {
-      "dir": "nepal-bipad-hydrology",
+      "dir": "feeders/nepal-bipad-hydrology",
       "image": "nepal-bipad-hydrology-amqp",
       "file": "Dockerfile.amqp",
       "module": "nepal_bipad_hydrology_amqp"
     },
     {
-      "dir": "noaa-ndbc",
+      "dir": "feeders/noaa-ndbc",
       "image": "noaa-ndbc-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "noaa_ndbc_mqtt"
     },
     {
-      "dir": "noaa-ndbc",
+      "dir": "feeders/noaa-ndbc",
       "image": "noaa-ndbc-amqp",
       "file": "Dockerfile.amqp",
       "module": "noaa_ndbc_amqp"
     },
     {
-      "dir": "noaa",
+      "dir": "feeders/noaa",
       "image": "noaa-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "noaa_mqtt"
     },
     {
-      "dir": "noaa",
+      "dir": "feeders/noaa",
       "image": "noaa-amqp",
       "file": "Dockerfile.amqp",
       "module": "noaa_amqp"
     },
     {
-      "dir": "snotel",
+      "dir": "feeders/snotel",
       "image": "snotel-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "snotel_mqtt"
     },
     {
-      "dir": "snotel",
+      "dir": "feeders/snotel",
       "image": "snotel-amqp",
       "file": "Dockerfile.amqp",
       "module": "snotel_amqp"
     },
     {
-      "dir": "syke-hydro",
+      "dir": "feeders/syke-hydro",
       "image": "syke-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "syke_hydro_mqtt"
     },
     {
-      "dir": "syke-hydro",
+      "dir": "feeders/syke-hydro",
       "image": "syke-hydro-amqp",
       "file": "Dockerfile.amqp",
       "module": "syke_hydro_amqp"
     },
     {
-      "dir": "uk-ea-flood-monitoring",
+      "dir": "feeders/uk-ea-flood-monitoring",
       "image": "uk-ea-flood-monitoring-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "uk_ea_flood_monitoring_mqtt"
     },
     {
-      "dir": "uk-ea-flood-monitoring",
+      "dir": "feeders/uk-ea-flood-monitoring",
       "image": "uk-ea-flood-monitoring-amqp",
       "file": "Dockerfile.amqp",
       "module": "uk_ea_flood_monitoring_amqp"
     },
     {
-      "dir": "usgs-nwis-wq",
+      "dir": "feeders/usgs-nwis-wq",
       "image": "usgs-nwis-wq-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "usgs_nwis_wq_mqtt"
     },
     {
-      "dir": "usgs-nwis-wq",
+      "dir": "feeders/usgs-nwis-wq",
       "image": "usgs-nwis-wq-amqp",
       "file": "Dockerfile.amqp",
       "module": "usgs_nwis_wq_amqp"
     },
     {
-      "dir": "waterinfo-vmm",
+      "dir": "feeders/waterinfo-vmm",
       "image": "waterinfo-vmm-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "waterinfo_vmm_mqtt"
     },
     {
-      "dir": "waterinfo-vmm",
+      "dir": "feeders/waterinfo-vmm",
       "image": "waterinfo-vmm-amqp",
       "file": "Dockerfile.amqp",
       "module": "waterinfo_vmm_amqp"
     },
     {
-      "dir": "noaa-goes",
+      "dir": "feeders/noaa-goes",
       "image": "noaa-goes-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "noaa_goes_mqtt"
     },
     {
-      "dir": "noaa-goes",
+      "dir": "feeders/noaa-goes",
       "image": "noaa-goes-amqp",
       "file": "Dockerfile.amqp",
       "module": "noaa_goes_amqp"
     },
     {
-      "dir": "nws-forecasts",
+      "dir": "feeders/nws-forecasts",
       "image": "nws-forecasts-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "nws_forecasts_mqtt"
     },
     {
-      "dir": "nws-forecasts",
+      "dir": "feeders/nws-forecasts",
       "image": "nws-forecasts-amqp",
       "file": "Dockerfile.amqp",
       "module": "nws_forecasts_amqp"
     },
     {
-      "dir": "singapore-nea",
+      "dir": "feeders/singapore-nea",
       "image": "singapore-nea-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "singapore_nea_mqtt"
     },
     {
-      "dir": "singapore-nea",
+      "dir": "feeders/singapore-nea",
       "image": "singapore-nea-amqp",
       "file": "Dockerfile.amqp",
       "module": "singapore_nea_amqp"
     },
     {
-      "dir": "jma-bosai-amedas",
+      "dir": "feeders/jma-bosai-amedas",
       "image": "jma-bosai-amedas-kafka",
       "file": "Dockerfile",
       "module": "jma_bosai_amedas"
     },
     {
-      "dir": "jma-bosai-amedas",
+      "dir": "feeders/jma-bosai-amedas",
       "image": "jma-bosai-amedas-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "jma_bosai_amedas_mqtt"
     },
     {
-      "dir": "jma-bosai-amedas",
+      "dir": "feeders/jma-bosai-amedas",
       "image": "jma-bosai-amedas-amqp",
       "file": "Dockerfile.amqp",
       "module": "jma_bosai_amedas_amqp"
     },
     {
-      "dir": "jma-bosai-quake",
+      "dir": "feeders/jma-bosai-quake",
       "image": "jma-bosai-quake-kafka",
       "file": "Dockerfile",
       "module": "jma_bosai_quake"
     },
     {
-      "dir": "jma-bosai-volcano",
+      "dir": "feeders/jma-bosai-volcano",
       "image": "jma-bosai-volcano-kafka",
       "file": "Dockerfile",
       "module": "jma_bosai_volcano"
     },
     {
-      "dir": "jma-bosai-volcano",
+      "dir": "feeders/jma-bosai-volcano",
       "image": "jma-bosai-volcano-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "jma_bosai_volcano_mqtt"
     },
     {
-      "dir": "jma-bosai-volcano",
+      "dir": "feeders/jma-bosai-volcano",
       "image": "jma-bosai-volcano-amqp",
       "file": "Dockerfile.amqp",
       "module": "jma_bosai_volcano_amqp"
     },
     {
-      "dir": "jma-bosai-warning",
+      "dir": "feeders/jma-bosai-warning",
       "image": "jma-bosai-warning-kafka",
       "file": "Dockerfile",
       "module": "jma_bosai_warning"
     },
     {
-      "dir": "french-road-traffic",
+      "dir": "feeders/french-road-traffic",
       "image": "french-road-traffic-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "french_road_traffic_mqtt"
     },
     {
-      "dir": "french-road-traffic",
+      "dir": "feeders/french-road-traffic",
       "image": "french-road-traffic-amqp",
       "file": "Dockerfile.amqp",
       "module": "french_road_traffic_amqp"
     },
     {
-      "dir": "gtfs",
+      "dir": "feeders/gtfs",
       "image": "gtfs-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "gtfs_mqtt"
     },
     {
-      "dir": "gtfs",
+      "dir": "feeders/gtfs",
       "image": "gtfs-amqp",
       "file": "Dockerfile.amqp",
       "module": "gtfs_amqp"
     },
     {
-      "dir": "madrid-traffic",
+      "dir": "feeders/madrid-traffic",
       "image": "madrid-traffic-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "madrid_traffic_mqtt"
     },
     {
-      "dir": "madrid-traffic",
+      "dir": "feeders/madrid-traffic",
       "image": "madrid-traffic-amqp",
       "file": "Dockerfile.amqp",
       "module": "madrid_traffic_amqp"
     },
     {
-      "dir": "ndl-netherlands",
+      "dir": "feeders/ndl-netherlands",
       "image": "ndl-netherlands-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "ndl_netherlands_mqtt"
     },
     {
-      "dir": "ndl-netherlands",
+      "dir": "feeders/ndl-netherlands",
       "image": "ndl-netherlands-amqp",
       "file": "Dockerfile.amqp",
       "module": "ndl_netherlands_amqp"
     },
     {
-      "dir": "ndw-road-traffic",
+      "dir": "feeders/ndw-road-traffic",
       "image": "ndw-road-traffic-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "ndw_road_traffic_mqtt"
     },
     {
-      "dir": "ndw-road-traffic",
+      "dir": "feeders/ndw-road-traffic",
       "image": "ndw-road-traffic-amqp",
       "file": "Dockerfile.amqp",
       "module": "ndw_road_traffic_amqp"
     },
     {
-      "dir": "nextbus",
+      "dir": "feeders/nextbus",
       "image": "nextbus-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "nextbus_mqtt"
     },
     {
-      "dir": "nextbus",
+      "dir": "feeders/nextbus",
       "image": "nextbus-amqp",
       "file": "Dockerfile.amqp",
       "module": "nextbus_amqp"
     },
     {
-      "dir": "seattle-street-closures",
+      "dir": "feeders/seattle-street-closures",
       "image": "seattle-street-closures-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "seattle_street_closures_mqtt"
     },
     {
-      "dir": "seattle-street-closures",
+      "dir": "feeders/seattle-street-closures",
       "image": "seattle-street-closures-amqp",
       "file": "Dockerfile.amqp",
       "module": "seattle_street_closures_amqp"
     },
     {
-      "dir": "tokyo-docomo-bikeshare",
+      "dir": "feeders/tokyo-docomo-bikeshare",
       "image": "tokyo-docomo-bikeshare-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "tokyo_docomo_bikeshare_mqtt"
     },
     {
-      "dir": "tokyo-docomo-bikeshare",
+      "dir": "feeders/tokyo-docomo-bikeshare",
       "image": "tokyo-docomo-bikeshare-amqp",
       "file": "Dockerfile.amqp",
       "module": "tokyo_docomo_bikeshare_amqp"
     },
     {
-      "dir": "wsdot",
+      "dir": "feeders/wsdot",
       "image": "wsdot-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "wsdot_mqtt"
     },
     {
-      "dir": "wsdot",
+      "dir": "feeders/wsdot",
       "image": "wsdot-amqp",
       "file": "Dockerfile.amqp",
       "module": "wsdot_amqp"
     },
     {
-      "dir": "canada-aqhi",
+      "dir": "feeders/canada-aqhi",
       "image": "canada-aqhi-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "canada_aqhi_mqtt"
     },
     {
-      "dir": "canada-aqhi",
+      "dir": "feeders/canada-aqhi",
       "image": "canada-aqhi-amqp",
       "file": "Dockerfile.amqp",
       "module": "canada_aqhi_amqp"
     },
     {
-      "dir": "defra-aurn",
+      "dir": "feeders/defra-aurn",
       "image": "defra-aurn-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "defra_aurn_mqtt"
     },
     {
-      "dir": "defra-aurn",
+      "dir": "feeders/defra-aurn",
       "image": "defra-aurn-amqp",
       "file": "Dockerfile.amqp",
       "module": "defra_aurn_amqp"
     },
     {
-      "dir": "sensor-community",
+      "dir": "feeders/sensor-community",
       "image": "sensor-community-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "sensor_community_mqtt"
     },
     {
-      "dir": "sensor-community",
+      "dir": "feeders/sensor-community",
       "image": "sensor-community-amqp",
       "file": "Dockerfile.amqp",
       "module": "sensor_community_amqp"
     },
     {
-      "dir": "uba-airdata",
+      "dir": "feeders/uba-airdata",
       "image": "uba-airdata-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "uba_airdata_mqtt"
     },
     {
-      "dir": "uba-airdata",
+      "dir": "feeders/uba-airdata",
       "image": "uba-airdata-amqp",
       "file": "Dockerfile.amqp",
       "module": "uba_airdata_amqp"
     },
     {
-      "dir": "aviationweather",
+      "dir": "feeders/aviationweather",
       "image": "aviationweather-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "aviationweather_mqtt"
     },
     {
-      "dir": "aviationweather",
+      "dir": "feeders/aviationweather",
       "image": "aviationweather-amqp",
       "file": "Dockerfile.amqp",
       "module": "aviationweather_amqp"
     },
     {
-      "dir": "bom-australia",
+      "dir": "feeders/bom-australia",
       "image": "bom-australia-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "bom_australia_mqtt"
     },
     {
-      "dir": "bom-australia",
+      "dir": "feeders/bom-australia",
       "image": "bom-australia-amqp",
       "file": "Dockerfile.amqp",
       "module": "bom_australia_amqp"
     },
     {
-      "dir": "dwd",
+      "dir": "feeders/dwd",
       "image": "dwd-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "dwd_mqtt"
     },
     {
-      "dir": "dwd",
+      "dir": "feeders/dwd",
       "image": "dwd-amqp",
       "file": "Dockerfile.amqp",
       "module": "dwd_amqp"
     },
     {
-      "dir": "environment-canada",
+      "dir": "feeders/environment-canada",
       "image": "environment-canada-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "environment_canada_mqtt"
     },
     {
-      "dir": "environment-canada",
+      "dir": "feeders/environment-canada",
       "image": "environment-canada-amqp",
       "file": "Dockerfile.amqp",
       "module": "environment_canada_amqp"
     },
     {
-      "dir": "geosphere-austria",
+      "dir": "feeders/geosphere-austria",
       "image": "geosphere-austria-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "geosphere_austria_mqtt"
     },
     {
-      "dir": "geosphere-austria",
+      "dir": "feeders/geosphere-austria",
       "image": "geosphere-austria-amqp",
       "file": "Dockerfile.amqp",
       "module": "geosphere_austria_amqp"
     },
     {
-      "dir": "hko-hong-kong",
+      "dir": "feeders/hko-hong-kong",
       "image": "hko-hong-kong-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "hko_hong_kong_mqtt"
     },
     {
-      "dir": "hko-hong-kong",
+      "dir": "feeders/hko-hong-kong",
       "image": "hko-hong-kong-amqp",
       "file": "Dockerfile.amqp",
       "module": "hko_hong_kong_amqp"
     },
     {
-      "dir": "jma-japan",
+      "dir": "feeders/jma-japan",
       "image": "jma-japan-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "jma_japan_mqtt"
     },
     {
-      "dir": "jma-japan",
+      "dir": "feeders/jma-japan",
       "image": "jma-japan-amqp",
       "file": "Dockerfile.amqp",
       "module": "jma_japan_amqp"
     },
     {
-      "dir": "kmi-belgium",
+      "dir": "feeders/kmi-belgium",
       "image": "kmi-belgium-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "kmi_belgium_mqtt"
     },
     {
-      "dir": "kmi-belgium",
+      "dir": "feeders/kmi-belgium",
       "image": "kmi-belgium-amqp",
       "file": "Dockerfile.amqp",
       "module": "kmi_belgium_amqp"
     },
     {
-      "dir": "noaa-nws",
+      "dir": "feeders/noaa-nws",
       "image": "noaa-nws-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "noaa_nws_mqtt"
     },
     {
-      "dir": "noaa-nws",
+      "dir": "feeders/noaa-nws",
       "image": "noaa-nws-amqp",
       "file": "Dockerfile.amqp",
       "module": "noaa_nws_amqp"
     },
     {
-      "dir": "smhi-weather",
+      "dir": "feeders/smhi-weather",
       "image": "smhi-weather-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "smhi_weather_mqtt"
     },
     {
-      "dir": "smhi-weather",
+      "dir": "feeders/smhi-weather",
       "image": "smhi-weather-amqp",
       "file": "Dockerfile.amqp",
       "module": "smhi_weather_amqp"
     },
     {
-      "dir": "noaa-swpc-l1",
+      "dir": "feeders/noaa-swpc-l1",
       "image": "noaa-swpc-l1-kafka",
       "file": "Dockerfile.kafka",
       "module": "noaa_swpc_l1_kafka"
     },
     {
-      "dir": "noaa-swpc-l1",
+      "dir": "feeders/noaa-swpc-l1",
       "image": "noaa-swpc-l1-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "noaa_swpc_l1_mqtt"
     },
     {
-      "dir": "noaa-swpc-l1",
+      "dir": "feeders/noaa-swpc-l1",
       "image": "noaa-swpc-l1-amqp",
       "file": "Dockerfile.amqp",
       "module": "noaa_swpc_l1_amqp"
     },
     {
-      "dir": "digitraffic-maritime",
+      "dir": "feeders/digitraffic-maritime",
       "image": "digitraffic-maritime-kafka",
       "file": "Dockerfile",
       "module": "digitraffic_maritime"
     },
     {
-      "dir": "digitraffic-maritime",
+      "dir": "feeders/digitraffic-maritime",
       "image": "digitraffic-maritime-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "digitraffic_maritime_mqtt"
     },
     {
-      "dir": "digitraffic-maritime",
+      "dir": "feeders/digitraffic-maritime",
       "image": "digitraffic-maritime-amqp",
       "file": "Dockerfile.amqp",
       "module": "digitraffic_maritime_amqp"
     },
     {
-      "dir": "digitraffic-road",
+      "dir": "feeders/digitraffic-road",
       "module": "digitraffic_road"
     },
     {
-      "dir": "digitraffic-road",
+      "dir": "feeders/digitraffic-road",
       "image": "digitraffic-road-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "digitraffic_road_mqtt"
     },
     {
-      "dir": "digitraffic-road",
+      "dir": "feeders/digitraffic-road",
       "image": "digitraffic-road-amqp",
       "file": "Dockerfile.amqp",
       "module": "digitraffic_road_amqp"
@@ -1430,1595 +1430,1595 @@
   ],
   "flow": [
     {
-      "dir": "blitzortung",
+      "dir": "feeders/blitzortung",
       "test_class": "TestBlitzortungDockerFlow"
     },
     {
-      "dir": "blitzortung",
+      "dir": "feeders/blitzortung",
       "image": "blitzortung-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestBlitzortungMqttDockerFlow"
     },
     {
-      "dir": "kystverket-ais",
+      "dir": "feeders/kystverket-ais",
       "image": "kystverket-ais-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestKystverketAisMqttDockerFlow"
     },
     {
-      "dir": "canada-aqhi",
+      "dir": "feeders/canada-aqhi",
       "test_class": "TestCanadaAQHIDockerFlow"
     },
     {
-      "dir": "chmi-hydro",
+      "dir": "feeders/chmi-hydro",
       "test_class": "TestCHMIHydroDockerFlow"
     },
     {
-      "dir": "chmi-hydro",
+      "dir": "feeders/chmi-hydro",
       "image": "chmi-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestCHMIHydroMqttDockerFlow"
     },
     {
-      "dir": "bfs-odl",
+      "dir": "feeders/bfs-odl",
       "image": "bfs-odl-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestBfsOdlMqttDockerFlow"
     },
     {
-      "dir": "bfs-odl",
+      "dir": "feeders/bfs-odl",
       "image": "bfs-odl-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestBfsOdlAmqpDockerFlow"
     },
     {
-      "dir": "bafu-hydro",
+      "dir": "feeders/bafu-hydro",
       "image": "bafu-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestBafuHydroMqttDockerFlow"
     },
     {
-      "dir": "nve-hydro",
+      "dir": "feeders/nve-hydro",
       "image": "nve-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNVEHydroMqttDockerFlow"
     },
     {
-      "dir": "wallonia-issep",
+      "dir": "feeders/wallonia-issep",
       "image": "wallonia-issep-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestWalloniaIssepMqttDockerFlow"
     },
     {
-      "dir": "german-waters",
+      "dir": "feeders/german-waters",
       "image": "german-waters-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestGermanWatersMqttDockerFlow"
     },
     {
-      "dir": "defra-aurn",
+      "dir": "feeders/defra-aurn",
       "test_class": "TestDefraAURNDockerFlow"
     },
     {
-      "dir": "epa-uv",
+      "dir": "feeders/epa-uv",
       "test_class": "TestEPAUVDockerFlow"
     },
     {
-      "dir": "fmi-finland",
+      "dir": "feeders/fmi-finland",
       "test_class": "TestFMIFinlandDockerFlow"
     },
     {
-      "dir": "fienta",
+      "dir": "feeders/fienta",
       "test_class": "TestFientaDockerFlow"
     },
     {
-      "dir": "hongkong-epd",
+      "dir": "feeders/hongkong-epd",
       "test_class": "TestHongKongEPDDockerFlow"
     },
     {
-      "dir": "hongkong-epd",
+      "dir": "feeders/hongkong-epd",
       "image": "hongkong-epd-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestHongkongEpdMqttDockerFlow"
     },
     {
-      "dir": "hubeau-hydrometrie",
+      "dir": "feeders/hubeau-hydrometrie",
       "test_class": "TestHubeauDockerFlow"
     },
     {
-      "dir": "imgw-hydro",
+      "dir": "feeders/imgw-hydro",
       "test_class": "TestIMGWHydroDockerFlow"
     },
     {
-      "dir": "irceline-belgium",
+      "dir": "feeders/irceline-belgium",
       "test_class": "TestIrcelineBelgiumDockerFlow"
     },
     {
-      "dir": "king-county-marine",
+      "dir": "feeders/king-county-marine",
       "test_class": "TestKingCountyMarineDockerFlow"
     },
     {
-      "dir": "laqn-london",
+      "dir": "feeders/laqn-london",
       "test_class": "TestLAQNLondonDockerFlow"
     },
     {
-      "dir": "luchtmeetnet-nl",
+      "dir": "feeders/luchtmeetnet-nl",
       "test_class": "TestLuchtmeetnetNLDockerFlow"
     },
     {
-      "dir": "noaa",
+      "dir": "feeders/noaa",
       "test_class": "TestNOAADockerFlow"
     },
     {
-      "dir": "noaa-goes",
+      "dir": "feeders/noaa-goes",
       "test_class": "TestNOAAGoesDockerFlow"
     },
     {
-      "dir": "noaa-ndbc",
+      "dir": "feeders/noaa-ndbc",
       "test_class": "TestNOAANdbcDockerFlow"
     },
     {
-      "dir": "noaa-nws",
+      "dir": "feeders/noaa-nws",
       "test_class": "TestNOAANwsDockerFlow"
     },
     {
-      "dir": "pegelonline",
+      "dir": "feeders/pegelonline",
       "image": "pegelonline-kafka",
       "file": "Dockerfile.kafka",
       "test_class": "TestPegelonlineDockerFlow"
     },
     {
-      "dir": "rws-waterwebservices",
+      "dir": "feeders/rws-waterwebservices",
       "test_class": "TestRWSDockerFlow"
     },
     {
-      "dir": "seattle-911",
+      "dir": "feeders/seattle-911",
       "test_class": "TestSeattle911DockerFlow"
     },
     {
-      "dir": "seattle-street-closures",
+      "dir": "feeders/seattle-street-closures",
       "test_class": "TestSeattleStreetClosuresDockerFlow"
     },
     {
-      "dir": "sensor-community",
+      "dir": "feeders/sensor-community",
       "test_class": "TestSensorCommunityDockerFlow"
     },
     {
-      "dir": "smhi-hydro",
+      "dir": "feeders/smhi-hydro",
       "test_class": "TestSMHIHydroDockerFlow"
     },
     {
-      "dir": "smhi-hydro",
+      "dir": "feeders/smhi-hydro",
       "image": "smhi-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestSmhiHydroMqttDockerFlow"
     },
     {
-      "dir": "uba-airdata",
+      "dir": "feeders/uba-airdata",
       "test_class": "TestUBAAirDataDockerFlow"
     },
     {
-      "dir": "uk-ea-flood-monitoring",
+      "dir": "feeders/uk-ea-flood-monitoring",
       "test_class": "TestUKEADockerFlow"
     },
     {
-      "dir": "usgs-earthquakes",
+      "dir": "feeders/usgs-earthquakes",
       "test_class": "TestUSGSEarthquakesDockerFlow"
     },
     {
-      "dir": "usgs-iv",
+      "dir": "feeders/usgs-iv",
       "test_class": "TestUSGSIVDockerFlow"
     },
     {
-      "dir": "waterinfo-vmm",
+      "dir": "feeders/waterinfo-vmm",
       "test_class": "TestWaterinfoVMMDockerFlow"
     },
     {
-      "dir": "wsdot",
+      "dir": "feeders/wsdot",
       "test_class": "TestWSDOTDockerFlow"
     },
     {
-      "dir": "wikimedia-osm-diffs",
+      "dir": "feeders/wikimedia-osm-diffs",
       "image": "wikimedia-osm-diffs-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestWikimediaOsmDiffsMqttDockerFlow"
     },
     {
-      "dir": "xceed",
+      "dir": "feeders/xceed",
       "test_class": "TestXceedDockerFlow"
     },
     {
-      "dir": "autobahn",
+      "dir": "feeders/autobahn",
       "image": "autobahn-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestAutobahnMqttDockerFlow"
     },
     {
-      "dir": "mode-s",
+      "dir": "feeders/mode-s",
       "image": "mode-s-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestModeSMqttDockerFlow"
     },
     {
-      "dir": "wikimedia-eventstreams",
+      "dir": "feeders/wikimedia-eventstreams",
       "image": "wikimedia-eventstreams-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestWikimediaEventstreamsMqttDockerFlow"
     },
     {
-      "dir": "nws-alerts",
+      "dir": "feeders/nws-alerts",
       "image": "nws-alerts-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNwsAlertsMqttDockerFlow"
     },
     {
-      "dir": "tfl-road-traffic",
+      "dir": "feeders/tfl-road-traffic",
       "image": "tfl-road-traffic-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestTflRoadTrafficMqttDockerFlow"
     },
     {
-      "dir": "rws-waterwebservices",
+      "dir": "feeders/rws-waterwebservices",
       "image": "rws-waterwebservices-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestRWSWaterwebservicesMqttDockerFlow"
     },
     {
-      "dir": "epa-uv",
+      "dir": "feeders/epa-uv",
       "image": "epa-uv-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestEPAUVMqttDockerFlow"
     },
     {
-      "dir": "usgs-geomag",
+      "dir": "feeders/usgs-geomag",
       "image": "usgs-geomag-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestUSGSGeomagMqttDockerFlow"
     },
     {
-      "dir": "seattle-911",
+      "dir": "feeders/seattle-911",
       "image": "seattle-911-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestSeattle911MqttDockerFlow"
     },
     {
-      "dir": "irail",
+      "dir": "feeders/irail",
       "image": "irail-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestIRailMqttDockerFlow"
     },
     {
-      "dir": "cbp-border-wait",
+      "dir": "feeders/cbp-border-wait",
       "image": "cbp-border-wait-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestCbpBorderWaitMqttDockerFlow"
     },
     {
-      "dir": "carbon-intensity",
+      "dir": "feeders/carbon-intensity",
       "image": "carbon-intensity-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestCarbonIntensityMqttDockerFlow"
     },
     {
-      "dir": "paris-bicycle-counters",
+      "dir": "feeders/paris-bicycle-counters",
       "image": "paris-bicycle-counters-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestParisBicycleCountersMqttDockerFlow"
     },
     {
-      "dir": "australia-wildfires",
+      "dir": "feeders/australia-wildfires",
       "image": "australia-wildfires-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestAustraliaWildfiresMqttDockerFlow"
     },
     {
-      "dir": "king-county-marine",
+      "dir": "feeders/king-county-marine",
       "image": "king-county-marine-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestKingCountyMarineMqttDockerFlow"
     },
     {
-      "dir": "inpe-deter-brazil",
+      "dir": "feeders/inpe-deter-brazil",
       "image": "inpe-deter-brazil-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestInpeDeterBrazilMqttDockerFlow"
     },
     {
-      "dir": "usgs-iv",
+      "dir": "feeders/usgs-iv",
       "image": "usgs-iv-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestUSGSIVMqttDockerFlow"
     },
     {
-      "dir": "rss",
+      "dir": "feeders/rss",
       "image": "rss-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestRssMqttDockerFlow"
     },
     {
-      "dir": "usgs-earthquakes",
+      "dir": "feeders/usgs-earthquakes",
       "image": "usgs-earthquakes-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestUSGSEarthquakesMqttDockerFlow"
     },
     {
-      "dir": "eaws-albina",
+      "dir": "feeders/eaws-albina",
       "image": "eaws-albina-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestEawsAlbinaMqttDockerFlow"
     },
     {
-      "dir": "gdacs",
+      "dir": "feeders/gdacs",
       "image": "gdacs-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestGdacsMqttDockerFlow"
     },
     {
-      "dir": "meteoalarm",
+      "dir": "feeders/meteoalarm",
       "image": "meteoalarm-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestMeteoalarmMqttDockerFlow"
     },
     {
-      "dir": "ptwc-tsunami",
+      "dir": "feeders/ptwc-tsunami",
       "image": "ptwc-tsunami-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestPtwcTsunamiMqttDockerFlow"
     },
     {
-      "dir": "nina-bbk",
+      "dir": "feeders/nina-bbk",
       "image": "nina-bbk-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNinaBbkMqttDockerFlow"
     },
     {
-      "dir": "jma-bosai-warning",
+      "dir": "feeders/jma-bosai-warning",
       "image": "jma-bosai-warning-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestJmaBosaiWarningMqttDockerFlow"
     },
     {
-      "dir": "jma-bosai-quake",
+      "dir": "feeders/jma-bosai-quake",
       "image": "jma-bosai-quake-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestJmaBosaiQuakeMqttDockerFlow"
     },
     {
-      "dir": "gracedb",
+      "dir": "feeders/gracedb",
       "image": "gracedb-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestGraceDbMqttDockerFlow"
     },
     {
-      "dir": "vatsim",
+      "dir": "feeders/vatsim",
       "image": "vatsim-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestVatsimMqttDockerFlow"
     },
     {
-      "dir": "entur-norway",
+      "dir": "feeders/entur-norway",
       "image": "entur-norway-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestEnturNorwayMqttDockerFlow"
     },
     {
-      "dir": "entsoe",
+      "dir": "feeders/entsoe",
       "image": "entsoe-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestEntsoeMqttDockerFlow"
     },
     {
-      "dir": "entsoe",
+      "dir": "feeders/entsoe",
       "image": "entsoe-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestEntsoeAmqpDockerFlow"
     },
     {
-      "dir": "entsoe",
+      "dir": "feeders/entsoe",
       "image": "entsoe-kafka",
       "file": "Dockerfile.kafka",
       "test_class": "TestEntsoeKafkaDockerFlow"
     },
     {
-      "dir": "bafu-hydro",
+      "dir": "feeders/bafu-hydro",
       "image": "bafu-hydro-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestBafuHydroAmqpArtemisFlow"
     },
     {
-      "dir": "bafu-hydro",
+      "dir": "feeders/bafu-hydro",
       "image": "bafu-hydro-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_sb_emulator_flow.py",
       "test_class": "TestBafuHydroAmqpSbEmulatorFlow"
     },
     {
-      "dir": "chmi-hydro",
+      "dir": "feeders/chmi-hydro",
       "image": "chmi-hydro-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestChmiHydroAmqpArtemisFlow"
     },
     {
-      "dir": "chmi-hydro",
+      "dir": "feeders/chmi-hydro",
       "image": "chmi-hydro-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_sb_emulator_flow.py",
       "test_class": "TestChmiHydroAmqpSbEmulatorFlow"
     },
     {
-      "dir": "german-waters",
+      "dir": "feeders/german-waters",
       "image": "german-waters-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestGermanWatersAmqpArtemisFlow"
     },
     {
-      "dir": "german-waters",
+      "dir": "feeders/german-waters",
       "image": "german-waters-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_sb_emulator_flow.py",
       "test_class": "TestGermanWatersAmqpSbEmulatorFlow"
     },
     {
-      "dir": "nve-hydro",
+      "dir": "feeders/nve-hydro",
       "image": "nve-hydro-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestNveHydroAmqpArtemisFlow"
     },
     {
-      "dir": "nve-hydro",
+      "dir": "feeders/nve-hydro",
       "image": "nve-hydro-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_sb_emulator_flow.py",
       "test_class": "TestNveHydroAmqpSbEmulatorFlow"
     },
     {
-      "dir": "rws-waterwebservices",
+      "dir": "feeders/rws-waterwebservices",
       "image": "rws-waterwebservices-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestRwsWaterwebservicesAmqpArtemisFlow"
     },
     {
-      "dir": "rws-waterwebservices",
+      "dir": "feeders/rws-waterwebservices",
       "image": "rws-waterwebservices-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_sb_emulator_flow.py",
       "test_class": "TestRwsWaterwebservicesAmqpSbEmulatorFlow"
     },
     {
-      "dir": "smhi-hydro",
+      "dir": "feeders/smhi-hydro",
       "image": "smhi-hydro-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestSmhiHydroAmqpArtemisFlow"
     },
     {
-      "dir": "smhi-hydro",
+      "dir": "feeders/smhi-hydro",
       "image": "smhi-hydro-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_sb_emulator_flow.py",
       "test_class": "TestSmhiHydroAmqpSbEmulatorFlow"
     },
     {
-      "dir": "wallonia-issep",
+      "dir": "feeders/wallonia-issep",
       "image": "wallonia-issep-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestWalloniaIssepAmqpArtemisFlow"
     },
     {
-      "dir": "wallonia-issep",
+      "dir": "feeders/wallonia-issep",
       "image": "wallonia-issep-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_sb_emulator_flow.py",
       "test_class": "TestWalloniaIssepAmqpSbEmulatorFlow"
     },
     {
-      "dir": "kystverket-ais",
+      "dir": "feeders/kystverket-ais",
       "image": "kystverket-ais-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestKystverketAisAmqpDockerFlow"
     },
     {
-      "dir": "king-county-marine",
+      "dir": "feeders/king-county-marine",
       "image": "king-county-marine-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestKingCountyMarineAmqpDockerFlow"
     },
     {
-      "dir": "vatsim",
+      "dir": "feeders/vatsim",
       "image": "vatsim-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestVatsimAmqpDockerFlow"
     },
     {
-      "dir": "mode-s",
+      "dir": "feeders/mode-s",
       "image": "mode-s-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestModeSAmqpDockerFlow"
     },
     {
-      "dir": "aisstream",
+      "dir": "feeders/aisstream",
       "image": "aisstream-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestAisstreamAmqpDockerFlow"
     },
     {
-      "dir": "australia-wildfires",
+      "dir": "feeders/australia-wildfires",
       "image": "australia-wildfires-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestAustraliaWildfiresAmqpDockerFlow"
     },
     {
-      "dir": "carbon-intensity",
+      "dir": "feeders/carbon-intensity",
       "image": "carbon-intensity-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestCarbonIntensityAmqpDockerFlow"
     },
     {
-      "dir": "rss",
+      "dir": "feeders/rss",
       "image": "rss-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestRssAmqpDockerFlow"
     },
     {
-      "dir": "wikimedia-eventstreams",
+      "dir": "feeders/wikimedia-eventstreams",
       "image": "wikimedia-eventstreams-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestWikimediaEventstreamsAmqpDockerFlow"
     },
     {
-      "dir": "wikimedia-osm-diffs",
+      "dir": "feeders/wikimedia-osm-diffs",
       "image": "wikimedia-osm-diffs-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestWikimediaOsmDiffsAmqpDockerFlow"
     },
     {
-      "dir": "bluesky",
+      "dir": "feeders/bluesky",
       "image": "bluesky-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestBlueskyAmqpDockerFlow"
     },
     {
-      "dir": "epa-uv",
+      "dir": "feeders/epa-uv",
       "image": "epa-uv-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestEpaUvAmqpDockerFlow"
     },
     {
-      "dir": "hongkong-epd",
+      "dir": "feeders/hongkong-epd",
       "image": "hongkong-epd-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestHongkongEpdAmqpDockerFlow"
     },
     {
-      "dir": "meteoalarm",
+      "dir": "feeders/meteoalarm",
       "image": "meteoalarm-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestMeteoalarmAmqpDockerFlow"
     },
     {
-      "dir": "nws-alerts",
+      "dir": "feeders/nws-alerts",
       "image": "nws-alerts-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNWSAlertsAmqpDockerFlow"
     },
     {
-      "dir": "ptwc-tsunami",
+      "dir": "feeders/ptwc-tsunami",
       "image": "ptwc-tsunami-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestPtwcTsunamiAmqpDockerFlow"
     },
     {
-      "dir": "nina-bbk",
+      "dir": "feeders/nina-bbk",
       "image": "nina-bbk-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNinaBbkAmqpDockerFlow"
     },
     {
-      "dir": "gdacs",
+      "dir": "feeders/gdacs",
       "image": "gdacs-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestGdacsAmqpDockerFlow"
     },
     {
-      "dir": "eaws-albina",
+      "dir": "feeders/eaws-albina",
       "image": "eaws-albina-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestEawsAlbinaAmqpDockerFlow"
     },
     {
-      "dir": "cbp-border-wait",
+      "dir": "feeders/cbp-border-wait",
       "image": "cbp-border-wait-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestCbpBorderWaitAmqpDockerFlow"
     },
     {
-      "dir": "seattle-911",
+      "dir": "feeders/seattle-911",
       "image": "seattle-911-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestSeattle911AmqpDockerFlow"
     },
     {
-      "dir": "autobahn",
+      "dir": "feeders/autobahn",
       "image": "autobahn-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestAutobahnAmqpDockerFlow"
     },
     {
-      "dir": "tfl-road-traffic",
+      "dir": "feeders/tfl-road-traffic",
       "image": "tfl-road-traffic-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestTflRoadTrafficAmqpDockerFlow"
     },
     {
-      "dir": "entur-norway",
+      "dir": "feeders/entur-norway",
       "image": "entur-norway-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestEnturNorwayAmqpDockerFlow"
     },
     {
-      "dir": "irail",
+      "dir": "feeders/irail",
       "image": "irail-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestIRailAmqpDockerFlow"
     },
     {
-      "dir": "paris-bicycle-counters",
+      "dir": "feeders/paris-bicycle-counters",
       "image": "paris-bicycle-counters-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestParisBicycleCountersAmqpDockerFlow"
     },
     {
-      "dir": "usgs-earthquakes",
+      "dir": "feeders/usgs-earthquakes",
       "image": "usgs-earthquakes-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestUSGSEarthquakesAmqpDockerFlow"
     },
     {
-      "dir": "usgs-geomag",
+      "dir": "feeders/usgs-geomag",
       "image": "usgs-geomag-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestUSGSGeomagAmqpDockerFlow"
     },
     {
-      "dir": "usgs-iv",
+      "dir": "feeders/usgs-iv",
       "image": "usgs-iv-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestUSGSIVAmqpDockerFlow"
     },
     {
-      "dir": "jma-bosai-quake",
+      "dir": "feeders/jma-bosai-quake",
       "image": "jma-bosai-quake-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestJmaBosaiQuakeAmqpDockerFlow"
     },
     {
-      "dir": "jma-bosai-warning",
+      "dir": "feeders/jma-bosai-warning",
       "image": "jma-bosai-warning-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestJmaBosaiWarningAmqpDockerFlow"
     },
     {
-      "dir": "blitzortung",
+      "dir": "feeders/blitzortung",
       "image": "blitzortung-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestBlitzortungAmqpDockerFlow"
     },
     {
-      "dir": "gracedb",
+      "dir": "feeders/gracedb",
       "image": "gracedb-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestGracedbAmqpDockerFlow"
     },
     {
-      "dir": "inpe-deter-brazil",
+      "dir": "feeders/inpe-deter-brazil",
       "image": "inpe-deter-brazil-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestInpeDeterBrazilAmqpDockerFlow"
     },
     {
-      "dir": "eurdep-radiation",
+      "dir": "feeders/eurdep-radiation",
       "image": "eurdep-radiation-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestEurdepRadiationMqttDockerFlow"
     },
     {
-      "dir": "eurdep-radiation",
+      "dir": "feeders/eurdep-radiation",
       "image": "eurdep-radiation-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestEurdepRadiationAmqpDockerFlow"
     },
     {
-      "dir": "nifc-usa-wildfires",
+      "dir": "feeders/nifc-usa-wildfires",
       "image": "nifc-usa-wildfires-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNifcUsaWildfiresMqttDockerFlow"
     },
     {
-      "dir": "nifc-usa-wildfires",
+      "dir": "feeders/nifc-usa-wildfires",
       "image": "nifc-usa-wildfires-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNifcUsaWildfiresAmqpDockerFlow"
     },
     {
-      "dir": "xceed",
+      "dir": "feeders/xceed",
       "image": "xceed-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestXceedMqttDockerFlow"
     },
     {
-      "dir": "xceed",
+      "dir": "feeders/xceed",
       "image": "xceed-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestXceedAmqpDockerFlow"
     },
     {
-      "dir": "elexon-bmrs",
+      "dir": "feeders/elexon-bmrs",
       "image": "elexon-bmrs-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestElexonBmrsMqttDockerFlow"
     },
     {
-      "dir": "elexon-bmrs",
+      "dir": "feeders/elexon-bmrs",
       "image": "elexon-bmrs-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestElexonBmrsAmqpDockerFlow"
     },
     {
-      "dir": "energidataservice-dk",
+      "dir": "feeders/energidataservice-dk",
       "image": "energidataservice-dk-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestEnergidataserviceDkMqttDockerFlow"
     },
     {
-      "dir": "energidataservice-dk",
+      "dir": "feeders/energidataservice-dk",
       "image": "energidataservice-dk-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestEnergidataserviceDkAmqpDockerFlow"
     },
     {
-      "dir": "energy-charts",
+      "dir": "feeders/energy-charts",
       "image": "energy-charts-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestEnergyChartsMqttDockerFlow"
     },
     {
-      "dir": "energy-charts",
+      "dir": "feeders/energy-charts",
       "image": "energy-charts-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestEnergyChartsAmqpDockerFlow"
     },
     {
-      "dir": "billetto",
+      "dir": "feeders/billetto",
       "image": "billetto-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestBillettoMqttDockerFlow"
     },
     {
-      "dir": "billetto",
+      "dir": "feeders/billetto",
       "image": "billetto-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestBillettoAmqpDockerFlow"
     },
     {
-      "dir": "fienta",
+      "dir": "feeders/fienta",
       "image": "fienta-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestFientaMqttDockerFlow"
     },
     {
-      "dir": "fienta",
+      "dir": "feeders/fienta",
       "image": "fienta-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestFientaAmqpDockerFlow"
     },
     {
-      "dir": "ticketmaster",
+      "dir": "feeders/ticketmaster",
       "image": "ticketmaster-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestTicketmasterMqttDockerFlow"
     },
     {
-      "dir": "ticketmaster",
+      "dir": "feeders/ticketmaster",
       "image": "ticketmaster-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestTicketmasterAmqpDockerFlow"
     },
     {
-      "dir": "tepco-denkiyoho",
+      "dir": "feeders/tepco-denkiyoho",
       "image": "tepco-denkiyoho-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestTepcoDenkiyohoMqttDockerFlow"
     },
     {
-      "dir": "tepco-denkiyoho",
+      "dir": "feeders/tepco-denkiyoho",
       "image": "tepco-denkiyoho-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestTepcoDenkiyohoAmqpDockerFlow"
     },
     {
-      "dir": "canada-eccc-wateroffice",
+      "dir": "feeders/canada-eccc-wateroffice",
       "image": "canada-eccc-wateroffice-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestCanadaEcccWaterofficeMqttDockerFlow"
     },
     {
-      "dir": "canada-eccc-wateroffice",
+      "dir": "feeders/canada-eccc-wateroffice",
       "image": "canada-eccc-wateroffice-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestCanadaEcccWaterofficeAmqpArtemisFlow"
     },
     {
-      "dir": "cdec-reservoirs",
+      "dir": "feeders/cdec-reservoirs",
       "image": "cdec-reservoirs-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestCdecReservoirsMqttDockerFlow"
     },
     {
-      "dir": "cdec-reservoirs",
+      "dir": "feeders/cdec-reservoirs",
       "image": "cdec-reservoirs-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestCdecReservoirsAmqpArtemisFlow"
     },
     {
-      "dir": "hubeau-hydrometrie",
+      "dir": "feeders/hubeau-hydrometrie",
       "image": "hubeau-hydrometrie-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestHubeauHydrometrieMqttDockerFlow"
     },
     {
-      "dir": "hubeau-hydrometrie",
+      "dir": "feeders/hubeau-hydrometrie",
       "image": "hubeau-hydrometrie-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestHubeauHydrometrieAmqpArtemisFlow"
     },
     {
-      "dir": "imgw-hydro",
+      "dir": "feeders/imgw-hydro",
       "image": "imgw-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestImgwHydroMqttDockerFlow"
     },
     {
-      "dir": "imgw-hydro",
+      "dir": "feeders/imgw-hydro",
       "image": "imgw-hydro-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestImgwHydroAmqpArtemisFlow"
     },
     {
-      "dir": "ireland-opw-waterlevel",
+      "dir": "feeders/ireland-opw-waterlevel",
       "image": "ireland-opw-waterlevel-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestIrelandOpwWaterlevelMqttDockerFlow"
     },
     {
-      "dir": "ireland-opw-waterlevel",
+      "dir": "feeders/ireland-opw-waterlevel",
       "image": "ireland-opw-waterlevel-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestIrelandOpwWaterlevelAmqpArtemisFlow"
     },
     {
-      "dir": "nepal-bipad-hydrology",
+      "dir": "feeders/nepal-bipad-hydrology",
       "image": "nepal-bipad-hydrology-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNepalBipadHydrologyMqttDockerFlow"
     },
     {
-      "dir": "nepal-bipad-hydrology",
+      "dir": "feeders/nepal-bipad-hydrology",
       "image": "nepal-bipad-hydrology-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestNepalBipadHydrologyAmqpArtemisFlow"
     },
     {
-      "dir": "noaa-ndbc",
+      "dir": "feeders/noaa-ndbc",
       "image": "noaa-ndbc-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNoaaNdbcMqttDockerFlow"
     },
     {
-      "dir": "noaa-ndbc",
+      "dir": "feeders/noaa-ndbc",
       "image": "noaa-ndbc-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestNoaaNdbcAmqpArtemisFlow"
     },
     {
-      "dir": "noaa",
+      "dir": "feeders/noaa",
       "image": "noaa-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNoaaMqttDockerFlow"
     },
     {
-      "dir": "noaa",
+      "dir": "feeders/noaa",
       "image": "noaa-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestNoaaAmqpArtemisFlow"
     },
     {
-      "dir": "snotel",
+      "dir": "feeders/snotel",
       "image": "snotel-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestSnotelMqttDockerFlow"
     },
     {
-      "dir": "snotel",
+      "dir": "feeders/snotel",
       "image": "snotel-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestSnotelAmqpArtemisFlow"
     },
     {
-      "dir": "syke-hydro",
+      "dir": "feeders/syke-hydro",
       "image": "syke-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestSykeHydroMqttDockerFlow"
     },
     {
-      "dir": "syke-hydro",
+      "dir": "feeders/syke-hydro",
       "image": "syke-hydro-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestSykeHydroAmqpArtemisFlow"
     },
     {
-      "dir": "uk-ea-flood-monitoring",
+      "dir": "feeders/uk-ea-flood-monitoring",
       "image": "uk-ea-flood-monitoring-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestUkEaFloodMonitoringMqttDockerFlow"
     },
     {
-      "dir": "uk-ea-flood-monitoring",
+      "dir": "feeders/uk-ea-flood-monitoring",
       "image": "uk-ea-flood-monitoring-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestUkEaFloodMonitoringAmqpArtemisFlow"
     },
     {
-      "dir": "usgs-nwis-wq",
+      "dir": "feeders/usgs-nwis-wq",
       "image": "usgs-nwis-wq-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestUsgsNwisWqMqttDockerFlow"
     },
     {
-      "dir": "usgs-nwis-wq",
+      "dir": "feeders/usgs-nwis-wq",
       "image": "usgs-nwis-wq-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestUsgsNwisWqAmqpArtemisFlow"
     },
     {
-      "dir": "waterinfo-vmm",
+      "dir": "feeders/waterinfo-vmm",
       "image": "waterinfo-vmm-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestWaterinfoVmmMqttDockerFlow"
     },
     {
-      "dir": "waterinfo-vmm",
+      "dir": "feeders/waterinfo-vmm",
       "image": "waterinfo-vmm-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestWaterinfoVmmAmqpArtemisFlow"
     },
     {
-      "dir": "canada-eccc-wateroffice",
+      "dir": "feeders/canada-eccc-wateroffice",
       "image": "canada-eccc-wateroffice-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestCanadaEcccWaterofficeAmqpDockerFlow"
     },
     {
-      "dir": "cdec-reservoirs",
+      "dir": "feeders/cdec-reservoirs",
       "image": "cdec-reservoirs-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestCdecReservoirsAmqpDockerFlow"
     },
     {
-      "dir": "hubeau-hydrometrie",
+      "dir": "feeders/hubeau-hydrometrie",
       "image": "hubeau-hydrometrie-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestHubeauHydrometrieAmqpDockerFlow"
     },
     {
-      "dir": "imgw-hydro",
+      "dir": "feeders/imgw-hydro",
       "image": "imgw-hydro-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestImgwHydroAmqpDockerFlow"
     },
     {
-      "dir": "ireland-opw-waterlevel",
+      "dir": "feeders/ireland-opw-waterlevel",
       "image": "ireland-opw-waterlevel-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestIrelandOpwWaterlevelAmqpDockerFlow"
     },
     {
-      "dir": "nepal-bipad-hydrology",
+      "dir": "feeders/nepal-bipad-hydrology",
       "image": "nepal-bipad-hydrology-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNepalBipadHydrologyAmqpDockerFlow"
     },
     {
-      "dir": "noaa-ndbc",
+      "dir": "feeders/noaa-ndbc",
       "image": "noaa-ndbc-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNoaaNdbcAmqpDockerFlow"
     },
     {
-      "dir": "noaa",
+      "dir": "feeders/noaa",
       "image": "noaa-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNoaaAmqpDockerFlow"
     },
     {
-      "dir": "snotel",
+      "dir": "feeders/snotel",
       "image": "snotel-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestSnotelAmqpDockerFlow"
     },
     {
-      "dir": "syke-hydro",
+      "dir": "feeders/syke-hydro",
       "image": "syke-hydro-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestSykeHydroAmqpDockerFlow"
     },
     {
-      "dir": "uk-ea-flood-monitoring",
+      "dir": "feeders/uk-ea-flood-monitoring",
       "image": "uk-ea-flood-monitoring-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestUkEaFloodMonitoringAmqpDockerFlow"
     },
     {
-      "dir": "usgs-nwis-wq",
+      "dir": "feeders/usgs-nwis-wq",
       "image": "usgs-nwis-wq-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestUsgsNwisWqAmqpDockerFlow"
     },
     {
-      "dir": "waterinfo-vmm",
+      "dir": "feeders/waterinfo-vmm",
       "image": "waterinfo-vmm-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestWaterinfoVmmAmqpDockerFlow"
     },
     {
-      "dir": "nws-alerts",
+      "dir": "feeders/nws-alerts",
       "image": "nws-alerts-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNwsAlertsAmqpDockerFlow"
     },
     {
-      "dir": "noaa-goes",
+      "dir": "feeders/noaa-goes",
       "image": "noaa-goes-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNoaaGoesMqttDockerFlow"
     },
     {
-      "dir": "noaa-goes",
+      "dir": "feeders/noaa-goes",
       "image": "noaa-goes-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNoaaGoesAmqpDockerFlow"
     },
     {
-      "dir": "nws-forecasts",
+      "dir": "feeders/nws-forecasts",
       "image": "nws-forecasts-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNwsForecastsMqttDockerFlow"
     },
     {
-      "dir": "nws-forecasts",
+      "dir": "feeders/nws-forecasts",
       "image": "nws-forecasts-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNwsForecastsAmqpDockerFlow"
     },
     {
-      "dir": "singapore-nea",
+      "dir": "feeders/singapore-nea",
       "image": "singapore-nea-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestSingaporeNeaMqttDockerFlow"
     },
     {
-      "dir": "singapore-nea",
+      "dir": "feeders/singapore-nea",
       "image": "singapore-nea-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestSingaporeNeaAmqpDockerFlow"
     },
     {
-      "dir": "jma-bosai-amedas",
+      "dir": "feeders/jma-bosai-amedas",
       "image": "jma-bosai-amedas-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestJmaBosaiAmedasMqttDockerFlow"
     },
     {
-      "dir": "jma-bosai-amedas",
+      "dir": "feeders/jma-bosai-amedas",
       "image": "jma-bosai-amedas-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestJmaBosaiAmedasAmqpDockerFlow"
     },
     {
-      "dir": "jma-bosai-volcano",
+      "dir": "feeders/jma-bosai-volcano",
       "image": "jma-bosai-volcano-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestJmaBosaiVolcanoMqttDockerFlow"
     },
     {
-      "dir": "jma-bosai-volcano",
+      "dir": "feeders/jma-bosai-volcano",
       "image": "jma-bosai-volcano-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestJmaBosaiVolcanoAmqpDockerFlow"
     },
     {
-      "dir": "french-road-traffic",
+      "dir": "feeders/french-road-traffic",
       "image": "french-road-traffic-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestFrenchRoadTrafficMqttDockerFlow"
     },
     {
-      "dir": "french-road-traffic",
+      "dir": "feeders/french-road-traffic",
       "image": "french-road-traffic-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestFrenchRoadTrafficAmqpDockerFlow"
     },
     {
-      "dir": "gtfs",
+      "dir": "feeders/gtfs",
       "image": "gtfs-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestGTFSMqttDockerFlow"
     },
     {
-      "dir": "gtfs",
+      "dir": "feeders/gtfs",
       "image": "gtfs-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestGTFSAmqpDockerFlow"
     },
     {
-      "dir": "madrid-traffic",
+      "dir": "feeders/madrid-traffic",
       "image": "madrid-traffic-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestMadridTrafficMqttDockerFlow"
     },
     {
-      "dir": "madrid-traffic",
+      "dir": "feeders/madrid-traffic",
       "image": "madrid-traffic-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestMadridTrafficAmqpDockerFlow"
     },
     {
-      "dir": "ndl-netherlands",
+      "dir": "feeders/ndl-netherlands",
       "image": "ndl-netherlands-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNDLNetherlandsMqttDockerFlow"
     },
     {
-      "dir": "ndl-netherlands",
+      "dir": "feeders/ndl-netherlands",
       "image": "ndl-netherlands-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNDLNetherlandsAmqpDockerFlow"
     },
     {
-      "dir": "ndw-road-traffic",
+      "dir": "feeders/ndw-road-traffic",
       "image": "ndw-road-traffic-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNDWRoadTrafficMqttDockerFlow"
     },
     {
-      "dir": "ndw-road-traffic",
+      "dir": "feeders/ndw-road-traffic",
       "image": "ndw-road-traffic-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNDWRoadTrafficAmqpDockerFlow"
     },
     {
-      "dir": "nextbus",
+      "dir": "feeders/nextbus",
       "image": "nextbus-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNextbusMqttDockerFlow"
     },
     {
-      "dir": "nextbus",
+      "dir": "feeders/nextbus",
       "image": "nextbus-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNextbusAmqpDockerFlow"
     },
     {
-      "dir": "seattle-street-closures",
+      "dir": "feeders/seattle-street-closures",
       "image": "seattle-street-closures-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestSeattleStreetClosuresMqttDockerFlow"
     },
     {
-      "dir": "seattle-street-closures",
+      "dir": "feeders/seattle-street-closures",
       "image": "seattle-street-closures-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestSeattleStreetClosuresAmqpDockerFlow"
     },
     {
-      "dir": "tfl-road-traffic",
+      "dir": "feeders/tfl-road-traffic",
       "image": "tfl-road-traffic-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestTFLRoadTrafficAmqpDockerFlow"
     },
     {
-      "dir": "tokyo-docomo-bikeshare",
+      "dir": "feeders/tokyo-docomo-bikeshare",
       "image": "tokyo-docomo-bikeshare-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestTokyoDocomoBikeshareMqttDockerFlow"
     },
     {
-      "dir": "tokyo-docomo-bikeshare",
+      "dir": "feeders/tokyo-docomo-bikeshare",
       "image": "tokyo-docomo-bikeshare-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestTokyoDocomoBikeshareAmqpDockerFlow"
     },
     {
-      "dir": "wsdot",
+      "dir": "feeders/wsdot",
       "image": "wsdot-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestWSDOTMqttDockerFlow"
     },
     {
-      "dir": "wsdot",
+      "dir": "feeders/wsdot",
       "image": "wsdot-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestWSDOTAmqpDockerFlow"
     },
     {
-      "dir": "canada-aqhi",
+      "dir": "feeders/canada-aqhi",
       "test_class": "TestCanadaAqhiMqttDockerFlow",
       "test_file": "test_docker_mqtt_flow.py"
     },
     {
-      "dir": "canada-aqhi",
+      "dir": "feeders/canada-aqhi",
       "test_class": "TestCanadaAqhiAmqpDockerFlow",
       "test_file": "test_docker_amqp_flow.py"
     },
     {
-      "dir": "defra-aurn",
+      "dir": "feeders/defra-aurn",
       "test_class": "TestDefraAurnMqttDockerFlow",
       "test_file": "test_docker_mqtt_flow.py"
     },
     {
-      "dir": "defra-aurn",
+      "dir": "feeders/defra-aurn",
       "test_class": "TestDefraAurnAmqpDockerFlow",
       "test_file": "test_docker_amqp_flow.py"
     },
     {
-      "dir": "sensor-community",
+      "dir": "feeders/sensor-community",
       "test_class": "TestSensorCommunityMqttDockerFlow",
       "test_file": "test_docker_mqtt_flow.py"
     },
     {
-      "dir": "sensor-community",
+      "dir": "feeders/sensor-community",
       "test_class": "TestSensorCommunityAmqpDockerFlow",
       "test_file": "test_docker_amqp_flow.py"
     },
     {
-      "dir": "uba-airdata",
+      "dir": "feeders/uba-airdata",
       "test_class": "TestUbaAirdataMqttDockerFlow",
       "test_file": "test_docker_mqtt_flow.py"
     },
     {
-      "dir": "uba-airdata",
+      "dir": "feeders/uba-airdata",
       "test_class": "TestUbaAirdataAmqpDockerFlow",
       "test_file": "test_docker_amqp_flow.py"
     },
     {
-      "dir": "aviationweather",
+      "dir": "feeders/aviationweather",
       "image": "aviationweather-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestAviationweatherMqttDockerFlow"
     },
     {
-      "dir": "aviationweather",
+      "dir": "feeders/aviationweather",
       "image": "aviationweather-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestAviationweatherAmqpDockerFlow"
     },
     {
-      "dir": "bom-australia",
+      "dir": "feeders/bom-australia",
       "image": "bom-australia-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestBomAustraliaMqttDockerFlow"
     },
     {
-      "dir": "bom-australia",
+      "dir": "feeders/bom-australia",
       "image": "bom-australia-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestBomAustraliaAmqpDockerFlow"
     },
     {
-      "dir": "dwd",
+      "dir": "feeders/dwd",
       "image": "dwd-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestDwdMqttDockerFlow"
     },
     {
-      "dir": "dwd",
+      "dir": "feeders/dwd",
       "image": "dwd-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestDwdAmqpDockerFlow"
     },
     {
-      "dir": "environment-canada",
+      "dir": "feeders/environment-canada",
       "image": "environment-canada-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestEnvironmentCanadaMqttDockerFlow"
     },
     {
-      "dir": "environment-canada",
+      "dir": "feeders/environment-canada",
       "image": "environment-canada-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestEnvironmentCanadaAmqpDockerFlow"
     },
     {
-      "dir": "geosphere-austria",
+      "dir": "feeders/geosphere-austria",
       "image": "geosphere-austria-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestGeosphereAustriaMqttDockerFlow"
     },
     {
-      "dir": "geosphere-austria",
+      "dir": "feeders/geosphere-austria",
       "image": "geosphere-austria-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestGeosphereAustriaAmqpDockerFlow"
     },
     {
-      "dir": "hko-hong-kong",
+      "dir": "feeders/hko-hong-kong",
       "image": "hko-hong-kong-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestHkoHongKongMqttDockerFlow"
     },
     {
-      "dir": "hko-hong-kong",
+      "dir": "feeders/hko-hong-kong",
       "image": "hko-hong-kong-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestHkoHongKongAmqpDockerFlow"
     },
     {
-      "dir": "jma-japan",
+      "dir": "feeders/jma-japan",
       "image": "jma-japan-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestJmaJapanMqttDockerFlow"
     },
     {
-      "dir": "jma-japan",
+      "dir": "feeders/jma-japan",
       "image": "jma-japan-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestJmaJapanAmqpDockerFlow"
     },
     {
-      "dir": "kmi-belgium",
+      "dir": "feeders/kmi-belgium",
       "image": "kmi-belgium-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestKmiBelgiumMqttDockerFlow"
     },
     {
-      "dir": "kmi-belgium",
+      "dir": "feeders/kmi-belgium",
       "image": "kmi-belgium-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestKmiBelgiumAmqpDockerFlow"
     },
     {
-      "dir": "noaa-nws",
+      "dir": "feeders/noaa-nws",
       "image": "noaa-nws-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNoaaNwsMqttDockerFlow"
     },
     {
-      "dir": "noaa-nws",
+      "dir": "feeders/noaa-nws",
       "image": "noaa-nws-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNoaaNwsAmqpDockerFlow"
     },
     {
-      "dir": "smhi-weather",
+      "dir": "feeders/smhi-weather",
       "image": "smhi-weather-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestSmhiWeatherMqttDockerFlow"
     },
     {
-      "dir": "smhi-weather",
+      "dir": "feeders/smhi-weather",
       "image": "smhi-weather-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestSmhiWeatherAmqpDockerFlow"
     },
     {
-      "dir": "noaa-swpc-l1",
+      "dir": "feeders/noaa-swpc-l1",
       "image": "noaa-swpc-l1-kafka",
       "file": "Dockerfile.kafka",
       "test_class": "TestNoaaSwpcL1DockerFlow"
     },
     {
-      "dir": "noaa-swpc-l1",
+      "dir": "feeders/noaa-swpc-l1",
       "image": "noaa-swpc-l1-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestNoaaSwpcL1MqttDockerFlow"
     },
     {
-      "dir": "noaa-swpc-l1",
+      "dir": "feeders/noaa-swpc-l1",
       "image": "noaa-swpc-l1-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestNoaaSwpcL1AmqpArtemisFlow"
     },
     {
-      "dir": "digitraffic-maritime",
+      "dir": "feeders/digitraffic-maritime",
       "image": "digitraffic-maritime-kafka",
       "file": "Dockerfile",
       "test_file": "test_docker_kafka_flow.py",
       "test_class": "TestDigitrafficMaritimeDockerFlow"
     },
     {
-      "dir": "digitraffic-maritime",
+      "dir": "feeders/digitraffic-maritime",
       "image": "digitraffic-maritime-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestDigitrafficMaritimeMqttDockerFlow"
     },
     {
-      "dir": "digitraffic-maritime",
+      "dir": "feeders/digitraffic-maritime",
       "image": "digitraffic-maritime-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestDigitrafficMaritimeAmqpDockerFlow"
     },
     {
-      "dir": "digitraffic-road",
+      "dir": "feeders/digitraffic-road",
       "test_class": "TestDigitrafficRoadDockerFlow"
     },
     {
-      "dir": "digitraffic-road",
+      "dir": "feeders/digitraffic-road",
       "image": "digitraffic-road-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestDigitrafficRoadMqttDockerFlow"
     },
     {
-      "dir": "digitraffic-road",
+      "dir": "feeders/digitraffic-road",
       "image": "digitraffic-road-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",

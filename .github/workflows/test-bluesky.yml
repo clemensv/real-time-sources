@@ -4,12 +4,12 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - 'bluesky/**'
+      - 'feeders/bluesky/**'
       - '.github/workflows/test-bluesky.yml'
   pull_request:
     branches: [ "main" ]
     paths:
-      - 'bluesky/**'
+      - 'feeders/bluesky/**'
       - '.github/workflows/test-bluesky.yml'
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./bluesky
+        working-directory: ./feeders/bluesky
     
     steps:
       - name: Checkout repository
@@ -42,7 +42,7 @@ jobs:
       - name: Cache Poetry dependencies
         uses: actions/cache@v5
         with:
-          path: ./bluesky/.venv
+          path: ./feeders/bluesky/.venv
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
             venv-${{ runner.os }}-
@@ -63,7 +63,7 @@ jobs:
         uses: codecov/codecov-action@v6
         if: always()
         with:
-          file: ./bluesky/coverage.xml
+          file: ./feeders/bluesky/coverage.xml
           flags: bluesky
           name: bluesky-coverage
           fail_ci_if_error: false

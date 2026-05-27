@@ -1,0 +1,27 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/kystverket-ais"
+LABEL org.opencontainers.image.title="Kystverket AIS → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Connects to the Norwegian Coastal Administration AIS TCP NMEA firehose, decodes ITU-R M.1371 messages, enriches them with MID-derived flag, ship-type bucket and geohash5 axes, and publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (maritime/no/kystverket/kystverket-ais/{flag}/{ship_type}/{geohash5}/{mmsi}/{msg_type}). Non-retained, QoS 0."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/kystverket-ais/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+LABEL real-time-sources.enrichment.mid_iso.version="2024-01"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./kystverket_ais_mqtt_producer/kystverket_ais_mqtt_producer_data \
+ && pip install --no-cache-dir ./kystverket_ais_mqtt_producer/kystverket_ais_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./kystverket_ais_producer/kystverket_ais_producer_data \
+ && pip install --no-cache-dir ./kystverket_ais_producer/kystverket_ais_producer_kafka_producer \
+ && pip install --no-cache-dir . \
+ && pip install --no-cache-dir ./kystverket_ais_mqtt
+
+ENV MQTT_BROKER_URL=""
+ENV AIS_TCP_HOST="153.44.253.27"
+ENV AIS_TCP_PORT="5631"
+
+CMD ["python", "-m", "kystverket_ais_mqtt", "feed"]

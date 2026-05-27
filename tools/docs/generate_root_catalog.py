@@ -18,6 +18,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parents[2]
+FEEDERS = ROOT / "feeders"
 README = ROOT / "README.md"
 CATALOG = ROOT / "catalog.json"
 UPSTREAM = ROOT / "tools" / "docs" / "upstream_links.json"
@@ -306,9 +307,9 @@ def render_source(entry: dict, upstream: dict, xreg_info: dict) -> str:
         f'<sub><b>📍 keyed by</b> {key_text} &nbsp; · &nbsp; '
         f'<b>📦 events</b> {events_text}</sub>\n\n'
         f'<sub><b>DEPLOY</b></sub><br>\n{chips}\n\n'
-        f'<sub>📘 <a href="{sid}/README.md">README</a> &nbsp;·&nbsp; '
-        f'📑 <a href="{sid}/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; '
-        f'🐳 <a href="{sid}/CONTAINER.md">CONTAINER</a>{upstream_link}</sub>\n'
+        f'<sub>📘 <a href="feeders/{sid}/README.md">README</a> &nbsp;·&nbsp; '
+        f'📑 <a href="feeders/{sid}/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; '
+        f'🐳 <a href="feeders/{sid}/CONTAINER.md">CONTAINER</a>{upstream_link}</sub>\n'
     )
 
     return (
@@ -353,7 +354,7 @@ def render() -> str:
             '<table width="100%">\n'
         )
         for e in entries:
-            src_dir = ROOT / e["id"]
+            src_dir = FEEDERS / e["id"]
             xreg_info = parse_xreg(src_dir)
             parts.append(render_source(e, upstream, xreg_info))
         parts.append("</table>\n\n</details>\n\n")

@@ -209,7 +209,7 @@
   station_id: string,
   value: real,
   quality: string
-)</div></div></div><div class="detail-links"><a href="https://github.com/clemensv/real-time-sources/blob/main/noaa/CONTAINER.md">CONTAINER.md</a><a href="https://github.com/clemensv/real-time-sources/blob/main/noaa/EVENTS.md">EVENTS.md</a></div></div></td></tr>
+)</div></div></div><div class="detail-links"><a href="https://github.com/clemensv/real-time-sources/blob/main/feeders/noaa/CONTAINER.md">CONTAINER.md</a><a href="https://github.com/clemensv/real-time-sources/blob/main/feeders/noaa/EVENTS.md">EVENTS.md</a></div></div></td></tr>
 
         <tr data-group="water" data-name="noaa ndbc" onclick="toggleDetail('d-noaa-ndbc')"><td><div class="source-name"><span class="source-icon">🔵</span><span class="source-label">NOAA NDBC</span></div></td><td class="region-flags">🇺🇸</td><td class="data-type">Buoy observations</td><td><span class="freq-pill">5 min</span></td><td class="docker-cell"><code>ghcr.io/.../noaa-ndbc</code><button class="copy-btn" onclick="event.stopPropagation();copyText('ghcr.io/clemensv/real-time-sources/noaa-ndbc')">Copy</button></td><td><a class="deploy-btn" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank" onclick="event.stopPropagation()">Deploy</a></td></tr>
         <tr class="detail-row" id="d-noaa-ndbc"><td colspan="6"><div class="detail-panel"><div class="detail-grid"><div><h4>Docker Run</h4><div class="detail-code"><button class="copy-detail" onclick="copyEl(this)">Copy</button>docker run \
@@ -221,7 +221,7 @@
   --image ghcr.io/clemensv/real-time-sources/noaa-ndbc \
   --environment-variables \
     KAFKA_BOOTSTRAP_SERVERS=&lt;host&gt;:9093 \
-    KAFKA_TOPIC=noaa-ndbc</div></div></div><div class="detail-links"><a href="https://github.com/clemensv/real-time-sources/blob/main/noaa-ndbc/CONTAINER.md">CONTAINER.md</a></div></div></td></tr>
+    KAFKA_TOPIC=noaa-ndbc</div></div></div><div class="detail-links"><a href="https://github.com/clemensv/real-time-sources/blob/main/feeders/noaa-ndbc/CONTAINER.md">CONTAINER.md</a></div></div></td></tr>
 
         <tr data-group="water" data-name="pegelonline" onclick="toggleDetail('d-pegelonline')"><td><div class="source-name"><span class="source-icon">🇩🇪</span><span class="source-label">Pegelonline</span></div></td><td class="region-flags">🇩🇪</td><td class="data-type">Water level, currents</td><td><span class="freq-pill">15 min</span></td><td class="docker-cell"><code>ghcr.io/.../pegelonline</code><button class="copy-btn" onclick="event.stopPropagation();copyText('ghcr.io/clemensv/real-time-sources/pegelonline')">Copy</button></td><td><a class="deploy-btn" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank" onclick="event.stopPropagation()">Deploy</a></td></tr>
         <tr class="detail-row" id="d-pegelonline"><td colspan="6"><div class="detail-panel"><div class="detail-grid"><div><h4>Docker Run</h4><div class="detail-code"><button class="copy-detail" onclick="copyEl(this)">Copy</button>docker run \
@@ -233,7 +233,7 @@
   --image ghcr.io/clemensv/real-time-sources/pegelonline \
   --environment-variables \
     KAFKA_BOOTSTRAP_SERVERS=&lt;host&gt;:9093 \
-    KAFKA_TOPIC=pegelonline</div></div></div><div class="detail-links"><a href="https://github.com/clemensv/real-time-sources/blob/main/pegelonline/CONTAINER.md">CONTAINER.md</a></div></div></td></tr>
+    KAFKA_TOPIC=pegelonline</div></div></div><div class="detail-links"><a href="https://github.com/clemensv/real-time-sources/blob/main/feeders/pegelonline/CONTAINER.md">CONTAINER.md</a></div></div></td></tr>
 
         <tr data-group="water" data-name="usgs iv" onclick="toggleDetail('d-usgs-iv')"><td><div class="source-name"><span class="source-icon">📊</span><span class="source-label">USGS Instantaneous Values</span></div></td><td class="region-flags">🇺🇸</td><td class="data-type">Water quality/quantity</td><td><span class="freq-pill">15 min</span></td><td class="docker-cell"><code>ghcr.io/.../usgs-iv</code><button class="copy-btn" onclick="event.stopPropagation();copyText('ghcr.io/clemensv/real-time-sources/usgs-iv')">Copy</button></td><td><a class="deploy-btn" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank" onclick="event.stopPropagation()">Deploy</a></td></tr>
         <tr class="detail-row" id="d-usgs-iv"><td colspan="6"><div class="detail-panel"><div class="detail-grid"><div><h4>Docker Run</h4><div class="detail-code"><button class="copy-detail" onclick="copyEl(this)">Copy</button>docker run \
@@ -242,7 +242,7 @@
   -e SASL_USERNAME='$ConnectionString' \
   -e SASL_PASSWORD='&lt;conn-string&gt;' \
   ghcr.io/clemensv/real-time-sources/usgs-iv</div></div><div><h4>Azure CLI</h4><div class="detail-code"><button class="copy-detail" onclick="copyEl(this)">Copy</button>az container create -g myRG -n usgs-iv \
-  --image ghcr.io/clemensv/real-time-sources/usgs-iv</div></div></div><div class="detail-links"><a href="https://github.com/clemensv/real-time-sources/blob/main/usgs-iv/CONTAINER.md">CONTAINER.md</a></div></div></td></tr>
+  --image ghcr.io/clemensv/real-time-sources/usgs-iv</div></div></div><div class="detail-links"><a href="https://github.com/clemensv/real-time-sources/blob/main/feeders/usgs-iv/CONTAINER.md">CONTAINER.md</a></div></div></td></tr>
 
         <tr data-group="water" data-name="chmi hydro" onclick="toggleDetail('d-chmi')"><td><div class="source-name"><span class="source-icon">🇨🇿</span><span class="source-label">CHMI Hydro</span></div></td><td class="region-flags">🇨🇿</td><td class="data-type">Water level, discharge, temp</td><td><span class="freq-pill">10 min</span></td><td class="docker-cell"><code>ghcr.io/.../chmi-hydro</code><button class="copy-btn" onclick="event.stopPropagation();copyText('ghcr.io/clemensv/real-time-sources/chmi-hydro')">Copy</button></td><td><a class="deploy-btn" href="https://portal.azure.com/#create/Microsoft.Template/uri/" target="_blank" onclick="event.stopPropagation()">Deploy</a></td></tr>
         <tr class="detail-row" id="d-chmi"><td colspan="6"><div class="detail-panel"><div class="detail-grid"><div><h4>Docker Run</h4><div class="detail-code"><button class="copy-detail" onclick="copyEl(this)">Copy</button>docker run -e KAFKA_BOOTSTRAP_SERVERS=&lt;host&gt;:9093 -e KAFKA_TOPIC=chmi-hydro ghcr.io/clemensv/real-time-sources/chmi-hydro</div></div><div><h4>Azure CLI</h4><div class="detail-code"><button class="copy-detail" onclick="copyEl(this)">Copy</button>az container create -g myRG -n chmi-hydro --image ghcr.io/clemensv/real-time-sources/chmi-hydro</div></div></div></div></td></tr>

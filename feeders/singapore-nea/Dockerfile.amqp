@@ -1,0 +1,18 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/singapore-nea"
+LABEL org.opencontainers.image.title="singapore-nea → AMQP 1.0 bridge"
+LABEL org.opencontainers.image.description="Publishes singapore-nea CloudEvents as AMQP 1.0 binary-mode messages."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/singapore-nea/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev libsasl2-2 libsasl2-modules && rm -rf /var/lib/apt/lists/*
+COPY . /app
+RUN pip install --no-cache-dir ./singapore_nea_amqp_producer/singapore_nea_amqp_producer_data \ 
+ && pip install --no-cache-dir ./singapore_nea_amqp \ 
+ && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \ 
+ && rm -rf /root/.cache /var/lib/apt/lists/*
+ENV AMQP_BROKER_URL=""
+ENV AMQP_ADDRESS="singapore-nea"
+CMD ["python", "-m", "singapore_nea_amqp", "feed"]

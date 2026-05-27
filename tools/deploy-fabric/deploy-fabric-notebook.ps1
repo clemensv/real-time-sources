@@ -86,7 +86,7 @@ if ([string]::IsNullOrWhiteSpace($Eventhouse)) { $Eventhouse = $Source -replace 
 
 if (-not $NotebookPath) {
     $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
-    $NotebookPath = Join-Path $repoRoot "$Source/botfinder/notebook/botfinder.ipynb"
+    $NotebookPath = Join-Path $repoRoot "feeders/$Source/botfinder/notebook/botfinder.ipynb"
 }
 
 function Write-Step { param([string]$Step, [string]$Msg) Write-Host "`n[$Step] $Msg" -ForegroundColor Yellow }
@@ -122,7 +122,7 @@ function Invoke-SourcePostDeployHook {
         return
     }
 
-    $rel = "$Source/fabric/post-deploy.ps1"
+    $rel = "feeders/$Source/fabric/post-deploy.ps1"
     $hookPath = $null
     try {
         $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..") -ErrorAction Stop

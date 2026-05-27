@@ -23,7 +23,7 @@ from pathlib import Path
 # Reuse maps from the catalog generator
 from generate_root_catalog import (
     FLAG, FLAG_BY_ID, parse_xreg, derive_region, derive_scope,
-    ROOT, CATALOG, UPSTREAM, REPO, PORTAL,
+    ROOT, CATALOG, UPSTREAM, REPO, PORTAL, FEEDERS,
 )
 
 BEGIN = "<!-- source-hero:begin -->"
@@ -53,7 +53,7 @@ def transport_pills_big(transports: set) -> str:
 def dest_chips(entry: dict) -> str:
     """Big destination chips: Azure templates count, Fabric (Notebook+ACI / ACI), Docker images."""
     sid = entry["id"]
-    src_dir = ROOT / sid
+    src_dir = FEEDERS / sid
     az_templates = len(list(src_dir.glob("azure-template*.json"))) if src_dir.exists() else 0
     dockerfiles = len(list(src_dir.glob("Dockerfile*"))) if src_dir.exists() else 0
     has_notebook = entry.get("notebook", False)
@@ -78,7 +78,7 @@ def dest_chips(entry: dict) -> str:
 
 def shortcut_buttons(entry: dict, upstream: dict) -> str:
     sid = entry["id"]
-    src_dir = ROOT / sid
+    src_dir = FEEDERS / sid
     parts = [
         f'[🚀 **Deploy to Azure**]({PORTAL}#{sid})',
     ]
@@ -198,7 +198,7 @@ def main() -> int:
     actions = {"replaced": 0, "inserted": 0, "no-op": 0, "skip (file missing)": 0}
     for entry in catalog:
         sid = entry["id"]
-        src_dir = ROOT / sid
+        src_dir = FEEDERS / sid
         if not src_dir.exists():
             continue
         xreg_info = parse_xreg(src_dir)

@@ -1,0 +1,18 @@
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/entsoe" \
+      org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/entsoe/CONTAINER.md" \
+      org.opencontainers.image.license="MIT" \
+      org.opencontainers.image.title="ENTSO-E AMQP 1.0 feeder" \
+      org.opencontainers.image.description="Publishes ENTSO-E Transparency Platform CloudEvents to AMQP 1.0 brokers and Azure Service Bus/Event Hubs."
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY . /app
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends gcc libc6-dev \
+ && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir ./entsoe_amqp_producer/entsoe_amqp_producer_data \
+ && pip install --no-cache-dir ./entsoe_amqp_producer/entsoe_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir ./entsoe_core \
+ && pip install --no-cache-dir ./entsoe_amqp
+ENV STATE_FILE="/mnt/fileshare/entsoe_state.json" AMQP_ADDRESS="entsoe" AMQP_AUTH_MODE="password"
+CMD ["python", "-m", "entsoe_amqp", "feed"]

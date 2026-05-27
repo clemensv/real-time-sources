@@ -32,7 +32,7 @@ import json
 import re
 from pathlib import Path
 
-from generate_root_catalog import ROOT, CATALOG, REPO, PORTAL
+from generate_root_catalog import ROOT, FEEDERS, CATALOG, REPO, PORTAL
 
 BEGIN = "<!-- source-deploy:begin -->"
 END = "<!-- source-deploy:end -->"
@@ -73,7 +73,7 @@ ARM_TEMPLATES = [
 
 
 def deploy_button(sid: str, template: str) -> str:
-    url = f"https://raw.githubusercontent.com/{REPO}/main/{sid}/{template}"
+    url = f"https://raw.githubusercontent.com/{REPO}/main/feeders/{sid}/{template}"
     return (
         "[![Deploy to Azure](https://aka.ms/deploytoazurebutton)]"
         f"(https://portal.azure.com/#create/Microsoft.Template/uri/"
@@ -84,7 +84,7 @@ def deploy_button(sid: str, template: str) -> str:
 def fabric_section(entry: dict) -> str:
     sid = entry["id"]
     name = entry["name"]
-    src = ROOT / sid
+    src = FEEDERS / sid
     has_notebook = (src / "notebook").exists() and any(
         (src / "notebook").glob("*.ipynb")
     )
@@ -218,7 +218,7 @@ def fabric_section(entry: dict) -> str:
 
 def aci_section(entry: dict) -> str:
     sid = entry["id"]
-    src = ROOT / sid
+    src = FEEDERS / sid
 
     available = [
         (fname, title, blurb)
@@ -252,7 +252,7 @@ def aci_section(entry: dict) -> str:
 
 
 def self_hosted_section(entry: dict) -> str:
-    src = ROOT / entry["id"]
+    src = FEEDERS / entry["id"]
     dockerfiles = sorted(p.name for p in src.glob("Dockerfile*"))
     n = len(dockerfiles)
     image_word = (
@@ -323,7 +323,7 @@ def main() -> int:
     missing = []
     for entry in catalog:
         sid = entry["id"]
-        src = ROOT / sid
+        src = FEEDERS / sid
         if not src.exists():
             continue
         deploy = render_deploy(entry)

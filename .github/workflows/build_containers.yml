@@ -52,7 +52,7 @@ jobs:
                     capture("^(?<path>.*)/(?<file>Dockerfile(?<variant>\\..+)?)$")
                     | . + {
                         image: (
-                          (.path | gsub("/"; "-"))
+                          (.path | sub("^feeders/"; "") | gsub("/"; "-"))
                           + (if .variant then (.variant | gsub("^\\."; "-")) else "" end)
                         )
                       }

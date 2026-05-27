@@ -453,8 +453,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/noaa',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=noaa \\\n  -e SASL_USERNAME='$ConnectionString' \\\n  -e SASL_PASSWORD='<conn-string>' \\\n  ghcr.io/clemensv/real-time-sources/noaa",
     az: "az container create -g myRG -n noaa \\\n  --image ghcr.io/clemensv/real-time-sources/noaa \\\n  --environment-variables KAFKA_BOOTSTRAP_SERVERS=<host>:9093 KAFKA_TOPIC=noaa",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/noaa/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/noaa/EVENTS.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/noaa/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/noaa/EVENTS.md'
   },
   'usgs-earthquakes': {
     logo: '🌋', title: 'USGS Earthquakes',
@@ -463,8 +463,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/usgs-earthquakes',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=usgs-earthquakes \\\n  ghcr.io/clemensv/real-time-sources/usgs-earthquakes",
     az: "az container create -g myRG -n usgs-earthquakes \\\n  --image ghcr.io/clemensv/real-time-sources/usgs-earthquakes",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/usgs-earthquakes/README.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/usgs-earthquakes/README.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/usgs-earthquakes/README.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/usgs-earthquakes/README.md'
   },
   'bluesky': {
     logo: '🦋', title: 'Bluesky Firehose',
@@ -473,8 +473,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/bluesky',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=bluesky \\\n  ghcr.io/clemensv/real-time-sources/bluesky",
     az: "az container create -g myRG -n bluesky \\\n  --image ghcr.io/clemensv/real-time-sources/bluesky",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/bluesky/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/bluesky/EVENTS.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/bluesky/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/bluesky/EVENTS.md'
   },
   'uk-ea-flood-monitoring': {
     logo: '🇬🇧', title: 'UK EA Flood Monitoring',
@@ -483,8 +483,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/uk-ea-flood-monitoring',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=uk-ea-flood-monitoring \\\n  ghcr.io/clemensv/real-time-sources/uk-ea-flood-monitoring",
     az: "az container create -g myRG -n uk-ea \\\n  --image ghcr.io/clemensv/real-time-sources/uk-ea-flood-monitoring",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/uk-ea-flood-monitoring/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/uk-ea-flood-monitoring/EVENTS.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/uk-ea-flood-monitoring/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/uk-ea-flood-monitoring/EVENTS.md'
   },
   'pegelonline': {
     logo: '🇩🇪', title: 'Pegelonline',
@@ -493,8 +493,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/pegelonline',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=pegelonline \\\n  ghcr.io/clemensv/real-time-sources/pegelonline",
     az: "az container create -g myRG -n pegelonline \\\n  --image ghcr.io/clemensv/real-time-sources/pegelonline",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/pegelonline/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/pegelonline/README.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/pegelonline/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/pegelonline/README.md'
   },
   'chmi-hydro': {
     logo: '🇨🇿', title: 'CHMI Hydro',
@@ -503,8 +503,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/chmi-hydro',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=chmi-hydro \\\n  ghcr.io/clemensv/real-time-sources/chmi-hydro",
     az: "az container create -g myRG -n chmi-hydro \\\n  --image ghcr.io/clemensv/real-time-sources/chmi-hydro",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/chmi-hydro/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/chmi-hydro/EVENTS.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/chmi-hydro/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/chmi-hydro/EVENTS.md'
   },
   'imgw-hydro': {
     logo: '🇵🇱', title: 'IMGW Hydro',
@@ -513,8 +513,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/imgw-hydro',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=imgw-hydro \\\n  ghcr.io/clemensv/real-time-sources/imgw-hydro",
     az: "az container create -g myRG -n imgw-hydro \\\n  --image ghcr.io/clemensv/real-time-sources/imgw-hydro",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/imgw-hydro/README.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/imgw-hydro/README.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/imgw-hydro/README.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/imgw-hydro/README.md'
   },
   'smhi-hydro': {
     logo: '🇸🇪', title: 'SMHI Hydro',
@@ -523,8 +523,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/smhi-hydro',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=smhi-hydro \\\n  ghcr.io/clemensv/real-time-sources/smhi-hydro",
     az: "az container create -g myRG -n smhi-hydro \\\n  --image ghcr.io/clemensv/real-time-sources/smhi-hydro",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/smhi-hydro/README.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/smhi-hydro/README.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/smhi-hydro/README.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/smhi-hydro/README.md'
   },
   'rws-waterwebservices': {
     logo: '🇳🇱', title: 'RWS Waterwebservices',
@@ -533,8 +533,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/rws-waterwebservices',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=rws-waterwebservices \\\n  ghcr.io/clemensv/real-time-sources/rws-waterwebservices",
     az: "az container create -g myRG -n rws-water \\\n  --image ghcr.io/clemensv/real-time-sources/rws-waterwebservices",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/rws-waterwebservices/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/rws-waterwebservices/README.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/rws-waterwebservices/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/rws-waterwebservices/README.md'
   },
   'waterinfo-vmm': {
     logo: '🇧🇪', title: 'Waterinfo VMM',
@@ -543,8 +543,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/waterinfo-vmm',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=waterinfo-vmm \\\n  ghcr.io/clemensv/real-time-sources/waterinfo-vmm",
     az: "az container create -g myRG -n waterinfo-vmm \\\n  --image ghcr.io/clemensv/real-time-sources/waterinfo-vmm",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/waterinfo-vmm/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/waterinfo-vmm/README.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/waterinfo-vmm/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/waterinfo-vmm/README.md'
   },
   'dwd': {
     logo: '🌤️', title: 'DWD',
@@ -553,8 +553,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/dwd',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=dwd \\\n  ghcr.io/clemensv/real-time-sources/dwd",
     az: "az container create -g myRG -n dwd \\\n  --image ghcr.io/clemensv/real-time-sources/dwd",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/dwd/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/dwd/EVENTS.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/dwd/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/dwd/EVENTS.md'
   },
   'entsoe': {
     logo: '⚡', title: 'ENTSO-E',
@@ -563,8 +563,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/entsoe',
     docker: "docker run \\\n  -e ENTSOE_API_KEY=<api-key> \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  ghcr.io/clemensv/real-time-sources/entsoe",
     az: "az container create -g myRG -n entsoe \\\n  --image ghcr.io/clemensv/real-time-sources/entsoe",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/entsoe/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/entsoe/EVENTS.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/entsoe/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/entsoe/EVENTS.md'
   },
   'kystverket-ais': {
     logo: '🇳🇴', title: 'Kystverket AIS',
@@ -573,8 +573,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/kystverket-ais',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=kystverket-ais \\\n  ghcr.io/clemensv/real-time-sources/kystverket-ais",
     az: "az container create -g myRG -n kystverket-ais \\\n  --image ghcr.io/clemensv/real-time-sources/kystverket-ais",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/kystverket-ais/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/kystverket-ais/README.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/kystverket-ais/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/kystverket-ais/README.md'
   },
   'digitraffic-maritime': {
     logo: '🇫🇮', title: 'Digitraffic Maritime',
@@ -583,8 +583,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/digitraffic-maritime',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=digitraffic-maritime \\\n  ghcr.io/clemensv/real-time-sources/digitraffic-maritime",
     az: "az container create -g myRG -n digitraffic-maritime \\\n  --image ghcr.io/clemensv/real-time-sources/digitraffic-maritime",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/digitraffic-maritime/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/digitraffic-maritime/EVENTS.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/digitraffic-maritime/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/digitraffic-maritime/EVENTS.md'
   },
   'hubeau-hydrometrie': {
     logo: '🇫🇷', title: "Hub'Eau Hydrometrie",
@@ -593,8 +593,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/hubeau-hydrometrie',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=hubeau-hydrometrie \\\n  ghcr.io/clemensv/real-time-sources/hubeau-hydrometrie",
     az: "az container create -g myRG -n hubeau-hydrometrie \\\n  --image ghcr.io/clemensv/real-time-sources/hubeau-hydrometrie",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/hubeau-hydrometrie/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/hubeau-hydrometrie/README.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/hubeau-hydrometrie/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/hubeau-hydrometrie/README.md'
   },
   'gtfs': {
     logo: '🚌', title: 'GTFS Realtime',
@@ -603,8 +603,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/gtfs',
     docker: "docker run \\\n  -e GTFS_URL=<feed-url> \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  ghcr.io/clemensv/real-time-sources/gtfs",
     az: "az container create -g myRG -n gtfs \\\n  --image ghcr.io/clemensv/real-time-sources/gtfs",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/gtfs/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/gtfs/README.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/gtfs/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/gtfs/README.md'
   },
   'mode-s': {
     logo: '✈️', title: 'Mode-S',
@@ -613,8 +613,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/mode-s',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=mode-s \\\n  ghcr.io/clemensv/real-time-sources/mode-s",
     az: "az container create -g myRG -n mode-s \\\n  --image ghcr.io/clemensv/real-time-sources/mode-s",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/mode-s/README.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/mode-s/README.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/mode-s/README.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/mode-s/README.md'
   },
   'noaa-goes': {
     logo: '☀️', title: 'NOAA GOES / SWPC',
@@ -623,8 +623,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/noaa-goes',
     docker: "docker run \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  -e KAFKA_TOPIC=noaa-goes \\\n  ghcr.io/clemensv/real-time-sources/noaa-goes",
     az: "az container create -g myRG -n noaa-goes \\\n  --image ghcr.io/clemensv/real-time-sources/noaa-goes",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/noaa-goes/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/noaa-goes/README.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/noaa-goes/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/noaa-goes/README.md'
   },
   'aisstream': {
     logo: '📡', title: 'AISStream',
@@ -633,8 +633,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/aisstream',
     docker: "docker run \\\n  -e AISSTREAM_API_KEY=<api-key> \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  ghcr.io/clemensv/real-time-sources/aisstream",
     az: "az container create -g myRG -n aisstream \\\n  --image ghcr.io/clemensv/real-time-sources/aisstream",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/aisstream/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/aisstream/EVENTS.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/aisstream/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/aisstream/EVENTS.md'
   },
   'rss': {
     logo: '📰', title: 'RSS Feeds',
@@ -643,8 +643,8 @@ const sourceData = {
     image: 'ghcr.io/clemensv/real-time-sources/rss',
     docker: "docker run \\\n  -e RSS_URLS=<feed1,feed2> \\\n  -e KAFKA_BOOTSTRAP_SERVERS=<host>:9093 \\\n  ghcr.io/clemensv/real-time-sources/rss",
     az: "az container create -g myRG -n rss \\\n  --image ghcr.io/clemensv/real-time-sources/rss",
-    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/rss/CONTAINER.md',
-    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/rss/README.md'
+    containerDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/rss/CONTAINER.md',
+    eventsDoc: 'https://github.com/clemensv/real-time-sources/blob/main/feeders/rss/README.md'
   }
 };
 

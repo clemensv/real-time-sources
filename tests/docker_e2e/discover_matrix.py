@@ -67,7 +67,10 @@ def is_additive_candidate(path: str) -> bool:
 
 
 def top_dir(path: str) -> str:
-    return path.split("/", 1)[0] if "/" in path else path
+    parts = path.split("/")
+    if len(parts) >= 2 and parts[0] == "feeders":
+        return parts[1]
+    return parts[0]
 
 
 def emit(name: str, value: str) -> None:

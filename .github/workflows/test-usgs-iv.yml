@@ -4,12 +4,12 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - 'usgs-iv/**'
+      - 'feeders/usgs-iv/**'
       - '.github/workflows/test-usgs-iv.yml'
   pull_request:
     branches: [ "main" ]
     paths:
-      - 'usgs-iv/**'
+      - 'feeders/usgs-iv/**'
       - '.github/workflows/test-usgs-iv.yml'
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./usgs-iv
+        working-directory: ./feeders/usgs-iv
     
     steps:
       - name: Checkout repository
@@ -42,7 +42,7 @@ jobs:
       - name: Cache Poetry dependencies
         uses: actions/cache@v5
         with:
-          path: ./usgs-iv/.venv
+          path: ./feeders/usgs-iv/.venv
           key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
             venv-${{ runner.os }}-
@@ -63,7 +63,7 @@ jobs:
         uses: codecov/codecov-action@v6
         if: always()
         with:
-          file: ./usgs-iv/coverage.xml
+          file: ./feeders/usgs-iv/coverage.xml
           flags: usgs-iv
           name: usgs-iv-coverage
           fail_ci_if_error: false

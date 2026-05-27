@@ -1,0 +1,35 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/vatsim"
+LABEL org.opencontainers.image.title="VATSIM → AMQP 1.0 bridge"
+LABEL org.opencontainers.image.description="Polls VATSIM live pilot/controller telemetry and publishes CloudEvents over AMQP 1.0. Supports generic AMQP 1.0 SASL PLAIN and Azure Service Bus / Event Hubs with CBS authentication."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/vatsim/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+LABEL source.transport="amqp"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+        build-essential cmake pkg-config swig \
+        libssl-dev libsasl2-dev python3-dev \
+        libsasl2-2 libsasl2-modules \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./vatsim_producer/vatsim_producer_data \
+ && pip install --no-cache-dir ./vatsim_producer/vatsim_producer_kafka_producer \
+ && pip install --no-cache-dir ./vatsim_amqp_producer/vatsim_amqp_producer_data \
+ && pip install --no-cache-dir ./vatsim_amqp_producer/vatsim_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir . \
+ && pip install --no-cache-dir ./vatsim_amqp \
+ && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \
+ && rm -rf /root/.cache /var/lib/apt/lists/*
+
+ENV AMQP_BROKER_URL=""
+ENV AMQP_ADDRESS="vatsim"
+
+CMD ["python", "-m", "vatsim_amqp", "feed"]

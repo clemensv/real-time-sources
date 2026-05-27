@@ -1,0 +1,24 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/epa-uv"
+LABEL org.opencontainers.image.title="EPA UV Index → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Polls EPA Envirofacts UV hourly and daily forecast services and publishes MQTT 5.0 binary-mode CloudEvents into uv/us/epa/epa-uv/{state}/{location_id}/... topics."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/epa-uv/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+LABEL source.transport="mqtt"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./epa_uv_mqtt_producer/epa_uv_mqtt_producer_data \
+ && pip install --no-cache-dir ./epa_uv_mqtt_producer/epa_uv_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./epa_uv_producer/epa_uv_producer_data \
+ && pip install --no-cache-dir . \
+ && pip install --no-cache-dir ./epa_uv_mqtt
+
+ENV MQTT_BROKER_URL=""
+
+CMD ["python", "-m", "epa_uv_mqtt", "feed"]

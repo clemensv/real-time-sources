@@ -48,7 +48,7 @@ jobs:
               sid = c['id']
               # Some catalog entries are forward-looking and have no source
               # directory checked in yet. Skip them so the matrix doesn't fail.
-              if not pathlib.Path(sid).is_dir():
+              if not (pathlib.Path('feeders') / sid).is_dir():
                   skipped.append(sid)
                   continue
               ids.append(sid)
@@ -94,7 +94,7 @@ jobs:
         # Some split sources still keep the legacy <id>_producer/ tree as the
         # source of producer path-deps; support either name.
         run: |
-          src="${{ matrix.source }}"
+          src="feeders/${{ matrix.source }}"
           id="${{ steps.pkg.outputs.id }}"
           if [ -f "$src/${id}_kafka/pyproject.toml" ]; then
             echo "split=true" >> "$GITHUB_OUTPUT"
@@ -118,11 +118,11 @@ jobs:
 
       - name: Verify notebook + producer present
         run: |
-          test -f "${{ matrix.source }}/notebook/${{ matrix.source }}-feed.ipynb" \
+          test -f "feeders/${{ matrix.source }}/notebook/${{ matrix.source }}-feed.ipynb" \
             || { echo "::error::Missing notebook for ${{ matrix.source }}"; exit 1; }
           producer_dir="${{ steps.layout.outputs.producer_dir }}"
           if [ -z "$producer_dir" ] || [ ! -d "$producer_dir" ]; then
-            echo "::error::Missing generated producer for ${{ matrix.source }} (looked for ${{ matrix.source }}/${{ steps.pkg.outputs.id }}_kafka_producer or ${{ matrix.source }}/${{ steps.pkg.outputs.id }}_producer)"
+            echo "::error::Missing generated producer for ${{ matrix.source }} (looked for feeders/${{ matrix.source }}/${{ steps.pkg.outputs.id }}_kafka_producer or feeders/${{ matrix.source }}/${{ steps.pkg.outputs.id }}_producer)"
             exit 1
           fi
           echo "Using producer dir: $producer_dir"

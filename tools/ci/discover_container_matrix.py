@@ -48,6 +48,13 @@ def is_infra(path: str) -> bool:
 
 
 def top_dir(path: str) -> str:
+    # After the 2026-05 feeders/ reorg, sources live at feeders/<sid>/...
+    # Treat that two-segment prefix as the "source dir" so per-source
+    # scoping continues to work.
+    if path.startswith("feeders/"):
+        parts = path.split("/", 2)
+        if len(parts) >= 2:
+            return "/".join(parts[:2])
     return path.split("/", 1)[0]
 
 

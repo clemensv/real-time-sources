@@ -4,12 +4,12 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - 'pegelonline/**'
+      - 'feeders/pegelonline/**'
       - '.github/workflows/test-pegelonline.yml'
   pull_request:
     branches: [ "main" ]
     paths:
-      - 'pegelonline/**'
+      - 'feeders/pegelonline/**'
       - '.github/workflows/test-pegelonline.yml'
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./pegelonline
+        working-directory: ./feeders/pegelonline
 
     steps:
       - name: Checkout repository
@@ -76,7 +76,7 @@ jobs:
         uses: codecov/codecov-action@v6
         if: always()
         with:
-          file: ./pegelonline/coverage.xml
+          file: ./feeders/pegelonline/coverage.xml
           flags: pegelonline
           name: pegelonline-coverage
           fail_ci_if_error: false

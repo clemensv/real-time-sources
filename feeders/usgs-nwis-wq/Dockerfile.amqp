@@ -1,0 +1,19 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/usgs-nwis-wq" \
+      org.opencontainers.image.title="usgs-nwis-wq → AMQP 1.0 bridge" \
+      org.opencontainers.image.description="Publishes usgs-nwis-wq CloudEvents over AMQP 1.0 to generic brokers and Azure Service Bus/Event Hubs." \
+      org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/usgs-nwis-wq/CONTAINER.md" \
+      org.opencontainers.image.license="MIT"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev libsasl2-2 libsasl2-modules && rm -rf /var/lib/apt/lists/*
+COPY . /app
+RUN pip install --no-cache-dir ./usgs_nwis_wq_amqp_producer/usgs_nwis_wq_amqp_producer_data \
+ && pip install --no-cache-dir ./usgs_nwis_wq_amqp_producer/usgs_nwis_wq_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir ./usgs_nwis_wq_amqp \
+ && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \
+ && rm -rf /root/.cache /var/lib/apt/lists/*
+ENV AMQP_BROKER_URL=""
+ENV AMQP_ADDRESS="usgs-nwis-wq"
+CMD ["python", "-m", "usgs_nwis_wq_amqp", "feed"]

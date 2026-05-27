@@ -135,11 +135,11 @@ if (-not $StatePath)               { $StatePath    = "/lakehouse/default/Files/f
 if (-not $EnvironmentName)         { $EnvironmentName = "feeder_env" }
 
 $repoRoot     = Resolve-Path (Join-Path $PSScriptRoot "..\..")
-$notebookPath = Join-Path $repoRoot "$Source/notebook/$Source-feed.ipynb"
+$notebookPath = Join-Path $repoRoot "feeders/$Source/notebook/$Source-feed.ipynb"
 if (-not (Test-Path $notebookPath)) {
     # Cloud Shell / standalone usage: only the helper scripts were downloaded,
     # not the full repo. Try to fetch the notebook from GitHub raw.
-    $rawNbUrl = "https://raw.githubusercontent.com/$Repo/$Branch/$Source/notebook/$Source-feed.ipynb"
+    $rawNbUrl = "https://raw.githubusercontent.com/$Repo/$Branch/feeders/$Source/notebook/$Source-feed.ipynb"
     $localNb  = Join-Path $TempDir "$Source-feed_$(Get-Random).ipynb"
     Write-Host "Notebook not in working tree; downloading from $rawNbUrl" -ForegroundColor DarkYellow
     try {
