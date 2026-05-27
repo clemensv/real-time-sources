@@ -1,4 +1,32 @@
-# Singapore NEA container images
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/sg.png" alt="Singapore" width="64" height="48"><br>
+<sub><b>Singapore</b></sub>
+</td>
+<td valign="middle">
+
+# Singapore NEA
+
+<sub>62 weather stations + 5 air-quality regions · Kafka · MQTT · AMQP · <a href="https://www.nea.gov.sg/">upstream</a> · <a href="https://www.nea.gov.sg/corporate-functions/weather/weather-data-services">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> Singapore — 62 weather stations + 5 air-quality regions
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#singapore-nea) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#singapore-nea/fabric-notebook) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/singapore_nea.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://www.nea.gov.sg/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 This document covers the published OCI container images for the Singapore NEA feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
 ## Why this container

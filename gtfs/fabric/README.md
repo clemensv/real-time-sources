@@ -130,7 +130,7 @@ After tweaking a layer query or colour ramp in `wire_gtfs_map.py`:
 ```powershell
 $env:GTFS_FABRIC_MAP_ID = "<map-guid>"
 ./gtfs/fabric/post-deploy.ps1 `
-    -WorkspaceId   "<ws-guid>" `
+    -Workspace   "<ws-guid>" `
     -KqlDatabaseId "<kqldb-guid>" `
     -KustoUri      "https://trd-xxxxxxxx.z1.kusto.fabric.microsoft.com" `
     -KustoDatabase "gtfs"

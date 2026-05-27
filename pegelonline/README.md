@@ -1,33 +1,30 @@
 <!-- source-hero:begin -->
 <table width="100%"><tr>
 <td width="80" valign="middle" align="center">
-<img src="https://flagcdn.com/64x48/de.png" alt="DE" width="64" height="48"><br>
-<sub><b>🇩🇪 Germany</b></sub>
+<img src="https://flagcdn.com/64x48/de.png" alt="Germany" width="64" height="48"><br>
+<sub><b>Germany</b></sub>
 </td>
 <td valign="middle">
 
-# Pegelonline — German Federal Waterways Hydrology
+# Pegelonline
 
-<sub><b>WSV PegelOnline</b> · ~1,200 federal gauges · polled every 60 s · <a href="https://www.pegelonline.wsv.de/">upstream</a> · <a href="https://www.pegelonline.wsv.de/webservice/dokuRestapi">REST API docs</a></sub>
+<sub>federal waterways, ~3,000 stations · Kafka · MQTT · AMQP · <a href="https://www.pegelonline.wsv.de/">upstream</a> · <a href="https://www.pegelonline.wsv.de/webservice/dokuRestapi">API docs</a></sub>
 
-<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square">
-<img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square">
-<img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
-<img align="middle" src="https://img.shields.io/badge/Azure-6_templates-0078d4?style=flat-square">
-<img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square">
-<img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
 &nbsp;
 <a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
-> **Real-time water-level CloudEvents for every federally administered inland and coastal gauge in Germany** — Rhine, Elbe, Danube, Weser, Main, Mosel, Oder, Kiel Canal. Reference station catalog + live measurements, keyed by `{station_id}`, identical schemas across Kafka, MQTT 5.0 (UNS), and AMQP 1.0.
+> Germany — federal waterways, ~3,000 stations
 
-[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources/#pegelonline) &nbsp;·&nbsp;
-[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources/#pegelonline/fabric-notebook) &nbsp;·&nbsp;
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#pegelonline) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#pegelonline/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
 [🗄️ **KQL schema**](kql/pegelonline.kql) &nbsp;·&nbsp;
-[🗺️ **Fabric Map**](fabric/README.md)
+[🗺️ **Fabric Map**](fabric/README.md) &nbsp;·&nbsp;
+[↗ **Upstream**](https://www.pegelonline.wsv.de/)
 
 </td></tr></table>
 <!-- source-hero:end -->
@@ -179,8 +176,9 @@ host to manage. Dedupe state lives in OneLake under
 ```powershell
 tools/deploy-fabric/deploy-feeder-notebook.ps1 `
   -Source pegelonline `
-  -WorkspaceId <fabric-workspace-id> `
-  -CapacityId <fabric-capacity-id>
+  -Workspace <fabric-workspace-id-or-name> `
+  -ResourceGroup <azure-rg-for-bootstrap> `
+  -Location <azure-region>
 ```
 
 Best fit for the default 60-second polling cadence; the notebook executes
@@ -200,8 +198,9 @@ model.
 ```powershell
 tools/deploy-fabric/deploy-fabric-aci.ps1 `
   -Source pegelonline `
-  -WorkspaceId <fabric-workspace-id> `
-  -CapacityId <fabric-capacity-id>
+  -Workspace <fabric-workspace-id-or-name> `
+  -ResourceGroup <azure-rg> `
+  -Location <azure-region>
 ```
 
 The script creates the Eventhouse, the KQL database with the

@@ -46,7 +46,7 @@ Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/clemensv/real-time-sou
 ./deploy-fabric.ps1 `
     -Source bluesky `
     -ResourceGroup rg-bluesky `
-    -WorkspaceId "<your-fabric-workspace-id>" `
+    -Workspace "<your-fabric-workspace-id>" `
     -EventhouseId "<your-fabric-eventhouse-id>"
 ```
 

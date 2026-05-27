@@ -1,4 +1,32 @@
-# Australian Wildfires container images
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/au.png" alt="Australia" width="64" height="48"><br>
+<sub><b>Australia</b></sub>
+</td>
+<td valign="middle">
+
+# Australian Wildfires
+
+<sub>NSW, QLD, VIC bushfire incidents · Kafka · MQTT · AMQP · <a href="https://www.rfs.nsw.gov.au/">upstream</a> · <a href="https://www.rfs.nsw.gov.au/news-and-media/current-incidents">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-2_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> Australia — NSW, QLD, VIC bushfire incidents
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#australia-wildfires) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#australia-wildfires/fabric-notebook) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/australia_wildfires.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://www.rfs.nsw.gov.au/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 This document covers the published OCI images for the Australian Wildfires source, including runtime environment variables, auth modes, and deploy options. For source context see [README.md](README.md); for the event contract see [EVENTS.md](EVENTS.md).
 
@@ -183,13 +211,13 @@ docker run --rm \
 
 ### Fabric Notebook feeder
 
-Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source australia-wildfires -WorkspaceId <id> -CapacityId <id>` to deploy the notebook in `notebook/`, bind Event Stream/Lakehouse/KQL assets, and schedule poll runs.
+Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source australia-wildfires -Workspace <id> -ResourceGroup <azure-rg> -Location <azure-region>` to deploy the notebook in `notebook/`, bind Event Stream/Lakehouse/KQL assets, and schedule poll runs.
 
 [![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#australia-wildfires/fabric-notebook)
 
 ### Fabric ACI feeder
 
-Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source australia-wildfires -WorkspaceId <id> -CapacityId <id>` for always-on container hosting that publishes to Fabric Event Streams.
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source australia-wildfires -Workspace <id> -ResourceGroup <azure-rg> -Location <azure-region>` for always-on container hosting that publishes to Fabric Event Streams.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#australia-wildfires/fabric-aci)
 

@@ -1,4 +1,32 @@
-# Carbon Intensity UK feeder
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/gb.png" alt="United Kingdom" width="64" height="48"><br>
+<sub><b>United Kingdom</b></sub>
+</td>
+<td valign="middle">
+
+# Carbon Intensity UK
+
+<sub>national grid carbon intensity · Kafka · MQTT · AMQP · <a href="https://carbonintensity.org.uk/">upstream</a> · <a href="https://carbon-intensity.github.io/api-definitions/">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-2_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> United Kingdom — national grid carbon intensity
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#carbon-intensity) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#carbon-intensity/fabric-notebook) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/carbon_intensity.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://carbonintensity.org.uk/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 This feeder turns the [National Grid ESO Carbon Intensity API](https://api.carbonintensity.org.uk/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 

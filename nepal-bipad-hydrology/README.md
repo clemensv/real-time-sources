@@ -1,4 +1,32 @@
-# Nepal BIPAD Hydrology feeder
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/np.png" alt="Nepal" width="64" height="48"><br>
+<sub><b>Nepal</b></sub>
+</td>
+<td valign="middle">
+
+# Nepal BIPAD Hydrology
+
+<sub>Himalayan river basins, BIPAD · Kafka · MQTT · AMQP · <a href="https://bipadportal.gov.np/">upstream</a> · <a href="https://bipadportal.gov.np/api/v1/">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> Nepal — Himalayan river basins, BIPAD
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#nepal-bipad-hydrology) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#nepal-bipad-hydrology/fabric-notebook) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/nepal_bipad_hydrology.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://bipadportal.gov.np/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 This feeder turns the upstream Nepal BIPAD Hydrology hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 

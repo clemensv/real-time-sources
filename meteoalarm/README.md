@@ -1,4 +1,31 @@
-# Meteoalarm European Weather Warnings Bridge
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/eu.png" alt="Europe" width="64" height="48"><br>
+<sub><b>Europe</b></sub>
+</td>
+<td valign="middle">
+
+# Meteoalarm
+
+<sub>37 countries, severe weather warnings · Kafka · MQTT · AMQP · <a href="https://meteoalarm.org/">upstream</a> · <a href="https://feeds.meteoalarm.org/">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-3_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> Europe — 37 countries, severe weather warnings
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#meteoalarm) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/meteoalarm.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://meteoalarm.org/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 This bridge polls the EUMETNET Meteoalarm API for severe weather warnings from
 30+ European national meteorological services and forwards them to Apache

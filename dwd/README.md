@@ -1,4 +1,32 @@
-# DWD Open Data feeder
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/de.png" alt="Germany" width="64" height="48"><br>
+<sub><b>Germany</b></sub>
+</td>
+<td valign="middle">
+
+# DWD
+
+<sub>~1,450 stations, observations and CAP alerts · Kafka · MQTT · AMQP · <a href="https://www.dwd.de/">upstream</a> · <a href="https://opendata.dwd.de/">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-6_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> Germany — ~1,450 stations, observations and CAP alerts
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#dwd) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/dwd.kql) &nbsp;·&nbsp;
+[🗺️ **Fabric Map**](fabric/README.md) &nbsp;·&nbsp;
+[↗ **Upstream**](https://www.dwd.de/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 This feeder turns the public [Deutscher Wetterdienst (DWD) open-data file server](https://opendata.dwd.de/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
@@ -192,7 +220,7 @@ This source's catalog entry is container-only (`notebook: false`), so the suppor
 
 A long-running Azure Container Instance hosts one of the three container images and writes into a Fabric Event Stream custom endpoint. Use this whenever the destination is a Fabric workspace.
 
-Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source dwd -WorkspaceId <id> -CapacityId <id>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with [`kql/dwd.kql`](kql/dwd.kql), the Event Stream with a custom endpoint, and the ACI with the connection string wired in.
+Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source dwd -Workspace <id> -ResourceGroup <azure-rg> -Location <azure-region>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with [`kql/dwd.kql`](kql/dwd.kql), the Event Stream with a custom endpoint, and the ACI with the connection string wired in.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#dwd/fabric-aci)
 

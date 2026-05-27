@@ -1,4 +1,32 @@
-# DMI Observation Triad → Apache Kafka & MQTT/UNS
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/dk.png" alt="Denmark" width="64" height="48"><br>
+<sub><b>Denmark</b></sub>
+</td>
+<td valign="middle">
+
+# DMI
+
+<sub>meteorological observations, sea level, lightning strikes · Kafka · MQTT · <a href="https://www.dmi.dk/">upstream</a> · <a href="https://opendatadocs.dmi.govcloud.dk/">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-4_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-2_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> Denmark — meteorological observations, sea level, lightning strikes
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#dmi) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#dmi/fabric-notebook) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/dmi.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://www.dmi.dk/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 ## Overview
 

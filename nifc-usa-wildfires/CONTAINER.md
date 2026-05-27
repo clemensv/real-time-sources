@@ -1,4 +1,31 @@
-# NIFC USA Wildfires bridge to Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/us.png" alt="United States" width="64" height="48"><br>
+<sub><b>United States</b></sub>
+</td>
+<td valign="middle">
+
+# NIFC USA Wildfires
+
+<sub>active wildfire incidents, NIFC · Kafka · MQTT · AMQP · <a href="https://www.nifc.gov/">upstream</a> · <a href="https://data-nifc.opendata.arcgis.com/">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> United States — active wildfire incidents, NIFC
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#nifc-usa-wildfires) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/nifc_usa_wildfires.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://www.nifc.gov/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 This container image provides a bridge between the [National Interagency Fire
 Center (NIFC)](https://www.nifc.gov/) ArcGIS Feature Service and Apache Kafka,

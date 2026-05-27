@@ -1,4 +1,32 @@
-# SNOTEL Snow feeder
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/us.png" alt="Western US & Alaska" width="64" height="48"><br>
+<sub><b>Western US & Alaska</b></sub>
+</td>
+<td valign="middle">
+
+# SNOTEL Snow
+
+<sub>~900 snowpack stations, NRCS · Kafka · MQTT · AMQP · <a href="https://www.nrcs.usda.gov/wps/portal/wcc/home/">upstream</a> · <a href="https://wcc.sc.egov.usda.gov/awdbRestWebService/swagger-ui/index.html">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> Western US & Alaska — ~900 snowpack stations, NRCS
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#snotel) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#snotel/fabric-notebook) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/snotel.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://www.nrcs.usda.gov/wps/portal/wcc/home/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 This feeder turns the upstream SNOTEL Snow hydrology feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 

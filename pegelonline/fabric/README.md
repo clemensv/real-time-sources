@@ -78,7 +78,7 @@ After tweaking colour ramps, KQL bodies, or adding layers in
 ```powershell
 $env:PEGELONLINE_FABRIC_MAP_ID = "<map-item-guid>"
 ./pegelonline/fabric/post-deploy.ps1 `
-    -WorkspaceId   "<workspace-guid>" `
+    -Workspace   "<workspace-guid>" `
     -KqlDatabaseId "<kql-db-guid>" `
     -KustoUri      "https://trd-xxxxxxxx.z1.kusto.fabric.microsoft.com"
 ```

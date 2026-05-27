@@ -54,7 +54,7 @@ After tweaking colour ramps or adding layers in `wire_icond2_map.py`:
 ```powershell
 $env:DWD_FABRIC_MAP_ID = "39abf7e3-1df6-4cbf-ab92-93d6d4cf07e5"
 ./dwd/fabric/post-deploy.ps1 `
-    -WorkspaceId   "a26c1440-1c4a-4774-b944-fd62f7380d62" `
+    -Workspace   "a26c1440-1c4a-4774-b944-fd62f7380d62" `
     -KqlDatabaseId "8c202901-5346-4faf-88a6-9c15d737a91b" `
     -KustoUri      "https://trd-mq16rbrpv3c4x4r4h1.z1.kusto.fabric.microsoft.com"
 ```
@@ -110,7 +110,7 @@ immediately when toggled on.
 
 ```powershell
 ./setup.ps1 `
-    -WorkspaceId   "a26c1440-1c4a-4774-b944-fd62f7380d62" `
+    -Workspace   "a26c1440-1c4a-4774-b944-fd62f7380d62" `
     -MapId         "39abf7e3-1df6-4cbf-ab92-93d6d4cf07e5" `
     -KqlDatabaseId "8c202901-5346-4faf-88a6-9c15d737a91b" `
     -KustoUri      "https://trd-mq16rbrpv3c4x4r4h1.z1.kusto.fabric.microsoft.com"

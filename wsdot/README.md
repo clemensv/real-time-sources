@@ -1,4 +1,32 @@
-# WSDOT Traveler Information feeder
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/us.png" alt="Washington State" width="64" height="48"><br>
+<sub><b>Washington State</b></sub>
+</td>
+<td valign="middle">
+
+# WSDOT
+
+<sub>~1,000 traffic flow sensors (requires free key) · Kafka · MQTT · AMQP · <a href="https://wsdot.wa.gov/">upstream</a> · <a href="https://wsdot.wa.gov/traffic/api/">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-4_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> Washington State — ~1,000 traffic flow sensors (requires free key)
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#wsdot) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#wsdot/fabric-notebook) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/wsdot.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://wsdot.wa.gov/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 This feeder turns Washington State DOT traveler and ferry APIs into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), and AMQP 1.0.
 
@@ -137,7 +165,7 @@ WSDOT Traveler Information supports both Fabric hosting models via the source ca
 
 Because this source is poll-based and ships a notebook asset (`notebook/`), you can run scheduled ingestion in-Fabric with:
 
-`tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source wsdot -WorkspaceId <id> -CapacityId <id>`
+`tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source wsdot -Workspace <id> -ResourceGroup <azure-rg> -Location <azure-region>`
 
 [![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#wsdot/fabric-notebook)
 
@@ -145,7 +173,7 @@ Because this source is poll-based and ships a notebook asset (`notebook/`), you 
 
 For always-on execution, deploy a long-running Azure Container Instance feeder with:
 
-`tools/deploy-fabric/deploy-fabric-aci.ps1 -Source wsdot -WorkspaceId <id> -CapacityId <id>`
+`tools/deploy-fabric/deploy-fabric-aci.ps1 -Source wsdot -Workspace <id> -ResourceGroup <azure-rg> -Location <azure-region>`
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#wsdot/fabric-aci)
 

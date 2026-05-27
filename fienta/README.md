@@ -1,4 +1,31 @@
-# Fienta Public Events feeder
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/eu.png" alt="Europe" width="64" height="48"><br>
+<sub><b>Europe</b></sub>
+</td>
+<td valign="middle">
+
+# Fienta
+
+<sub>ticketed public events with sale-status signals · Kafka · MQTT · AMQP · <a href="https://fienta.com/">upstream</a> · <a href="https://fienta.com/api-public-events">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-6_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> Europe — ticketed public events with sale-status signals
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#fienta) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/fienta.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://fienta.com/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 Companion docs:
 
@@ -114,7 +141,7 @@ Primary message groups in xRegistry: `Com.Fienta`.
 For this streaming-style bridge, deploy the container via the **Fabric ACI** path:
 
 ```powershell
-tools/deploy-fabric/deploy-fabric-aci.ps1 -Source fienta -WorkspaceId <id> -CapacityId <id>
+tools/deploy-fabric/deploy-fabric-aci.ps1 -Source fienta -Workspace <id> -ResourceGroup <azure-rg> -Location <azure-region>
 ```
 
 ## Deploying into Azure Container Instances

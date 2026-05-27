@@ -95,7 +95,7 @@ Estimated volume: ~2.9 million events/day (~248 MB/day).
 
 ```powershell
 # PowerShell
-./setup.ps1 -WorkspaceId "<workspace-guid>" -EventhouseId "<eventhouse-guid>"
+./setup.ps1 -Workspace "<workspace-guid>" -EventhouseId "<eventhouse-guid>"
 ```
 
 ```bash

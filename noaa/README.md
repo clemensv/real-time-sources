@@ -1,4 +1,31 @@
-# NOAA Tides and Currents feeder
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/us.png" alt="United States" width="64" height="48"><br>
+<sub><b>United States</b></sub>
+</td>
+<td valign="middle">
+
+# NOAA Tides & Currents
+
+<sub>~3,000 stations · Kafka · MQTT · AMQP · <a href="https://tidesandcurrents.noaa.gov/">upstream</a> · <a href="https://api.tidesandcurrents.noaa.gov/api/prod/">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> United States — ~3,000 stations
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#noaa) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/noaa.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://tidesandcurrents.noaa.gov/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 This feeder turns the public [NOAA Tides and Currents API](https://api.tidesandcurrents.noaa.gov/) into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
@@ -165,7 +192,7 @@ This source's catalog entry is container-only (`notebook: false`), so the suppor
 
 A long-running Azure Container Instance hosts one of the three container images and writes into a Fabric Event Stream custom endpoint. Use this whenever the destination is a Fabric workspace.
 
-Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source noaa -WorkspaceId <id> -CapacityId <id>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with [`kql/noaa.kql`](kql/noaa.kql), the Event Stream with a custom endpoint, and the ACI with the connection string wired in.
+Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source noaa -Workspace <id> -ResourceGroup <azure-rg> -Location <azure-region>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with [`kql/noaa.kql`](kql/noaa.kql), the Event Stream with a custom endpoint, and the ACI with the connection string wired in.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#noaa/fabric-aci)
 

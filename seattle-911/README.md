@@ -1,4 +1,32 @@
-# Seattle Fire 911 feeder
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/us.png" alt="Seattle" width="64" height="48"><br>
+<sub><b>Seattle</b></sub>
+</td>
+<td valign="middle">
+
+# Seattle Fire 911
+
+<sub>real-time fire dispatch incidents · Kafka · MQTT · AMQP · <a href="https://data.seattle.gov/">upstream</a> · <a href="https://data.seattle.gov/Public-Safety/Call-Data/33kz-ixgy">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-3_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> Seattle, WA — real-time fire dispatch incidents
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#seattle-911) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#seattle-911/fabric-notebook) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/seattle_911.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://data.seattle.gov/)
+
+</td></tr></table>
+<!-- source-hero:end -->
 
 This feeder turns the City of Seattle's [Real Time Fire 911 Calls](https://data.seattle.gov/Public-Safety/Seattle-Real-Time-Fire-911-Calls/kzjm-xkqj) open-data feed into a real-time CloudEvents stream over Apache Kafka, MQTT 5.0 (Unified Namespace), or AMQP 1.0.
 
@@ -155,7 +183,7 @@ Two hosting models are supported. **Use the deploy buttons on the [project porta
 
 A scheduled Fabric Notebook ([`notebook/`](notebook/)) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `seattle_911` package and the generated producer sub-packages. The Event Stream custom endpoint connection string is looked up at runtime via the public Fabric Topology API using the workspace identity — no secrets in the notebook, no separate container host to manage. Resume state lives in OneLake under `/lakehouse/default/Files/feeder-state/seattle-911/`.
 
-Deploy with `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source seattle-911 -WorkspaceId <id> -CapacityId <id>` (the portal button wraps this for you). Best fit for the dataset's ~5-minute refresh cadence; the notebook executes on a Fabric schedule and writes a per-run diagnostic log to OneLake.
+Deploy with `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source seattle-911 -Workspace <id> -ResourceGroup <azure-rg> -Location <azure-region>` (the portal button wraps this for you). Best fit for the dataset's ~5-minute refresh cadence; the notebook executes on a Fabric schedule and writes a per-run diagnostic log to OneLake.
 
 [![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#seattle-911/fabric-notebook)
 
@@ -163,7 +191,7 @@ Deploy with `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source seattle-911 
 
 A long-running Azure Container Instance hosts one of the three container images and writes into the same Fabric Event Stream custom endpoint. Use this when you want continuous MQTT publishing for a Unified Namespace, the AMQP transport, or always-on Kafka delivery rather than the notebook's scheduled execution.
 
-Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source seattle-911 -WorkspaceId <id> -CapacityId <id>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
+Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source seattle-911 -Workspace <id> -ResourceGroup <azure-rg> -Location <azure-region>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#seattle-911/fabric-aci)
 
