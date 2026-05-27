@@ -83,6 +83,12 @@ docker run --rm \
 | `KAFKA_TOPIC` | Destination topic (default from contract). |
 | `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials for Kafka-compatible brokers. |
 
+## Deploying into Microsoft Fabric
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source digitraffic-maritime -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>` for the one-click ACI + Fabric path. The script provisions the Eventhouse, applies [`kql/digitraffic_maritime.kql`](kql/digitraffic_maritime.kql), creates the Fabric Event Stream custom endpoint, and deploys the Azure Container Instance with the connection string wired into the Kafka image.
+
+If you want the Fabric data plane without the ACI wrapper, use `tools/deploy-fabric/deploy-fabric.ps1 -Source digitraffic-maritime ...` and then start the container with the emitted connection string. For the older manual Fabric bootstrap scripts, see [`fabric/README.md`](fabric/README.md), [`fabric/setup.ps1`](fabric/setup.ps1), and [`fabric/setup.sh`](fabric/setup.sh).
+
 ## Deploying into Azure Container Instances
 
 One deploy button is provided per ARM template file present in this folder:

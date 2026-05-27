@@ -164,6 +164,12 @@ docker run --rm \
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token settings for SAS CBS auth mode. |
 | `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
 
+## Deploying into Microsoft Fabric
+
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source gtfs -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>` for the one-click ACI + Fabric path. The script provisions the Eventhouse, applies [`kql/gtfs.kql`](kql/gtfs.kql), creates the Fabric Event Stream custom endpoint, deploys the Azure Container Instance with the connection string wired into the selected transport image, and auto-invokes [`fabric/post-deploy.ps1`](fabric/post-deploy.ps1) to wire the optional GTFS map assets unless you skip the post-deploy hook.
+
+If you want the Fabric data plane without the ACI wrapper, use `tools/deploy-fabric/deploy-fabric.ps1 -Source gtfs ...` and then start the container with the emitted connection string. The follow-on Fabric map workflow is documented in [`fabric/README.md`](fabric/README.md).
+
 ## Deploying into Azure Container Instances
 
 One deploy button is provided per ARM template file present in this folder:

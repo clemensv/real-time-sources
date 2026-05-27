@@ -127,7 +127,15 @@ See [EVENTS.md](EVENTS.md) for the full field-level schema contract and routing 
 
 ## Deploying into Microsoft Fabric
 
-This source is documented as a streaming feeder for this rollout. Use the **Fabric ACI feeder** model to host the container and route into a Fabric Event Stream custom endpoint, then materialize into Eventhouse with the checked-in KQL assets.
+Kystverket AIS targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), and an attached Eventhouse / KQL database materializes the contract from [`kql/kystverket_ais.kql`](kql/kystverket_ais.kql).
+
+This source's catalog entry is container-only (`notebook: false`), so the supported Fabric hosting model is the always-on **Fabric ACI feeder**.
+
+### Fabric ACI feeder
+
+Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source kystverket-ais -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>` (the portal button wraps the same flow for you). The script provisions the Eventhouse, applies [`kql/kystverket_ais.kql`](kql/kystverket_ais.kql), creates the Event Stream custom endpoint, and deploys the Azure Container Instance with the resulting connection string wired into the feeder container.
+
+If you want to inspect or re-run the Fabric-side bootstrap manually, see [`fabric/README.md`](fabric/README.md) plus the included [`fabric/setup.ps1`](fabric/setup.ps1) / [`fabric/setup.sh`](fabric/setup.sh) scripts.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#kystverket-ais/fabric-aci)
 

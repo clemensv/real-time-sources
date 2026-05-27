@@ -133,7 +133,15 @@ See [EVENTS.md](EVENTS.md) for the full field-level schema contract and routing 
 
 ## Deploying into Microsoft Fabric
 
-This source is documented as a streaming feeder for this rollout. Use the **Fabric ACI feeder** model to host the container and route into a Fabric Event Stream custom endpoint, then materialize into Eventhouse with the checked-in KQL assets.
+GTFS targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), an attached Eventhouse / KQL database materializes the contract from [`kql/gtfs.kql`](kql/gtfs.kql), and the bundled Fabric map assets in [`fabric/`](fabric/README.md) can wire a ready-made transit visualization after the data plane is live.
+
+This source's catalog entry is container-only (`notebook: false`), so the supported Fabric hosting model is the always-on **Fabric ACI feeder**.
+
+### Fabric ACI feeder
+
+Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source gtfs -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>` (the portal button wraps the same flow for you). The script provisions the Eventhouse, applies [`kql/gtfs.kql`](kql/gtfs.kql), creates the Event Stream custom endpoint, deploys the Azure Container Instance with the connection string wired in, and auto-invokes [`fabric/post-deploy.ps1`](fabric/post-deploy.ps1) unless you skip the post-deploy hook.
+
+For the map layers, helper functions, and standalone re-wire workflow, see [`fabric/README.md`](fabric/README.md).
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#gtfs/fabric-aci)
 
