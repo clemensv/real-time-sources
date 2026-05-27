@@ -147,20 +147,139 @@ See [EVENTS.md](EVENTS.md) for the full schemas of both event types
 
 ## Deploy
 
-| Target | One-click | Best for |
-|---|---|---|
-| **Azure → Event Hubs (Kafka)** | [🚀 Portal](https://clemensv.github.io/real-time-sources/#pegelonline) | Greenfield Azure deployments wanting Kafka semantics |
-| **Azure → Service Bus (AMQP, Entra ID)** | [🚀 Portal](https://clemensv.github.io/real-time-sources/#pegelonline) | Existing Service Bus topologies, no SAS-key minting |
-| **Azure → Event Grid namespace (MQTT)** | [🚀 Portal](https://clemensv.github.io/real-time-sources/#pegelonline) | UNS / industrial IoT topologies |
-| **Azure → Fabric Event Stream** | [🚀 Portal](https://clemensv.github.io/real-time-sources/#pegelonline) | Direct ingest into Fabric Eventhouse |
-| **Fabric Notebook (no Azure subscription)** | [📓 Portal](https://clemensv.github.io/real-time-sources/#pegelonline/fabric-notebook) | Low-volume polling fully inside Fabric. Recommended for the default 60 s cadence — the notebook runs on Fabric schedule, dedupe state lives in OneLake, no container host to manage |
-| **Self-hosted (laptop, k8s, ACA, Cloud Run, ECS)** | [🐳 CONTAINER.md](CONTAINER.md) | Anything else |
+The portal buttons wrap the underlying scripts and ARM templates documented
+below; pick the path that matches your destination and operational
+preference. Every route lands in the same Eventhouse / KQL schema if you
+want one — they only differ in where the feeder container or notebook runs.
 
-The portal buttons wrap `tools/deploy-fabric/deploy-feeder-notebook.ps1`
-(notebook) or the ARM templates in this directory (ACI). Both routes
-end up writing to the same KQL update policies from
-[`kql/pegelonline.kql`](kql/pegelonline.kql); a Fabric Eventhouse is
-created if it doesn't already exist.
+### Deploying into Microsoft Fabric
+
+Pegelonline targets Microsoft Fabric end-to-end: events land in a Fabric
+**Event Stream** (custom endpoint), an attached **Eventhouse / KQL database**
+materializes the contract from [`kql/pegelonline.kql`](kql/pegelonline.kql),
+and the bundled 8-layer [Fabric Map](fabric/README.md) visualizes the live
+state of every gauge on a basemap with river geometry.
+
+Two hosting models are supported. Use the deploy buttons on the
+[project portal](https://clemensv.github.io/real-time-sources/#pegelonline)
+to launch either — both walk you through the same Fabric workspace
+selection and follow-up steps.
+
+#### Fabric Notebook feeder &nbsp;<sub><i>(recommended for low-volume polling)</i></sub>
+
+A scheduled [Fabric Notebook](notebook/pegelonline-feed.ipynb) runs the
+poller inside the Fabric workspace itself, against a per-source Fabric
+**Environment** that bundles the `pegelonline` package and the generated
+producer sub-packages. The Event Stream custom-endpoint connection string
+is looked up at runtime via the public Fabric Topology API using the
+workspace identity — no secrets in the notebook, no separate container
+host to manage. Dedupe state lives in OneLake under
+`/lakehouse/default/Files/feeder-state/pegelonline/`.
+
+```powershell
+tools/deploy-fabric/deploy-feeder-notebook.ps1 `
+  -Source pegelonline `
+  -WorkspaceId <fabric-workspace-id> `
+  -CapacityId <fabric-capacity-id>
+```
+
+Best fit for the default 60-second polling cadence; the notebook executes
+on a Fabric schedule (default every 5 minutes) and writes a per-run
+diagnostic log to OneLake.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#pegelonline/fabric-notebook)
+
+#### Fabric ACI feeder &nbsp;<sub><i>(recommended for high-volume / always-on, and for MQTT or AMQP)</i></sub>
+
+A long-running Azure Container Instance hosts one of the three container
+images and writes into the same Fabric Event Stream custom endpoint. Use
+this when you want continuous polling, real-time MQTT/UNS publishing, or
+the AMQP transport — anything that does not fit the notebook scheduling
+model.
+
+```powershell
+tools/deploy-fabric/deploy-fabric-aci.ps1 `
+  -Source pegelonline `
+  -WorkspaceId <fabric-workspace-id> `
+  -CapacityId <fabric-capacity-id>
+```
+
+The script creates the Eventhouse, the KQL database with the
+[`kql/pegelonline.kql`](kql/pegelonline.kql) schema and update policies,
+the Event Stream with a custom endpoint, the ACI with the connection
+string wired in, and a storage account / file share mounted at `/state`
+for dedupe persistence.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#pegelonline/fabric-aci)
+
+#### Fabric Map visualization &nbsp;<sub><i>(optional, post-deploy)</i></sub>
+
+After either hosting model has events flowing, run
+[`fabric/post-deploy.ps1`](fabric/README.md) (or
+`tools/deploy-fabric/deploy-fabric.ps1 -Source pegelonline`) to ingest the
+curated river geometry into the `RiverSegments` table and wire the 8
+Kusto-backed layers (hydrological state, navigation state, 1h / 3h / 6h /
+24h trend, data freshness, station labels) onto a blank Fabric Map item.
+The map updates live as new measurements arrive.
+
+### Deploying into Azure Container Instances
+
+Five one-click deployment templates are available — one per realistic
+Azure target. These templates host the container directly in Azure
+(without a Fabric workspace) and target an Azure Event Hubs namespace, an
+MQTT broker, or an AMQP 1.0 peer. All templates create a storage account
+and file share for persistent dedupe state.
+
+#### Kafka — bring your own Event Hub / Kafka
+
+Deploy the Kafka container with your own Azure Event Hubs or Fabric Event
+Stream connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template.json)
+
+#### Kafka — provision a new Event Hub
+
+Deploy the Kafka container together with a new Event Hubs namespace
+(Standard SKU, 1 throughput unit) and event hub. The connection string is
+wired automatically.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-with-eventhub.json)
+
+#### MQTT — bring your own broker
+
+Deploy the MQTT container against an existing MQTT 5 broker. You provide
+the `mqtts://` URL and optional credentials.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-mqtt.json)
+
+#### MQTT — provision a new Event Grid namespace MQTT broker
+
+Deploy the MQTT container together with a new
+[Azure Event Grid namespace](https://learn.microsoft.com/azure/event-grid/mqtt-overview)
+with the MQTT broker enabled, a topic space rooted at `hydro/#`, a
+user-assigned managed identity, and the **EventGrid TopicSpaces
+Publisher** role assignment. The feeder authenticates with MQTT v5
+enhanced authentication (`OAUTH2-JWT`).
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-with-eventgrid-mqtt.json)
+
+#### AMQP — provision a new Azure Service Bus namespace
+
+Deploy the AMQP container together with a new
+[Azure Service Bus Standard namespace](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview)
+with a queue named `pegelonline`, a user-assigned managed identity, and
+the **Azure Service Bus Data Sender** role assignment. The feeder
+authenticates via AMQP CBS put-token with Microsoft Entra ID — no SAS
+key rotation required.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fpegelonline%2Fazure-template-with-servicebus.json)
+
+### Self-hosted
+
+Pull and run any of the three container images directly — laptop,
+Kubernetes, Azure Container Apps, Cloud Run, ECS, bare metal. The full
+per-transport / per-auth-mode env-var matrix and sample `docker run`
+commands for every target broker live in [CONTAINER.md](CONTAINER.md).
 
 ## Configuration
 
