@@ -7,9 +7,15 @@ LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sou
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 COPY . /app
-RUN apt-get update \
- && apt-get install -y --no-install-recommends gcc libc6-dev \
- && rm -rf /var/lib/apt/lists/*
+RUN set -eux; \
+    for i in 1 2 3 4 5; do \
+        apt-get update && \
+        apt-get install -y --no-install-recommends --fix-missing \
+            gcc libc6-dev \
+        && break || \
+        { echo "apt attempt $i failed, retrying..."; sleep $((i*5)); }; \
+    done; \
+    rm -rf /var/lib/apt/lists/*
 RUN pip install --no-cache-dir ./entsoe_amqp_producer/entsoe_amqp_producer_data \
  && pip install --no-cache-dir ./entsoe_amqp_producer/entsoe_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./entsoe_core \

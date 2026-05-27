@@ -8,7 +8,15 @@ LABEL org.opencontainers.image.license="MIT"
 LABEL source.transport="amqp"
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev libsasl2-2 libsasl2-modules && rm -rf /var/lib/apt/lists/*
+RUN set -eux; \
+    for i in 1 2 3 4 5; do \
+        apt-get update && \
+        apt-get install -y --no-install-recommends --fix-missing \
+            build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev libsasl2-2 libsasl2-modules \
+        && break || \
+        { echo "apt attempt $i failed, retrying..."; sleep $((i*5)); }; \
+    done; \
+    rm -rf /var/lib/apt/lists/*
 COPY . /app
 RUN pip install --no-cache-dir ./defra_aurn_amqp_producer/defra_aurn_amqp_producer_data  && pip install --no-cache-dir ./defra_aurn_amqp_producer/defra_aurn_amqp_producer_amqp_producer  && pip install --no-cache-dir ./defra_aurn_amqp  && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev && rm -rf /root/.cache /var/lib/apt/lists/*
 ENV AMQP_BROKER_URL=""
