@@ -371,7 +371,7 @@
       "messages": {
         "fi.digitraffic.road.mqtt.TmsSensorData": {
           "name": "TmsSensorData",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.TmsSensorData",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.TmsSensorData",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fi/fintraffic/digitraffic-road/{station_id}/{sensor_id}/tms-sensor-data",
@@ -381,7 +381,7 @@
         },
         "fi.digitraffic.road.mqtt.WeatherSensorData": {
           "name": "WeatherSensorData",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.WeatherSensorData",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.WeatherSensorData",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fi/fintraffic/digitraffic-road/{station_id}/{sensor_id}/weather-sensor-data",
@@ -391,7 +391,7 @@
         },
         "fi.digitraffic.road.mqtt.TrafficAnnouncement": {
           "name": "TrafficAnnouncement",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.TrafficAnnouncement",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.TrafficAnnouncement",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/traffic-announcement",
@@ -401,7 +401,7 @@
         },
         "fi.digitraffic.road.mqtt.RoadWork": {
           "name": "RoadWork",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.RoadWork",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.RoadWork",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/road-work",
@@ -411,7 +411,7 @@
         },
         "fi.digitraffic.road.mqtt.WeightRestriction": {
           "name": "WeightRestriction",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.WeightRestriction",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.WeightRestriction",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/weight-restriction",
@@ -421,7 +421,7 @@
         },
         "fi.digitraffic.road.mqtt.ExemptedTransport": {
           "name": "ExemptedTransport",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.ExemptedTransport",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.ExemptedTransport",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/exempted-transport",
@@ -431,7 +431,7 @@
         },
         "fi.digitraffic.road.mqtt.MaintenanceTracking": {
           "name": "MaintenanceTracking",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.maintenance/messages/fi.digitraffic.road.maintenance.MaintenanceTracking",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.maintenance/messages/fi.digitraffic.road.maintenance.MaintenanceTracking",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fi/fintraffic/digitraffic-road/maintenance/{domain}/tracking",
@@ -441,7 +441,7 @@
         },
         "fi.digitraffic.road.mqtt.TmsStation": {
           "name": "TmsStation",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.TmsStation",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.TmsStation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fi/fintraffic/digitraffic-road/stations/{station_id}/tms-station",
@@ -451,7 +451,7 @@
         },
         "fi.digitraffic.road.mqtt.WeatherStation": {
           "name": "WeatherStation",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.WeatherStation",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.WeatherStation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fi/fintraffic/digitraffic-road/stations/{station_id}/weather-station",
@@ -461,7 +461,7 @@
         },
         "fi.digitraffic.road.mqtt.MaintenanceTaskType": {
           "name": "MaintenanceTaskType",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.maintenance.tasks/messages/fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.maintenance.tasks/messages/fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "traffic/fi/fintraffic/digitraffic-road/maintenance-tasks/{task_id}/task-type",
@@ -476,7 +476,7 @@
       "messages": {
         "fi.digitraffic.road.amqp.TmsSensorData": {
           "name": "TmsSensorData",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.TmsSensorData",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.TmsSensorData",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -509,7 +509,7 @@
         },
         "fi.digitraffic.road.amqp.WeatherSensorData": {
           "name": "WeatherSensorData",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.WeatherSensorData",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.sensors/messages/fi.digitraffic.road.sensors.WeatherSensorData",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -542,7 +542,7 @@
         },
         "fi.digitraffic.road.amqp.TrafficAnnouncement": {
           "name": "TrafficAnnouncement",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.TrafficAnnouncement",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.TrafficAnnouncement",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -563,7 +563,7 @@
         },
         "fi.digitraffic.road.amqp.RoadWork": {
           "name": "RoadWork",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.RoadWork",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.RoadWork",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -584,7 +584,7 @@
         },
         "fi.digitraffic.road.amqp.WeightRestriction": {
           "name": "WeightRestriction",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.WeightRestriction",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.WeightRestriction",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -605,7 +605,7 @@
         },
         "fi.digitraffic.road.amqp.ExemptedTransport": {
           "name": "ExemptedTransport",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.ExemptedTransport",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.messages/messages/fi.digitraffic.road.messages.ExemptedTransport",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -626,7 +626,7 @@
         },
         "fi.digitraffic.road.amqp.MaintenanceTracking": {
           "name": "MaintenanceTracking",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.maintenance/messages/fi.digitraffic.road.maintenance.MaintenanceTracking",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.maintenance/messages/fi.digitraffic.road.maintenance.MaintenanceTracking",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -654,7 +654,7 @@
         },
         "fi.digitraffic.road.amqp.TmsStation": {
           "name": "TmsStation",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.TmsStation",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.TmsStation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -682,7 +682,7 @@
         },
         "fi.digitraffic.road.amqp.WeatherStation": {
           "name": "WeatherStation",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.WeatherStation",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.stations/messages/fi.digitraffic.road.stations.WeatherStation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -710,7 +710,7 @@
         },
         "fi.digitraffic.road.amqp.MaintenanceTaskType": {
           "name": "MaintenanceTaskType",
-          "basemessageurl": "/messagegroups/fi.digitraffic.road.maintenance.tasks/messages/fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType",
+          "basemessageuri": "/messagegroups/fi.digitraffic.road.maintenance.tasks/messages/fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

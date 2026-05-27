@@ -259,7 +259,7 @@
       "messages": {
         "fi.digitraffic.marine.ais.mqtt.location": {
           "name": "location",
-          "basemessageurl": "#/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselLocation",
+          "basemessageuri": "#/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselLocation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/fi/fintraffic/digitraffic-maritime/vessels/{mmsi}/location",
@@ -270,7 +270,7 @@
         },
         "fi.digitraffic.marine.ais.mqtt.metadata": {
           "name": "metadata",
-          "basemessageurl": "#/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselMetadata",
+          "basemessageuri": "#/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselMetadata",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/fi/fintraffic/digitraffic-maritime/vessels/{mmsi}/metadata",
@@ -286,7 +286,7 @@
       "messages": {
         "fi.digitraffic.marine.ais.amqp.location": {
           "name": "location",
-          "basemessageurl": "#/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselLocation",
+          "basemessageuri": "#/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselLocation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -308,7 +308,7 @@
         },
         "fi.digitraffic.marine.ais.amqp.metadata": {
           "name": "metadata",
-          "basemessageurl": "#/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselMetadata",
+          "basemessageuri": "#/messagegroups/fi.digitraffic.marine.ais/messages/fi.digitraffic.marine.ais.VesselMetadata",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -335,7 +335,7 @@
       "messages": {
         "fi.digitraffic.marine.portcall.mqtt.port_call": {
           "name": "port_call",
-          "basemessageurl": "#/messagegroups/fi.digitraffic.marine.portcall/messages/fi.digitraffic.marine.portcall.PortCall",
+          "basemessageuri": "#/messagegroups/fi.digitraffic.marine.portcall/messages/fi.digitraffic.marine.portcall.PortCall",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/fi/fintraffic/digitraffic-maritime/port-calls/{port_call_id}/port-call",
@@ -351,7 +351,7 @@
       "messages": {
         "fi.digitraffic.marine.portcall.amqp.port_call": {
           "name": "port_call",
-          "basemessageurl": "#/messagegroups/fi.digitraffic.marine.portcall/messages/fi.digitraffic.marine.portcall.PortCall",
+          "basemessageuri": "#/messagegroups/fi.digitraffic.marine.portcall/messages/fi.digitraffic.marine.portcall.PortCall",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -378,7 +378,7 @@
       "messages": {
         "fi.digitraffic.marine.portcall.vesseldetails.mqtt.vessel_details": {
           "name": "vessel_details",
-          "basemessageurl": "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails/messages/fi.digitraffic.marine.portcall.VesselDetails",
+          "basemessageuri": "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails/messages/fi.digitraffic.marine.portcall.VesselDetails",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/fi/fintraffic/digitraffic-maritime/vessels/{vessel_id}/vessel-details",
@@ -394,7 +394,7 @@
       "messages": {
         "fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details": {
           "name": "vessel_details",
-          "basemessageurl": "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails/messages/fi.digitraffic.marine.portcall.VesselDetails",
+          "basemessageuri": "#/messagegroups/fi.digitraffic.marine.portcall.vesseldetails/messages/fi.digitraffic.marine.portcall.VesselDetails",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -421,7 +421,7 @@
       "messages": {
         "fi.digitraffic.marine.portcall.portlocation.mqtt.port_location": {
           "name": "port_location",
-          "basemessageurl": "#/messagegroups/fi.digitraffic.marine.portcall.portlocation/messages/fi.digitraffic.marine.portcall.PortLocation",
+          "basemessageuri": "#/messagegroups/fi.digitraffic.marine.portcall.portlocation/messages/fi.digitraffic.marine.portcall.PortLocation",
           "protocol": "MQTT/5.0",
           "protocoloptions": {
             "topic_name": "maritime/fi/fintraffic/digitraffic-maritime/ports/{locode}/port-location",
@@ -437,7 +437,7 @@
       "messages": {
         "fi.digitraffic.marine.portcall.portlocation.amqp.port_location": {
           "name": "port_location",
-          "basemessageurl": "#/messagegroups/fi.digitraffic.marine.portcall.portlocation/messages/fi.digitraffic.marine.portcall.PortLocation",
+          "basemessageuri": "#/messagegroups/fi.digitraffic.marine.portcall.portlocation/messages/fi.digitraffic.marine.portcall.PortLocation",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
