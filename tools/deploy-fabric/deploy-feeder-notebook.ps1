@@ -148,7 +148,7 @@ if (-not (Test-Path $notebookPath)) {
     } catch {
         throw "Notebook not found locally and could not be downloaded from $rawNbUrl. " +
               "Source '$Source' may not have a Fabric notebook published yet (expected " +
-              "$Source/notebook/$Source-feed.ipynb in the repo). Underlying error: $($_.Exception.Message)"
+              "feeders/$Source/notebook/$Source-feed.ipynb in the repo). Underlying error: $($_.Exception.Message)"
     }
 }
 
@@ -235,7 +235,7 @@ function Build-SourceWheels {
     #>
     param([string]$Source, [string]$RepoRoot)
 
-    $srcDir = Join-Path $RepoRoot $Source
+    $srcDir = Join-Path $RepoRoot "feeders/$Source"
     if (-not (Test-Path $srcDir)) { throw "Source folder not found: $srcDir" }
 
     $producerRoot = Join-Path $srcDir "$($Source -replace '-', '_')_producer"
