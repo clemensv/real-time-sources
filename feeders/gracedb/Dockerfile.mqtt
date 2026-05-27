@@ -1,0 +1,24 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/gracedb"
+LABEL org.opencontainers.image.title="GraceDB → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Polls LIGO GraceDB superevents and publishes MQTT 5.0 binary-mode CloudEvents into seismic/intl/ligo/gracedb/{category}/{group}/{superevent_id}/superevent topics."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/gracedb/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+LABEL source.transport="mqtt"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./gracedb_mqtt_producer/gracedb_mqtt_producer_data \
+ && pip install --no-cache-dir ./gracedb_mqtt_producer/gracedb_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./gracedb_producer/gracedb_producer_data \
+ && pip install --no-cache-dir . \
+ && pip install --no-cache-dir ./gracedb_mqtt
+
+ENV MQTT_BROKER_URL=""
+
+CMD ["python", "-m", "gracedb_mqtt", "feed"]

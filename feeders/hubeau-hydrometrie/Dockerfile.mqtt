@@ -1,0 +1,15 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/hubeau-hydrometrie" \
+      org.opencontainers.image.title="hubeau-hydrometrie → MQTT/UNS bridge" \
+      org.opencontainers.image.description="Publishes hubeau-hydrometrie CloudEvents over MQTT 5.0 into the documented Unified Namespace topic tree." \
+      org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/hubeau-hydrometrie/CONTAINER.md" \
+      org.opencontainers.image.license="MIT"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY . /app
+RUN pip install --no-cache-dir ./hubeau_hydrometrie_mqtt_producer/hubeau_hydrometrie_mqtt_producer_data \
+ && pip install --no-cache-dir ./hubeau_hydrometrie_mqtt_producer/hubeau_hydrometrie_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./hubeau_hydrometrie_mqtt
+ENV MQTT_BROKER_URL=""
+CMD ["python", "-m", "hubeau_hydrometrie_mqtt", "feed"]

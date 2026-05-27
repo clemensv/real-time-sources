@@ -188,7 +188,7 @@ if ($LASTEXITCODE -ne 0 -or -not $rgShow) {
     Write-Info "Using existing resource group '$ResourceGroup' (location: $Location)"
 }
 
-$templateUrl = "$RawBase/$Source/azure-template.json"
+$templateUrl = "$RawBase/feeders/$Source/azure-template.json"
 Write-Info "Template: $templateUrl"
 
 # Build the --parameters list. Use the env-var indirection (@CS_ENV) to

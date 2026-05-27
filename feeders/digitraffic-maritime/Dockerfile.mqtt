@@ -1,0 +1,20 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/digitraffic-maritime"
+LABEL org.opencontainers.image.title="Digitraffic Maritime → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Streams Digitraffic Maritime AIS and port-call events as MQTT 5.0 binary-mode CloudEvents into a Unified Namespace topic tree."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/digitraffic-maritime/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY . /app
+
+RUN pip install --no-cache-dir ./digitraffic_maritime_mqtt_producer/digitraffic_maritime_mqtt_producer_data \
+ && pip install --no-cache-dir ./digitraffic_maritime_mqtt_producer/digitraffic_maritime_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir . \
+ && pip install --no-cache-dir ./digitraffic_maritime_mqtt
+
+ENV MQTT_BROKER_URL=""
+CMD ["python", "-m", "digitraffic_maritime_mqtt", "feed"]

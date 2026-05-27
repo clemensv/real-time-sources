@@ -1,0 +1,33 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/paris-bicycle-counters"
+LABEL org.opencontainers.image.title="Paris Bicycle Counters â†’ AMQP 1.0 bridge"
+LABEL org.opencontainers.image.description="Publishes Paris Bicycle Counters CloudEvents over AMQP 1.0 to generic AMQP brokers and Azure Service Bus/Event Hubs via CBS."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/paris-bicycle-counters/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+RUN set -eux; \
+    for i in 1 2 3 4 5; do \
+        apt-get update && \
+        apt-get install -y --no-install-recommends --fix-missing \
+            build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev libsasl2-2 libsasl2-modules \
+        && break || \
+        { echo "apt attempt $i failed, retrying..."; sleep $((i*5)); }; \
+    done; \
+    rm -rf /var/lib/apt/lists/*
+COPY . /app
+RUN pip install --no-cache-dir ./paris_bicycle_counters_amqp_producer/paris_bicycle_counters_amqp_producer_data \
+ && pip install --no-cache-dir ./paris_bicycle_counters_amqp_producer/paris_bicycle_counters_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir ./paris_bicycle_counters_mqtt_producer/paris_bicycle_counters_mqtt_producer_data \
+ && pip install --no-cache-dir ./paris_bicycle_counters_producer/paris_bicycle_counters_producer_data \
+ && pip install --no-cache-dir . \
+ && pip install --no-cache-dir ./paris_bicycle_counters_mqtt \
+ && pip install --no-cache-dir ./paris_bicycle_counters_amqp \
+ && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \
+ && rm -rf /root/.cache /var/lib/apt/lists/*
+ENV AMQP_BROKER_URL=""
+ENV AMQP_ADDRESS="paris-bicycle-counters"
+CMD ["python", "-m", "paris_bicycle_counters_amqp", "feed"]

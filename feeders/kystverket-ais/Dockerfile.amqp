@@ -1,0 +1,42 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/kystverket-ais"
+LABEL org.opencontainers.image.title="Kystverket AIS → AMQP 1.0 bridge"
+LABEL org.opencontainers.image.description="Connects to the Norwegian Coastal Administration AIS TCP firehose and publishes CloudEvents over AMQP 1.0. Supports generic AMQP 1.0 SASL PLAIN and Azure Service Bus / Event Hubs with CBS authentication."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/kystverket-ais/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+LABEL source.transport="amqp"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+RUN set -eux; \
+    for i in 1 2 3 4 5; do \
+        apt-get update && \
+        apt-get install -y --no-install-recommends --fix-missing \
+            build-essential cmake pkg-config swig \
+            libssl-dev libsasl2-dev python3-dev \
+            libsasl2-2 libsasl2-modules \
+        && break || \
+        { echo "apt attempt $i failed, retrying..."; sleep $((i*5)); }; \
+    done; \
+    rm -rf /var/lib/apt/lists/*
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./kystverket_ais_producer/kystverket_ais_producer_data \
+ && pip install --no-cache-dir ./kystverket_ais_producer/kystverket_ais_producer_kafka_producer \
+ && pip install --no-cache-dir ./kystverket_ais_amqp_producer/kystverket_ais_amqp_producer_data \
+ && pip install --no-cache-dir ./kystverket_ais_amqp_producer/kystverket_ais_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir . \
+ && pip install --no-cache-dir ./kystverket_ais_amqp \
+ && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \
+ && rm -rf /root/.cache /var/lib/apt/lists/*
+
+ENV AMQP_BROKER_URL=""
+ENV AMQP_ADDRESS="kystverket-ais"
+ENV AIS_TCP_HOST="153.44.253.27"
+ENV AIS_TCP_PORT="5631"
+
+CMD ["python", "-m", "kystverket_ais_amqp", "feed"]

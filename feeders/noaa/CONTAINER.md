@@ -1,0 +1,310 @@
+<!-- source-hero:begin -->
+<table width="100%"><tr>
+<td width="80" valign="middle" align="center">
+<img src="https://flagcdn.com/64x48/us.png" alt="United States" width="64" height="48"><br>
+<sub><b>United States</b></sub>
+</td>
+<td valign="middle">
+
+# NOAA Tides & Currents
+
+<sub>~3,000 stations · Kafka · MQTT · AMQP · <a href="https://tidesandcurrents.noaa.gov/">upstream</a> · <a href="https://api.tidesandcurrents.noaa.gov/api/prod/">API docs</a></sub>
+
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
+&nbsp;
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+&nbsp;
+<a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
+
+> United States — ~3,000 stations
+
+[🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#noaa) &nbsp;·&nbsp;
+[🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
+[📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/noaa.kql) &nbsp;·&nbsp;
+[↗ **Upstream**](https://tidesandcurrents.noaa.gov/)
+
+</td></tr></table>
+<!-- source-hero:end -->
+
+This document covers the published OCI container images for the NOAA Tides and Currents feeder, their environment-variable contract, authentication modes, and one-click Azure deployments. For the project overview see [README.md](README.md); for the CloudEvents contract see [EVENTS.md](EVENTS.md).
+
+<!-- upstream-links:begin -->
+## Upstream
+
+- Home page: <https://tidesandcurrents.noaa.gov/>
+- API / data documentation: <https://api.tidesandcurrents.noaa.gov/api/prod/>
+
+<!-- upstream-links:end -->
+
+## Why this container
+
+[NOAA Tides and Currents](https://api.tidesandcurrents.noaa.gov/) exposes real-time coastal and tidal observations for U.S. stations — water levels, tidal predictions, currents, temperatures, wind, salinity, visibility, and station metadata — as public-domain HTTP endpoints with no authentication. The data is easy to query once, but production consumers quickly end up rebuilding the same station discovery, per-product polling, checkpointing, schema-validation, and routing logic.
+
+These container images do that work once and re-emit the NOAA feed as **CloudEvents** on the messaging fabric of your choice — so port operators, flood-monitoring teams, environmental analytics platforms, coastal digital twins, and researchers can subscribe to a topic instead of polling NOAA directly.
+
+## What ships in the box
+
+This source ships three container images backed by the same polling contract and the same xRegistry manifest:
+
+| Image | Transport | Default behavior |
+|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-noaa` | Apache Kafka 2.x (Azure Event Hubs, Microsoft Fabric Event Streams, Confluent Cloud, plain Kafka) | One topic, JSON CloudEvents (binary mode), key = `{station_id}` |
+| `ghcr.io/clemensv/real-time-sources-noaa-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric MQTT) | Unified-Namespace topic tree `maritime/us/noaa/noaa/{region}/{station_id}/{product-slug}`, QoS 1 retained, CloudEvent attributes as MQTT 5 user properties |
+| `ghcr.io/clemensv/real-time-sources-noaa-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, ActiveMQ Artemis, Qpid Dispatch, Azure Service Bus, Azure Event Hubs, Azure Service Bus emulator) | One AMQP node (queue/topic), binary CloudEvents, SASL PLAIN for generic brokers, Microsoft Entra ID via AMQP CBS for Service Bus / Event Hubs, or SAS-token CBS for the emulator and SAS-only namespaces |
+
+All three images consume the same NOAA products and re-emit the same 13 CloudEvents types. The on-the-wire schemas live in [EVENTS.md](EVENTS.md).
+
+## Database schemas and handling
+
+If you want to build a full data pipeline with all events ingested into a database, the integration with Microsoft Fabric Eventhouse and Azure Data Explorer is described in [DATABASE.md](../DATABASE.md). The KQL schema for NOAA lives in [`kql/noaa.kql`](kql/noaa.kql).
+
+## Image contract
+
+All three images share the same operational contract:
+
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.10-slim` |
+| Default entry point | `python -m noaa feed`, `python -m noaa_mqtt feed`, `python -m noaa_amqp feed` |
+| Default user | root (no `USER` directive) |
+| Exposed ports | none — the feeder is an outbound publisher only |
+| Health check | none defined; treat process liveness as health |
+| Signals | terminates cleanly on `SIGTERM`; the poll cycle and downstream producer flush before exit |
+| Persistent state | `NOAA_LAST_POLLED_FILE` stores the last successful poll watermark per station/product. If you do not persist it outside the container, restarts may replay recent intervals. |
+| Image tags | `:latest` tracks the default branch; immutable tags `:v<MAJOR>.<MINOR>.<PATCH>` and `:sha-<git-sha>` are published per release. |
+
+Pull and inspect available tags at <https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-noaa>.
+
+## Installing the container images
+
+Pull the container images from the GitHub Container Registry:
+
+```bash
+docker pull ghcr.io/clemensv/real-time-sources-noaa:latest
+docker pull ghcr.io/clemensv/real-time-sources-noaa-mqtt:latest
+docker pull ghcr.io/clemensv/real-time-sources-noaa-amqp:latest
+```
+
+## Using the Kafka image
+
+The Kafka image (`…-noaa`) polls NOAA and writes JSON CloudEvents (binary mode) to a Kafka topic. It works with Apache Kafka 2.x, Azure Event Hubs, and Microsoft Fabric Event Streams.
+
+### With a Kafka broker
+
+Ensure you have a Kafka broker configured with TLS and SASL PLAIN authentication. Run the container with the following command:
+
+```bash
+docker run --rm \
+    -e KAFKA_BOOTSTRAP_SERVERS='<kafka-bootstrap-servers>' \
+    -e KAFKA_TOPIC='<kafka-topic>' \
+    -e SASL_USERNAME='<sasl-username>' \
+    -e SASL_PASSWORD='<sasl-password>' \
+    ghcr.io/clemensv/real-time-sources-noaa:latest
+```
+
+### With Azure Event Hubs or Fabric Event Streams
+
+Use the connection string to establish a connection to the service. Obtain the connection string from the Azure portal, the Azure CLI, or the custom endpoint of a Fabric Event Stream.
+
+```bash
+docker run --rm \
+    -e CONNECTION_STRING='<connection-string>' \
+    ghcr.io/clemensv/real-time-sources-noaa:latest
+```
+
+### Polling a single station
+
+Restrict the poller to one NOAA station when you want a narrower feed:
+
+```bash
+docker run --rm \
+    -e CONNECTION_STRING='<connection-string>' \
+    -e NOAA_STATION='9414290' \
+    ghcr.io/clemensv/real-time-sources-noaa:latest
+```
+
+## Using the MQTT image
+
+The MQTT image (`…-noaa-mqtt`) publishes MQTT 5.0 CloudEvents into a Unified-Namespace topic tree at QoS 1 with `retain=true` on every leaf so new subscribers can obtain the latest value per station/product immediately. It works against any MQTT 5 broker (Mosquitto, EMQX, HiveMQ, …) and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/fabric/real-time-hub/add-source-event-grid).
+
+### Topic template
+
+```text
+maritime/us/noaa/noaa/{region}/{station_id}/{product-slug}
+```
+
+| Axis | Meaning |
+|------|---------|
+| `{region}` | NOAA region bucket carried through from station metadata for routing and wildcard subscriptions. |
+| `{station_id}` | Stable NOAA station identifier. |
+| `{product-slug}` | One of `info`, `water-level`, `predictions`, `air-pressure`, `air-temperature`, `water-temperature`, `wind`, `humidity`, `conductivity`, `salinity`, `visibility`, `currents`, `current-predictions`. |
+
+`ContentType` is `application/json`; CloudEvents attributes ride as MQTT 5 user properties; `subject` equals `{station_id}`.
+
+### With a generic MQTT 5 broker (username/password)
+
+```bash
+docker run --rm \
+    -e MQTT_BROKER_URL='mqtts://<broker-host>:8883' \
+    -e MQTT_USERNAME='<username>' \
+    -e MQTT_PASSWORD='<password>' \
+    ghcr.io/clemensv/real-time-sources-noaa-mqtt:latest
+```
+
+### With Azure Event Grid namespace MQTT broker (Microsoft Entra JWT)
+
+When the host is an Azure VM, Container Instance, App Service, etc. with a managed identity that holds the **EventGrid TopicSpaces Publisher** role on the target topic space, the feeder uses MQTT v5 enhanced authentication (`OAUTH2-JWT`) to authenticate with a token issued for audience `https://eventgrid.azure.net/`.
+
+> [!IMPORTANT]
+> `MQTT_CLIENT_ID` must be globally unique across all clients connected to the same broker. Azure Event Grid disconnects an existing session when a second client connects with the same identifier ("subscription steal"). Use a deterministic but unique value per deployed feeder instance.
+
+```bash
+docker run --rm \
+    -e MQTT_BROKER_URL='mqtts://<ns>.<region>-1.ts.eventgrid.azure.net:8883' \
+    -e MQTT_AUTH_MODE=entra \
+    -e MQTT_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+    -e MQTT_CLIENT_ID='<unique-client-id>' \
+    ghcr.io/clemensv/real-time-sources-noaa-mqtt:latest
+```
+
+## Using the AMQP image
+
+The AMQP image (`…-noaa-amqp`) publishes CloudEvents over AMQP 1.0 to a single AMQP node (queue, topic, or address). It targets two deployment shapes:
+
+### Generic AMQP 1.0 brokers (RabbitMQ AMQP 1.0, Artemis, Qpid Dispatch)
+
+Use SASL PLAIN with a connection URL:
+
+```bash
+docker run --rm \
+    -e AMQP_BROKER_URL='amqp://<user>:<password>@<broker-host>:5672/noaa' \
+    ghcr.io/clemensv/real-time-sources-noaa-amqp:latest
+```
+
+For TLS-enabled brokers use `amqps://<broker-host>:5671/<address>`.
+
+### Azure Service Bus / Event Hubs (Microsoft Entra ID, no SAS keys)
+
+> [!IMPORTANT]
+> For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`. Port 5672 is only valid against the local Service Bus emulator.
+
+Run the image with `AMQP_AUTH_MODE=entra` against a user-assigned managed identity. The identity must hold the **Azure Service Bus Data Sender** role (or **Azure Event Hubs Data Sender** for Event Hubs) on the target queue or hub:
+
+```bash
+docker run --rm \
+    -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+    -e AMQP_PORT=5671 -e AMQP_TLS=true \
+    -e AMQP_ADDRESS='noaa' \
+    -e AMQP_AUTH_MODE=entra \
+    -e AMQP_ENTRA_AUDIENCE='https://servicebus.azure.net/.default' \
+    -e AMQP_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+    ghcr.io/clemensv/real-time-sources-noaa-amqp:latest
+```
+
+The bridge mints an Entra ID access token via `DefaultAzureCredential` and hands it to the broker through the AMQP CBS (Claims-Based Security) put-token control link — no SAS-key rotation required.
+
+### Azure Service Bus emulator / SAS-only namespaces (SAS-token CBS)
+
+For local development against the [Azure Service Bus emulator](https://learn.microsoft.com/azure/service-bus-messaging/test-locally-with-service-bus-emulator) or for Service Bus / Event Hubs namespaces still configured for SAS authentication (no Entra ID), use `AMQP_AUTH_MODE=sas`:
+
+```bash
+docker run --rm \
+    -e AMQP_HOST='servicebus-emulator' \
+    -e AMQP_PORT=5672 \
+    -e AMQP_ADDRESS='noaa' \
+    -e AMQP_AUTH_MODE=sas \
+    -e AMQP_SAS_KEY_NAME='RootManageSharedAccessKey' \
+    -e AMQP_SAS_KEY='<sas-key>' \
+    ghcr.io/clemensv/real-time-sources-noaa-amqp:latest
+```
+
+For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
+
+## Environment variables
+
+### Common (all images)
+
+| Variable | Description |
+|---|---|
+| `NOAA_LAST_POLLED_FILE` | Path to the checkpoint file that stores the last successful poll watermark per station/product. Default `~/.noaa_last_polled.json`. |
+| `POLLING_INTERVAL` | Optional global polling interval override in seconds. |
+
+### Kafka image
+
+| Variable | Description |
+|---|---|
+| `CONNECTION_STRING` | Azure Event Hubs / Fabric Event Stream–style connection string. Supersedes `KAFKA_BOOTSTRAP_SERVERS`, `SASL_USERNAME`, `SASL_PASSWORD`. |
+| `KAFKA_BOOTSTRAP_SERVERS` | Comma-separated `host:port` list of TLS-enabled Kafka brokers. |
+| `KAFKA_TOPIC` | Target Kafka topic. |
+| `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials. |
+| `KAFKA_ENABLE_TLS` | `false` disables TLS (default `true`). |
+| `NOAA_STATION` | Optional single station id to poll instead of the full station catalog. |
+
+### MQTT image
+
+| Variable | Description |
+|---|---|
+| `MQTT_BROKER_URL` | Broker URL, e.g. `mqtt://host:1883` or `mqtts://host:8883`. |
+| `MQTT_HOST` / `MQTT_PORT` / `MQTT_TLS` | Component-level alternative to `MQTT_BROKER_URL`. |
+| `MQTT_USERNAME` / `MQTT_PASSWORD` | Optional credentials when `MQTT_AUTH_MODE=password` (default). |
+| `MQTT_AUTH_MODE` | `password` (default) or `entra` for MQTT v5 enhanced authentication via Microsoft Entra JWT. |
+| `MQTT_ENTRA_AUDIENCE` | JWT audience (default `https://eventgrid.azure.net/`). |
+| `MQTT_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client id; otherwise `DefaultAzureCredential` selection applies. |
+| `MQTT_CLIENT_ID` | MQTT client identifier (must be globally unique per broker). |
+| `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Broker URL, e.g. `amqp://user:pw@host:5672/address` or `amqps://host:5671/address`. Path overrides `AMQP_ADDRESS`. |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component-level alternative to `AMQP_BROKER_URL` (default port 5672, or 5671 with `AMQP_TLS=true`). |
+| `AMQP_ADDRESS` | AMQP node (queue / topic) name (default `noaa`). |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | SASL PLAIN credentials, used when `AMQP_AUTH_MODE=password` (default). |
+| `AMQP_AUTH_MODE` | `password` (default), `entra` for Microsoft Entra ID via AMQP CBS (Service Bus / Event Hubs), or `sas` for SAS-token CBS (Service Bus emulator, or SAS-only namespaces). |
+| `AMQP_ENTRA_AUDIENCE` | Token audience (default `https://servicebus.azure.net/.default`). Use `https://eventhubs.azure.net/.default` for Event Hubs. Used only when `AMQP_AUTH_MODE=entra`. |
+| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client id; otherwise `DefaultAzureCredential` selection applies. Used only when `AMQP_AUTH_MODE=entra`. |
+| `AMQP_SAS_KEY_NAME` | SAS policy / key name (e.g. `RootManageSharedAccessKey`). **Required when `AMQP_AUTH_MODE=sas`.** |
+| `AMQP_SAS_KEY` | SAS key value (base64-encoded shared secret). **Required when `AMQP_AUTH_MODE=sas`.** |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+
+## Deploying into Azure Container Instances
+
+Five one-click deployment templates are available — covering every Azure deployment shape checked into this source.
+
+### Kafka — bring your own Event Hub / Kafka
+
+Deploy the Kafka container with your own Azure Event Hubs or Fabric Event Stream connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fnoaa%2Fazure-template.json)
+
+### Kafka — provision a new Event Hub
+
+Deploy the Kafka container together with a new Event Hubs namespace (Standard SKU, 1 throughput unit) and event hub. The connection string is wired automatically.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fnoaa%2Fazure-template-with-eventhub.json)
+
+### MQTT — bring your own broker
+
+Deploy the MQTT container with your own MQTT broker.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fnoaa%2Fazure-template-mqtt.json)
+
+### MQTT — provision Azure Event Grid namespace MQTT
+
+Deploy the MQTT container together with an Azure Event Grid namespace for MQTT publishing.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fnoaa%2Fazure-template-with-eventgrid-mqtt.json)
+
+### AMQP 1.0 — provision a new Azure Service Bus namespace
+
+Deploy the AMQP container together with a new [Azure Service Bus Standard namespace](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview) with an address named `noaa`, a user-assigned managed identity, and a role assignment granting the identity the **Azure Service Bus Data Sender** role. The feeder authenticates to the broker using AMQP 1.0 claims-based security (CBS) with tokens minted by the managed identity for audience `https://servicebus.azure.net/`.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fnoaa%2Fazure-template-with-servicebus.json)
+
+## Related
+
+- [README.md](README.md) — project overview, audience, and one-paragraph operational summary.
+- [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, per-transport routing, and example payloads.
+- [`xreg/noaa.xreg.json`](xreg/noaa.xreg.json) — the xRegistry manifest the producers and EVENTS.md are derived from.

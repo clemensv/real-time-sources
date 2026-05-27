@@ -118,7 +118,7 @@ output types defined in [eurowater.xreg.json](eurowater.xreg.json):
 
 ```powershell
 # PowerShell
-./setup.ps1 -WorkspaceId "<workspace-guid>" -EventhouseId "<eventhouse-guid>"
+./setup.ps1 -Workspace "<workspace-guid>" -EventhouseId "<eventhouse-guid>"
 ```
 
 ```bash

@@ -1,0 +1,21 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/wikimedia-osm-diffs"
+LABEL org.opencontainers.image.title="OpenStreetMap minutely diffs → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Polls the OSM Planet replication state, fetches each minutely OsmChange .osc.gz diff, and republishes node/way/relation create/modify/delete events as non-retained MQTT 5.0 binary-mode CloudEvents under osm/intl/wikimedia/wikimedia-osm-diffs/{element_type}/{geohash5}/{element_id}/change, plus a retained replication-state side-channel."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/wikimedia-osm-diffs/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./wikimedia_osm_diffs_mqtt_producer/wikimedia_osm_diffs_mqtt_producer_data \
+ && pip install --no-cache-dir ./wikimedia_osm_diffs_mqtt_producer/wikimedia_osm_diffs_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./wikimedia_osm_diffs_mqtt
+
+ENV MQTT_BROKER_URL=""
+
+CMD ["python", "-m", "wikimedia_osm_diffs_mqtt", "feed"]

@@ -48,6 +48,13 @@ def is_infra(path: str) -> bool:
 
 
 def top_dir(path: str) -> str:
+    # After the 2026-05 feeders/ reorg, sources live at feeders/<sid>/...
+    # Treat that two-segment prefix as the "source dir" so per-source
+    # scoping continues to work.
+    if path.startswith("feeders/"):
+        parts = path.split("/", 2)
+        if len(parts) >= 2:
+            return "/".join(parts[:2])
     return path.split("/", 1)[0]
 
 
@@ -63,14 +70,20 @@ def emit(name: str, value: str) -> None:
     print(f"::notice::{name}={value[:200]}{'…' if len(value) > 200 else ''}")
 
 
+def _load_changed_files() -> list[str]:
+    path = os.environ.get("CHANGED_FILES_PATH", "").strip()
+    if path and os.path.isfile(path):
+        with open(path, "r", encoding="utf-8", errors="ignore") as fh:
+            raw = fh.read()
+    else:
+        raw = os.environ.get("CHANGED_FILES", "")
+    return [line.strip() for line in raw.splitlines() if line.strip()]
+
+
 def main() -> int:
     event = os.environ.get("EVENT_NAME", "")
     ref_type = os.environ.get("REF_TYPE", "")
-    changed = [
-        line.strip()
-        for line in os.environ.get("CHANGED_FILES", "").splitlines()
-        if line.strip()
-    ]
+    changed = _load_changed_files()
     base = json.loads(os.environ.get("ALL_BASE_JSON", "[]"))
     transport = json.loads(os.environ.get("ALL_TRANSPORT_JSON", "[]"))
 

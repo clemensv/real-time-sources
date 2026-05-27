@@ -1,0 +1,22 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/dmi"
+LABEL org.opencontainers.image.title="DMI observation triad → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Polls the Danish Meteorological Institute (DMI) Open Data v2 metObs and oceanObs REST APIs and publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (weather/dk/dmi/met-obs/{station}/{parameter} and ocean/dk/dmi/...). Lightning strikes are not published over MQTT because per-strike events do not fit retained last-known-value semantics."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/dmi/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./dmi_mqtt_producer/dmi_mqtt_producer_data \
+ && pip install --no-cache-dir ./dmi_mqtt_producer/dmi_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./dmi_core \
+ && pip install --no-cache-dir ./dmi_mqtt
+
+ENV MQTT_BROKER_URL=""
+
+CMD ["python", "-m", "dmi_mqtt", "feed"]

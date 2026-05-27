@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/nifc-usa-wildfires"
+LABEL org.opencontainers.image.title="NIFC USA wildfires -> AMQP 1.0 bridge"
+LABEL org.opencontainers.image.description="Publishes NIFC wildfire incident CloudEvents over AMQP 1.0."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/nifc-usa-wildfires/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+RUN set -eux; \
+    for i in 1 2 3 4 5; do \
+        apt-get update && \
+        apt-get install -y --no-install-recommends --fix-missing \
+            build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev libsasl2-2 libsasl2-modules \
+        && break || \
+        { echo "apt attempt $i failed, retrying..."; sleep $((i*5)); }; \
+    done; \
+    rm -rf /var/lib/apt/lists/*
+COPY . /app
+RUN pip install --no-cache-dir ./nifc_usa_wildfires_producer/nifc_usa_wildfires_producer_data && pip install --no-cache-dir ./nifc_usa_wildfires_amqp_producer/nifc_usa_wildfires_amqp_producer_data && pip install --no-cache-dir ./nifc_usa_wildfires_amqp_producer/nifc_usa_wildfires_amqp_producer_amqp_producer && pip install --no-cache-dir . && pip install --no-cache-dir ./nifc_usa_wildfires_amqp && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev && rm -rf /root/.cache /var/lib/apt/lists/*
+ENV AMQP_BROKER_URL=""
+ENV AMQP_ADDRESS="nifc-usa-wildfires"
+CMD ["python", "-m", "nifc_usa_wildfires_amqp", "feed"]

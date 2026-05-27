@@ -1,0 +1,22 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/tfl-road-traffic"
+LABEL org.opencontainers.image.title="TfL Road Traffic → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Polls the TfL Road API and publishes MQTT 5.0 binary-mode CloudEvents under traffic/gb/tfl/tfl-road-traffic/."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/tfl-road-traffic/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./tfl_road_traffic_mqtt_producer/tfl_road_traffic_mqtt_producer_data \
+ && pip install --no-cache-dir ./tfl_road_traffic_mqtt_producer/tfl_road_traffic_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./tfl_road_traffic_mqtt
+
+ENV MQTT_BROKER_URL=""
+ENV POLLING_INTERVAL="60"
+
+CMD ["python", "-m", "tfl_road_traffic_mqtt", "feed"]

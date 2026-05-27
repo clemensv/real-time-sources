@@ -22,7 +22,7 @@
 *.log
 
 
-mode-s/kql/aircraft.csv
+feeders/mode-s/kql/aircraft.csv
 /tmp/
 
 # Poetry lock files (generated; not used by Docker builds)

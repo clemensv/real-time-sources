@@ -25,6 +25,23 @@ from testcontainers.kafka import KafkaContainer
 
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+FEEDERS_ROOT = os.path.join(REPO_ROOT, 'feeders')
+
+
+def _resolve_project_dir(project_dir: str) -> str:
+    """Resolve a project directory name to an absolute path.
+
+    All feeders live under ``feeders/<id>`` after the 2026-05 restructure.
+    Callers still pass bare source IDs (e.g. ``'chmi-hydro'``); accept
+    either layout for backward compatibility.
+    """
+    if os.path.isabs(project_dir):
+        return project_dir
+    feeders_path = os.path.join(FEEDERS_ROOT, project_dir)
+    if os.path.isdir(feeders_path):
+        return feeders_path
+    return os.path.join(REPO_ROOT, project_dir)
+
 _TEMPLATE_PATTERN = re.compile(r'{([^{}]+)}')
 _SCHEMA_VALIDATOR = SchemaValidator(extended=True)
 _KAFKA_ARTIFACTS_DIR: Optional[str] = None
@@ -103,7 +120,7 @@ def build_image(project_dir: str, dockerfile: str = 'Dockerfile', tag: Optional[
         The built :class:`docker.models.images.Image`.
     """
     client = docker.from_env()
-    build_context = os.path.join(REPO_ROOT, project_dir)
+    build_context = _resolve_project_dir(project_dir)
     if tag is None:
         tag = f'test-{project_dir}'
     image, _logs = client.images.build(
@@ -355,7 +372,7 @@ def _render_template(template: str, context: Mapping[str, Any]) -> str:
 
 @lru_cache(maxsize=None)
 def _find_xreg_file(project_dir: str) -> str:
-    pattern = os.path.join(REPO_ROOT, project_dir, 'xreg', '*.xreg.json')
+    pattern = os.path.join(_resolve_project_dir(project_dir), 'xreg', '*.xreg.json')
     matches = sorted(glob.glob(pattern))
     if len(matches) != 1:
         raise AssertionError(

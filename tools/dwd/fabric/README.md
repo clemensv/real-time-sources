@@ -101,7 +101,7 @@ The notebook is therefore triggered by one of:
 
 ```powershell
 ./setup.ps1 `
-    -WorkspaceId  "c98acd97-4363-4296-8323-b6ab21e53903" `
+    -Workspace  "c98acd97-4363-4296-8323-b6ab21e53903" `
     -EventhouseId "dbfd2819-2879-4ae7-bff2-95619ad7b8e7"
 ```
 
@@ -114,7 +114,7 @@ instead, create an Activator (Reflex) item, then re-run with
 To re-apply KQL only (e.g. after editing `dwd.kql`):
 
 ```powershell
-./setup.ps1 -WorkspaceId ... -EventhouseId ... -SkipNotebook
+./setup.ps1 -Workspace ... -EventhouseId ... -SkipNotebook
 ```
 
 To regenerate the notebook from source without uploading:

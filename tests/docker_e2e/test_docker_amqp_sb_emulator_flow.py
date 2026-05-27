@@ -91,7 +91,7 @@ def _find_free_port() -> int:
 
 
 def _load_schemas() -> Dict[str, Dict[str, Any]]:
-    xreg_path = os.path.join(REPO_ROOT, "pegelonline", "xreg", "pegelonline.xreg.json")
+    xreg_path = os.path.join(REPO_ROOT, 'feeders', "pegelonline", "xreg", "pegelonline.xreg.json")
     with open(xreg_path, "r", encoding="utf-8") as fh:
         manifest = json.load(fh)
     schemagroup = manifest["schemagroups"]["de.wsv.pegelonline.jstruct"]
@@ -341,7 +341,7 @@ HYDRO_AMQP_SOURCES = [
 
 
 def _load_source_schemas_sb(source_dir: str) -> Dict[str, Dict[str, Any]]:
-    xreg_dir = os.path.join(REPO_ROOT, source_dir, "xreg")
+    xreg_dir = os.path.join(REPO_ROOT, 'feeders', source_dir, "xreg")
     xreg_name = next(n for n in os.listdir(xreg_dir) if n.endswith(".xreg.json"))
     with open(os.path.join(xreg_dir, xreg_name), "r", encoding="utf-8") as fh:
         manifest = json.load(fh)

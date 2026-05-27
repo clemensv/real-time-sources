@@ -1,0 +1,22 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/digitraffic-road"
+LABEL org.opencontainers.image.title="Digitraffic Road → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Subscribes to the Finnish Digitraffic Road MQTT broker, normalizes sensor telemetry, traffic messages, maintenance tracking, and reference station data into CloudEvents, and republishes them as MQTT 5.0 binary-mode CloudEvents on a UNS topic tree (traffic/fi/fintraffic/digitraffic-road/...)."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/digitraffic-road/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./digitraffic_road_mqtt_producer/digitraffic_road_mqtt_producer_data \
+ && pip install --no-cache-dir ./digitraffic_road_mqtt_producer/digitraffic_road_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./digitraffic_road_mqtt
+
+ENV MQTT_BROKER_URL=""
+ENV MQTT_AUTH_MODE="anonymous"
+
+CMD ["python", "-m", "digitraffic_road_mqtt", "feed"]

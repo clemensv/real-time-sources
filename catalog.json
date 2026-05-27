@@ -715,7 +715,7 @@
     "name": "AISStream",
     "cat": "Maritime",
     "key": true,
-    "desc": "Global â€” AIS via WebSocket, ~200 km from shore",
+    "desc": "Global — AIS via WebSocket, ~200 km from shore",
     "kql": true,
     "amqp": true,
     "mqtt": true
@@ -735,7 +735,7 @@
     "name": "Kystverket AIS",
     "cat": "Maritime",
     "key": false,
-    "desc": "Norway / Svalbard â€” raw TCP AIS, ~34 msg/s",
+    "desc": "Norway / Svalbard — raw TCP AIS, ~34 msg/s",
     "kql": true,
     "amqp": true,
     "mqtt": true
@@ -745,7 +745,7 @@
     "name": "Mode-S",
     "cat": "Aviation",
     "key": false,
-    "desc": "Local â€” ADS-B via dump1090 receivers",
+    "desc": "Local — ADS-B via dump1090 receivers",
     "kql": true,
     "amqp": true,
     "mqtt": true

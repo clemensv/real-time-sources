@@ -279,7 +279,7 @@ function Invoke-SourcePostDeployHook {
         return
     }
 
-    $rel = "$Source/fabric/post-deploy.ps1"
+    $rel = "feeders/$Source/fabric/post-deploy.ps1"
     $localPath = $null
     try {
         $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..") -ErrorAction Stop
@@ -326,14 +326,14 @@ Write-Host "=== Real-Time Sources — Fabric Deployment ===" -ForegroundColor Cy
 Write-Host "  Source: $Source" -ForegroundColor White
 
 # Check that the source's KQL schema script exists in the repo
-$kqlUrl = "$RawBase/$Source/kql/$($Source -replace '-', '_').kql"
+$kqlUrl = "$RawBase/feeders/$Source/kql/$($Source -replace '-', '_').kql"
 
 Write-Step "0/6" "Validating source assets in repository..."
 try {
     $null = Invoke-WebRequest -Uri $kqlUrl -Method Head -UseBasicParsing
     Write-OK "KQL script found"
 } catch {
-    $kqlUrl = "$RawBase/$Source/kql/$Source.kql"
+    $kqlUrl = "$RawBase/feeders/$Source/kql/$Source.kql"
     try {
         $null = Invoke-WebRequest -Uri $kqlUrl -Method Head -UseBasicParsing
         Write-OK "KQL script found (alternate name)"

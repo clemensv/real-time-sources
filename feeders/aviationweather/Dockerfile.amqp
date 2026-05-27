@@ -1,0 +1,25 @@
+        # syntax=docker/dockerfile:1.6
+        FROM python:3.10-slim
+        LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/aviationweather"
+        LABEL org.opencontainers.image.title="aviationweather → AMQP companion bridge"
+        LABEL org.opencontainers.image.description="Publishes aviationweather CloudEvents over AMQP using the companion transport contract."
+        LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/aviationweather/CONTAINER.md"
+        LABEL org.opencontainers.image.license="MIT"
+        LABEL source.transport="amqp"
+        ENV PYTHONUNBUFFERED=1
+        WORKDIR /app
+        RUN set -eux; \
+    for i in 1 2 3 4 5; do \
+        apt-get update && \
+        apt-get install -y --no-install-recommends --fix-missing \
+            build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev libsasl2-2 libsasl2-modules \
+        && break || \
+        { echo "apt attempt $i failed, retrying..."; sleep $((i*5)); }; \
+    done; \
+    rm -rf /var/lib/apt/lists/*
+
+COPY . /app
+        RUN pip install --no-cache-dir ./aviationweather_amqp && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev && rm -rf /root/.cache /var/lib/apt/lists/*
+        ENV AMQP_BROKER_URL=""
+ENV AMQP_ADDRESS="aviationweather"
+CMD ["python", "-m", "aviationweather_amqp", "feed"]

@@ -52,7 +52,7 @@ them back out into typed tables.
 
 ```powershell
 ./setup.ps1 `
-  -WorkspaceId "c98acd97-4363-4296-8323-b6ab21e53903" `
+  -Workspace "c98acd97-4363-4296-8323-b6ab21e53903" `
   -EventhouseId "dbfd2819-2879-4ae7-bff2-95619ad7b8e7"
 ```
 

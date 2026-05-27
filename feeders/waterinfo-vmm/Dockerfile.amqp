@@ -1,0 +1,27 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/waterinfo-vmm" \
+      org.opencontainers.image.title="waterinfo-vmm → AMQP 1.0 bridge" \
+      org.opencontainers.image.description="Publishes waterinfo-vmm CloudEvents over AMQP 1.0 to generic brokers and Azure Service Bus/Event Hubs." \
+      org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/waterinfo-vmm/CONTAINER.md" \
+      org.opencontainers.image.license="MIT"
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+RUN set -eux; \
+    for i in 1 2 3 4 5; do \
+        apt-get update && \
+        apt-get install -y --no-install-recommends --fix-missing \
+            build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev libsasl2-2 libsasl2-modules \
+        && break || \
+        { echo "apt attempt $i failed, retrying..."; sleep $((i*5)); }; \
+    done; \
+    rm -rf /var/lib/apt/lists/*
+COPY . /app
+RUN pip install --no-cache-dir ./waterinfo_vmm_amqp_producer/waterinfo_vmm_amqp_producer_data \
+ && pip install --no-cache-dir ./waterinfo_vmm_amqp_producer/waterinfo_vmm_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir ./waterinfo_vmm_amqp \
+ && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \
+ && rm -rf /root/.cache /var/lib/apt/lists/*
+ENV AMQP_BROKER_URL=""
+ENV AMQP_ADDRESS="waterinfo-vmm"
+CMD ["python", "-m", "waterinfo_vmm_amqp", "feed"]

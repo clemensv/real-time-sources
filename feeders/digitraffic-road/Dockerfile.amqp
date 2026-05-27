@@ -1,0 +1,36 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/digitraffic-road"
+LABEL org.opencontainers.image.title="Digitraffic Road → AMQP 1.0 bridge"
+LABEL org.opencontainers.image.description="Subscribes to the Finnish Digitraffic Road MQTT broker, normalizes sensor telemetry, traffic messages, maintenance tracking, and reference station data into CloudEvents, and publishes them over AMQP 1.0. Supports generic AMQP 1.0 brokers via SASL PLAIN and Azure Service Bus / Event Hubs via Entra ID CBS authentication."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/digitraffic-road/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+RUN set -eux; \
+    for i in 1 2 3 4 5; do \
+        apt-get update && \
+        apt-get install -y --no-install-recommends --fix-missing \
+            build-essential cmake pkg-config swig \
+            libssl-dev libsasl2-dev python3-dev \
+            libsasl2-2 libsasl2-modules \
+        && break || \
+        { echo "apt attempt $i failed, retrying..."; sleep $((i*5)); }; \
+    done; \
+    rm -rf /var/lib/apt/lists/*
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./digitraffic_road_amqp_producer/digitraffic_road_amqp_producer_data \
+ && pip install --no-cache-dir ./digitraffic_road_amqp_producer/digitraffic_road_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir ./digitraffic_road_amqp \
+ && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \
+ && rm -rf /root/.cache /var/lib/apt/lists/*
+
+ENV AMQP_BROKER_URL=""
+ENV AMQP_ADDRESS="digitraffic-road"
+
+CMD ["python", "-m", "digitraffic_road_amqp", "feed"]
