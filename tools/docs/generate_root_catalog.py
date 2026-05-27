@@ -312,9 +312,9 @@ def render_source(entry: dict, upstream: dict, xreg_info: dict) -> str:
     )
 
     return (
-        f'<table width="100%"><tr><td>\n\n'
+        f'<tr><td>\n\n'
         f'<details><summary>{summary}</summary>\n{body}\n</details>\n\n'
-        f'</td></tr></table>\n\n'
+        f'</td></tr>\n'
     )
 
 
@@ -350,12 +350,13 @@ def render() -> str:
         parts.append(
             f'<details open><summary><b>{emoji} {title}</b> &nbsp;'
             f'<sub>{len(entries)} source{"s" if len(entries) != 1 else ""}</sub></summary>\n\n'
+            '<table width="100%">\n'
         )
         for e in entries:
             src_dir = ROOT / e["id"]
             xreg_info = parse_xreg(src_dir)
             parts.append(render_source(e, upstream, xreg_info))
-        parts.append("</details>\n\n")
+        parts.append("</table>\n\n</details>\n\n")
 
     return "".join(parts).rstrip() + "\n"
 

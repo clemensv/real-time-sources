@@ -67,7 +67,8 @@ _The catalog below is rendered from `catalog.json`. Click a category to expand. 
 
 <details open><summary><b>💧 Hydrology and Water Monitoring</b> &nbsp;<sub>22 sources</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="Switzerland" title="Switzerland" src="https://flagcdn.com/20x15/ch.png" width="20" height="15"> &nbsp;<b>BAFU Hydro</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~300 stations, FOEN</sub></summary>
 
@@ -91,9 +92,8 @@ _The catalog below is rendered from `catalog.json`. Click a category to expand. 
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Canada" title="Canada" src="https://flagcdn.com/20x15/ca.png" width="20" height="15"> &nbsp;<b>Canada ECCC Water Office</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~2,100 hydrometric stations, ECCC/WSC</sub></summary>
 
@@ -117,9 +117,8 @@ _The catalog below is rendered from `catalog.json`. Click a category to expand. 
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="California" title="California" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>CDEC Reservoirs</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~2,600 stations, DWR</sub></summary>
 
@@ -143,9 +142,8 @@ _The catalog below is rendered from `catalog.json`. Click a category to expand. 
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Czech Republic" title="Czech Republic" src="https://flagcdn.com/20x15/cz.png" width="20" height="15"> &nbsp;<b>CHMI Hydro</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;CHMU</sub></summary>
 
@@ -169,9 +167,8 @@ CHMU
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"> &nbsp;<b>German Waters</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;12 state portals, ~2,724 stations</sub></summary>
 
@@ -195,9 +192,8 @@ CHMU
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="France" title="France" src="https://flagcdn.com/20x15/fr.png" width="20" height="15"> &nbsp;<b>Hub'Eau Hydrometrie</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~6,300 stations</sub></summary>
 
@@ -221,9 +217,8 @@ CHMU
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Poland" title="Poland" src="https://flagcdn.com/20x15/pl.png" width="20" height="15"> &nbsp;<b>IMGW Hydro</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;IMGW-PIB</sub></summary>
 
@@ -247,9 +242,8 @@ IMGW-PIB
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Ireland" title="Ireland" src="https://flagcdn.com/20x15/ie.png" width="20" height="15"> &nbsp;<b>Ireland OPW Water Level</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~500 OPW hydrometric stations</sub></summary>
 
@@ -273,9 +267,8 @@ IMGW-PIB
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Washington State / Puget Sound" title="Washington State / Puget Sound" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>King County Marine</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;buoy and mooring telemetry</sub></summary>
 
@@ -299,9 +292,8 @@ buoy and mooring telemetry
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Nepal" title="Nepal" src="https://flagcdn.com/20x15/np.png" width="20" height="15"> &nbsp;<b>Nepal BIPAD Hydrology</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;Himalayan river basins, BIPAD</sub></summary>
 
@@ -325,9 +317,8 @@ Himalayan river basins, BIPAD
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>NOAA NDBC</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;buoy observations</sub></summary>
 
@@ -351,9 +342,8 @@ buoy observations
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>NOAA Tides & Currents</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~3,000 stations</sub></summary>
 
@@ -377,9 +367,8 @@ buoy observations
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Norway" title="Norway" src="https://flagcdn.com/20x15/no.png" width="20" height="15"> &nbsp;<b>NVE Hydro</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;NVE (requires free API key)</sub></summary>
 
@@ -403,9 +392,8 @@ NVE (requires free API key)
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"> &nbsp;<b>Pegelonline</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;federal waterways, ~3,000 stations</sub></summary>
 
@@ -429,9 +417,8 @@ federal waterways, ~3,000 stations
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Netherlands" title="Netherlands" src="https://flagcdn.com/20x15/nl.png" width="20" height="15"> &nbsp;<b>RWS Waterwebservices</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~785 stations</sub></summary>
 
@@ -455,9 +442,8 @@ federal waterways, ~3,000 stations
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Sweden" title="Sweden" src="https://flagcdn.com/20x15/se.png" width="20" height="15"> &nbsp;<b>SMHI Hydro</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;SMHI</sub></summary>
 
@@ -481,9 +467,8 @@ SMHI
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Western US & Alaska" title="Western US & Alaska" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>SNOTEL Snow</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~900 snowpack stations, NRCS</sub></summary>
 
@@ -507,9 +492,8 @@ SMHI
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Finland" title="Finland" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"> &nbsp;<b>SYKE Hydro</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;SYKE</sub></summary>
 
@@ -533,9 +517,8 @@ SYKE
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="England" title="England" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"> &nbsp;<b>UK EA Flood Monitoring</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~4,000 stations</sub></summary>
 
@@ -559,9 +542,8 @@ SYKE
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>USGS Instantaneous Values</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~1.5M stations</sub></summary>
 
@@ -585,9 +567,8 @@ SYKE
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>USGS NWIS Water Quality</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~3,000 continuous WQ sites</sub></summary>
 
@@ -611,9 +592,8 @@ SYKE
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Belgium / Flanders" title="Belgium / Flanders" src="https://flagcdn.com/20x15/be.png" width="20" height="15"> &nbsp;<b>Waterinfo VMM</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~1,785 stations</sub></summary>
 
@@ -637,13 +617,15 @@ SYKE
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
 <details open><summary><b>⛅ Weather and Meteorology</b> &nbsp;<sub>21 sources</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>AviationWeather.gov</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;METAR, SIGMET advisories</sub></summary>
 
@@ -667,9 +649,8 @@ METAR, SIGMET advisories
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>Blitzortung</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;community lightning strokes, seconds latency</sub></summary>
 
@@ -693,9 +674,8 @@ community lightning strokes, seconds latency
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Australia" title="Australia" src="https://flagcdn.com/20x15/au.png" width="20" height="15"> &nbsp;<b>BOM Australia</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~8 capital city airports, half-hourly obs</sub></summary>
 
@@ -719,9 +699,8 @@ community lightning strokes, seconds latency
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Denmark" title="Denmark" src="https://flagcdn.com/20x15/dk.png" width="20" height="15"> &nbsp;<b>DMI</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-_-eaeef2?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-4-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-2-2496ed?style=flat-square"><sub>&nbsp;&nbsp;DMI observation triad (metObs + oceanObs + lightning)</sub></summary>
 
@@ -745,9 +724,8 @@ DMI observation triad (metObs + oceanObs + lightning)
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Denmark" title="Denmark" src="https://flagcdn.com/20x15/dk.png" width="20" height="15"> &nbsp;<b>DMI</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-_-eaeef2?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-4-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-2-2496ed?style=flat-square"><sub>&nbsp;&nbsp;meteorological observations, sea level, lightning strikes</sub></summary>
 
@@ -771,9 +749,8 @@ meteorological observations, sea level, lightning strikes
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"> &nbsp;<b>DWD</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~1,450 stations, observations and CAP alerts</sub></summary>
 
@@ -797,9 +774,8 @@ meteorological observations, sea level, lightning strikes
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"> &nbsp;<b>DWD Pollenflug</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;daily pollen forecasts, 27 regions</sub></summary>
 
@@ -823,9 +799,8 @@ daily pollen forecasts, 27 regions
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Canada" title="Canada" src="https://flagcdn.com/20x15/ca.png" width="20" height="15"> &nbsp;<b>Environment Canada</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~963 SWOB stations, hourly obs</sub></summary>
 
@@ -849,9 +824,8 @@ daily pollen forecasts, 27 regions
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Austria" title="Austria" src="https://flagcdn.com/20x15/at.png" width="20" height="15"> &nbsp;<b>GeoSphere Austria</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~280 TAWES stations, 10-min obs</sub></summary>
 
@@ -875,9 +849,8 @@ daily pollen forecasts, 27 regions
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Hong Kong" title="Hong Kong" src="https://flagcdn.com/20x15/hk.png" width="20" height="15"> &nbsp;<b>HKO Hong Kong</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;27 temp stations, 18 rainfall districts</sub></summary>
 
@@ -901,9 +874,8 @@ daily pollen forecasts, 27 regions
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"> &nbsp;<b>JMA Bosai AMeDAS</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~1,300 AMeDAS stations, 10-min observations via Bosai JSON API</sub></summary>
 
@@ -927,9 +899,8 @@ daily pollen forecasts, 27 regions
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"> &nbsp;<b>JMA Japan</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;weather bulletins, warnings, forecasts</sub></summary>
 
@@ -953,9 +924,8 @@ weather bulletins, warnings, forecasts
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Belgium" title="Belgium" src="https://flagcdn.com/20x15/be.png" width="20" height="15"> &nbsp;<b>KMI Belgium</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~14 AWS stations, 10-min observations</sub></summary>
 
@@ -979,9 +949,8 @@ weather bulletins, warnings, forecasts
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"> &nbsp;<b>Meteoalarm</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;37 countries, severe weather warnings</sub></summary>
 
@@ -1005,9 +974,8 @@ weather bulletins, warnings, forecasts
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>NOAA GOES / SWPC</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;space weather, solar wind, K-index</sub></summary>
 
@@ -1031,9 +999,8 @@ space weather, solar wind, K-index
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>NOAA NWS</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;weather alerts, CAP</sub></summary>
 
@@ -1057,9 +1024,8 @@ weather alerts, CAP
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>NOAA SWPC L1</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30–60 min Earth-impact lead time</sub></summary>
 
@@ -1083,9 +1049,8 @@ L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30–60 min Earth-impact l
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>NWS CAP Alerts</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;active alerts via api.weather.gov</sub></summary>
 
@@ -1109,9 +1074,8 @@ active alerts via api.weather.gov
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>NWS Forecast Zones</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;configurable land and marine forecast zones</sub></summary>
 
@@ -1135,9 +1099,8 @@ configurable land and marine forecast zones
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Singapore" title="Singapore" src="https://flagcdn.com/20x15/sg.png" width="20" height="15"> &nbsp;<b>Singapore NEA</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;62 weather stations + 5 air-quality regions</sub></summary>
 
@@ -1161,9 +1124,8 @@ configurable land and marine forecast zones
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Sweden" title="Sweden" src="https://flagcdn.com/20x15/se.png" width="20" height="15"> &nbsp;<b>SMHI Weather</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~232 stations, hourly obs</sub></summary>
 
@@ -1187,13 +1149,15 @@ configurable land and marine forecast zones
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
 <details open><summary><b>🌫️ Air Quality and Environmental Health</b> &nbsp;<sub>12 sources</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="Canada" title="Canada" src="https://flagcdn.com/20x15/ca.png" width="20" height="15"> &nbsp;<b>Canada AQHI</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;community AQHI observations and forecasts</sub></summary>
 
@@ -1217,9 +1181,8 @@ community AQHI observations and forecasts
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="United Kingdom" title="United Kingdom" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"> &nbsp;<b>Defra AURN</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;300+ monitoring locations, hourly pollutants</sub></summary>
 
@@ -1243,9 +1206,8 @@ community AQHI observations and forecasts
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>EPA UV Index</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;city-scoped hourly and daily UV forecasts</sub></summary>
 
@@ -1269,9 +1231,8 @@ city-scoped hourly and daily UV forecasts
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Finland" title="Finland" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"> &nbsp;<b>FMI Finland</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;hourly air quality observations via FMI WFS</sub></summary>
 
@@ -1295,9 +1256,8 @@ hourly air quality observations via FMI WFS
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Poland" title="Poland" src="https://flagcdn.com/20x15/pl.png" width="20" height="15"> &nbsp;<b>GIOŚ Poland</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~250 stations, hourly pollutants + AQI</sub></summary>
 
@@ -1321,9 +1281,8 @@ hourly air quality observations via FMI WFS
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Hong Kong" title="Hong Kong" src="https://flagcdn.com/20x15/hk.png" width="20" height="15"> &nbsp;<b>Hong Kong EPD AQHI</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;18 AQHI stations, hourly health index</sub></summary>
 
@@ -1347,9 +1306,8 @@ hourly air quality observations via FMI WFS
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Belgium" title="Belgium" src="https://flagcdn.com/20x15/be.png" width="20" height="15"> &nbsp;<b>IRCELINE Belgium</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;station, timeseries, and hourly observations</sub></summary>
 
@@ -1373,9 +1331,8 @@ station, timeseries, and hourly observations
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="London" title="London" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"> &nbsp;<b>LAQN London</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;site metadata, species, hourly measurements</sub></summary>
 
@@ -1399,9 +1356,8 @@ site metadata, species, hourly measurements
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Netherlands" title="Netherlands" src="https://flagcdn.com/20x15/nl.png" width="20" height="15"> &nbsp;<b>Luchtmeetnet Netherlands</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;station measurements, components, LKI index</sub></summary>
 
@@ -1425,9 +1381,8 @@ station measurements, components, LKI index
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>Sensor.Community</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;citizen air sensors, PM and climate readings</sub></summary>
 
@@ -1451,9 +1406,8 @@ citizen air sensors, PM and climate readings
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"> &nbsp;<b>UBA AirData</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;stations, pollutant components, hourly measures</sub></summary>
 
@@ -1477,9 +1431,8 @@ stations, pollutant components, hourly measures
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Belgium / Wallonia" title="Belgium / Wallonia" src="https://flagcdn.com/20x15/be.png" width="20" height="15"> &nbsp;<b>Wallonia ISSeP</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;low-cost air quality sensors</sub></summary>
 
@@ -1503,13 +1456,15 @@ low-cost air quality sensors
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
 <details open><summary><b>🚨 Disaster Alerts and Civil Protection</b> &nbsp;<sub>12 sources</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="Australia" title="Australia" src="https://flagcdn.com/20x15/au.png" width="20" height="15"> &nbsp;<b>Australian Wildfires</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;NSW, QLD, VIC bushfire incidents</sub></summary>
 
@@ -1533,9 +1488,8 @@ NSW, QLD, VIC bushfire incidents
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="European Alps" title="European Alps" src="https://flagcdn.com/20x15/at.png" width="20" height="15"> &nbsp;<b>EAWS ALBINA Avalanche</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;daily avalanche bulletins, CAAMLv6</sub></summary>
 
@@ -1559,9 +1513,8 @@ daily avalanche bulletins, CAAMLv6
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>GDACS</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;earthquakes, floods, cyclones, volcanoes, droughts</sub></summary>
 
@@ -1585,9 +1538,8 @@ earthquakes, floods, cyclones, volcanoes, droughts
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Brazil" title="Brazil" src="https://flagcdn.com/20x15/br.png" width="20" height="15"> &nbsp;<b>INPE DETER Brazil</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;Amazon & Cerrado deforestation alerts</sub></summary>
 
@@ -1611,9 +1563,8 @@ Amazon & Cerrado deforestation alerts
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"> &nbsp;<b>JMA Bosai Quake</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)</sub></summary>
 
@@ -1637,9 +1588,8 @@ JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"> &nbsp;<b>JMA Bosai Volcano</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;111 volcanoes, alert levels, eruption observations</sub></summary>
 
@@ -1663,9 +1613,8 @@ JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"> &nbsp;<b>JMA Bosai Warning & Tsunami</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;per-prefecture weather warnings + tsunami alerts</sub></summary>
 
@@ -1689,9 +1638,8 @@ per-prefecture weather warnings + tsunami alerts
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>NIFC USA Wildfires</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;active wildfire incidents, NIFC</sub></summary>
 
@@ -1715,9 +1663,8 @@ active wildfire incidents, NIFC
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"> &nbsp;<b>NINA/BBK</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;MOWAS, KATWARN, BIWAPP, DWD, LHP, Police</sub></summary>
 
@@ -1741,9 +1688,8 @@ MOWAS, KATWARN, BIWAPP, DWD, LHP, Police
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Pacific and Atlantic" title="Pacific and Atlantic" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>PTWC Tsunami</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;NOAA tsunami bulletins</sub></summary>
 
@@ -1767,9 +1713,8 @@ NOAA tsunami bulletins
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Seattle" title="Seattle" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>Seattle Fire 911</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;real-time fire dispatch incidents</sub></summary>
 
@@ -1793,9 +1738,8 @@ real-time fire dispatch incidents
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>USGS Earthquakes</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;seismic events</sub></summary>
 
@@ -1819,13 +1763,15 @@ seismic events
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
 <details open><summary><b>☢️ Radiation Monitoring</b> &nbsp;<sub>3 sources</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"> &nbsp;<b>BfS ODL</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~1,700 stations, hourly gamma dose rate</sub></summary>
 
@@ -1849,9 +1795,8 @@ seismic events
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"> &nbsp;<b>EURDEP Radiation</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~5,500 stations, 39 countries, gamma dose</sub></summary>
 
@@ -1875,9 +1820,8 @@ seismic events
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>USGS Geomagnetism</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;14 observatories, 1-min geomagnetic field</sub></summary>
 
@@ -1901,13 +1845,15 @@ seismic events
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
 <details open><summary><b>⚓ Maritime and Vessel Tracking</b> &nbsp;<sub>3 sources</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="Global â€” AIS via WebSocket" title="Global â€” AIS via WebSocket" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>AISStream</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;Global â€” AIS via WebSocket, ~200 km from shore</sub></summary>
 
@@ -1931,9 +1877,8 @@ Global â€” AIS via WebSocket, ~200 km from shore
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Finland / Baltic Sea" title="Finland / Baltic Sea" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"> &nbsp;<b>Digitraffic Maritime</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;AIS via MQTT</sub></summary>
 
@@ -1957,9 +1902,8 @@ AIS via MQTT
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Norway / Svalbard â€” raw TCP AIS" title="Norway / Svalbard â€” raw TCP AIS" src="https://flagcdn.com/20x15/no.png" width="20" height="15"> &nbsp;<b>Kystverket AIS</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;Norway / Svalbard â€” raw TCP AIS, ~34 msg/s</sub></summary>
 
@@ -1983,13 +1927,15 @@ Norway / Svalbard â€” raw TCP AIS, ~34 msg/s
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
 <details open><summary><b>✈️ Aviation</b> &nbsp;<sub>2 sources</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="Local â€” ADS-B via dump1090 receivers" title="Local â€” ADS-B via dump1090 receivers" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>Mode-S</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;Local â€” ADS-B via dump1090 receivers</sub></summary>
 
@@ -2013,9 +1959,8 @@ Local â€” ADS-B via dump1090 receivers
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>VATSIM</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;virtual aviation network, pilots & controllers</sub></summary>
 
@@ -2039,13 +1984,15 @@ virtual aviation network, pilots & controllers
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
 <details open><summary><b>🚦 Road and Public Transport</b> &nbsp;<sub>14 sources</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"> &nbsp;<b>Autobahn</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;roadworks, warnings, closures, webcams</sub></summary>
 
@@ -2069,9 +2016,8 @@ roadworks, warnings, closures, webcams
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Finland" title="Finland" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"> &nbsp;<b>Digitraffic Road</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;TMS sensors, road weather, traffic messages</sub></summary>
 
@@ -2095,9 +2041,8 @@ TMS sensors, road weather, traffic messages
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="France" title="France" src="https://flagcdn.com/20x15/fr.png" width="20" height="15"> &nbsp;<b>French Road Traffic</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;national road network, DATEX II</sub></summary>
 
@@ -2121,9 +2066,8 @@ national road network, DATEX II
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>GTFS Realtime</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;1,000+ transit agencies, vehicles, trips, alerts</sub></summary>
 
@@ -2147,9 +2091,8 @@ national road network, DATEX II
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Madrid" title="Madrid" src="https://flagcdn.com/20x15/es.png" width="20" height="15"> &nbsp;<b>Madrid Traffic</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~4,000 sensors, Informo</sub></summary>
 
@@ -2173,9 +2116,8 @@ national road network, DATEX II
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Netherlands" title="Netherlands" src="https://flagcdn.com/20x15/nl.png" width="20" height="15"> &nbsp;<b>NDW Netherlands Traffic</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;national road traffic, DATEX II</sub></summary>
 
@@ -2199,9 +2141,8 @@ national road traffic, DATEX II
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Netherlands" title="Netherlands" src="https://flagcdn.com/20x15/nl.png" width="20" height="15"> &nbsp;<b>NDW Road Traffic</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;national road traffic, DATEX II XML</sub></summary>
 
@@ -2225,9 +2166,8 @@ national road traffic, DATEX II XML
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="North America" title="North America" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>Nextbus</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;public transit arrivals</sub></summary>
 
@@ -2250,9 +2190,8 @@ public transit arrivals
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Paris" title="Paris" src="https://flagcdn.com/20x15/fr.png" width="20" height="15"> &nbsp;<b>Paris Bicycle Counters</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~141 counting stations, hourly counts</sub></summary>
 
@@ -2276,9 +2215,8 @@ public transit arrivals
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Seattle" title="Seattle" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>Seattle Street Closures</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;permit-driven street closure windows</sub></summary>
 
@@ -2302,9 +2240,8 @@ permit-driven street closure windows
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="London" title="London" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"> &nbsp;<b>TfL Road Traffic</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;road corridor status and disruptions</sub></summary>
 
@@ -2327,9 +2264,8 @@ road corridor status and disruptions
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Tokyo" title="Tokyo" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"> &nbsp;<b>Tokyo Docomo Bikeshare</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;1,794 stations, GBFS 2.3 via ODPT</sub></summary>
 
@@ -2352,9 +2288,8 @@ road corridor status and disruptions
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="US borders" title="US borders" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>US CBP Border Wait</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~81 ports of entry</sub></summary>
 
@@ -2378,9 +2313,8 @@ road corridor status and disruptions
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Washington State" title="Washington State" src="https://flagcdn.com/20x15/us.png" width="20" height="15"> &nbsp;<b>WSDOT</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~1,000 traffic flow sensors (requires free key)</sub></summary>
 
@@ -2404,13 +2338,15 @@ road corridor status and disruptions
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
 <details open><summary><b>🚆 Railway</b> &nbsp;<sub>2 sources</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="Norway" title="Norway" src="https://flagcdn.com/20x15/no.png" width="20" height="15"> &nbsp;<b>Entur Norway</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;national real-time transit, SIRI ET/VM/SX</sub></summary>
 
@@ -2434,9 +2370,8 @@ national real-time transit, SIRI ET/VM/SX
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Belgium" title="Belgium" src="https://flagcdn.com/20x15/be.png" width="20" height="15"> &nbsp;<b>iRail</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;~600 NMBS/SNCB stations, departures, delays</sub></summary>
 
@@ -2460,13 +2395,15 @@ national real-time transit, SIRI ET/VM/SX
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
 <details open><summary><b>🎵 Nightlife and Live Entertainment</b> &nbsp;<sub>1 source</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"> &nbsp;<b>Xceed</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;clubs, bars, parties, festivals — event schedules</sub></summary>
 
@@ -2490,13 +2427,15 @@ clubs, bars, parties, festivals — event schedules
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
 <details open><summary><b>⚡ Energy and Infrastructure</b> &nbsp;<sub>6 sources</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="United Kingdom" title="United Kingdom" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"> &nbsp;<b>Carbon Intensity UK</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;national grid carbon intensity</sub></summary>
 
@@ -2520,9 +2459,8 @@ national grid carbon intensity
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Great Britain" title="Great Britain" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"> &nbsp;<b>Elexon BMRS</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;electricity market, generation, demand</sub></summary>
 
@@ -2546,9 +2484,8 @@ electricity market, generation, demand
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Denmark" title="Denmark" src="https://flagcdn.com/20x15/dk.png" width="20" height="15"> &nbsp;<b>Energi Data Service</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;power system, spot prices, CO₂</sub></summary>
 
@@ -2572,9 +2509,8 @@ power system, spot prices, CO₂
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"> &nbsp;<b>Energy-Charts</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;40+ countries, electricity generation & prices</sub></summary>
 
@@ -2598,9 +2534,8 @@ power system, spot prices, CO₂
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"> &nbsp;<b>ENTSO-E</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;electricity generation, prices, load, flows (requires token)</sub></summary>
 
@@ -2624,9 +2559,8 @@ electricity generation, prices, load, flows (requires token)
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Japan / Kanto" title="Japan / Kanto" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"> &nbsp;<b>TEPCO Denkiyoho</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;TEPCO electricity supply, hourly forecast, 5-min actuals + solar</sub></summary>
 
@@ -2650,13 +2584,15 @@ TEPCO electricity supply, hourly forecast, 5-min actuals + solar
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
 <details open><summary><b>💬 Social Media and News</b> &nbsp;<sub>4 sources</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>Bluesky Firehose</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;posts, likes, reposts, follows</sub></summary>
 
@@ -2680,9 +2616,8 @@ posts, likes, reposts, follows
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>OpenStreetMap Diffs</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;OSM minutely replication diffs</sub></summary>
 
@@ -2706,9 +2641,8 @@ OSM minutely replication diffs
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Any" title="Any" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>RSS Feeds</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;configurable RSS/Atom feed URLs or OPML files</sub></summary>
 
@@ -2732,9 +2666,8 @@ configurable RSS/Atom feed URLs or OPML files
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>Wikimedia EventStreams</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;Wikipedia, Wikidata, Commons recent changes</sub></summary>
 
@@ -2758,13 +2691,15 @@ Wikipedia, Wikidata, Commons recent changes
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
 <details open><summary><b>📅 Public Events</b> &nbsp;<sub>3 sources</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"> &nbsp;<b>Billetto</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;pan-European ticketed public events</sub></summary>
 
@@ -2787,9 +2722,8 @@ pan-European ticketed public events
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"> &nbsp;<b>Fienta</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;ticketed public events with sale-status signals</sub></summary>
 
@@ -2813,9 +2747,8 @@ ticketed public events with sale-status signals
 
 </details>
 
-</td></tr></table>
-
-<table width="100%"><tr><td>
+</td></tr>
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>Ticketmaster</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;concerts, sports, theater, arts via Discovery API</sub></summary>
 
@@ -2838,13 +2771,15 @@ concerts, sports, theater, arts via Discovery API
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
 <details open><summary><b>🔬 Scientific Research</b> &nbsp;<sub>1 source</sub></summary>
 
-<table width="100%"><tr><td>
+<table width="100%">
+<tr><td>
 
 <details><summary><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"> &nbsp;<b>GraceDB</b> &nbsp; <img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"> &nbsp; <img align="middle" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"><img align="middle" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"><img align="middle" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"><sub>&nbsp;&nbsp;LIGO/Virgo/KAGRA gravitational wave candidates</sub></summary>
 
@@ -2868,7 +2803,8 @@ LIGO/Virgo/KAGRA gravitational wave candidates
 
 </details>
 
-</td></tr></table>
+</td></tr>
+</table>
 
 </details>
 
@@ -2883,467 +2819,6 @@ key-aware Kafka producer behavior now relied on by the repo are generated with
 that version. Each project’s `generate_producer.ps1` script uses the checked-in
 manifest as the source of truth, validates the `xrcg` version up front, and
 refreshes the generated client package from that definition.
-
-## Command Line Tools
-
-Detailed descriptions of each data source, its API, update frequency, and
-configuration options are in the per-project README files linked in the tables
-above.
-
-### Hydrology and Water Monitoring
-
-**[BAFU Hydro](bafu-hydro/README.md)** -- Swiss Federal Office for the
-Environment (BAFU/FOEN) hydrological monitoring network. Forwards water level,
-discharge, and temperature observations from approximately 300 stations.
-Available as both a Kafka image and an MQTT/UNS image (topic root
-`hydro/ch/bafu/bafu-hydro/{water_body_name}/{station_id}/…`).
-
-**[Canada ECCC Water Office](canada-eccc-wateroffice/README.md)** -- Environment
-and Climate Change Canada (ECCC) Water Survey of Canada. Real-time water level
-and discharge from approximately 2,100 hydrometric stations across all Canadian
-provinces and territories, updated every 5 minutes via OGC API Features.
-
-**[CDEC Reservoirs](cdec-reservoirs/README.md)** -- California Data Exchange
-Center (CDEC). Real-time reservoir storage, elevation, inflow, and outflow from
-over 2,600 stations operated by the Department of Water Resources.
-
-**[CHMI Hydro](chmi-hydro/README.md)** -- Czech Hydrometeorological Institute.
-Real-time water level, discharge, and temperature. Polled every 10 minutes.
-Available as both a Kafka image and an MQTT/UNS image (topic root
-`hydro/cz/chmi/chmi-hydro/{stream_name}/{station_id}/…`).
-
-**[German Waters](german-waters/README.md)** -- Aggregates water level and
-discharge data from 12 German state open data portals (~2,724 stations). Polled
-every 15 minutes.
-
-**[Hub’Eau Hydrometrie](hubeau-hydrometrie/README.md)** -- French Hub’Eau
-Hydrométrie API, covering ~6,300 stations across France.
-
-**[IMGW Hydro](imgw-hydro/README.md)** -- Polish Institute of Meteorology and
-Water Management (IMGW-PIB). Polled every 10 minutes.
-
-**[Ireland OPW Water Level](ireland-opw-waterlevel/README.md)** -- Ireland
-Office of Public Works (OPW) hydrometric stations via waterlevel.ie. Real-time
-water level, temperature, and voltage data. Polled every 15 minutes.
-
-**[Nepal BIPAD Hydrology](nepal-bipad-hydrology/README.md)** -- Nepal BIPAD
-Portal river monitoring network. Real-time water level data from Himalayan river
-basins. Polled every 10 minutes.
-
-**[NOAA Tides and Currents](noaa/README.md)** -- NOAA NOS water level and
-current data for over 3,000 US stations. Updated every 6 minutes.
-
-**[NOAA NDBC](noaa-ndbc/README.md)** -- National Data Buoy Center buoy
-observations across the United States. Polled every 5 minutes.
-
-**[King County Marine](king-county-marine/README.md)** -- Current raw buoy and
-mooring telemetry from King County marine monitoring datasets. Emits station
-reference events plus normalized water-quality readings for the active marine
-datasets.
-
-**[NVE Hydro](nve-hydro/README.md)** -- Norwegian Water Resources and Energy
-Directorate (NVE). Water level and discharge observations. Requires a free API
-key. Available as both a Kafka image and an MQTT/UNS image (topic root
-`hydro/no/nve/nve-hydro/{river_name}/{station_id}/…`).
-
-**[Pegelonline](pegelonline/README.md)** -- German Federal Waterways and
-Shipping Administration (WSV). Over 3,000 stations, updated every 15 minutes.
-
-**[RWS Waterwebservices](rws-waterwebservices/README.md)** -- Dutch
-Rijkswaterstaat water level data from ~785 stations. Polled every 10 minutes.
-
-**[SMHI Hydro](smhi-hydro/README.md)** -- Swedish Meteorological and
-Hydrological Institute (SMHI). Discharge data for hundreds of stations. Polled
-every 15 minutes.
-
-**[SNOTEL Snow](snotel/README.md)** -- USDA NRCS SNOTEL (SNOwpack TELemetry)
-network. Hourly snow water equivalent, snow depth, temperature, and
-precipitation from over 900 sites in the western US and Alaska.
-
-**[SYKE Hydro](syke-hydro/README.md)** -- Finnish Environment Institute (SYKE).
-Water level and discharge observations.
-
-**[UK EA Flood Monitoring](uk-ea-flood-monitoring/README.md)** -- UK Environment
-Agency. ~4,000 stations across England. Polled every 15 minutes.
-
-**[USGS Instantaneous Values](usgs-iv/README.md)** -- USGS water quality and
-quantity data for over 1.5 million US stations. Updated every 15 minutes.
-
-**[USGS NWIS Water Quality](usgs-nwis-wq/README.md)** -- USGS National Water
-Information System continuous water quality sensors. Dissolved oxygen, pH,
-temperature, conductance, turbidity, and nitrate from over 3,000 monitoring
-sites.
-
-**[Waterinfo VMM](waterinfo-vmm/README.md)** -- Belgian Waterinfo.be KIWIS API,
-~1,785 stations across Flanders. Polled every 15 minutes.
-
-### Weather and Meteorology
-
-**[AviationWeather.gov](aviationweather/README.md)** -- NOAA Aviation Weather
-Center. METAR observations, SIGMET advisories, and station reference data from
-aviationweather.gov. Polled every 5 minutes.
-
-**[Blitzortung](blitzortung/README.md)** -- Public LightningMaps / Blitzortung
-live websocket feed with global lightning strokes, typically delivered within
-seconds of occurrence.
-
-**[BOM Australia](bom-australia/README.md)** -- Australian Bureau of Meteorology.
-Half-hourly weather observations from capital city airports: temperature, wind,
-pressure, humidity, rainfall, cloud cover, visibility.
-
-**[DWD](dwd/README.md)** -- German Weather Service. ~1,450 stations with
-10-minute observations (temperature, precipitation, wind) plus CAP weather
-alerts.
-
-**[DWD Pollenflug](dwd-pollenflug/README.md)** -- Deutscher Wetterdienst pollen
-forecasts for 27 German regions. Daily forecasts with today/tomorrow/day-after-tomorrow
-danger levels for 8 pollen types.
-
-**[Environment Canada](environment-canada/README.md)** -- Environment and
-Climate Change Canada (ECCC). ~963 SWOB stations via OGC API with hourly
-temperature, humidity, dew point, pressure, wind, and precipitation.
-
-**[GeoSphere Austria](geosphere-austria/README.md)** -- GeoSphere Austria
-(formerly ZAMG) TAWES automatic weather stations. 10-minute observations
-including temperature, humidity, wind, pressure, precipitation, and sunshine
-duration from approximately 280 stations.
-
-**[HKO Hong Kong](hko-hong-kong/README.md)** -- Hong Kong Observatory. 27
-temperature stations, 18 rainfall districts, humidity, and UV index. Updated
-hourly.
-
-**[JMA Japan](jma-japan/README.md)** -- Japan Meteorological Agency weather
-bulletins. Forecasts, warnings, advisories, and risk notifications from the JMA
-Atom XML feeds.
-
-**[JMA Bosai AMeDAS](jma-bosai-amedas/README.md)** -- Japan Meteorological Agency
-AMeDAS automated weather station network. ~1,300 stations across Japan reporting
-temperature, humidity, precipitation, wind, and snow at 10-minute resolution from
-the JMA Bosai JSON API.
-
-**[Meteoalarm](meteoalarm/README.md)** -- EUMETNET Meteoalarm. Severe weather
-warnings aggregated from 37 European national meteorological services.
-
-**[NOAA NWS](noaa-nws/README.md)** -- National Weather Service active weather
-alerts across the United States. Polled every 60 seconds.
-
-**[NWS CAP Alerts](nws-alerts/README.md)** -- US National Weather Service
-active alerts via the api.weather.gov GeoJSON endpoint with SAME/UGC geocodes
-and VTEC codes.
-
-**[NOAA GOES / SWPC](noaa-goes/README.md)** -- NOAA Space Weather Prediction
-Center. Space weather alerts, planetary K-index, and solar wind data. Polled
-every 60 seconds.
-
-**[Singapore NEA](singapore-nea/README.md)** -- National Environment Agency of
-Singapore. 62 weather stations with temperature, rainfall, wind speed, wind
-direction, 2-hour area forecasts, and regional PSI/PM2.5 air-quality readings.
-
-**[SMHI Weather](smhi-weather/README.md)** -- Swedish Meteorological and
-Hydrological Institute (SMHI). ~232 stations with hourly temperature, wind gust,
-dew point, pressure, humidity, and precipitation.
-
-### Air Quality and Environmental Health
-
-**[Canada AQHI](canada-aqhi/README.md)** -- Environment and Climate Change
-Canada. Community-keyed AQHI reference data, current observations, and public
-forecast periods across all provinces and territories.
-
-**[Defra AURN](defra-aurn/README.md)** -- UK Defra Automatic Urban and Rural
-Network. Station reference data, pollutant timeseries metadata, and hourly
-observations from the public SOS API.
-
-**[FMI Finland](fmi-finland/README.md)** -- Finnish Meteorological Institute
-air-quality WFS feed. Station reference records plus hourly aggregated pollutant
-and AQI observations.
-
-**[GIOŚ Poland](gios-poland/README.md)** -- Polish Chief Inspectorate of
-Environmental Protection (GIOŚ). Station and sensor reference data, hourly
-pollutant measurements, and air quality index values from approximately 250
-monitoring stations.
-
-**[Hong Kong EPD AQHI](hongkong-epd/README.md)** -- Hong Kong Environmental
-Protection Department AQHI feed. Station reference events and the latest AQHI
-reading per station from the public 24-hour XML feed.
-
-**[IRCELINE Belgium](irceline-belgium/README.md)** -- Belgian IRCELINE SOS API.
-Station metadata, pollutant timeseries metadata, and hourly observations with
-BelAQI context on the timeseries records.
-
-**[LAQN London](laqn-london/README.md)** -- King’s College London LAQN API.
-Monitoring sites, pollutant species metadata, hourly measurements, and Daily
-Air Quality Index bulletin records for London.
-
-**[Luchtmeetnet Netherlands](luchtmeetnet-nl/README.md)** -- Dutch
-Luchtmeetnet open API. Station and component reference data, hourly station
-measurements, and Dutch LKI air-quality-index readings.
-
-**[EPA UV Index](epa-uv/README.md)** -- United States EPA Envirofacts UV
-forecast service. Location-keyed hourly and daily UV forecast events for
-configured city/state pairs.
-
-**[Sensor.Community](sensor-community/README.md)** -- Sensor.Community public
-JSON sensor feeds. Sensor reference metadata plus particulate and climate sensor
-readings from the community network worldwide.
-
-**[Singapore NEA Air Quality](singapore-nea/README.md)** -- The Singapore NEA
-bridge also publishes regional air-quality reference data, PSI readings, and
-PM2.5 readings alongside the existing weather feed.
-
-**[UBA AirData](uba-airdata/README.md)** -- German Umweltbundesamt air-data
-API. Station reference records, pollutant component catalog events, and hourly
-measurements from the federal monitoring network.
-
-**[Wallonia ISSeP](wallonia-issep/README.md)** -- Wallonia ISSeP (Institut
-Scientifique de Service Public) low-cost air quality sensor network across
-Wallonia, Belgium. Sensor reference data and near-real-time observations.
-
-### Disaster Alerts and Civil Protection
-
-**[Australian Wildfires](australia-wildfires/README.md)** -- Aggregated bushfire
-incident data from NSW Rural Fire Service, Queensland Fire and Emergency
-Services, and Victoria’s Country Fire Authority. Normalized fire incident events.
-
-**[EAWS ALBINA Avalanche](eaws-albina/README.md)** -- European Avalanche
-Warning Services (EAWS) ALBINA system. Daily avalanche danger bulletins in
-CAAMLv6 standard for the European Alps (Tirol, South Tyrol, Trentino). Five
-danger levels with aspect/elevation detail.
-
-**[GDACS](gdacs/README.md)** -- Global Disaster Alert and Coordination System.
-Earthquake, tropical cyclone, flood, volcano, flash flood, and drought alerts
-from the GDACS RSS feed.
-
-**[INPE DETER Brazil](inpe-deter-brazil/README.md)** -- INPE TerraBrasilis
-DETER real-time deforestation detection system. Deforestation alerts for the
-Amazon and Cerrado biomes with area, coordinates, and satellite data.
-
-**[JMA Bosai Quake](jma-bosai-quake/README.md)** -- Japan Meteorological Agency
-earthquake bulletins from the Bosai JSON API. Hypocenter, magnitude, JMA
-intensity (shindo 1–7), affected prefectures/cities, and tsunami flag.
-Append-style event stream keyed by `{event_id}/{serial}` covering 発表/訂正/取消
-bulletin lifecycle.
-
-**[JMA Bosai Volcano](jma-bosai-volcano/README.md)** -- Japan Meteorological
-Agency volcanic warnings and eruption observations for all 111 Japanese
-volcanoes. Alert-level changes (噴火警戒レベル 1–5), eruption-event reports,
-and stable volcano reference catalog.
-
-**[JMA Bosai Warning & Tsunami](jma-bosai-warning/README.md)** -- Japan
-Meteorological Agency per-prefecture weather warnings (advisory, warning,
-emergency warning) covering 28 hazard categories plus the tsunami warning feed
-(forecasts + VTSE51/52 observed wave heights).
-
-**[NIFC USA Wildfires](nifc-usa-wildfires/README.md)** -- National Interagency
-Fire Center (NIFC) active wildfire incident data from the ArcGIS Feature
-Service. Incident name, location, acres burned, containment percentage, and
-discovery date.
-
-**[NINA/BBK](nina-bbk/README.md)** -- German Federal Office of Civil Protection
-(BBK) NINA warning system. Aggregates warnings from six providers: MOWAS
-(federal), KATWARN, BIWAPP, DWD, LHP (flood centers), and Police.
-
-**[PTWC Tsunami](ptwc-tsunami/README.md)** -- NOAA National Tsunami Warning
-Center (NTWC) and Pacific Tsunami Warning Center (PTWC). Tsunami bulletins from
-two Atom XML feeds covering the Pacific, Atlantic, and Caribbean.
-
-**[Seattle Fire 911](seattle-911/README.md)** -- Seattle Open Data real-time
-Fire 911 calls feed. Incident-keyed dispatch events with address and published
-coordinates.
-
-**[USGS Earthquakes](usgs-earthquakes/README.md)** -- Real-time earthquake
-events from the USGS GeoJSON feeds with deduplication. Polled every 60 seconds.
-
-### Radiation Monitoring
-
-**[BfS ODL](bfs-odl/README.md)** -- German Federal Office for Radiation
-Protection (BfS) ODL ambient gamma dose rate monitoring network. Approximately
-1,700 stationary probes measuring hourly averaged gamma dose rates in µSv/h,
-with cosmic and terrestrial decomposition. Open WFS data interface, no auth.
-Polled hourly.
-
-**[EURDEP Radiation](eurdep-radiation/README.md)** -- European Radiological
-Data Exchange Platform (EURDEP). Ambient gamma dose rate monitoring from
-approximately 5,500 stations across 39 European countries. Hourly averages in
-µSv/h.
-
-**[USGS Geomagnetism](usgs-geomag/README.md)** -- USGS Geomagnetism Program.
-1-minute geomagnetic field variation data (H, D, Z, F components) from 14 US
-observatories.
-
-### Maritime and Vessel Tracking
-
-**[AISStream](aisstream/README.md)** -- AISStream.io WebSocket API. Real-time
-AIS vessel tracking from ships worldwide (~200 km from shore). Publishes 23 AIS
-message types. Requires API key. The free service can be unreliable.
-
-**[Digitraffic Maritime](digitraffic-maritime/README.md)** -- Finland’s
-Digitraffic Marine MQTT stream. AIS vessel positions and metadata from the
-Finnish coastal zone and Baltic Sea. ~35 messages/second. Open data (CC 4.0 BY).
-
-**[Kystverket AIS](kystverket-ais/README.md)** -- Norwegian Coastal
-Administration raw TCP AIS stream. NMEA sentences from 50+ stations covering the
-Norwegian economic zone, Svalbard, and Jan Mayen. ~34 messages/second (~2.9M/day).
-
-### Aviation
-
-**[Mode-S](mode-s/README.md)** -- ADS-B aircraft position and telemetry data
-from dump1090 receivers. Polled every 60 seconds.
-
-**[VATSIM](vatsim/README.md)** -- VATSIM virtual aviation network live data feed.
-Pilot positions, controller positions, ATIS, pre-files, and network status from
-the VATSIM v3 JSON feed.
-
-### Road Transport
-
-**[Autobahn](autobahn/README.md)** -- German Autobahn API. Roadworks, warnings,
-closures, parking areas, charging stations, and webcams. Uses ETags and local
-state to detect changes. Available as both a Kafka image and an MQTT/UNS image
-(topic root `traffic/de/autobahn/autobahn/{road}/{kind}/{identifier}/{state}`).
-
-**[Digitraffic Road](digitraffic-road/README.md)** -- Finland’s Digitraffic Road
-MQTT stream. TMS sensor readings (vehicle counts and speeds from 500+ stations),
-road weather measurements (350+ stations), traffic messages, and maintenance
-vehicle tracking. Open data (CC 4.0 BY).
-
-**[French Road Traffic](french-road-traffic/README.md)** -- French national road
-traffic data via DATEX II from Bison Futé (tipi.bison-fute.gouv.fr). Traffic flow
-measurements (~1,000 sites with vehicle counts and speeds) and road events (~300
-situations including accidents, roadworks, and restrictions). Polled every 6
-minutes.
-
-**[GTFS Realtime](gtfs/README.md)** -- GTFS and GTFS-RT data from 1,000+ public
-transport agencies worldwide. Vehicle positions, trip updates, and alerts. MTA
-feeds alone produce over 50 GB/day.
-
-**[Madrid Traffic](madrid-traffic/README.md)** -- Madrid Informo traffic sensor
-API. Real-time readings from approximately 4,000 sensors across Madrid’s road
-network including the M-30 ring motorway. Updated every 5 minutes.
-
-**[NDW Netherlands Traffic](ndl-netherlands/README.md)** -- Dutch NDW (Nationaal
-Dataportaal Wegverkeer) DATEX II traffic data. Speed, travel time, and traffic
-situations from the national road network.
-
-**[TfL Road Traffic](tfl-road-traffic/README.md)** -- Transport for London (TfL)
-Unified API road corridor status and disruption data. Road corridor reference
-data, real-time aggregate traffic status per corridor, and active road
-disruptions including incidents, planned works, and road closures across
-London's TfL-managed road network (A-roads and motorways such as A2, A12, M25).
-Disruption events are deduped by ID and last-modified time.
-
-**[Nextbus](nextbus/README.md)** -- Public transit arrivals from the Nextbus
-service.
-
-**[Paris Bicycle Counters](paris-bicycle-counters/README.md)** -- Paris Open
-Data bicycle counting stations. Hourly bicycle counts from 141 permanent
-counting stations across Paris with counter location reference data.
-
-**[Seattle Street Closures](seattle-street-closures/README.md)** -- Seattle
-Open Data street closure schedule feed. Permit-keyed closure windows with
-street segments, dates, and serialized geometry snapshots.
-
-**[Tokyo Docomo Bikeshare](tokyo-docomo-bikeshare/README.md)** -- Tokyo Docomo
-Bikeshare real-time availability. GBFS 2.3 feed from the Open Data Platform for
-Transportation (ODPT) covering 1,794 dock-based stations across central Tokyo
-wards. System metadata, station locations (bilingual names), and real-time bike
-and dock availability updated on a 60-second TTL.
-
-**[US CBP Border Wait](cbp-border-wait/README.md)** -- US Customs and Border
-Protection border wait times. Real-time delay data for approximately 81 land
-border ports of entry along the US-Canada and US-Mexico borders.
-
-**[WSDOT](wsdot/README.md)** -- Washington State DOT traffic flow data from
-approximately 1,000 inductive loop sensors across five regions. Level of Service
-readings updated every 90 seconds. Requires a free API access code.
-
-### Railway
-
-**[iRail](irail/README.md)** -- Belgian railway real-time data from the iRail
-API. Station metadata and departure boards for approximately 600 NMBS/SNCB
-stations, including delays, platform assignments, cancellations, and occupancy.
-No authentication. Rate-limited to 3 requests/second; full cycle ~3–4 minutes.
-
-### Nightlife and Live Entertainment
-
-**[Xceed](xceed/README.md)** -- Xceed Open Event API. European nightlife and
-live-entertainment events including clubs, bars, parties, and festivals. Emits
-event reference data (schedule, venue, cover image) and admission telemetry
-(per-tier ticket-availability signals including `isSoldOut` and `isSalesClosed`).
-No authentication required. Polled every 5 minutes by default.
-
-### Energy and Infrastructure
-
-**[Carbon Intensity UK](carbon-intensity/README.md)** -- National Grid ESO Carbon
-Intensity API. National carbon intensity (gCO₂/kWh forecast and actual) and
-fuel-mix generation percentages for 10 fuel types. Polled every 30 minutes.
-
-**[Elexon BMRS](elexon-bmrs/README.md)** -- Elexon Balancing Mechanism
-Reporting Service. GB electricity generation mix, demand outturn, system
-frequency, and interconnector flows. Settlement-period-keyed data from the BMRS
-API.
-
-**[Energi Data Service](energidataservice-dk/README.md)** -- Energinet Energi
-Data Service. Danish power system snapshots (CO₂, solar, wind, exchange flows)
-and day-ahead spot prices per bidding zone.
-
-**[Energy-Charts](energy-charts/README.md)** -- Fraunhofer ISE Energy-Charts
-API. Electricity generation, prices, and grid carbon signals for 40+ European
-countries. CC BY 4.0 open data.
-
-**[ENTSO-E](entsoe/README.md)** -- European electricity market data from the
-ENTSO-E Transparency Platform. Generation output, day-ahead prices, load,
-forecasts, installed capacity, reservoir filling, and cross-border flows.
-
-**[TEPCO Denkiyoho](tepco-denkiyoho/README.md)** -- Tokyo Electric Power Company
-でんき予報 supply/demand feed for the Kanto region (Tokyo + 8 prefectures). Peak
-supply capacity, hourly demand forecast, 5-min actuals, solar PV generation, and
-reserve margin from the Shift-JIS CSV publication, refreshed every 5 minutes.
-
-### Social Media and News
-
-**[Bluesky Firehose](bluesky/README.md)** -- Bluesky AT Protocol firehose.
-Posts, likes, reposts, follows, blocks, and profile updates. Supports selective
-filtering and cursor management for resumable streaming.
-
-**[OpenStreetMap Diffs](wikimedia-osm-diffs/README.md)** -- OpenStreetMap
-minutely replication diffs. Every node, way, and relation create/modify/delete
-from the OSM replication feed as individual CloudEvents.
-
-**[RSS Feeds](rss/README.md)** -- Configurable RSS/Atom feed poller. Supports
-feed URLs or OPML files. Only forwards new items.
-
-**[Wikimedia EventStreams](wikimedia-eventstreams/README.md)** -- Wikimedia’s
-public recentchange stream for edits, page creations, and log actions across
-Wikipedia, Wikidata, Commons, and sister projects.
-
-### Public Events
-
-**[Billetto](billetto/README.md)** -- Billetto pan-European event-discovery
-platform. Polls the public events API for new and updated ticketed events
-across Denmark, the United Kingdom, Germany, Sweden, Norway, Finland, Belgium,
-Austria, and Ireland. Emits event schedule, venue, organizer, pricing, and
-ticket availability as CloudEvents keyed by stable Billetto event ID.
-
-### Scientific Research
-
-**[GraceDB](gracedb/README.md)** -- LIGO/Virgo/KAGRA GraceDB gravitational wave
-candidate event database. Superevent alerts including chirp mass, false alarm
-rate, classification probabilities, and sky localization data.
-
-### Public Events
-
-**[Fienta](fienta/README.md)** -- European public event ticketing platform
-(Estonia, Latvia, Lithuania, and other European markets). Emits full event
-reference data including name, location, organizer, and schedule, plus
-sale-status change telemetry (`onSale`, `soldOut`, `notOnSale`, `saleEnded`)
-whenever a public event's ticket status changes. Polling the Fienta public REST
-API requires no authentication.
-
-### External
-
-**[Forza Motorsport PC](https://github.com/clemensv/forza-telemetry-bridge)** --
-Racing game telemetry bridge (separate repository). Captures UDP telemetry from
-Forza Motorsport games and forwards to Event Hubs or Fabric Event Streams.
-Binary release available.
 
 
 ## AMQP companion feeders for maritime and tracking sources
