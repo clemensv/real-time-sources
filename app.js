@@ -5,6 +5,7 @@
 const REPO = "clemensv/real-time-sources";
 const BRANCH = "main";
 const RAW = `https://raw.githubusercontent.com/${REPO}/${BRANCH}`;
+const FEEDERS_PREFIX = "feeders";
 
 /* ── Source catalog ────────────────────────────────────────────────────── */
 const SOURCES = [
@@ -232,18 +233,18 @@ async function selectSource(s) {
 
   // wire deploy buttons
   $btnContainer.onclick   = () => {
-    const url = `${RAW}/${s.id}/azure-template.json`;
+    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   };
   $btnContainerEH.onclick = () => {
-    const url = `${RAW}/${s.id}/azure-template-with-eventhub.json`;
+    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-with-eventhub.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   };
   if ($btnContainerMqtt) {
     // MQTT BYO-broker deploy is opt-in per source (requires azure-template-mqtt.json).
     $btnContainerMqtt.style.display = s.mqtt ? "" : "none";
     $btnContainerMqtt.onclick = () => {
-      const url = `${RAW}/${s.id}/azure-template-mqtt.json`;
+      const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-mqtt.json`;
       window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
     };
   }
@@ -251,7 +252,7 @@ async function selectSource(s) {
     // MQTT + Event Grid namespace deploy is opt-in per source (requires azure-template-with-eventgrid-mqtt.json).
     $btnContainerMqttEG.style.display = s.mqtt ? "" : "none";
     $btnContainerMqttEG.onclick = () => {
-      const url = `${RAW}/${s.id}/azure-template-with-eventgrid-mqtt.json`;
+      const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-with-eventgrid-mqtt.json`;
       window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
     };
   }
@@ -259,7 +260,7 @@ async function selectSource(s) {
     // AMQP 1.0 + Service Bus namespace deploy is opt-in per source (requires azure-template-with-servicebus.json).
     $btnContainerAmqpSB.style.display = s.amqp ? "" : "none";
     $btnContainerAmqpSB.onclick = () => {
-      const url = `${RAW}/${s.id}/azure-template-with-servicebus.json`;
+      const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-with-servicebus.json`;
       window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
     };
   }
@@ -273,12 +274,12 @@ async function selectSource(s) {
   // fetch and render CONTAINER.md
   $content.innerHTML = '<div class="loading-indicator">Loading documentation…</div>';
   try {
-    const url = `${RAW}/${s.id}/CONTAINER.md`;
+    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/CONTAINER.md`;
     const resp = await fetch(url);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     let md = await resp.text();
     md = md.replace(/\]\((?!https?:\/\/)([^)]+)\)/g, (m, p) =>
-      `](https://github.com/${REPO}/blob/${BRANCH}/${s.id}/${p})`
+      `](https://github.com/${REPO}/blob/${BRANCH}/${FEEDERS_PREFIX}/${s.id}/${p})`
     );
     $content.innerHTML = `<div class="md-body">${marked.parse(md)}</div>`;
   } catch (e) {
@@ -464,7 +465,7 @@ function launchCloudShell(source, mode) {
   } else {
     // ARM template deploy — use the Azure Portal custom deployment blade
     const templateFile = mode === "container" ? "azure-template.json" : "azure-template-with-eventhub.json";
-    const templateUrl = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${source.id}/${templateFile}`;
+    const templateUrl = `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${FEEDERS_PREFIX}/${source.id}/${templateFile}`;
     const portalUrl = `https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(templateUrl)}`;
     window.open(portalUrl, "_blank", "noopener");
   }
@@ -712,19 +713,19 @@ async function selectFromHash() {
   } else if (action === "fabric-notebook") {
     openDeployForm(s, "fabric-notebook");
   } else if (action === "azure") {
-    const url = `${RAW}/${s.id}/azure-template-with-eventhub.json`;
+    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-with-eventhub.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   } else if (action === "azure-byoeh") {
-    const url = `${RAW}/${s.id}/azure-template.json`;
+    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   } else if (action === "azure-mqtt") {
-    const url = `${RAW}/${s.id}/azure-template-mqtt.json`;
+    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-mqtt.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   } else if (action === "azure-mqtt-eg") {
-    const url = `${RAW}/${s.id}/azure-template-with-eventgrid-mqtt.json`;
+    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-with-eventgrid-mqtt.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   } else if (action === "azure-amqp-sb") {
-    const url = `${RAW}/${s.id}/azure-template-with-servicebus.json`;
+    const url = `${RAW}/${FEEDERS_PREFIX}/${s.id}/azure-template-with-servicebus.json`;
     window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
   }
 }
