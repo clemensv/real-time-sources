@@ -112,15 +112,22 @@ a:hover { text-decoration: underline; }
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
 }
-.header-left .logo { color: var(--fg-default); flex-shrink: 0; }
-.header-left h1 { font-size: 16px; font-weight: 600; }
+.header-left .logo { color: var(--accent); flex-shrink: 0; }
+.header-left h1 { font-size: 16px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
 .header-left h1 a { color: var(--fg-default); }
 .header-left h1 a:hover { text-decoration: none; color: var(--accent); }
 .header-left .subtitle {
   font-size: 12px;
   color: var(--fg-muted);
   display: none;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 @media (min-width: 900px) {
   .header-left .subtitle { display: inline; }
@@ -128,7 +135,8 @@ a:hover { text-decoration: underline; }
 .header-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 .gh-link {
   font-size: 12px;
@@ -138,17 +146,25 @@ a:hover { text-decoration: underline; }
   background: var(--btn-bg);
   color: var(--fg-default);
   transition: background var(--transition);
+  white-space: nowrap;
 }
 .gh-link:hover { background: var(--btn-hover); text-decoration: none; }
+
+.gh-repo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.gh-icon { display: block; flex-shrink: 0; }
 
 .xreg-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
+  padding: 3px 10px;
 }
 .xreg-logo {
-  height: 18px;
+  height: 12px;
   width: auto;
   display: block;
 }
