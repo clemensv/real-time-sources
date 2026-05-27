@@ -2819,26 +2819,3 @@ key-aware Kafka producer behavior now relied on by the repo are generated with
 that version. Each project’s `generate_producer.ps1` script uses the checked-in
 manifest as the source of truth, validates the `xrcg` version up front, and
 refreshes the generated client package from that definition.
-
-
-## AMQP companion feeders for maritime and tracking sources
-
-AMQP 1.0 companion images and Service Bus deployment templates are available for `kystverket-ais`, `king-county-marine`, `vatsim`, `mode-s`, and `aisstream` via each source's `Dockerfile.amqp`, `azure-template-with-servicebus.json`, and container documentation.
-
-
-
-
-<!-- B2-weather MQTT+AMQP companions -->
-- `aviationweather`: MQTT + AMQP companion feeders (`aviationweather-mqtt`, `aviationweather-amqp`).
-- `blitzortung`: MQTT + AMQP companion feeders (`blitzortung-mqtt`, `blitzortung-amqp`).
-- `bom-australia`: MQTT + AMQP companion feeders (`bom-australia-mqtt`, `bom-australia-amqp`).
-- `dwd`: MQTT + AMQP companion feeders (`dwd-mqtt`, `dwd-amqp`).
-- `dwd-pollenflug`: MQTT + AMQP companion feeders (`dwd-pollenflug-mqtt`, `dwd-pollenflug-amqp`).
-- `environment-canada`: MQTT + AMQP companion feeders (`environment-canada-mqtt`, `environment-canada-amqp`).
-- `geosphere-austria`: MQTT + AMQP companion feeders (`geosphere-austria-mqtt`, `geosphere-austria-amqp`).
-- `hko-hong-kong`: MQTT + AMQP companion feeders (`hko-hong-kong-mqtt`, `hko-hong-kong-amqp`).
-- `jma-japan`: MQTT + AMQP companion feeders (`jma-japan-mqtt`, `jma-japan-amqp`).
-- `kmi-belgium`: MQTT + AMQP companion feeders (`kmi-belgium-mqtt`, `kmi-belgium-amqp`).
-- `noaa-nws`: MQTT + AMQP companion feeders (`noaa-nws-mqtt`, `noaa-nws-amqp`).
-- `smhi-weather`: MQTT + AMQP companion feeders (`smhi-weather-mqtt`, `smhi-weather-amqp`).
-
