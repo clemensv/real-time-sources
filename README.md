@@ -1,66 +1,67 @@
 [![Build Containers](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg)](https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml)
 
-# Real Time Sources for Apache Kafka, Azure Event Hubs, and Fabric Event Streams
+# Real-Time Event Sources for Kafka, MQTT, and AMQP
 
 > 🚀 **Explore the catalog interactively at [clemensv.github.io/real-time-sources](http://clemensv.github.io/real-time-sources)** — browse every source, read its docs, and one-click deploy to Azure or Fabric.
 
-Learning how to build event streaming solutions with Microsoft Azure Event Hubs,
-Microsoft Fabric Event Streams, and any Apache Kafka compatible server and
-service is more interesting when you have real time data sources to work with.
+This repository turns **~100 public real-time data feeds** — hydrology gauges,
+weather observations, AIS vessel tracks, transit GTFS-RT, electricity-grid
+telemetry, seismic and avalanche alerts, civic 911 dispatches, social-media
+firehoses, and many more — into well-typed
+[**CloudEvents**](https://cloudevents.io) on the messaging substrate of your
+choice. Every source ships as a small Python feeder, contract-first via an
+[xRegistry](https://github.com/xregistry/spec) manifest, and is published as
+a pre-built container image.
 
-This repo contains command line tools, written in Python, that can be used to
-retrieve real-time streaming data and related reference data from various APIs,
-and then route the data to Apache Kafka compatible endpoints.
+**Three first-class transports.** Each source supports any combination of:
 
-For each tool, there is a corresponding, pre-built (Docker-) container image
-that you can pull and use instantly from this repo's container registry. The
-container images will work with any Apache Kafka compatible server or service
-that supports TLS with `SASL/PLAIN` authentication, as long as you provide the
-required connection information.
+- **🟥 Apache Kafka** — the original target. Works with any Kafka-compatible
+  endpoint (open-source brokers, Confluent Cloud, Aiven, Redpanda, AWS MSK)
+  and natively with **Azure Event Hubs** and **Microsoft Fabric Event Streams**
+  via the Kafka surface. CloudEvents are emitted with the `ce_*` header
+  binding and a stable Kafka key per source.
+- **🟪 MQTT 5.0 / Unified Namespace** — for industrial IoT, edge, and
+  publish/subscribe topologies. Feeders publish into UNS-shaped topic trees
+  using the CloudEvents binary binding. Tested against Mosquitto, HiveMQ,
+  EMQX, and **Azure Event Grid namespace** brokers (with Entra JWT).
+- **🟦 AMQP 1.0** — for **Azure Service Bus**, **Azure Event Hubs (AMQP
+  surface)**, ActiveMQ Artemis, Qpid, and any AMQP 1.0 broker. Uses SASL
+  PLAIN for generic brokers and Entra ID + AMQP CBS for Service Bus / Event
+  Hubs (no SAS-key minting).
 
-## Deployment models
+A single source typically emits the **same CloudEvents** over all three
+transports, so consumers can pick whichever wire protocol fits their
+architecture without changing the event schemas or the routing keys.
 
-> ⚡ **MQTT 5.0 / Unified-Namespace pilot.** Seventeen sources — including
-> **[NWS Alerts](nws-alerts/CONTAINER.md)**,
-> ⚡ **MQTT 5.0 / Unified-Namespace pilot.** Selected sources — including
-> **[TfL Road Traffic](tfl-road-traffic/CONTAINER.md#mqtt-50--unified-namespace-feeder)**,
-> **[Autobahn](autobahn/CONTAINER.md#mqtt-50--unified-namespace-feeder)**,
-> **[Bluesky](bluesky/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**,
-> **[AISStream](aisstream/CONTAINER.md#mqtt-50--unified-namespace-feeder-pilot)**,
-> **[Kystverket AIS](kystverket-ais/CONTAINER.md#mqtt-50--unified-namespace-feeder)**,
-> and **[Blitzortung](blitzortung/CONTAINER.md#mqtt-50--unified-namespace-feeder)** —
-> now ship a second container image (`Dockerfile.mqtt`) that publishes into MQTT
-> 5.0 brokers on UNS topic trees using the CloudEvents binary binding. The Kafka
-> images and contracts are unchanged.
-> ship a second container image (`Dockerfile.mqtt`) that publishes into MQTT
-> 5.0 brokers on UNS topic trees using the CloudEvents binary binding. The
-> Kafka images remain separate.
+**Deployment.** Each source can be deployed in one click from the
+[interactive catalog](https://clemensv.github.io/real-time-sources) into:
 
-Every source can be deployed in three ways. The [interactive catalog](https://clemensv.github.io/real-time-sources)
-exposes a one-click deploy button for each supported model:
-
-1. **Azure Container Instance → Azure Event Hubs.** An [ARM template](https://learn.microsoft.com/azure/azure-resource-manager/templates/overview)
-   provisions an [Azure Container Instance](https://learn.microsoft.com/azure/container-instances/)
-   running the feeder, with the choice of either provisioning a fresh
-   [Azure Event Hubs](https://learn.microsoft.com/azure/event-hubs/event-hubs-about)
-   namespace alongside it (*Azure + Event Hub*) or feeding into an existing
-   Event Hubs connection string you already have (*Azure BYO Event Hub*).
-
-2. **Azure Container Instance → Microsoft Fabric Event Stream.** The same ACI
+1. **Azure Container Instance → Azure Event Hubs (Kafka)** — ARM template
+   provisions an ACI running the Kafka feeder, with the option to provision
+   a fresh [Event Hubs](https://learn.microsoft.com/azure/event-hubs/event-hubs-about)
+   namespace or feed into an existing one.
+2. **Azure Container Instance → Azure Service Bus / Event Hubs (AMQP)** —
+   ARM template provisions an ACI running the AMQP feeder against a Service
+   Bus topic (Entra-authenticated, no shared-access keys).
+3. **Azure Container Instance → Azure Event Grid namespace (MQTT)** — ARM
+   template provisions an ACI running the MQTT feeder against an Event Grid
+   namespace MQTT broker.
+4. **Azure Container Instance → Microsoft Fabric Event Stream.** Same ACI
    feeder, deployed from the gh-pages portal, writes into a
    [Fabric Event Stream](https://learn.microsoft.com/fabric/real-time-intelligence/event-streams/overview)
    custom endpoint inside a [Fabric Eventhouse](https://learn.microsoft.com/fabric/real-time-intelligence/eventhouse).
-   This is the right choice when you want the data in Fabric but prefer to host
-   the feeder in Azure.
+5. **Fabric-only via notebooks.** For poll-based sources, the feeder runs
+   as a [Fabric notebook](https://learn.microsoft.com/fabric/data-engineering/how-to-use-notebook)
+   on a [scheduled trigger](https://learn.microsoft.com/fabric/data-engineering/schedule-notebook-runs)
+   with no Azure subscription required at all. The deploy script provisions
+   the Eventhouse, Event Stream, [KQL database](https://learn.microsoft.com/fabric/real-time-intelligence/create-database),
+   and update policies, then imports the notebook and schedules it. Look for
+   the **Fabric Notebook Feeder** button on supported cards below.
 
-3. **Fabric-only via notebooks.** For supported sources, the feeder runs as a
-   [Fabric notebook](https://learn.microsoft.com/fabric/data-engineering/how-to-use-notebook)
-   on a [scheduled trigger](https://learn.microsoft.com/fabric/data-engineering/schedule-notebook-runs),
-   with no Azure subscription required at all. The deploy script provisions an
-   Eventhouse, Event Stream, [KQL database](https://learn.microsoft.com/fabric/real-time-intelligence/create-database),
-   and update policies, then imports the notebook and schedules it. Everything
-   — ingestion, storage, query — stays inside your Fabric workspace. Look for
-   the **Fabric Notebook Feeder** button in the catalog below.
+Or run any feeder yourself via `docker pull` — see each source's
+`CONTAINER.md` for the image tag, environment variables, and sample
+`docker run` command. The container images run anywhere: laptop,
+Kubernetes, Container Apps, Cloud Run, ECS.
 
 <!-- root-catalog:begin -->
 _The catalog below is rendered from `catalog.json`. Click a category to expand. Inside each category, click a source to see deploy targets, contract key, and event types. The [interactive portal](https://clemensv.github.io/real-time-sources) has the same content with live filters._
