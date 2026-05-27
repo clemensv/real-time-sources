@@ -173,50 +173,77 @@ The feeder emits a single event family:
 
 The dataset does not publish a separate reference catalog for incident types or stations, so **no reference-data event type is emitted**. Field-level provenance, units, and known gaps are documented per-field in [EVENTS.md](EVENTS.md). Upstream fields explicitly dropped from the contract: `report_location` (duplicate geometry presentation of `latitude` / `longitude`) and the Socrata `:@computed_region_*` platform-derived fields (not authoritative incident attributes).
 
-## Deploying into Microsoft Fabric
+<!-- source-deploy:begin -->
+## Deploy
 
-Seattle Fire 911 targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), and an attached Eventhouse / KQL database materializes the contract from [`kql/`](kql/) with one table for `Incident` and update policies that decode the CloudEvent envelope.
+The portal buttons wrap the underlying scripts and ARM templates documented below; pick the path that matches your destination and operational preference. Every route lands in the same Eventhouse / KQL schema if you want one — they only differ in where the feeder container or notebook runs.
 
-Two hosting models are supported. **Use the deploy buttons on the [project portal](https://clemensv.github.io/real-time-sources/#seattle-911)** to launch either.
+### Deploying into Microsoft Fabric
 
-### Fabric Notebook feeder (recommended for this 5-minute polling cadence)
+Seattle Fire 911 targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), an attached **Eventhouse / KQL database** materializes the contract from [`kql/`](kql/).
 
-A scheduled Fabric Notebook ([`notebook/`](notebook/)) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `seattle_911` package and the generated producer sub-packages. The Event Stream custom endpoint connection string is looked up at runtime via the public Fabric Topology API using the workspace identity — no secrets in the notebook, no separate container host to manage. Resume state lives in OneLake under `/lakehouse/default/Files/feeder-state/seattle-911/`.
+Two hosting models are supported. Use the deploy buttons on the [project portal](https://clemensv.github.io/real-time-sources#seattle-911) to launch either — both walk you through the same Fabric workspace selection and follow-up steps.
 
-Deploy with `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source seattle-911 -Workspace <id> -ResourceGroup <azure-rg> -Location <azure-region>` (the portal button wraps this for you). Best fit for the dataset's ~5-minute refresh cadence; the notebook executes on a Fabric schedule and writes a per-run diagnostic log to OneLake.
+#### Fabric Notebook feeder &nbsp;<sub><i>(recommended for low-volume polling)</i></sub>
 
-[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#seattle-911/fabric-notebook)
+A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `seattle_911` package and the generated producer sub-packages. The Event Stream custom-endpoint connection string is looked up at runtime via the public Fabric Topology API using the workspace identity — no secrets in the notebook, no separate container host to manage. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/seattle-911/`.
 
-### Fabric ACI feeder (recommended for MQTT / AMQP transports)
+```powershell
+tools/deploy-fabric/deploy-feeder-notebook.ps1 `
+  -Source seattle-911 `
+  -Workspace <fabric-workspace-id-or-name> `
+  -ResourceGroup <azure-rg-for-bootstrap> `
+  -Location <azure-region>
+```
 
-A long-running Azure Container Instance hosts one of the three container images and writes into the same Fabric Event Stream custom endpoint. Use this when you want continuous MQTT publishing for a Unified Namespace, the AMQP transport, or always-on Kafka delivery rather than the notebook's scheduled execution.
+Best fit for poll-based sources whose update cadence aligns with scheduled execution; the notebook writes a per-run diagnostic log to OneLake on every run.
 
-Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source seattle-911 -Workspace <id> -ResourceGroup <azure-rg> -Location <azure-region>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#seattle-911/fabric-notebook)
 
-[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#seattle-911/fabric-aci)
+#### Fabric ACI feeder &nbsp;<sub><i>(recommended for high-volume / always-on, and for MQTT or AMQP)</i></sub>
 
-## Deploying into Azure Container Instances
+A long-running Azure Container Instance hosts the container image and writes into a Fabric Event Stream custom endpoint. Use this for continuous polling, real-time MQTT/UNS publishing, or the AMQP transport — anything that does not fit a scheduled-notebook model.
 
-Three one-click deployment templates are available — one for each realistic Azure target. These templates host the container directly in Azure (without a Fabric workspace) and target an Azure Event Hubs namespace or an Azure Service Bus AMQP queue. All templates create a storage account and file share for persistent dedupe / resume state.
+```powershell
+tools/deploy-fabric/deploy-fabric-aci.ps1 `
+  -Source seattle-911 `
+  -Workspace <fabric-workspace-id-or-name> `
+  -ResourceGroup <azure-rg> `
+  -Location <azure-region>
+```
 
-### Kafka — bring your own Event Hub / Kafka
+The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
 
-Deploy the Kafka container with your own Azure Event Hubs or Fabric Event Stream connection string.
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#seattle-911/fabric-aci)
+
+
+### Deploying into Azure Container Instances
+
+3 one-click deployment templates — one per realistic Azure target. These templates host the container directly in Azure (without a Fabric workspace) and target an Azure Event Hubs namespace, an MQTT broker, or an AMQP 1.0 peer. All templates create a storage account and file share for persistent dedupe state.
+
+#### Kafka — bring your own Event Hub / Kafka
+
+Deploy the Kafka container with your own Azure Event Hubs or Fabric Event Stream connection string. You pass the connection string at deploy time; the template provisions only the container and a storage account for persistent dedupe state.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fseattle-911%2Fazure-template.json)
 
-### Kafka — provision a new Event Hub
+#### Kafka — provision a new Event Hub
 
 Deploy the Kafka container together with a new Event Hubs namespace (Standard SKU, 1 throughput unit) and event hub. The connection string is wired automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fseattle-911%2Fazure-template-with-eventhub.json)
 
-### AMQP — provision a new Azure Service Bus namespace
+#### AMQP — provision a new Azure Service Bus namespace
 
-Deploy the AMQP container together with a new [Azure Service Bus Standard namespace](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview) with a queue named `seattle-911`, a user-assigned managed identity, and the **Azure Service Bus Data Sender** role assignment. The feeder authenticates via AMQP CBS put-token with Microsoft Entra ID — no SAS key rotation required.
+Deploy the AMQP container together with a new [Azure Service Bus Standard namespace](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview) with a queue, a user-assigned managed identity, and the **Azure Service Bus Data Sender** role assignment. The feeder authenticates via AMQP CBS put-token with Microsoft Entra ID — no SAS key rotation required.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Fseattle-911%2Fazure-template-with-servicebus.json)
 
+
+### Self-hosted
+
+Pull and run any of the 3 container images directly — laptop, Kubernetes, Azure Container Apps, Cloud Run, ECS, bare metal. The full per-transport / per-auth-mode environment-variable matrix and sample `docker run` commands for every target broker live in [CONTAINER.md](CONTAINER.md).
+<!-- source-deploy:end -->
 ## Next steps
 
 - Pick a hosting model: a [Fabric Notebook or Fabric ACI feeder](#deploying-into-microsoft-fabric) if your destination is a Fabric workspace; a [direct Azure deployment](#deploying-into-azure-container-instances) if you target Event Hubs or Service Bus without Fabric.

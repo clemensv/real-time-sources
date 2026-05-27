@@ -145,42 +145,77 @@ This feeder emits the following event families:
 
 See [EVENTS.md](EVENTS.md) for field-level schemas, subject templates, and key mapping per transport.
 
-## Deploying into Microsoft Fabric
+<!-- source-deploy:begin -->
+## Deploy
 
-Two hosting options are available for this poll-based source:
+The portal buttons wrap the underlying scripts and ARM templates documented below; pick the path that matches your destination and operational preference. Every route lands in the same Eventhouse / KQL schema if you want one — they only differ in where the feeder container or notebook runs.
 
-### Fabric Notebook feeder
+### Deploying into Microsoft Fabric
 
-The notebook under [`notebook/`](notebook/) runs the bridge on a Fabric schedule and resolves the Event Stream connection string at runtime via Fabric topology APIs.
+EAWS ALBINA Avalanche targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), an attached **Eventhouse / KQL database** materializes the contract from [`kql/`](kql/).
 
-[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#eaws-albina/fabric-notebook)
+Two hosting models are supported. Use the deploy buttons on the [project portal](https://clemensv.github.io/real-time-sources#eaws-albina) to launch either — both walk you through the same Fabric workspace selection and follow-up steps.
 
-### Fabric ACI feeder
+#### Fabric Notebook feeder &nbsp;<sub><i>(recommended for low-volume polling)</i></sub>
 
-A long-running Azure Container Instance hosts one of the three transport images and publishes to a Fabric Event Stream custom endpoint.
+A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `eaws_albina` package and the generated producer sub-packages. The Event Stream custom-endpoint connection string is looked up at runtime via the public Fabric Topology API using the workspace identity — no secrets in the notebook, no separate container host to manage. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/eaws-albina/`.
 
-[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#eaws-albina/fabric-aci)
+```powershell
+tools/deploy-fabric/deploy-feeder-notebook.ps1 `
+  -Source eaws-albina `
+  -Workspace <fabric-workspace-id-or-name> `
+  -ResourceGroup <azure-rg-for-bootstrap> `
+  -Location <azure-region>
+```
 
-## Deploying into Azure Container Instances
+Best fit for poll-based sources whose update cadence aligns with scheduled execution; the notebook writes a per-run diagnostic log to OneLake on every run.
 
-### Kafka — bring your own Event Hub / Kafka
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#eaws-albina/fabric-notebook)
 
-Deploys the Kafka image and uses a provided connection string.
+#### Fabric ACI feeder &nbsp;<sub><i>(recommended for high-volume / always-on, and for MQTT or AMQP)</i></sub>
+
+A long-running Azure Container Instance hosts the container image and writes into a Fabric Event Stream custom endpoint. Use this for continuous polling, real-time MQTT/UNS publishing, or the AMQP transport — anything that does not fit a scheduled-notebook model.
+
+```powershell
+tools/deploy-fabric/deploy-fabric-aci.ps1 `
+  -Source eaws-albina `
+  -Workspace <fabric-workspace-id-or-name> `
+  -ResourceGroup <azure-rg> `
+  -Location <azure-region>
+```
+
+The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
+
+[![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#eaws-albina/fabric-aci)
+
+
+### Deploying into Azure Container Instances
+
+3 one-click deployment templates — one per realistic Azure target. These templates host the container directly in Azure (without a Fabric workspace) and target an Azure Event Hubs namespace, an MQTT broker, or an AMQP 1.0 peer. All templates create a storage account and file share for persistent dedupe state.
+
+#### Kafka — bring your own Event Hub / Kafka
+
+Deploy the Kafka container with your own Azure Event Hubs or Fabric Event Stream connection string. You pass the connection string at deploy time; the template provisions only the container and a storage account for persistent dedupe state.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Feaws-albina%2Fazure-template.json)
 
-### Kafka — provision a new Event Hub
+#### Kafka — provision a new Event Hub
 
-Deploys Kafka plus a new Event Hubs namespace and hub.
+Deploy the Kafka container together with a new Event Hubs namespace (Standard SKU, 1 throughput unit) and event hub. The connection string is wired automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Feaws-albina%2Fazure-template-with-eventhub.json)
 
-### AMQP — provision Azure Service Bus
+#### AMQP — provision a new Azure Service Bus namespace
 
-Deploys AMQP plus a new Service Bus namespace/queue and sender identity wiring.
+Deploy the AMQP container together with a new [Azure Service Bus Standard namespace](https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview) with a queue, a user-assigned managed identity, and the **Azure Service Bus Data Sender** role assignment. The feeder authenticates via AMQP CBS put-token with Microsoft Entra ID — no SAS key rotation required.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Feaws-albina%2Fazure-template-with-servicebus.json)
 
+
+### Self-hosted
+
+Pull and run any of the 3 container images directly — laptop, Kubernetes, Azure Container Apps, Cloud Run, ECS, bare metal. The full per-transport / per-auth-mode environment-variable matrix and sample `docker run` commands for every target broker live in [CONTAINER.md](CONTAINER.md).
+<!-- source-deploy:end -->
 ## Next steps
 
 - Review [EVENTS.md](EVENTS.md) before building consumers.
