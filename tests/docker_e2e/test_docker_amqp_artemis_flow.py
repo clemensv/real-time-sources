@@ -644,18 +644,39 @@ def noaa_swpc_l1_amqp_image():
 
 @pytest.fixture()
 def artemis_broker_swpc():
+    client = docker.from_env()
     network = client.networks.create("noaa-swpc-l1-amqp-e2e", driver="bridge")
+    host_port = _find_free_port()
     container = None
+    try:
         container = client.containers.run(
+            ARTEMIS_IMAGE,
             name="noaa-swpc-l1-amqp-e2e-broker",
             detach=True, remove=True, network=network.name,
+            ports={"5672/tcp": host_port},
+            environment={
+                "ARTEMIS_USER": ARTEMIS_USER,
+                "ARTEMIS_PASSWORD": ARTEMIS_PASSWORD,
+                "ANONYMOUS_LOGIN": "false",
                 "EXTRA_ARGS": f"--queues {SWPC_QUEUE_NAME}",
+            },
+        )
+        deadline = time.time() + 90
         ready = False
+        while time.time() < deadline:
+            try:
+                with closing(socket.create_connection(("127.0.0.1", host_port), timeout=1)):
                     logs = container.logs().decode("utf-8", errors="replace")
+                    if "Server is now live" in logs or ("AMQP" in logs and "started" in logs.lower()):
                         ready = True
+                        break
+            except OSError:
+                pass
+            time.sleep(2)
         if not ready:
             tail = container.logs().decode("utf-8", errors="replace")[-2000:]
             pytest.skip(f"Artemis broker not ready. Tail:\n{tail}")
+        time.sleep(3)
         yield {
             "internal_host": "noaa-swpc-l1-amqp-e2e-broker",
             "internal_port": 5672,
@@ -678,21 +699,32 @@ class TestNoaaSwpcL1AmqpArtemisFlow:
 
     def test_emits_cloudevents_with_partition_key(self, artemis_broker_swpc, noaa_swpc_l1_amqp_image):
         client = docker.from_env()
+        feeder = client.containers.run(
             noaa_swpc_l1_amqp_image.id,
             detach=True, remove=False,
             network=artemis_broker_swpc["network"],
+            environment={
                 "AMQP_HOST": artemis_broker_swpc["internal_host"],
                 "AMQP_PORT": str(artemis_broker_swpc["internal_port"]),
                 "AMQP_ADDRESS": artemis_broker_swpc["queue"],
                 "AMQP_USERNAME": artemis_broker_swpc["user"],
                 "AMQP_PASSWORD": artemis_broker_swpc["password"],
+                "AMQP_AUTH_MODE": "password",
                 "POLLING_INTERVAL": "60",
                 "BACKFILL_MINUTES": "1440",
+                "ONCE_MODE": "true",
+                "PYTHONUNBUFFERED": "1",
+            },
+        )
+        try:
             result = feeder.wait(timeout=600)
+            logs = feeder.logs().decode("utf-8", errors="replace")
             assert result.get("StatusCode") == 0, (
                 f"Feeder exited non-zero: {result}\n--- LOGS (last 4KB) ---\n{logs[-4000:]}"
             )
+        finally:
             try: feeder.remove(force=True)
+            except docker.errors.APIError: pass
         messages = _receive_messages(
             "127.0.0.1",
             artemis_broker_swpc["host_port"],

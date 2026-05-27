@@ -4393,7 +4393,7 @@ def _mqtt_topic_options(message: Mapping[str, Any]) -> Tuple[str, int, bool]:
 
 @lru_cache(maxsize=None)
 def _load_mqtt_contracts(project_dir: str) -> Dict[str, Dict[str, Any]]:
-    xreg_dir = os.path.join(REPO_ROOT, project_dir, 'xreg')
+    xreg_dir = os.path.join(REPO_ROOT, 'feeders', project_dir, 'xreg')
     xreg_files = [os.path.join(xreg_dir, name) for name in os.listdir(xreg_dir) if name.endswith('.xreg.json')]
     assert len(xreg_files) == 1, f'Expected one xreg file for {project_dir}, found {xreg_files}'
     with open(xreg_files[0], 'r', encoding='utf-8') as fh:
