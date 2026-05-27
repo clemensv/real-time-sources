@@ -149,7 +149,7 @@ This source is documented for the long-running **Fabric ACI feeder** deployment 
 
 A long-running Azure Container Instance hosts one of the three container images and writes into a Fabric Event Stream custom endpoint. Use this whenever the destination is a Fabric workspace.
 
-Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source canada-eccc-wateroffice -WorkspaceId <id> -CapacityId <id>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with the [`kql/canada-eccc-wateroffice.kql`](kql/canada-eccc-wateroffice.kql) schema and update policies, the Event Stream with a custom endpoint, and the ACI with the connection string wired in.
+Deploy with `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source canada-eccc-wateroffice -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>` (the portal button wraps this for you). The script creates the Eventhouse, the KQL database with the [`kql/canada-eccc-wateroffice.kql`](kql/canada-eccc-wateroffice.kql) schema and update policies, the Event Stream with a custom endpoint, and the ACI with the connection string wired in.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#canada-eccc-wateroffice/fabric-aci)
 

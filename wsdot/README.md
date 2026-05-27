@@ -137,7 +137,7 @@ WSDOT Traveler Information supports both Fabric hosting models via the source ca
 
 Because this source is poll-based and ships a notebook asset (`notebook/`), you can run scheduled ingestion in-Fabric with:
 
-`tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source wsdot -WorkspaceId <id> -CapacityId <id>`
+`tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source wsdot -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>`
 
 [![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#wsdot/fabric-notebook)
 
@@ -145,7 +145,7 @@ Because this source is poll-based and ships a notebook asset (`notebook/`), you 
 
 For always-on execution, deploy a long-running Azure Container Instance feeder with:
 
-`tools/deploy-fabric/deploy-fabric-aci.ps1 -Source wsdot -WorkspaceId <id> -CapacityId <id>`
+`tools/deploy-fabric/deploy-fabric-aci.ps1 -Source wsdot -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>`
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#wsdot/fabric-aci)
 

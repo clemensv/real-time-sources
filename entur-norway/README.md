@@ -116,8 +116,10 @@ Primary message groups in xRegistry: `no.entur.journeys`, `no.entur.situations`.
 For this streaming-style bridge, deploy the container via the **Fabric ACI** path:
 
 ```powershell
-tools/deploy-fabric/deploy-fabric-aci.ps1 -Source entur-norway -WorkspaceId <id> -CapacityId <id>
+tools/deploy-fabric/deploy-fabric-aci.ps1 -Source entur-norway -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>
 ```
+
+The script provisions the Fabric Eventhouse, applies the source KQL schema when the source checks one in, creates the Event Stream custom endpoint, and deploys the Azure Container Instance with the resulting connection string wired into the feeder container.
 
 ## Deploying into Azure Container Instances
 

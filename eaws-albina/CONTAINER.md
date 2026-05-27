@@ -186,13 +186,13 @@ docker run --rm \
 
 ### Fabric Notebook feeder
 
-Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source eaws-albina -WorkspaceId <id> -CapacityId <id>` to deploy the notebook in `notebook/`, bind Event Stream/Lakehouse/KQL assets, and schedule poll runs.
+Use `tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source eaws-albina -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>` to deploy the notebook in `notebook/`, bind Event Stream/Lakehouse/KQL assets, and schedule poll runs.
 
 [![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#eaws-albina/fabric-notebook)
 
 ### Fabric ACI feeder
 
-Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source eaws-albina -WorkspaceId <id> -CapacityId <id>` for always-on container hosting that publishes to Fabric Event Streams.
+Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source eaws-albina -ResourceGroup <rg> -Location <azure-region> -Workspace <fabric-workspace>` for always-on container hosting that publishes to Fabric Event Streams.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources/#eaws-albina/fabric-aci)
 
