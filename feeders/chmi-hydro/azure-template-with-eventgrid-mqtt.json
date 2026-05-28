@@ -1,0 +1,263 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "Deploys the chmi-hydro MQTT/UNS bridge with a new Azure Event Grid namespace (MQTT broker enabled), a user-assigned managed identity authorized via Microsoft Entra JWT against the broker, a topic space rooted at hydro/cz/chmi/chmi-hydro/#, and an Azure Container Instance hosting the feeder. The feeder authenticates to the broker using MQTT v5 enhanced authentication (OAUTH2-JWT) with tokens minted by the managed identity for audience https://eventgrid.azure.net/."
+  },
+  "parameters": {
+    "namePrefix": {
+      "type": "string",
+      "defaultValue": "chmi-hydro",
+      "minLength": 3,
+      "maxLength": 24,
+      "metadata": {
+        "description": "Base name for all resources."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    },
+    "eventGridSku": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": ["Standard"],
+      "metadata": {
+        "description": "Event Grid namespace SKU."
+      }
+    },
+    "eventGridCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 40,
+      "metadata": {
+        "description": "Event Grid namespace throughput units."
+      }
+    },
+    "topicRoot": {
+      "type": "string",
+      "defaultValue": "hydro/#",
+      "metadata": {
+        "description": "Topic-space root for the MQTT/UNS publish surface. Defaults to hydro/# which covers all chmi-hydro output (hydro/cz/chmi/chmi-hydro/...)."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-chmi-hydro-mqtt:latest",
+      "metadata": {
+        "description": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build."
+      }
+    }
+  },
+  "variables": {
+    "namespaceName": "[concat(parameters('namePrefix'), '-egns')]",
+    "topicSpaceName": "chmi-hydro",
+    "clientGroupName": "chmi-hydro-publishers",
+    "permissionBindingName": "chmi-hydro-publish",
+    "userIdentityName": "[concat(parameters('namePrefix'), '-mi')]",
+    "containerGroupName": "[parameters('namePrefix')]",
+    "storageAccountName": "[take(concat(replace(replace(parameters('namePrefix'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
+    "fileShareName": "bridge-state",
+    "logAnalyticsWorkspaceName": "[concat(parameters('namePrefix'), '-logs')]",
+    "publisherRoleId": "/providers/Microsoft.Authorization/roleDefinitions/a12b0b94-b317-4dcd-84a8-502ce99884c6",
+    "userIdentityResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userIdentityName'))]",
+    "namespaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces', variables('namespaceName'))]",
+    "topicSpaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces/topicSpaces', variables('namespaceName'), variables('topicSpaceName'))]",
+    "roleAssignmentName": "[guid(variables('topicSpaceResourceId'), variables('userIdentityResourceId'), variables('publisherRoleId'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[variables('userIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": { "name": "PerGB2018" },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": { "name": "Standard_LRS" },
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot",
+        "minimumTlsVersion": "TLS1_2"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2023-05-01",
+      "name": "[concat(variables('storageAccountName'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2023-05-01",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": { "shareQuota": 1 }
+    },
+    {
+      "type": "Microsoft.EventGrid/namespaces",
+      "apiVersion": "2025-07-15-preview",
+      "name": "[variables('namespaceName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('eventGridSku')]",
+        "capacity": "[parameters('eventGridCapacity')]"
+      },
+      "properties": {
+        "topicSpacesConfiguration": {
+          "state": "Enabled",
+          "maximumClientSessionsPerAuthenticationName": 1,
+          "maximumSessionExpiryInHours": 1
+        }
+      }
+    },
+    {
+      "type": "Microsoft.EventGrid/namespaces/topicSpaces",
+      "apiVersion": "2025-07-15-preview",
+      "name": "[concat(variables('namespaceName'), '/', variables('topicSpaceName'))]",
+      "dependsOn": [
+        "[variables('namespaceResourceId')]"
+      ],
+      "properties": {
+        "topicTemplates": [
+          "[parameters('topicRoot')]"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[variables('roleAssignmentName')]",
+      "scope": "[concat('Microsoft.EventGrid/namespaces/', variables('namespaceName'), '/topicSpaces/', variables('topicSpaceName'))]",
+      "dependsOn": [
+        "[variables('topicSpaceResourceId')]",
+        "[variables('userIdentityResourceId')]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('publisherRoleId')]",
+        "principalId": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[variables('userIdentityResourceId')]": {}
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]",
+        "[variables('namespaceResourceId')]",
+        "[variables('topicSpaceResourceId')]",
+        "[extensionResourceId(variables('topicSpaceResourceId'), 'Microsoft.Authorization/roleAssignments', variables('roleAssignmentName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[variables('containerGroupName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "resources": {
+                "requests": { "cpu": 0.5, "memoryInGB": 1.0 }
+              },
+              "environmentVariables": [
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[concat('mqtts://', reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname, ':8883')]"
+                },
+                { "name": "MQTT_AUTH_MODE", "value": "entra" },
+                { "name": "MQTT_ENTRA_AUDIENCE", "value": "https://eventgrid.azure.net/" },
+                {
+                  "name": "MQTT_ENTRA_CLIENT_ID",
+                  "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
+                },
+                {
+                  "name": "MQTT_CLIENT_ID",
+                  "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
+                },
+                { "name": "LOG_LEVEL", "value": "INFO" },
+                { "name": "PYTHONUNBUFFERED", "value": "1" }
+              ],
+              "volumeMounts": [
+                { "name": "bridge-state", "mountPath": "/mnt/bridge-state" }
+              ]
+            }
+          }
+        ],
+        "volumes": [
+          {
+            "name": "bridge-state",
+            "azureFile": {
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountName": "[variables('storageAccountName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-05-01').keys[0].value]"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "namespaceName": {
+      "type": "string",
+      "value": "[variables('namespaceName')]"
+    },
+    "mqttHostname": {
+      "type": "string",
+      "value": "[reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname]"
+    },
+    "topicSpaceName": {
+      "type": "string",
+      "value": "[variables('topicSpaceName')]"
+    },
+    "managedIdentityClientId": {
+      "type": "string",
+      "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
+    },
+    "managedIdentityPrincipalId": {
+      "type": "string",
+      "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
+    },
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', variables('containerGroupName'))]"
+    }
+  }
+}
