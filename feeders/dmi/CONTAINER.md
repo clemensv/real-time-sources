@@ -8,11 +8,11 @@
 
 # DMI
 
-<sub>meteorological observations, sea level, lightning strikes · Kafka · MQTT · <a href="https://www.dmi.dk/">upstream</a> · <a href="https://opendatadocs.dmi.govcloud.dk/">API docs</a></sub>
+<sub>meteorological observations, sea level, lightning strikes · Kafka · MQTT · AMQP · <a href="https://www.dmi.dk/">upstream</a> · <a href="https://opendatadocs.dmi.govcloud.dk/">API docs</a></sub>
 
-<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square">
+<img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
-<img align="middle" src="https://img.shields.io/badge/Azure-4_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-2_images-2496ed?style=flat-square">
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
 &nbsp;
 <a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
@@ -28,7 +28,7 @@
 </td></tr></table>
 <!-- source-hero:end -->
 
-This source ships two container images backed by the same upstream poller
+This source ships three container images backed by the same upstream poller
 and xRegistry contract:
 
 <!-- upstream-links:begin -->
@@ -43,15 +43,17 @@ and xRegistry contract:
 |---|---|---|
 | `ghcr.io/clemensv/real-time-sources-dmi-kafka` | Apache Kafka 2.x (Azure Event Hubs, Fabric Event Streams, Confluent Cloud, plain Kafka) | Single topic `dmi`, JSON CloudEvents (binary mode); subscribers route by `ce_type` |
 | `ghcr.io/clemensv/real-time-sources-dmi-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric MQTT) | Unified-Namespace topic tree under `weather/dk/dmi/…` and `ocean/dk/dmi/…`, retained QoS 1, CloudEvent attributes as MQTT 5 user properties |
+| `ghcr.io/clemensv/real-time-sources-dmi-amqp` | AMQP 1.0 broker (Azure Service Bus, Azure Event Hubs, ActiveMQ Artemis, RabbitMQ AMQP 1.0) | Binary-mode AMQP 1.0 messages to one address `dmi`; subject = stable upstream identifier |
 
-Both images consume the [DMI Open Data REST API](https://opendatadocs.dmi.govcloud.dk/)
+All three images consume the [DMI Open Data REST API](https://opendatadocs.dmi.govcloud.dk/)
 operated by the Danish Meteorological Institute and emit the
 **observation triad**: `metObs` (land weather), `oceanObs` (sea-state and
-tidewater), and `lightningData` (per-strike events, Kafka only).
+tidewater), and `lightningData` (per-strike events published on Kafka and AMQP).
 
 The on-the-wire schemas live in [EVENTS.md](EVENTS.md). The container images
 work with any Apache Kafka–compatible service that supports TLS with
-SASL/PLAIN, and with any MQTT 5.0 broker.
+SASL/PLAIN, any MQTT 5.0 broker, and AMQP 1.0 brokers ranging from
+generic SASL PLAIN peers to Azure Service Bus / Event Hubs with Entra ID.
 
 ## Database Schemas and Handling
 
@@ -65,6 +67,7 @@ in [kql/dmi.kql](kql/dmi.kql).
 ```shell
 $ docker pull ghcr.io/clemensv/real-time-sources-dmi-kafka:latest
 $ docker pull ghcr.io/clemensv/real-time-sources-dmi-mqtt:latest
+$ docker pull ghcr.io/clemensv/real-time-sources-dmi-amqp:latest
 ```
 
 ## Using the Kafka image
@@ -145,16 +148,45 @@ $ docker run --rm \
     ghcr.io/clemensv/real-time-sources-dmi-mqtt:latest
 ```
 
+## Using the AMQP image
+
+### With a generic AMQP 1.0 broker (username/password)
+
+```shell
+$ docker run --rm \
+    -e AMQP_BROKER_URL='amqps://broker.example.com:5671/dmi' \
+    -e DMI_METOBS_API_KEY='<key>' \
+    -e DMI_OCEANOBS_API_KEY='<key>' \
+    -e DMI_LIGHTNING_API_KEY='<key>' \
+    ghcr.io/clemensv/real-time-sources-dmi-amqp:latest
+```
+
+### With Azure Service Bus / Event Hubs (Microsoft Entra ID over CBS)
+
+```shell
+$ docker run --rm \
+    -e AMQP_HOST='<namespace>.servicebus.windows.net' \
+    -e AMQP_PORT=5671 \
+    -e AMQP_TLS=true \
+    -e AMQP_ADDRESS='dmi' \
+    -e AMQP_AUTH_MODE=entra \
+    -e AMQP_ENTRA_CLIENT_ID='<user-assigned-managed-identity-client-id>' \
+    -e DMI_METOBS_API_KEY='<key>' \
+    -e DMI_OCEANOBS_API_KEY='<key>' \
+    -e DMI_LIGHTNING_API_KEY='<key>' \
+    ghcr.io/clemensv/real-time-sources-dmi-amqp:latest
+```
+
 ## Environment Variables
 
-### Common (both images)
+### Common (all images)
 
 | Variable | Description |
 |---|---|
 | `DMI_API_KEY` | Fallback DMI Gravitee key used for any API without a dedicated key. |
 | `DMI_METOBS_API_KEY` | Per-API key for the MetObs API. |
 | `DMI_OCEANOBS_API_KEY` | Per-API key for the OceanObs API. |
-| `DMI_LIGHTNING_API_KEY` | Per-API key for the Lightning API (Kafka image only). |
+| `DMI_LIGHTNING_API_KEY` | Per-API key for the Lightning API (Kafka and AMQP images). |
 | `DMI_OBSERVATION_PERIOD` | DMI period filter (default `latest-hour`). |
 | `DMI_REFERENCE_REFRESH_HOURS` | Hours between re-emit of reference data (default `6`). |
 | `POLLING_INTERVAL` | Seconds between polling cycles (default `300`). |
@@ -186,6 +218,19 @@ $ docker run --rm \
 | `MQTT_CA_FILE` | Path to broker CA chain. |
 | `MQTT_CLIENT_CERT` / `MQTT_CLIENT_KEY` | PEM paths for `tls-cert` auth. |
 
+### AMQP image
+
+| Variable | Description |
+|---|---|
+| `AMQP_BROKER_URL` | Broker URL, e.g. `amqp://host:5672/dmi` or `amqps://host:5671/dmi`. |
+| `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component-level alternative to `AMQP_BROKER_URL`. |
+| `AMQP_ADDRESS` | Queue, topic, or event hub name (default `dmi`). |
+| `AMQP_USERNAME` / `AMQP_PASSWORD` | Optional SASL PLAIN credentials when `AMQP_AUTH_MODE=password`. |
+| `AMQP_AUTH_MODE` | `password` (default) or `entra`. |
+| `AMQP_ENTRA_AUDIENCE` | Entra audience (default `https://servicebus.azure.net/.default`; use `https://eventhubs.azure.net/.default` for Event Hubs). |
+| `AMQP_ENTRA_CLIENT_ID` | Optional user-assigned managed-identity client id. |
+| `AMQP_CONTENT_MODE` | `binary` (default) or `structured`. |
+
 ## Deploying into Azure Container Instances
 
 ### Kafka — bring your own Event Hub / Kafka
@@ -212,3 +257,11 @@ identity, and an `EventGrid TopicSpaces Publisher` role assignment scoped
 to the topic space.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fdmi%2Fazure-template-with-eventgrid-mqtt.json)
+
+### AMQP — provision a new Azure Service Bus queue
+
+Deploys the AMQP container together with an Azure Service Bus namespace,
+queue `dmi`, a user-assigned managed identity, and an `Azure Service Bus
+Data Sender` role assignment scoped to the queue.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fdmi%2Fazure-template-with-servicebus.json)

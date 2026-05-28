@@ -98,6 +98,12 @@
       "module": "german_waters_mqtt"
     },
     {
+      "dir": "feeders/dmi",
+      "image": "dmi-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "dmi_amqp"
+    },
+    {
       "dir": "feeders/defra-aurn",
       "module": "defra_aurn"
     },

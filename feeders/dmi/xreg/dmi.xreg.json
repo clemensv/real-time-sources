@@ -45,6 +45,29 @@
         "#/messagegroups/dk.dmi.metObs.mqtt",
         "#/messagegroups/dk.dmi.oceanObs.mqtt"
       ]
+    },
+    "dk.dmi.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/dmi"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/dk.dmi.metObs.amqp",
+        "#/messagegroups/dk.dmi.oceanObs.amqp",
+        "#/messagegroups/dk.dmi.lightning.amqp"
+      ]
     }
   },
   "messagegroups": {
@@ -361,6 +384,130 @@
             "topic_name": "ocean/dk/dmi/tidewater/{station_id}/prediction",
             "qos": 1,
             "retain": true
+          }
+        }
+      }
+    },
+    "dk.dmi.metObs.amqp": {
+      "messages": {
+        "dk.dmi.metObs.amqp.Station": {
+          "name": "Station",
+          "basemessageuri": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsStation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable DMI station identifier matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        },
+        "dk.dmi.metObs.amqp.Observation": {
+          "name": "Observation",
+          "basemessageuri": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}/{parameter_id}",
+                "description": "AMQP message subject — stable meteorological observation identity matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        }
+      }
+    },
+    "dk.dmi.oceanObs.amqp": {
+      "messages": {
+        "dk.dmi.oceanObs.amqp.Station": {
+          "name": "OceanStation",
+          "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable ocean-station identifier matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        },
+        "dk.dmi.oceanObs.amqp.TidewaterStation": {
+          "name": "TidewaterStation",
+          "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable tidewater-station identifier matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        },
+        "dk.dmi.oceanObs.amqp.Observation": {
+          "name": "OceanObservation",
+          "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}/{parameter_id}",
+                "description": "AMQP message subject — stable ocean observation identity matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        },
+        "dk.dmi.oceanObs.amqp.TidewaterPrediction": {
+          "name": "TidewaterPrediction",
+          "basemessageuri": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP message subject — stable tidewater prediction identity matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        }
+      }
+    },
+    "dk.dmi.lightning.amqp": {
+      "messages": {
+        "dk.dmi.lightning.amqp.Sensor": {
+          "name": "LightningSensor",
+          "basemessageuri": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningSensor",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{sensor_id}",
+                "description": "AMQP message subject — stable lightning sensor identifier matching the CloudEvent subject and Kafka key."
+              }
+            }
+          }
+        },
+        "dk.dmi.lightning.amqp.Strike": {
+          "name": "LightningStrike",
+          "basemessageuri": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningStrike",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{strike_id}",
+                "description": "AMQP message subject — stable lightning strike identifier matching the CloudEvent subject and Kafka key."
+              }
+            }
           }
         }
       }
