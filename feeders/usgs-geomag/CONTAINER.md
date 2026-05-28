@@ -241,6 +241,24 @@ Deploys the AMQP image against a provided AMQP broker endpoint.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fusgs-geomag%2Fazure-template-amqp.json)
 
+### AMQP — provision a new Service Bus namespace
+
+Deploys the AMQP image together with a new Azure Service Bus namespace (Standard SKU) and queue. A user-assigned managed identity is granted the Azure Service Bus Data Sender role on the queue; the feeder authenticates via Entra ID (no SAS keys).
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fusgs-geomag%2Fazure-template-with-servicebus.json)
+
+### MQTT — bring your own broker
+
+Deploy the MQTT container against an existing MQTT 5 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid namespace MQTT, etc.). You provide the `mqtts://` URL and optional credentials.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fusgs-geomag%2Fazure-template-mqtt.json)
+
+### MQTT — provision a new Azure Event Grid namespace
+
+Deploys the MQTT container together with a new Azure Event Grid namespace (MQTT broker enabled, Standard SKU). A user-assigned managed identity is granted the EventGrid TopicSpace Publisher role; the feeder authenticates via Entra JWT (OAUTH2-JWT enhanced auth, no certificates or passwords).
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fusgs-geomag%2Fazure-template-with-eventgrid-mqtt.json)
+
 ## Related
 
 - [README.md](README.md) — source overview, use cases, and quick-start guidance.
