@@ -12,13 +12,14 @@
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
-<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
 &nbsp;
 <a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
 > United States — active wildfire incidents, NIFC
 
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#nifc-usa-wildfires) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#nifc-usa-wildfires/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
 [🗄️ **KQL schema**](kql/nifc_usa_wildfires.kql) &nbsp;·&nbsp;
@@ -94,6 +95,8 @@ nifc-usa-wildfires incidents
 nifc-usa-wildfires feed --connection-string "<your_connection_string>"
 ```
 
+Add `--once` to exit after a single polling cycle, which is useful for scheduled Fabric notebook runs.
+
 Or with explicit Kafka configuration:
 
 ```bash
@@ -104,6 +107,7 @@ nifc-usa-wildfires feed --kafka-bootstrap-servers "<bootstrap_servers>" --kafka-
 
 - `CONNECTION_STRING`: Microsoft Event Hubs or Microsoft Fabric Event Stream connection string.
 - `NIFC_LAST_POLLED_FILE`: Path to file storing the last polled incident IDs (default: `~/.nifc_usa_wildfires_last_polled.json`).
+- `ONCE_MODE`: Exit after one polling cycle when set to `true`, `1`, or `yes`.
 - `LOG_LEVEL`: Logging level (default: INFO).
 - `KAFKA_ENABLE_TLS`: Enable TLS for Kafka connections (default: true).
 
@@ -130,9 +134,25 @@ The portal buttons wrap the underlying scripts and ARM templates documented belo
 
 NIFC USA Wildfires targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), an attached **Eventhouse / KQL database** materializes the contract from [`kql/`](kql/).
 
-Use the deploy button on the [project portal](https://clemensv.github.io/real-time-sources#nifc-usa-wildfires) to launch the Fabric ACI hosting model — it walks you through Fabric workspace selection and follow-up steps.
+Two hosting models are supported. Use the deploy buttons on the [project portal](https://clemensv.github.io/real-time-sources#nifc-usa-wildfires) to launch either — both walk you through the same Fabric workspace selection and follow-up steps.
 
-#### Fabric ACI feeder &nbsp;<sub><i>(continuous container hosting against a Fabric Event Stream)</i></sub>
+#### Fabric Notebook feeder &nbsp;<sub><i>(recommended for low-volume polling)</i></sub>
+
+A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `nifc_usa_wildfires` package and the generated producer sub-packages. The Event Stream custom-endpoint connection string is looked up at runtime via the public Fabric Topology API using the workspace identity — no secrets in the notebook, no separate container host to manage. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/nifc-usa-wildfires/`.
+
+```powershell
+tools/deploy-fabric/deploy-feeder-notebook.ps1 `
+  -Source nifc-usa-wildfires `
+  -Workspace <fabric-workspace-id-or-name> `
+  -ResourceGroup <azure-rg-for-bootstrap> `
+  -Location <azure-region>
+```
+
+Best fit for poll-based sources whose update cadence aligns with scheduled execution; the notebook writes a per-run diagnostic log to OneLake on every run.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#nifc-usa-wildfires/fabric-notebook)
+
+#### Fabric ACI feeder &nbsp;<sub><i>(recommended for high-volume / always-on, and for MQTT or AMQP)</i></sub>
 
 A long-running Azure Container Instance hosts the container image and writes into a Fabric Event Stream custom endpoint. Use this for continuous polling, real-time MQTT/UNS publishing, or the AMQP transport — anything that does not fit a scheduled-notebook model.
 

@@ -4,10 +4,13 @@ Tests that don't require external dependencies or API calls.
 """
 
 import pytest
+import asyncio
 import json
 import os
+import sys
 from unittest.mock import Mock, patch, MagicMock, AsyncMock
 from datetime import datetime, timezone, timedelta
+import nifc_usa_wildfires.nifc_usa_wildfires as nifc_module
 from nifc_usa_wildfires.nifc_usa_wildfires import (
     NIFCWildfirePoller,
     parse_connection_string,
@@ -763,3 +766,46 @@ class TestConnectionStringEdgeCases:
         conn_str = "BootstrapServer=localhost:9092 ; EntityPath=test-topic"
         result = parse_connection_string(conn_str)
         assert 'kafka_topic' in result
+
+
+@pytest.mark.unit
+def test_poll_and_send_once_exits_after_first_cycle():
+    """The poller should support single-cycle notebook execution."""
+    poller = NIFCWildfirePoller(
+        kafka_config=None,
+        kafka_topic='test-topic',
+        last_polled_file='test_state.json',
+    )
+    poller.event_producer = Mock()
+    poller.event_producer.producer = Mock()
+    poller.fetch_incidents = AsyncMock(return_value=[_make_feature()])
+    poller.load_seen_ids = Mock(return_value={})
+    poller.save_seen_ids = Mock()
+
+    asyncio.run(poller.poll_and_send(once=True))
+
+    poller.fetch_incidents.assert_awaited_once()
+    poller.event_producer.send_gov_nifc_wildfires_wildfire_incident.assert_called_once()
+    poller.event_producer.producer.flush.assert_called_once()
+    poller.save_seen_ids.assert_called_once()
+
+
+@pytest.mark.unit
+@patch.dict(os.environ, {
+    'CONNECTION_STRING': 'BootstrapServer=localhost:9092;EntityPath=test-topic',
+    'ONCE_MODE': 'true',
+}, clear=False)
+@patch('nifc_usa_wildfires.nifc_usa_wildfires.asyncio.run')
+@patch('nifc_usa_wildfires.nifc_usa_wildfires.NIFCWildfirePoller')
+def test_main_honors_once_mode_env(mock_poller_class, mock_asyncio_run):
+    """The CLI should translate ONCE_MODE into a single-cycle poll."""
+    poller = Mock()
+    poller.poll_and_send = AsyncMock()
+    mock_poller_class.return_value = poller
+
+    with patch.object(sys, 'argv', ['nifc-usa-wildfires', 'feed']):
+        nifc_module.main()
+
+    poller.poll_and_send.assert_called_once_with(once=True)
+    mock_asyncio_run.assert_called_once()
+    mock_asyncio_run.call_args[0][0].close()
