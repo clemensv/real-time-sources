@@ -1,0 +1,608 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['Ticketmaster.Events.Event'] (
+   [event_id]: string,
+   [name]: string,
+   [type]: string,
+   [url]: string,
+   [locale]: string,
+   [start_date]: string,
+   [start_time]: string,
+   [start_datetime_local]: string,
+   [start_datetime_utc]: string,
+   [status]: string,
+   [segment_id]: string,
+   [segment_name]: string,
+   [genre_id]: string,
+   [genre_name]: string,
+   [subgenre_id]: string,
+   [subgenre_name]: string,
+   [venue_id]: string,
+   [venue_name]: string,
+   [venue_city]: string,
+   [venue_state_code]: string,
+   [venue_country_code]: string,
+   [venue_latitude]: real,
+   [venue_longitude]: real,
+   [price_min]: real,
+   [price_max]: real,
+   [currency]: string,
+   [attraction_ids]: string,
+   [attraction_names]: string,
+   [onsale_start_datetime]: string,
+   [onsale_end_datetime]: string,
+   [info]: string,
+   [please_note]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Ticketmaster.Events.Event'] docstring "{\"description\": \"A Ticketmaster event representing a concert, sports match, theater performance, or other live public event. Sourced from the Discovery API v2 /events endpoint.\"}";
+
+.alter table ['Ticketmaster.Events.Event'] column-docstrings (
+   [event_id]: "{\"description\": \"Stable Ticketmaster event identifier. Globally unique across all event types (e.g. 'G5v0Z9iQkPl_2'). Used as the Kafka message key.\"}",
+   [name]: "{\"description\": \"Human-readable event name as provided by Ticketmaster (e.g. 'Taylor Swift | The Eras Tour').\"}",
+   [type]: "{\"description\": \"Ticketmaster resource type discriminator. Usually 'event'.\"}",
+   [url]: "{\"description\": \"URL to the event page on Ticketmaster.com where tickets can be purchased.\"}",
+   [locale]: "{\"description\": \"BCP-47 locale string for the event page (e.g. 'en-us', 'en-gb', 'de-de').\"}",
+   [start_date]: "{\"description\": \"Local calendar date on which the event starts, in ISO 8601 YYYY-MM-DD format. May be absent for events without a confirmed date (time-to-be-announced).\"}",
+   [start_time]: "{\"description\": \"Local clock time at which the event starts, in HH:MM:SS format. May be absent when the time is to be announced.\"}",
+   [start_datetime_local]: "{\"description\": \"Combined local start date and time as an ISO 8601 datetime string (e.g. '2024-07-20T19:30:00'). Not adjusted to UTC.\"}",
+   [start_datetime_utc]: "{\"description\": \"Start date and time expressed in UTC as an ISO 8601 datetime string (e.g. '2024-07-20T23:30:00Z'). Used as the CloudEvents time attribute.\"}",
+   [status]: "{\"description\": \"Current on-sale status of the event. Known values: 'onsale' (tickets available), 'offsale' (tickets not available), 'cancelled' (event cancelled), 'postponed' (date changed, new date not yet set), 'rescheduled' (new date confirmed).\"}",
+   [segment_id]: "{\"description\": \"Stable Ticketmaster classification segment identifier for this event (e.g. 'KZFzniwnSyZfZ7v7nJ' for Music). Corresponds to the top-level category.\"}",
+   [segment_name]: "{\"description\": \"Human-readable name of the classification segment (e.g. 'Music', 'Sports', 'Arts & Theatre', 'Film', 'Miscellaneous').\"}",
+   [genre_id]: "{\"description\": \"Stable Ticketmaster genre identifier within the segment. Second level of the classification hierarchy.\"}",
+   [genre_name]: "{\"description\": \"Human-readable genre name (e.g. 'Rock', 'Pop', 'Hip-Hop/Rap', 'Basketball', 'Theatre').\"}",
+   [subgenre_id]: "{\"description\": \"Stable Ticketmaster subgenre identifier. Third level of the classification hierarchy, below genre.\"}",
+   [subgenre_name]: "{\"description\": \"Human-readable subgenre name (e.g. 'Alternative Rock', 'Dance Pop', 'NBA').\"}",
+   [venue_id]: "{\"description\": \"Stable Ticketmaster venue identifier for the primary venue where this event takes place. Matches entity_id in a Ticketmaster.Reference.Venue event.\"}",
+   [venue_name]: "{\"description\": \"Human-readable name of the primary venue (e.g. 'Madison Square Garden').\"}",
+   [venue_city]: "{\"description\": \"City where the venue is located.\"}",
+   [venue_state_code]: "{\"description\": \"ISO 3166-2 state or province code for the venue location (e.g. 'NY', 'CA'). May be absent for non-US/CA venues.\"}",
+   [venue_country_code]: "{\"description\": \"ISO 3166-1 alpha-2 country code for the venue location (e.g. 'US', 'GB', 'DE').\"}",
+   [venue_latitude]: "{\"description\": \"WGS-84 latitude of the venue in decimal degrees. North is positive.\"}",
+   [venue_longitude]: "{\"description\": \"WGS-84 longitude of the venue in decimal degrees. East is positive.\"}",
+   [price_min]: "{\"description\": \"Minimum face-value ticket price in the currency indicated by the currency field. Provided by the price_ranges element in the Discovery API response when available.\"}",
+   [price_max]: "{\"description\": \"Maximum face-value ticket price in the currency indicated by the currency field. Provided by the price_ranges element in the Discovery API response when available.\"}",
+   [currency]: "{\"description\": \"ISO 4217 currency code for price_min and price_max (e.g. 'USD', 'GBP', 'EUR').\"}",
+   [attraction_ids]: "{\"description\": \"JSON-encoded array of Ticketmaster attraction identifiers associated with this event (e.g. '[\\\"K8vZ91718H7\\\",\\\"K8vZ9179Ki7\\\"]'). Each ID corresponds to an entity_id in a Ticketmaster.Reference.Attraction reference event.\"}",
+   [attraction_names]: "{\"description\": \"JSON-encoded array of attraction names corresponding to the attraction_ids array (e.g. '[\\\"Taylor Swift\\\",\\\"Sabrina Carpenter\\\"]').\"}",
+   [onsale_start_datetime]: "{\"description\": \"ISO 8601 UTC datetime when public ticket sales open for this event.\"}",
+   [onsale_end_datetime]: "{\"description\": \"ISO 8601 UTC datetime when public ticket sales close for this event.\"}",
+   [info]: "{\"description\": \"General informational text about the event as provided by the promoter or Ticketmaster. May include age restrictions, bag policies, or other event notes.\"}",
+   [please_note]: "{\"description\": \"Important notes for ticket purchasers, such as bag-check policies, camera restrictions, or health and safety requirements. Displayed prominently on the event page.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Ticketmaster.Events.Event'] ingestion json mapping "Ticketmaster.Events.Event_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "event_id", "path": "$.event_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "type", "path": "$.type"},
+  {"column": "url", "path": "$.url"},
+  {"column": "locale", "path": "$.locale"},
+  {"column": "start_date", "path": "$.start_date"},
+  {"column": "start_time", "path": "$.start_time"},
+  {"column": "start_datetime_local", "path": "$.start_datetime_local"},
+  {"column": "start_datetime_utc", "path": "$.start_datetime_utc"},
+  {"column": "status", "path": "$.status"},
+  {"column": "segment_id", "path": "$.segment_id"},
+  {"column": "segment_name", "path": "$.segment_name"},
+  {"column": "genre_id", "path": "$.genre_id"},
+  {"column": "genre_name", "path": "$.genre_name"},
+  {"column": "subgenre_id", "path": "$.subgenre_id"},
+  {"column": "subgenre_name", "path": "$.subgenre_name"},
+  {"column": "venue_id", "path": "$.venue_id"},
+  {"column": "venue_name", "path": "$.venue_name"},
+  {"column": "venue_city", "path": "$.venue_city"},
+  {"column": "venue_state_code", "path": "$.venue_state_code"},
+  {"column": "venue_country_code", "path": "$.venue_country_code"},
+  {"column": "venue_latitude", "path": "$.venue_latitude"},
+  {"column": "venue_longitude", "path": "$.venue_longitude"},
+  {"column": "price_min", "path": "$.price_min"},
+  {"column": "price_max", "path": "$.price_max"},
+  {"column": "currency", "path": "$.currency"},
+  {"column": "attraction_ids", "path": "$.attraction_ids"},
+  {"column": "attraction_names", "path": "$.attraction_names"},
+  {"column": "onsale_start_datetime", "path": "$.onsale_start_datetime"},
+  {"column": "onsale_end_datetime", "path": "$.onsale_end_datetime"},
+  {"column": "info", "path": "$.info"},
+  {"column": "please_note", "path": "$.please_note"},
+]
+```
+
+.create-or-alter table ['Ticketmaster.Events.Event'] ingestion json mapping "Ticketmaster.Events.Event_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "event_id", "path": "$.data.event_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "type", "path": "$.data.type"},
+  {"column": "url", "path": "$.data.url"},
+  {"column": "locale", "path": "$.data.locale"},
+  {"column": "start_date", "path": "$.data.start_date"},
+  {"column": "start_time", "path": "$.data.start_time"},
+  {"column": "start_datetime_local", "path": "$.data.start_datetime_local"},
+  {"column": "start_datetime_utc", "path": "$.data.start_datetime_utc"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "segment_id", "path": "$.data.segment_id"},
+  {"column": "segment_name", "path": "$.data.segment_name"},
+  {"column": "genre_id", "path": "$.data.genre_id"},
+  {"column": "genre_name", "path": "$.data.genre_name"},
+  {"column": "subgenre_id", "path": "$.data.subgenre_id"},
+  {"column": "subgenre_name", "path": "$.data.subgenre_name"},
+  {"column": "venue_id", "path": "$.data.venue_id"},
+  {"column": "venue_name", "path": "$.data.venue_name"},
+  {"column": "venue_city", "path": "$.data.venue_city"},
+  {"column": "venue_state_code", "path": "$.data.venue_state_code"},
+  {"column": "venue_country_code", "path": "$.data.venue_country_code"},
+  {"column": "venue_latitude", "path": "$.data.venue_latitude"},
+  {"column": "venue_longitude", "path": "$.data.venue_longitude"},
+  {"column": "price_min", "path": "$.data.price_min"},
+  {"column": "price_max", "path": "$.data.price_max"},
+  {"column": "currency", "path": "$.data.currency"},
+  {"column": "attraction_ids", "path": "$.data.attraction_ids"},
+  {"column": "attraction_names", "path": "$.data.attraction_names"},
+  {"column": "onsale_start_datetime", "path": "$.data.onsale_start_datetime"},
+  {"column": "onsale_end_datetime", "path": "$.data.onsale_end_datetime"},
+  {"column": "info", "path": "$.data.info"},
+  {"column": "please_note", "path": "$.data.please_note"},
+]
+```
+
+.drop materialized-view ['Ticketmaster.Events.EventLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Ticketmaster.Events.EventLatest'] on table ['Ticketmaster.Events.Event'] {
+    ['Ticketmaster.Events.Event'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Ticketmaster.Events.Event'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Ticketmaster.Events.Event') | project['event_id'] = tostring(data.['event_id']),['name'] = tostring(data.['name']),['type'] = tostring(data.['type']),['url'] = tostring(data.['url']),['locale'] = tostring(data.['locale']),['start_date'] = tostring(data.['start_date']),['start_time'] = tostring(data.['start_time']),['start_datetime_local'] = tostring(data.['start_datetime_local']),['start_datetime_utc'] = tostring(data.['start_datetime_utc']),['status'] = tostring(data.['status']),['segment_id'] = tostring(data.['segment_id']),['segment_name'] = tostring(data.['segment_name']),['genre_id'] = tostring(data.['genre_id']),['genre_name'] = tostring(data.['genre_name']),['subgenre_id'] = tostring(data.['subgenre_id']),['subgenre_name'] = tostring(data.['subgenre_name']),['venue_id'] = tostring(data.['venue_id']),['venue_name'] = tostring(data.['venue_name']),['venue_city'] = tostring(data.['venue_city']),['venue_state_code'] = tostring(data.['venue_state_code']),['venue_country_code'] = tostring(data.['venue_country_code']),['venue_latitude'] = toreal(data.['venue_latitude']),['venue_longitude'] = toreal(data.['venue_longitude']),['price_min'] = toreal(data.['price_min']),['price_max'] = toreal(data.['price_max']),['currency'] = tostring(data.['currency']),['attraction_ids'] = tostring(data.['attraction_ids']),['attraction_names'] = tostring(data.['attraction_names']),['onsale_start_datetime'] = tostring(data.['onsale_start_datetime']),['onsale_end_datetime'] = tostring(data.['onsale_end_datetime']),['info'] = tostring(data.['info']),['please_note'] = tostring(data.['please_note']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Ticketmaster.Reference.Venue'] (
+   [entity_id]: string,
+   [name]: string,
+   [url]: string,
+   [locale]: string,
+   [timezone]: string,
+   [city]: string,
+   [state_code]: string,
+   [country_code]: string,
+   [address]: string,
+   [postal_code]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Ticketmaster.Reference.Venue'] docstring "{\"description\": \"Reference data for a Ticketmaster venue. Carries the venue's stable identifier, location details, timezone, and geographic coordinates as returned by the Discovery API v2 /venues endpoint.\"}";
+
+.alter table ['Ticketmaster.Reference.Venue'] column-docstrings (
+   [entity_id]: "{\"description\": \"Stable Ticketmaster venue identifier (e.g. 'KovZpaFVAeA'). Used as both the Kafka message key and the CloudEvents subject. Matches the venue_id field in Event records.\"}",
+   [name]: "{\"description\": \"Human-readable name of the venue as listed on Ticketmaster (e.g. 'Madison Square Garden', 'The O2 Arena').\"}",
+   [url]: "{\"description\": \"URL to the venue page on Ticketmaster.com.\"}",
+   [locale]: "{\"description\": \"BCP-47 locale string for the venue page (e.g. 'en-us').\"}",
+   [timezone]: "{\"description\": \"IANA timezone database name for the venue's local time (e.g. 'America/New_York', 'Europe/London'). Used to interpret local start times in Event records.\"}",
+   [city]: "{\"description\": \"City name where the venue is located.\"}",
+   [state_code]: "{\"description\": \"ISO 3166-2 state or province code (e.g. 'NY', 'CA'). Populated for US and Canadian venues; absent for most international venues.\"}",
+   [country_code]: "{\"description\": \"ISO 3166-1 alpha-2 country code (e.g. 'US', 'GB', 'DE', 'AU').\"}",
+   [address]: "{\"description\": \"Street address line 1 for the venue (e.g. '4 Pennsylvania Plaza').\"}",
+   [postal_code]: "{\"description\": \"Postal or ZIP code for the venue address.\"}",
+   [latitude]: "{\"description\": \"WGS-84 latitude of the venue in decimal degrees. North is positive.\"}",
+   [longitude]: "{\"description\": \"WGS-84 longitude of the venue in decimal degrees. East is positive.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Ticketmaster.Reference.Venue'] ingestion json mapping "Ticketmaster.Reference.Venue_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "entity_id", "path": "$.entity_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "url", "path": "$.url"},
+  {"column": "locale", "path": "$.locale"},
+  {"column": "timezone", "path": "$.timezone"},
+  {"column": "city", "path": "$.city"},
+  {"column": "state_code", "path": "$.state_code"},
+  {"column": "country_code", "path": "$.country_code"},
+  {"column": "address", "path": "$.address"},
+  {"column": "postal_code", "path": "$.postal_code"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table ['Ticketmaster.Reference.Venue'] ingestion json mapping "Ticketmaster.Reference.Venue_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "entity_id", "path": "$.data.entity_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "url", "path": "$.data.url"},
+  {"column": "locale", "path": "$.data.locale"},
+  {"column": "timezone", "path": "$.data.timezone"},
+  {"column": "city", "path": "$.data.city"},
+  {"column": "state_code", "path": "$.data.state_code"},
+  {"column": "country_code", "path": "$.data.country_code"},
+  {"column": "address", "path": "$.data.address"},
+  {"column": "postal_code", "path": "$.data.postal_code"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view ['Ticketmaster.Reference.VenueLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Ticketmaster.Reference.VenueLatest'] on table ['Ticketmaster.Reference.Venue'] {
+    ['Ticketmaster.Reference.Venue'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Ticketmaster.Reference.Venue'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Ticketmaster.Reference.Venue') | project['entity_id'] = tostring(data.['entity_id']),['name'] = tostring(data.['name']),['url'] = tostring(data.['url']),['locale'] = tostring(data.['locale']),['timezone'] = tostring(data.['timezone']),['city'] = tostring(data.['city']),['state_code'] = tostring(data.['state_code']),['country_code'] = tostring(data.['country_code']),['address'] = tostring(data.['address']),['postal_code'] = tostring(data.['postal_code']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Ticketmaster.Reference.Attraction'] (
+   [entity_id]: string,
+   [name]: string,
+   [url]: string,
+   [locale]: string,
+   [segment_id]: string,
+   [segment_name]: string,
+   [genre_id]: string,
+   [genre_name]: string,
+   [subgenre_id]: string,
+   [subgenre_name]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Ticketmaster.Reference.Attraction'] docstring "{\"description\": \"Reference data for a Ticketmaster attraction, which represents a performer, musical artist, sports team, theatrical production, or other headline act. Sourced from the Discovery API v2 /attractions endpoint.\"}";
+
+.alter table ['Ticketmaster.Reference.Attraction'] column-docstrings (
+   [entity_id]: "{\"description\": \"Stable Ticketmaster attraction identifier (e.g. 'K8vZ91718H7'). Used as both the Kafka message key and the CloudEvents subject. Matches values in the attraction_ids array of Event records.\"}",
+   [name]: "{\"description\": \"Human-readable name of the attraction as listed on Ticketmaster (e.g. 'Taylor Swift', 'Los Angeles Lakers').\"}",
+   [url]: "{\"description\": \"URL to the attraction page on Ticketmaster.com.\"}",
+   [locale]: "{\"description\": \"BCP-47 locale string for the attraction page (e.g. 'en-us').\"}",
+   [segment_id]: "{\"description\": \"Stable Ticketmaster classification segment identifier for this attraction (e.g. 'KZFzniwnSyZfZ7v7nJ' for Music). Matches entity_id in Classification reference events.\"}",
+   [segment_name]: "{\"description\": \"Human-readable name of the classification segment (e.g. 'Music', 'Sports', 'Arts & Theatre').\"}",
+   [genre_id]: "{\"description\": \"Stable Ticketmaster genre identifier for this attraction within its segment.\"}",
+   [genre_name]: "{\"description\": \"Human-readable genre name (e.g. 'Rock', 'Pop', 'Basketball').\"}",
+   [subgenre_id]: "{\"description\": \"Stable Ticketmaster subgenre identifier for this attraction.\"}",
+   [subgenre_name]: "{\"description\": \"Human-readable subgenre name (e.g. 'Alternative Rock', 'Dance Pop').\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Ticketmaster.Reference.Attraction'] ingestion json mapping "Ticketmaster.Reference.Attraction_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "entity_id", "path": "$.entity_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "url", "path": "$.url"},
+  {"column": "locale", "path": "$.locale"},
+  {"column": "segment_id", "path": "$.segment_id"},
+  {"column": "segment_name", "path": "$.segment_name"},
+  {"column": "genre_id", "path": "$.genre_id"},
+  {"column": "genre_name", "path": "$.genre_name"},
+  {"column": "subgenre_id", "path": "$.subgenre_id"},
+  {"column": "subgenre_name", "path": "$.subgenre_name"},
+]
+```
+
+.create-or-alter table ['Ticketmaster.Reference.Attraction'] ingestion json mapping "Ticketmaster.Reference.Attraction_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "entity_id", "path": "$.data.entity_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "url", "path": "$.data.url"},
+  {"column": "locale", "path": "$.data.locale"},
+  {"column": "segment_id", "path": "$.data.segment_id"},
+  {"column": "segment_name", "path": "$.data.segment_name"},
+  {"column": "genre_id", "path": "$.data.genre_id"},
+  {"column": "genre_name", "path": "$.data.genre_name"},
+  {"column": "subgenre_id", "path": "$.data.subgenre_id"},
+  {"column": "subgenre_name", "path": "$.data.subgenre_name"},
+]
+```
+
+.drop materialized-view ['Ticketmaster.Reference.AttractionLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Ticketmaster.Reference.AttractionLatest'] on table ['Ticketmaster.Reference.Attraction'] {
+    ['Ticketmaster.Reference.Attraction'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Ticketmaster.Reference.Attraction'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Ticketmaster.Reference.Attraction') | project['entity_id'] = tostring(data.['entity_id']),['name'] = tostring(data.['name']),['url'] = tostring(data.['url']),['locale'] = tostring(data.['locale']),['segment_id'] = tostring(data.['segment_id']),['segment_name'] = tostring(data.['segment_name']),['genre_id'] = tostring(data.['genre_id']),['genre_name'] = tostring(data.['genre_name']),['subgenre_id'] = tostring(data.['subgenre_id']),['subgenre_name'] = tostring(data.['subgenre_name']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Ticketmaster.Reference.Classification'] (
+   [entity_id]: string,
+   [name]: string,
+   [type]: string,
+   [primary_genre_id]: string,
+   [primary_genre_name]: string,
+   [primary_subgenre_id]: string,
+   [primary_subgenre_name]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Ticketmaster.Reference.Classification'] docstring "{\"description\": \"Reference data for a Ticketmaster classification segment, which represents the top level of the event classification hierarchy (Music, Sports, Arts & Theatre, Film, Miscellaneous, etc.). Emitted at bridge startup from the Discovery API v2 /classifications endpoint.\"}";
+
+.alter table ['Ticketmaster.Reference.Classification'] column-docstrings (
+   [entity_id]: "{\"description\": \"Stable Ticketmaster segment identifier (e.g. 'KZFzniwnSyZfZ7v7nJ'). Used as both the Kafka message key and the CloudEvents subject. Matches segment_id in Event and Attraction records.\"}",
+   [name]: "{\"description\": \"Human-readable name of the classification segment (e.g. 'Music', 'Sports', 'Arts & Theatre', 'Film', 'Miscellaneous').\"}",
+   [type]: "{\"description\": \"Ticketmaster resource type discriminator for this classification entry. Usually 'segment'.\"}",
+   [primary_genre_id]: "{\"description\": \"Stable identifier for the primary or most prominent genre within this segment. Provided when the API returns a primary_genre sub-object.\"}",
+   [primary_genre_name]: "{\"description\": \"Human-readable name of the primary genre (e.g. 'Rock', 'Pop', 'Basketball').\"}",
+   [primary_subgenre_id]: "{\"description\": \"Stable identifier for the primary subgenre under the primary genre.\"}",
+   [primary_subgenre_name]: "{\"description\": \"Human-readable name of the primary subgenre.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Ticketmaster.Reference.Classification'] ingestion json mapping "Ticketmaster.Reference.Classification_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "entity_id", "path": "$.entity_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "type", "path": "$.type"},
+  {"column": "primary_genre_id", "path": "$.primary_genre_id"},
+  {"column": "primary_genre_name", "path": "$.primary_genre_name"},
+  {"column": "primary_subgenre_id", "path": "$.primary_subgenre_id"},
+  {"column": "primary_subgenre_name", "path": "$.primary_subgenre_name"},
+]
+```
+
+.create-or-alter table ['Ticketmaster.Reference.Classification'] ingestion json mapping "Ticketmaster.Reference.Classification_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "entity_id", "path": "$.data.entity_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "type", "path": "$.data.type"},
+  {"column": "primary_genre_id", "path": "$.data.primary_genre_id"},
+  {"column": "primary_genre_name", "path": "$.data.primary_genre_name"},
+  {"column": "primary_subgenre_id", "path": "$.data.primary_subgenre_id"},
+  {"column": "primary_subgenre_name", "path": "$.data.primary_subgenre_name"},
+]
+```
+
+.drop materialized-view ['Ticketmaster.Reference.ClassificationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Ticketmaster.Reference.ClassificationLatest'] on table ['Ticketmaster.Reference.Classification'] {
+    ['Ticketmaster.Reference.Classification'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Ticketmaster.Reference.Classification'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Ticketmaster.Reference.Classification') | project['entity_id'] = tostring(data.['entity_id']),['name'] = tostring(data.['name']),['type'] = tostring(data.['type']),['primary_genre_id'] = tostring(data.['primary_genre_id']),['primary_genre_name'] = tostring(data.['primary_genre_name']),['primary_subgenre_id'] = tostring(data.['primary_subgenre_id']),['primary_subgenre_name'] = tostring(data.['primary_subgenre_name']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [Info] (
+   [info_id]: string,
+   [name]: string,
+   [country]: string,
+   [city]: string,
+   [category]: string,
+   [price_area]: string,
+   [settlement_date]: string,
+   [settlement_period]: int,
+   [area_code]: string,
+   [segment]: string,
+   [entity_id]: string,
+   [event_id]: string,
+   [venue_id]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [Info] docstring "{\"description\": \"Reference information for the source, area, or event collection used by MQTT retained topics and AMQP consumers to discover the logical feed scope.\"}";
+
+.alter table [Info] column-docstrings (
+   [info_id]: "{\"description\": \"Stable identifier for the reference information record; used as the CloudEvents subject when no more specific upstream entity exists.\"}",
+   [name]: "{\"description\": \"Human-readable name for the source, area, or event collection represented by this reference information record.\"}",
+   [country]: "{\"description\": \"Lower-case ISO 3166-1 alpha-2 country code or intl when the feed spans countries.\"}",
+   [city]: "{\"description\": \"City segment used in civic-events topic routing, or null when not applicable.\"}",
+   [category]: "{\"description\": \"Event category segment used in topic routing, or null when not applicable.\"}",
+   [price_area]: "{\"description\": \"Energy market price area or bidding zone represented by this reference record, when applicable.\"}",
+   [settlement_date]: "{\"description\": \"GB settlement date for Elexon retained information topics when applicable.\"}",
+   [settlement_period]: "{\"description\": \"GB settlement period for Elexon retained information topics when applicable.\"}",
+   [area_code]: "{\"description\": \"Electricity control area or utility service area code represented by this record when applicable.\"}",
+   [segment]: "{\"description\": \"Ticketmaster classification segment used for wildcard topic routing, when applicable.\"}",
+   [entity_id]: "{\"description\": \"Stable upstream entity identifier for reference topics, when applicable.\"}",
+   [event_id]: "{\"description\": \"Stable upstream event identifier for event-scoped reference topics, when applicable.\"}",
+   [venue_id]: "{\"description\": \"Stable venue identifier for venue-scoped civic event topics, when applicable.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [Info] ingestion json mapping "Info_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "info_id", "path": "$.info_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "country", "path": "$.country"},
+  {"column": "city", "path": "$.city"},
+  {"column": "category", "path": "$.category"},
+  {"column": "price_area", "path": "$.price_area"},
+  {"column": "settlement_date", "path": "$.settlement_date"},
+  {"column": "settlement_period", "path": "$.settlement_period"},
+  {"column": "area_code", "path": "$.area_code"},
+  {"column": "segment", "path": "$.segment"},
+  {"column": "entity_id", "path": "$.entity_id"},
+  {"column": "event_id", "path": "$.event_id"},
+  {"column": "venue_id", "path": "$.venue_id"},
+]
+```
+
+.create-or-alter table [Info] ingestion json mapping "Info_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "info_id", "path": "$.data.info_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "country", "path": "$.data.country"},
+  {"column": "city", "path": "$.data.city"},
+  {"column": "category", "path": "$.data.category"},
+  {"column": "price_area", "path": "$.data.price_area"},
+  {"column": "settlement_date", "path": "$.data.settlement_date"},
+  {"column": "settlement_period", "path": "$.data.settlement_period"},
+  {"column": "area_code", "path": "$.data.area_code"},
+  {"column": "segment", "path": "$.data.segment"},
+  {"column": "entity_id", "path": "$.data.entity_id"},
+  {"column": "event_id", "path": "$.data.event_id"},
+  {"column": "venue_id", "path": "$.data.venue_id"},
+]
+```
+
+.drop materialized-view InfoLatest ifexists;
+
+.create materialized-view with (backfill=true) InfoLatest on table Info {
+    Info | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [Info] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Ticketmaster.Reference.Info') | project['info_id'] = tostring(data.['info_id']),['name'] = tostring(data.['name']),['country'] = tostring(data.['country']),['city'] = tostring(data.['city']),['category'] = tostring(data.['category']),['price_area'] = tostring(data.['price_area']),['settlement_date'] = tostring(data.['settlement_date']),['settlement_period'] = toint(data.['settlement_period']),['area_code'] = tostring(data.['area_code']),['segment'] = tostring(data.['segment']),['entity_id'] = tostring(data.['entity_id']),['event_id'] = tostring(data.['event_id']),['venue_id'] = tostring(data.['venue_id']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

@@ -1051,7 +1051,8 @@
     "key": true,
     "desc": "Global — concerts, sports, theater, arts via Discovery API",
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "kql": true
   },
   {
     "id": "gracedb",
