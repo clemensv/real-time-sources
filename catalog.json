@@ -873,6 +873,7 @@
     "cat": "Transport",
     "key": false,
     "desc": "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT",
+    "kql": true,
     "mqtt": true,
     "amqp": true
   },

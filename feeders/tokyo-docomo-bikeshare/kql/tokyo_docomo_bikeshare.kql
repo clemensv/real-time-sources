@@ -1,0 +1,338 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['JP.ODPT.DocomoBikeshare.BikeshareSystem'] (
+   [system_id]: string,
+   [language]: string,
+   [name]: string,
+   [short_name]: string,
+   [operator]: string,
+   [url]: string,
+   [purchase_url]: string,
+   [start_date]: string,
+   [phone_number]: string,
+   [email]: string,
+   [feed_contact_email]: string,
+   [timezone]: string,
+   [license_url]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['JP.ODPT.DocomoBikeshare.BikeshareSystem'] docstring "{\"description\": \"A transport update from Docomo Bike Share open feeds. It carries station status and availability updates for Tokyo bike-share stations.\"}";
+
+.alter table ['JP.ODPT.DocomoBikeshare.BikeshareSystem'] column-docstrings (
+   [system_id]: "{\"description\": \"Unique identifier for this bikeshare system. A short, URL-friendly identifier that does not contain spaces, for example 'docomo-cycle-tokyo'. This value is stable and matches the GBFS feed directory name on the ODPT platform.\"}",
+   [language]: "{\"description\": \"A single IETF BCP 47 language identifier representing the primary language used in this feed, for example 'ja' for Japanese or 'en' for English.\"}",
+   [name]: "{\"description\": \"Full name of the bikeshare system as displayed to customers, for example '\\u30c9\\u30b3\\u30e2\\u30fb\\u30d0\\u30a4\\u30af\\u30b7\\u30a7\\u30a2' or 'Docomo Bikeshare'.\"}",
+   [short_name]: "{\"description\": \"Optional abbreviation or short form of the system name, for example 'DocomoBike'.\"}",
+   [operator]: "{\"description\": \"Name of the company or organization that operates the bikeshare system, for example 'NTT Docomo, Inc.'.\"}",
+   [url]: "{\"description\": \"URL of the bikeshare system or operator website for end users, for example 'https://docomo-cycle.jp/'.\"}",
+   [purchase_url]: "{\"description\": \"URL where a customer can purchase a membership or learn about purchasing memberships for this bikeshare system.\"}",
+   [start_date]: "{\"description\": \"Date that the bikeshare system began operations, formatted as YYYY-MM-DD in accordance with ISO 8601.\"}",
+   [phone_number]: "{\"description\": \"A single voice telephone number for the customer service department of this bikeshare system, including country and area code.\"}",
+   [email]: "{\"description\": \"A single contact email address actively monitored by the operator's customer service department.\"}",
+   [feed_contact_email]: "{\"description\": \"A single contact email address for the purpose of reporting issues with the GBFS feed for this system.\"}",
+   [timezone]: "{\"description\": \"The IANA time zone database name for the time zone where the system is located, for example 'Asia/Tokyo'.\"}",
+   [license_url]: "{\"description\": \"A fully qualified URL of a page that defines the license terms for the GBFS data published by this system.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['JP.ODPT.DocomoBikeshare.BikeshareSystem'] ingestion json mapping "JP.ODPT.DocomoBikeshare.BikeshareSystem_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.system_id"},
+  {"column": "language", "path": "$.language"},
+  {"column": "name", "path": "$.name"},
+  {"column": "short_name", "path": "$.short_name"},
+  {"column": "operator", "path": "$.operator"},
+  {"column": "url", "path": "$.url"},
+  {"column": "purchase_url", "path": "$.purchase_url"},
+  {"column": "start_date", "path": "$.start_date"},
+  {"column": "phone_number", "path": "$.phone_number"},
+  {"column": "email", "path": "$.email"},
+  {"column": "feed_contact_email", "path": "$.feed_contact_email"},
+  {"column": "timezone", "path": "$.timezone"},
+  {"column": "license_url", "path": "$.license_url"},
+]
+```
+
+.create-or-alter table ['JP.ODPT.DocomoBikeshare.BikeshareSystem'] ingestion json mapping "JP.ODPT.DocomoBikeshare.BikeshareSystem_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.data.system_id"},
+  {"column": "language", "path": "$.data.language"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "short_name", "path": "$.data.short_name"},
+  {"column": "operator", "path": "$.data.operator"},
+  {"column": "url", "path": "$.data.url"},
+  {"column": "purchase_url", "path": "$.data.purchase_url"},
+  {"column": "start_date", "path": "$.data.start_date"},
+  {"column": "phone_number", "path": "$.data.phone_number"},
+  {"column": "email", "path": "$.data.email"},
+  {"column": "feed_contact_email", "path": "$.data.feed_contact_email"},
+  {"column": "timezone", "path": "$.data.timezone"},
+  {"column": "license_url", "path": "$.data.license_url"},
+]
+```
+
+.drop materialized-view ['JP.ODPT.DocomoBikeshare.BikeshareSystemLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['JP.ODPT.DocomoBikeshare.BikeshareSystemLatest'] on table ['JP.ODPT.DocomoBikeshare.BikeshareSystem'] {
+    ['JP.ODPT.DocomoBikeshare.BikeshareSystem'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['JP.ODPT.DocomoBikeshare.BikeshareSystem'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.ODPT.DocomoBikeshare.BikeshareSystem') | project['system_id'] = tostring(data.['system_id']),['language'] = tostring(data.['language']),['name'] = tostring(data.['name']),['short_name'] = tostring(data.['short_name']),['operator'] = tostring(data.['operator']),['url'] = tostring(data.['url']),['purchase_url'] = tostring(data.['purchase_url']),['start_date'] = tostring(data.['start_date']),['phone_number'] = tostring(data.['phone_number']),['email'] = tostring(data.['email']),['feed_contact_email'] = tostring(data.['feed_contact_email']),['timezone'] = tostring(data.['timezone']),['license_url'] = tostring(data.['license_url']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['JP.ODPT.DocomoBikeshare.BikeshareStation'] (
+   [system_id]: string,
+   [station_id]: string,
+   [name]: string,
+   [short_name]: string,
+   [lat]: real,
+   [lon]: real,
+   [address]: string,
+   [cross_street]: string,
+   [region_id]: string,
+   [post_code]: string,
+   [capacity]: int,
+   [is_virtual_station]: bool,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['JP.ODPT.DocomoBikeshare.BikeshareStation'] docstring "{\"description\": \"A reference record from Docomo Bike Share open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.\"}";
+
+.alter table ['JP.ODPT.DocomoBikeshare.BikeshareStation'] column-docstrings (
+   [system_id]: "{\"description\": \"Identifier of the bikeshare system this station belongs to, for example 'docomo-cycle-tokyo'. Included in the payload so that the composite Kafka key {system_id}/{station_id} can be resolved from the event data.\"}",
+   [station_id]: "{\"description\": \"Unique identifier of the station within the GBFS feed, for example '00010137'. Stable across feed updates; used as the second component of the Kafka key.\"}",
+   [name]: "{\"description\": \"Public name of the station as displayed to customers. Tokyo Docomo Bikeshare publishes bilingual names in the format 'Japanese / English', for example 'A4-01.\\u6771\\u4eac\\u99c5\\u516b\\u91cd\\u6d32\\u53e3 / Tokyo Station Yaesu'.\"}",
+   [short_name]: "{\"description\": \"Short name or other operator-assigned identifier for the station, if provided.\"}",
+   [lat]: "{\"description\": \"WGS 84 latitude of the station in decimal degrees. Positive values indicate north of the equator.\"}",
+   [lon]: "{\"description\": \"WGS 84 longitude of the station in decimal degrees. Positive values indicate east of the prime meridian.\"}",
+   [address]: "{\"description\": \"Street address of the station, if provided by the operator.\"}",
+   [cross_street]: "{\"description\": \"Cross street or nearby landmark of the station location, if provided.\"}",
+   [region_id]: "{\"description\": \"Identifier of the district or region where the station is located, as defined in the GBFS system_regions.json feed.\"}",
+   [post_code]: "{\"description\": \"Postal code of the station location, if provided.\"}",
+   [capacity]: "{\"description\": \"Total number of docking points installed at the station, including those that are temporarily disabled. Reflects the physical capacity of the station.\"}",
+   [is_virtual_station]: "{\"description\": \"If true, the station is a virtual station (i.e., a parking zone without physical docks) rather than a docked station. If absent or false, the station has physical docking points.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['JP.ODPT.DocomoBikeshare.BikeshareStation'] ingestion json mapping "JP.ODPT.DocomoBikeshare.BikeshareStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.system_id"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "short_name", "path": "$.short_name"},
+  {"column": "lat", "path": "$.lat"},
+  {"column": "lon", "path": "$.lon"},
+  {"column": "address", "path": "$.address"},
+  {"column": "cross_street", "path": "$.cross_street"},
+  {"column": "region_id", "path": "$.region_id"},
+  {"column": "post_code", "path": "$.post_code"},
+  {"column": "capacity", "path": "$.capacity"},
+  {"column": "is_virtual_station", "path": "$.is_virtual_station"},
+]
+```
+
+.create-or-alter table ['JP.ODPT.DocomoBikeshare.BikeshareStation'] ingestion json mapping "JP.ODPT.DocomoBikeshare.BikeshareStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.data.system_id"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "short_name", "path": "$.data.short_name"},
+  {"column": "lat", "path": "$.data.lat"},
+  {"column": "lon", "path": "$.data.lon"},
+  {"column": "address", "path": "$.data.address"},
+  {"column": "cross_street", "path": "$.data.cross_street"},
+  {"column": "region_id", "path": "$.data.region_id"},
+  {"column": "post_code", "path": "$.data.post_code"},
+  {"column": "capacity", "path": "$.data.capacity"},
+  {"column": "is_virtual_station", "path": "$.data.is_virtual_station"},
+]
+```
+
+.drop materialized-view ['JP.ODPT.DocomoBikeshare.BikeshareStationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['JP.ODPT.DocomoBikeshare.BikeshareStationLatest'] on table ['JP.ODPT.DocomoBikeshare.BikeshareStation'] {
+    ['JP.ODPT.DocomoBikeshare.BikeshareStation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['JP.ODPT.DocomoBikeshare.BikeshareStation'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.ODPT.DocomoBikeshare.BikeshareStation') | project['system_id'] = tostring(data.['system_id']),['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['short_name'] = tostring(data.['short_name']),['lat'] = toreal(data.['lat']),['lon'] = toreal(data.['lon']),['address'] = tostring(data.['address']),['cross_street'] = tostring(data.['cross_street']),['region_id'] = tostring(data.['region_id']),['post_code'] = tostring(data.['post_code']),['capacity'] = toint(data.['capacity']),['is_virtual_station'] = tobool(data.['is_virtual_station']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['JP.ODPT.DocomoBikeshare.BikeshareStationStatus'] (
+   [system_id]: string,
+   [station_id]: string,
+   [num_bikes_available]: int,
+   [num_bikes_disabled]: int,
+   [num_docks_available]: int,
+   [num_docks_disabled]: int,
+   [is_installed]: bool,
+   [is_renting]: bool,
+   [is_returning]: bool,
+   [last_reported]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['JP.ODPT.DocomoBikeshare.BikeshareStationStatus'] docstring "{\"description\": \"A reference record from Docomo Bike Share open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.\"}";
+
+.alter table ['JP.ODPT.DocomoBikeshare.BikeshareStationStatus'] column-docstrings (
+   [system_id]: "{\"description\": \"Identifier of the bikeshare system this station belongs to, for example 'docomo-cycle-tokyo'. Included in the payload so that the composite Kafka key {system_id}/{station_id} can be resolved from the event data.\"}",
+   [station_id]: "{\"description\": \"Unique identifier of the station within the GBFS feed, for example '00010137'. Matches the station_id in the corresponding BikeshareStation event.\"}",
+   [num_bikes_available]: "{\"description\": \"Number of functional vehicles (bicycles) physically available for rental at this station at the time of the last update.\"}",
+   [num_bikes_disabled]: "{\"description\": \"Number of disabled or broken vehicles at the station that are not available for rental. Absent if the operator does not publish this value.\"}",
+   [num_docks_available]: "{\"description\": \"Number of empty and functional docking points at the station where a customer can return a vehicle. Absent if the operator does not publish this value.\"}",
+   [num_docks_disabled]: "{\"description\": \"Number of broken or disabled docking points at the station that cannot accept vehicle returns. Absent if the operator does not publish this value.\"}",
+   [is_installed]: "{\"description\": \"Indicates whether the station infrastructure is installed on-street and operational. A value of false means the station is temporarily or permanently removed from service.\"}",
+   [is_renting]: "{\"description\": \"Indicates whether the station is currently allowing vehicle rentals. May be false even when bikes are present, for example during a system outage.\"}",
+   [is_returning]: "{\"description\": \"Indicates whether the station is currently accepting vehicle returns. May be false even when docks are empty, for example during a system outage.\"}",
+   [last_reported]: "{\"description\": \"Unix timestamp in seconds (UTC) indicating the last time this station's status was updated by the operator's system. Absent if the operator does not publish this value.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['JP.ODPT.DocomoBikeshare.BikeshareStationStatus'] ingestion json mapping "JP.ODPT.DocomoBikeshare.BikeshareStationStatus_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.system_id"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "num_bikes_available", "path": "$.num_bikes_available"},
+  {"column": "num_bikes_disabled", "path": "$.num_bikes_disabled"},
+  {"column": "num_docks_available", "path": "$.num_docks_available"},
+  {"column": "num_docks_disabled", "path": "$.num_docks_disabled"},
+  {"column": "is_installed", "path": "$.is_installed"},
+  {"column": "is_renting", "path": "$.is_renting"},
+  {"column": "is_returning", "path": "$.is_returning"},
+  {"column": "last_reported", "path": "$.last_reported"},
+]
+```
+
+.create-or-alter table ['JP.ODPT.DocomoBikeshare.BikeshareStationStatus'] ingestion json mapping "JP.ODPT.DocomoBikeshare.BikeshareStationStatus_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.data.system_id"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "num_bikes_available", "path": "$.data.num_bikes_available"},
+  {"column": "num_bikes_disabled", "path": "$.data.num_bikes_disabled"},
+  {"column": "num_docks_available", "path": "$.data.num_docks_available"},
+  {"column": "num_docks_disabled", "path": "$.data.num_docks_disabled"},
+  {"column": "is_installed", "path": "$.data.is_installed"},
+  {"column": "is_renting", "path": "$.data.is_renting"},
+  {"column": "is_returning", "path": "$.data.is_returning"},
+  {"column": "last_reported", "path": "$.data.last_reported"},
+]
+```
+
+.drop materialized-view ['JP.ODPT.DocomoBikeshare.BikeshareStationStatusLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['JP.ODPT.DocomoBikeshare.BikeshareStationStatusLatest'] on table ['JP.ODPT.DocomoBikeshare.BikeshareStationStatus'] {
+    ['JP.ODPT.DocomoBikeshare.BikeshareStationStatus'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['JP.ODPT.DocomoBikeshare.BikeshareStationStatus'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'JP.ODPT.DocomoBikeshare.BikeshareStationStatus') | project['system_id'] = tostring(data.['system_id']),['station_id'] = tostring(data.['station_id']),['num_bikes_available'] = toint(data.['num_bikes_available']),['num_bikes_disabled'] = toint(data.['num_bikes_disabled']),['num_docks_available'] = toint(data.['num_docks_available']),['num_docks_disabled'] = toint(data.['num_docks_disabled']),['is_installed'] = tobool(data.['is_installed']),['is_renting'] = tobool(data.['is_renting']),['is_returning'] = tobool(data.['is_returning']),['last_reported'] = toint(data.['last_reported']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
