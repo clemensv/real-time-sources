@@ -6,6 +6,8 @@ on:
     paths:
       - catalog.json
       - app.js
+      - tools/ghpages/**
+      - tools/docs/generate_root_catalog.py
   workflow_dispatch:
 
 # Serialise with the xRegistry build workflow — both push to ghpages.
@@ -37,16 +39,41 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install share-card dependencies
+        run: pip install --quiet Pillow
+
       - name: Sync app.js and catalog.json from main
         run: |
           cp main/app.js ghpages/app.js
           cp main/catalog.json ghpages/catalog.json
 
+      - name: Generate per-source share pages and OG cards
+        working-directory: main
+        run: |
+          python tools/ghpages/generate_share_pages.py \
+            --catalog catalog.json \
+            --out-dir ../ghpages/share \
+            --base-url https://clemensv.github.io/real-time-sources \
+            --flag-cache .cache/flags
+
+      - name: Generate top-level OG hero card
+        working-directory: main
+        run: |
+          python tools/ghpages/render_hero_card.py \
+            --catalog catalog.json \
+            --out ../ghpages/og.png
+
       - name: Check for changes
         id: diff
         working-directory: ghpages
         run: |
-          if git diff --quiet -- app.js catalog.json; then
+          git add -A app.js catalog.json share og.png
+          if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -58,6 +85,5 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add app.js catalog.json
-          git commit -m "Sync catalog from main"
+          git commit -m "Sync catalog and share pages from main"
           git push origin ghpages
