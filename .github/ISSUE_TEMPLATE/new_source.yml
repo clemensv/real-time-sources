@@ -1,0 +1,54 @@
+name: New source request
+description: Propose a new real-time public data source to add as a feeder.
+labels: ["new-source"]
+body:
+  - type: input
+    id: source-name
+    attributes:
+      label: Source name
+      placeholder: e.g. "BAFU Hydro (Swiss Federal Office for the Environment)"
+    validations:
+      required: true
+  - type: input
+    id: source-url
+    attributes:
+      label: Upstream API URL / docs
+      placeholder: https://...
+    validations:
+      required: true
+  - type: textarea
+    id: what-it-provides
+    attributes:
+      label: What real-time data does it provide?
+      description: Briefly describe the event families, update cadence, and geographic / domain scope.
+    validations:
+      required: true
+  - type: dropdown
+    id: license
+    attributes:
+      label: Upstream data license
+      options:
+        - Public domain
+        - Creative Commons / open data
+        - Free with registration
+        - Other (explain below)
+        - Unknown
+    validations:
+      required: true
+  - type: dropdown
+    id: transport
+    attributes:
+      label: Upstream transport
+      options:
+        - REST / HTTP polling
+        - WebSocket
+        - MQTT
+        - SSE
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Any rate limits, auth requirements, quirks worth flagging?

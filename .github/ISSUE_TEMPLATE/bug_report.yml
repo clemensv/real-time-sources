@@ -1,0 +1,47 @@
+name: Bug report
+description: Report a bug in a feeder or in the shared tooling.
+labels: ["bug"]
+body:
+  - type: input
+    id: feeder
+    attributes:
+      label: Affected feeder (or "tooling")
+      placeholder: e.g. bafu-hydro
+    validations:
+      required: true
+  - type: dropdown
+    id: runtime
+    attributes:
+      label: How are you running it?
+      options:
+        - Container (ACI / Docker)
+        - Fabric Notebook
+        - Local Python checkout
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Include the exact command and the error / unexpected output.
+      placeholder: |
+        Steps:
+        1. ...
+        2. ...
+
+        Expected: ...
+        Actual: ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (sanitized)
+      description: Paste relevant log output. **Remove connection strings and secrets.**
+      render: shell
+  - type: input
+    id: commit
+    attributes:
+      label: Commit SHA / image tag
+      placeholder: e.g. 6d96ebe7d or ghcr.io/clemensv/real-time-sources-bafu-hydro:main
