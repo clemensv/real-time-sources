@@ -61,11 +61,18 @@ jobs:
             --base-url https://clemensv.github.io/real-time-sources \
             --flag-cache .cache/flags
 
+      - name: Generate top-level OG hero card
+        working-directory: main
+        run: |
+          python tools/ghpages/render_hero_card.py \
+            --catalog catalog.json \
+            --out ../ghpages/og.png
+
       - name: Check for changes
         id: diff
         working-directory: ghpages
         run: |
-          git add -A app.js catalog.json share
+          git add -A app.js catalog.json share og.png
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
