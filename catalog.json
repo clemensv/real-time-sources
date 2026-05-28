@@ -302,16 +302,6 @@
     "amqp": true
   },
   {
-    "id": "dmi",
-    "name": "DMI",
-    "cat": "Weather",
-    "key": true,
-    "desc": "Denmark — meteorological observations, sea level, lightning strikes",
-    "kql": true,
-    "notebook": true,
-    "mqtt": true
-  },
-  {
     "id": "environment-canada",
     "name": "Environment Canada",
     "cat": "Weather",
