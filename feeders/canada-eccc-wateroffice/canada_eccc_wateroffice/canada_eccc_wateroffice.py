@@ -244,6 +244,29 @@ def feed(
     return sent
 
 
+def _load_seen_ids(state_file: str) -> typing.Set[str]:
+    """Load persisted seen observation IDs from *state_file*."""
+    try:
+        if state_file and os.path.exists(state_file):
+            with open(state_file, "r", encoding="utf-8") as fh:
+                return set(json.load(fh).get("seen_ids", []))
+    except Exception as exc:
+        logger.warning("Could not load state from %s: %s", state_file, exc)
+    return set()
+
+
+def _save_seen_ids(state_file: str, seen_ids: typing.Set[str]) -> None:
+    """Persist *seen_ids* to *state_file*."""
+    if not state_file:
+        return
+    try:
+        os.makedirs(os.path.dirname(os.path.abspath(state_file)), exist_ok=True)
+        with open(state_file, "w", encoding="utf-8") as fh:
+            json.dump({"seen_ids": list(seen_ids)}, fh)
+    except Exception as exc:
+        logger.warning("Could not save state to %s: %s", state_file, exc)
+
+
 def main():
     """Main entry point for the Canada ECCC Water Office bridge."""
     parser = argparse.ArgumentParser(description="Canada ECCC Water Office Hydrometric Bridge")
@@ -274,7 +297,18 @@ def main():
         default=OBSERVATION_WINDOW_SECONDS,
         help="Lookback window in seconds",
     )
-    subparsers.add_parser("feed", help="Feed data continuously to Kafka")
+    feed_parser = subparsers.add_parser("feed", help="Feed data continuously to Kafka")
+    feed_parser.add_argument(
+        "--state-file",
+        default=os.environ.get("STATE_FILE", os.path.expanduser("~/.canada_eccc_wateroffice_state.json")),
+        help="Path to JSON file used to persist seen observation IDs across runs (also via STATE_FILE env var).",
+    )
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
+    )
 
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
@@ -329,7 +363,7 @@ def main():
         logger.info("Starting ECCC Water Office bridge, polling every %d seconds", args.polling_interval)
 
         stations = send_stations(api, event_producer)
-        seen_ids: typing.Set[str] = set()
+        seen_ids: typing.Set[str] = _load_seen_ids(args.state_file)
         last_station_refresh = time.time()
 
         while True:
@@ -345,8 +379,13 @@ def main():
 
                 count = feed(api, event_producer, seen_ids, stations)
                 logger.info("Sent %d new observation events", count)
+                _save_seen_ids(args.state_file, seen_ids)
             except Exception as exc:
                 logger.error("Error in feed loop: %s", exc)
+
+            if args.once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
 
             time.sleep(args.polling_interval)
 
