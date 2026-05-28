@@ -160,17 +160,6 @@ const $deployTitle = document.getElementById("deploy-pane-title");
 const $deployClose = document.getElementById("deploy-pane-close");
 const $deployForm = document.getElementById("deploy-form-area");
 
-// Share button + popover (per-source social-card sharing). These elements
-// live in the ghpages header; when absent (e.g. older index.html) the
-// share-* lookups are null and the share logic is silently skipped.
-const $shareBtn      = document.getElementById("share-btn");
-const $sharePopover  = document.getElementById("share-popover");
-const $shareTitle    = document.getElementById("share-title");
-const $shareUrl      = document.getElementById("share-url-input");
-const $shareCopy     = document.getElementById("share-copy-btn");
-const $shareToast    = document.getElementById("share-toast");
-const $shareIntents  = document.getElementById("share-intents");
-
 let activeCat = null;
 let activeSource = null;
 
@@ -241,7 +230,6 @@ async function selectSource(s) {
   renderList();
   $deployBar.style.display = "flex";
   $deployBarFabric.style.display = "flex";
-  updateShareButton();
 
   // wire deploy buttons
   $btnContainer.onclick   = () => {
@@ -686,132 +674,6 @@ function renderWelcome() {
 renderPills();
 renderList();
 
-/* ── Share button + popover ─────────────────────────────────────────────
-   The Share button is visible only when a source is selected (location.hash
-   resolves to a known source). Clicking it opens a popover containing:
-     - the canonical share URL (https://<host>/<base>/share/<sid>/) which is
-       backed by a static OG-meta-rich HTML shell + 1200x630 og.png that
-       crawlers can render rich link previews for
-     - a Copy button
-     - intent links for X, LinkedIn, Bluesky, Mastodon, Reddit and email
-   The static shells are emitted at build time by
-   tools/ghpages/generate_share_pages.py and committed to the ghpages branch
-   alongside this app.js.
-   ────────────────────────────────────────────────────────────────────── */
-const SITE_BASE = `${location.origin}${location.pathname.replace(/\/[^/]*$/, "")}`;
-
-function shareUrlFor(sid) {
-  return `${SITE_BASE}/share/${sid}/`;
-}
-
-function buildIntents(sourceName, url) {
-  const text = `${sourceName} — real-time data on Kafka, MQTT and AMQP`;
-  const encU = encodeURIComponent(url);
-  const encT = encodeURIComponent(text);
-  const encTU = encodeURIComponent(`${text}\n${url}`);
-  return [
-    { label: "X",        href: `https://twitter.com/intent/tweet?text=${encT}&url=${encU}` },
-    { label: "LinkedIn", href: `https://www.linkedin.com/sharing/share-offsite/?url=${encU}` },
-    { label: "Bluesky",  href: `https://bsky.app/intent/compose?text=${encTU}` },
-    { label: "Mastodon", href: `https://mastodonshare.com/?text=${encTU}` },
-    { label: "Reddit",   href: `https://www.reddit.com/submit?url=${encU}&title=${encT}` },
-    { label: "Email",    href: `mailto:?subject=${encT}&body=${encTU}` },
-  ];
-}
-
-function renderShareIntents(source, url) {
-  if (!$shareIntents) return;
-  $shareIntents.innerHTML = "";
-  for (const intent of buildIntents(source.name, url)) {
-    const a = document.createElement("a");
-    a.className = "share-intent";
-    a.href = intent.href;
-    a.target = "_blank";
-    a.rel = "noopener";
-    a.textContent = intent.label;
-    $shareIntents.appendChild(a);
-  }
-}
-
-function openSharePopover(source) {
-  if (!$sharePopover || !$shareBtn) return;
-  const url = shareUrlFor(source.id);
-  if ($shareTitle) $shareTitle.textContent = `Share ${source.name}`;
-  if ($shareUrl)   $shareUrl.value = url;
-  renderShareIntents(source, url);
-  $sharePopover.style.display = "block";
-  $shareBtn.setAttribute("aria-expanded", "true");
-}
-
-function closeSharePopover() {
-  if (!$sharePopover || !$shareBtn) return;
-  $sharePopover.style.display = "none";
-  $shareBtn.setAttribute("aria-expanded", "false");
-}
-
-function flashShareToast(msg) {
-  if (!$shareToast) return;
-  $shareToast.textContent = msg;
-  $shareToast.style.opacity = "1";
-  clearTimeout(flashShareToast._t);
-  flashShareToast._t = setTimeout(() => { $shareToast.style.opacity = "0"; }, 1800);
-}
-
-function updateShareButton() {
-  if (!$shareBtn) return;
-  const s = activeSource ? SOURCES.find(x => x.id === activeSource) : null;
-  if (s) {
-    $shareBtn.style.display = "";
-    $shareBtn.dataset.source = s.id;
-    $shareBtn.title = `Share ${s.name}`;
-  } else {
-    $shareBtn.style.display = "none";
-    closeSharePopover();
-  }
-}
-
-if ($shareBtn) {
-  $shareBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const s = SOURCES.find(x => x.id === activeSource);
-    if (!s) return;
-    if ($sharePopover && $sharePopover.style.display === "block") {
-      closeSharePopover();
-    } else {
-      openSharePopover(s);
-    }
-  });
-}
-if ($shareCopy && $shareUrl) {
-  $shareCopy.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText($shareUrl.value);
-      flashShareToast("Link copied!");
-    } catch {
-      // Fallback: select the input so the user can copy manually.
-      $shareUrl.select();
-      $shareUrl.setSelectionRange(0, 9999);
-      flashShareToast("Press Ctrl/Cmd+C to copy");
-    }
-  });
-}
-if ($sharePopover) {
-  // Click-outside dismiss.
-  document.addEventListener("click", (e) => {
-    if ($sharePopover.style.display !== "block") return;
-    if (e.target === $shareBtn || $shareBtn?.contains?.(e.target)) return;
-    if ($sharePopover.contains(e.target)) return;
-    closeSharePopover();
-  });
-  // Esc dismiss.
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && $sharePopover.style.display === "block") {
-      closeSharePopover();
-      $shareBtn?.focus();
-    }
-  });
-}
-
 /* ── Hash deep-linking ────────────────────────────────────────────────────
    #<id>                     → select source, show docs
    #<id>/fabric              → select source + open Fabric deploy panel
@@ -838,14 +700,12 @@ async function selectFromHash() {
     if (typeof closeDeployPane === "function") closeDeployPane();
     renderList();
     renderWelcome();
-    updateShareButton();
     return;
   }
   const [id, action] = raw.split("/");
   const s = SOURCES.find(x => x.id === id);
-  if (!s) { updateShareButton(); return; }
+  if (!s) return;
   await selectSource(s);
-  updateShareButton();
   if (action === "fabric") {
     openDeployForm(s, s.notebook ? "fabric-notebook" : "fabric-aci");
   } else if (action === "fabric-aci") {

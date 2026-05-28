@@ -125,6 +125,7 @@
     "key": false,
     "desc": "United States — ~3,000 stations",
     "kql": true,
+    "notebook": true,
     "mqtt": true,
     "amqp": true
   },
@@ -300,16 +301,6 @@
     "notebook": true,
     "mqtt": true,
     "amqp": true
-  },
-  {
-    "id": "dmi",
-    "name": "DMI",
-    "cat": "Weather",
-    "key": true,
-    "desc": "Denmark — meteorological observations, sea level, lightning strikes",
-    "kql": true,
-    "notebook": true,
-    "mqtt": true
   },
   {
     "id": "environment-canada",
