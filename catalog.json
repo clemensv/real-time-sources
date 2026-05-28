@@ -825,6 +825,7 @@
     "key": false,
     "desc": "Netherlands — national road traffic, DATEX II XML",
     "kql": true,
+    "notebook": true,
     "mqtt": true,
     "amqp": true
   },
