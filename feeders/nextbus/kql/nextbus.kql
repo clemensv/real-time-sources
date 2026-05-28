@@ -1,0 +1,347 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['nextbus.VehiclePosition'] (
+   [agency_id]: string,
+   [route_tag]: string,
+   [vehicle_id]: string,
+   [stop_or_vehicle_id]: string,
+   [event_type]: string,
+   [lat]: string,
+   [lon]: string,
+   [timestamp]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['nextbus.VehiclePosition'] docstring "{\"description\": \"Nextbus XML feed event payload.\"}";
+
+.alter table ['nextbus.VehiclePosition'] column-docstrings (
+   [agency_id]: "{\"description\": \"agency_id value from the Nextbus XML feed.\"}",
+   [route_tag]: "{\"description\": \"route_tag value from the Nextbus XML feed.\"}",
+   [vehicle_id]: "{\"description\": \"vehicle_id value from the Nextbus XML feed.\"}",
+   [stop_or_vehicle_id]: "{\"description\": \"stop_or_vehicle_id value from the Nextbus XML feed.\"}",
+   [event_type]: "{\"description\": \"event_type value from the Nextbus XML feed.\"}",
+   [lat]: "{\"description\": \"lat value from the Nextbus XML feed.\"}",
+   [lon]: "{\"description\": \"lon value from the Nextbus XML feed.\"}",
+   [timestamp]: "{\"description\": \"timestamp value from the Nextbus XML feed.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['nextbus.VehiclePosition'] ingestion json mapping "nextbus.VehiclePosition_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agency_id", "path": "$.agency_id"},
+  {"column": "route_tag", "path": "$.route_tag"},
+  {"column": "vehicle_id", "path": "$.vehicle_id"},
+  {"column": "stop_or_vehicle_id", "path": "$.stop_or_vehicle_id"},
+  {"column": "event_type", "path": "$.event_type"},
+  {"column": "lat", "path": "$.lat"},
+  {"column": "lon", "path": "$.lon"},
+  {"column": "timestamp", "path": "$.timestamp"},
+]
+```
+
+.create-or-alter table ['nextbus.VehiclePosition'] ingestion json mapping "nextbus.VehiclePosition_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agency_id", "path": "$.data.agency_id"},
+  {"column": "route_tag", "path": "$.data.route_tag"},
+  {"column": "vehicle_id", "path": "$.data.vehicle_id"},
+  {"column": "stop_or_vehicle_id", "path": "$.data.stop_or_vehicle_id"},
+  {"column": "event_type", "path": "$.data.event_type"},
+  {"column": "lat", "path": "$.data.lat"},
+  {"column": "lon", "path": "$.data.lon"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+]
+```
+
+.drop materialized-view ['nextbus.VehiclePositionLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['nextbus.VehiclePositionLatest'] on table ['nextbus.VehiclePosition'] {
+    ['nextbus.VehiclePosition'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['nextbus.VehiclePosition'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'nextbus.VehiclePosition') | project['agency_id'] = tostring(data.['agency_id']),['route_tag'] = tostring(data.['route_tag']),['vehicle_id'] = tostring(data.['vehicle_id']),['stop_or_vehicle_id'] = tostring(data.['stop_or_vehicle_id']),['event_type'] = tostring(data.['event_type']),['lat'] = tostring(data.['lat']),['lon'] = tostring(data.['lon']),['timestamp'] = toreal(data.['timestamp']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['nextbus.RouteConfig'] (
+   [agency_id]: string,
+   [route_tag]: string,
+   [stop_or_vehicle_id]: string,
+   [event_type]: string,
+   [route_config]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['nextbus.RouteConfig'] docstring "{\"description\": \"Nextbus XML feed event payload.\"}";
+
+.alter table ['nextbus.RouteConfig'] column-docstrings (
+   [agency_id]: "{\"description\": \"agency_id value from the Nextbus XML feed.\"}",
+   [route_tag]: "{\"description\": \"route_tag value from the Nextbus XML feed.\"}",
+   [stop_or_vehicle_id]: "{\"description\": \"stop_or_vehicle_id value from the Nextbus XML feed.\"}",
+   [event_type]: "{\"description\": \"event_type value from the Nextbus XML feed.\"}",
+   [route_config]: "{\"description\": \"route_config value from the Nextbus XML feed.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['nextbus.RouteConfig'] ingestion json mapping "nextbus.RouteConfig_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agency_id", "path": "$.agency_id"},
+  {"column": "route_tag", "path": "$.route_tag"},
+  {"column": "stop_or_vehicle_id", "path": "$.stop_or_vehicle_id"},
+  {"column": "event_type", "path": "$.event_type"},
+  {"column": "route_config", "path": "$.route_config"},
+]
+```
+
+.create-or-alter table ['nextbus.RouteConfig'] ingestion json mapping "nextbus.RouteConfig_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agency_id", "path": "$.data.agency_id"},
+  {"column": "route_tag", "path": "$.data.route_tag"},
+  {"column": "stop_or_vehicle_id", "path": "$.data.stop_or_vehicle_id"},
+  {"column": "event_type", "path": "$.data.event_type"},
+  {"column": "route_config", "path": "$.data.route_config"},
+]
+```
+
+.drop materialized-view ['nextbus.RouteConfigLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['nextbus.RouteConfigLatest'] on table ['nextbus.RouteConfig'] {
+    ['nextbus.RouteConfig'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['nextbus.RouteConfig'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'nextbus.RouteConfig') | project['agency_id'] = tostring(data.['agency_id']),['route_tag'] = tostring(data.['route_tag']),['stop_or_vehicle_id'] = tostring(data.['stop_or_vehicle_id']),['event_type'] = tostring(data.['event_type']),['route_config'] = tostring(data.['route_config']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['nextbus.Schedule'] (
+   [agency_id]: string,
+   [route_tag]: string,
+   [stop_or_vehicle_id]: string,
+   [event_type]: string,
+   [schedule]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['nextbus.Schedule'] docstring "{\"description\": \"Nextbus XML feed event payload.\"}";
+
+.alter table ['nextbus.Schedule'] column-docstrings (
+   [agency_id]: "{\"description\": \"agency_id value from the Nextbus XML feed.\"}",
+   [route_tag]: "{\"description\": \"route_tag value from the Nextbus XML feed.\"}",
+   [stop_or_vehicle_id]: "{\"description\": \"stop_or_vehicle_id value from the Nextbus XML feed.\"}",
+   [event_type]: "{\"description\": \"event_type value from the Nextbus XML feed.\"}",
+   [schedule]: "{\"description\": \"schedule value from the Nextbus XML feed.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['nextbus.Schedule'] ingestion json mapping "nextbus.Schedule_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agency_id", "path": "$.agency_id"},
+  {"column": "route_tag", "path": "$.route_tag"},
+  {"column": "stop_or_vehicle_id", "path": "$.stop_or_vehicle_id"},
+  {"column": "event_type", "path": "$.event_type"},
+  {"column": "schedule", "path": "$.schedule"},
+]
+```
+
+.create-or-alter table ['nextbus.Schedule'] ingestion json mapping "nextbus.Schedule_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agency_id", "path": "$.data.agency_id"},
+  {"column": "route_tag", "path": "$.data.route_tag"},
+  {"column": "stop_or_vehicle_id", "path": "$.data.stop_or_vehicle_id"},
+  {"column": "event_type", "path": "$.data.event_type"},
+  {"column": "schedule", "path": "$.data.schedule"},
+]
+```
+
+.drop materialized-view ['nextbus.ScheduleLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['nextbus.ScheduleLatest'] on table ['nextbus.Schedule'] {
+    ['nextbus.Schedule'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['nextbus.Schedule'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'nextbus.Schedule') | project['agency_id'] = tostring(data.['agency_id']),['route_tag'] = tostring(data.['route_tag']),['stop_or_vehicle_id'] = tostring(data.['stop_or_vehicle_id']),['event_type'] = tostring(data.['event_type']),['schedule'] = tostring(data.['schedule']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['nextbus.Message'] (
+   [agency_id]: string,
+   [route_tag]: string,
+   [stop_or_vehicle_id]: string,
+   [event_type]: string,
+   [message]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['nextbus.Message'] docstring "{\"description\": \"Nextbus XML feed event payload.\"}";
+
+.alter table ['nextbus.Message'] column-docstrings (
+   [agency_id]: "{\"description\": \"agency_id value from the Nextbus XML feed.\"}",
+   [route_tag]: "{\"description\": \"route_tag value from the Nextbus XML feed.\"}",
+   [stop_or_vehicle_id]: "{\"description\": \"stop_or_vehicle_id value from the Nextbus XML feed.\"}",
+   [event_type]: "{\"description\": \"event_type value from the Nextbus XML feed.\"}",
+   [message]: "{\"description\": \"message value from the Nextbus XML feed.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['nextbus.Message'] ingestion json mapping "nextbus.Message_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agency_id", "path": "$.agency_id"},
+  {"column": "route_tag", "path": "$.route_tag"},
+  {"column": "stop_or_vehicle_id", "path": "$.stop_or_vehicle_id"},
+  {"column": "event_type", "path": "$.event_type"},
+  {"column": "message", "path": "$.message"},
+]
+```
+
+.create-or-alter table ['nextbus.Message'] ingestion json mapping "nextbus.Message_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "agency_id", "path": "$.data.agency_id"},
+  {"column": "route_tag", "path": "$.data.route_tag"},
+  {"column": "stop_or_vehicle_id", "path": "$.data.stop_or_vehicle_id"},
+  {"column": "event_type", "path": "$.data.event_type"},
+  {"column": "message", "path": "$.data.message"},
+]
+```
+
+.drop materialized-view ['nextbus.MessageLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['nextbus.MessageLatest'] on table ['nextbus.Message'] {
+    ['nextbus.Message'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['nextbus.Message'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'nextbus.Message') | project['agency_id'] = tostring(data.['agency_id']),['route_tag'] = tostring(data.['route_tag']),['stop_or_vehicle_id'] = tostring(data.['stop_or_vehicle_id']),['event_type'] = tostring(data.['event_type']),['message'] = tostring(data.['message']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

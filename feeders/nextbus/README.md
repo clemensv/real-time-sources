@@ -99,8 +99,6 @@ nextbus/
 - Network access to the upstream data endpoint(s).
 - Network access to your target broker (Kafka, MQTT, or AMQP).
 
-This source is handled as a streaming feeder in this batch; no notebook runtime section is included.
-
 ## Quick start with Docker
 
 ### Kafka
