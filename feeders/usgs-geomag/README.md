@@ -12,7 +12,7 @@
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
-<img align="middle" src="https://img.shields.io/badge/Azure-3_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+<img align="middle" src="https://img.shields.io/badge/Azure-6_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
 &nbsp;
 <a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
@@ -191,7 +191,7 @@ The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) sche
 
 ### Deploying into Azure Container Instances
 
-3 one-click deployment templates — one per realistic Azure target. These templates host the container directly in Azure (without a Fabric workspace) and target an Azure Event Hubs namespace, an MQTT broker, or an AMQP 1.0 peer. All templates create a storage account and file share for persistent dedupe state.
+6 one-click deployment templates across Kafka, MQTT, and AMQP transports. These templates host the container directly in Azure (without a Fabric workspace). All templates create a storage account and file share for persistent dedupe state.
 
 #### Kafka — bring your own Event Hub / Kafka
 
@@ -211,6 +211,23 @@ Deploy the AMQP container against an existing AMQP 1.0 peer (RabbitMQ AMQP 1.0 p
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fusgs-geomag%2Fazure-template-amqp.json)
 
+#### AMQP — provision a new Service Bus namespace
+
+Deploy the AMQP container together with a new Azure Service Bus namespace (Standard SKU) and queue. A user-assigned managed identity is granted the Azure Service Bus Data Sender role; the feeder authenticates via Entra ID (no SAS keys).
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fusgs-geomag%2Fazure-template-with-servicebus.json)
+
+#### MQTT — bring your own broker
+
+Deploy the MQTT container against an existing MQTT 5 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid namespace MQTT, etc.). You provide the `mqtts://` URL and optional credentials.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fusgs-geomag%2Fazure-template-mqtt.json)
+
+#### MQTT — provision a new Azure Event Grid namespace
+
+Deploy the MQTT container together with a new Azure Event Grid namespace (MQTT broker enabled, Standard SKU). A user-assigned managed identity is granted the EventGrid TopicSpace Publisher role; the feeder authenticates via Entra JWT (no certificates or passwords).
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fusgs-geomag%2Fazure-template-with-eventgrid-mqtt.json)
 
 ### Self-hosted
 
