@@ -863,6 +863,7 @@
     "cat": "Transport",
     "key": false,
     "desc": "London, UK — road corridor status and disruptions",
+    "kql": true,
     "mqtt": true,
     "amqp": true
   },

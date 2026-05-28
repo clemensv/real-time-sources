@@ -21,6 +21,7 @@
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#tfl-road-traffic) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/tfl_road_traffic.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://tfl.gov.uk/)
 
 </td></tr></table>
@@ -88,6 +89,7 @@ tfl-road-traffic/
   tfl_road_traffic_mqtt/
   tfl_road_traffic_mqtt_producer/
   tfl_road_traffic_producer/
+  kql/
   Dockerfile
   Dockerfile.mqtt
   Dockerfile.amqp
@@ -152,7 +154,7 @@ The portal buttons wrap the underlying scripts and ARM templates documented belo
 
 ### Deploying into Microsoft Fabric
 
-TfL Road Traffic targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), an attached **Eventhouse / KQL database** materializes the contract.
+TfL Road Traffic targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), an attached **Eventhouse / KQL database** materializes the contract from [`kql/`](kql/).
 
 Use the deploy button on the [project portal](https://clemensv.github.io/real-time-sources#tfl-road-traffic) to launch the Fabric ACI hosting model — it walks you through Fabric workspace selection and follow-up steps.
 
@@ -168,7 +170,7 @@ tools/deploy-fabric/deploy-fabric-aci.ps1 `
   -Location <azure-region>
 ```
 
-The script creates the Eventhouse, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
+The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) schema and update policies, the Event Stream with a custom endpoint, the ACI with the connection string wired in, and a storage account / file share mounted at `/state` for dedupe persistence.
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#tfl-road-traffic/fabric-aci)
 
