@@ -237,6 +237,20 @@ The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) sche
 
 [![Deploy Fabric ACI](https://img.shields.io/badge/Fabric-Container%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#dwd/fabric-aci)
 
+#### Fabric Notebook feeder &nbsp;<sub><i>(recommended for low-volume scheduled polling)</i></sub>
+
+A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `dwd` package and generated producer sub-packages. The Event Stream custom-endpoint connection string is looked up at runtime via the Fabric Topology API, and state/logs are persisted under `/lakehouse/default/Files/feeder-state/dwd/`.
+
+```powershell
+tools/deploy-fabric/deploy-feeder-notebook.ps1 `
+  -Source dwd `
+  -Workspace <fabric-workspace-id-or-name> `
+  -ResourceGroup <azure-rg-for-bootstrap> `
+  -Location <azure-region>
+```
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#dwd/fabric-notebook)
+
 #### Fabric Map visualization &nbsp;<sub><i>(optional, post-deploy)</i></sub>
 
 After either hosting model has events flowing, run [`fabric/post-deploy.ps1`](fabric/README.md) (or `tools/deploy-fabric/deploy-fabric.ps1 -Source dwd -Workspace <ws>`) to provision the bundled Fabric Map item and wire its Kusto-backed layers onto a basemap. The map updates live as new events arrive.
