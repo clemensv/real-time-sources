@@ -12,13 +12,14 @@
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
-<img align="middle" src="https://img.shields.io/badge/Azure-3_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
 &nbsp;
 <a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
 > Germany — 12 state portals, ~2,724 stations
 
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#german-waters) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#german-waters/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
 [🗄️ **KQL schema**](kql/german_waters.kql) &nbsp;·&nbsp;
@@ -278,7 +279,7 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 
 ## Deploying into Azure Container Instances
 
-This source checks in Kafka and AMQP ARM templates only; no MQTT-specific Azure deployment template exists on disk for `german-waters`.
+Five one-click deployment templates are available — one per realistic Azure target. All templates create a storage account and file share for persistent dedupe state.
 
 ### Kafka — bring your own Event Hub / Kafka
 
@@ -291,6 +292,26 @@ Deploy the Kafka container with your own Azure Event Hubs or Fabric Event Stream
 Deploy the Kafka container together with a new Event Hubs namespace (Standard SKU, 1 throughput unit) and event hub. The connection string is wired automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgerman-waters%2Fazure-template-with-eventhub.json)
+
+### MQTT — bring your own broker
+
+Deploy the MQTT container against an existing MQTT 5 broker. You provide
+the `mqtts://` URL and optional credentials.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgerman-waters%2Fazure-template-mqtt.json)
+
+### MQTT — provision a new Event Grid namespace MQTT broker
+
+Deploy the MQTT container together with a new
+[Azure Event Grid namespace](https://learn.microsoft.com/azure/event-grid/mqtt-overview)
+with the MQTT broker enabled, a topic space rooted at `hydro/#`, a
+user-assigned managed identity, and a role assignment granting the
+identity the **EventGrid TopicSpaces Publisher** role on the topic space.
+The feeder authenticates to the broker using MQTT v5 enhanced authentication
+(`OAUTH2-JWT`) with tokens minted by the managed identity for audience
+`https://eventgrid.azure.net/`.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgerman-waters%2Fazure-template-with-eventgrid-mqtt.json)
 
 ### AMQP 1.0 — provision a new Azure Service Bus namespace
 

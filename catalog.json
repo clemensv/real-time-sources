@@ -49,6 +49,7 @@
     "key": false,
     "desc": "Germany — 12 state portals, ~2,724 stations",
     "kql": true,
+    "notebook": true,
     "mqtt": true,
     "amqp": true
   },
