@@ -46,10 +46,10 @@
 
 .EXAMPLE
     # Standalone re-wire after a layer tweak:
-    $env:DWD_FABRIC_MAP_ID = "39abf7e3-1df6-4cbf-ab92-93d6d4cf07e5"
+    $env:DWD_FABRIC_MAP_ID = "<map-item-guid>"
     ./post-deploy.ps1 `
-        -WorkspaceId   "a26c1440-1c4a-4774-b944-fd62f7380d62" `
-        -KqlDatabaseId "8c202901-5346-4faf-88a6-9c15d737a91b" `
+        -WorkspaceId   "<workspace-guid>" `
+        -KqlDatabaseId "<kql-database-guid>" `
         -KustoUri      "https://trd-xxxxxxxx.z1.kusto.fabric.microsoft.com"
 #>
 [CmdletBinding()]

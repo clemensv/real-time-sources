@@ -37,3 +37,17 @@ origin_merged.json
 pr_integration.json
 
 tmp/
+
+# Secrets — DO NOT commit
+.env
+.env.*
+*.pem
+*.pfx
+*.p12
+*.key
+*.pfx.password
+local.settings.json
+appsettings.Development.json
+secrets.json
+.azureauth
+.azure/credentials

@@ -1,0 +1,26 @@
+# gitleaks allowlist — entries below are confirmed non-secrets:
+#
+# - Test fixtures using obviously-synthetic SAS keys ("abc123def456...",
+#   base64("test-shared-access-key-value...")) in unit/integration tests.
+# - A historical agencies.json catalog entry containing a transit agency's
+#   own published public API URL (file no longer in tree).
+# - The NLWKN Pegelonline public Azure API Management subscription key
+#   used by the german-waters feeder. NLWKN publishes this key for
+#   anonymous read access to their public hydrology product.
+#
+# Format: <commit-sha>:<file>:<rule-id>:<start-line>
+#
+# Generated 2026-05 from `gitleaks detect` review.
+
+855a0f17:entsoe/tests/test_entsoe_integration.py:generic-api-key:335
+f9d1bd72:german-waters/german_waters/providers/nds_nlwkn.py:generic-api-key:23
+2d6603ee:usgs-iv/tests/test_usgs_integration.py:generic-api-key:259
+1b3889e2:usgs-iv/tests/test_usgs_integration.py:generic-api-key:259
+b0da91b9:rss/tests/test_rssbridge_e2e.py:generic-api-key:223
+15530d1a:rss/tests/test_rssbridge_e2e.py:generic-api-key:223
+525e4ef7:rss/tests/test_rssbridge_e2e.py:generic-api-key:223
+ca7151c4:rss/tests/test_rssbridge_e2e.py:generic-api-key:223
+45014855:usgs-iv/tests/test_usgs_integration.py:generic-api-key:245
+5c1b7863:usgs-iv/tests/test_usgs_integration.py:generic-api-key:245
+0033444f:agencies.json:generic-api-key:34619
+5cc5c112:agencies.json:generic-api-key:34619

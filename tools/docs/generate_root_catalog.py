@@ -225,7 +225,7 @@ def deploy_chips(entry: dict) -> str:
     chips = []
     # Azure Event Hubs
     eh_with = (f"https://portal.azure.com/#create/Microsoft.Template/uri/"
-               f"https%3A%2F%2Fraw.githubusercontent.com%2F{REPO.replace('/', '%2F')}%2Fmain%2F"
+               f"https%3A%2F%2Fraw.githubusercontent.com%2F{REPO.replace('/', '%2F')}%2Fmain%2Ffeeders%2F"
                f"{sid}%2Fazure-template-with-eventhub.json")
     eh_byo  = eh_with.replace("azure-template-with-eventhub.json", "azure-template.json")
     chips.append(f'[![]({_shield("Azure", "Container + EH", C_AZURE)})]({eh_with})')

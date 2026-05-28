@@ -34,7 +34,7 @@ of a successful deploy.
 ## Auto-invocation
 
 ```powershell
-$env:DWD_FABRIC_MAP_ID = "39abf7e3-1df6-4cbf-ab92-93d6d4cf07e5"
+$env:DWD_FABRIC_MAP_ID = "<map-item-guid>"
 ./tools/deploy-fabric/deploy-fabric.ps1 -Source dwd `
     -ResourceGroup rg-dwd -Workspace "<ws-guid>"
 # ...generic 6 steps...
@@ -52,11 +52,11 @@ Skip with `-SkipPostDeployHook` if needed.
 After tweaking colour ramps or adding layers in `wire_icond2_map.py`:
 
 ```powershell
-$env:DWD_FABRIC_MAP_ID = "39abf7e3-1df6-4cbf-ab92-93d6d4cf07e5"
+$env:DWD_FABRIC_MAP_ID = "<map-item-guid>"
 ./dwd/fabric/post-deploy.ps1 `
-    -Workspace   "a26c1440-1c4a-4774-b944-fd62f7380d62" `
-    -KqlDatabaseId "8c202901-5346-4faf-88a6-9c15d737a91b" `
-    -KustoUri      "https://trd-mq16rbrpv3c4x4r4h1.z1.kusto.fabric.microsoft.com"
+    -Workspace   "<workspace-guid>" `
+    -KqlDatabaseId "<kql-database-guid>" `
+    -KustoUri      "https://trd-xxxxxxxx.z1.kusto.fabric.microsoft.com"
 ```
 
 ## What the map looks like
@@ -110,10 +110,10 @@ immediately when toggled on.
 
 ```powershell
 ./setup.ps1 `
-    -Workspace   "a26c1440-1c4a-4774-b944-fd62f7380d62" `
-    -MapId         "39abf7e3-1df6-4cbf-ab92-93d6d4cf07e5" `
-    -KqlDatabaseId "8c202901-5346-4faf-88a6-9c15d737a91b" `
-    -KustoUri      "https://trd-mq16rbrpv3c4x4r4h1.z1.kusto.fabric.microsoft.com"
+    -Workspace   "<workspace-guid>" `
+    -MapId         "<map-item-guid>" `
+    -KqlDatabaseId "<kql-database-guid>" `
+    -KustoUri      "https://trd-xxxxxxxx.z1.kusto.fabric.microsoft.com"
 ```
 
 Re-run any time you change the layer set, colour ramps or label format in
