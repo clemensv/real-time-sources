@@ -197,6 +197,10 @@ One deploy button is provided per ARM template file present in this folder:
 
 - **azure-template-with-eventhub.json** (with eventhub)
   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fkystverket-ais%2Fazure-template-with-eventhub.json)
+- **azure-template-mqtt.json** (mqtt)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fkystverket-ais%2Fazure-template-mqtt.json)
+- **azure-template-with-eventgrid-mqtt.json** (with eventgrid mqtt)
+  [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fkystverket-ais%2Fazure-template-with-eventgrid-mqtt.json)
 - **azure-template-with-servicebus.json** (with servicebus)
   [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fkystverket-ais%2Fazure-template-with-servicebus.json)
 - **azure-template.json** (default (BYO Event Hubs/Kafka))
