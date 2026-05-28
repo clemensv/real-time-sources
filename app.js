@@ -321,11 +321,7 @@ async function openDeployForm(source, mode) {
       source.id, "Name for the Azure Container Group", false));
     $deployForm.appendChild(azSection);
   } else if (mode === "fabric-notebook") {
-    const azSection = el("div", { class: "form-section" });
-    azSection.innerHTML = '<div class="form-section-title">Azure Subscription</div>';
-    azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
-      "", "Azure subscription GUID (leave blank for default)", false));
-    $deployForm.appendChild(azSection);
+    // Fabric Notebook deployment uses Fabric capacity auth only; no Azure subscription needed.
   } else if (mode === "fabric") {
     const azSection = el("div", { class: "form-section" });
     azSection.innerHTML = '<div class="form-section-title">Azure Subscription <span style="font-weight:normal;color:var(--muted);font-size:11px">(optional)</span></div>';
