@@ -224,6 +224,12 @@ Use `tools/deploy-fabric/deploy-fabric-aci.ps1 -Source jma-bosai-quake -Workspac
 
 ## Deploying into Azure Container Instances
 
+### Kafka — bring your own Event Hub / Kafka
+
+Deploys the Kafka image and uses a provided connection string.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fjma-bosai-quake%2Fazure-template.json)
+
 ### MQTT — bring your own broker
 
 Deploys the MQTT image against an existing MQTT 5 broker.
