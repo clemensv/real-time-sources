@@ -49,6 +49,7 @@
     "key": false,
     "desc": "Germany — 12 state portals, ~2,724 stations",
     "kql": true,
+    "notebook": true,
     "mqtt": true,
     "amqp": true
   },
@@ -159,7 +160,8 @@
     "desc": "Denmark — DMI observation triad (metObs + oceanObs + lightning)",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "rws-waterwebservices",
@@ -623,6 +625,7 @@
     "key": false,
     "desc": "United States — active wildfire incidents, NIFC",
     "kql": true,
+    "notebook": true,
     "mqtt": true,
     "amqp": true
   },
@@ -806,23 +809,13 @@
     "amqp": true
   },
   {
-    "id": "ndl-netherlands",
-    "name": "NDW Netherlands Traffic",
-    "cat": "Transport",
-    "key": false,
-    "desc": "Netherlands — national road traffic, DATEX II",
-    "kql": true,
-    "notebook": true,
-    "mqtt": true,
-    "amqp": true
-  },
-  {
     "id": "ndw-road-traffic",
     "name": "NDW Road Traffic",
     "cat": "Transport",
     "key": false,
     "desc": "Netherlands — national road traffic, DATEX II XML",
     "kql": true,
+    "notebook": true,
     "mqtt": true,
     "amqp": true
   },
@@ -832,6 +825,8 @@
     "cat": "Transport",
     "key": true,
     "desc": "North America — public transit arrivals",
+    "kql": true,
+    "notebook": true,
     "mqtt": true,
     "amqp": true
   },
@@ -863,6 +858,7 @@
     "cat": "Transport",
     "key": false,
     "desc": "London, UK — road corridor status and disruptions",
+    "kql": true,
     "mqtt": true,
     "amqp": true
   },
@@ -872,6 +868,7 @@
     "cat": "Transport",
     "key": false,
     "desc": "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT",
+    "kql": true,
     "mqtt": true,
     "amqp": true
   },
@@ -1029,6 +1026,8 @@
     "cat": "Public Events",
     "key": false,
     "desc": "Europe — pan-European ticketed public events",
+    "kql": true,
+    "notebook": true,
     "mqtt": true,
     "amqp": true
   },
@@ -1049,7 +1048,8 @@
     "key": true,
     "desc": "Global — concerts, sports, theater, arts via Discovery API",
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "kql": true
   },
   {
     "id": "gracedb",
