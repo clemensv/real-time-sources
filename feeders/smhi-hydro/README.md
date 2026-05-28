@@ -12,7 +12,7 @@
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
-<img align="middle" src="https://img.shields.io/badge/Azure-3_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
 &nbsp;
 <a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
@@ -206,7 +206,19 @@ The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) sche
 
 ### Deploying into Azure Container Instances
 
-3 one-click deployment templates — one per realistic Azure target. These templates host the container directly in Azure (without a Fabric workspace) and target an Azure Event Hubs namespace, an MQTT broker, or an AMQP 1.0 peer. All templates create a storage account and file share for persistent dedupe state.
+5 one-click deployment templates cover Kafka (bring-your-own or managed Event Hubs), MQTT (bring-your-own broker or managed Event Grid namespace), and AMQP (managed Service Bus). All templates host the container directly in Azure (without a Fabric workspace) and create a storage account and file share for persistent dedupe state.
+
+#### MQTT — bring your own broker
+
+Deploy the MQTT container with your own MQTT 5.0 broker endpoint. You pass the broker URL and optional credentials at deploy time; the template provisions only the container and a storage account for persistent dedupe state.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fsmhi-hydro%2Fazure-template-mqtt.json)
+
+#### MQTT — provision a new Event Grid namespace MQTT broker
+
+Deploy the MQTT container together with an [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), a topic space rooted at `hydro/se/smhi/smhi-hydro/#`, and a user-assigned managed identity granted the **EventGrid TopicSpaces Publisher** role on that topic space.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fsmhi-hydro%2Fazure-template-with-eventgrid-mqtt.json)
 
 #### Kafka — bring your own Event Hub / Kafka
 
