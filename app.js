@@ -39,12 +39,12 @@ const SOURCES = [
   { id: "bom-australia", name: "BOM Australia", cat: "Weather", key: false, desc: "Australia — ~8 capital city airports, half-hourly obs", notebook: true, mqtt: true, amqp: true },
   { id: "dwd", name: "DWD", cat: "Weather", key: false, desc: "Germany — ~1,450 stations, observations and CAP alerts", mqtt: true, amqp: true },
   { id: "dwd-pollenflug", name: "DWD Pollenflug", cat: "Weather", key: false, desc: "Germany — daily pollen forecasts, 27 regions", notebook: true, mqtt: true, amqp: true },
-  { id: "dmi", name: "DMI Denmark", cat: "Weather", key: true, desc: "Denmark — Danish Meteorological Institute observations", mqtt: true, amqp: false },
+  { id: "dmi", name: "DMI Denmark", cat: "Weather", key: true, desc: "Denmark — Danish Meteorological Institute observations", notebook: true, mqtt: true, amqp: false },
   { id: "environment-canada", name: "Environment Canada", cat: "Weather", key: false, desc: "Canada — ~963 SWOB stations, hourly obs", notebook: true, mqtt: true, amqp: true },
   { id: "geosphere-austria", name: "GeoSphere Austria", cat: "Weather", key: false, desc: "Austria — ~280 TAWES stations, 10-min obs", notebook: true, mqtt: true, amqp: true },
   { id: "hko-hong-kong", name: "HKO Hong Kong", cat: "Weather", key: false, desc: "Hong Kong — 27 temp stations, 18 rainfall districts", notebook: true, mqtt: true, amqp: true },
   { id: "jma-japan", name: "JMA Japan", cat: "Weather", key: false, desc: "Japan — weather bulletins, warnings, forecasts", notebook: true, mqtt: true, amqp: true },
-  { id: "jma-bosai-amedas", name: "JMA Bosai AMeDAS", cat: "Weather", key: false, desc: "Japan — ~1,300 AMeDAS automated weather stations, 10-min obs", mqtt: true, amqp: true },
+  { id: "jma-bosai-amedas", name: "JMA Bosai AMeDAS", cat: "Weather", key: false, desc: "Japan — ~1,300 AMeDAS automated weather stations, 10-min obs", notebook: true, mqtt: true, amqp: true },
   { id: "kmi-belgium", name: "KMI Belgium", cat: "Weather", key: false, desc: "Belgium — ~14 AWS stations, 10-min observations", notebook: true, mqtt: true, amqp: true },
   { id: "meteoalarm", name: "Meteoalarm", cat: "Weather", key: false, desc: "Europe — 37 countries, severe weather warnings", mqtt: true, amqp: true },
   { id: "noaa-goes", name: "NOAA GOES / SWPC", cat: "Weather", key: false, desc: "Global — space weather, solar wind, K-index", notebook: true, mqtt: true, amqp: true },
@@ -74,9 +74,9 @@ const SOURCES = [
   { id: "eaws-albina", name: "EAWS ALBINA Avalanche", cat: "Disasters", key: false, desc: "European Alps — daily avalanche bulletins, CAAMLv6", notebook: true, mqtt: true, amqp: true },
   { id: "gdacs", name: "GDACS", cat: "Disasters", key: false, desc: "Global — earthquakes, floods, cyclones, volcanoes, droughts", mqtt: true, amqp: true },
   { id: "inpe-deter-brazil", name: "INPE DETER Brazil", cat: "Disasters", key: false, desc: "Brazil — Amazon & Cerrado deforestation alerts", mqtt: true, amqp: true },
-  { id: "jma-bosai-quake", name: "JMA Bosai Earthquake", cat: "Disasters", key: false, desc: "Japan — JMA earthquake / tsunami / hypocenter feeds", mqtt: true, amqp: true },
-  { id: "jma-bosai-volcano", name: "JMA Bosai Volcano", cat: "Disasters", key: false, desc: "Japan — JMA volcanic activity bulletins and alerts", mqtt: true, amqp: true },
-  { id: "jma-bosai-warning", name: "JMA Bosai Warning", cat: "Disasters", key: false, desc: "Japan — JMA weather warnings and advisories", mqtt: true, amqp: true },
+  { id: "jma-bosai-quake", name: "JMA Bosai Earthquake", cat: "Disasters", key: false, desc: "Japan — JMA earthquake / tsunami / hypocenter feeds", notebook: true, mqtt: true, amqp: true },
+  { id: "jma-bosai-volcano", name: "JMA Bosai Volcano", cat: "Disasters", key: false, desc: "Japan — JMA volcanic activity bulletins and alerts", notebook: true, mqtt: true, amqp: true },
+  { id: "jma-bosai-warning", name: "JMA Bosai Warning", cat: "Disasters", key: false, desc: "Japan — JMA weather warnings and advisories", notebook: true, mqtt: true, amqp: true },
   { id: "nifc-usa-wildfires", name: "NIFC USA Wildfires", cat: "Disasters", key: false, desc: "United States — active wildfire incidents, NIFC", mqtt: true, amqp: true },
   { id: "nina-bbk", name: "NINA/BBK", cat: "Disasters", key: false, desc: "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police", mqtt: true, amqp: true },
   { id: "ptwc-tsunami", name: "PTWC Tsunami", cat: "Disasters", key: false, desc: "Pacific and Atlantic — NOAA tsunami bulletins", mqtt: true, amqp: true },
@@ -105,11 +105,11 @@ const SOURCES = [
   { id: "madrid-traffic", name: "Madrid Traffic", cat: "Transport", key: false, desc: "Madrid, Spain — ~4,000 sensors, Informo", notebook: true, mqtt: true, amqp: true },
   { id: "ndl-netherlands", name: "NDW Netherlands Traffic", cat: "Transport", key: false, desc: "Netherlands — national road traffic, DATEX II", notebook: true, mqtt: true, amqp: true },
   { id: "ndw-road-traffic", name: "NDW Road Traffic", cat: "Transport", key: false, desc: "Netherlands — national road traffic, DATEX II XML", mqtt: true, amqp: true },
-  { id: "nextbus", name: "Nextbus", cat: "Transport", key: true, desc: "North America — public transit arrivals", mqtt: true, amqp: true },
+  { id: "nextbus", name: "Nextbus", cat: "Transport", key: true, desc: "North America — public transit arrivals", kql: false, mqtt: true, amqp: true },
   { id: "paris-bicycle-counters", name: "Paris Bicycle Counters", cat: "Transport", key: false, desc: "Paris — ~141 counting stations, hourly counts", notebook: true, mqtt: true, amqp: true },
   { id: "seattle-street-closures", name: "Seattle Street Closures", cat: "Transport", key: false, desc: "Seattle, WA — permit-driven street closure windows", notebook: true, mqtt: true, amqp: true },
-  { id: "tfl-road-traffic", name: "TfL Road Traffic", cat: "Transport", key: false, desc: "London, UK — road corridor status and disruptions", mqtt: true, amqp: true },
-  { id: "tokyo-docomo-bikeshare", name: "Tokyo Docomo Bikeshare", cat: "Transport", key: false, desc: "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT", mqtt: true, amqp: true },
+  { id: "tfl-road-traffic", name: "TfL Road Traffic", cat: "Transport", key: false, desc: "London, UK — road corridor status and disruptions", kql: false, mqtt: true, amqp: true },
+  { id: "tokyo-docomo-bikeshare", name: "Tokyo Docomo Bikeshare", cat: "Transport", key: false, desc: "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT", kql: false, mqtt: true, amqp: true },
   { id: "cbp-border-wait", name: "US CBP Border Wait", cat: "Transport", key: false, desc: "US borders — ~81 ports of entry", notebook: true, mqtt: true, amqp: true },
   { id: "wsdot", name: "WSDOT", cat: "Transport", key: true, desc: "Washington State — ~1,000 traffic flow sensors (requires free key)", notebook: true, mqtt: true, amqp: true },
 
@@ -126,7 +126,7 @@ const SOURCES = [
   { id: "energidataservice-dk", name: "Energi Data Service", cat: "Energy", key: false, desc: "Denmark — power system, spot prices, CO₂", notebook: true, mqtt: true, amqp: true },
   { id: "energy-charts", name: "Energy-Charts", cat: "Energy", key: false, desc: "Europe — 40+ countries, electricity generation & prices", notebook: true, mqtt: true, amqp: true },
   { id: "entsoe", name: "ENTSO-E", cat: "Energy", key: true, desc: "Europe — electricity generation, prices, load, flows (requires token)", mqtt: true, amqp: true },
-  { id: "tepco-denkiyoho", name: "TEPCO Denkiyoho", cat: "Energy", key: false, desc: "Japan / Kanto — TEPCO electricity supply, hourly forecast, 5-min actuals + solar", mqtt: true, amqp: true },
+  { id: "tepco-denkiyoho", name: "TEPCO Denkiyoho", cat: "Energy", key: false, desc: "Japan / Kanto — TEPCO electricity supply, hourly forecast, 5-min actuals + solar", notebook: true, mqtt: true, amqp: true },
 
   // ── Social Media and News ──
   { id: "bluesky", name: "Bluesky Firehose", cat: "Social", key: false, desc: "Global — posts, likes, reposts, follows", mqtt: true, amqp: true },
@@ -135,9 +135,9 @@ const SOURCES = [
   { id: "wikimedia-eventstreams", name: "Wikimedia EventStreams", cat: "Social", key: false, desc: "Global — Wikipedia, Wikidata, Commons recent changes", mqtt: true, amqp: true },
 
   // ── Public Events ──
-  { id: "billetto", name: "Billetto", cat: "Public Events", key: false, desc: "Europe — pan-European ticketed public events", mqtt: true, amqp: true },
+  { id: "billetto", name: "Billetto", cat: "Public Events", key: false, desc: "Europe — pan-European ticketed public events", kql: false, mqtt: true, amqp: true },
   { id: "fienta", name: "Fienta", cat: "Public Events", key: false, desc: "Europe — ticketed public events with sale-status signals", mqtt: true, amqp: true },
-  { id: "ticketmaster", name: "Ticketmaster", cat: "Public Events", key: true, desc: "Global — concerts, sports, theater, arts via Discovery API", mqtt: true, amqp: true },
+  { id: "ticketmaster", name: "Ticketmaster", cat: "Public Events", key: true, desc: "Global — concerts, sports, theater, arts via Discovery API", kql: false, mqtt: true, amqp: true },
 
   // ── Scientific Research ──
   { id: "gracedb", name: "GraceDB", cat: "Science", key: false, desc: "Global — LIGO/Virgo/KAGRA gravitational wave candidates", notebook: true, mqtt: true, amqp: true },
@@ -281,11 +281,21 @@ async function selectSource(s) {
       window.open(`https://portal.azure.com/#create/Microsoft.Template/uri/${encodeURIComponent(url)}`, "_blank", "noopener");
     };
   }
+  // Hide Fabric ACI deploy button if the source lacks a KQL schema; the
+  // central deploy-fabric.ps1 aborts at step 0/6 when feeders/<id>/kql/<id>.kql
+  // is missing, so the button would only lead to a failed deploy.
+  const hasKql = s.kql !== false;
+  $btnFabric.style.display = hasKql ? "" : "none";
   $btnFabric.onclick      = () => openDeployForm(s, "fabric-aci");
   if ($btnFabricNotebook) {
-    // Notebook deploy is opt-in per source (requires <source>/notebook/<source>-feed.ipynb).
-    $btnFabricNotebook.style.display = s.notebook ? "" : "none";
+    // Notebook deploy is opt-in per source (requires <source>/notebook/<source>-feed.ipynb)
+    // and also needs the KQL schema for the database it writes into.
+    $btnFabricNotebook.style.display = (s.notebook && hasKql) ? "" : "none";
     $btnFabricNotebook.onclick = () => openDeployForm(s, "fabric-notebook");
+  }
+  // If both Fabric buttons are hidden, hide the whole Fabric deploy bar.
+  if (!hasKql && (!s.notebook || !hasKql)) {
+    $deployBarFabric.style.display = "none";
   }
 
   // fetch and render README.md
