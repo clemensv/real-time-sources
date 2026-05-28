@@ -31,6 +31,7 @@ from dmi_kafka.app import (
     _build_tidewater_prediction,
     _build_tidewater_station,
 )
+from dmi_amqp.app import _parse_broker_url
 
 
 # ---------------------------------------------------------------------------
@@ -158,6 +159,28 @@ def test_build_kafka_config_sasl_vs_plain():
     assert plain_tls["security.protocol"] == "SSL"
     plain = build_kafka_config(bootstrap_servers="b:9092", tls_enabled=False)
     assert "security.protocol" not in plain
+
+
+def test_parse_amqp_broker_url_defaults():
+    host, port, tls, user, pwd, path = _parse_broker_url("broker.example.com")
+    assert host == "broker.example.com"
+    assert port == 5672
+    assert tls is False
+    assert user is None
+    assert pwd is None
+    assert path is None
+
+
+def test_parse_amqp_broker_url_with_auth_and_path():
+    host, port, tls, user, pwd, path = _parse_broker_url(
+        "amqps://alice:secret@broker.example.com:5671/dmi"
+    )
+    assert host == "broker.example.com"
+    assert port == 5671
+    assert tls is True
+    assert user == "alice"
+    assert pwd == "secret"
+    assert path == "dmi"
 
 
 # ---------------------------------------------------------------------------
