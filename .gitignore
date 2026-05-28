@@ -51,3 +51,5 @@ appsettings.Development.json
 secrets.json
 .azureauth
 .azure/credentials
+# Local flag-image cache for share-card generator
+.cache/
