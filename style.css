@@ -203,10 +203,11 @@ a:hover { color: var(--accent); text-decoration: none; }
   height: 13px;
   width: auto;
   display: block;
-  filter: grayscale(1) contrast(0.9);
-  opacity: 0.85;
 }
-[data-theme="light"] .xreg-logo { opacity: 0.75; }
+/* Dark theme (default): use whitetext variant; hide light variant */
+.xreg-logo-light { display: none; }
+[data-theme="light"] .xreg-logo-dark { display: none; }
+[data-theme="light"] .xreg-logo-light { display: block; }
 
 /* ── Share button + popover ─────────────────────────────────────────── */
 .share-wrap { position: relative; display: inline-block; }
