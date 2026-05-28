@@ -12,7 +12,7 @@
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
-<img align="middle" src="https://img.shields.io/badge/Azure-3_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
 &nbsp;
 <a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
@@ -297,7 +297,7 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 
 ## Deploying into Azure Container Instances
 
-Three one-click deployment templates are available — one for each realistic Azure target.
+Five one-click deployment templates are available — one for each realistic Azure target.
 
 ### Kafka — bring your own Event Hub / Kafka
 
@@ -310,6 +310,18 @@ Deploy the Kafka container with your own Azure Event Hubs or Fabric Event Stream
 Deploy the Kafka container together with a new Event Hubs namespace (Standard SKU, 1 throughput unit) and event hub. The connection string is wired automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Faisstream%2Fazure-template-with-eventhub.json)
+
+### MQTT — bring your own broker
+
+Deploy the MQTT container against an existing MQTT 5 broker by passing the broker URL and optional username/password credentials at deploy time.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Faisstream%2Fazure-template-mqtt.json)
+
+### MQTT — provision a new Azure Event Grid namespace broker
+
+Deploy the MQTT container together with a new Azure Event Grid namespace, an AISstream-scoped topic space rooted at `maritime/intl/aisstream/aisstream/#`, and a user-assigned managed identity for publishing.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Faisstream%2Fazure-template-with-eventgrid-mqtt.json)
 
 ### AMQP 1.0 — provision a new Azure Service Bus namespace
 
