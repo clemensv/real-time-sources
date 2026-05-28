@@ -280,9 +280,12 @@ class INPEDeterPoller:
             with open(self.last_polled_file, 'w', encoding='utf-8') as f:
                 json.dump(state, f)
 
-    async def poll_and_send(self):
+    async def poll_and_send(self, once: bool = False):
         """
-        Continuously poll both Amazon and Cerrado WFS endpoints and send new alerts to Kafka.
+        Poll both Amazon and Cerrado WFS endpoints and send new alerts to Kafka.
+
+        Args:
+            once: If True, run a single polling cycle and return.
         """
         state = self.load_state()
         poll_interval = timedelta(minutes=self.poll_interval_minutes)
@@ -346,6 +349,9 @@ class INPEDeterPoller:
             else:
                 logger.debug("No new deforestation alerts")
 
+            if once:
+                logger.info("--once specified; exiting after single cycle")
+                break
             elapsed = datetime.now(timezone.utc) - start_poll_time
             remaining = poll_interval - elapsed
             if remaining.total_seconds() > 0:
@@ -410,6 +416,7 @@ def main():
 
     feed_parser = subparsers.add_parser('feed', help="Poll INPE DETER data and feed it to Kafka")
     feed_parser.add_argument('--last-polled-file', type=str,
+                             default=os.environ.get('STATE_FILE', os.environ.get('INPE_DETER_LAST_POLLED_FILE')),
                              help="File to store the last polled state")
     feed_parser.add_argument('--kafka-bootstrap-servers', type=str,
                              help="Comma separated list of Kafka bootstrap servers")
@@ -425,6 +432,9 @@ def main():
                              help=f'Poll interval in minutes (default: {DEFAULT_POLL_INTERVAL_MINUTES})')
     feed_parser.add_argument('--log-level', type=str,
                              help='Logging level', default='INFO')
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.environ.get('ONCE_MODE', 'false').lower() in ('true', '1', 'yes'),
+                             help='Run a single polling cycle and exit')
 
     events_parser = subparsers.add_parser('events', help="List recent deforestation alerts")
     events_parser.add_argument('--biome', type=str, choices=['amazon', 'cerrado'],
@@ -446,9 +456,7 @@ def main():
         if not args.connection_string:
             args.connection_string = os.getenv('CONNECTION_STRING')
         if not args.last_polled_file:
-            args.last_polled_file = os.getenv('INPE_DETER_LAST_POLLED_FILE')
-            if not args.last_polled_file:
-                args.last_polled_file = os.path.expanduser('~/.inpe_deter_brazil_last_polled.json')
+            args.last_polled_file = os.path.expanduser('~/.inpe_deter_brazil_last_polled.json')
         if os.getenv('LOG_LEVEL'):
             args.log_level = os.getenv('LOG_LEVEL')
         if args.log_level:
@@ -493,7 +501,7 @@ def main():
             poll_interval_minutes=args.poll_interval,
         )
 
-        asyncio.run(poller.poll_and_send())
+        asyncio.run(poller.poll_and_send(once=args.once))
     else:
         parser.print_help()
 
