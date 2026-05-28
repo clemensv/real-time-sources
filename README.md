@@ -2,6 +2,17 @@
 
 # Real-Time Event Sources for Kafka, MQTT, and AMQP
 
+> ⚠️ **Upstream terms of service apply.** Every feeder in this repository
+> consumes a third-party public data source. Before you deploy, run, or
+> redistribute output from **any** feeder, you are required to review and
+> accept the terms of service, license, acceptable-use policy, and any
+> attribution or rate-limit requirements of that specific upstream data
+> provider. The MIT license on the code in this repository covers only the
+> code itself — it does **not** grant you any rights to the upstream data.
+> See the "Upstream data — terms of service" section in
+> [LICENSE.md](LICENSE.md) and the per-source `README.md` for the upstream
+> homepage and license link.
+
 > 🚀 **Explore the catalog interactively at [clemensv.github.io/real-time-sources](http://clemensv.github.io/real-time-sources)** — browse every source, read its docs, and one-click deploy to Azure or Fabric.
 
 This repository turns **~100 public real-time data feeds** — hydrology gauges,

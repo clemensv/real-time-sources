@@ -20,7 +20,45 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
---- 
+---
+
+## Upstream data — terms of service
+
+The MIT license above applies **only to the source code** in this
+repository (the feeders, deployment scripts, schemas, tooling, and
+documentation). It grants you no rights to, and makes no representations
+about, the **upstream third-party data** that the feeders consume.
+
+Every feeder in this repository ingests data from a third-party real-time
+public data source — government agencies, transit operators, weather
+services, hydrology offices, AIS receivers, social-media APIs, and so on.
+Each of those upstream providers publishes its own terms of service,
+data license, acceptable-use policy, attribution requirement, rate limit,
+and (in some cases) registration or API-key requirement.
+
+**Before you deploy, run, redistribute, cache, republish, or build a
+product on top of *any* feeder in this repository, you are required to
+review and accept the terms of the specific upstream data provider that
+the feeder consumes.** This includes — without limitation — terms
+covering:
+
+- permitted uses (commercial, non-commercial, research-only, internal,
+  redistribution),
+- attribution and source-citation requirements,
+- rate limits, polling intervals, and fair-use clauses,
+- caching, archival, and republication restrictions,
+- accuracy, fitness-for-purpose, and liability disclaimers,
+- registration, API-key, or token requirements.
+
+Each feeder's `README.md` links to its upstream provider's homepage and,
+where the provider publishes one, to its data-license page. Start there.
+If you cannot locate the upstream terms, **do not deploy the feeder
+until you have**.
+
+The maintainers of this repository are not party to and assume no
+responsibility for your compliance with any upstream provider's terms.
+
+---
 
 For the **Nextbus** tool, you must agree to the [Nextbus Terms of Use](https://www.nextbus.com/xmlFeedDocs/NextBusXMLFeed.pdf) 
 before using the tool. 
