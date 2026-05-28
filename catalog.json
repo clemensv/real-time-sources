@@ -831,6 +831,8 @@
     "cat": "Transport",
     "key": true,
     "desc": "North America — public transit arrivals",
+    "kql": true,
+    "notebook": true,
     "mqtt": true,
     "amqp": true
   },
