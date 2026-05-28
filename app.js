@@ -56,7 +56,6 @@ const SOURCES = [
   { id: "smhi-weather", name: "SMHI Weather", cat: "Weather", key: false, desc: "Sweden — ~232 stations, hourly obs", notebook: true, mqtt: true, amqp: true },
 
   // ── Air Quality and Environmental Health ──
-  { id: "airqo-uganda", name: "AirQo Uganda", cat: "Air Quality", key: true, desc: "Uganda + East Africa — low-cost PM2.5/PM10 sensor network", mqtt: false, amqp: false },
   { id: "canada-aqhi", name: "Canada AQHI", cat: "Air Quality", key: false, desc: "Canada — community AQHI observations and forecasts", notebook: true, mqtt: true, amqp: true },
   { id: "defra-aurn", name: "Defra AURN", cat: "Air Quality", key: false, desc: "United Kingdom — 300+ monitoring locations, hourly pollutants", notebook: true, mqtt: true, amqp: true },
   { id: "epa-uv", name: "EPA UV Index", cat: "Air Quality", key: false, desc: "United States — city-scoped hourly and daily UV forecasts", notebook: true, mqtt: true, amqp: true },
