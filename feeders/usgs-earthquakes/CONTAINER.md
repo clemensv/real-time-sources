@@ -237,6 +237,18 @@ Deploys Kafka plus a new Event Hubs namespace and hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fusgs-earthquakes%2Fazure-template-with-eventhub.json)
 
+### MQTT — bring your own broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fusgs-earthquakes%2Fazure-template-mqtt.json)
+
+### MQTT — provision a new Event Grid namespace MQTT broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fusgs-earthquakes%2Fazure-template-with-eventgrid-mqtt.json)
+
+### AMQP — provision a new Azure Service Bus namespace
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fusgs-earthquakes%2Fazure-template-with-servicebus.json)
+
 ### AMQP — bring your own AMQP broker
 
 Deploys the AMQP image against a provided AMQP broker endpoint.
