@@ -624,6 +624,7 @@
     "key": false,
     "desc": "United States — active wildfire incidents, NIFC",
     "kql": true,
+    "notebook": true,
     "mqtt": true,
     "amqp": true
   },

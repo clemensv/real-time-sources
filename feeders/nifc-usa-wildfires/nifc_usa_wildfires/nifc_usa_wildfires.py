@@ -197,7 +197,7 @@ class NIFCWildfirePoller:
             with open(self.last_polled_file, 'w', encoding='utf-8') as f:
                 json.dump(seen_ids, f)
 
-    async def poll_and_send(self):
+    async def poll_and_send(self, once: bool = False):
         """Continuously poll the NIFC wildfire feed and send new/updated incidents to Kafka."""
         seen_ids = self.load_seen_ids()
 
@@ -246,6 +246,10 @@ class NIFCWildfirePoller:
             # Prune seen IDs older than 90 days
             cutoff = (datetime.now(timezone.utc) - timedelta(days=90)).isoformat()
             seen_ids = {k: v for k, v in seen_ids.items() if v >= cutoff}
+
+            if once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
 
             elapsed = datetime.now(timezone.utc) - start_poll_time
             remaining = self.poll_interval - elapsed
@@ -312,6 +316,10 @@ def main():
                              help=f'Poll interval in minutes (default: {POLL_INTERVAL_MINUTES})')
     feed_parser.add_argument('--log-level', type=str,
                              help='Logging level', default='INFO')
+    feed_parser.add_argument('--once', action='store_true',
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). '
+                                  'Useful for scheduled execution in Fabric notebooks.')
 
     subparsers.add_parser('incidents', help="List recent wildfire incidents")
 
@@ -371,7 +379,7 @@ def main():
             poll_interval_minutes=args.poll_interval,
         )
 
-        asyncio.run(poller.poll_and_send())
+        asyncio.run(poller.poll_and_send(once=args.once))
     else:
         parser.print_help()
 
