@@ -68,6 +68,11 @@ def _optional_int_env(var_name: str) -> Optional[int]:
     return value or None
 
 
+def _truthy_env(var_name: str) -> bool:
+    """Parse bool-ish env vars using common truthy values."""
+    return os.getenv(var_name, "").strip().lower() in ("1", "true", "yes")
+
+
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
     """Parse an Event Hubs / Fabric Event Stream connection string."""
     config_dict: Dict[str, str] = {}
@@ -196,7 +201,8 @@ def _emit_event(cdc_event_producer: DEDWDCDCEventProducer,
 
 def run_feed(kafka_config: Dict[str, str], kafka_topic: str,
              polling_interval: Optional[int], state_file: str,
-             modules: List[BaseModule]) -> None:
+             modules: List[BaseModule],
+             once: bool = False) -> None:
     """Main feed loop: schedule modules and emit events."""
     full_state = load_state(state_file)
     kafka_producer = Producer(kafka_config)
@@ -249,6 +255,10 @@ def run_feed(kafka_config: Dict[str, str], kafka_topic: str,
             if total_events:
                 logger.info("Emitted %d events total", total_events)
 
+            if once:
+                logger.info("ONCE_MODE enabled — exiting after one polling cycle.")
+                break
+
             # Sleep until next module is due
             next_due = min(next_poll.values()) if next_poll else time.time() + 60
             sleep_time = max(1, next_due - time.time())
@@ -299,6 +309,9 @@ def main() -> None:
                         help="Comma-separated station IDs to include (default: all)")
     feed_p.add_argument("--base-url", type=str,
                         default=os.getenv("DWD_BASE_URL", "https://opendata.dwd.de"))
+    feed_p.add_argument("--once", action="store_true",
+                        default=_truthy_env("ONCE_MODE"),
+                        help="Run one poll cycle and exit (for scheduled notebook execution)")
 
     args = parser.parse_args()
 
@@ -354,7 +367,7 @@ def main() -> None:
             print("Error: No modules enabled.")
             sys.exit(1)
 
-        run_feed(kafka_config, topic, args.polling_interval, args.state_file, modules)
+        run_feed(kafka_config, topic, args.polling_interval, args.state_file, modules, once=args.once)
         return
 
     parser.print_help()
