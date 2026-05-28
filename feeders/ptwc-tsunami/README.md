@@ -12,13 +12,14 @@
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
-<img align="middle" src="https://img.shields.io/badge/Azure-3_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
+<img align="middle" src="https://img.shields.io/badge/Azure-5_templates-0078d4?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Fabric-Notebook_%2B_ACI-117865?style=flat-square"> <img align="middle" src="https://img.shields.io/badge/Docker-3_images-2496ed?style=flat-square">
 &nbsp;
 <a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml"><img align="middle" alt="build" src="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml/badge.svg"></a>
 
 > Pacific and Atlantic — NOAA tsunami bulletins
 
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#ptwc-tsunami) &nbsp;·&nbsp;
+[📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#ptwc-tsunami/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
 [🗄️ **KQL schema**](kql/ptwc_tsunami.kql) &nbsp;·&nbsp;
@@ -101,7 +102,7 @@ ptwc-tsunami/
 - Network access to the upstream data endpoint(s).
 - Network access to your target broker (Kafka, MQTT, or AMQP).
 
-This source is handled as a streaming feeder in this batch; no notebook runtime section is included.
+For low-volume polling workloads, a scheduled Fabric notebook is also available in [`notebook/`](notebook/).
 
 ## Quick start with Docker
 
@@ -154,7 +155,23 @@ The portal buttons wrap the underlying scripts and ARM templates documented belo
 
 PTWC Tsunami targets Microsoft Fabric end-to-end: events land in a Fabric **Event Stream** (custom endpoint), an attached **Eventhouse / KQL database** materializes the contract from [`kql/`](kql/).
 
-Use the deploy button on the [project portal](https://clemensv.github.io/real-time-sources#ptwc-tsunami) to launch the Fabric ACI hosting model — it walks you through Fabric workspace selection and follow-up steps.
+Two hosting models are supported. Use the deploy buttons on the [project portal](https://clemensv.github.io/real-time-sources#ptwc-tsunami) to launch either — both walk you through the same Fabric workspace selection and follow-up steps.
+
+#### Fabric Notebook feeder &nbsp;<sub><i>(recommended for low-volume polling)</i></sub>
+
+A scheduled Fabric Notebook in [`notebook/`](notebook/) runs the poller inside the Fabric workspace itself, against a per-source Fabric **Environment** that bundles the `ptwc_tsunami` package and the generated producer sub-packages. The Event Stream custom-endpoint connection string is looked up at runtime via the public Fabric Topology API using the workspace identity — no secrets in the notebook, no separate container host to manage. Dedupe state lives in OneLake under `/lakehouse/default/Files/feeder-state/ptwc-tsunami/`.
+
+```powershell
+tools/deploy-fabric/deploy-feeder-notebook.ps1 `
+  -Source ptwc-tsunami `
+  -Workspace <fabric-workspace-id-or-name> `
+  -ResourceGroup <azure-rg-for-bootstrap> `
+  -Location <azure-region>
+```
+
+Best fit for poll-based sources whose update cadence aligns with scheduled execution; the notebook writes a per-run diagnostic log to OneLake on every run.
+
+[![Deploy Fabric Notebook](https://img.shields.io/badge/Fabric-Notebook%20Feeder-117865?logo=microsoftfabric&logoColor=white)](https://clemensv.github.io/real-time-sources#ptwc-tsunami/fabric-notebook)
 
 #### Fabric ACI feeder &nbsp;<sub><i>(continuous container hosting against a Fabric Event Stream)</i></sub>
 
@@ -175,7 +192,7 @@ The script creates the Eventhouse, the KQL database with the [`kql/`](kql/) sche
 
 ### Deploying into Azure Container Instances
 
-3 one-click deployment templates — one per realistic Azure target. These templates host the container directly in Azure (without a Fabric workspace) and target an Azure Event Hubs namespace, an MQTT broker, or an AMQP 1.0 peer. All templates create a storage account and file share for persistent dedupe state.
+5 one-click deployment templates — one per realistic Azure target. These templates host the container directly in Azure (without a Fabric workspace) and target an Azure Event Hubs namespace, an MQTT broker, or an AMQP 1.0 peer. All templates create a storage account and file share for persistent dedupe state.
 
 #### Kafka — bring your own Event Hub / Kafka
 
@@ -188,6 +205,18 @@ Deploy the Kafka container with your own Azure Event Hubs or Fabric Event Stream
 Deploy the Kafka container together with a new Event Hubs namespace (Standard SKU, 1 throughput unit) and event hub. The connection string is wired automatically.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fptwc-tsunami%2Fazure-template-with-eventhub.json)
+
+#### MQTT — bring your own broker
+
+Deploy the MQTT container against an existing MQTT 5 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid namespace MQTT, etc.). You provide the `mqtts://` URL and optional credentials.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fptwc-tsunami%2Fazure-template-mqtt.json)
+
+#### MQTT — provision a new Event Grid namespace MQTT broker
+
+Deploy the MQTT container together with a new [Azure Event Grid namespace](https://learn.microsoft.com/azure/event-grid/mqtt-overview) with the MQTT broker enabled, a topic space for this source, a user-assigned managed identity, and the **EventGrid TopicSpaces Publisher** role assignment. The feeder authenticates with MQTT v5 enhanced authentication (`OAUTH2-JWT`) — no shared keys to rotate.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fptwc-tsunami%2Fazure-template-with-eventgrid-mqtt.json)
 
 #### AMQP — provision a new Azure Service Bus namespace
 
