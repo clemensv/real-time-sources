@@ -235,6 +235,18 @@ Deploys Kafka plus a new Event Hubs namespace and hub.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fvatsim%2Fazure-template-with-eventhub.json)
 
+### MQTT — bring your own broker
+
+Deploys the MQTT image and connects to an existing MQTT 5 broker with optional username/password auth.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fvatsim%2Fazure-template-mqtt.json)
+
+### MQTT — provision Event Grid namespace broker
+
+Deploys the MQTT image plus an Azure Event Grid namespace configured as an MQTT broker, including topic-space publisher role assignment via managed identity.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fvatsim%2Fazure-template-with-eventgrid-mqtt.json)
+
 ### AMQP — provision Azure Service Bus
 
 Deploys AMQP plus a new Service Bus namespace/queue and sender identity wiring.
