@@ -1,2 +1,0 @@
-pip install .\ndl_netherlands_mqtt_producer_data
-pip install .\ndl_netherlands_mqtt_producer_mqtt_client

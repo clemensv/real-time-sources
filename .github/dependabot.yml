@@ -996,24 +996,6 @@ updates:
     schedule:
       interval: "weekly"
 
-  # Ndl Netherlands
-  - package-ecosystem: "pip"
-    directory: "/feeders/ndl-netherlands"
-    schedule:
-      interval: "weekly"
-
-  # Ndl Netherlands producer data
-  - package-ecosystem: "pip"
-    directory: "/feeders/ndl-netherlands/ndl_netherlands_producer/ndl_netherlands_producer_data"
-    schedule:
-      interval: "weekly"
-
-  # Ndl Netherlands producer kafka producer
-  - package-ecosystem: "pip"
-    directory: "/feeders/ndl-netherlands/ndl_netherlands_producer/ndl_netherlands_producer_kafka_producer"
-    schedule:
-      interval: "weekly"
-
   # Ndw Road Traffic
   - package-ecosystem: "pip"
     directory: "/feeders/ndw-road-traffic"

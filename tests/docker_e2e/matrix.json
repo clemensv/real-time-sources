@@ -1142,18 +1142,6 @@
       "module": "madrid_traffic_amqp"
     },
     {
-      "dir": "feeders/ndl-netherlands",
-      "image": "ndl-netherlands-mqtt",
-      "file": "Dockerfile.mqtt",
-      "module": "ndl_netherlands_mqtt"
-    },
-    {
-      "dir": "feeders/ndl-netherlands",
-      "image": "ndl-netherlands-amqp",
-      "file": "Dockerfile.amqp",
-      "module": "ndl_netherlands_amqp"
-    },
-    {
       "dir": "feeders/ndw-road-traffic",
       "image": "ndw-road-traffic-mqtt",
       "file": "Dockerfile.mqtt",
@@ -2719,20 +2707,6 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestMadridTrafficAmqpDockerFlow"
-    },
-    {
-      "dir": "feeders/ndl-netherlands",
-      "image": "ndl-netherlands-mqtt",
-      "file": "Dockerfile.mqtt",
-      "test_file": "test_docker_mqtt_flow.py",
-      "test_class": "TestNDLNetherlandsMqttDockerFlow"
-    },
-    {
-      "dir": "feeders/ndl-netherlands",
-      "image": "ndl-netherlands-amqp",
-      "file": "Dockerfile.amqp",
-      "test_file": "test_docker_amqp_flow.py",
-      "test_class": "TestNDLNetherlandsAmqpDockerFlow"
     },
     {
       "dir": "feeders/ndw-road-traffic",

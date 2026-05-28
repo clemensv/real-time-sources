@@ -103,7 +103,6 @@ const SOURCES = [
   { id: "french-road-traffic", name: "French Road Traffic", cat: "Transport", key: false, desc: "France — national road network, DATEX II", notebook: true, mqtt: true, amqp: true, amqpSb: false },
   { id: "gtfs", name: "GTFS Realtime", cat: "Transport", key: false, desc: "Global — 1,000+ transit agencies, vehicles, trips, alerts", mqtt: true, amqp: true, amqpSb: false },
   { id: "madrid-traffic", name: "Madrid Traffic", cat: "Transport", key: false, desc: "Madrid, Spain — ~4,000 sensors, Informo", notebook: true, mqtt: true, amqp: true, amqpSb: false },
-  { id: "ndl-netherlands", name: "NDW Netherlands Traffic", cat: "Transport", key: false, desc: "Netherlands — national road traffic, DATEX II", notebook: true, mqtt: true, amqp: true, amqpSb: false },
   { id: "ndw-road-traffic", name: "NDW Road Traffic", cat: "Transport", key: false, desc: "Netherlands — national road traffic, DATEX II XML", mqtt: true, amqp: true, amqpSb: false },
   { id: "nextbus", name: "Nextbus", cat: "Transport", key: true, desc: "North America — public transit arrivals", kql: false, mqtt: true, amqp: true, amqpSb: false },
   { id: "paris-bicycle-counters", name: "Paris Bicycle Counters", cat: "Transport", key: false, desc: "Paris — ~141 counting stations, hourly counts", notebook: true, mqtt: true, amqp: true },

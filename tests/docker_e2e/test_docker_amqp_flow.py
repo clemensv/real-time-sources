@@ -688,13 +688,6 @@ class TestMadridTrafficAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {'es.madrid.informo.TrafficReading', 'es.madrid.informo.MeasurementPoint'}
     expected_count = 2
 
-class TestNDLNetherlandsAmqpDockerFlow(AmqpDockerFlowBase):
-    source_dir = "ndl-netherlands"
-    image = "ndl-netherlands-amqp"
-    env = {"ONCE_MODE": "true"}
-    expected_types = {'NL.NDW.Traffic.TrafficSpeed', 'NL.NDW.Traffic.TrafficSituation', 'NL.NDW.Traffic.TravelTime'}
-    expected_count = 3
-
 class TestNDWRoadTrafficAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "ndw-road-traffic"
     image = "ndw-road-traffic-amqp"

@@ -5415,25 +5415,6 @@ class TestMadridTrafficMqttDockerFlow:
         _run_mqtt_contract_flow('madrid-traffic', madrid_traffic_mqtt_image, mosquitto_madrid_traffic, timeout=240)
 
 @pytest.fixture(scope='module')
-def ndl_netherlands_mqtt_image():
-    return build_image('ndl-netherlands', dockerfile='Dockerfile.mqtt', tag='test-ndl-netherlands-mqtt')
-
-@pytest.fixture()
-def mosquitto_ndl_netherlands():
-    container, network, host_port = _generic_mosquitto('ndl-netherlands-mqtt-e2e', 'ndl-netherlands-mqtt-e2e-broker')
-    try:
-        yield {'host_port': host_port, 'internal_host': 'ndl-netherlands-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
-    finally:
-        try: container.kill()
-        except docker.errors.APIError: pass
-        try: network.remove()
-        except docker.errors.APIError: pass
-
-class TestNDLNetherlandsMqttDockerFlow:
-    def test_emits_mqtt_uns_topics(self, mosquitto_ndl_netherlands, ndl_netherlands_mqtt_image):
-        _run_mqtt_contract_flow('ndl-netherlands', ndl_netherlands_mqtt_image, mosquitto_ndl_netherlands, timeout=240)
-
-@pytest.fixture(scope='module')
 def ndw_road_traffic_mqtt_image():
     return build_image('ndw-road-traffic', dockerfile='Dockerfile.mqtt', tag='test-ndw-road-traffic-mqtt')
 

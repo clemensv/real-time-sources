@@ -1,4 +1,0 @@
-#!/bin/bash
-
-pip install ./ndl_netherlands_producer_data
-pip install ./ndl_netherlands_producer_kafka_producer

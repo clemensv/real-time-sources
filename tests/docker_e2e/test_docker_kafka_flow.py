@@ -251,8 +251,6 @@ def usgs_geomag_image():
     return build_image('usgs-geomag')
 def french_road_traffic_image():
     return build_image('french-road-traffic')
-def ndl_netherlands_image():
-    return build_image('ndl-netherlands')
 def eaws_albina_image():
     return build_image('eaws-albina')
 def geosphere_austria_image():
@@ -337,10 +335,6 @@ def usgs_geomag_image():
 @pytest.fixture(scope='module')
 def french_road_traffic_image():
     return build_image('french-road-traffic')
-
-@pytest.fixture(scope='module')
-def ndl_netherlands_image():
-    return build_image('ndl-netherlands')
 
 @pytest.fixture(scope='module')
 def eaws_albina_image():
@@ -1698,23 +1692,6 @@ class TestFrenchRoadTrafficDockerFlow:
             telemetry_types=['TrafficFlowMeasurement', 'RoadEvent'],
             min_messages=5,
             timeout=420,
-        )
-
-
-# NDW Netherlands Road Traffic (telemetry only – speed, travel time, situations)
-# ---------------------------------------------------------------------------
-
-class TestNDLNetherlandsDockerFlow:
-    TOPIC = 'test-ndl-traffic'
-
-    def test_emits_telemetry(self, kafka: KafkaFixture, ndl_netherlands_image):
-        _run_kafka_flow_test(
-            kafka, ndl_netherlands_image, self.TOPIC,
-            reference_types=None,
-            telemetry_types=['TrafficSpeed', 'TravelTime', 'TrafficSituation'],
-            extra_env={'SITUATIONS_TOPIC': self.TOPIC},
-            min_messages=5,
-            timeout=300,
         )
 
 

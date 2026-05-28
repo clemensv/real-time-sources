@@ -61,7 +61,6 @@
   "madrid-traffic": {"homepage": "https://datos.madrid.es/", "api_docs": "https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=02f2c23866b93410VgnVCM1000000b205a0aRCRD"},
   "meteoalarm": {"homepage": "https://meteoalarm.org/", "api_docs": "https://feeds.meteoalarm.org/"},
   "mode-s": {"homepage": "https://opensky-network.org/", "api_docs": "https://opensky-network.org/apidoc/"},
-  "ndl-netherlands": {"homepage": "https://www.ndw.nu/", "api_docs": "https://docs.ndw.nu/"},
   "ndw-road-traffic": {"homepage": "https://www.ndw.nu/", "api_docs": "https://opendata.ndw.nu/"},
   "nepal-bipad-hydrology": {"homepage": "https://bipadportal.gov.np/", "api_docs": "https://bipadportal.gov.np/api/v1/"},
   "nextbus": {"homepage": "https://www.umoiq.com/", "api_docs": "https://retro.umoiq.com/xmlFeedDocs/NextBusXMLFeed.pdf"},

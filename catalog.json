@@ -808,17 +808,6 @@
     "amqp": true
   },
   {
-    "id": "ndl-netherlands",
-    "name": "NDW Netherlands Traffic",
-    "cat": "Transport",
-    "key": false,
-    "desc": "Netherlands — national road traffic, DATEX II",
-    "kql": true,
-    "notebook": true,
-    "mqtt": true,
-    "amqp": true
-  },
-  {
     "id": "ndw-road-traffic",
     "name": "NDW Road Traffic",
     "cat": "Transport",
