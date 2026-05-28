@@ -1031,6 +1031,8 @@
     "cat": "Public Events",
     "key": false,
     "desc": "Europe — pan-European ticketed public events",
+    "kql": true,
+    "notebook": true,
     "mqtt": true,
     "amqp": true
   },
