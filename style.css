@@ -133,32 +133,21 @@ a:hover { color: var(--accent); text-decoration: none; }
   flex: 1 1 auto;
   overflow: hidden;
 }
-/* Brand mark — Braun-style hairline ring + solid accent dot */
+/* Brand mark — Braun-style hairline ring + solid accent dot
+   (rendered with a radial-gradient on the existing SVG since SVG
+   elements do not paint ::before/::after) */
 .header-left .logo {
   flex-shrink: 0;
   width: 22px;
   height: 22px;
-  color: transparent;
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
+  background: radial-gradient(circle,
+    var(--accent) 0 3.5px,
+    transparent 3.5px 9.5px,
+    var(--fg-default) 9.5px 10.5px,
+    transparent 10.5px);
 }
-.header-left .logo::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 1px solid var(--fg-default);
-  border-radius: 50%;
-}
-.header-left .logo::after {
-  content: '';
-  width: 7px;
-  height: 7px;
-  background: var(--accent);
-  border-radius: 50%;
-}
-.header-left .logo svg { display: none; }
+.header-left .logo > * { display: none; }
 .header-left h1 {
   font-size: 14px;
   font-weight: 600;
