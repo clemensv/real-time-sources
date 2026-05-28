@@ -530,7 +530,7 @@ class BillettoPoller:
 
         return 0, state
 
-    def feed(self, polling_interval: int = DEFAULT_POLLING_INTERVAL) -> None:
+    def feed(self, polling_interval: int = DEFAULT_POLLING_INTERVAL, once: bool = False) -> None:
         """Run the continuous polling loop."""
         state = self.load_state()
         logger.info(
@@ -546,8 +546,13 @@ class BillettoPoller:
                     self.save_state(new_state)
                     state = new_state
                 logger.info("Poll cycle complete: %d new/updated events sent", sent)
+                if once:
+                    logger.info("--once mode: exiting after first polling cycle")
+                    break
             except Exception as exc:  # pylint: disable=broad-except
                 logger.error("Unhandled error in polling loop: %s", exc, exc_info=True)
+                if once:
+                    raise
             self._sleep(polling_interval)
 
 
@@ -604,6 +609,12 @@ def main() -> None:
         type=str,
         default="INFO",
         help="Python logging level such as DEBUG, INFO, WARNING, or ERROR.",
+    )
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
     )
     _add_filter_arguments(feed_parser)
 
@@ -668,7 +679,7 @@ def main() -> None:
             kafka_topic=topic,
             state_file=state_file,
         )
-        poller.feed(polling_interval=polling_interval)
+        poller.feed(polling_interval=polling_interval, once=args.once)
 
     elif args.command == "list":
         api_keypair = args.api_keypair or os.environ.get("BILLETTO_API_KEYPAIR", "")

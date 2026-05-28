@@ -269,6 +269,34 @@ class TestMainConfiguration:
 
         assert poller_cls.call_args is not None
         assert poller_cls.call_args.kwargs["kafka_topic"] == "topic-from-cs"
+        poller.feed.assert_called_once_with(polling_interval=300, once=False)
+
+    def test_once_flag_via_cli_argument(self, monkeypatch):
+        monkeypatch.setenv("BILLETTO_API_KEYPAIR", "key:secret")
+        monkeypatch.setenv("CONNECTION_STRING", "BootstrapServer=localhost:9092;EntityPath=topic-from-cs")
+        monkeypatch.setattr(sys, "argv", ["billetto", "feed", "--once"])
+
+        with patch("billetto.billetto.BillettoPoller") as poller_cls:
+            poller = poller_cls.return_value
+            poller.feed.return_value = None
+
+            main()
+
+        poller.feed.assert_called_once_with(polling_interval=300, once=True)
+
+    def test_once_flag_via_env_var(self, monkeypatch):
+        monkeypatch.setenv("BILLETTO_API_KEYPAIR", "key:secret")
+        monkeypatch.setenv("CONNECTION_STRING", "BootstrapServer=localhost:9092;EntityPath=topic-from-cs")
+        monkeypatch.setenv("ONCE_MODE", "true")
+        monkeypatch.setattr(sys, "argv", ["billetto", "feed"])
+
+        with patch("billetto.billetto.BillettoPoller") as poller_cls:
+            poller = poller_cls.return_value
+            poller.feed.return_value = None
+
+            main()
+
+        poller.feed.assert_called_once_with(polling_interval=300, once=True)
 
     def test_feed_filters_use_cli_then_env(self, monkeypatch):
         monkeypatch.setenv("BILLETTO_API_KEYPAIR", "key:secret")
@@ -599,3 +627,20 @@ class TestBillettoPollerState:
         poller = BillettoPoller(api_keypair="k:s", state_file=str(state_file))
         state = poller.load_state()
         assert state == {}
+
+
+@pytest.mark.unit
+class TestBillettoPollerFeed:
+    def test_once_mode_runs_single_cycle_without_sleep(self):
+        poller = BillettoPoller(api_keypair="key:secret")
+        state = {"12345": "old"}
+
+        with patch.object(poller, "load_state", return_value=state), \
+             patch.object(poller, "poll_once", return_value=(1, {"12345": "new"})) as poll_once, \
+             patch.object(poller, "save_state") as save_state, \
+             patch.object(poller, "_sleep") as sleep_mock:
+            poller.feed(polling_interval=300, once=True)
+
+        poll_once.assert_called_once_with(state)
+        save_state.assert_called_once_with({"12345": "new"})
+        sleep_mock.assert_not_called()
