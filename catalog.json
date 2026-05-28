@@ -160,7 +160,8 @@
     "desc": "Denmark — DMI observation triad (metObs + oceanObs + lightning)",
     "kql": true,
     "notebook": true,
-    "mqtt": true
+    "mqtt": true,
+    "amqp": true
   },
   {
     "id": "rws-waterwebservices",

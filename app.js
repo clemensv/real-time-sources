@@ -39,7 +39,7 @@ const SOURCES = [
   { id: "bom-australia", name: "BOM Australia", cat: "Weather", key: false, desc: "Australia — ~8 capital city airports, half-hourly obs", notebook: true, mqtt: true, amqp: true },
   { id: "dwd", name: "DWD", cat: "Weather", key: false, desc: "Germany — ~1,450 stations, observations and CAP alerts", mqtt: true, amqp: true },
   { id: "dwd-pollenflug", name: "DWD Pollenflug", cat: "Weather", key: false, desc: "Germany — daily pollen forecasts, 27 regions", notebook: true, mqtt: true, amqp: true },
-  { id: "dmi", name: "DMI Denmark", cat: "Weather", key: true, desc: "Denmark — Danish Meteorological Institute observations", notebook: true, mqtt: true, amqp: false },
+  { id: "dmi", name: "DMI Denmark", cat: "Weather", key: true, desc: "Denmark — Danish Meteorological Institute observations", notebook: true, mqtt: true, amqp: true },
   { id: "environment-canada", name: "Environment Canada", cat: "Weather", key: false, desc: "Canada — ~963 SWOB stations, hourly obs", notebook: true, mqtt: true, amqp: true },
   { id: "geosphere-austria", name: "GeoSphere Austria", cat: "Weather", key: false, desc: "Austria — ~280 TAWES stations, 10-min obs", notebook: true, mqtt: true, amqp: true },
   { id: "hko-hong-kong", name: "HKO Hong Kong", cat: "Weather", key: false, desc: "Hong Kong — 27 temp stations, 18 rainfall districts", notebook: true, mqtt: true, amqp: true },
