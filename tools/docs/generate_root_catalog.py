@@ -92,8 +92,8 @@ def flag_img(cc: str, region: str = "") -> str:
     cc = (cc or "un").lower()
     alt = region or cc.upper()
     return (
-        f'<img align="middle" alt="{alt}" title="{alt}" '
-        f'src="https://flagcdn.com/20x15/{cc}.png" width="20" height="15">'
+        f'<picture><img align="middle" alt="{alt}" title="{alt}" '
+        f'src="https://flagcdn.com/20x15/{cc}.png" width="20" height="15"></picture>'
     )
 
 # Color palette (shields.io hex without #)
@@ -170,7 +170,8 @@ def derive_scope(desc: str) -> str:
 
 
 def transport_pills(transports: set) -> str:
-    """Three K/M/A square pills (on/off)."""
+    """Three K/M/A square pills (on/off). Wrapped in <picture> so GitHub
+    does not auto-link them to the badge image URL."""
     pills = []
     for letter, on_color, present in [
         ("K", C_KAFKA, "Kafka" in transports),
@@ -181,20 +182,27 @@ def transport_pills(transports: set) -> str:
             url = _shield(letter, None, on_color)
         else:
             url = _shield("_", None, C_OFF)
-        pills.append(f'<img align="middle" alt="{letter}" src="{url}">')
+        pills.append(f'<picture><img align="middle" alt="{letter}" src="{url}"></picture>')
     return "".join(pills)
 
 
 def deploy_counts(entry: dict) -> tuple[int, int, int]:
-    """(azure_count, fabric_count, docker_count) based on catalog flags."""
-    az = 2  # +EH and BYO EH baseline
-    if entry.get("amqp"):
-        az += 2  # Service Bus + BYO Service Bus
-    if entry.get("mqtt"):
-        az += 2  # Event Grid MQTT + BYO MQTT broker
-    fab = 1  # Container Feeder baseline
+    """(azure_count, fabric_count, docker_count) based on which deploy
+    templates actually exist in the source directory."""
+    sid = entry["id"]
+    src_dir = FEEDERS / sid
+    az_files = [
+        "azure-template-with-eventhub.json",
+        "azure-template.json",
+        "azure-template-with-servicebus.json",
+        "azure-template-amqp.json",
+        "azure-template-with-eventgrid-mqtt.json",
+        "azure-template-mqtt.json",
+    ]
+    az = sum(1 for f in az_files if (src_dir / f).exists())
+    fab = 1  # Container + Event Stream via gh-pages portal (always available)
     if entry.get("notebook"):
-        fab += 1  # Notebook Feeder
+        fab += 1
     dock = 1  # the Kafka image
     if entry.get("mqtt"):
         dock += 1
@@ -205,9 +213,9 @@ def deploy_counts(entry: dict) -> tuple[int, int, int]:
 
 def count_pills(az: int, fab: int, dock: int) -> str:
     pills = [
-        f'<img align="middle" src="{_shield("Az", str(az), C_AZURE)}">',
-        f'<img align="middle" src="{_shield("Fab", str(fab), C_FABRIC)}">',
-        f'<img align="middle" src="{_shield("D", str(dock), C_DOCKER)}">',
+        f'<picture><img align="middle" alt="Az" src="{_shield("Az", str(az), C_AZURE)}"></picture>',
+        f'<picture><img align="middle" alt="Fab" src="{_shield("Fab", str(fab), C_FABRIC)}"></picture>',
+        f'<picture><img align="middle" alt="D" src="{_shield("D", str(dock), C_DOCKER)}"></picture>',
     ]
     return "".join(pills)
 
@@ -220,29 +228,41 @@ def build_badge(source_id: str) -> str:
 
 
 def deploy_chips(entry: dict) -> str:
-    """List of two-tone Azure / Fabric / Docker chips with portal links."""
+    """List of two-tone Azure / Fabric / Docker chips with portal links.
+
+    Only emit chips whose underlying template file actually exists in
+    feeders/<sid>/ — this prevents broken links when the catalog flag
+    (amqp/mqtt) is set but a particular ARM template hasn't been generated."""
     sid = entry["id"]
+    src_dir = FEEDERS / sid
     chips = []
-    # Azure Event Hubs
-    eh_with = (f"https://portal.azure.com/#create/Microsoft.Template/uri/"
-               f"https%3A%2F%2Fraw.githubusercontent.com%2F{REPO.replace('/', '%2F')}%2Fmain%2Ffeeders%2F"
-               f"{sid}%2Fazure-template-with-eventhub.json")
-    eh_byo  = eh_with.replace("azure-template-with-eventhub.json", "azure-template.json")
-    chips.append(f'[![]({_shield("Azure", "Container + EH", C_AZURE)})]({eh_with})')
-    chips.append(f'[![]({_shield("Azure", "BYO EH", C_AZURE)})]({eh_byo})')
-    if entry.get("amqp"):
-        sb_with = eh_with.replace("azure-template-with-eventhub.json", "azure-template-with-servicebus.json")
-        sb_byo  = eh_with.replace("azure-template-with-eventhub.json", "azure-template-amqp.json")
-        chips.append(f'[![]({_shield("Azure", "Container + Service Bus", C_AZURE)})]({sb_with})')
-        chips.append(f'[![]({_shield("Azure", "BYO Service Bus", C_AZURE)})]({sb_byo})')
-    if entry.get("mqtt"):
-        eg_mqtt = eh_with.replace("azure-template-with-eventhub.json", "azure-template-with-eventgrid-mqtt.json")
-        byo_mqtt = eh_with.replace("azure-template-with-eventhub.json", "azure-template-mqtt.json")
-        chips.append(f'[![]({_shield("Azure", "Event Grid MQTT", C_AZURE)})]({eg_mqtt})')
-        chips.append(f'[![]({_shield("Azure", "BYO MQTT", C_AZURE)})]({byo_mqtt})')
+    base = (f"https://portal.azure.com/#create/Microsoft.Template/uri/"
+            f"https%3A%2F%2Fraw.githubusercontent.com%2F{REPO.replace('/', '%2F')}%2Fmain%2Ffeeders%2F"
+            f"{sid}%2F")
+
+    # (filename, badge_label, badge_message, condition)
+    azure_chips = [
+        ("azure-template-with-eventhub.json",       "Azure", "Container + EH",          True),
+        ("azure-template.json",                     "Azure", "BYO EH",                   True),
+        ("azure-template-with-servicebus.json",     "Azure", "Container + Service Bus",  bool(entry.get("amqp"))),
+        ("azure-template-amqp.json",                "Azure", "BYO Service Bus",          bool(entry.get("amqp"))),
+        ("azure-template-with-eventgrid-mqtt.json", "Azure", "Event Grid MQTT",          bool(entry.get("mqtt"))),
+        ("azure-template-mqtt.json",                "Azure", "BYO MQTT",                 bool(entry.get("mqtt"))),
+    ]
+    for fname, label, msg, want in azure_chips:
+        if not want:
+            continue
+        if not (src_dir / fname).exists():
+            continue
+        chips.append(f'[![]({_shield(label, msg, C_AZURE)})]({base}{fname})')
+
+    # Fabric chips — these go to the gh-pages portal which handles its own
+    # routing and works for every source regardless of whether the feeder
+    # ships extra fabric/ helper scripts.
     chips.append(f'[![]({_shield("Fabric", "Container + Event Stream", C_FABRIC)})]({PORTAL}/#{sid}/fabric-aci)')
     if entry.get("notebook"):
         chips.append(f'[![]({_shield("Fabric", "Notebook", C_FABRIC)})]({PORTAL}/#{sid}/fabric-notebook)')
+
     pkg = f"https://github.com/{REPO}/pkgs/container/real-time-sources-{sid}"
     chips.append(f'[![]({_shield("Docker", "pull", C_DOCKER, "logo=docker&logoColor=white")})]({pkg})')
     return " ".join(chips)
