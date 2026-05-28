@@ -198,6 +198,14 @@ docker run --rm \
 
 ## Deploying into Azure Container Instances
 
+### MQTT — bring your own broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fbafu-hydro%2Fazure-template-mqtt.json)
+
+### MQTT — provision a new Event Grid namespace MQTT broker
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fbafu-hydro%2Fazure-template-with-eventgrid-mqtt.json)
+
 ### Kafka — provision a new Event Hub
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fbafu-hydro%2Fazure-template-with-eventhub.json)
