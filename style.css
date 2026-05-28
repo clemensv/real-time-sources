@@ -872,6 +872,8 @@ a:hover { color: var(--accent); text-decoration: none; }
 .md-body a { color: var(--fg-default); border-bottom: 1px solid var(--accent); }
 .md-body a:hover { color: var(--accent); }
 .md-body img { max-width: 100%; border-radius: 0; }
+.md-body img[src*="flagcdn"] { width: 32px; height: auto; }
+.md-body a:has(> img[src*="flagcdn"]) { border-bottom: 0; }
 
 .loading-indicator {
   display: flex;
