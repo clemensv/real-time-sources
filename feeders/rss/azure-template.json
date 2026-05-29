@@ -9,7 +9,7 @@
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "Azure Event Hubs or Fabric Event Streams connection string (e.g. Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...)"
+        "description": "String. See feeders/rss/CONTAINER.md for details."
       }
     },
     "containerGroupName": {
@@ -32,7 +32,7 @@
       "type": "string",
       "defaultValue": "https://news.ycombinator.com/rss,https://feeds.bbci.co.uk/news/world/rss.xml,https://www.theguardian.com/world/rss",
       "metadata": {
-        "description": "Comma-separated list of RSS/Atom feed URLs."
+        "description": "URLs. See feeders/rss/CONTAINER.md for details."
       }
     }
   },

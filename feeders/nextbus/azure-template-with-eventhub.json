@@ -9,14 +9,14 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "Nextbus agency tag (e.g. 'ttc' for Toronto Transit Commission)."
+        "description": "Configuration value. See feeders/nextbus/CONTAINER.md for details."
       }
     },
     "route": {
       "type": "string",
       "defaultValue": "*",
       "metadata": {
-        "description": "Route tag to poll. Use '*' for all routes."
+        "description": "Configuration value. See feeders/nextbus/CONTAINER.md for details."
       }
     },
     "containerGroupName": {

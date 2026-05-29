@@ -59,6 +59,15 @@
 .PARAMETER ApiKey
     The secret value for -ApiKeyParamName.
 
+.PARAMETER TemplateParameter
+    Additional ARM template parameter overrides as 'name=value' strings.
+    Repeatable: -TemplateParameter foo=1 -TemplateParameter bar=baz.
+    Forwarded verbatim to `az deployment group create --parameters`.
+    These are passed AFTER the script-managed parameters (connectionString,
+    containerGroupName, location, optional ApiKeyParamName), so they can
+    override the defaults baked into azure-template.json without overriding
+    the connection string.
+
 .PARAMETER Branch
     Repo branch for fetching template URLs. Defaults to 'main'.
 
@@ -78,6 +87,13 @@
         -ResourceGroup rg-streams -Location westeurope `
         -Workspace ContosoRealTime -Eventhouse ContosoRealTime-eh `
         -ApiKeyParamName aisstreamApiKey -ApiKey 'abc123…'
+
+.EXAMPLE
+    ./deploy-fabric-aci.ps1 -Source canada-aqhi `
+        -ResourceGroup rg-aqhi -Location westeurope `
+        -Workspace ContosoRealTime -Eventhouse contoso-eh `
+        -TemplateParameter 'provinces=BC,ON' `
+        -TemplateParameter 'referenceRefreshInterval=3600'
 #>
 
 param(
@@ -103,6 +119,8 @@ param(
     [string]$ApiKeyParamName,
 
     [string]$ApiKey,
+
+    [string[]]$TemplateParameter = @(),
 
     [string]$Branch = "main",
 
@@ -202,6 +220,13 @@ $paramArgs = @(
 if ($ApiKeyParamName -and $ApiKey) {
     Write-Info "Passing $ApiKeyParamName as a secure template parameter"
     $paramArgs += "$ApiKeyParamName=$ApiKey"
+}
+foreach ($tp in $TemplateParameter) {
+    if ([string]::IsNullOrWhiteSpace($tp)) { continue }
+    if ($tp -notmatch '^[A-Za-z_][A-Za-z0-9_]*=') {
+        throw "Invalid -TemplateParameter '$tp'. Expected 'name=value' (name must match ARM param naming rules)."
+    }
+    $paramArgs += $tp
 }
 
 $deploymentName = "rts-$Source-aci-$(Get-Date -Format 'yyyyMMddHHmmss')"

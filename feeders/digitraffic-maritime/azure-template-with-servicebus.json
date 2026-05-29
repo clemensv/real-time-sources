@@ -5,16 +5,30 @@
     "description": "Deploy Digitraffic Maritime AMQP feeder with a new Azure Service Bus namespace and queue, using managed identity + Entra ID authentication."
   },
   "parameters": {
-    "namePrefix": {"type": "string", "defaultValue": "digitraffic-maritime", "minLength": 3, "maxLength": 24},
-    "location": {"type": "string", "defaultValue": "[resourceGroup().location]"},
-    "queueName": {"type": "string", "defaultValue": "digitraffic-maritime"},
+    "namePrefix": {
+      "type": "string",
+      "defaultValue": "digitraffic-maritime",
+      "minLength": 3,
+      "maxLength": 24
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "queueName": {
+      "type": "string",
+      "defaultValue": "digitraffic-maritime",
+      "metadata": {
+        "description": "Address. See feeders/digitraffic-maritime/CONTAINER.md for details."
+      }
+    },
     "imageName": {
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-digitraffic-maritime-amqp:latest"
     }
   },
   "variables": {
-    "namespaceName": "[concat(parameters('namePrefix'), '-sb')]",
+    "namespaceName": "[concat(parameters('namePrefix'), '-sbns')]",
     "userIdentityName": "[concat(parameters('namePrefix'), '-mi')]",
     "containerGroupName": "[concat(parameters('namePrefix'), '-amqp')]",
     "sbDataSenderRoleId": "/providers/Microsoft.Authorization/roleDefinitions/69a216fc-b8fb-44d8-bc22-1f3c2cd27a39",
@@ -34,7 +48,10 @@
       "apiVersion": "2022-10-01-preview",
       "name": "[variables('namespaceName')]",
       "location": "[parameters('location')]",
-      "sku": {"name": "Standard", "tier": "Standard"},
+      "sku": {
+        "name": "Standard",
+        "tier": "Standard"
+      },
       "properties": {
         "minimumTlsVersion": "1.2",
         "publicNetworkAccess": "Enabled",
@@ -45,7 +62,9 @@
       "type": "Microsoft.ServiceBus/namespaces/queues",
       "apiVersion": "2022-10-01-preview",
       "name": "[concat(variables('namespaceName'), '/', parameters('queueName'))]",
-      "dependsOn": ["[resourceId('Microsoft.ServiceBus/namespaces', variables('namespaceName'))]"],
+      "dependsOn": [
+        "[resourceId('Microsoft.ServiceBus/namespaces', variables('namespaceName'))]"
+      ],
       "properties": {
         "requiresSession": false,
         "deadLetteringOnMessageExpiration": true
@@ -56,7 +75,10 @@
       "apiVersion": "2022-04-01",
       "name": "[variables('roleAssignmentName')]",
       "scope": "[concat('Microsoft.ServiceBus/namespaces/', variables('namespaceName'), '/queues/', parameters('queueName'))]",
-      "dependsOn": ["[variables('queueResourceId')]", "[variables('userIdentityResourceId')]"],
+      "dependsOn": [
+        "[variables('queueResourceId')]",
+        "[variables('userIdentityResourceId')]"
+      ],
       "properties": {
         "roleDefinitionId": "[variables('sbDataSenderRoleId')]",
         "principalId": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]",
@@ -70,7 +92,9 @@
       "location": "[parameters('location')]",
       "identity": {
         "type": "UserAssigned",
-        "userAssignedIdentities": {"[variables('userIdentityResourceId')]": {}}
+        "userAssignedIdentities": {
+          "[variables('userIdentityResourceId')]": {}
+        }
       },
       "dependsOn": [
         "[resourceId('Microsoft.ServiceBus/namespaces', variables('namespaceName'))]",
@@ -85,18 +109,53 @@
             "name": "[variables('containerGroupName')]",
             "properties": {
               "image": "[parameters('imageName')]",
-              "resources": {"requests": {"cpu": 0.5, "memoryInGB": 1}},
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1
+                }
+              },
               "environmentVariables": [
-                {"name": "AMQP_HOST", "value": "[concat(variables('namespaceName'), '.servicebus.windows.net')]"},
-                {"name": "AMQP_PORT", "value": "5671"},
-                {"name": "AMQP_TLS", "value": "true"},
-                {"name": "AMQP_ADDRESS", "value": "[parameters('queueName')]"},
-                {"name": "AMQP_AUTH_MODE", "value": "entra"},
-                {"name": "AMQP_ENTRA_AUDIENCE", "value": "https://servicebus.azure.net/.default"},
-                {"name": "AMQP_ENTRA_CLIENT_ID", "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"},
-                {"name": "AMQP_CONTENT_MODE", "value": "binary"},
-                {"name": "LOG_LEVEL", "value": "INFO"},
-                {"name": "PYTHONUNBUFFERED", "value": "1"}
+                {
+                  "name": "AMQP_HOST",
+                  "value": "[concat(variables('namespaceName'), '.servicebus.windows.net')]"
+                },
+                {
+                  "name": "AMQP_PORT",
+                  "value": "5671"
+                },
+                {
+                  "name": "AMQP_TLS",
+                  "value": "true"
+                },
+                {
+                  "name": "AMQP_ADDRESS",
+                  "value": "[parameters('queueName')]"
+                },
+                {
+                  "name": "AMQP_AUTH_MODE",
+                  "value": "entra"
+                },
+                {
+                  "name": "AMQP_ENTRA_AUDIENCE",
+                  "value": "https://servicebus.azure.net/.default"
+                },
+                {
+                  "name": "AMQP_ENTRA_CLIENT_ID",
+                  "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
+                },
+                {
+                  "name": "AMQP_CONTENT_MODE",
+                  "value": "binary"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
               ]
             }
           }
@@ -105,7 +164,13 @@
     }
   ],
   "outputs": {
-    "namespaceName": {"type": "string", "value": "[variables('namespaceName')]"},
-    "queueName": {"type": "string", "value": "[parameters('queueName')]"}
+    "namespaceName": {
+      "type": "string",
+      "value": "[variables('namespaceName')]"
+    },
+    "queueName": {
+      "type": "string",
+      "value": "[parameters('queueName')]"
+    }
   }
 }

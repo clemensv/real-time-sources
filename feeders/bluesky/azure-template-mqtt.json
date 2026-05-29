@@ -9,21 +9,21 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "MQTT 5 broker URL (e.g. mqtts://broker.example.com:8883)."
+        "description": "Broker URL. See feeders/bluesky/CONTAINER.md for details."
       }
     },
     "brokerUsername": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional MQTT username."
+        "description": "Username. See feeders/bluesky/CONTAINER.md for details."
       }
     },
     "brokerPassword": {
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional MQTT password."
+        "description": "Password. See feeders/bluesky/CONTAINER.md for details."
       }
     },
     "containerGroupName": {
@@ -46,14 +46,14 @@
       "type": "string",
       "defaultValue": "wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos",
       "metadata": {
-        "description": "BLUESKY_FIREHOSE_URL configuration value."
+        "description": "Bluesky firehose WebSocket URL"
       }
     },
     "blueskyCollections": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "BLUESKY_COLLECTIONS configuration value. Empty means all supported event families."
+        "description": "Comma-separated list of collections to process (empty = all)"
       }
     }
   },

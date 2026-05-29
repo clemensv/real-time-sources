@@ -197,22 +197,68 @@ targets per transport are:
 | MQTT | (c) bring-your-own MQTT 5 broker → `azure-template-mqtt.json`; (d) provision new Event Grid MQTT broker → `azure-template-with-eventgrid-mqtt.json` |
 | AMQP | (e) provision new Azure Service Bus namespace → `azure-template-with-servicebus.json` |
 
-For each in-scope target:
+For each in-scope target the following items are **BLOCKING REVIEW
+CRITERIA**. A PR that fails any of them must not merge, even if all
+other checks have signed off. The reviewer must run the verification
+script (`tools/verify-arm-template.ps1`) and the validator
+(`tools/validate-arm-templates.ps1`) against the changed templates
+and paste the PASS lines into the PR body.
 
-- [ ] **ARM template exists** at the canonical filename above.
+- [ ] **ARM template exists and is NON-EMPTY** at the canonical
+      filename above. An `azure-template-*.json` whose `resources`
+      array is empty (`"resources": []`) is a release blocker — it
+      will create an empty resource group on deploy and is the most
+      common silent regression in this repo. Reviewers MUST verify
+      `(Get-Content <tpl> -Raw | ConvertFrom-Json).resources.Count -gt 0`
+      for every template touched by the PR.
+- [ ] **Every required feeder env var is exposed as an ARM
+      parameter** with `type` (`string` or `securestring`), a
+      sensible `defaultValue` (omit only for required secrets), and a
+      `metadata.description` derived from CONTAINER.md / the runtime
+      argparse help text — not a generic "X configuration value"
+      placeholder. The parameter must be wired into the container
+      `environmentVariables` array using `value` (non-secret) or
+      `secureValue` (secret). Run
+      `pwsh tools/validate-arm-templates.ps1 -FeederSlug <slug>` and
+      paste the report into the PR body. Missing required-secret
+      parameter is an `error` and blocks merge; missing non-secret
+      parameter is a `warning` and blocks merge unless the env var
+      is explicitly justified as not user-tunable in the PR body.
+- [ ] **Image suffix matches transport family.** kafka + eventhub →
+      base image (no suffix), servicebus + amqp → `-amqp:latest`,
+      mqtt + eventgrid-mqtt → `-mqtt:latest`. Mismatches cause the
+      wrong container variant to run and silently break the
+      deployment.
 - [ ] **Template provisions identity + role assignment** where Entra
       ID is the auth path (UAMI + the right
       `Microsoft.Authorization/roleAssignments` per resource).
 - [ ] **Storage account + file share** mounted for persistent dedupe
-      state.
-- [ ] **Template tested by clicking the actual deploy button** (or
-      via `az deployment group create` against a scratch RG) within
-      the last 30 days.
+      state on kafka / eventhub / servicebus variants. MQTT variants
+      do not require a state share — follow the aisstream reference
+      shape.
+- [ ] **Template validated end-to-end against a live Azure
+      subscription** within the last 30 days via
+      `pwsh tools/verify-arm-template.ps1 -FeederSlug <slug>
+      -Variant <variant>`. This script creates a real resource
+      group, deploys the template, observes data flow on the
+      provisioned broker (eventhub / servicebus / eventgrid-mqtt) or
+      validates container-group shape (amqp / mqtt BYO variants),
+      and tears the RG down in a `finally` block. Paste the script's
+      `PASS` line into the PR body. A PR that has not been live-
+      verified against Azure is not mergeable.
 
 ## 7. ghpages portal (`catalog.json` + `app.js`)
 
 - [ ] **Source entry exists in `catalog.json`** with all in-scope
       transport flags set (`mqtt: true`, `amqp: true`, etc.).
+- [ ] **`notebook: true` is set** in BOTH `catalog.json` (main) AND
+      `app.js` SOURCES (ghpages branch) whenever
+      `feeders/<slug>/notebook/<slug>-feed.ipynb` exists. A missing
+      flag hides the "Deploy to Fabric Notebook" button even though
+      the notebook is ready to deploy. Verify by running
+      `pwsh tools/validate-fabric-deployment.ps1` — exit 0 with zero
+      blockers means catalog ↔ notebook opt-in is consistent across
+      the fleet.
 - [ ] **Deploy button(s) render** on the live portal for every
       shipped transport. Check by inspecting the rendered card after
       the `update-ghpages-catalog` workflow runs on `main`.
@@ -220,6 +266,55 @@ For each in-scope target:
       (the catalog flag is necessary but not sufficient). Look for
       `btn-container-<transport>` containers and the matching hash
       route handlers.
+
+## 7a. Fabric notebook deployment correctness — BLOCKING
+
+> Notebook feeders are a separate hosting model from ACI: the
+> deploy script (`tools/deploy-fabric/deploy-feeder-notebook.ps1`)
+> uploads the `.ipynb` to a Fabric workspace, binds a per-source
+> Environment + KQL DB + Eventstream, and schedules it. A broken
+> notebook fails silently on the Fabric scheduler — there is no
+> portal-visible stderr — so static checks before merge are
+> non-negotiable for any source where
+> `feeders/<slug>/notebook/<slug>-feed.ipynb` exists.
+
+Run `pwsh tools/validate-fabric-deployment.ps1 -FeederSlug <slug>` and
+confirm **zero blockers** before requesting review. The validator
+enforces, per source:
+
+- [ ] **No `asyncio.run(` in any code cell.** The Fabric kernel owns
+      the event loop; `asyncio.run` deadlocks scheduled runs. Run
+      `feeder.main()` on a worker thread instead.
+- [ ] **No `%pip install` / `!pip install` / `%conda install` magic
+      in any code cell.** Wheels must come from the per-source Fabric
+      Environment built by `deploy-feeder-notebook.ps1`. Magic
+      installs make scheduled runs depend on PyPI availability and
+      break the version pin contract.
+- [ ] **OneLake state-file logging present** —
+      `/lakehouse/default/Files/feeder-state/<source>/` is the only
+      diagnostic channel for scheduled runs since Fabric REST does
+      not expose cell stderr.
+- [ ] **`notebookutils.notebook.exit(` is called on the failure
+      path** — without it, exceptions surface as a generic "notebook
+      failed" with no message.
+- [ ] **`CONNECTION_STRING` is NOT a notebook parameter** — the
+      notebook resolves the Event Stream connection string at
+      runtime via the public Topology API. Bake-in parameters expose
+      the secret to anyone with workspace read access and break
+      rotation.
+- [ ] **`feeders/<slug>/fabric/post-deploy.ps1`** (when present)
+      parses cleanly via the PowerShell AST, declares
+      `[hashtable] $Context` as its first param, references at least
+      one of the well-known `$Context` keys (`WorkspaceId`,
+      `EventhouseId`, `DatabaseId`, `EventstreamId`), and every sibling
+      file it `Join-Path $PSScriptRoot`s exists on disk.
+- [ ] **Live deploy + scheduled run + tear-down** succeeded **in a
+      real Fabric workspace** within the last 30 days for any
+      notebook touched by this PR. Capture the workspace name + run
+      ID and paste into the PR body.
+
+A PR that introduces or modifies a notebook MUST include the
+validator's `PASS` line and the live-deploy evidence in the PR body.
 
 ## 8. Documentation
 

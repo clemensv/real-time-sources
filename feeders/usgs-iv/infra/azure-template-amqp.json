@@ -38,7 +38,7 @@
       "minLength": 1,
       "maxLength": 50,
       "metadata": {
-        "description": "Service Bus queue name. The bridge writes all Usgs Iv CloudEvents into this single queue."
+        "description": "AMQP node/address name."
       }
     },
     "imageName": {
@@ -50,7 +50,7 @@
     }
   },
   "variables": {
-    "namespaceName": "[concat(parameters('namePrefix'), '-sb')]",
+    "namespaceName": "[concat(parameters('namePrefix'), '-sbns')]",
     "userIdentityName": "[concat(parameters('namePrefix'), '-mi')]",
     "containerGroupName": "[parameters('namePrefix')]",
     "storageAccountName": "[take(concat(replace(replace(parameters('namePrefix'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",

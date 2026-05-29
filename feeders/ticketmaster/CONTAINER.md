@@ -87,7 +87,7 @@ docker run --rm   -e TICKETMASTER_API_KEY="<api-key>" -e AMQP_BROKER_URL="amqp:/
 
 | Variable | Purpose |
 |---|---|
-| `TICKETMASTER_API_KEY` | Core configuration for this image variant. |
+| `TICKETMASTER_API_KEY` | **Required.** Ticketmaster Discovery API key used to authenticate upstream event and reference-data requests; obtain it from the Ticketmaster developer portal before deployment. |
 | `CONNECTION_STRING or KAFKA_BOOTSTRAP_SERVERS` | Core configuration for this image variant. |
 | `KAFKA_TOPIC` | Core configuration for this image variant. |
 | `COUNTRY_CODES` | Core configuration for this image variant. |
@@ -114,7 +114,7 @@ docker run --rm   -e TICKETMASTER_API_KEY="<api-key>" -e AMQP_BROKER_URL="amqp:/
 
 | Variable | Purpose |
 |---|---|
-| `TICKETMASTER_API_KEY` | Core configuration for this image variant. |
+| `TICKETMASTER_API_KEY` | **Required.** Ticketmaster Discovery API key used to authenticate upstream event and reference-data requests; obtain it from the Ticketmaster developer portal before deployment. |
 | `MQTT_BROKER_URL` | Core configuration for this image variant. |
 | `MQTT_USERNAME` | Core configuration for this image variant. |
 | `MQTT_PASSWORD` | Core configuration for this image variant. |
@@ -125,7 +125,7 @@ docker run --rm   -e TICKETMASTER_API_KEY="<api-key>" -e AMQP_BROKER_URL="amqp:/
 
 | Variable | Purpose |
 |---|---|
-| `TICKETMASTER_API_KEY` | Core configuration for this image variant. |
+| `TICKETMASTER_API_KEY` | **Required.** Ticketmaster Discovery API key used to authenticate upstream event and reference-data requests; obtain it from the Ticketmaster developer portal before deployment. |
 | `AMQP_BROKER_URL` | Core configuration for this image variant. |
 | `AMQP_ADDRESS` | Core configuration for this image variant. |
 | `AMQP_AUTH_MODE` | Core configuration for this image variant. |

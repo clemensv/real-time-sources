@@ -1,12 +1,267 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {},
-  "resources": [],
-  "outputs": {
-    "note": {
+  "metadata": {
+    "description": "Deploys the billetto MQTT feeder as an Azure Container Instance against an existing MQTT 5 broker."
+  },
+  "parameters": {
+    "brokerUrl": {
       "type": "string",
-      "value": "billetto azure-template-mqtt.json placeholder for companion transport deployment"
+      "minLength": 1,
+      "metadata": {
+        "description": "Broker URL, e.g. mqtt://host:1883 or mqtts://host:8883."
+      }
+    },
+    "brokerUsername": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "brokerPassword": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "billetto-mqtt",
+      "metadata": {
+        "description": "Name for the container group resource."
+      },
+      "maxLength": 63,
+      "minLength": 1
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-billetto-mqtt:latest",
+      "metadata": {
+        "description": "Container image reference for the MQTT feeder."
+      }
+    },
+    "mqttClientId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "MQTT client identifier (must be globally unique per broker)."
+      }
+    },
+    "billettoApiKeypair": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Billetto API key pair used to authenticate upstream public-events API requests; obtain it from the Billetto developer portal before deployment."
+      }
+    },
+    "billettoBaseUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Base URL for the Billetto upstream API."
+      },
+      "defaultValue": "https://billetto.dk"
+    },
+    "billettoCategory": {
+      "type": "string",
+      "metadata": {
+        "description": "Billetto category filter applied to event discovery queries."
+      },
+      "defaultValue": ""
+    },
+    "billettoEventType": {
+      "type": "string",
+      "metadata": {
+        "description": "Billetto event type filter applied to event discovery queries."
+      },
+      "defaultValue": ""
+    },
+    "billettoMacroregion": {
+      "type": "string",
+      "metadata": {
+        "description": "Billetto macro-region filter applied to event discovery queries."
+      },
+      "defaultValue": ""
+    },
+    "billettoOrganizerId": {
+      "type": "string",
+      "metadata": {
+        "description": "Billetto organizer identifier used to limit event discovery queries."
+      },
+      "defaultValue": ""
+    },
+    "billettoPostalCode": {
+      "type": "string",
+      "metadata": {
+        "description": "Postal code filter applied to Billetto event discovery queries."
+      },
+      "defaultValue": ""
+    },
+    "billettoRegion": {
+      "type": "string",
+      "metadata": {
+        "description": "Billetto region filter applied to event discovery queries."
+      },
+      "defaultValue": ""
+    },
+    "billettoSubcategory": {
+      "type": "string",
+      "metadata": {
+        "description": "Billetto subcategory option used to filter or tune the billetto upstream feeder."
+      },
+      "defaultValue": ""
+    },
+    "billettoSubregion": {
+      "type": "string",
+      "metadata": {
+        "description": "Billetto sub-region filter applied to event discovery queries."
+      },
+      "defaultValue": ""
+    },
+    "onceMode": {
+      "type": "string",
+      "metadata": {
+        "description": "Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks."
+      },
+      "defaultValue": ""
+    }
+  },
+  "variables": {
+    "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[parameters('containerGroupName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[parameters('brokerUrl')]"
+                },
+                {
+                  "name": "MQTT_USERNAME",
+                  "value": "[parameters('brokerUsername')]"
+                },
+                {
+                  "name": "MQTT_PASSWORD",
+                  "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "MQTT_CLIENT_ID",
+                  "value": "[parameters('mqttClientId')]"
+                },
+                {
+                  "name": "BILLETTO_API_KEYPAIR",
+                  "secureValue": "[parameters('billettoApiKeypair')]"
+                },
+                {
+                  "name": "BILLETTO_BASE_URL",
+                  "value": "[parameters('billettoBaseUrl')]"
+                },
+                {
+                  "name": "BILLETTO_CATEGORY",
+                  "value": "[parameters('billettoCategory')]"
+                },
+                {
+                  "name": "BILLETTO_EVENT_TYPE",
+                  "value": "[parameters('billettoEventType')]"
+                },
+                {
+                  "name": "BILLETTO_MACROREGION",
+                  "value": "[parameters('billettoMacroregion')]"
+                },
+                {
+                  "name": "BILLETTO_ORGANIZER_ID",
+                  "value": "[parameters('billettoOrganizerId')]"
+                },
+                {
+                  "name": "BILLETTO_POSTAL_CODE",
+                  "value": "[parameters('billettoPostalCode')]"
+                },
+                {
+                  "name": "BILLETTO_REGION",
+                  "value": "[parameters('billettoRegion')]"
+                },
+                {
+                  "name": "BILLETTO_SUBCATEGORY",
+                  "value": "[parameters('billettoSubcategory')]"
+                },
+                {
+                  "name": "BILLETTO_SUBREGION",
+                  "value": "[parameters('billettoSubregion')]"
+                },
+                {
+                  "name": "ONCE_MODE",
+                  "value": "[parameters('onceMode')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerGroupName'))]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
     }
   }
 }

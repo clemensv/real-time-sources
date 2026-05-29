@@ -10,34 +10,47 @@
       "defaultValue": "nws-alerts",
       "minLength": 3,
       "maxLength": 24,
-      "metadata": { "description": "Base name for all resources." }
+      "metadata": {
+        "description": "Base name for all resources."
+      }
     },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
-      "metadata": { "description": "Azure region for all resources." }
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
     },
     "serviceBusSku": {
       "type": "string",
       "defaultValue": "Standard",
-      "allowedValues": ["Standard", "Premium"],
-      "metadata": { "description": "Service Bus namespace SKU. Standard is sufficient for nws-alerts-class throughput." }
+      "allowedValues": [
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Service Bus namespace SKU. Standard is sufficient for nws-alerts-class throughput."
+      }
     },
     "queueName": {
       "type": "string",
       "defaultValue": "nws-alerts",
       "minLength": 1,
       "maxLength": 50,
-      "metadata": { "description": "Service Bus queue name. The bridge writes all CloudEvents (station catalog + current measurements) into this single queue." }
+      "metadata": {
+        "description": "Address. See feeders/nws-alerts/CONTAINER.md for details."
+      }
     },
     "imageName": {
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-nws-alerts-amqp:latest",
-      "metadata": { "description": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build." }
+      "metadata": {
+        "description": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build."
+      }
     }
   },
   "variables": {
-    "namespaceName": "[concat(parameters('namePrefix'), '-sb')]",
+    "namespaceName": "[concat(parameters('namePrefix'), '-sbns')]",
     "userIdentityName": "[concat(parameters('namePrefix'), '-mi')]",
     "containerGroupName": "[parameters('namePrefix')]",
     "storageAccountName": "[take(concat(replace(replace(parameters('namePrefix'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
@@ -62,7 +75,9 @@
       "name": "[variables('logAnalyticsWorkspaceName')]",
       "location": "[parameters('location')]",
       "properties": {
-        "sku": { "name": "PerGB2018" },
+        "sku": {
+          "name": "PerGB2018"
+        },
         "retentionInDays": 30
       }
     },
@@ -71,7 +86,9 @@
       "apiVersion": "2023-05-01",
       "name": "[variables('storageAccountName')]",
       "location": "[parameters('location')]",
-      "sku": { "name": "Standard_LRS" },
+      "sku": {
+        "name": "Standard_LRS"
+      },
       "kind": "StorageV2",
       "properties": {
         "accessTier": "Hot",
@@ -94,7 +111,9 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ],
-      "properties": { "shareQuota": 1 }
+      "properties": {
+        "shareQuota": 1
+      }
     },
     {
       "type": "Microsoft.ServiceBus/namespaces",
@@ -178,30 +197,66 @@
             "properties": {
               "image": "[parameters('imageName')]",
               "resources": {
-                "requests": { "cpu": 0.5, "memoryInGB": 1.0 }
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
               },
               "environmentVariables": [
                 {
                   "name": "AMQP_HOST",
                   "value": "[concat(variables('namespaceName'), '.servicebus.windows.net')]"
                 },
-                { "name": "AMQP_PORT", "value": "5671" },
-                { "name": "AMQP_TLS", "value": "true" },
-                { "name": "AMQP_ADDRESS", "value": "[parameters('queueName')]" },
-                { "name": "AMQP_AUTH_MODE", "value": "entra" },
-                { "name": "AMQP_ENTRA_AUDIENCE", "value": "https://servicebus.azure.net/.default" },
+                {
+                  "name": "AMQP_PORT",
+                  "value": "5671"
+                },
+                {
+                  "name": "AMQP_TLS",
+                  "value": "true"
+                },
+                {
+                  "name": "AMQP_ADDRESS",
+                  "value": "[parameters('queueName')]"
+                },
+                {
+                  "name": "AMQP_AUTH_MODE",
+                  "value": "entra"
+                },
+                {
+                  "name": "AMQP_ENTRA_AUDIENCE",
+                  "value": "https://servicebus.azure.net/.default"
+                },
                 {
                   "name": "AMQP_ENTRA_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
                 },
-                { "name": "AMQP_CONTENT_MODE", "value": "binary" },
-                { "name": "POLLING_INTERVAL", "value": "60" },
-                { "name": "STATE_FILE", "value": "/mnt/bridge-state/state.json" },
-                { "name": "LOG_LEVEL", "value": "INFO" },
-                { "name": "PYTHONUNBUFFERED", "value": "1" }
+                {
+                  "name": "AMQP_CONTENT_MODE",
+                  "value": "binary"
+                },
+                {
+                  "name": "POLLING_INTERVAL",
+                  "value": "60"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "/mnt/bridge-state/state.json"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
               ],
               "volumeMounts": [
-                { "name": "bridge-state", "mountPath": "/mnt/bridge-state" }
+                {
+                  "name": "bridge-state",
+                  "mountPath": "/mnt/bridge-state"
+                }
               ]
             }
           }
@@ -246,4 +301,3 @@
     }
   }
 }
-

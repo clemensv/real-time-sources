@@ -36,21 +36,21 @@
       "type": "string",
       "defaultValue": "station_obs_10min,weather_alerts,station_metadata,icond2_grid",
       "metadata": {
-        "description": "DWD_MODULES configuration value."
+        "description": "Comma-separated module names to enable."
       }
     },
     "dwdModulesDisabled": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "DWD_MODULES_DISABLED configuration value."
+        "description": "Comma-separated module names to disable."
       }
     },
     "pollingInterval": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "POLLING_INTERVAL configuration value."
+        "description": "Optional global polling interval override in seconds."
       }
     }
   },

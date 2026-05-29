@@ -9,7 +9,7 @@
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "Azure Event Hubs or Fabric Event Streams connection string (e.g. Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...)"
+        "description": "String. See feeders/xceed/CONTAINER.md for details."
       }
     },
     "containerGroupName": {

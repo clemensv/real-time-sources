@@ -36,21 +36,21 @@
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "DMI MetObs API key (X-Gravitee-Api-Key)."
+        "description": "Per-API key for the MetObs API."
       }
     },
     "dmiOceanObsApiKey": {
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "DMI OceanObs API key (X-Gravitee-Api-Key)."
+        "description": "Per-API key for the OceanObs API."
       }
     },
     "dmiLightningApiKey": {
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "DMI Lightning API key (X-Gravitee-Api-Key)."
+        "description": "Per-API key for the Lightning API (Kafka and AMQP images)."
       }
     }
   },

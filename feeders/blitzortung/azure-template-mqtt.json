@@ -1,12 +1,257 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {},
-  "resources": [],
-  "outputs": {
-    "containerImage": {
+  "metadata": {
+    "description": "Deploys the blitzortung MQTT feeder as an Azure Container Instance against an existing MQTT 5 broker."
+  },
+  "parameters": {
+    "brokerUrl": {
       "type": "string",
-      "value": "ghcr.io/clemensv/real-time-sources/blitzortung"
+      "minLength": 1,
+      "metadata": {
+        "description": "Broker URL, e.g. mqtt://host:1883 or mqtts://host:8883."
+      }
+    },
+    "brokerUsername": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "brokerPassword": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "blitzortung-mqtt",
+      "metadata": {
+        "description": "Name for the container group resource."
+      },
+      "maxLength": 63,
+      "minLength": 1
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-blitzortung-mqtt:latest",
+      "metadata": {
+        "description": "Container image reference for the MQTT feeder."
+      }
+    },
+    "mqttClientId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "MQTT client identifier (must be globally unique per broker)."
+      }
+    },
+    "blitzortungBbox": {
+      "type": "string",
+      "metadata": {
+        "description": "Geographic bounding box filter for upstream events, expressed as comma-separated coordinates."
+      },
+      "defaultValue": ""
+    },
+    "blitzortungDedupeSize": {
+      "type": "string",
+      "metadata": {
+        "description": "Maximum number of event identifiers retained in the in-memory dedupe cache."
+      },
+      "defaultValue": "5000"
+    },
+    "blitzortungFlushInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "Producer flush interval in milliseconds for batched event publishing."
+      },
+      "defaultValue": "250"
+    },
+    "blitzortungIncludeStations": {
+      "type": "string",
+      "metadata": {
+        "description": "Whether to request detector participation details (true/false)."
+      },
+      "defaultValue": "true"
+    },
+    "blitzortungMaxRetryDelay": {
+      "type": "string",
+      "metadata": {
+        "description": "Maximum reconnect backoff delay in seconds after upstream failures."
+      },
+      "defaultValue": "60"
+    },
+    "blitzortungSourceMask": {
+      "type": "string",
+      "metadata": {
+        "description": "Blitzortung source mask option used to filter or tune the blitzortung upstream feeder."
+      },
+      "defaultValue": "4"
+    },
+    "blitzortungStateFile": {
+      "type": "string",
+      "metadata": {
+        "description": "Path to the feeder-specific JSON state file used for upstream poll resume and dedupe."
+      },
+      "defaultValue": ""
+    },
+    "blitzortungUserAgent": {
+      "type": "string",
+      "metadata": {
+        "description": "HTTP User-Agent header sent to the upstream service."
+      },
+      "defaultValue": "real-time-sources-blitzortung/0.1 (https://github.com/clemensv/real-time-sources)"
+    },
+    "blitzortungWebsocketUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Upstream websocket URL. Default wss://live.lightningmaps.org:443/; failover to wss://live2.lightningmaps.org:443/ is automatic."
+      },
+      "defaultValue": ""
+    },
+    "blitzortungWsUrls": {
+      "type": "string",
+      "metadata": {
+        "description": "Comma-separated websocket endpoint URLs used for upstream connection failover."
+      },
+      "defaultValue": ""
+    }
+  },
+  "variables": {
+    "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[parameters('containerGroupName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[parameters('brokerUrl')]"
+                },
+                {
+                  "name": "MQTT_USERNAME",
+                  "value": "[parameters('brokerUsername')]"
+                },
+                {
+                  "name": "MQTT_PASSWORD",
+                  "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "MQTT_CLIENT_ID",
+                  "value": "[parameters('mqttClientId')]"
+                },
+                {
+                  "name": "BLITZORTUNG_BBOX",
+                  "value": "[parameters('blitzortungBbox')]"
+                },
+                {
+                  "name": "BLITZORTUNG_DEDUPE_SIZE",
+                  "value": "[parameters('blitzortungDedupeSize')]"
+                },
+                {
+                  "name": "BLITZORTUNG_FLUSH_INTERVAL",
+                  "value": "[parameters('blitzortungFlushInterval')]"
+                },
+                {
+                  "name": "BLITZORTUNG_INCLUDE_STATIONS",
+                  "value": "[parameters('blitzortungIncludeStations')]"
+                },
+                {
+                  "name": "BLITZORTUNG_MAX_RETRY_DELAY",
+                  "value": "[parameters('blitzortungMaxRetryDelay')]"
+                },
+                {
+                  "name": "BLITZORTUNG_SOURCE_MASK",
+                  "value": "[parameters('blitzortungSourceMask')]"
+                },
+                {
+                  "name": "BLITZORTUNG_STATE_FILE",
+                  "value": "[parameters('blitzortungStateFile')]"
+                },
+                {
+                  "name": "BLITZORTUNG_USER_AGENT",
+                  "value": "[parameters('blitzortungUserAgent')]"
+                },
+                {
+                  "name": "BLITZORTUNG_WEBSOCKET_URL",
+                  "value": "[parameters('blitzortungWebsocketUrl')]"
+                },
+                {
+                  "name": "BLITZORTUNG_WS_URLS",
+                  "value": "[parameters('blitzortungWsUrls')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerGroupName'))]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
     }
   }
 }

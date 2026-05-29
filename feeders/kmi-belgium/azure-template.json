@@ -9,7 +9,7 @@
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "Azure Event Hubs or Fabric Event Streams connection string (e.g. Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...)"
+        "description": "Event Hubs / Fabric Event Stream connection string (overrides bootstrap settings)."
       }
     },
     "containerGroupName": {
@@ -49,7 +49,9 @@
       "name": "[variables('logAnalyticsWorkspaceName')]",
       "location": "[parameters('location')]",
       "properties": {
-        "sku": { "name": "PerGB2018" },
+        "sku": {
+          "name": "PerGB2018"
+        },
         "retentionInDays": 30
       }
     },
@@ -58,7 +60,9 @@
       "apiVersion": "2023-05-01",
       "name": "[variables('storageAccountName')]",
       "location": "[parameters('location')]",
-      "sku": { "name": "Standard_LRS" },
+      "sku": {
+        "name": "Standard_LRS"
+      },
       "kind": "StorageV2",
       "properties": {
         "accessTier": "Hot",
@@ -81,7 +85,9 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ],
-      "properties": { "shareQuota": 1 }
+      "properties": {
+        "shareQuota": 1
+      }
     },
     {
       "type": "Microsoft.ContainerInstance/containerGroups",
@@ -108,17 +114,38 @@
             "properties": {
               "image": "[variables('imageName')]",
               "resources": {
-                "requests": { "cpu": 0.5, "memoryInGB": 1.0 }
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
               },
               "environmentVariables": [
-                { "name": "CONNECTION_STRING", "secureValue": "[parameters('connectionString')]" },
-                { "name": "POLLING_INTERVAL", "value": "[string(parameters('pollingInterval'))]" },
-                { "name": "STATE_FILE", "value": "/mnt/bridge-state/kmi_belgium_state.json" },
-                { "name": "LOG_LEVEL", "value": "INFO" },
-                { "name": "PYTHONUNBUFFERED", "value": "1" }
+                {
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionString')]"
+                },
+                {
+                  "name": "POLLING_INTERVAL",
+                  "value": "[string(parameters('pollingInterval'))]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "/mnt/bridge-state/kmi_belgium_state.json"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
               ],
               "volumeMounts": [
-                { "name": "bridge-state", "mountPath": "/mnt/bridge-state" }
+                {
+                  "name": "bridge-state",
+                  "mountPath": "/mnt/bridge-state"
+                }
               ]
             }
           }

@@ -1,12 +1,334 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {},
-  "resources": [],
-  "outputs": {
-    "note": {
+  "metadata": {
+    "description": "Deploys the gtfs MQTT feeder as an Azure Container Instance against an existing MQTT 5 broker."
+  },
+  "parameters": {
+    "brokerUrl": {
       "type": "string",
-      "value": "AMQP Service Bus deployment template placeholder for gtfs."
+      "minLength": 1,
+      "metadata": {
+        "description": "Broker URL, e.g. mqtt://host:1883 or mqtts://host:8883."
+      }
+    },
+    "brokerUsername": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "brokerPassword": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "gtfs-mqtt",
+      "metadata": {
+        "description": "Name for the container group resource."
+      },
+      "maxLength": 63,
+      "minLength": 1
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-gtfs-mqtt:latest",
+      "metadata": {
+        "description": "Container image reference for the MQTT feeder."
+      }
+    },
+    "mqttClientId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "MQTT client identifier (must be globally unique per broker)."
+      }
+    },
+    "agency": {
+      "type": "string",
+      "metadata": {
+        "description": "The tag of the agency to get vehicle locations for."
+      },
+      "defaultValue": ""
+    },
+    "cacheDir": {
+      "type": "string",
+      "metadata": {
+        "description": "The directory to store the GTFS schedule files."
+      },
+      "defaultValue": ""
+    },
+    "fabricApiBase": {
+      "type": "string",
+      "metadata": {
+        "description": "Fabric api base option used to filter or tune the gtfs upstream feeder."
+      },
+      "defaultValue": "https://api.fabric.microsoft.com/v1"
+    },
+    "fabricKqlDbId": {
+      "type": "string",
+      "metadata": {
+        "description": "Fabric kql db id option used to filter or tune the gtfs upstream feeder."
+      },
+      "defaultValue": ""
+    },
+    "fabricMapId": {
+      "type": "string",
+      "metadata": {
+        "description": "Fabric map id option used to filter or tune the gtfs upstream feeder."
+      },
+      "defaultValue": ""
+    },
+    "fabricWorkspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Fabric workspace id option used to filter or tune the gtfs upstream feeder."
+      },
+      "defaultValue": ""
+    },
+    "gtfsHeaders": {
+      "type": "string",
+      "metadata": {
+        "description": "HTTP header(s) expressed as \"key=value\", e.g. \"API-Key=abc."
+      },
+      "defaultValue": ""
+    },
+    "gtfsRtHeaders": {
+      "type": "string",
+      "metadata": {
+        "description": "HTTP header(s) expressed as \"key=value\", e.g. \"API-Key=abc."
+      },
+      "defaultValue": ""
+    },
+    "gtfsRtUrls": {
+      "type": "string",
+      "metadata": {
+        "description": "The URL(s) of the GTFS Realtime feed(s)."
+      },
+      "defaultValue": ""
+    },
+    "gtfsUrls": {
+      "type": "string",
+      "metadata": {
+        "description": "The URL(s) of the GTFS Schedule feed."
+      },
+      "defaultValue": ""
+    },
+    "kustoClusterUri": {
+      "type": "string",
+      "metadata": {
+        "description": "Kusto cluster uri option used to filter or tune the gtfs upstream feeder."
+      },
+      "defaultValue": ""
+    },
+    "kustoDb": {
+      "type": "string",
+      "metadata": {
+        "description": "Kusto db option used to filter or tune the gtfs upstream feeder."
+      },
+      "defaultValue": "gtfs"
+    },
+    "mdbSourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Mobility Database source ID of the GTFS Realtime feed."
+      },
+      "defaultValue": ""
+    },
+    "pollInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "Seconds between upstream polling cycles for this feeder."
+      },
+      "defaultValue": ""
+    },
+    "route": {
+      "type": "string",
+      "metadata": {
+        "description": "The route to poll vehicle locations for, omit or '*' to poll all routes."
+      },
+      "defaultValue": ""
+    },
+    "schedulePollInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "The number of seconds to wait between polling the GTFS schedule."
+      },
+      "defaultValue": ""
+    },
+    "sourceRoot": {
+      "type": "string",
+      "metadata": {
+        "description": "Filesystem root for source-specific static or generated input files used by this feeder."
+      },
+      "defaultValue": ""
+    }
+  },
+  "variables": {
+    "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[parameters('containerGroupName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[parameters('brokerUrl')]"
+                },
+                {
+                  "name": "MQTT_USERNAME",
+                  "value": "[parameters('brokerUsername')]"
+                },
+                {
+                  "name": "MQTT_PASSWORD",
+                  "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "MQTT_CLIENT_ID",
+                  "value": "[parameters('mqttClientId')]"
+                },
+                {
+                  "name": "AGENCY",
+                  "value": "[parameters('agency')]"
+                },
+                {
+                  "name": "CACHE_DIR",
+                  "value": "[parameters('cacheDir')]"
+                },
+                {
+                  "name": "FABRIC_API_BASE",
+                  "value": "[parameters('fabricApiBase')]"
+                },
+                {
+                  "name": "FABRIC_KQL_DB_ID",
+                  "value": "[parameters('fabricKqlDbId')]"
+                },
+                {
+                  "name": "FABRIC_MAP_ID",
+                  "value": "[parameters('fabricMapId')]"
+                },
+                {
+                  "name": "FABRIC_WORKSPACE_ID",
+                  "value": "[parameters('fabricWorkspaceId')]"
+                },
+                {
+                  "name": "GTFS_HEADERS",
+                  "value": "[parameters('gtfsHeaders')]"
+                },
+                {
+                  "name": "GTFS_RT_HEADERS",
+                  "value": "[parameters('gtfsRtHeaders')]"
+                },
+                {
+                  "name": "GTFS_RT_URLS",
+                  "value": "[parameters('gtfsRtUrls')]"
+                },
+                {
+                  "name": "GTFS_URLS",
+                  "value": "[parameters('gtfsUrls')]"
+                },
+                {
+                  "name": "KUSTO_CLUSTER_URI",
+                  "value": "[parameters('kustoClusterUri')]"
+                },
+                {
+                  "name": "KUSTO_DB",
+                  "value": "[parameters('kustoDb')]"
+                },
+                {
+                  "name": "MDB_SOURCE_ID",
+                  "value": "[parameters('mdbSourceId')]"
+                },
+                {
+                  "name": "POLL_INTERVAL",
+                  "value": "[parameters('pollInterval')]"
+                },
+                {
+                  "name": "ROUTE",
+                  "value": "[parameters('route')]"
+                },
+                {
+                  "name": "SCHEDULE_POLL_INTERVAL",
+                  "value": "[parameters('schedulePollInterval')]"
+                },
+                {
+                  "name": "SOURCE_ROOT",
+                  "value": "[parameters('sourceRoot')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerGroupName'))]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
     }
   }
 }

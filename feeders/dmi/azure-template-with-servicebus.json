@@ -38,7 +38,7 @@
       "minLength": 1,
       "maxLength": 50,
       "metadata": {
-        "description": "Service Bus queue name. The bridge writes all DMI CloudEvents into this queue."
+        "description": "Queue, topic, or event hub name (default dmi)."
       }
     },
     "imageName": {
@@ -52,26 +52,26 @@
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "DMI MetObs API key (X-Gravitee-Api-Key)."
+        "description": "Per-API key for the MetObs API."
       }
     },
     "dmiOceanObsApiKey": {
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "DMI OceanObs API key (X-Gravitee-Api-Key)."
+        "description": "Per-API key for the OceanObs API."
       }
     },
     "dmiLightningApiKey": {
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "DMI Lightning API key (X-Gravitee-Api-Key)."
+        "description": "Per-API key for the Lightning API (Kafka and AMQP images)."
       }
     }
   },
   "variables": {
-    "namespaceName": "[concat(parameters('namePrefix'), '-sb')]",
+    "namespaceName": "[concat(parameters('namePrefix'), '-sbns')]",
     "userIdentityName": "[concat(parameters('namePrefix'), '-mi')]",
     "containerGroupName": "[parameters('namePrefix')]",
     "storageAccountName": "[take(concat(replace(replace(parameters('namePrefix'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",

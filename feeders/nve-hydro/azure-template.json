@@ -9,7 +9,7 @@
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "Azure Event Hubs or Fabric Event Streams connection string (e.g. Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...)"
+        "description": "Event Hubs/Fabric-style connection string (optional alternative to explicit Kafka variables)."
       }
     },
     "containerGroupName": {
@@ -32,7 +32,7 @@
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "NVE_API_KEY configuration value."
+        "description": "NVE Hydro API key used to authenticate upstream requests. Obtain it from the upstream provider's developer portal before deployment. See feeders/nve-hydro/CONTAINER.md for details."
       }
     }
   },

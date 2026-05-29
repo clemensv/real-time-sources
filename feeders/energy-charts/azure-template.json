@@ -9,7 +9,7 @@
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "Azure Event Hubs or Fabric Event Streams connection string (e.g. Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...)"
+        "description": "Event Hubs/Fabric-style or Kafka-style connection string."
       }
     },
     "containerGroupName": {
@@ -32,14 +32,14 @@
       "type": "string",
       "defaultValue": "de",
       "metadata": {
-        "description": "COUNTRY configuration value."
+        "description": "Configuration value. See feeders/energy-charts/CONTAINER.md for details."
       }
     },
     "biddingZone": {
       "type": "string",
       "defaultValue": "DE-LU",
       "metadata": {
-        "description": "BIDDING_ZONE configuration value."
+        "description": "Zone. See feeders/energy-charts/CONTAINER.md for details."
       }
     }
   },

@@ -36,14 +36,14 @@
       "type": "string",
       "defaultValue": "SDS011,BME280,SPS30,DHT22,PMS5003,SHT31,BMP280",
       "metadata": {
-        "description": "SENSOR_TYPES configuration value."
+        "description": "Comma separated list of Sensor.Community sensor types to poll"
       }
     },
     "pollingInterval": {
       "type": "string",
       "defaultValue": "300",
       "metadata": {
-        "description": "POLLING_INTERVAL configuration value."
+        "description": "Polling interval in seconds (source default applies when not set)."
       }
     }
   },

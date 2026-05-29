@@ -54,35 +54,35 @@
     },
     "ticketmasterApiKey": {
       "metadata": {
-        "description": "Ticketmaster Discovery API consumer key. Leave blank to deploy template only; bridge will exit until a key is supplied via redeploy."
+        "description": "Ticketmaster Discovery API key used to authenticate upstream event and reference-data requests; obtain it from the Ticketmaster developer portal before deployment."
       },
       "type": "secureString",
       "defaultValue": ""
     },
     "countryCodes": {
       "metadata": {
-        "description": "Comma-separated ISO country codes."
+        "description": "Codes. See feeders/ticketmaster/CONTAINER.md for details."
       },
       "type": "string",
       "defaultValue": "AU,AT,BE,CA,CZ,DK,FI,FR,DE,GR,HU,IE,IT,MX,NL,NZ,NO,PL,PT,ES,SE,CH,GB,US"
     },
     "pollInterval": {
       "metadata": {
-        "description": "Seconds between full polling cycles."
+        "description": "Interval. See feeders/ticketmaster/CONTAINER.md for details."
       },
       "type": "string",
       "defaultValue": "300"
     },
     "referenceRefresh": {
       "metadata": {
-        "description": "Seconds between reference-data refreshes."
+        "description": "Refresh. See feeders/ticketmaster/CONTAINER.md for details."
       },
       "type": "string",
       "defaultValue": "3600"
     },
     "lookaheadDays": {
       "metadata": {
-        "description": "Relative search window in days."
+        "description": "Lookahead days. See feeders/ticketmaster/CONTAINER.md for details."
       },
       "type": "string",
       "defaultValue": "90"

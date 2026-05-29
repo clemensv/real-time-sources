@@ -36,7 +36,7 @@
       "type": "string",
       "defaultValue": "https://news.ycombinator.com/rss,https://feeds.bbci.co.uk/news/world/rss.xml,https://www.theguardian.com/world/rss",
       "metadata": {
-        "description": "Comma-separated list of RSS/Atom feed URLs."
+        "description": "URLs. See feeders/rss/CONTAINER.md for details."
       }
     }
   },

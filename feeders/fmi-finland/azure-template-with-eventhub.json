@@ -36,14 +36,14 @@
       "type": "string",
       "defaultValue": "3600",
       "metadata": {
-        "description": "POLLING_INTERVAL configuration value."
+        "description": "Polling interval in seconds (source default applies when not set)."
       }
     },
     "stationRefreshInterval": {
       "type": "string",
       "defaultValue": "86400",
       "metadata": {
-        "description": "STATION_REFRESH_INTERVAL configuration value."
+        "description": "How often to re-emit reference station data in seconds."
       }
     }
   },

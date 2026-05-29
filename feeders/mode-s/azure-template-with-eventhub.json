@@ -36,42 +36,42 @@
       "type": "string",
       "defaultValue": "localhost",
       "metadata": {
-        "description": "DUMP1090_HOST configuration value."
+        "description": "Host. See feeders/mode-s/CONTAINER.md for details."
       }
     },
     "dump1090Port": {
       "type": "string",
       "defaultValue": "30005",
       "metadata": {
-        "description": "DUMP1090_PORT configuration value."
+        "description": "Port. See feeders/mode-s/CONTAINER.md for details."
       }
     },
     "refLat": {
       "type": "string",
       "defaultValue": "0",
       "metadata": {
-        "description": "REF_LAT configuration value."
+        "description": "Lat. See feeders/mode-s/CONTAINER.md for details."
       }
     },
     "refLon": {
       "type": "string",
       "defaultValue": "0",
       "metadata": {
-        "description": "REF_LON configuration value."
+        "description": "Lon. See feeders/mode-s/CONTAINER.md for details."
       }
     },
     "stationid": {
       "type": "string",
       "defaultValue": "station1",
       "metadata": {
-        "description": "STATIONID configuration value."
+        "description": "Configuration value. See feeders/mode-s/CONTAINER.md for details."
       }
     },
     "pollingInterval": {
       "type": "string",
       "defaultValue": "60",
       "metadata": {
-        "description": "POLLING_INTERVAL configuration value."
+        "description": "Interval. See feeders/mode-s/CONTAINER.md for details."
       }
     }
   },

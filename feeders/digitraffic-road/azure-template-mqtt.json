@@ -9,21 +9,21 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "MQTT 5 broker URL (e.g. mqtts://broker.example.com:8883)."
+        "description": "Target broker URL, for example mqtts://broker:8883."
       }
     },
     "brokerUsername": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional MQTT username."
+        "description": "Username/password credentials used when MQTT_AUTH_MODE=userpass."
       }
     },
     "brokerPassword": {
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional MQTT password."
+        "description": "Username/password credentials used when MQTT_AUTH_MODE=userpass."
       }
     },
     "containerGroupName": {
@@ -56,7 +56,9 @@
       "name": "[variables('logAnalyticsWorkspaceName')]",
       "location": "[parameters('location')]",
       "properties": {
-        "sku": { "name": "PerGB2018" },
+        "sku": {
+          "name": "PerGB2018"
+        },
         "retentionInDays": 30
       }
     },
@@ -65,7 +67,9 @@
       "apiVersion": "2023-05-01",
       "name": "[variables('storageAccountName')]",
       "location": "[parameters('location')]",
-      "sku": { "name": "Standard_LRS" },
+      "sku": {
+        "name": "Standard_LRS"
+      },
       "kind": "StorageV2",
       "properties": {
         "accessTier": "Hot",
@@ -88,7 +92,9 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ],
-      "properties": { "shareQuota": 1 }
+      "properties": {
+        "shareQuota": 1
+      }
     },
     {
       "type": "Microsoft.ContainerInstance/containerGroups",
@@ -115,17 +121,38 @@
             "properties": {
               "image": "[variables('imageName')]",
               "resources": {
-                "requests": { "cpu": 0.5, "memoryInGB": 1.0 }
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
               },
               "environmentVariables": [
-                { "name": "MQTT_BROKER_URL", "value": "[parameters('brokerUrl')]" },
-                { "name": "MQTT_USERNAME", "value": "[parameters('brokerUsername')]" },
-                { "name": "MQTT_PASSWORD", "secureValue": "[parameters('brokerPassword')]" },
-                { "name": "LOG_LEVEL", "value": "INFO" },
-                { "name": "PYTHONUNBUFFERED", "value": "1" }
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[parameters('brokerUrl')]"
+                },
+                {
+                  "name": "MQTT_USERNAME",
+                  "value": "[parameters('brokerUsername')]"
+                },
+                {
+                  "name": "MQTT_PASSWORD",
+                  "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
               ],
               "volumeMounts": [
-                { "name": "bridge-state", "mountPath": "/mnt/bridge-state" }
+                {
+                  "name": "bridge-state",
+                  "mountPath": "/mnt/bridge-state"
+                }
               ]
             }
           }

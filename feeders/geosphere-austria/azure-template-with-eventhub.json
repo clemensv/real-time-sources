@@ -36,14 +36,14 @@
       "type": "string",
       "defaultValue": "600",
       "metadata": {
-        "description": "POLLING_INTERVAL configuration value."
+        "description": "Seconds between polling cycles."
       }
     },
     "stationRefreshInterval": {
       "type": "string",
       "defaultValue": "86400",
       "metadata": {
-        "description": "STATION_REFRESH_INTERVAL configuration value."
+        "description": "Refresh interval. See feeders/geosphere-austria/CONTAINER.md for details."
       }
     }
   },

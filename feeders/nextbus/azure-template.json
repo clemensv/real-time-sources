@@ -9,42 +9,42 @@
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "Azure Event Hubs connection string for vehicle position events (e.g. Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...)"
+        "description": "Connection string. See feeders/nextbus/CONTAINER.md for details."
       }
     },
     "feedEventHubName": {
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "Name of the Event Hub receiving vehicle position events."
+        "description": "Event hub name. See feeders/nextbus/CONTAINER.md for details."
       }
     },
     "referenceConnectionString": {
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional Azure Event Hubs connection string for reference data events. Leave empty to disable reference data. May be the same as feedConnectionString."
+        "description": "Connection string. See feeders/nextbus/CONTAINER.md for details."
       }
     },
     "referenceEventHubName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Name of the Event Hub receiving reference data events. Required when referenceConnectionString is set."
+        "description": "Event hub name. See feeders/nextbus/CONTAINER.md for details."
       }
     },
     "agency": {
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "Nextbus agency tag (e.g. 'ttc' for Toronto Transit Commission)."
+        "description": "Configuration value. See feeders/nextbus/CONTAINER.md for details."
       }
     },
     "route": {
       "type": "string",
       "defaultValue": "*",
       "metadata": {
-        "description": "Route tag to poll. Use '*' for all routes."
+        "description": "Configuration value. See feeders/nextbus/CONTAINER.md for details."
       }
     },
     "containerGroupName": {

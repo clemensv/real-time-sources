@@ -9,21 +9,21 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "MQTT 5 broker URL (e.g. mqtts://broker.example.com:8883)."
+        "description": "Broker URL (mqtt:// or mqtts://)."
       }
     },
     "brokerUsername": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional MQTT username."
+        "description": "Optional broker credentials."
       }
     },
     "brokerPassword": {
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional MQTT password."
+        "description": "Optional broker credentials."
       }
     },
     "containerGroupName": {

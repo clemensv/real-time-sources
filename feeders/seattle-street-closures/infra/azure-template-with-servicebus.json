@@ -38,7 +38,7 @@
       "minLength": 1,
       "maxLength": 50,
       "metadata": {
-        "description": "Service Bus queue name. The bridge writes all Seattle Street Closures CloudEvents into this queue."
+        "description": "Queue/topic/address target."
       }
     },
     "imageName": {

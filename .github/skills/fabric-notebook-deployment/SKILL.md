@@ -45,6 +45,32 @@ argument-hint: "Describe the source, its workspace, eventhouse and KQL database,
 - **A scheduled run is not validated until `KQL count > 0`** in the source's
   reference and telemetry tables, queried via Kusto with the
   `https://kusto.kusto.windows.net` audience.
+- **Pre-merge static validation is a blocking review criterion.** Every PR
+  that adds or modifies a notebook MUST pass
+  `pwsh tools/validate-fabric-deployment.ps1 -FeederSlug <slug>` with **zero
+  blockers** before review. The validator enforces every other non-negotiable
+  in this list mechanically (no `asyncio.run`, no `%pip install`, OneLake
+  state-file path present, `notebookutils.notebook.exit` on failure path,
+  `CONNECTION_STRING` not exposed as a notebook parameter, post-deploy hook
+  AST-parses, hook references at least one `$Context.*` key, every
+  `$PSScriptRoot` sibling exists, catalog opt-in matches notebook presence).
+  The fleet-wide pass is run in CI and on demand via
+  `pwsh tools/validate-fabric-deployment.ps1 -OutJson fabric-validation.json`.
+- **Subscription ID is not required for notebook deployment.** The deploy
+  script (`deploy-feeder-notebook.ps1`) and the underlying
+  `deploy-fabric.ps1` authenticate Fabric REST calls via the signed-in user's
+  Entra context — there is no Azure resource provisioned in pure notebook
+  mode. The ghpages portal's Fabric Notebook deploy form therefore MUST NOT
+  render a Subscription ID field, and the Cloud-Shell command MUST NOT
+  append `-SubscriptionId`. Subscription is only meaningful for the ACI
+  variant (`deploy-fabric-aci.ps1`).
+- **Catalog opt-in is mandatory.** Whenever
+  `feeders/<slug>/notebook/<slug>-feed.ipynb` exists, BOTH `catalog.json`
+  (main) AND `app.js` SOURCES (ghpages branch) MUST set
+  `"notebook": true` for that source. A missing flag hides the
+  "Deploy to Fabric Notebook" button on the portal even though the
+  notebook is wired and deployable. The validator above enforces this
+  symmetry.
 
 ## Source Folder Additions
 

@@ -36,14 +36,14 @@
       "type": "string",
       "defaultValue": "600",
       "metadata": {
-        "description": "POLLING_INTERVAL configuration value."
+        "description": "Polling interval in seconds."
       }
     },
     "stationMetadataRefreshHours": {
       "type": "string",
       "defaultValue": "168",
       "metadata": {
-        "description": "STATION_METADATA_REFRESH_HOURS configuration value."
+        "description": "Metadata refresh hours. See feeders/jma-bosai-amedas/CONTAINER.md for details."
       }
     }
   },

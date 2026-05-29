@@ -1,12 +1,344 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {},
-  "resources": [],
-  "outputs": {
-    "note": {
+  "metadata": {
+    "description": "Deploys the ticketmaster MQTT feeder as an Azure Container Instance against an existing MQTT 5 broker."
+  },
+  "parameters": {
+    "brokerUrl": {
       "type": "string",
-      "value": "ticketmaster azure-template-mqtt.json placeholder for companion transport deployment"
+      "minLength": 1,
+      "metadata": {
+        "description": "Broker URL, e.g. mqtt://host:1883 or mqtts://host:8883."
+      }
+    },
+    "brokerUsername": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "brokerPassword": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "ticketmaster-mqtt",
+      "metadata": {
+        "description": "Name for the container group resource."
+      },
+      "maxLength": 63,
+      "minLength": 1
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-ticketmaster-mqtt:latest",
+      "metadata": {
+        "description": "Container image reference for the MQTT feeder."
+      }
+    },
+    "mqttClientId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "MQTT client identifier (must be globally unique per broker)."
+      }
+    },
+    "countryCodes": {
+      "type": "string",
+      "metadata": {
+        "description": "Comma-separated ISO 3166-1 alpha-2 country codes for Ticketmaster event polling and reference-data refreshes."
+      },
+      "defaultValue": "AU,AT,BE,CA,CZ,DK,FI,FR,DE,GR,HU,IE,IT,MX,NL,NZ,NO,PL,PT,ES,SE,CH,GB,US"
+    },
+    "pollInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "Seconds between upstream polling cycles for this feeder."
+      },
+      "defaultValue": "300"
+    },
+    "referenceRefresh": {
+      "type": "string",
+      "metadata": {
+        "description": "Seconds between Ticketmaster reference-data refreshes."
+      },
+      "defaultValue": "3600"
+    },
+    "ticketmasterApiKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Ticketmaster Discovery API key used to authenticate upstream event and reference-data requests; obtain it from the Ticketmaster developer portal before deployment."
+      }
+    },
+    "ticketmasterAttractionId": {
+      "type": "string",
+      "metadata": {
+        "description": "Ticketmaster attraction identifier used to limit events to an artist, team, or production."
+      },
+      "defaultValue": ""
+    },
+    "ticketmasterCity": {
+      "type": "string",
+      "metadata": {
+        "description": "City name filter applied to Ticketmaster event search."
+      },
+      "defaultValue": ""
+    },
+    "ticketmasterEndDatetime": {
+      "type": "string",
+      "metadata": {
+        "description": "Absolute UTC upper bound for Ticketmaster event search in ISO 8601 format."
+      },
+      "defaultValue": ""
+    },
+    "ticketmasterGenreId": {
+      "type": "string",
+      "metadata": {
+        "description": "Ticketmaster genre identifier used to limit events within the selected segment."
+      },
+      "defaultValue": ""
+    },
+    "ticketmasterLocale": {
+      "type": "string",
+      "metadata": {
+        "description": "Ticketmaster Discovery API locale for event queries; * requests all locales."
+      },
+      "defaultValue": "*"
+    },
+    "ticketmasterLookaheadDays": {
+      "type": "string",
+      "metadata": {
+        "description": "Relative Ticketmaster event search window in days when explicit start and end datetimes are not set."
+      },
+      "defaultValue": "30"
+    },
+    "ticketmasterMarketId": {
+      "type": "string",
+      "metadata": {
+        "description": "Ticketmaster market identifier used to limit event search results."
+      },
+      "defaultValue": ""
+    },
+    "ticketmasterPageSize": {
+      "type": "string",
+      "metadata": {
+        "description": "Ticketmaster Discovery API page size per request, up to 200."
+      },
+      "defaultValue": "100"
+    },
+    "ticketmasterPostalCode": {
+      "type": "string",
+      "metadata": {
+        "description": "Postal or ZIP code filter applied to Ticketmaster event search."
+      },
+      "defaultValue": ""
+    },
+    "ticketmasterSegmentId": {
+      "type": "string",
+      "metadata": {
+        "description": "Ticketmaster segment identifier used to limit events, such as Music or Sports."
+      },
+      "defaultValue": ""
+    },
+    "ticketmasterSort": {
+      "type": "string",
+      "metadata": {
+        "description": "Ticketmaster Discovery API sort order, such as date,asc or name,desc."
+      },
+      "defaultValue": "date,asc"
+    },
+    "ticketmasterStartDatetime": {
+      "type": "string",
+      "metadata": {
+        "description": "Absolute UTC lower bound for Ticketmaster event search in ISO 8601 format."
+      },
+      "defaultValue": ""
+    },
+    "ticketmasterSubGenreId": {
+      "type": "string",
+      "metadata": {
+        "description": "Ticketmaster sub-genre identifier used to limit event search results."
+      },
+      "defaultValue": ""
+    },
+    "ticketmasterVenueId": {
+      "type": "string",
+      "metadata": {
+        "description": "Ticketmaster venue identifier used to limit events to a single venue."
+      },
+      "defaultValue": ""
+    }
+  },
+  "variables": {
+    "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[parameters('containerGroupName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[parameters('brokerUrl')]"
+                },
+                {
+                  "name": "MQTT_USERNAME",
+                  "value": "[parameters('brokerUsername')]"
+                },
+                {
+                  "name": "MQTT_PASSWORD",
+                  "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "MQTT_CLIENT_ID",
+                  "value": "[parameters('mqttClientId')]"
+                },
+                {
+                  "name": "COUNTRY_CODES",
+                  "value": "[parameters('countryCodes')]"
+                },
+                {
+                  "name": "POLL_INTERVAL",
+                  "value": "[parameters('pollInterval')]"
+                },
+                {
+                  "name": "REFERENCE_REFRESH",
+                  "value": "[parameters('referenceRefresh')]"
+                },
+                {
+                  "name": "TICKETMASTER_API_KEY",
+                  "secureValue": "[parameters('ticketmasterApiKey')]"
+                },
+                {
+                  "name": "TICKETMASTER_ATTRACTION_ID",
+                  "value": "[parameters('ticketmasterAttractionId')]"
+                },
+                {
+                  "name": "TICKETMASTER_CITY",
+                  "value": "[parameters('ticketmasterCity')]"
+                },
+                {
+                  "name": "TICKETMASTER_END_DATETIME",
+                  "value": "[parameters('ticketmasterEndDatetime')]"
+                },
+                {
+                  "name": "TICKETMASTER_GENRE_ID",
+                  "value": "[parameters('ticketmasterGenreId')]"
+                },
+                {
+                  "name": "TICKETMASTER_LOCALE",
+                  "value": "[parameters('ticketmasterLocale')]"
+                },
+                {
+                  "name": "TICKETMASTER_LOOKAHEAD_DAYS",
+                  "value": "[parameters('ticketmasterLookaheadDays')]"
+                },
+                {
+                  "name": "TICKETMASTER_MARKET_ID",
+                  "value": "[parameters('ticketmasterMarketId')]"
+                },
+                {
+                  "name": "TICKETMASTER_PAGE_SIZE",
+                  "value": "[parameters('ticketmasterPageSize')]"
+                },
+                {
+                  "name": "TICKETMASTER_POSTAL_CODE",
+                  "value": "[parameters('ticketmasterPostalCode')]"
+                },
+                {
+                  "name": "TICKETMASTER_SEGMENT_ID",
+                  "value": "[parameters('ticketmasterSegmentId')]"
+                },
+                {
+                  "name": "TICKETMASTER_SORT",
+                  "value": "[parameters('ticketmasterSort')]"
+                },
+                {
+                  "name": "TICKETMASTER_START_DATETIME",
+                  "value": "[parameters('ticketmasterStartDatetime')]"
+                },
+                {
+                  "name": "TICKETMASTER_SUB_GENRE_ID",
+                  "value": "[parameters('ticketmasterSubGenreId')]"
+                },
+                {
+                  "name": "TICKETMASTER_VENUE_ID",
+                  "value": "[parameters('ticketmasterVenueId')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerGroupName'))]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
     }
   }
 }

@@ -1,12 +1,345 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {},
-  "resources": [],
-  "outputs": {
-    "note": {
+  "metadata": {
+    "description": "Deploys the mode-s MQTT feeder as an Azure Container Instance against an existing MQTT 5 broker."
+  },
+  "parameters": {
+    "brokerUrl": {
       "type": "string",
-      "value": "mode-s azure-template-mqtt.json placeholder for companion transport deployment"
+      "minLength": 1,
+      "metadata": {
+        "description": "Broker URL, e.g. mqtt://host:1883 or mqtts://host:8883."
+      }
+    },
+    "brokerUsername": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "brokerPassword": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "mode-s-mqtt",
+      "metadata": {
+        "description": "Name for the container group resource."
+      },
+      "maxLength": 63,
+      "minLength": 1
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-mode-s-mqtt:latest",
+      "metadata": {
+        "description": "Container image reference for the MQTT feeder."
+      }
+    },
+    "mqttClientId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "MQTT client identifier (must be globally unique per broker)."
+      }
+    },
+    "dump1090Host": {
+      "type": "string",
+      "metadata": {
+        "description": "Dump1090 host (default from DUMP1090_HOST)."
+      },
+      "defaultValue": ""
+    },
+    "dump1090Port": {
+      "type": "string",
+      "metadata": {
+        "description": "Dump1090 port (default from DUMP1090_PORT)."
+      },
+      "defaultValue": ""
+    },
+    "kafkaBatchNumMessages": {
+      "type": "string",
+      "metadata": {
+        "description": "Kafka batch num messages option used to filter or tune the mode-s upstream feeder."
+      },
+      "defaultValue": ""
+    },
+    "kafkaCompressionType": {
+      "type": "string",
+      "metadata": {
+        "description": "Kafka compression type option used to filter or tune the mode-s upstream feeder."
+      },
+      "defaultValue": ""
+    },
+    "kafkaLingerMs": {
+      "type": "string",
+      "metadata": {
+        "description": "Kafka linger ms option used to filter or tune the mode-s upstream feeder."
+      },
+      "defaultValue": ""
+    },
+    "kafkaQueueBufferingMaxKbytes": {
+      "type": "string",
+      "metadata": {
+        "description": "Kafka queue buffering max kbytes option used to filter or tune the mode-s upstream feeder."
+      },
+      "defaultValue": ""
+    },
+    "kafkaQueueBufferingMaxMessages": {
+      "type": "string",
+      "metadata": {
+        "description": "Kafka queue buffering max messages option used to filter or tune the mode-s upstream feeder."
+      },
+      "defaultValue": ""
+    },
+    "kafkaSocketSendBufferBytes": {
+      "type": "string",
+      "metadata": {
+        "description": "Kafka socket send buffer bytes option used to filter or tune the mode-s upstream feeder."
+      },
+      "defaultValue": ""
+    },
+    "modeSFeedurl": {
+      "type": "string",
+      "metadata": {
+        "description": "Mode s feedurl option used to filter or tune the mode-s upstream feeder."
+      },
+      "defaultValue": ""
+    },
+    "modeSFlushIntervalSeconds": {
+      "type": "string",
+      "metadata": {
+        "description": "Mode s flush interval seconds option used to filter or tune the mode-s upstream feeder."
+      },
+      "defaultValue": "10"
+    },
+    "modeSFlushRecordThreshold": {
+      "type": "string",
+      "metadata": {
+        "description": "Mode s flush record threshold option used to filter or tune the mode-s upstream feeder."
+      },
+      "defaultValue": "50000"
+    },
+    "modeSMaxEvents": {
+      "type": "string",
+      "metadata": {
+        "description": "Maximum number of upstream events to emit before exiting; 0 means no explicit cap."
+      },
+      "defaultValue": "0"
+    },
+    "modeSMock": {
+      "type": "string",
+      "metadata": {
+        "description": "Skip TCP feed, emit one synthetic event per family, then exit"
+      },
+      "defaultValue": ""
+    },
+    "modeSQueueCapacity": {
+      "type": "string",
+      "metadata": {
+        "description": "Mode s queue capacity option used to filter or tune the mode-s upstream feeder."
+      },
+      "defaultValue": "20000"
+    },
+    "modeSReceiverId": {
+      "type": "string",
+      "metadata": {
+        "description": "Mode s receiver id option used to filter or tune the mode-s upstream feeder."
+      },
+      "defaultValue": ""
+    },
+    "refLat": {
+      "type": "string",
+      "metadata": {
+        "description": "Reference latitude (default from REF_LAT)."
+      },
+      "defaultValue": ""
+    },
+    "refLon": {
+      "type": "string",
+      "metadata": {
+        "description": "Reference longitude (default from REF_LON)."
+      },
+      "defaultValue": ""
+    },
+    "stationid": {
+      "type": "string",
+      "metadata": {
+        "description": "Station ID (default from STATIONID)."
+      },
+      "defaultValue": "station1"
+    }
+  },
+  "variables": {
+    "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[parameters('containerGroupName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[parameters('brokerUrl')]"
+                },
+                {
+                  "name": "MQTT_USERNAME",
+                  "value": "[parameters('brokerUsername')]"
+                },
+                {
+                  "name": "MQTT_PASSWORD",
+                  "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "MQTT_CLIENT_ID",
+                  "value": "[parameters('mqttClientId')]"
+                },
+                {
+                  "name": "DUMP1090_HOST",
+                  "value": "[parameters('dump1090Host')]"
+                },
+                {
+                  "name": "DUMP1090_PORT",
+                  "value": "[parameters('dump1090Port')]"
+                },
+                {
+                  "name": "KAFKA_BATCH_NUM_MESSAGES",
+                  "value": "[parameters('kafkaBatchNumMessages')]"
+                },
+                {
+                  "name": "KAFKA_COMPRESSION_TYPE",
+                  "value": "[parameters('kafkaCompressionType')]"
+                },
+                {
+                  "name": "KAFKA_LINGER_MS",
+                  "value": "[parameters('kafkaLingerMs')]"
+                },
+                {
+                  "name": "KAFKA_QUEUE_BUFFERING_MAX_KBYTES",
+                  "value": "[parameters('kafkaQueueBufferingMaxKbytes')]"
+                },
+                {
+                  "name": "KAFKA_QUEUE_BUFFERING_MAX_MESSAGES",
+                  "value": "[parameters('kafkaQueueBufferingMaxMessages')]"
+                },
+                {
+                  "name": "KAFKA_SOCKET_SEND_BUFFER_BYTES",
+                  "value": "[parameters('kafkaSocketSendBufferBytes')]"
+                },
+                {
+                  "name": "MODE_S_FEEDURL",
+                  "value": "[parameters('modeSFeedurl')]"
+                },
+                {
+                  "name": "MODE_S_FLUSH_INTERVAL_SECONDS",
+                  "value": "[parameters('modeSFlushIntervalSeconds')]"
+                },
+                {
+                  "name": "MODE_S_FLUSH_RECORD_THRESHOLD",
+                  "value": "[parameters('modeSFlushRecordThreshold')]"
+                },
+                {
+                  "name": "MODE_S_MAX_EVENTS",
+                  "value": "[parameters('modeSMaxEvents')]"
+                },
+                {
+                  "name": "MODE_S_MOCK",
+                  "value": "[parameters('modeSMock')]"
+                },
+                {
+                  "name": "MODE_S_QUEUE_CAPACITY",
+                  "value": "[parameters('modeSQueueCapacity')]"
+                },
+                {
+                  "name": "MODE_S_RECEIVER_ID",
+                  "value": "[parameters('modeSReceiverId')]"
+                },
+                {
+                  "name": "REF_LAT",
+                  "value": "[parameters('refLat')]"
+                },
+                {
+                  "name": "REF_LON",
+                  "value": "[parameters('refLon')]"
+                },
+                {
+                  "name": "STATIONID",
+                  "value": "[parameters('stationid')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerGroupName'))]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
     }
   }
 }

@@ -36,21 +36,21 @@
       "type": "string",
       "defaultValue": "location,metadata",
       "metadata": {
-        "description": "DIGITRAFFIC_SUBSCRIBE configuration value."
+        "description": "Comma-separated: location,metadata (default: both)"
       }
     },
     "digitrafficFilterMmsi": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "DIGITRAFFIC_FILTER_MMSI configuration value."
+        "description": "Comma-separated MMSI numbers to include (default: all)"
       }
     },
     "digitrafficFlushInterval": {
       "type": "string",
       "defaultValue": "1000",
       "metadata": {
-        "description": "DIGITRAFFIC_FLUSH_INTERVAL configuration value."
+        "description": "Flush Kafka producer every N events"
       }
     }
   },

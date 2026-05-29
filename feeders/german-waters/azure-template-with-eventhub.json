@@ -36,14 +36,14 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "PROVIDERS configuration value."
+        "description": "Comma-separated provider keys to include. Available keys: bayern_gkd, nrw_hygon, sh_lkn, nds_nlwkn, sa_lhw, he_hlnug, sn_lfulg, bw_hvz, bb_lfu, th_tlubn, mv_lung, be_senumvk."
       }
     },
     "excludeProviders": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "EXCLUDE_PROVIDERS configuration value."
+        "description": "Comma-separated provider keys to exclude from polling. Uses the same key set as PROVIDERS."
       }
     }
   },

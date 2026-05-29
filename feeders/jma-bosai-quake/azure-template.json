@@ -9,7 +9,7 @@
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "Azure Event Hubs or Fabric Event Streams connection string (e.g. Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...)"
+        "description": "Event Hubs / Fabric custom endpoint style connection string."
       }
     },
     "containerGroupName": {
@@ -32,14 +32,14 @@
       "type": "string",
       "defaultValue": "jma-bosai-quake",
       "metadata": {
-        "description": "KAFKA_TOPIC configuration value."
+        "description": "Destination Kafka topic."
       }
     },
     "pollingInterval": {
       "type": "string",
       "defaultValue": "60",
       "metadata": {
-        "description": "POLLING_INTERVAL configuration value."
+        "description": "Polling interval in seconds."
       }
     }
   },

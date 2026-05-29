@@ -36,42 +36,42 @@
       "type": "string",
       "defaultValue": "http://api.bart.gov/gtfsrt/tripupdate.aspx,http://api.bart.gov/gtfsrt/alerts.aspx",
       "metadata": {
-        "description": "Comma-separated GTFS-Realtime feed URLs (default: BART)."
+        "description": "Rt URLs. See feeders/gtfs/CONTAINER.md for details."
       }
     },
     "gtfsUrls": {
       "type": "string",
       "defaultValue": "http://www.bart.gov/dev/schedules/google_transit.zip",
       "metadata": {
-        "description": "Comma-separated GTFS schedule URLs (default: BART)."
+        "description": "URLs. See feeders/gtfs/CONTAINER.md for details."
       }
     },
     "route": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "ROUTE configuration value."
+        "description": "Configuration value. See feeders/gtfs/CONTAINER.md for details."
       }
     },
     "gtfsRtHeaders": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "GTFS_RT_HEADERS configuration value."
+        "description": "Rt headers. See feeders/gtfs/CONTAINER.md for details."
       }
     },
     "gtfsHeaders": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "GTFS_HEADERS configuration value."
+        "description": "Headers. See feeders/gtfs/CONTAINER.md for details."
       }
     },
     "scheduleCacheDir": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "SCHEDULE_CACHE_DIR configuration value."
+        "description": "Cache dir. See feeders/gtfs/CONTAINER.md for details."
       }
     }
   },

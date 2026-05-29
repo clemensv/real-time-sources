@@ -36,21 +36,21 @@
       "type": "string",
       "defaultValue": "wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos",
       "metadata": {
-        "description": "BLUESKY_FIREHOSE_URL configuration value."
+        "description": "Bluesky firehose WebSocket URL"
       }
     },
     "blueskyCollections": {
       "type": "string",
       "defaultValue": "app.bsky.feed.post,app.bsky.feed.like,app.bsky.feed.repost,app.bsky.graph.follow",
       "metadata": {
-        "description": "BLUESKY_COLLECTIONS configuration value."
+        "description": "Comma-separated list of collections to process (empty = all)"
       }
     },
     "sampleRate": {
       "type": "string",
       "defaultValue": "1.0",
       "metadata": {
-        "description": "SAMPLE_RATE configuration value."
+        "description": "Rate. See feeders/bluesky/CONTAINER.md for details."
       }
     }
   },

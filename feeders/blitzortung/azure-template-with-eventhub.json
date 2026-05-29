@@ -36,42 +36,42 @@
       "type": "string",
       "defaultValue": "wss://live.lightningmaps.org:443/,wss://live2.lightningmaps.org:443/",
       "metadata": {
-        "description": "BLITZORTUNG_WS_URLS configuration value."
+        "description": "WebSocket URLs. See feeders/blitzortung/CONTAINER.md for details."
       }
     },
     "blitzortungBbox": {
       "type": "string",
       "defaultValue": "90,180,-90,-180",
       "metadata": {
-        "description": "BLITZORTUNG_BBOX configuration value."
+        "description": "Bounding box. See feeders/blitzortung/CONTAINER.md for details."
       }
     },
     "blitzortungIncludeStations": {
       "type": "string",
       "defaultValue": "true",
       "metadata": {
-        "description": "BLITZORTUNG_INCLUDE_STATIONS configuration value."
+        "description": "Whether to request detector participation details (true/false)."
       }
     },
     "blitzortungSourceMask": {
       "type": "string",
       "defaultValue": "4",
       "metadata": {
-        "description": "BLITZORTUNG_SOURCE_MASK configuration value."
+        "description": "Source mask. See feeders/blitzortung/CONTAINER.md for details."
       }
     },
     "blitzortungFlushInterval": {
       "type": "string",
       "defaultValue": "250",
       "metadata": {
-        "description": "BLITZORTUNG_FLUSH_INTERVAL configuration value."
+        "description": "Flush interval. See feeders/blitzortung/CONTAINER.md for details."
       }
     },
     "blitzortungMaxRetryDelay": {
       "type": "string",
       "defaultValue": "60",
       "metadata": {
-        "description": "BLITZORTUNG_MAX_RETRY_DELAY configuration value."
+        "description": "Max retry delay. See feeders/blitzortung/CONTAINER.md for details."
       }
     }
   },

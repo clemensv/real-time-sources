@@ -36,7 +36,7 @@
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "ENTSOE_SECURITY_TOKEN configuration value."
+        "description": "ENTSO-E security token used to authenticate upstream requests. Register for or retrieve it from the upstream provider's account/API portal before deployment. See feeders/entsoe/CONTAINER.md for details."
       }
     }
   },

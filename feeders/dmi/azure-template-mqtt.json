@@ -9,21 +9,21 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "MQTT 5 broker URL (e.g. mqtts://broker.example.com:8883)."
+        "description": "Broker URL, e.g. mqtt://host:1883 or mqtts://host:8883."
       }
     },
     "brokerUsername": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional MQTT username."
+        "description": "Optional credentials when MQTT_AUTH_MODE=password."
       }
     },
     "brokerPassword": {
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional MQTT password."
+        "description": "Optional credentials when MQTT_AUTH_MODE=password."
       }
     },
     "containerGroupName": {
@@ -46,14 +46,14 @@
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "DMI MetObs API key (X-Gravitee-Api-Key)."
+        "description": "Per-API key for the MetObs API."
       }
     },
     "dmiOceanObsApiKey": {
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "DMI OceanObs API key (X-Gravitee-Api-Key)."
+        "description": "Per-API key for the OceanObs API."
       }
     }
   },

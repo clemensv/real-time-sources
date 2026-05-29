@@ -54,21 +54,21 @@
     },
     "billettoApiKeypair": {
       "metadata": {
-        "description": "Billetto API keypair in key_id:secret form. Leave blank to deploy template only; bridge will exit until a key is supplied via redeploy."
+        "description": "Billetto API key pair used to authenticate upstream public-events API requests; obtain it from the Billetto developer portal before deployment."
       },
       "type": "secureString",
       "defaultValue": ""
     },
     "pollingInterval": {
       "metadata": {
-        "description": "Seconds between Billetto poll cycles."
+        "description": "Interval. See feeders/billetto/CONTAINER.md for details."
       },
       "type": "string",
       "defaultValue": "300"
     },
     "billettoBaseUrl": {
       "metadata": {
-        "description": "Billetto API base URL."
+        "description": "Base URL. See feeders/billetto/CONTAINER.md for details."
       },
       "type": "string",
       "defaultValue": "https://billetto.dk"

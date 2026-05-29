@@ -24,7 +24,9 @@
     "eventGridSku": {
       "type": "string",
       "defaultValue": "Standard",
-      "allowedValues": ["Standard"],
+      "allowedValues": [
+        "Standard"
+      ],
       "metadata": {
         "description": "Event Grid namespace SKU."
       }
@@ -49,7 +51,7 @@
       "type": "string",
       "defaultValue": "Seattle,WA",
       "metadata": {
-        "description": "EPA_UV_LOCATIONS configuration value."
+        "description": "Semicolon-separated CITY,STATE pairs"
       }
     },
     "imageName": {
@@ -89,7 +91,9 @@
       "name": "[variables('logAnalyticsWorkspaceName')]",
       "location": "[parameters('location')]",
       "properties": {
-        "sku": { "name": "PerGB2018" },
+        "sku": {
+          "name": "PerGB2018"
+        },
         "retentionInDays": 30
       }
     },
@@ -98,7 +102,9 @@
       "apiVersion": "2023-05-01",
       "name": "[variables('storageAccountName')]",
       "location": "[parameters('location')]",
-      "sku": { "name": "Standard_LRS" },
+      "sku": {
+        "name": "Standard_LRS"
+      },
       "kind": "StorageV2",
       "properties": {
         "accessTier": "Hot",
@@ -121,7 +127,9 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ],
-      "properties": { "shareQuota": 1 }
+      "properties": {
+        "shareQuota": 1
+      }
     },
     {
       "type": "Microsoft.EventGrid/namespaces",
@@ -202,15 +210,24 @@
             "properties": {
               "image": "[parameters('imageName')]",
               "resources": {
-                "requests": { "cpu": 0.5, "memoryInGB": 1.0 }
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
               },
               "environmentVariables": [
                 {
                   "name": "MQTT_BROKER_URL",
                   "value": "[concat('mqtts://', reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname, ':8883')]"
                 },
-                { "name": "MQTT_AUTH_MODE", "value": "entra" },
-                { "name": "MQTT_ENTRA_AUDIENCE", "value": "https://eventgrid.azure.net/" },
+                {
+                  "name": "MQTT_AUTH_MODE",
+                  "value": "entra"
+                },
+                {
+                  "name": "MQTT_ENTRA_AUDIENCE",
+                  "value": "https://eventgrid.azure.net/"
+                },
                 {
                   "name": "MQTT_ENTRA_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
@@ -219,13 +236,28 @@
                   "name": "MQTT_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
                 },
-                { "name": "EPA_UV_LOCATIONS", "value": "[parameters('epaUvLocations')]" },
-                { "name": "EPA_UV_STATE_FILE", "value": "/mnt/bridge-state/epa_uv_state.json" },
-                { "name": "LOG_LEVEL", "value": "INFO" },
-                { "name": "PYTHONUNBUFFERED", "value": "1" }
+                {
+                  "name": "EPA_UV_LOCATIONS",
+                  "value": "[parameters('epaUvLocations')]"
+                },
+                {
+                  "name": "EPA_UV_STATE_FILE",
+                  "value": "/mnt/bridge-state/epa_uv_state.json"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
               ],
               "volumeMounts": [
-                { "name": "bridge-state", "mountPath": "/mnt/bridge-state" }
+                {
+                  "name": "bridge-state",
+                  "mountPath": "/mnt/bridge-state"
+                }
               ]
             }
           }

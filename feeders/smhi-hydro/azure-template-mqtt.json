@@ -9,28 +9,28 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "MQTT 5 broker URL (e.g. mqtts://broker.example.com:8883)."
+        "description": "Broker URL (mqtt:// or mqtts://)."
       }
     },
     "brokerUsername": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional MQTT username."
+        "description": "Credentials for MQTT_AUTH_MODE=password."
       }
     },
     "brokerPassword": {
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional MQTT password."
+        "description": "Credentials for MQTT_AUTH_MODE=password."
       }
     },
     "containerGroupName": {
       "type": "string",
       "defaultValue": "smhi-hydro-mqtt",
       "metadata": {
-        "description": "Name for the container group resource."
+        "description": "MQTT client ID (must be unique per broker)."
       },
       "maxLength": 63,
       "minLength": 1

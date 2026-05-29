@@ -36,21 +36,21 @@
       "type": "string",
       "defaultValue": "digitraffic-road-sensors",
       "metadata": {
-        "description": "KAFKA_TOPIC_SENSORS configuration value."
+        "description": "Target topic for station metadata and sensor telemetry. Default digitraffic-road-sensors."
       }
     },
     "kafkaTopicMessages": {
       "type": "string",
       "defaultValue": "digitraffic-road-messages",
       "metadata": {
-        "description": "KAFKA_TOPIC_MESSAGES configuration value."
+        "description": "Target topic for traffic message families. Default digitraffic-road-messages."
       }
     },
     "kafkaTopicMaintenance": {
       "type": "string",
       "defaultValue": "digitraffic-road-maintenance",
       "metadata": {
-        "description": "KAFKA_TOPIC_MAINTENANCE configuration value."
+        "description": "Target topic for maintenance tracking and maintenance task catalog. Default digitraffic-road-maintenance."
       }
     }
   },

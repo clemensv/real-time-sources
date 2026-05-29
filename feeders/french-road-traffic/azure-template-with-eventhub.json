@@ -36,14 +36,14 @@
       "type": "string",
       "defaultValue": "french-road-traffic-flow",
       "metadata": {
-        "description": "KAFKA_TOPIC_FLOW configuration value."
+        "description": "Topic flow. See feeders/french-road-traffic/CONTAINER.md for details."
       }
     },
     "kafkaTopicEvents": {
       "type": "string",
       "defaultValue": "french-road-traffic-events",
       "metadata": {
-        "description": "KAFKA_TOPIC_EVENTS configuration value."
+        "description": "Topic events. See feeders/french-road-traffic/CONTAINER.md for details."
       }
     }
   },

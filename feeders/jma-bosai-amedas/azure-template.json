@@ -9,7 +9,7 @@
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "Azure Event Hubs or Fabric Event Streams connection string (e.g. Endpoint=sb://...;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=...)"
+        "description": "Event Hubs / Fabric custom endpoint style connection string."
       }
     },
     "containerGroupName": {
@@ -32,14 +32,14 @@
       "type": "string",
       "defaultValue": "600",
       "metadata": {
-        "description": "POLLING_INTERVAL configuration value."
+        "description": "Polling interval in seconds."
       }
     },
     "stationMetadataRefreshHours": {
       "type": "string",
       "defaultValue": "168",
       "metadata": {
-        "description": "STATION_METADATA_REFRESH_HOURS configuration value."
+        "description": "Metadata refresh hours. See feeders/jma-bosai-amedas/CONTAINER.md for details."
       }
     }
   },

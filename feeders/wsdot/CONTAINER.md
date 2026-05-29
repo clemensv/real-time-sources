@@ -176,6 +176,7 @@ docker run --rm \
 
 | Variable | Description |
 |---|---|
+| `WSDOT_ACCESS_CODE` | **Required.** WSDOT Traveler Information API access code used to authenticate upstream traffic, ferry, and traveler-information requests; register for a free code at https://www.wsdot.wa.gov/traffic/api/. |
 | `STATE_FILE` | Path to persisted poll/dedupe state file. |
 | `POLLING_INTERVAL` | Polling interval in seconds (where supported by the runtime variant). |
 | `ONCE_MODE` | Run one poll cycle and exit (used by notebook scheduling). |

@@ -36,7 +36,7 @@
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "WSDOT_ACCESS_CODE configuration value."
+        "description": "WSDOT Traveler Information API access code used to authenticate upstream traffic, ferry, and traveler-information requests; register for a free code at https://www.wsdot.wa.gov/traffic/api/."
       }
     }
   },

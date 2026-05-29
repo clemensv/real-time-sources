@@ -9,21 +9,21 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "MQTT 5 broker URL (e.g. mqtts://broker.example.com:8883)."
+        "description": "Broker URL. See feeders/rss/CONTAINER.md for details."
       }
     },
     "brokerUsername": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional MQTT username."
+        "description": "Username. See feeders/rss/CONTAINER.md for details."
       }
     },
     "brokerPassword": {
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional MQTT password."
+        "description": "Password. See feeders/rss/CONTAINER.md for details."
       }
     },
     "containerGroupName": {
@@ -46,7 +46,7 @@
       "type": "string",
       "defaultValue": "https://news.ycombinator.com/rss,https://feeds.bbci.co.uk/news/world/rss.xml,https://www.theguardian.com/world/rss",
       "metadata": {
-        "description": "Comma-separated list of RSS/Atom feed URLs."
+        "description": "URLs. See feeders/rss/CONTAINER.md for details."
       }
     }
   },

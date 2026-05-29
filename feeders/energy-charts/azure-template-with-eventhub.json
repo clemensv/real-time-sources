@@ -36,14 +36,14 @@
       "type": "string",
       "defaultValue": "de",
       "metadata": {
-        "description": "COUNTRY configuration value."
+        "description": "Configuration value. See feeders/energy-charts/CONTAINER.md for details."
       }
     },
     "biddingZone": {
       "type": "string",
       "defaultValue": "DE-LU",
       "metadata": {
-        "description": "BIDDING_ZONE configuration value."
+        "description": "Zone. See feeders/energy-charts/CONTAINER.md for details."
       }
     }
   },

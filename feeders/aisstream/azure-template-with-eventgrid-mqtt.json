@@ -39,28 +39,28 @@
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "AISSTREAM_API_KEY configuration value."
+        "description": "AISstream.io API key. Obtain one by registering at aisstream.io via GitHub OAuth (free)."
       }
     },
     "aisstreamBoundingBoxes": {
       "type": "string",
       "defaultValue": "-90,-180,90,180",
       "metadata": {
-        "description": "AISSTREAM_BOUNDING_BOXES configuration value."
+        "description": "Server-side geographic filter as semicolon-separated bounding boxes: lat1,lon1,lat2,lon2;... Default -90,-180,90,180 (global)."
       }
     },
     "aisstreamMessageTypes": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "AISSTREAM_MESSAGE_TYPES configuration value."
+        "description": "Comma-separated list of AIS message-type names to subscribe to. Default: all 23 types."
       }
     },
     "aisstreamFilterMmsi": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "AISSTREAM_FILTER_MMSI configuration value."
+        "description": "Comma-separated list of MMSI numbers to include (client-side filter applied after the server-side AISstream.io filter). Default: all vessels."
       }
     },
     "mqttClientId": {

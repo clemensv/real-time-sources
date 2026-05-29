@@ -1,21 +1,253 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "Deploys the sensor-community MQTT feeder together with a new Azure Event Grid namespace MQTT broker, an sensor-community-scoped topic space, and a user-assigned managed identity for broker publishing."
+  },
   "parameters": {
-    "containerImage": {
+    "namePrefix": {
       "type": "string",
-      "defaultValue": "ghcr.io/clemensv/real-time-sources-sensor-community-mqtt:latest"
+      "defaultValue": "sensor-community",
+      "minLength": 3,
+      "maxLength": 24,
+      "metadata": {
+        "description": "Base name for all resources."
+      }
     },
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]"
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    },
+    "topicRoot": {
+      "type": "string",
+      "defaultValue": "air-quality/intl/sensor-community/sensor-community/#",
+      "metadata": {
+        "description": "Topic-space root for the sensor-community UNS publish surface."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-sensor-community-mqtt:latest",
+      "metadata": {
+        "description": "Container image reference for the MQTT feeder."
+      }
+    },
+    "mqttClientId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional MQTT client identifier override. Defaults to the managed identity principal id."
+      }
+    },
+    "countries": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional comma separated list of countries to keep"
+      },
+      "defaultValue": ""
+    },
+    "onceMode": {
+      "type": "string",
+      "metadata": {
+        "description": "Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks."
+      },
+      "defaultValue": ""
+    },
+    "sensorTypes": {
+      "type": "string",
+      "metadata": {
+        "description": "Comma separated list of Sensor.Community sensor types to poll"
+      },
+      "defaultValue": "SDS011,BME280,SPS30,DHT22,PMS5003,SHT31,BMP280"
     }
   },
-  "resources": [],
+  "variables": {
+    "namespaceName": "[concat(parameters('namePrefix'), '-egns')]",
+    "topicSpaceName": "sensor-community",
+    "userIdentityName": "[concat(parameters('namePrefix'), '-mi')]",
+    "containerGroupName": "[concat(parameters('namePrefix'), '-mqtt')]",
+    "logAnalyticsWorkspaceName": "[concat(parameters('namePrefix'), '-logs')]",
+    "publisherRoleId": "/providers/Microsoft.Authorization/roleDefinitions/a12b0b94-b317-4dcd-84a8-502ce99884c6",
+    "userIdentityResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userIdentityName'))]",
+    "namespaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces', variables('namespaceName'))]",
+    "topicSpaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces/topicSpaces', variables('namespaceName'), variables('topicSpaceName'))]",
+    "roleAssignmentName": "[guid(variables('topicSpaceResourceId'), variables('userIdentityResourceId'), variables('publisherRoleId'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[variables('userIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.EventGrid/namespaces",
+      "apiVersion": "2025-07-15-preview",
+      "name": "[variables('namespaceName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard",
+        "capacity": 1
+      },
+      "properties": {
+        "topicSpacesConfiguration": {
+          "state": "Enabled"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.EventGrid/namespaces/topicSpaces",
+      "apiVersion": "2025-07-15-preview",
+      "name": "[concat(variables('namespaceName'), '/', variables('topicSpaceName'))]",
+      "dependsOn": [
+        "[variables('namespaceResourceId')]"
+      ],
+      "properties": {
+        "topicTemplates": [
+          "[parameters('topicRoot')]"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[variables('roleAssignmentName')]",
+      "scope": "[concat('Microsoft.EventGrid/namespaces/', variables('namespaceName'), '/topicSpaces/', variables('topicSpaceName'))]",
+      "dependsOn": [
+        "[variables('topicSpaceResourceId')]",
+        "[variables('userIdentityResourceId')]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[variables('publisherRoleId')]",
+        "principalId": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[variables('userIdentityResourceId')]": {}
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
+        "[variables('namespaceResourceId')]",
+        "[variables('topicSpaceResourceId')]",
+        "[extensionResourceId(variables('topicSpaceResourceId'), 'Microsoft.Authorization/roleAssignments', variables('roleAssignmentName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "Always",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[variables('containerGroupName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[concat('mqtts://', reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname, ':8883')]"
+                },
+                {
+                  "name": "MQTT_AUTH_MODE",
+                  "value": "entra"
+                },
+                {
+                  "name": "MQTT_ENTRA_AUDIENCE",
+                  "value": "https://eventgrid.azure.net/"
+                },
+                {
+                  "name": "MQTT_ENTRA_CLIENT_ID",
+                  "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
+                },
+                {
+                  "name": "MQTT_CLIENT_ID",
+                  "value": "[if(empty(parameters('mqttClientId')), reference(variables('userIdentityResourceId'), '2023-01-31').principalId, parameters('mqttClientId'))]"
+                },
+                {
+                  "name": "COUNTRIES",
+                  "value": "[parameters('countries')]"
+                },
+                {
+                  "name": "ONCE_MODE",
+                  "value": "[parameters('onceMode')]"
+                },
+                {
+                  "name": "SENSOR_TYPES",
+                  "value": "[parameters('sensorTypes')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
   "outputs": {
-    "note": {
+    "namespaceName": {
       "type": "string",
-      "value": "sensor-community mqtt-eg companion feeder template placeholder for Azure Container Instances."
+      "value": "[variables('namespaceName')]"
+    },
+    "mqttHostname": {
+      "type": "string",
+      "value": "[reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname]"
+    },
+    "topicSpaceName": {
+      "type": "string",
+      "value": "[variables('topicSpaceName')]"
+    },
+    "managedIdentityClientId": {
+      "type": "string",
+      "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
+    },
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', variables('containerGroupName'))]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
     }
   }
 }

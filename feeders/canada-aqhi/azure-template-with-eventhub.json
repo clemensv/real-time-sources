@@ -36,21 +36,21 @@
       "type": "string",
       "defaultValue": "3600",
       "metadata": {
-        "description": "POLLING_INTERVAL configuration value."
+        "description": "Polling interval in seconds (source default applies when not set)."
       }
     },
     "referenceRefreshInterval": {
       "type": "string",
       "defaultValue": "86400",
       "metadata": {
-        "description": "REFERENCE_REFRESH_INTERVAL configuration value."
+        "description": "Reference refresh interval in seconds"
       }
     },
     "provinces": {
       "type": "string",
       "defaultValue": "AB,BC,MB,NB,NL,NS,NT,NU,ON,PE,QC,SK,YT",
       "metadata": {
-        "description": "PROVINCES configuration value."
+        "description": "Comma-separated province/territory codes to emit"
       }
     }
   },

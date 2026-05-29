@@ -58,14 +58,14 @@
       "type": "string",
       "defaultValue": "wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos",
       "metadata": {
-        "description": "BLUESKY_FIREHOSE_URL configuration value."
+        "description": "Bluesky firehose WebSocket URL"
       }
     },
     "blueskyCollections": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "BLUESKY_COLLECTIONS configuration value. Empty means all supported event families."
+        "description": "Comma-separated list of collections to process (empty = all)"
       }
     }
   },

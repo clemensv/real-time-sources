@@ -36,7 +36,7 @@
       "type": "string",
       "defaultValue": "Seattle,WA",
       "metadata": {
-        "description": "EPA_UV_LOCATIONS configuration value."
+        "description": "Semicolon-separated CITY,STATE pairs"
       }
     }
   },

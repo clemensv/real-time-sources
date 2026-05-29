@@ -24,7 +24,9 @@
     "eventGridSku": {
       "type": "string",
       "defaultValue": "Standard",
-      "allowedValues": ["Standard"],
+      "allowedValues": [
+        "Standard"
+      ],
       "metadata": {
         "description": "Event Grid namespace SKU."
       }
@@ -56,7 +58,7 @@
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "NVE_API_KEY configuration value."
+        "description": "NVE Hydro API key used to authenticate upstream requests. Obtain it from the upstream provider's developer portal before deployment. See feeders/nve-hydro/CONTAINER.md for details."
       }
     }
   },
@@ -89,7 +91,9 @@
       "name": "[variables('logAnalyticsWorkspaceName')]",
       "location": "[parameters('location')]",
       "properties": {
-        "sku": { "name": "PerGB2018" },
+        "sku": {
+          "name": "PerGB2018"
+        },
         "retentionInDays": 30
       }
     },
@@ -98,7 +102,9 @@
       "apiVersion": "2023-05-01",
       "name": "[variables('storageAccountName')]",
       "location": "[parameters('location')]",
-      "sku": { "name": "Standard_LRS" },
+      "sku": {
+        "name": "Standard_LRS"
+      },
       "kind": "StorageV2",
       "properties": {
         "accessTier": "Hot",
@@ -121,7 +127,9 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ],
-      "properties": { "shareQuota": 1 }
+      "properties": {
+        "shareQuota": 1
+      }
     },
     {
       "type": "Microsoft.EventGrid/namespaces",
@@ -202,15 +210,24 @@
             "properties": {
               "image": "[parameters('imageName')]",
               "resources": {
-                "requests": { "cpu": 0.5, "memoryInGB": 1.0 }
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
               },
               "environmentVariables": [
                 {
                   "name": "MQTT_BROKER_URL",
                   "value": "[concat('mqtts://', reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname, ':8883')]"
                 },
-                { "name": "MQTT_AUTH_MODE", "value": "entra" },
-                { "name": "MQTT_ENTRA_AUDIENCE", "value": "https://eventgrid.azure.net/" },
+                {
+                  "name": "MQTT_AUTH_MODE",
+                  "value": "entra"
+                },
+                {
+                  "name": "MQTT_ENTRA_AUDIENCE",
+                  "value": "https://eventgrid.azure.net/"
+                },
                 {
                   "name": "MQTT_ENTRA_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
@@ -219,14 +236,32 @@
                   "name": "MQTT_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
                 },
-                { "name": "NVE_API_KEY", "secureValue": "[parameters('nveApiKey')]" },
-                { "name": "POLLING_INTERVAL", "value": "600" },
-                { "name": "STATE_FILE", "value": "/mnt/bridge-state/state.json" },
-                { "name": "LOG_LEVEL", "value": "INFO" },
-                { "name": "PYTHONUNBUFFERED", "value": "1" }
+                {
+                  "name": "NVE_API_KEY",
+                  "secureValue": "[parameters('nveApiKey')]"
+                },
+                {
+                  "name": "POLLING_INTERVAL",
+                  "value": "600"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "/mnt/bridge-state/state.json"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
               ],
               "volumeMounts": [
-                { "name": "bridge-state", "mountPath": "/mnt/bridge-state" }
+                {
+                  "name": "bridge-state",
+                  "mountPath": "/mnt/bridge-state"
+                }
               ]
             }
           }

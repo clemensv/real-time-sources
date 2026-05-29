@@ -5,15 +5,38 @@
     "description": "Deploy Digitraffic Maritime MQTT feeder to Azure Container Instances (bring your own MQTT broker)."
   },
   "parameters": {
-    "containerGroupName": {"type": "string", "defaultValue": "digitraffic-maritime-mqtt"},
-    "location": {"type": "string", "defaultValue": "[resourceGroup().location]"},
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "digitraffic-maritime-mqtt"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    },
     "imageName": {
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-digitraffic-maritime-mqtt:latest"
     },
-    "brokerUrl": {"type": "string", "metadata": {"description": "MQTT broker URL, e.g. mqtts://broker.example.com:8883"}},
-    "mqttUsername": {"type": "string", "defaultValue": ""},
-    "mqttPassword": {"type": "securestring", "defaultValue": ""}
+    "brokerUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Broker URL. See feeders/digitraffic-maritime/CONTAINER.md for details."
+      }
+    },
+    "mqttUsername": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Username. See feeders/digitraffic-maritime/CONTAINER.md for details."
+      }
+    },
+    "mqttPassword": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Password. See feeders/digitraffic-maritime/CONTAINER.md for details."
+      }
+    }
   },
   "resources": [
     {
@@ -29,14 +52,37 @@
             "name": "[parameters('containerGroupName')]",
             "properties": {
               "image": "[parameters('imageName')]",
-              "resources": {"requests": {"cpu": 0.5, "memoryInGB": 1}},
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1
+                }
+              },
               "environmentVariables": [
-                {"name": "MQTT_BROKER_URL", "value": "[parameters('brokerUrl')]"},
-                {"name": "MQTT_USERNAME", "value": "[parameters('mqttUsername')]"},
-                {"name": "MQTT_PASSWORD", "secureValue": "[parameters('mqttPassword')]"},
-                {"name": "MQTT_CONTENT_MODE", "value": "binary"},
-                {"name": "LOG_LEVEL", "value": "INFO"},
-                {"name": "PYTHONUNBUFFERED", "value": "1"}
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[parameters('brokerUrl')]"
+                },
+                {
+                  "name": "MQTT_USERNAME",
+                  "value": "[parameters('mqttUsername')]"
+                },
+                {
+                  "name": "MQTT_PASSWORD",
+                  "secureValue": "[parameters('mqttPassword')]"
+                },
+                {
+                  "name": "MQTT_CONTENT_MODE",
+                  "value": "binary"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
               ]
             }
           }

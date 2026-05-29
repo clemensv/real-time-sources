@@ -13,9 +13,56 @@
 
 ## Common Additional Assets
 
-- `azure-template.json`
+- `azure-template.json` (Kafka, BYO connection string)
+- `azure-template-with-eventhub.json` (Kafka, provisions Event Hubs namespace)
+- `azure-template-with-servicebus.json` (AMQP, provisions Service Bus namespace)
+- `azure-template-amqp.json` (AMQP, BYO broker)
+- `azure-template-mqtt.json` (MQTT, BYO broker)
+- `azure-template-with-eventgrid-mqtt.json` (MQTT, provisions Event Grid namespace)
 - `generate-template.ps1`
 - `fabric/README.md`
+
+## ARM Template Correctness — BLOCKING
+
+Every `azure-template-*.json` shipped with the source is a blocking
+review item. The most common silent regression in this repo is an
+ARM template whose `resources` array is empty — the deploy button
+succeeds and creates an empty resource group, then the user has no
+recourse. Every PR that adds or modifies a feeder MUST pass these
+checks, and the reviewer MUST paste evidence into the PR body:
+
+- [ ] **Every shipped `azure-template-*.json` has a non-empty
+      `resources` array.** Quick check:
+      `(Get-Content <tpl> -Raw | ConvertFrom-Json).resources.Count -gt 0`.
+      Repo-wide scan:
+      `pwsh tools/validate-arm-templates.ps1 -RepoRoot .` lists
+      every empty template across the fleet — there must be zero.
+- [ ] **Every required feeder env var is exposed as an ARM
+      parameter** with appropriate `type` (`string` or
+      `securestring`), `defaultValue` where one applies, and a real
+      `metadata.description` derived from CONTAINER.md or runtime
+      argparse help text (not a placeholder phrase). The parameter
+      must be wired into the container's `environmentVariables`
+      array. Missing required-secret parameters block merge.
+- [ ] **Image suffix matches transport family.** kafka + eventhub
+      use the base image (`:latest` no suffix), servicebus + amqp
+      use `-amqp:latest`, mqtt + eventgrid-mqtt use `-mqtt:latest`.
+      Mismatches deploy the wrong container variant.
+- [ ] **Identity + role assignments correct** where Entra ID is the
+      auth path (UAMI + the right
+      `Microsoft.Authorization/roleAssignments` per resource scope).
+- [ ] **Live deploy verification.** Run
+      `pwsh tools/verify-arm-template.ps1 -FeederSlug <slug>
+      -Variant <variant>` for every variant the PR touches. The
+      script creates a real RG, deploys the template, validates
+      data flow on the provisioned broker (or container-group
+      shape for BYO-broker variants), and tears the RG down in
+      `finally`. Paste the PASS line into the PR body. A PR that
+      has not been live-verified against Azure is not mergeable.
+
+Run the regenerator (`python tools/generate-arm-templates.py`)
+rather than hand-editing per-feeder templates when the change is a
+parameter / env-var addition that applies fleet-wide.
 
 ## Dockerfile Checklist
 
@@ -55,6 +102,9 @@
 
 ## Common Mistakes
 
+- **Shipping an `azure-template-*.json` whose `resources` array is empty (`"resources": []`).** This is the most common silent regression in this repo. The deploy button succeeds, the user gets an empty resource group, and the failure mode is invisible from the portal. Audit before merge with `pwsh tools/validate-arm-templates.ps1 -RepoRoot .` and live-deploy-test with `pwsh tools/verify-arm-template.ps1 -FeederSlug <slug> -Variant <variant>`. Never accept a "placeholder template" for a transport variant that has a corresponding Dockerfile — regenerate from the aisstream canonical via `python tools/generate-arm-templates.py`.
+- **Required feeder env vars not exposed as ARM parameters.** A bridge that requires `<FEEDER>_API_KEY` or per-feeder filter env vars (regions, categories, sort orders) but does not expose them as ARM parameters with `metadata.description` forces every user to fork the template. Mine env vars from CONTAINER.md and runtime argparse; expose every user-tunable one.
+- **Wrong image suffix per transport variant.** `azure-template-with-servicebus.json` referencing the base `:latest` image (instead of `-amqp:latest`) deploys the Kafka container against a Service Bus broker. Audit suffix matches the variant before merging.
 - Shipping a new source without container docs.
 - Leaving `EVENTS.md` stale after changing xreg.
 - **Shipping a source without `kql/<source>.kql`.** The Fabric deployers print "No KQL script — database schema step will be skipped" and the deployed database has only the auto-provisioned `_cloudevents_dispatch` table; every typed-table consumer (Eventhouse Maps, Activator rules, materialized `*Latest` views, KQL dashboards) is broken. Generate with `tools/generate-kql-from-xreg.ps1 -Qualified`.

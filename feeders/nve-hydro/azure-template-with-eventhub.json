@@ -36,7 +36,7 @@
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "NVE_API_KEY configuration value."
+        "description": "NVE Hydro API key used to authenticate upstream requests. Obtain it from the upstream provider's developer portal before deployment. See feeders/nve-hydro/CONTAINER.md for details."
       }
     }
   },

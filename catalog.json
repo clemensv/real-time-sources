@@ -18,7 +18,8 @@
     "desc": "Canada — ~2,100 hydrometric stations, ECCC/WSC",
     "kql": true,
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "notebook": true
   },
   {
     "id": "cdec-reservoirs",
@@ -291,7 +292,8 @@
     "desc": "Germany — ~1,450 stations, observations and CAP alerts",
     "kql": true,
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "notebook": true
   },
   {
     "id": "dwd-pollenflug",
@@ -410,7 +412,8 @@
     "desc": "United States — active alerts via api.weather.gov",
     "kql": true,
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "notebook": true
   },
   {
     "id": "nws-forecasts",
@@ -574,7 +577,8 @@
     "desc": "Belgium / Wallonia — low-cost air quality sensors",
     "kql": true,
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "notebook": true
   },
   {
     "id": "australia-wildfires",
@@ -606,7 +610,8 @@
     "desc": "Global — earthquakes, floods, cyclones, volcanoes, droughts",
     "kql": true,
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "notebook": true
   },
   {
     "id": "inpe-deter-brazil",
@@ -616,7 +621,8 @@
     "desc": "Brazil — Amazon & Cerrado deforestation alerts",
     "kql": true,
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "notebook": true
   },
   {
     "id": "nifc-usa-wildfires",
@@ -637,7 +643,8 @@
     "desc": "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police",
     "kql": true,
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "notebook": true
   },
   {
     "id": "ptwc-tsunami",
@@ -647,7 +654,8 @@
     "desc": "Pacific and Atlantic — NOAA tsunami bulletins",
     "kql": true,
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "notebook": true
   },
   {
     "id": "seattle-911",
@@ -795,7 +803,8 @@
     "desc": "Global — 1,000+ transit agencies, vehicles, trips, alerts",
     "kql": true,
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "notebook": true
   },
   {
     "id": "madrid-traffic",
@@ -902,7 +911,8 @@
     "desc": "Norway — national real-time transit, SIRI ET/VM/SX",
     "kql": true,
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "notebook": true
   },
   {
     "id": "irail",
@@ -923,7 +933,8 @@
     "desc": "Europe — clubs, bars, parties, festivals — event schedules",
     "kql": true,
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "notebook": true
   },
   {
     "id": "carbon-intensity",
@@ -977,7 +988,8 @@
     "desc": "Europe — electricity generation, prices, load, flows (requires token)",
     "kql": true,
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "notebook": true
   },
   {
     "id": "bluesky",
@@ -1039,7 +1051,8 @@
     "desc": "Europe — ticketed public events with sale-status signals",
     "kql": true,
     "mqtt": true,
-    "amqp": true
+    "amqp": true,
+    "notebook": true
   },
   {
     "id": "ticketmaster",
