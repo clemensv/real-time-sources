@@ -117,7 +117,7 @@ const SOURCES = [
   { id: "irail", name: "iRail", cat: "Railway", key: false, desc: "Belgium — ~600 NMBS/SNCB stations, departures, delays", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
 
   // ── Nightlife and Live Entertainment ──
-  { id: "xceed", name: "Xceed", cat: "Nightlife", key: false, desc: "Europe — clubs, bars, parties, festivals — event schedules", mqtt: true, amqp: true },
+  { id: "xceed", name: "Xceed", cat: "Nightlife", key: false, desc: "Europe — clubs, bars, parties, festivals — event schedules", mqtt: true, amqp: true, notebook: true },
 
   // ── Energy and Infrastructure ──
   { id: "carbon-intensity", name: "Carbon Intensity UK", cat: "Energy", key: false, desc: "United Kingdom — national grid carbon intensity", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
@@ -359,11 +359,10 @@ async function openDeployForm(source, mode) {
       source.id, "Name for the Azure Container Group", false));
     $deployForm.appendChild(azSection);
   } else if (mode === "fabric-notebook") {
-    const azSection = el("div", { class: "form-section" });
-    azSection.innerHTML = '<div class="form-section-title">Azure Subscription</div>';
-    azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
-      "", "Azure subscription GUID (leave blank for default)", false));
-    $deployForm.appendChild(azSection);
+    // Notebook deployment runs entirely against Fabric REST APIs using the
+    // signed-in user's Entra context. No Azure subscription is required —
+    // Fabric tokens are acquired from https://api.fabric.microsoft.com via the
+    // active az/Cloud-Shell context. Do not render a SubscriptionId field.
   } else if (mode === "fabric") {
     const azSection = el("div", { class: "form-section" });
     azSection.innerHTML = '<div class="form-section-title">Azure Subscription <span style="font-weight:normal;color:var(--muted);font-size:11px">(optional)</span></div>';
@@ -385,24 +384,26 @@ async function openDeployForm(source, mode) {
 
   // API key section (only for sources that require one, and only the
   // fabric-aci mode actually deploys the feeder).
-  if (source.key && mode === "fabric-aci") {
-    const keyMap = {
-      "aisstream": { param: "aisstreamApiKey", label: "AISStream API Key" },
-      "entsoe":    { param: "entsoeSecurityToken", label: "ENTSO-E Security Token" },
-      "nve-hydro": { param: "nveApiKey", label: "NVE API Key" },
-      "wsdot":     { param: "wsdotAccessCode", label: "WSDOT Access Code" }
-    };
-    const meta = keyMap[source.id];
-    if (meta) {
-      const keySection = el("div", { class: "form-section" });
-      keySection.innerHTML = `<div class="form-section-title">${esc(meta.label)} <span style="font-weight:normal;color:var(--accent);font-size:11px">required</span></div>`;
-      keySection.appendChild(makeField("apiKey", meta.label, "password",
-        "", "Stored as a securestring template parameter", true, true));
-      // remember the param name on a hidden field
-      const hidden = el("input", { type: "hidden", id: "deploy-apiKeyParamName", value: meta.param });
-      keySection.appendChild(hidden);
-      $deployForm.appendChild(keySection);
-    }
+  const keyMap = {
+    "aisstream": { param: "aisstreamApiKey", label: "AISStream API Key" },
+    "entsoe":    { param: "entsoeSecurityToken", label: "ENTSO-E Security Token" },
+    "nve-hydro": { param: "nveApiKey", label: "NVE API Key" },
+    "wsdot":     { param: "wsdotAccessCode", label: "WSDOT Access Code" }
+  };
+  const keyMeta = keyMap[source.id];
+  if (source.key && mode === "fabric-aci" && keyMeta) {
+    const keySection = el("div", { class: "form-section" });
+    keySection.innerHTML = `<div class="form-section-title">${esc(keyMeta.label)} <span style="font-weight:normal;color:var(--accent);font-size:11px">required</span></div>`;
+    keySection.appendChild(makeField("apiKey", keyMeta.label, "password",
+      "", "Stored as a securestring template parameter", true, true));
+    // remember the param name on a hidden field
+    const hidden = el("input", { type: "hidden", id: "deploy-apiKeyParamName", value: keyMeta.param });
+    keySection.appendChild(hidden);
+    $deployForm.appendChild(keySection);
+  }
+
+  if (mode === "fabric-aci") {
+    await renderTemplateParameterFields(source, keyMeta);
   }
 
   // Submit button
@@ -421,25 +422,90 @@ function makeField(name, label, type, defaultVal, hint, required, secure) {
   const group = el("div", { class: "form-group" });
   const lbl = el("label");
   lbl.setAttribute("for", `deploy-${name}`);
-  lbl.innerHTML = esc(label) + (required ? '<span class="required">*</span>' : '');
+  const labelHtml = /<span\b/i.test(label) ? label : esc(label);
+  lbl.innerHTML = labelHtml + (required ? '<span class="required">*</span>' : '');
   group.appendChild(lbl);
 
+  const defaultText = defaultVal == null ? "" : String(defaultVal);
+  const defaultIsExpression = /^\s*\[.*\]\s*$/.test(defaultText);
   const input = el("input", {
     type: type,
     id: `deploy-${name}`,
     name: name,
-    value: defaultVal || "",
-    placeholder: hint || "",
+    value: defaultIsExpression ? "" : defaultText,
+    placeholder: defaultIsExpression ? defaultText : (hint || ""),
   });
   if (secure) input.classList.add("secure");
+  if (required) input.required = true;
   group.appendChild(input);
 
   if (hint) {
     const h = el("div", { class: "form-hint" });
-    h.textContent = hint;
+    h.innerHTML = hintHtml(hint);
     group.appendChild(h);
   }
   return group;
+}
+
+async function renderTemplateParameterFields(source, keyMeta) {
+  const skipNames = new Set([
+    "connectionString",
+    "containerGroupName",
+    "location",
+    "subscriptionId",
+    "image",
+    "imageTag",
+    "storageAccountName",
+    "fileShareName",
+    "logAnalyticsName",
+    "cpuCores",
+    "memoryGb"
+  ]);
+  if (source.key && keyMeta?.param) skipNames.add(keyMeta.param);
+
+  try {
+    const resp = await fetch(`${RAW}/${FEEDERS_PREFIX}/${source.id}/azure-template.json`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const template = await resp.json();
+    const parameters = template.parameters || {};
+    const fields = Object.entries(parameters)
+      .filter(([name]) => !skipNames.has(name))
+      .map(([name, param]) => {
+        const hasDefault = Object.prototype.hasOwnProperty.call(param, "defaultValue");
+        const armType = param.type || "string";
+        const hint = param.metadata?.description || "";
+        return {
+          name,
+          param,
+          armType,
+          hasDefault,
+          required: !hasDefault || hintMarksRequired(hint),
+          label: `${esc(camelToTitle(name))} <span style="font-weight:normal;color:var(--muted);font-size:11px">(${esc(armType)})</span>`,
+          inputType: armType === "securestring" ? "password" : (armType === "int" ? "number" : "text"),
+          defaultValue: hasDefault ? param.defaultValue : "",
+          hint,
+          secure: armType === "securestring"
+        };
+      })
+      .sort((a, b) => (a.hasDefault - b.hasDefault) || a.name.localeCompare(b.name));
+
+    if (fields.length === 0) return;
+
+    const section = el("div", { class: "form-section" });
+    section.innerHTML = '<div class="form-section-title">Feeder Options <span style="font-weight:normal;color:var(--muted);font-size:11px">from the source\'s ARM template</span></div>';
+    for (const field of fields) {
+      const group = makeField(`tp-${field.name}`, field.label, field.inputType,
+        field.defaultValue, field.hint, field.required, field.secure);
+      group.querySelector("input")?.setAttribute("name", field.name);
+      section.appendChild(group);
+    }
+    $deployForm.appendChild(section);
+  } catch (err) {
+    console.warn(`Could not load ARM template parameters for ${source.id}`, err);
+    const warning = el("div", { class: "form-hint" },
+      "Could not load per-feeder template parameters — only the standard Azure + Fabric fields will be used.");
+    $deployForm.appendChild(warning);
+  }
 }
 
 function launchCloudShell(source, mode) {
@@ -447,6 +513,7 @@ function launchCloudShell(source, mode) {
     const el = document.getElementById(`deploy-${name}`);
     return el ? el.value.trim() : "";
   };
+  const quotePs = (value) => String(value).replace(/'/g, "''");
 
   const subId = getValue("subscriptionId");
 
@@ -481,11 +548,20 @@ function launchCloudShell(source, mode) {
         const apiKeyParamName = getValue("apiKeyParamName");
         if (!apiKey) { alert(`This source requires an API key (${apiKeyParamName || "secret"}).`); return; }
         if (apiKeyParamName) {
-          cmd += ` -ApiKeyParamName '${apiKeyParamName}' -ApiKey '${apiKey}'`;
+          cmd += ` -ApiKeyParamName '${quotePs(apiKeyParamName)}' -ApiKey '${quotePs(apiKey)}'`;
         }
       }
+      $deployForm.querySelectorAll("[id^='deploy-tp-']").forEach(input => {
+        const value = input.value.trim();
+        if (!value) return;
+        const name = input.id.substring("deploy-tp-".length);
+        cmd += ` -TemplateParameter '${quotePs(`${name}=${value}`)}'`;
+      });
     }
-    if (subId) cmd += ` -SubscriptionId '${subId}'`;
+    // SubscriptionId is only meaningful for ACI-bearing deploys (fabric-aci).
+    // Fabric-only / Fabric-notebook deploys authenticate via the user's Entra
+    // context and do not need a subscription pin.
+    if (subId && mode !== "fabric-notebook") cmd += ` -SubscriptionId '${subId}'`;
     cmd += ` -Workspace '${wsId}'`;
     if (ehId) cmd += ` -Eventhouse '${ehId}'`;
     cmd += ` -DatabaseName '${dbName}'`;
@@ -544,6 +620,14 @@ function esc(s) {
   const d = document.createElement("div");
   d.textContent = s;
   return d.innerHTML;
+}
+
+function hintHtml(s) {
+  return String(s).split(/\r?\n/).map(line => line.split(";").map(esc).join(";<wbr>")).join("<br>");
+}
+
+function hintMarksRequired(s) {
+  return /^\s*required(?:\.|:|\s)/i.test(String(s).replace(/[`*_]/g, ""));
 }
 
 /* ── Welcome / landing panel ───────────────────────────────────────────── */
