@@ -265,6 +265,41 @@ function Get-EventStreamConnectionString {
     return $null
 }
 
+function Wait-EventStreamTopologyReady {
+    param(
+        [string]$WsId,
+        [string]$EventStreamId,
+        [int]$TimeoutSeconds = 180,
+        [int]$PollSeconds = 15
+    )
+
+    $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+    $lastStatus = ""
+    while ((Get-Date) -lt $deadline) {
+        try {
+            $topo = Invoke-FabricApi -Method GET `
+                -Url "$FabricApi/workspaces/$WsId/eventstreams/$EventStreamId/topology"
+            $sourceStates = @($topo.sources | ForEach-Object { "$($_.name):$($_.status)" })
+            $destinationStates = @($topo.destinations | ForEach-Object { "$($_.name):$($_.status)" })
+            $lastStatus = (@($sourceStates) + @($destinationStates)) -join "; "
+
+            $sourcesReady = @($topo.sources | Where-Object { $_.type -eq "CustomEndpoint" -and $_.status -eq "Running" }).Count -gt 0
+            $destinations = @($topo.destinations | Where-Object { $_.type -eq "Eventhouse" })
+            $destinationsReady = $destinations.Count -gt 0 -and @($destinations | Where-Object { $_.status -ne "Running" }).Count -eq 0
+            if ($sourcesReady -and $destinationsReady) {
+                Write-OK "Event Stream source and Eventhouse destination are Running"
+                return
+            }
+            Write-Info "Waiting for Event Stream topology... $lastStatus"
+        } catch {
+            $lastStatus = $_.Exception.Message
+            Write-Info "Waiting for Event Stream topology... $lastStatus"
+        }
+        Start-Sleep -Seconds $PollSeconds
+    }
+    throw "Timed out waiting for Event Stream topology to become Running. Last status: $lastStatus"
+}
+
 # ── Optional post-deploy hook ───────────────────────────────────────────
 # Each source MAY ship a {Source}/fabric/post-deploy.ps1 to perform extra
 # wiring (Fabric Map layers, dashboards, environment seeding, …). The hook
@@ -537,11 +572,11 @@ $updateFile = Join-Path $TempDir "es_update_$(Get-Random).json"
 az rest --method POST --url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/updateDefinition" --resource "https://api.fabric.microsoft.com" --body "@$updateFile" --headers "Content-Type=application/json" 2>&1 | Out-Null
 if ($LASTEXITCODE -ne 0) { throw "Failed to update Event Stream definition" }
 Write-OK "Event Stream topology configured"
+Wait-EventStreamTopologyReady -WsId $WorkspaceId -EventStreamId $eventstreamId
 
 #  Step 5: Retrieve Custom Endpoint connection string 
 
 Write-Step "5/6" "Retrieving Event Stream connection string..."
-Start-Sleep -Seconds 30
 $esConnectionString = $null
 try {
     $csInfo = Get-EventStreamConnectionString -WsId $WorkspaceId -EventStreamId $eventstreamId
