@@ -32,7 +32,7 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from nextbus_producer_kafka_producer.producer import NextbusEventProducer
+from nextbus_producer_kafka_producer.producer import NextbusKafkaEventProducer
 
 # imports for the data classes for each event
 
@@ -53,43 +53,43 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
         # or an Azure Event Hubs connection string
-        nextbus_event_producer = NextbusEventProducer.from_connection_string(connection_string, topic, 'binary')
+        nextbus_kafka_event_producer = NextbusKafkaEventProducer.from_connection_string(connection_string, topic, 'binary')
     else:
         # use a Kafka producer configuration provided as JSON text
         kafka_producer = KafkaProducer(json.loads(producer_config))
-        nextbus_event_producer = NextbusEventProducer(kafka_producer, topic, 'binary')
+        nextbus_kafka_event_producer = NextbusKafkaEventProducer(kafka_producer, topic, 'binary')
 
-    # ---- nextbus.VehiclePosition ----
-    # TODO: Supply event data for the nextbus.VehiclePosition event
+    # ---- nextbus.kafka.VehiclePosition ----
+    # TODO: Supply event data for the nextbus.kafka.VehiclePosition event
     _vehicle_position = VehiclePosition()
 
-    # sends the 'nextbus.VehiclePosition' event to Kafka topic.
-    await nextbus_event_producer.send_nextbus_vehicle_position(_agency_id = 'TODO: replace me', _route_tag = 'TODO: replace me', _vehicle_id = 'TODO: replace me', _timestamp = 'TODO: replace me', data = _vehicle_position)
-    print(f"Sent 'nextbus.VehiclePosition' event: {_vehicle_position.to_json()}")
+    # sends the 'nextbus.kafka.VehiclePosition' event to Kafka topic.
+    await nextbus_kafka_event_producer.send_nextbus_kafka_vehicle_position(_agency_id = 'TODO: replace me', _route_tag = 'TODO: replace me', _vehicle_id = 'TODO: replace me', data = _vehicle_position)
+    print(f"Sent 'nextbus.kafka.VehiclePosition' event: {_vehicle_position.to_json()}")
 
-    # ---- nextbus.RouteConfig ----
-    # TODO: Supply event data for the nextbus.RouteConfig event
+    # ---- nextbus.kafka.RouteConfig ----
+    # TODO: Supply event data for the nextbus.kafka.RouteConfig event
     _route_config = RouteConfig()
 
-    # sends the 'nextbus.RouteConfig' event to Kafka topic.
-    await nextbus_event_producer.send_nextbus_route_config(_agency_id = 'TODO: replace me', _route_tag = 'TODO: replace me', _stop_or_vehicle_id = 'TODO: replace me', _timestamp = 'TODO: replace me', data = _route_config)
-    print(f"Sent 'nextbus.RouteConfig' event: {_route_config.to_json()}")
+    # sends the 'nextbus.kafka.RouteConfig' event to Kafka topic.
+    await nextbus_kafka_event_producer.send_nextbus_kafka_route_config(_agency_id = 'TODO: replace me', _route_tag = 'TODO: replace me', _stop_or_vehicle_id = 'TODO: replace me', data = _route_config)
+    print(f"Sent 'nextbus.kafka.RouteConfig' event: {_route_config.to_json()}")
 
-    # ---- nextbus.Schedule ----
-    # TODO: Supply event data for the nextbus.Schedule event
+    # ---- nextbus.kafka.Schedule ----
+    # TODO: Supply event data for the nextbus.kafka.Schedule event
     _schedule = Schedule()
 
-    # sends the 'nextbus.Schedule' event to Kafka topic.
-    await nextbus_event_producer.send_nextbus_schedule(_agency_id = 'TODO: replace me', _route_tag = 'TODO: replace me', _stop_or_vehicle_id = 'TODO: replace me', _timestamp = 'TODO: replace me', data = _schedule)
-    print(f"Sent 'nextbus.Schedule' event: {_schedule.to_json()}")
+    # sends the 'nextbus.kafka.Schedule' event to Kafka topic.
+    await nextbus_kafka_event_producer.send_nextbus_kafka_schedule(_agency_id = 'TODO: replace me', _route_tag = 'TODO: replace me', _stop_or_vehicle_id = 'TODO: replace me', data = _schedule)
+    print(f"Sent 'nextbus.kafka.Schedule' event: {_schedule.to_json()}")
 
-    # ---- nextbus.Message ----
-    # TODO: Supply event data for the nextbus.Message event
+    # ---- nextbus.kafka.Message ----
+    # TODO: Supply event data for the nextbus.kafka.Message event
     _message = Message()
 
-    # sends the 'nextbus.Message' event to Kafka topic.
-    await nextbus_event_producer.send_nextbus_message(_agency_id = 'TODO: replace me', _route_tag = 'TODO: replace me', _stop_or_vehicle_id = 'TODO: replace me', _timestamp = 'TODO: replace me', data = _message)
-    print(f"Sent 'nextbus.Message' event: {_message.to_json()}")
+    # sends the 'nextbus.kafka.Message' event to Kafka topic.
+    await nextbus_kafka_event_producer.send_nextbus_kafka_message(_agency_id = 'TODO: replace me', _route_tag = 'TODO: replace me', _stop_or_vehicle_id = 'TODO: replace me', data = _message)
+    print(f"Sent 'nextbus.kafka.Message' event: {_message.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

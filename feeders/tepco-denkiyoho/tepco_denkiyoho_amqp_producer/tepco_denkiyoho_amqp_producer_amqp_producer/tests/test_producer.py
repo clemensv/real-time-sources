@@ -17,6 +17,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../tepco_denkiyoho_amqp_producer_data/src')))
@@ -265,6 +266,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                 producer.send_supply_capacity(
                     data=payload,
                     _feedurl="value",
+                    _area_code="value",
                     _date="value",
                     _time="value",
                     content_type="application/json"
@@ -274,6 +276,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -295,6 +298,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value"))[:128]
         finally:
             producer.close()
     
@@ -323,6 +327,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                 producer.send_peak_demand_forecast(
                     data=payload,
                     _feedurl="value",
+                    _area_code="value",
                     _date="value",
                     _time="value",
                     content_type="application/json"
@@ -332,6 +337,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -353,6 +359,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value"))[:128]
         finally:
             producer.close()
     
@@ -381,6 +388,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                 producer.send_demand_actual(
                     data=payload,
                     _feedurl="value",
+                    _area_code="value",
                     _date="value",
                     _time="value",
                     content_type="application/json"
@@ -390,6 +398,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -411,6 +420,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value"))[:128]
         finally:
             producer.close()
     
@@ -439,6 +449,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                 producer.send_demand_forecast(
                     data=payload,
                     _feedurl="value",
+                    _area_code="value",
                     _date="value",
                     _time="value",
                     content_type="application/json"
@@ -448,6 +459,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -469,6 +481,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value"))[:128]
         finally:
             producer.close()
     
@@ -504,6 +517,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -525,6 +539,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{area_code}".format(area_code="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]
         finally:
             producer.close()
 

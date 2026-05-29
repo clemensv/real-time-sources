@@ -17,8 +17,9 @@ import json
 import threading
 import queue
 import concurrent.futures
+from datetime import datetime, timezone
 from urllib.parse import quote_plus
-from proton import Message
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
@@ -36,7 +37,7 @@ import hmac
 import logging
 import time as _cbs_time
 from urllib.parse import quote
-from proton import Endpoint, symbol
+from proton import Endpoint
 from proton.handlers import MessagingHandler
 from proton.reactor import Container, AtLeastOnce
 
@@ -578,6 +579,23 @@ class NextbusAmqpProducer:
         return payload
 
     @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
+
+    @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
         CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
@@ -605,7 +623,6 @@ class NextbusAmqpProducer:
         _agency_id: str,
         _route_tag: str,
         _vehicle_id: str,
-        _timestamp: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `nextbus.VehiclePosition.amqp` message
@@ -615,7 +632,6 @@ class NextbusAmqpProducer:
             _agency_id (str): Value for placeholder agency_id in attribute subject
             _route_tag (str): Value for placeholder route_tag in attribute subject
             _vehicle_id (str): Value for placeholder vehicle_id in attribute subject
-            _timestamp (str): Value for placeholder timestamp in attribute time
             data (VehiclePosition): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -628,7 +644,7 @@ class NextbusAmqpProducer:
             "subject":
             "{agency_id}/{route_tag}/vehicle/{vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, vehicle_id=_vehicle_id),
             "time":
-            None,  # Will be auto-generated
+            "{timestamp}",
         }
         
         # Remove None values
@@ -659,6 +675,9 @@ class NextbusAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{agency_id}/{route_tag}/vehicle/{vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, vehicle_id=_vehicle_id)
 
@@ -667,6 +686,15 @@ class NextbusAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{agency_id}/{route_tag}/vehicle/{vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, vehicle_id=_vehicle_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
@@ -679,7 +707,6 @@ class NextbusAmqpProducer:
         _agency_id: str,
         _route_tag: str,
         _vehicle_id: str,
-        _timestamp: str,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `nextbus.VehiclePosition.amqp` messages
@@ -689,7 +716,6 @@ class NextbusAmqpProducer:
             _agency_id (str): Value for placeholder agency_id in attribute subject
             _route_tag (str): Value for placeholder route_tag in attribute subject
             _vehicle_id (str): Value for placeholder vehicle_id in attribute subject
-            _timestamp (str): Value for placeholder timestamp in attribute time
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -698,7 +724,6 @@ class NextbusAmqpProducer:
                 _agency_id=_agency_id,
                 _route_tag=_route_tag,
                 _vehicle_id=_vehicle_id,
-                _timestamp=_timestamp,
                 content_type=content_type)
     
     
@@ -707,7 +732,6 @@ class NextbusAmqpProducer:
         _agency_id: str,
         _route_tag: str,
         _stop_or_vehicle_id: str,
-        _timestamp: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `nextbus.RouteConfig.amqp` message
@@ -717,7 +741,6 @@ class NextbusAmqpProducer:
             _agency_id (str): Value for placeholder agency_id in attribute subject
             _route_tag (str): Value for placeholder route_tag in attribute subject
             _stop_or_vehicle_id (str): Value for placeholder stop_or_vehicle_id in attribute subject
-            _timestamp (str): Value for placeholder timestamp in attribute time
             data (RouteConfig): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -730,7 +753,7 @@ class NextbusAmqpProducer:
             "subject":
             "{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id),
             "time":
-            None,  # Will be auto-generated
+            "{timestamp}",
         }
         
         # Remove None values
@@ -761,6 +784,9 @@ class NextbusAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id)
 
@@ -769,6 +795,15 @@ class NextbusAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
@@ -781,7 +816,6 @@ class NextbusAmqpProducer:
         _agency_id: str,
         _route_tag: str,
         _stop_or_vehicle_id: str,
-        _timestamp: str,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `nextbus.RouteConfig.amqp` messages
@@ -791,7 +825,6 @@ class NextbusAmqpProducer:
             _agency_id (str): Value for placeholder agency_id in attribute subject
             _route_tag (str): Value for placeholder route_tag in attribute subject
             _stop_or_vehicle_id (str): Value for placeholder stop_or_vehicle_id in attribute subject
-            _timestamp (str): Value for placeholder timestamp in attribute time
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -800,7 +833,6 @@ class NextbusAmqpProducer:
                 _agency_id=_agency_id,
                 _route_tag=_route_tag,
                 _stop_or_vehicle_id=_stop_or_vehicle_id,
-                _timestamp=_timestamp,
                 content_type=content_type)
     
     
@@ -809,7 +841,6 @@ class NextbusAmqpProducer:
         _agency_id: str,
         _route_tag: str,
         _stop_or_vehicle_id: str,
-        _timestamp: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `nextbus.Schedule.amqp` message
@@ -819,7 +850,6 @@ class NextbusAmqpProducer:
             _agency_id (str): Value for placeholder agency_id in attribute subject
             _route_tag (str): Value for placeholder route_tag in attribute subject
             _stop_or_vehicle_id (str): Value for placeholder stop_or_vehicle_id in attribute subject
-            _timestamp (str): Value for placeholder timestamp in attribute time
             data (Schedule): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -832,7 +862,7 @@ class NextbusAmqpProducer:
             "subject":
             "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id),
             "time":
-            None,  # Will be auto-generated
+            "{timestamp}",
         }
         
         # Remove None values
@@ -863,6 +893,9 @@ class NextbusAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id)
 
@@ -871,6 +904,15 @@ class NextbusAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
@@ -883,7 +925,6 @@ class NextbusAmqpProducer:
         _agency_id: str,
         _route_tag: str,
         _stop_or_vehicle_id: str,
-        _timestamp: str,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `nextbus.Schedule.amqp` messages
@@ -893,7 +934,6 @@ class NextbusAmqpProducer:
             _agency_id (str): Value for placeholder agency_id in attribute subject
             _route_tag (str): Value for placeholder route_tag in attribute subject
             _stop_or_vehicle_id (str): Value for placeholder stop_or_vehicle_id in attribute subject
-            _timestamp (str): Value for placeholder timestamp in attribute time
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -902,7 +942,6 @@ class NextbusAmqpProducer:
                 _agency_id=_agency_id,
                 _route_tag=_route_tag,
                 _stop_or_vehicle_id=_stop_or_vehicle_id,
-                _timestamp=_timestamp,
                 content_type=content_type)
     
     
@@ -911,7 +950,6 @@ class NextbusAmqpProducer:
         _agency_id: str,
         _route_tag: str,
         _stop_or_vehicle_id: str,
-        _timestamp: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `nextbus.Message.amqp` message
@@ -921,7 +959,6 @@ class NextbusAmqpProducer:
             _agency_id (str): Value for placeholder agency_id in attribute subject
             _route_tag (str): Value for placeholder route_tag in attribute subject
             _stop_or_vehicle_id (str): Value for placeholder stop_or_vehicle_id in attribute subject
-            _timestamp (str): Value for placeholder timestamp in attribute time
             data (Message): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -934,7 +971,7 @@ class NextbusAmqpProducer:
             "subject":
             "{agency_id}/{route_tag}/message/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id),
             "time":
-            None,  # Will be auto-generated
+            "{timestamp}",
         }
         
         # Remove None values
@@ -965,6 +1002,9 @@ class NextbusAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{agency_id}/{route_tag}/message/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id)
 
@@ -973,6 +1013,15 @@ class NextbusAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{agency_id}/{route_tag}/message/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
@@ -985,7 +1034,6 @@ class NextbusAmqpProducer:
         _agency_id: str,
         _route_tag: str,
         _stop_or_vehicle_id: str,
-        _timestamp: str,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `nextbus.Message.amqp` messages
@@ -995,7 +1043,6 @@ class NextbusAmqpProducer:
             _agency_id (str): Value for placeholder agency_id in attribute subject
             _route_tag (str): Value for placeholder route_tag in attribute subject
             _stop_or_vehicle_id (str): Value for placeholder stop_or_vehicle_id in attribute subject
-            _timestamp (str): Value for placeholder timestamp in attribute time
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1004,7 +1051,6 @@ class NextbusAmqpProducer:
                 _agency_id=_agency_id,
                 _route_tag=_route_tag,
                 _stop_or_vehicle_id=_stop_or_vehicle_id,
-                _timestamp=_timestamp,
                 content_type=content_type)
     
     

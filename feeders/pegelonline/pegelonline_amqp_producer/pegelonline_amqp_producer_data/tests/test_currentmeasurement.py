@@ -9,9 +9,9 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from pegelonline_amqp_producer_data.de.wsv.pegelonline.currentmeasurement import CurrentMeasurement
-from pegelonline_amqp_producer_data.de.wsv.pegelonline.statemnwmhwenum import StateMnwMhwEnum
-from pegelonline_amqp_producer_data.de.wsv.pegelonline.trendenum import TrendEnum
 from pegelonline_amqp_producer_data.de.wsv.pegelonline.statenswhswenum import StateNswHswEnum
+from pegelonline_amqp_producer_data.de.wsv.pegelonline.trendenum import TrendEnum
+from pegelonline_amqp_producer_data.de.wsv.pegelonline.statemnwmhwenum import StateMnwMhwEnum
 import datetime
 
 
@@ -32,9 +32,9 @@ class Test_CurrentMeasurement(unittest.TestCase):
         Create instance of CurrentMeasurement for testing
         """
         instance = CurrentMeasurement(
-            station_id='fjteqljlkvwbfgmtaxsk',
+            station_id='snpdzjlokjukgsazmsxq',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(68.22003062311794),
+            value=float(92.08288387236927),
             stateMnwMhw=StateMnwMhwEnum.low,
             stateNswHsw=StateNswHswEnum.normal,
             trend=TrendEnum.VALUE_NEG_1
@@ -46,7 +46,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'fjteqljlkvwbfgmtaxsk'
+        test_value = 'snpdzjlokjukgsazmsxq'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -62,7 +62,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(68.22003062311794)
+        test_value = float(92.08288387236927)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -90,6 +90,15 @@ class Test_CurrentMeasurement(unittest.TestCase):
         self.instance.trend = test_value
         self.assertEqual(self.instance.trend, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = CurrentMeasurement.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

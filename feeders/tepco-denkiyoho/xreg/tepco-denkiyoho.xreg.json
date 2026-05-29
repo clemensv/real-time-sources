@@ -14,11 +14,11 @@
         "deployed": false,
         "options": {
           "topic": "tepco-denkiyoho",
-          "key": "jp.tepco.denkiyoho/{date}/{time}"
+          "key": "{area_code}"
         }
       },
       "messagegroups": [
-        "#/messagegroups/JP.TEPCO.Denkiyoho"
+        "#/messagegroups/JP.TEPCO.Denkiyoho.kafka"
       ]
     },
     "JP.TEPCO.Denkiyoho.Mqtt": {
@@ -86,7 +86,7 @@
               "type": "uritemplate"
             },
             "subject": {
-              "value": "jp.tepco.denkiyoho/{date}/{time}",
+              "value": "{area_code}",
               "type": "uritemplate"
             }
           },
@@ -106,7 +106,7 @@
               "type": "uritemplate"
             },
             "subject": {
-              "value": "jp.tepco.denkiyoho/{date}/{time}",
+              "value": "{area_code}",
               "type": "uritemplate"
             }
           },
@@ -126,7 +126,7 @@
               "type": "uritemplate"
             },
             "subject": {
-              "value": "jp.tepco.denkiyoho/{date}/{time}",
+              "value": "{area_code}",
               "type": "uritemplate"
             }
           },
@@ -146,7 +146,7 @@
               "type": "uritemplate"
             },
             "subject": {
-              "value": "jp.tepco.denkiyoho/{date}/{time}",
+              "value": "{area_code}",
               "type": "uritemplate"
             }
           },
@@ -171,6 +171,50 @@
           },
           "dataschemaformat": "JsonStructure/draft-02",
           "dataschemauri": "#/schemagroups/jp.tepco.denkiyoho.jstruct/schemas/JP.TEPCO.Denkiyoho.Info"
+        }
+      }
+    },
+    "JP.TEPCO.Denkiyoho.kafka": {
+      "messages": {
+        "JP.TEPCO.Denkiyoho.kafka.SupplyCapacity": {
+          "name": "SupplyCapacity",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.SupplyCapacity",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{area_code}"
+          }
+        },
+        "JP.TEPCO.Denkiyoho.kafka.PeakDemandForecast": {
+          "name": "PeakDemandForecast",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.PeakDemandForecast",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{area_code}"
+          }
+        },
+        "JP.TEPCO.Denkiyoho.kafka.DemandActual": {
+          "name": "DemandActual",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandActual",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{area_code}"
+          }
+        },
+        "JP.TEPCO.Denkiyoho.kafka.DemandForecast": {
+          "name": "DemandForecast",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/jp.tepco.denkiyoho.DemandForecast",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{area_code}"
+          }
+        },
+        "JP.TEPCO.Denkiyoho.kafka.Info": {
+          "name": "Info",
+          "basemessageuri": "/messagegroups/JP.TEPCO.Denkiyoho/messages/JP.TEPCO.Denkiyoho.Info",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{area_code}"
+          }
         }
       }
     },
@@ -241,14 +285,14 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "jp.tepco.denkiyoho/{date}/{time}",
-                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+                "description": "AMQP transport subject retained on the existing date/time template; Kafka partitioning and CloudEvent subjects use the stable area_code identity."
               }
             },
             "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "jp.tepco.denkiyoho/{date}/{time}",
-                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+                "description": "AMQP transport partition key retained on the existing date/time template; Kafka partitioning and CloudEvent subjects use the stable area_code identity."
               }
             }
           }
@@ -262,14 +306,14 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "jp.tepco.denkiyoho/{date}/{time}",
-                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+                "description": "AMQP transport subject retained on the existing date/time template; Kafka partitioning and CloudEvent subjects use the stable area_code identity."
               }
             },
             "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "jp.tepco.denkiyoho/{date}/{time}",
-                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+                "description": "AMQP transport partition key retained on the existing date/time template; Kafka partitioning and CloudEvent subjects use the stable area_code identity."
               }
             }
           }
@@ -283,14 +327,14 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "jp.tepco.denkiyoho/{date}/{time}",
-                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+                "description": "AMQP transport subject retained on the existing date/time template; Kafka partitioning and CloudEvent subjects use the stable area_code identity."
               }
             },
             "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "jp.tepco.denkiyoho/{date}/{time}",
-                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+                "description": "AMQP transport partition key retained on the existing date/time template; Kafka partitioning and CloudEvent subjects use the stable area_code identity."
               }
             }
           }
@@ -304,14 +348,14 @@
               "subject": {
                 "type": "uritemplate",
                 "value": "jp.tepco.denkiyoho/{date}/{time}",
-                "description": "AMQP subject matching the CloudEvent subject and Kafka key."
+                "description": "AMQP transport subject retained on the existing date/time template; Kafka partitioning and CloudEvent subjects use the stable area_code identity."
               }
             },
             "message-annotations": {
               "x-opt-partition-key": {
                 "type": "uritemplate",
                 "value": "jp.tepco.denkiyoho/{date}/{time}",
-                "description": "AMQP partition key matching the CloudEvent subject and Kafka key."
+                "description": "AMQP transport partition key retained on the existing date/time template; Kafka partitioning and CloudEvent subjects use the stable area_code identity."
               }
             }
           }
@@ -369,7 +413,7 @@
                             },
                             "time": {
                               "type": "string",
-                              "description": "Stable subject and Kafka key time component. Supply capacity is daily reference data rather than a point-in-time demand measurement, so the bridge sets this field to the sentinel value _supply_capacity_ while using the same jp.tepco.denkiyoho/{date}/{time} key model as demand events.",
+                              "description": "Record time component retained in the payload for dedupe and downstream interpretation. Supply capacity is daily reference data rather than a point-in-time demand measurement, so the bridge sets this field to the sentinel value _supply_capacity_ while Kafka partitioning and CloudEvent subjects use the stable area_code identity.",
                               "pattern": "^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$"
                             },
                             "peak_supply_capacity_mw": {
@@ -499,7 +543,7 @@
                             },
                             "time": {
                               "type": "string",
-                              "description": "Stable subject and Kafka key time component for the section 2 peak-demand forecast. The bridge sets this field to the sentinel value _peak_forecast_ so the daily peak forecast shares the same jp.tepco.denkiyoho/{date}/{time} key model as the other TEPCO events without pretending to be an hourly measurement.",
+                              "description": "Record time component retained in the payload for the section 2 peak-demand forecast. The bridge sets this field to the sentinel value _peak_forecast_ so the daily peak forecast remains distinguishable without pretending to be an hourly measurement; Kafka partitioning and CloudEvent subjects use the stable area_code identity.",
                               "pattern": "^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$"
                             },
                             "peak_demand_forecast_mw": {

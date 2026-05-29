@@ -181,7 +181,6 @@ Nextbus VehiclePosition event.
 - `_agency_id` (str): Value for placeholder agency_id in attribute subject
 - `_route_tag` (str): Value for placeholder route_tag in attribute subject
 - `_vehicle_id` (str): Value for placeholder vehicle_id in attribute subject
-- `_timestamp` (str): Value for placeholder timestamp in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_amqp_batch()`
@@ -193,7 +192,6 @@ Send multiple Amqp messages in sequence.
 - `_agency_id` (str): Value for placeholder agency_id in attribute subject
 - `_route_tag` (str): Value for placeholder route_tag in attribute subject
 - `_vehicle_id` (str): Value for placeholder vehicle_id in attribute subject
-- `_timestamp` (str): Value for placeholder timestamp in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -206,7 +204,6 @@ Nextbus RouteConfig event.
 - `_agency_id` (str): Value for placeholder agency_id in attribute subject
 - `_route_tag` (str): Value for placeholder route_tag in attribute subject
 - `_stop_or_vehicle_id` (str): Value for placeholder stop_or_vehicle_id in attribute subject
-- `_timestamp` (str): Value for placeholder timestamp in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_amqp_batch()`
@@ -218,7 +215,6 @@ Send multiple Amqp messages in sequence.
 - `_agency_id` (str): Value for placeholder agency_id in attribute subject
 - `_route_tag` (str): Value for placeholder route_tag in attribute subject
 - `_stop_or_vehicle_id` (str): Value for placeholder stop_or_vehicle_id in attribute subject
-- `_timestamp` (str): Value for placeholder timestamp in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -231,7 +227,6 @@ Nextbus Schedule event.
 - `_agency_id` (str): Value for placeholder agency_id in attribute subject
 - `_route_tag` (str): Value for placeholder route_tag in attribute subject
 - `_stop_or_vehicle_id` (str): Value for placeholder stop_or_vehicle_id in attribute subject
-- `_timestamp` (str): Value for placeholder timestamp in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_amqp_batch()`
@@ -243,7 +238,6 @@ Send multiple Amqp messages in sequence.
 - `_agency_id` (str): Value for placeholder agency_id in attribute subject
 - `_route_tag` (str): Value for placeholder route_tag in attribute subject
 - `_stop_or_vehicle_id` (str): Value for placeholder stop_or_vehicle_id in attribute subject
-- `_timestamp` (str): Value for placeholder timestamp in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -256,7 +250,6 @@ Nextbus Message event.
 - `_agency_id` (str): Value for placeholder agency_id in attribute subject
 - `_route_tag` (str): Value for placeholder route_tag in attribute subject
 - `_stop_or_vehicle_id` (str): Value for placeholder stop_or_vehicle_id in attribute subject
-- `_timestamp` (str): Value for placeholder timestamp in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_amqp_batch()`
@@ -268,7 +261,6 @@ Send multiple Amqp messages in sequence.
 - `_agency_id` (str): Value for placeholder agency_id in attribute subject
 - `_route_tag` (str): Value for placeholder route_tag in attribute subject
 - `_stop_or_vehicle_id` (str): Value for placeholder stop_or_vehicle_id in attribute subject
-- `_timestamp` (str): Value for placeholder timestamp in attribute time
 - `content_type` (str): Content type of the message data
 
 

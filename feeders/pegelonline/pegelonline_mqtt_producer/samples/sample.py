@@ -39,18 +39,14 @@ import signal
 from pegelonline_mqtt_producer_data import *
 from pegelonline_mqtt_producer_mqtt_client.client import DeWsvPegelonlineMqttProducer, DeWsvPegelonlineMqttDispatcher
 
-async def handle_de_wsv_pegelonline_mqtt_station(mqtt_msg,cloud_event, de_wsv_pegelonline_mqtt_station_data):
+async def handle_de_wsv_pegelonline_mqtt_station(mqtt_msg,de_wsv_pegelonline_mqtt_station_data):
     """ Handles the de.wsv.pegelonline.mqtt.Station message """
     print(f"Received de.wsv.pegelonline.mqtt.Station on topic {mqtt_msg.topic}")
-    if cloud_event:
-        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
     print(f"  Data: {de_wsv_pegelonline_mqtt_station_data}")
 
-async def handle_de_wsv_pegelonline_mqtt_current_measurement(mqtt_msg,cloud_event, de_wsv_pegelonline_mqtt_current_measurement_data):
+async def handle_de_wsv_pegelonline_mqtt_current_measurement(mqtt_msg,de_wsv_pegelonline_mqtt_current_measurement_data):
     """ Handles the de.wsv.pegelonline.mqtt.CurrentMeasurement message """
     print(f"Received de.wsv.pegelonline.mqtt.CurrentMeasurement on topic {mqtt_msg.topic}")
-    if cloud_event:
-        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
     print(f"  Data: {de_wsv_pegelonline_mqtt_current_measurement_data}")
 
 async def main(broker_host, broker_port, topic, username=None, password=None):

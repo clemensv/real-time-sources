@@ -1,4 +1,4 @@
-from .jp import DemandActual, PeakDemandForecast, DemandForecast, SupplyCapacity
+from .jp import DemandActual, DemandForecast, PeakDemandForecast, SupplyCapacity
 from .info import Info
 
-__all__ = ["DemandActual", "PeakDemandForecast", "DemandForecast", "SupplyCapacity", "Info"]
+__all__ = ["DemandActual", "DemandForecast", "PeakDemandForecast", "SupplyCapacity", "Info"]

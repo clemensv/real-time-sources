@@ -1,6 +1,6 @@
 ---
 name: xreg-source-contract
-description: "Use when designing or changing event contracts for this repo. Covers mandatory upstream schema review, required JSON Structure Core and extension-spec study, exhaustive field descriptions from upstream docs, CloudEvents modeling, xreg message groups, stable subject and Kafka key selection, JsonStructure extension usage, regeneration with xrcg 0.10.1, and EVENTS.md refresh."
+description: "Use when designing or changing event contracts for this repo. Covers mandatory upstream schema review, required JSON Structure Core and extension-spec study, exhaustive field descriptions from upstream docs, CloudEvents modeling, xreg message groups, stable subject and Kafka key selection, JsonStructure extension usage, regeneration with xrcg 0.10.7, and EVENTS.md refresh."
 argument-hint: "Describe the source, event families, stable identifier shape, and whether multiple families share one identity or need separate message groups."
 ---
 

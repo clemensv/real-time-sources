@@ -13,7 +13,7 @@ from tepco_denkiyoho_producer_data import DemandActual
 from tepco_denkiyoho_producer_data import DemandForecast
 from tepco_denkiyoho_producer_data import Info
 
-class JPTEPCODenkiyohoEventProducer:
+class JPTEPCODenkiyohoKafkaEventProducer:
     def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
         """
         Initializes the Kafka producer
@@ -44,25 +44,24 @@ class JPTEPCODenkiyohoEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_jp_tepco_denkiyoho_supply_capacity(self,_feedurl : str, _date : str, _time : str, data: SupplyCapacity, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, SupplyCapacity], str]=None) -> None:
+    def send_jp_tepco_denkiyoho_kafka_supply_capacity(self,_feedurl : str, _area_code : str, data: SupplyCapacity, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, SupplyCapacity], str]=None) -> None:
         """
-        Sends the 'jp.tepco.denkiyoho.SupplyCapacity' event to the Kafka topic
+        Sends the 'JP.TEPCO.Denkiyoho.kafka.SupplyCapacity' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
-            _date(str):  Value for placeholder date in attribute subject
-            _time(str):  Value for placeholder time in attribute subject
+            _area_code(str):  Value for placeholder area_code in attribute subject
             data: (SupplyCapacity): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, SupplyCapacity], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration 'jp.tepco.denkiyoho/{date}/{time}'
+                The default key is derived from the xRegistry Kafka key declaration '{area_code}'
         """
-        kafka_key = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        kafka_key = "{area_code}".format(area_code=_area_code)
         attributes = {
              "type":"JP.TEPCO.Denkiyoho.SupplyCapacity",
              "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = _date,time = _time)
+             "subject":"{area_code}".format(area_code = _area_code)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -78,25 +77,24 @@ class JPTEPCODenkiyohoEventProducer:
             self.producer.flush()
 
 
-    def send_jp_tepco_denkiyoho_peak_demand_forecast(self,_feedurl : str, _date : str, _time : str, data: PeakDemandForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PeakDemandForecast], str]=None) -> None:
+    def send_jp_tepco_denkiyoho_kafka_peak_demand_forecast(self,_feedurl : str, _area_code : str, data: PeakDemandForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PeakDemandForecast], str]=None) -> None:
         """
-        Sends the 'jp.tepco.denkiyoho.PeakDemandForecast' event to the Kafka topic
+        Sends the 'JP.TEPCO.Denkiyoho.kafka.PeakDemandForecast' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
-            _date(str):  Value for placeholder date in attribute subject
-            _time(str):  Value for placeholder time in attribute subject
+            _area_code(str):  Value for placeholder area_code in attribute subject
             data: (PeakDemandForecast): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, PeakDemandForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration 'jp.tepco.denkiyoho/{date}/{time}'
+                The default key is derived from the xRegistry Kafka key declaration '{area_code}'
         """
-        kafka_key = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        kafka_key = "{area_code}".format(area_code=_area_code)
         attributes = {
              "type":"JP.TEPCO.Denkiyoho.PeakDemandForecast",
              "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = _date,time = _time)
+             "subject":"{area_code}".format(area_code = _area_code)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -112,25 +110,24 @@ class JPTEPCODenkiyohoEventProducer:
             self.producer.flush()
 
 
-    def send_jp_tepco_denkiyoho_demand_actual(self,_feedurl : str, _date : str, _time : str, data: DemandActual, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DemandActual], str]=None) -> None:
+    def send_jp_tepco_denkiyoho_kafka_demand_actual(self,_feedurl : str, _area_code : str, data: DemandActual, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DemandActual], str]=None) -> None:
         """
-        Sends the 'jp.tepco.denkiyoho.DemandActual' event to the Kafka topic
+        Sends the 'JP.TEPCO.Denkiyoho.kafka.DemandActual' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
-            _date(str):  Value for placeholder date in attribute subject
-            _time(str):  Value for placeholder time in attribute subject
+            _area_code(str):  Value for placeholder area_code in attribute subject
             data: (DemandActual): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, DemandActual], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration 'jp.tepco.denkiyoho/{date}/{time}'
+                The default key is derived from the xRegistry Kafka key declaration '{area_code}'
         """
-        kafka_key = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        kafka_key = "{area_code}".format(area_code=_area_code)
         attributes = {
              "type":"JP.TEPCO.Denkiyoho.DemandActual",
              "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = _date,time = _time)
+             "subject":"{area_code}".format(area_code = _area_code)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -146,25 +143,24 @@ class JPTEPCODenkiyohoEventProducer:
             self.producer.flush()
 
 
-    def send_jp_tepco_denkiyoho_demand_forecast(self,_feedurl : str, _date : str, _time : str, data: DemandForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DemandForecast], str]=None) -> None:
+    def send_jp_tepco_denkiyoho_kafka_demand_forecast(self,_feedurl : str, _area_code : str, data: DemandForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DemandForecast], str]=None) -> None:
         """
-        Sends the 'jp.tepco.denkiyoho.DemandForecast' event to the Kafka topic
+        Sends the 'JP.TEPCO.Denkiyoho.kafka.DemandForecast' event to the Kafka topic
 
         Args:
             _feedurl(str):  Value for placeholder feedurl in attribute source
-            _date(str):  Value for placeholder date in attribute subject
-            _time(str):  Value for placeholder time in attribute subject
+            _area_code(str):  Value for placeholder area_code in attribute subject
             data: (DemandForecast): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, DemandForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration 'jp.tepco.denkiyoho/{date}/{time}'
+                The default key is derived from the xRegistry Kafka key declaration '{area_code}'
         """
-        kafka_key = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        kafka_key = "{area_code}".format(area_code=_area_code)
         attributes = {
              "type":"JP.TEPCO.Denkiyoho.DemandForecast",
              "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = _date,time = _time)
+             "subject":"{area_code}".format(area_code = _area_code)
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -180,21 +176,19 @@ class JPTEPCODenkiyohoEventProducer:
             self.producer.flush()
 
 
-    def send_jp_tepco_denkiyoho_info(self,_area_code : str, _date: str, _time: str, data: Info, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Info], str]=None) -> None:
+    def send_jp_tepco_denkiyoho_kafka_info(self,_area_code : str, data: Info, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Info], str]=None) -> None:
         """
-        Sends the 'JP.TEPCO.Denkiyoho.Info' event to the Kafka topic
+        Sends the 'JP.TEPCO.Denkiyoho.kafka.Info' event to the Kafka topic
 
         Args:
             _area_code(str):  Value for placeholder area_code in attribute subject
-            _date(str): Value for Kafka key placeholder 'date'
-            _time(str): Value for Kafka key placeholder 'time'
             data: (Info): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Info], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration 'jp.tepco.denkiyoho/{date}/{time}'
+                The default key is derived from the xRegistry Kafka key declaration '{area_code}'
         """
-        kafka_key = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        kafka_key = "{area_code}".format(area_code=_area_code)
         attributes = {
              "type":"JP.TEPCO.Denkiyoho.Info",
              "source":"https://github.com/clemensv/real-time-sources",
@@ -244,497 +238,7 @@ class JPTEPCODenkiyohoEventProducer:
         return config_dict, kafka_topic
 
     @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'JPTEPCODenkiyohoEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
-
-
-
-class JPTEPCODenkiyohoMqttEventProducer:
-    def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
-        """
-        Initializes the Kafka producer
-
-        Args:
-            producer (Producer): The Kafka producer client
-            topic (str): The Kafka topic to send events to
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-        """
-        self.producer = producer
-        self.topic = topic
-        self.content_mode = content_mode
-
-    @staticmethod
-    def __key_mapper(x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str], default_key: typing.Optional[str] = None) -> typing.Optional[str]:
-        """
-        Maps a CloudEvent to a Kafka key
-
-        Args:
-            x (CloudEvent): The CloudEvent to map
-            m (Any): The event data
-            key_mapper (Callable[[CloudEvent, Any], str]): The user's key mapper function
-            default_key (Optional[str]): The resolved key from the xRegistry model declaration
-        """
-        if key_mapper:
-            return key_mapper(x, m)
-        elif default_key is not None:
-            return default_key
-        return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
-
-    def send_jp_tepco_denkiyoho_mqtt_supply_capacity(self,_feedurl : str, _date : str, _time : str, data: SupplyCapacity, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, SupplyCapacity], str]=None) -> None:
-        """
-        Sends the 'JP.TEPCO.Denkiyoho.mqtt.SupplyCapacity' event to the Kafka topic
-
-        Args:
-            _feedurl(str):  Value for placeholder feedurl in attribute source
-            _date(str):  Value for placeholder date in attribute subject
-            _time(str):  Value for placeholder time in attribute subject
-            data: (SupplyCapacity): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, SupplyCapacity], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"JP.TEPCO.Denkiyoho.SupplyCapacity",
-             "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = _date,time = _time)
-        }
-        attributes["datacontenttype"] = content_type
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    def send_jp_tepco_denkiyoho_mqtt_peak_demand_forecast(self,_feedurl : str, _date : str, _time : str, data: PeakDemandForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PeakDemandForecast], str]=None) -> None:
-        """
-        Sends the 'JP.TEPCO.Denkiyoho.mqtt.PeakDemandForecast' event to the Kafka topic
-
-        Args:
-            _feedurl(str):  Value for placeholder feedurl in attribute source
-            _date(str):  Value for placeholder date in attribute subject
-            _time(str):  Value for placeholder time in attribute subject
-            data: (PeakDemandForecast): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, PeakDemandForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"JP.TEPCO.Denkiyoho.PeakDemandForecast",
-             "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = _date,time = _time)
-        }
-        attributes["datacontenttype"] = content_type
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    def send_jp_tepco_denkiyoho_mqtt_demand_actual(self,_feedurl : str, _date : str, _time : str, data: DemandActual, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DemandActual], str]=None) -> None:
-        """
-        Sends the 'JP.TEPCO.Denkiyoho.mqtt.DemandActual' event to the Kafka topic
-
-        Args:
-            _feedurl(str):  Value for placeholder feedurl in attribute source
-            _date(str):  Value for placeholder date in attribute subject
-            _time(str):  Value for placeholder time in attribute subject
-            data: (DemandActual): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, DemandActual], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"JP.TEPCO.Denkiyoho.DemandActual",
-             "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = _date,time = _time)
-        }
-        attributes["datacontenttype"] = content_type
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    def send_jp_tepco_denkiyoho_mqtt_demand_forecast(self,_feedurl : str, _date : str, _time : str, data: DemandForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DemandForecast], str]=None) -> None:
-        """
-        Sends the 'JP.TEPCO.Denkiyoho.mqtt.DemandForecast' event to the Kafka topic
-
-        Args:
-            _feedurl(str):  Value for placeholder feedurl in attribute source
-            _date(str):  Value for placeholder date in attribute subject
-            _time(str):  Value for placeholder time in attribute subject
-            data: (DemandForecast): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, DemandForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"JP.TEPCO.Denkiyoho.DemandForecast",
-             "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = _date,time = _time)
-        }
-        attributes["datacontenttype"] = content_type
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    def send_jp_tepco_denkiyoho_mqtt_info(self,_area_code : str, data: Info, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Info], str]=None) -> None:
-        """
-        Sends the 'JP.TEPCO.Denkiyoho.mqtt.Info' event to the Kafka topic
-
-        Args:
-            _area_code(str):  Value for placeholder area_code in attribute subject
-            data: (Info): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, Info], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"JP.TEPCO.Denkiyoho.Info",
-             "source":"https://github.com/clemensv/real-time-sources",
-             "subject":"{area_code}".format(area_code = _area_code)
-        }
-        attributes["datacontenttype"] = content_type
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'JPTEPCODenkiyohoMqttEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
-
-
-
-class JPTEPCODenkiyohoAmqpEventProducer:
-    def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
-        """
-        Initializes the Kafka producer
-
-        Args:
-            producer (Producer): The Kafka producer client
-            topic (str): The Kafka topic to send events to
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-        """
-        self.producer = producer
-        self.topic = topic
-        self.content_mode = content_mode
-
-    @staticmethod
-    def __key_mapper(x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str], default_key: typing.Optional[str] = None) -> typing.Optional[str]:
-        """
-        Maps a CloudEvent to a Kafka key
-
-        Args:
-            x (CloudEvent): The CloudEvent to map
-            m (Any): The event data
-            key_mapper (Callable[[CloudEvent, Any], str]): The user's key mapper function
-            default_key (Optional[str]): The resolved key from the xRegistry model declaration
-        """
-        if key_mapper:
-            return key_mapper(x, m)
-        elif default_key is not None:
-            return default_key
-        return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
-
-    def send_jp_tepco_denkiyoho_amqp_supply_capacity(self,_feedurl : str, _date : str, _time : str, data: SupplyCapacity, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, SupplyCapacity], str]=None) -> None:
-        """
-        Sends the 'JP.TEPCO.Denkiyoho.amqp.SupplyCapacity' event to the Kafka topic
-
-        Args:
-            _feedurl(str):  Value for placeholder feedurl in attribute source
-            _date(str):  Value for placeholder date in attribute subject
-            _time(str):  Value for placeholder time in attribute subject
-            data: (SupplyCapacity): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, SupplyCapacity], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"JP.TEPCO.Denkiyoho.SupplyCapacity",
-             "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = _date,time = _time)
-        }
-        attributes["datacontenttype"] = content_type
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    def send_jp_tepco_denkiyoho_amqp_peak_demand_forecast(self,_feedurl : str, _date : str, _time : str, data: PeakDemandForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PeakDemandForecast], str]=None) -> None:
-        """
-        Sends the 'JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast' event to the Kafka topic
-
-        Args:
-            _feedurl(str):  Value for placeholder feedurl in attribute source
-            _date(str):  Value for placeholder date in attribute subject
-            _time(str):  Value for placeholder time in attribute subject
-            data: (PeakDemandForecast): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, PeakDemandForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"JP.TEPCO.Denkiyoho.PeakDemandForecast",
-             "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = _date,time = _time)
-        }
-        attributes["datacontenttype"] = content_type
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    def send_jp_tepco_denkiyoho_amqp_demand_actual(self,_feedurl : str, _date : str, _time : str, data: DemandActual, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DemandActual], str]=None) -> None:
-        """
-        Sends the 'JP.TEPCO.Denkiyoho.amqp.DemandActual' event to the Kafka topic
-
-        Args:
-            _feedurl(str):  Value for placeholder feedurl in attribute source
-            _date(str):  Value for placeholder date in attribute subject
-            _time(str):  Value for placeholder time in attribute subject
-            data: (DemandActual): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, DemandActual], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"JP.TEPCO.Denkiyoho.DemandActual",
-             "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = _date,time = _time)
-        }
-        attributes["datacontenttype"] = content_type
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    def send_jp_tepco_denkiyoho_amqp_demand_forecast(self,_feedurl : str, _date : str, _time : str, data: DemandForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DemandForecast], str]=None) -> None:
-        """
-        Sends the 'JP.TEPCO.Denkiyoho.amqp.DemandForecast' event to the Kafka topic
-
-        Args:
-            _feedurl(str):  Value for placeholder feedurl in attribute source
-            _date(str):  Value for placeholder date in attribute subject
-            _time(str):  Value for placeholder time in attribute subject
-            data: (DemandForecast): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, DemandForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"JP.TEPCO.Denkiyoho.DemandForecast",
-             "source":"{feedurl}".format(feedurl = _feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = _date,time = _time)
-        }
-        attributes["datacontenttype"] = content_type
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    def send_jp_tepco_denkiyoho_amqp_info(self,_area_code : str, data: Info, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Info], str]=None) -> None:
-        """
-        Sends the 'JP.TEPCO.Denkiyoho.amqp.Info' event to the Kafka topic
-
-        Args:
-            _area_code(str):  Value for placeholder area_code in attribute subject
-            data: (Info): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, Info], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"JP.TEPCO.Denkiyoho.Info",
-             "source":"https://github.com/clemensv/real-time-sources",
-             "subject":"{area_code}".format(area_code = _area_code)
-        }
-        attributes["datacontenttype"] = content_type
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'JPTEPCODenkiyohoAmqpEventProducer':
+    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'JPTEPCODenkiyohoKafkaEventProducer':
         """
         Create a Kafka producer from a connection string and a topic name.
 

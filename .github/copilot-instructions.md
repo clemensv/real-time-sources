@@ -33,7 +33,7 @@ in its own top-level directory.
    and produce a keep/drop list before designing the contract.
 2. **xRegistry contract** — Author the `xreg/<source>.xreg.json` manifest.
 3. **Generate producer** — Run `generate_producer.ps1` (which calls
-   `xrcg 0.10.1`). Never hand-edit the generated output.
+   `xrcg 0.10.7`). Never hand-edit the generated output.
 4. **Runtime bridge** — Implement the bridge code that polls, streams, or
    decodes upstream data and emits CloudEvents via the generated producer.
 5. **Tests** — Unit and integration tests under `tests/`.
@@ -80,8 +80,8 @@ observations), `noaa-ndbc` (buoy stations).
 
 ## Producer Generation
 
-- The generator is **xrcg 0.10.1**. Install with
-  `pip install --upgrade xrcg==0.10.1`.
+- The generator is **xrcg 0.10.7**. Install with
+  `pip install --upgrade xrcg==0.10.7`.
 - Each source has `generate_producer.ps1` which calls
   `tools/require-xrcg.ps1` and then runs:\
   `xrcg generate --style kafkaproducer --language py --definitions xreg/<source>.xreg.json --projectname <source>_producer --output <source>_producer`

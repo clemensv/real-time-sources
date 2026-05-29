@@ -17,8 +17,9 @@ import json
 import threading
 import queue
 import concurrent.futures
+from datetime import datetime, timezone
 from urllib.parse import quote_plus
-from proton import Message
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
@@ -36,7 +37,7 @@ import hmac
 import logging
 import time as _cbs_time
 from urllib.parse import quote
-from proton import Endpoint, symbol
+from proton import Endpoint
 from proton.handlers import MessagingHandler
 from proton.reactor import Container, AtLeastOnce
 
@@ -579,6 +580,23 @@ class JPTEPCODenkiyohoAmqpProducer:
         return payload
 
     @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
+
+    @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
         CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
@@ -604,6 +622,7 @@ class JPTEPCODenkiyohoAmqpProducer:
     def send_supply_capacity(self,
         data: SupplyCapacity,
         _feedurl: str,
+        _area_code: str,
         _date: str,
         _time: str,
         content_type: str = 'application/json') -> None:
@@ -613,8 +632,9 @@ class JPTEPCODenkiyohoAmqpProducer:
         
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
-            _date (str): Value for placeholder date in attribute subject
-            _time (str): Value for placeholder time in attribute subject
+            _area_code (str): Value for placeholder area_code in attribute subject
+            _date (str): Value for AMQP protocol option placeholder date
+            _time (str): Value for AMQP protocol option placeholder time
             data (SupplyCapacity): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -625,7 +645,7 @@ class JPTEPCODenkiyohoAmqpProducer:
             "source":
             "{feedurl}".format(feedurl=_feedurl),
             "subject":
-            "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time),
+            "{area_code}".format(area_code=_area_code),
         }
         
         # Remove None values
@@ -656,6 +676,9 @@ class JPTEPCODenkiyohoAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
 
@@ -664,6 +687,15 @@ class JPTEPCODenkiyohoAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
@@ -674,6 +706,7 @@ class JPTEPCODenkiyohoAmqpProducer:
     def send_supply_capacity_batch(self,
         data_array: typing.List[SupplyCapacity],
         _feedurl: str,
+        _area_code: str,
         _date: str,
         _time: str,
         content_type: str = 'application/json') -> None:
@@ -683,14 +716,16 @@ class JPTEPCODenkiyohoAmqpProducer:
         Args:
             data_array (typing.List[SupplyCapacity]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
-            _date (str): Value for placeholder date in attribute subject
-            _time (str): Value for placeholder time in attribute subject
+            _area_code (str): Value for placeholder area_code in attribute subject
+            _date (str): Value for AMQP protocol option placeholder date
+            _time (str): Value for AMQP protocol option placeholder time
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_supply_capacity(
                 data=data,
                 _feedurl=_feedurl,
+                _area_code=_area_code,
                 _date=_date,
                 _time=_time,
                 content_type=content_type)
@@ -699,6 +734,7 @@ class JPTEPCODenkiyohoAmqpProducer:
     def send_peak_demand_forecast(self,
         data: PeakDemandForecast,
         _feedurl: str,
+        _area_code: str,
         _date: str,
         _time: str,
         content_type: str = 'application/json') -> None:
@@ -708,8 +744,9 @@ class JPTEPCODenkiyohoAmqpProducer:
         
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
-            _date (str): Value for placeholder date in attribute subject
-            _time (str): Value for placeholder time in attribute subject
+            _area_code (str): Value for placeholder area_code in attribute subject
+            _date (str): Value for AMQP protocol option placeholder date
+            _time (str): Value for AMQP protocol option placeholder time
             data (PeakDemandForecast): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -720,7 +757,7 @@ class JPTEPCODenkiyohoAmqpProducer:
             "source":
             "{feedurl}".format(feedurl=_feedurl),
             "subject":
-            "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time),
+            "{area_code}".format(area_code=_area_code),
         }
         
         # Remove None values
@@ -751,6 +788,9 @@ class JPTEPCODenkiyohoAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
 
@@ -759,6 +799,15 @@ class JPTEPCODenkiyohoAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
@@ -769,6 +818,7 @@ class JPTEPCODenkiyohoAmqpProducer:
     def send_peak_demand_forecast_batch(self,
         data_array: typing.List[PeakDemandForecast],
         _feedurl: str,
+        _area_code: str,
         _date: str,
         _time: str,
         content_type: str = 'application/json') -> None:
@@ -778,14 +828,16 @@ class JPTEPCODenkiyohoAmqpProducer:
         Args:
             data_array (typing.List[PeakDemandForecast]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
-            _date (str): Value for placeholder date in attribute subject
-            _time (str): Value for placeholder time in attribute subject
+            _area_code (str): Value for placeholder area_code in attribute subject
+            _date (str): Value for AMQP protocol option placeholder date
+            _time (str): Value for AMQP protocol option placeholder time
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_peak_demand_forecast(
                 data=data,
                 _feedurl=_feedurl,
+                _area_code=_area_code,
                 _date=_date,
                 _time=_time,
                 content_type=content_type)
@@ -794,6 +846,7 @@ class JPTEPCODenkiyohoAmqpProducer:
     def send_demand_actual(self,
         data: DemandActual,
         _feedurl: str,
+        _area_code: str,
         _date: str,
         _time: str,
         content_type: str = 'application/json') -> None:
@@ -803,8 +856,9 @@ class JPTEPCODenkiyohoAmqpProducer:
         
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
-            _date (str): Value for placeholder date in attribute subject
-            _time (str): Value for placeholder time in attribute subject
+            _area_code (str): Value for placeholder area_code in attribute subject
+            _date (str): Value for AMQP protocol option placeholder date
+            _time (str): Value for AMQP protocol option placeholder time
             data (DemandActual): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -815,7 +869,7 @@ class JPTEPCODenkiyohoAmqpProducer:
             "source":
             "{feedurl}".format(feedurl=_feedurl),
             "subject":
-            "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time),
+            "{area_code}".format(area_code=_area_code),
         }
         
         # Remove None values
@@ -846,6 +900,9 @@ class JPTEPCODenkiyohoAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
 
@@ -854,6 +911,15 @@ class JPTEPCODenkiyohoAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
@@ -864,6 +930,7 @@ class JPTEPCODenkiyohoAmqpProducer:
     def send_demand_actual_batch(self,
         data_array: typing.List[DemandActual],
         _feedurl: str,
+        _area_code: str,
         _date: str,
         _time: str,
         content_type: str = 'application/json') -> None:
@@ -873,14 +940,16 @@ class JPTEPCODenkiyohoAmqpProducer:
         Args:
             data_array (typing.List[DemandActual]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
-            _date (str): Value for placeholder date in attribute subject
-            _time (str): Value for placeholder time in attribute subject
+            _area_code (str): Value for placeholder area_code in attribute subject
+            _date (str): Value for AMQP protocol option placeholder date
+            _time (str): Value for AMQP protocol option placeholder time
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_demand_actual(
                 data=data,
                 _feedurl=_feedurl,
+                _area_code=_area_code,
                 _date=_date,
                 _time=_time,
                 content_type=content_type)
@@ -889,6 +958,7 @@ class JPTEPCODenkiyohoAmqpProducer:
     def send_demand_forecast(self,
         data: DemandForecast,
         _feedurl: str,
+        _area_code: str,
         _date: str,
         _time: str,
         content_type: str = 'application/json') -> None:
@@ -898,8 +968,9 @@ class JPTEPCODenkiyohoAmqpProducer:
         
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
-            _date (str): Value for placeholder date in attribute subject
-            _time (str): Value for placeholder time in attribute subject
+            _area_code (str): Value for placeholder area_code in attribute subject
+            _date (str): Value for AMQP protocol option placeholder date
+            _time (str): Value for AMQP protocol option placeholder time
             data (DemandForecast): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -910,7 +981,7 @@ class JPTEPCODenkiyohoAmqpProducer:
             "source":
             "{feedurl}".format(feedurl=_feedurl),
             "subject":
-            "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time),
+            "{area_code}".format(area_code=_area_code),
         }
         
         # Remove None values
@@ -941,6 +1012,9 @@ class JPTEPCODenkiyohoAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
 
@@ -949,6 +1023,15 @@ class JPTEPCODenkiyohoAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
@@ -959,6 +1042,7 @@ class JPTEPCODenkiyohoAmqpProducer:
     def send_demand_forecast_batch(self,
         data_array: typing.List[DemandForecast],
         _feedurl: str,
+        _area_code: str,
         _date: str,
         _time: str,
         content_type: str = 'application/json') -> None:
@@ -968,14 +1052,16 @@ class JPTEPCODenkiyohoAmqpProducer:
         Args:
             data_array (typing.List[DemandForecast]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
-            _date (str): Value for placeholder date in attribute subject
-            _time (str): Value for placeholder time in attribute subject
+            _area_code (str): Value for placeholder area_code in attribute subject
+            _date (str): Value for AMQP protocol option placeholder date
+            _time (str): Value for AMQP protocol option placeholder time
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_demand_forecast(
                 data=data,
                 _feedurl=_feedurl,
+                _area_code=_area_code,
                 _date=_date,
                 _time=_time,
                 content_type=content_type)
@@ -1032,6 +1118,9 @@ class JPTEPCODenkiyohoAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{area_code}".format(area_code=_area_code)
 
@@ -1040,6 +1129,15 @@ class JPTEPCODenkiyohoAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{area_code}".format(area_code=_area_code)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:

@@ -1,44 +1,47 @@
 """ DemandActual dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+from marshmallow import fields
+import json
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class DemandActual:
     """
-    Actual electricity demand record from TEPCO Electricity Forecast.
-    Attributes:
-        date (str): Operating date in ISO 8601 calendar-date form.
-        time (str): JST HH:MM clock time and stable key component.
-        datetime (str): Measurement timestamp converted to UTC RFC 3339.
-        datetime_local (str): Measurement timestamp in JST RFC 3339.
-        actual_demand_mw (float): Actual electricity demand converted from 万kW to MW.
-        actual_demand_jp_unit_value (int): Original actual demand value in 万kW.
-        solar_generation_mw (typing.Optional[float]): Solar generation converted from 万kW to MW for five-minute rows.
-        solar_generation_jp_unit_value (typing.Optional[int]): Original solar generation value in 万kW for five-minute rows.
-        solar_share_pct (typing.Optional[float]): Solar generation percentage of electricity usage for five-minute rows.
-        usage_pct (typing.Optional[float]): Usage percentage for hourly rows.
-        supply_capacity_mw (typing.Optional[float]): Supply capacity converted from 万kW to MW for hourly rows.
-        supply_capacity_jp_unit_value (typing.Optional[int]): Original supply capacity value in 万kW for hourly rows.
-        area_code (str): Constant TEPCO area code."""
+    Telemetry schema for actual TEPCO electricity demand in the Tokyo Electric Power Company service area. Hourly rows from section 3 carry usage and supply-capacity context, while five-minute rows from section 5 carry solar generation context.
     
-    date: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date"))
+    Attributes:
+        date (datetime.date)
+        time (str)
+        datetime (datetime.datetime)
+        datetime_local (datetime.datetime)
+        actual_demand_mw (float)
+        actual_demand_jp_unit_value (int)
+        solar_generation_mw (typing.Optional[float])
+        solar_generation_jp_unit_value (typing.Optional[int])
+        solar_share_pct (typing.Optional[float])
+        usage_pct (typing.Optional[float])
+        supply_capacity_mw (typing.Optional[float])
+        supply_capacity_jp_unit_value (typing.Optional[int])
+        area_code (str)
+    """
+    
+    
+    date: datetime.date=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date"))
     time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time"))
-    datetime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="datetime"))
-    datetime_local: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="datetime_local"))
+    datetime: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="datetime", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    datetime_local: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="datetime_local", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     actual_demand_mw: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="actual_demand_mw"))
     actual_demand_jp_unit_value: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="actual_demand_jp_unit_value"))
     solar_generation_mw: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="solar_generation_mw"))
@@ -48,26 +51,6 @@ class DemandActual:
     supply_capacity_mw: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="supply_capacity_mw"))
     supply_capacity_jp_unit_value: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="supply_capacity_jp_unit_value"))
     area_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_code"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"DemandActual\", \"namespace\": \"jp.tepco.denkiyoho\", \"doc\": \"Actual electricity demand record from TEPCO Electricity Forecast.\", \"fields\": [{\"name\": \"date\", \"type\": \"string\", \"doc\": \"Operating date in ISO 8601 calendar-date form.\"}, {\"name\": \"time\", \"type\": \"string\", \"doc\": \"JST HH:MM clock time and stable key component.\"}, {\"name\": \"datetime\", \"type\": \"string\", \"doc\": \"Measurement timestamp converted to UTC RFC 3339.\"}, {\"name\": \"datetime_local\", \"type\": \"string\", \"doc\": \"Measurement timestamp in JST RFC 3339.\"}, {\"name\": \"actual_demand_mw\", \"type\": \"double\", \"doc\": \"Actual electricity demand converted from \u4e07kW to MW.\"}, {\"name\": \"actual_demand_jp_unit_value\", \"type\": \"int\", \"doc\": \"Original actual demand value in \u4e07kW.\"}, {\"name\": \"solar_generation_mw\", \"type\": [\"null\", \"double\"], \"doc\": \"Solar generation converted from \u4e07kW to MW for five-minute rows.\", \"default\": null}, {\"name\": \"solar_generation_jp_unit_value\", \"type\": [\"null\", \"int\"], \"doc\": \"Original solar generation value in \u4e07kW for five-minute rows.\", \"default\": null}, {\"name\": \"solar_share_pct\", \"type\": [\"null\", \"double\"], \"doc\": \"Solar generation percentage of electricity usage for five-minute rows.\", \"default\": null}, {\"name\": \"usage_pct\", \"type\": [\"null\", \"double\"], \"doc\": \"Usage percentage for hourly rows.\", \"default\": null}, {\"name\": \"supply_capacity_mw\", \"type\": [\"null\", \"double\"], \"doc\": \"Supply capacity converted from \u4e07kW to MW for hourly rows.\", \"default\": null}, {\"name\": \"supply_capacity_jp_unit_value\", \"type\": [\"null\", \"int\"], \"doc\": \"Original supply capacity value in \u4e07kW for hourly rows.\", \"default\": null}, {\"name\": \"area_code\", \"type\": \"string\", \"doc\": \"Constant TEPCO area code.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.date=str(self.date)
-        self.time=str(self.time)
-        self.datetime=str(self.datetime)
-        self.datetime_local=str(self.datetime_local)
-        self.actual_demand_mw=float(self.actual_demand_mw)
-        self.actual_demand_jp_unit_value=int(self.actual_demand_jp_unit_value)
-        self.solar_generation_mw=float(self.solar_generation_mw) if self.solar_generation_mw else None
-        self.solar_generation_jp_unit_value=int(self.solar_generation_jp_unit_value) if self.solar_generation_jp_unit_value else None
-        self.solar_share_pct=float(self.solar_share_pct) if self.solar_share_pct else None
-        self.usage_pct=float(self.usage_pct) if self.usage_pct else None
-        self.supply_capacity_mw=float(self.supply_capacity_mw) if self.supply_capacity_mw else None
-        self.supply_capacity_jp_unit_value=int(self.supply_capacity_jp_unit_value) if self.supply_capacity_jp_unit_value else None
-        self.area_code=str(self.area_code)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'DemandActual':
@@ -78,7 +61,7 @@ class DemandActual:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -97,7 +80,7 @@ class DemandActual:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -111,8 +94,6 @@ class DemandActual:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -125,12 +106,6 @@ class DemandActual:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -159,10 +134,6 @@ class DemandActual:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -188,18 +159,6 @@ class DemandActual:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return DemandActual.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -207,5 +166,28 @@ class DemandActual:
                 return DemandActual.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'DemandActual':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            date=datetime.date.today(),
+            time='dsahtgvovxbdzfrxkfyp',
+            datetime=datetime.datetime.now(datetime.timezone.utc),
+            datetime_local=datetime.datetime.now(datetime.timezone.utc),
+            actual_demand_mw=float(77.08152324319866),
+            actual_demand_jp_unit_value=int(34),
+            solar_generation_mw=float(37.959101934242135),
+            solar_generation_jp_unit_value=int(98),
+            solar_share_pct=float(70.29520418301958),
+            usage_pct=float(33.76372430659447),
+            supply_capacity_mw=float(36.33270367562046),
+            supply_capacity_jp_unit_value=int(45),
+            area_code='msnsnbdxbswpbbqnywkk'
+        )

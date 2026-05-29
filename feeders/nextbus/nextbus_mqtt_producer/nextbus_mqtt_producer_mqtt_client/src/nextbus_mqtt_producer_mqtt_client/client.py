@@ -392,7 +392,6 @@ class NextbusMqttMqttClient(_ClientBase):
         agency_id: str,
         route_tag: str,
         vehicle_id: str,
-        timestamp: str,
         event_type: str,
         stop_or_vehicle_id: str,
         data: nextbus_mqtt_producer_data.VehiclePosition,
@@ -408,7 +407,6 @@ class NextbusMqttMqttClient(_ClientBase):
             agency_id: URI template variable for 'agency_id'
             route_tag: URI template variable for 'route_tag'
             vehicle_id: URI template variable for 'vehicle_id'
-            timestamp: URI template variable for 'timestamp'
             event_type: URI template variable for 'event_type'
             stop_or_vehicle_id: URI template variable for 'stop_or_vehicle_id'
             data: The event data to be published.
@@ -423,7 +421,6 @@ class NextbusMqttMqttClient(_ClientBase):
             "agency_id": str(agency_id),
             "route_tag": str(route_tag),
             "vehicle_id": str(vehicle_id),
-            "timestamp": str(timestamp),
             "event_type": str(event_type),
             "stop_or_vehicle_id": str(stop_or_vehicle_id),
         }
@@ -434,7 +431,7 @@ class NextbusMqttMqttClient(_ClientBase):
              "type":"nextbus.VehiclePosition",
              "source":"https://retro.umoiq.com/service/publicXMLFeed",
              "subject":"{agency_id}/{route_tag}/vehicle/{vehicle_id}".format(agency_id = agency_id,route_tag = route_tag,vehicle_id = vehicle_id),
-             "time":"{timestamp}".format(timestamp = timestamp)
+             "time":"{timestamp}"
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -481,7 +478,6 @@ class NextbusMqttMqttClient(_ClientBase):
         agency_id: str,
         route_tag: str,
         stop_or_vehicle_id: str,
-        timestamp: str,
         event_type: str,
         data: nextbus_mqtt_producer_data.RouteConfig,
         topic: Optional[str] = None,
@@ -496,7 +492,6 @@ class NextbusMqttMqttClient(_ClientBase):
             agency_id: URI template variable for 'agency_id'
             route_tag: URI template variable for 'route_tag'
             stop_or_vehicle_id: URI template variable for 'stop_or_vehicle_id'
-            timestamp: URI template variable for 'timestamp'
             event_type: URI template variable for 'event_type'
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}'
@@ -510,7 +505,6 @@ class NextbusMqttMqttClient(_ClientBase):
             "agency_id": str(agency_id),
             "route_tag": str(route_tag),
             "stop_or_vehicle_id": str(stop_or_vehicle_id),
-            "timestamp": str(timestamp),
             "event_type": str(event_type),
         }
         if _topic_template_values:
@@ -520,7 +514,7 @@ class NextbusMqttMqttClient(_ClientBase):
              "type":"nextbus.RouteConfig",
              "source":"https://retro.umoiq.com/service/publicXMLFeed",
              "subject":"{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}".format(agency_id = agency_id,route_tag = route_tag,stop_or_vehicle_id = stop_or_vehicle_id),
-             "time":"{timestamp}".format(timestamp = timestamp)
+             "time":"{timestamp}"
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -567,7 +561,6 @@ class NextbusMqttMqttClient(_ClientBase):
         agency_id: str,
         route_tag: str,
         stop_or_vehicle_id: str,
-        timestamp: str,
         event_type: str,
         data: nextbus_mqtt_producer_data.Schedule,
         topic: Optional[str] = None,
@@ -582,7 +575,6 @@ class NextbusMqttMqttClient(_ClientBase):
             agency_id: URI template variable for 'agency_id'
             route_tag: URI template variable for 'route_tag'
             stop_or_vehicle_id: URI template variable for 'stop_or_vehicle_id'
-            timestamp: URI template variable for 'timestamp'
             event_type: URI template variable for 'event_type'
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}'
@@ -596,7 +588,6 @@ class NextbusMqttMqttClient(_ClientBase):
             "agency_id": str(agency_id),
             "route_tag": str(route_tag),
             "stop_or_vehicle_id": str(stop_or_vehicle_id),
-            "timestamp": str(timestamp),
             "event_type": str(event_type),
         }
         if _topic_template_values:
@@ -606,7 +597,7 @@ class NextbusMqttMqttClient(_ClientBase):
              "type":"nextbus.Schedule",
              "source":"https://retro.umoiq.com/service/publicXMLFeed",
              "subject":"{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}".format(agency_id = agency_id,route_tag = route_tag,stop_or_vehicle_id = stop_or_vehicle_id),
-             "time":"{timestamp}".format(timestamp = timestamp)
+             "time":"{timestamp}"
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -653,7 +644,6 @@ class NextbusMqttMqttClient(_ClientBase):
         agency_id: str,
         route_tag: str,
         stop_or_vehicle_id: str,
-        timestamp: str,
         event_type: str,
         data: nextbus_mqtt_producer_data.Message,
         topic: Optional[str] = None,
@@ -668,7 +658,6 @@ class NextbusMqttMqttClient(_ClientBase):
             agency_id: URI template variable for 'agency_id'
             route_tag: URI template variable for 'route_tag'
             stop_or_vehicle_id: URI template variable for 'stop_or_vehicle_id'
-            timestamp: URI template variable for 'timestamp'
             event_type: URI template variable for 'event_type'
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'transit/intl/nextbus/nextbus/{agency_id}/{route_tag}/{event_type}/{stop_or_vehicle_id}'
@@ -682,7 +671,6 @@ class NextbusMqttMqttClient(_ClientBase):
             "agency_id": str(agency_id),
             "route_tag": str(route_tag),
             "stop_or_vehicle_id": str(stop_or_vehicle_id),
-            "timestamp": str(timestamp),
             "event_type": str(event_type),
         }
         if _topic_template_values:
@@ -692,7 +680,7 @@ class NextbusMqttMqttClient(_ClientBase):
              "type":"nextbus.Message",
              "source":"https://retro.umoiq.com/service/publicXMLFeed",
              "subject":"{agency_id}/{route_tag}/message/{stop_or_vehicle_id}".format(agency_id = agency_id,route_tag = route_tag,stop_or_vehicle_id = stop_or_vehicle_id),
-             "time":"{timestamp}".format(timestamp = timestamp)
+             "time":"{timestamp}"
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''

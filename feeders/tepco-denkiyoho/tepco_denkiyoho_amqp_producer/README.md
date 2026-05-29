@@ -184,8 +184,7 @@ Daily TEPCO Electricity Forecast supply capability reference record for the Toky
 **Parameters:**
 - `data` (SupplyCapacity): The message data object
 - `_feedurl` (str): Value for placeholder feedurl in attribute source
-- `_date` (str): Value for placeholder date in attribute subject
-- `_time` (str): Value for placeholder time in attribute subject
+- `_area_code` (str): Value for placeholder area_code in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_supply_capacity_batch()`
@@ -195,8 +194,7 @@ Send multiple SupplyCapacity messages in sequence.
 **Parameters:**
 - `data_array` (List[SupplyCapacity]): Array of message data objects
 - `_feedurl` (str): Value for placeholder feedurl in attribute source
-- `_date` (str): Value for placeholder date in attribute subject
-- `_time` (str): Value for placeholder time in attribute subject
+- `_area_code` (str): Value for placeholder area_code in attribute subject
 - `content_type` (str): Content type of the message data
 
 
@@ -207,8 +205,7 @@ Daily TEPCO Electricity Forecast maximum-demand forecast record for the Tokyo se
 **Parameters:**
 - `data` (PeakDemandForecast): The message data object
 - `_feedurl` (str): Value for placeholder feedurl in attribute source
-- `_date` (str): Value for placeholder date in attribute subject
-- `_time` (str): Value for placeholder time in attribute subject
+- `_area_code` (str): Value for placeholder area_code in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_peak_demand_forecast_batch()`
@@ -218,8 +215,7 @@ Send multiple PeakDemandForecast messages in sequence.
 **Parameters:**
 - `data_array` (List[PeakDemandForecast]): Array of message data objects
 - `_feedurl` (str): Value for placeholder feedurl in attribute source
-- `_date` (str): Value for placeholder date in attribute subject
-- `_time` (str): Value for placeholder time in attribute subject
+- `_area_code` (str): Value for placeholder area_code in attribute subject
 - `content_type` (str): Content type of the message data
 
 
@@ -231,8 +227,7 @@ with section 3 context and for five-minute rows with section 5 solar context.
 **Parameters:**
 - `data` (DemandActual): The message data object
 - `_feedurl` (str): Value for placeholder feedurl in attribute source
-- `_date` (str): Value for placeholder date in attribute subject
-- `_time` (str): Value for placeholder time in attribute subject
+- `_area_code` (str): Value for placeholder area_code in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_demand_actual_batch()`
@@ -242,8 +237,7 @@ Send multiple DemandActual messages in sequence.
 **Parameters:**
 - `data_array` (List[DemandActual]): Array of message data objects
 - `_feedurl` (str): Value for placeholder feedurl in attribute source
-- `_date` (str): Value for placeholder date in attribute subject
-- `_time` (str): Value for placeholder time in attribute subject
+- `_area_code` (str): Value for placeholder area_code in attribute subject
 - `content_type` (str): Content type of the message data
 
 
@@ -254,8 +248,7 @@ Hourly electricity demand forecast record from TEPCO Electricity Forecast for th
 **Parameters:**
 - `data` (DemandForecast): The message data object
 - `_feedurl` (str): Value for placeholder feedurl in attribute source
-- `_date` (str): Value for placeholder date in attribute subject
-- `_time` (str): Value for placeholder time in attribute subject
+- `_area_code` (str): Value for placeholder area_code in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_demand_forecast_batch()`
@@ -265,8 +258,7 @@ Send multiple DemandForecast messages in sequence.
 **Parameters:**
 - `data_array` (List[DemandForecast]): Array of message data objects
 - `_feedurl` (str): Value for placeholder feedurl in attribute source
-- `_date` (str): Value for placeholder date in attribute subject
-- `_time` (str): Value for placeholder time in attribute subject
+- `_area_code` (str): Value for placeholder area_code in attribute subject
 - `content_type` (str): Content type of the message data
 
 

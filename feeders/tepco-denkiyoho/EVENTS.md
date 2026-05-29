@@ -4,10 +4,10 @@ MQTT 5.0 binary-mode CloudEvents variant of JP.TEPCO.Denkiyoho.
 
 ## At a glance
 
-- **Event types:** 5 documented event types (15 transport bindings in the manifest).
+- **Event types:** 5 documented event types (20 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 5 telemetry event types.
-- **Identity:** `jp.tepco.denkiyoho/{date}/{time}`, `{area_code}` identifies the resource each event is about.
+- **Identity:** `{area_code}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
@@ -17,7 +17,7 @@ These examples show the smallest useful consumer for each transport declared by 
 
 ### Kafka
 
-Subscribe to `tepco-denkiyoho`. The record key is `jp.tepco.denkiyoho/{date}/{time}`. In plain language, `jp.tepco.denkiyoho/{date}/{time}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+Subscribe to `tepco-denkiyoho`. The record key is `{area_code}`. In plain language, `{area_code}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
 ```python
 from confluent_kafka import Consumer
@@ -70,13 +70,13 @@ Daily TEPCO Electricity Forecast supply capability reference record for the Toky
 
 #### Identity
 
-Each event identifies the real-world resource with `jp.tepco.denkiyoho/{date}/{time}`. `{date}` is service date for TEPCO's Electricity Forecast daily CSV in local Tokyo time, normalized from the DATE column to ISO 8601 calendar-date form (YYYY-MM-DD); `{time}` is stable subject and Kafka key time component. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{area_code}`. `{area_code}` is constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `tepco-denkiyoho`, key `jp.tepco.denkiyoho/{date}/{time}` |
+| `KAFKA` | topic `tepco-denkiyoho`, key `{area_code}` |
 | `MQTT/5.0` | topic `energy/jp/tepco/tepco-denkiyoho/jp-tepco/supply-capacity`, retain `true`, QoS `1` |
 | `AMQP/1.0` | source address `amqps://localhost:5671/tepco-denkiyoho`, message subject `jp.tepco.denkiyoho/{date}/{time}` |
 
@@ -85,7 +85,7 @@ Each event identifies the real-world resource with `jp.tepco.denkiyoho/{date}/{t
 `Supply Capacity` payloads are JSON object. Required fields: `date`, `time`, `peak_supply_capacity_mw`, `peak_supply_capacity_jp_unit_value`, `peak_time_slot`, `peak_reserve_margin_pct`, `peak_usage_pct`, `daily_max_usage_pct`, `daily_max_usage_time_slot`, `update_datetime`, `update_datetime_local`, `area_code`, `area_name_jp`, `area_name_en`.
 
 - **`date`** (date, required): Service date for TEPCO's Electricity Forecast daily CSV in local Tokyo time, normalized from the DATE column to ISO 8601 calendar-date form (YYYY-MM-DD). This date is a stable key component for all records from the same operating day.
-- **`time`** (string, required): Stable subject and Kafka key time component. Supply capacity is daily reference data rather than a point-in-time demand measurement, so the bridge sets this field to the sentinel value _supply_capacity_ while using the same jp.tepco.denkiyoho/{date}/{time} key model as demand events. Constraints: pattern `^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$`.
+- **`time`** (string, required): Record time component retained in the payload for dedupe and downstream interpretation. Supply capacity is daily reference data rather than a point-in-time demand measurement, so the bridge sets this field to the sentinel value _supply_capacity_ while Kafka partitioning and CloudEvent subjects use the stable area_code identity. Constraints: pattern `^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$`.
 - **`peak_supply_capacity_mw`** (double, required, MW): Peak-time available supply capability for the Tokyo service area shown by TEPCO as ピーク時供給力(万kW). The bridge converts the published 10,000-kilowatt unit to megawatts by multiplying the source value by 10. Constraints: minimum `0`.
 - **`peak_supply_capacity_jp_unit_value`** (int32, required, 10MW (万kW)): Original integer value from TEPCO's ピーク時供給力(万kW) header field. TEPCO publishes demand and supply values in 万kW, where one unit is 10,000 kilowatts, equal to 10 megawatts. Constraints: minimum `0`.
 - **`peak_time_slot`** (string, required): Local Japan Standard Time hour range from TEPCO's section 1 時間帯 column indicating the peak supply-capability time slot, normalized to an ASCII hyphen such as 13:00-14:00. Constraints: pattern `^(([01]?[0-9]|2[0-3]):[0-5][0-9])-(([01]?[0-9]|2[0-3]):[0-5][0-9])$`.
@@ -135,13 +135,13 @@ Daily TEPCO Electricity Forecast maximum-demand forecast record for the Tokyo se
 
 #### Identity
 
-Each event identifies the real-world resource with `jp.tepco.denkiyoho/{date}/{time}`. `{date}` is operating date for TEPCO's section 2 peak-demand forecast, normalized from 予想最大電力情報更新日 with the CSV update year to ISO 8601 calendar-date form (YYYY-MM-DD); `{time}` is stable subject and Kafka key time component for the section 2 peak-demand forecast. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{area_code}`. `{area_code}` is constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `tepco-denkiyoho`, key `jp.tepco.denkiyoho/{date}/{time}` |
+| `KAFKA` | topic `tepco-denkiyoho`, key `{area_code}` |
 | `MQTT/5.0` | topic `energy/jp/tepco/tepco-denkiyoho/jp-tepco/peak-demand-forecast`, retain `true`, QoS `1` |
 | `AMQP/1.0` | source address `amqps://localhost:5671/tepco-denkiyoho`, message subject `jp.tepco.denkiyoho/{date}/{time}` |
 
@@ -150,7 +150,7 @@ Each event identifies the real-world resource with `jp.tepco.denkiyoho/{date}/{t
 `Peak Demand Forecast` payloads are JSON object. Required fields: `date`, `time`, `peak_demand_forecast_mw`, `peak_demand_forecast_jp_unit_value`, `peak_time_slot`, `update_datetime`, `update_datetime_local`, `area_code`, `area_name_jp`, `area_name_en`.
 
 - **`date`** (date, required): Operating date for TEPCO's section 2 peak-demand forecast, normalized from 予想最大電力情報更新日 with the CSV update year to ISO 8601 calendar-date form (YYYY-MM-DD). This is the stable date key component.
-- **`time`** (string, required): Stable subject and Kafka key time component for the section 2 peak-demand forecast. The bridge sets this field to the sentinel value _peak_forecast_ so the daily peak forecast shares the same jp.tepco.denkiyoho/{date}/{time} key model as the other TEPCO events without pretending to be an hourly measurement. Constraints: pattern `^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$`.
+- **`time`** (string, required): Record time component retained in the payload for the section 2 peak-demand forecast. The bridge sets this field to the sentinel value _peak_forecast_ so the daily peak forecast remains distinguishable without pretending to be an hourly measurement; Kafka partitioning and CloudEvent subjects use the stable area_code identity. Constraints: pattern `^(([01][0-9]|2[0-3]):[0-5][0-9]|_supply_capacity_|_peak_forecast_)$`.
 - **`peak_demand_forecast_mw`** (double, required, MW): Forecast maximum electricity demand for the Tokyo service area from TEPCO's section 2 予想最大電力(万kW) row, converted from 万kW to megawatts by multiplying by 10. Constraints: minimum `0`.
 - **`peak_demand_forecast_jp_unit_value`** (int32, required, 10MW (万kW)): Original integer peak-demand forecast value from TEPCO's section 2 予想最大電力(万kW) field. Constraints: minimum `0`.
 - **`peak_time_slot`** (string, required): Local Japan Standard Time hour range from TEPCO's section 2 時間帯 column indicating when the forecast maximum demand is expected, normalized to an ASCII hyphen such as 13:00-14:00. Constraints: pattern `^(([01]?[0-9]|2[0-3]):[0-5][0-9])-(([01]?[0-9]|2[0-3]):[0-5][0-9])$`.
@@ -192,13 +192,13 @@ Actual electricity demand record from TEPCO Electricity Forecast for the Tokyo s
 
 #### Identity
 
-Each event identifies the real-world resource with `jp.tepco.denkiyoho/{date}/{time}`. `{date}` is operating date from the DATE column in TEPCO's hourly actual-demand section or five-minute actual-demand section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD); `{time}` is local Japan Standard Time clock time from the TIME column in TEPCO's hourly or five-minute actual-demand section, normalized to zero-padded HH:MM form. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{area_code}`. `{area_code}` is constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `tepco-denkiyoho`, key `jp.tepco.denkiyoho/{date}/{time}` |
+| `KAFKA` | topic `tepco-denkiyoho`, key `{area_code}` |
 | `MQTT/5.0` | topic `energy/jp/tepco/tepco-denkiyoho/jp-tepco/demand-actual`, retain `true`, QoS `1` |
 | `AMQP/1.0` | source address `amqps://localhost:5671/tepco-denkiyoho`, message subject `jp.tepco.denkiyoho/{date}/{time}` |
 
@@ -255,13 +255,13 @@ Hourly electricity demand forecast record from TEPCO Electricity Forecast for th
 
 #### Identity
 
-Each event identifies the real-world resource with `jp.tepco.denkiyoho/{date}/{time}`. `{date}` is operating date from the DATE column in TEPCO's hourly same-day forecast section, normalized to ISO 8601 calendar-date form (YYYY-MM-DD); `{time}` is local Japan Standard Time clock hour from the TIME column in TEPCO's hourly forecast section, normalized to zero-padded HH:MM form. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{area_code}`. `{area_code}` is constant service-area code TEPCO assigned by this bridge for the Tokyo Electric Power Company service area covered by the Electricity Forecast page. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `tepco-denkiyoho`, key `jp.tepco.denkiyoho/{date}/{time}` |
+| `KAFKA` | topic `tepco-denkiyoho`, key `{area_code}` |
 | `MQTT/5.0` | topic `energy/jp/tepco/tepco-denkiyoho/jp-tepco/demand-forecast`, retain `true`, QoS `1` |
 | `AMQP/1.0` | source address `amqps://localhost:5671/tepco-denkiyoho`, message subject `jp.tepco.denkiyoho/{date}/{time}` |
 
@@ -318,7 +318,7 @@ Each event identifies the real-world resource with `{area_code}`. `{area_code}` 
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `tepco-denkiyoho`, key `jp.tepco.denkiyoho/{date}/{time}` |
+| `KAFKA` | topic `tepco-denkiyoho`, key `{area_code}` |
 | `MQTT/5.0` | topic `energy/jp/tepco/tepco-denkiyoho/jp-tepco/info`, retain `true`, QoS `1` |
 | `AMQP/1.0` | source address `amqps://localhost:5671/tepco-denkiyoho`, message subject `{area_code}` |
 
@@ -389,3 +389,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/tepco-denkiyoho.xreg.json`](xreg/tepco-denkiyoho.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

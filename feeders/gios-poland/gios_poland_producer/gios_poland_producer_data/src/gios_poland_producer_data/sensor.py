@@ -161,10 +161,10 @@ class Sensor:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id=int(49),
-            station_id=int(14),
-            parameter_name='uisoylmtykvulvmjlrmc',
-            parameter_formula='jqplxjjodzmibcgzkmda',
-            parameter_code='wawunocgyctmxuymfuoz',
-            parameter_id=int(58)
+            sensor_id=int(67),
+            station_id=int(58),
+            parameter_name='aygnykkypnrbvvevsvko',
+            parameter_formula='wmrsoryyijklbgzdgtdq',
+            parameter_code='omqbbdljiotizfacmvze',
+            parameter_id=int(52)
         )

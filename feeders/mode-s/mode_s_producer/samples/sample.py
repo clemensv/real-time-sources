@@ -32,8 +32,7 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from mode_s_producer_kafka_producer.producer import ModeSEventProducer
-from mode_s_producer_kafka_producer.producer import ModeSMqttEventProducer
+from mode_s_producer_kafka_producer.producer import ModeSKafkaEventProducer
 
 # imports for the data classes for each event
 
@@ -51,115 +50,59 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
         # or an Azure Event Hubs connection string
-        mode_sevent_producer = ModeSEventProducer.from_connection_string(connection_string, topic, 'binary')
+        mode_skafka_event_producer = ModeSKafkaEventProducer.from_connection_string(connection_string, topic, 'binary')
     else:
         # use a Kafka producer configuration provided as JSON text
         kafka_producer = KafkaProducer(json.loads(producer_config))
-        mode_sevent_producer = ModeSEventProducer(kafka_producer, topic, 'binary')
+        mode_skafka_event_producer = ModeSKafkaEventProducer(kafka_producer, topic, 'binary')
 
-    # ---- Mode_S.ADSB ----
-    # TODO: Supply event data for the Mode_S.ADSB event
+    # ---- Mode_S.kafka.ADSB ----
+    # TODO: Supply event data for the Mode_S.kafka.ADSB event
     _record = Record()
 
-    # sends the 'Mode_S.ADSB' event to Kafka topic.
-    await mode_sevent_producer.send_mode_s_adsb(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
-    print(f"Sent 'Mode_S.ADSB' event: {_record.to_json()}")
+    # sends the 'Mode_S.kafka.ADSB' event to Kafka topic.
+    await mode_skafka_event_producer.send_mode_s_kafka_adsb(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
+    print(f"Sent 'Mode_S.kafka.ADSB' event: {_record.to_json()}")
 
-    # ---- Mode_S.AltitudeReply ----
-    # TODO: Supply event data for the Mode_S.AltitudeReply event
+    # ---- Mode_S.kafka.AltitudeReply ----
+    # TODO: Supply event data for the Mode_S.kafka.AltitudeReply event
     _record = Record()
 
-    # sends the 'Mode_S.AltitudeReply' event to Kafka topic.
-    await mode_sevent_producer.send_mode_s_altitude_reply(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
-    print(f"Sent 'Mode_S.AltitudeReply' event: {_record.to_json()}")
+    # sends the 'Mode_S.kafka.AltitudeReply' event to Kafka topic.
+    await mode_skafka_event_producer.send_mode_s_kafka_altitude_reply(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
+    print(f"Sent 'Mode_S.kafka.AltitudeReply' event: {_record.to_json()}")
 
-    # ---- Mode_S.IdentityReply ----
-    # TODO: Supply event data for the Mode_S.IdentityReply event
+    # ---- Mode_S.kafka.IdentityReply ----
+    # TODO: Supply event data for the Mode_S.kafka.IdentityReply event
     _record = Record()
 
-    # sends the 'Mode_S.IdentityReply' event to Kafka topic.
-    await mode_sevent_producer.send_mode_s_identity_reply(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
-    print(f"Sent 'Mode_S.IdentityReply' event: {_record.to_json()}")
+    # sends the 'Mode_S.kafka.IdentityReply' event to Kafka topic.
+    await mode_skafka_event_producer.send_mode_s_kafka_identity_reply(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
+    print(f"Sent 'Mode_S.kafka.IdentityReply' event: {_record.to_json()}")
 
-    # ---- Mode_S.AcquisitionReply ----
-    # TODO: Supply event data for the Mode_S.AcquisitionReply event
+    # ---- Mode_S.kafka.AcquisitionReply ----
+    # TODO: Supply event data for the Mode_S.kafka.AcquisitionReply event
     _record = Record()
 
-    # sends the 'Mode_S.AcquisitionReply' event to Kafka topic.
-    await mode_sevent_producer.send_mode_s_acquisition_reply(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
-    print(f"Sent 'Mode_S.AcquisitionReply' event: {_record.to_json()}")
+    # sends the 'Mode_S.kafka.AcquisitionReply' event to Kafka topic.
+    await mode_skafka_event_producer.send_mode_s_kafka_acquisition_reply(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
+    print(f"Sent 'Mode_S.kafka.AcquisitionReply' event: {_record.to_json()}")
 
-    # ---- Mode_S.CommBAltitude ----
-    # TODO: Supply event data for the Mode_S.CommBAltitude event
+    # ---- Mode_S.kafka.CommBAltitude ----
+    # TODO: Supply event data for the Mode_S.kafka.CommBAltitude event
     _record = Record()
 
-    # sends the 'Mode_S.CommBAltitude' event to Kafka topic.
-    await mode_sevent_producer.send_mode_s_comm_baltitude(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
-    print(f"Sent 'Mode_S.CommBAltitude' event: {_record.to_json()}")
+    # sends the 'Mode_S.kafka.CommBAltitude' event to Kafka topic.
+    await mode_skafka_event_producer.send_mode_s_kafka_comm_baltitude(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
+    print(f"Sent 'Mode_S.kafka.CommBAltitude' event: {_record.to_json()}")
 
-    # ---- Mode_S.CommBIdentity ----
-    # TODO: Supply event data for the Mode_S.CommBIdentity event
+    # ---- Mode_S.kafka.CommBIdentity ----
+    # TODO: Supply event data for the Mode_S.kafka.CommBIdentity event
     _record = Record()
 
-    # sends the 'Mode_S.CommBIdentity' event to Kafka topic.
-    await mode_sevent_producer.send_mode_s_comm_bidentity(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
-    print(f"Sent 'Mode_S.CommBIdentity' event: {_record.to_json()}")
-    if connection_string:
-        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
-        # or an Azure Event Hubs connection string
-        mode_smqtt_event_producer = ModeSMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
-    else:
-        # use a Kafka producer configuration provided as JSON text
-        kafka_producer = KafkaProducer(json.loads(producer_config))
-        mode_smqtt_event_producer = ModeSMqttEventProducer(kafka_producer, topic, 'binary')
-
-    # ---- Mode_S.ADSB.mqtt ----
-    # TODO: Supply event data for the Mode_S.ADSB.mqtt event
-    _record = Record()
-
-    # sends the 'Mode_S.ADSB.mqtt' event to Kafka topic.
-    await mode_smqtt_event_producer.send_mode_s_adsb_mqtt(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
-    print(f"Sent 'Mode_S.ADSB.mqtt' event: {_record.to_json()}")
-
-    # ---- Mode_S.AltitudeReply.mqtt ----
-    # TODO: Supply event data for the Mode_S.AltitudeReply.mqtt event
-    _record = Record()
-
-    # sends the 'Mode_S.AltitudeReply.mqtt' event to Kafka topic.
-    await mode_smqtt_event_producer.send_mode_s_altitude_reply_mqtt(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
-    print(f"Sent 'Mode_S.AltitudeReply.mqtt' event: {_record.to_json()}")
-
-    # ---- Mode_S.IdentityReply.mqtt ----
-    # TODO: Supply event data for the Mode_S.IdentityReply.mqtt event
-    _record = Record()
-
-    # sends the 'Mode_S.IdentityReply.mqtt' event to Kafka topic.
-    await mode_smqtt_event_producer.send_mode_s_identity_reply_mqtt(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
-    print(f"Sent 'Mode_S.IdentityReply.mqtt' event: {_record.to_json()}")
-
-    # ---- Mode_S.AcquisitionReply.mqtt ----
-    # TODO: Supply event data for the Mode_S.AcquisitionReply.mqtt event
-    _record = Record()
-
-    # sends the 'Mode_S.AcquisitionReply.mqtt' event to Kafka topic.
-    await mode_smqtt_event_producer.send_mode_s_acquisition_reply_mqtt(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
-    print(f"Sent 'Mode_S.AcquisitionReply.mqtt' event: {_record.to_json()}")
-
-    # ---- Mode_S.CommBAltitude.mqtt ----
-    # TODO: Supply event data for the Mode_S.CommBAltitude.mqtt event
-    _record = Record()
-
-    # sends the 'Mode_S.CommBAltitude.mqtt' event to Kafka topic.
-    await mode_smqtt_event_producer.send_mode_s_comm_baltitude_mqtt(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
-    print(f"Sent 'Mode_S.CommBAltitude.mqtt' event: {_record.to_json()}")
-
-    # ---- Mode_S.CommBIdentity.mqtt ----
-    # TODO: Supply event data for the Mode_S.CommBIdentity.mqtt event
-    _record = Record()
-
-    # sends the 'Mode_S.CommBIdentity.mqtt' event to Kafka topic.
-    await mode_smqtt_event_producer.send_mode_s_comm_bidentity_mqtt(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
-    print(f"Sent 'Mode_S.CommBIdentity.mqtt' event: {_record.to_json()}")
+    # sends the 'Mode_S.kafka.CommBIdentity' event to Kafka topic.
+    await mode_skafka_event_producer.send_mode_s_kafka_comm_bidentity(_feedurl = 'TODO: replace me', _icao24 = 'TODO: replace me', _receiver_id = 'TODO: replace me', data = _record)
+    print(f"Sent 'Mode_S.kafka.CommBIdentity' event: {_record.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

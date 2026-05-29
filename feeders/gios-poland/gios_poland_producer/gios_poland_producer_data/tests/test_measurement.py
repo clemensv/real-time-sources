@@ -29,11 +29,11 @@ class Test_Measurement(unittest.TestCase):
         Create instance of Measurement for testing
         """
         instance = Measurement(
-            station_id=int(89),
-            sensor_id=int(58),
-            sensor_code='gtpfpnbstufhicycsbui',
+            station_id=int(35),
+            sensor_id=int(27),
+            sensor_code='qofhsjzackxffahhyyzk',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(80.09974182635261)
+            value=float(16.917007328529486)
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = int(89)
+        test_value = int(35)
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test sensor_id property
         """
-        test_value = int(58)
+        test_value = int(27)
         self.instance.sensor_id = test_value
         self.assertEqual(self.instance.sensor_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test sensor_code property
         """
-        test_value = 'gtpfpnbstufhicycsbui'
+        test_value = 'qofhsjzackxffahhyyzk'
         self.instance.sensor_code = test_value
         self.assertEqual(self.instance.sensor_code, test_value)
     
@@ -74,7 +74,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(80.09974182635261)
+        test_value = float(16.917007328529486)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     

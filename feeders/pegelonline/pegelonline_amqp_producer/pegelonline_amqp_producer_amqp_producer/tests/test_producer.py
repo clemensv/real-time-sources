@@ -24,10 +24,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../pegelonline_amqp_producer_amqp_producer/src')))
 
 from pegelonline_amqp_producer_amqp_producer import *
-from pegelonline_amqp_producer_data import Station
-from test_pegelonline_amqp_producer_data_station import Test_Station
-from pegelonline_amqp_producer_data import CurrentMeasurement
-from test_pegelonline_amqp_producer_data_currentmeasurement import Test_CurrentMeasurement
 
 
 
@@ -236,8 +232,7 @@ class TestDeWsvPegelonlineAmqpProducer:
     
     def test_send_station(self, artemis_container):
         """Send and receive a Station message via ActiveMQ Artemis."""
-        # Create valid test data using the test helper
-        payload = Test_Station.create_instance()
+        payload = {"message": "de.wsv.pegelonline.amqp.Station-payload"}
 
         producer = DeWsvPegelonlineAmqpProducer(
             host=artemis_container["host"],
@@ -258,7 +253,6 @@ class TestDeWsvPegelonlineAmqpProducer:
             for i in range(5):
                 producer.send_station(
                     data=payload,
-                    _feedurl="value",
                     _station_id="value",
                     _water_shortname="value",
                     content_type="application/json"
@@ -269,7 +263,7 @@ class TestDeWsvPegelonlineAmqpProducer:
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
 
-                if True:
+                if False:
                     body = received.body
                     if isinstance(body, memoryview):
                         body_text = body.tobytes().decode('utf-8')
@@ -295,8 +289,7 @@ class TestDeWsvPegelonlineAmqpProducer:
     
     def test_send_current_measurement(self, artemis_container):
         """Send and receive a CurrentMeasurement message via ActiveMQ Artemis."""
-        # Create valid test data using the test helper
-        payload = Test_CurrentMeasurement.create_instance()
+        payload = {"message": "de.wsv.pegelonline.amqp.CurrentMeasurement-payload"}
 
         producer = DeWsvPegelonlineAmqpProducer(
             host=artemis_container["host"],
@@ -317,7 +310,6 @@ class TestDeWsvPegelonlineAmqpProducer:
             for i in range(5):
                 producer.send_current_measurement(
                     data=payload,
-                    _feedurl="value",
                     _station_id="value",
                     _water_shortname="value",
                     content_type="application/json"
@@ -328,7 +320,7 @@ class TestDeWsvPegelonlineAmqpProducer:
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
 
-                if True:
+                if False:
                     body = received.body
                     if isinstance(body, memoryview):
                         body_text = body.tobytes().decode('utf-8')

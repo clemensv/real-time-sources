@@ -28,17 +28,17 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_id=int(79),
-            station_code='imihycbmcdnpzljsrhfk',
-            name='pxvdyvzzfmqupmebkccq',
-            latitude=float(25.023517746945878),
-            longitude=float(90.35938662622691),
-            city_id=int(16),
-            city_name='aikqhyqwmwhzomorvduy',
-            commune='wmkevcjrurlogxkmnrmp',
-            district='zhasaxpthvfkawewofnl',
-            voivodeship='dkbiipokjbkwlrynfdge',
-            street='vkokjbfxqbhzceinlihf'
+            station_id=int(74),
+            station_code='agtwhjdmpoupzakhpjqv',
+            name='emkgowsiosmdxvuxyjwk',
+            latitude=float(33.41362432117159),
+            longitude=float(68.1891588630606),
+            city_id=int(11),
+            city_name='cccymhajgrqwwqsohmyc',
+            commune='uwnzblvsngyjyjvdzewl',
+            district='vosczhvuhmuemyzgxvzd',
+            voivodeship='hzrkfkfmtzsqwxnffeng',
+            street='tgynptwhbwfotnpjepbt'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = int(79)
+        test_value = int(74)
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -55,7 +55,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_code property
         """
-        test_value = 'imihycbmcdnpzljsrhfk'
+        test_value = 'agtwhjdmpoupzakhpjqv'
         self.instance.station_code = test_value
         self.assertEqual(self.instance.station_code, test_value)
     
@@ -63,7 +63,7 @@ class Test_Station(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'pxvdyvzzfmqupmebkccq'
+        test_value = 'emkgowsiosmdxvuxyjwk'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -71,7 +71,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(25.023517746945878)
+        test_value = float(33.41362432117159)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -79,7 +79,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(90.35938662622691)
+        test_value = float(68.1891588630606)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -87,7 +87,7 @@ class Test_Station(unittest.TestCase):
         """
         Test city_id property
         """
-        test_value = int(16)
+        test_value = int(11)
         self.instance.city_id = test_value
         self.assertEqual(self.instance.city_id, test_value)
     
@@ -95,7 +95,7 @@ class Test_Station(unittest.TestCase):
         """
         Test city_name property
         """
-        test_value = 'aikqhyqwmwhzomorvduy'
+        test_value = 'cccymhajgrqwwqsohmyc'
         self.instance.city_name = test_value
         self.assertEqual(self.instance.city_name, test_value)
     
@@ -103,7 +103,7 @@ class Test_Station(unittest.TestCase):
         """
         Test commune property
         """
-        test_value = 'wmkevcjrurlogxkmnrmp'
+        test_value = 'uwnzblvsngyjyjvdzewl'
         self.instance.commune = test_value
         self.assertEqual(self.instance.commune, test_value)
     
@@ -111,7 +111,7 @@ class Test_Station(unittest.TestCase):
         """
         Test district property
         """
-        test_value = 'zhasaxpthvfkawewofnl'
+        test_value = 'vosczhvuhmuemyzgxvzd'
         self.instance.district = test_value
         self.assertEqual(self.instance.district, test_value)
     
@@ -119,7 +119,7 @@ class Test_Station(unittest.TestCase):
         """
         Test voivodeship property
         """
-        test_value = 'dkbiipokjbkwlrynfdge'
+        test_value = 'hzrkfkfmtzsqwxnffeng'
         self.instance.voivodeship = test_value
         self.assertEqual(self.instance.voivodeship, test_value)
     
@@ -127,7 +127,7 @@ class Test_Station(unittest.TestCase):
         """
         Test street property
         """
-        test_value = 'vkokjbfxqbhzceinlihf'
+        test_value = 'tgynptwhbwfotnpjepbt'
         self.instance.street = test_value
         self.assertEqual(self.instance.street, test_value)
     

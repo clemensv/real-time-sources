@@ -2776,7 +2776,7 @@ LIGO/Virgo/KAGRA gravitational wave candidates
 ## Code Generation
 
 Projects with checked-in `xreg` manifests regenerate their producer clients with
-`xrcg generate`. Use `xrcg` `0.10.1`; the checked-in producer output and the
+`xrcg generate`. Use `xrcg` `0.10.7`; the checked-in producer output and the
 key-aware Kafka producer behavior now relied on by the repo are generated with
 that version. Each project’s `generate_producer.ps1` script uses the checked-in
 manifest as the source of truth, validates the `xrcg` version up front, and

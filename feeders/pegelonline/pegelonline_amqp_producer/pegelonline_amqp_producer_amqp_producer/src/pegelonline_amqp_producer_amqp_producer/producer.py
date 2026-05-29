@@ -394,8 +394,6 @@ class _CbsAzureHandler(MessagingHandler):
             if not fut.done():
                 fut.set_exception(exc)
         self._pending.clear()
-from pegelonline_amqp_producer_data import Station
-from pegelonline_amqp_producer_data import CurrentMeasurement
 
 class DeWsvPegelonlineAmqpProducer:
     """
@@ -599,60 +597,23 @@ class DeWsvPegelonlineAmqpProducer:
     
     
     def send_station(self,
-        data: Station,
-        _feedurl: str,
+        data: object,
         _station_id: str,
         _water_shortname: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `de.wsv.pegelonline.amqp.Station` message
-        Reference catalog entry for one WSV PegelOnline gauge installation. Emitted at bridge startup and periodically refreshed so downstream consumers can interpret CurrentMeasurement events without an out-of-band lookup. Sourced from `GET /stations.json` on the PegelOnline REST API v2.
         
         Args:
-            _feedurl (str): Value for placeholder feedurl in attribute source
-            _station_id (str): Value for placeholder station_id in attribute subject
+            _station_id (str): Value for AMQP protocol option placeholder station_id
             _water_shortname (str): Value for AMQP protocol option placeholder water_shortname
-            data (Station): The message data object
+            data (object): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
-        # Build CloudEvent attributes
-        attributes = {
-            "type":
-            "de.wsv.pegelonline.Station",
-            "source":
-            "{feedurl}".format(feedurl=_feedurl),
-            "subject":
-            "{station_id}".format(station_id=_station_id),
-        }
-        
-        # Remove None values
-        attributes = {k: v for k, v in attributes.items() if v is not None}
-        
-        # Serialize data
+        # Plain AMQP message (non-CloudEvent)
         byte_data = self._serialize_payload(data, content_type)
-        
-        # Create CloudEvent
-        cloud_event = CloudEvent(attributes, byte_data)
-        
-        # Convert to AMQP message based on content mode
-        if self.content_mode == 'structured':
-            headers, body = to_structured(cloud_event)
-            if isinstance(body, dict):
-                msg_body = json.dumps(body).encode('utf-8')
-            elif isinstance(body, bytes):
-                msg_body = body
-            else:
-                msg_body = str(body).encode('utf-8')
-            amqp_msg = Message(body=msg_body, inferred=True)
-            amqp_msg.content_type = self.format_type or headers.get('content-type')
-        else:  # binary mode
-            headers, body = to_binary(cloud_event)
-            if isinstance(body, str):
-                body = body.encode('utf-8')
-            amqp_msg = Message(body=body, inferred=True)
-            amqp_msg.content_type = content_type
-            if headers:
-                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_msg = Message(body=byte_data, inferred=True)
+        amqp_msg.content_type = content_type
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{station_id}".format(station_id=_station_id)
 
@@ -670,8 +631,7 @@ class DeWsvPegelonlineAmqpProducer:
             self._sender.send(amqp_msg)
     
     def send_station_batch(self,
-        data_array: typing.List[Station],
-        _feedurl: str,
+        data_array: typing.List[object],
         _station_id: str,
         _water_shortname: str,
         content_type: str = 'application/json') -> None:
@@ -679,76 +639,37 @@ class DeWsvPegelonlineAmqpProducer:
         Send multiple `de.wsv.pegelonline.amqp.Station` messages
         
         Args:
-            data_array (typing.List[Station]): Array of message data objects
-            _feedurl (str): Value for placeholder feedurl in attribute source
-            _station_id (str): Value for placeholder station_id in attribute subject
+            data_array (typing.List[object]): Array of message data objects
+            _station_id (str): Value for AMQP protocol option placeholder station_id
             _water_shortname (str): Value for AMQP protocol option placeholder water_shortname
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_station(
                 data=data,
-                _feedurl=_feedurl,
                 _station_id=_station_id,
                 _water_shortname=_water_shortname,
                 content_type=content_type)
     
     
     def send_current_measurement(self,
-        data: CurrentMeasurement,
-        _feedurl: str,
+        data: object,
         _station_id: str,
         _water_shortname: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `de.wsv.pegelonline.amqp.CurrentMeasurement` message
-        Latest 15-minute water-level reading (W timeseries) for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the PegelOnline REST API v2. Telemetry counterpart to the Station reference event; both share the `station_id` keying.
         
         Args:
-            _feedurl (str): Value for placeholder feedurl in attribute source
-            _station_id (str): Value for placeholder station_id in attribute subject
+            _station_id (str): Value for AMQP protocol option placeholder station_id
             _water_shortname (str): Value for AMQP protocol option placeholder water_shortname
-            data (CurrentMeasurement): The message data object
+            data (object): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
-        # Build CloudEvent attributes
-        attributes = {
-            "type":
-            "de.wsv.pegelonline.CurrentMeasurement",
-            "source":
-            "{feedurl}".format(feedurl=_feedurl),
-            "subject":
-            "{station_id}".format(station_id=_station_id),
-        }
-        
-        # Remove None values
-        attributes = {k: v for k, v in attributes.items() if v is not None}
-        
-        # Serialize data
+        # Plain AMQP message (non-CloudEvent)
         byte_data = self._serialize_payload(data, content_type)
-        
-        # Create CloudEvent
-        cloud_event = CloudEvent(attributes, byte_data)
-        
-        # Convert to AMQP message based on content mode
-        if self.content_mode == 'structured':
-            headers, body = to_structured(cloud_event)
-            if isinstance(body, dict):
-                msg_body = json.dumps(body).encode('utf-8')
-            elif isinstance(body, bytes):
-                msg_body = body
-            else:
-                msg_body = str(body).encode('utf-8')
-            amqp_msg = Message(body=msg_body, inferred=True)
-            amqp_msg.content_type = self.format_type or headers.get('content-type')
-        else:  # binary mode
-            headers, body = to_binary(cloud_event)
-            if isinstance(body, str):
-                body = body.encode('utf-8')
-            amqp_msg = Message(body=body, inferred=True)
-            amqp_msg.content_type = content_type
-            if headers:
-                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_msg = Message(body=byte_data, inferred=True)
+        amqp_msg.content_type = content_type
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{station_id}".format(station_id=_station_id)
 
@@ -766,8 +687,7 @@ class DeWsvPegelonlineAmqpProducer:
             self._sender.send(amqp_msg)
     
     def send_current_measurement_batch(self,
-        data_array: typing.List[CurrentMeasurement],
-        _feedurl: str,
+        data_array: typing.List[object],
         _station_id: str,
         _water_shortname: str,
         content_type: str = 'application/json') -> None:
@@ -775,16 +695,14 @@ class DeWsvPegelonlineAmqpProducer:
         Send multiple `de.wsv.pegelonline.amqp.CurrentMeasurement` messages
         
         Args:
-            data_array (typing.List[CurrentMeasurement]): Array of message data objects
-            _feedurl (str): Value for placeholder feedurl in attribute source
-            _station_id (str): Value for placeholder station_id in attribute subject
+            data_array (typing.List[object]): Array of message data objects
+            _station_id (str): Value for AMQP protocol option placeholder station_id
             _water_shortname (str): Value for AMQP protocol option placeholder water_shortname
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_current_measurement(
                 data=data,
-                _feedurl=_feedurl,
                 _station_id=_station_id,
                 _water_shortname=_water_shortname,
                 content_type=content_type)

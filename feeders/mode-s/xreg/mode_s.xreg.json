@@ -14,11 +14,11 @@
         "deployed": false,
         "options": {
           "topic": "mode-s",
-          "key": "{stationid}"
+          "key": "{icao24}/{receiver_id}"
         }
       },
       "messagegroups": [
-        "#/messagegroups/Mode_S"
+        "#/messagegroups/Mode_S.kafka"
       ]
     },
     "Mode_S.Mqtt": {
@@ -202,6 +202,59 @@
       "epoch": 0,
       "modifiedat": "2025-01-21T15:56:27.070873"
     },
+    "Mode_S.kafka": {
+      "description": "Kafka variant of the Mode-S events. It carries the same downlink-format family semantics as the source events and uses the stable aircraft ICAO address plus receiver identifier for partitioning.",
+      "messages": {
+        "Mode_S.kafka.ADSB": {
+          "name": "ADSB",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.ADSB",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{icao24}/{receiver_id}"
+          }
+        },
+        "Mode_S.kafka.AltitudeReply": {
+          "name": "AltitudeReply",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{icao24}/{receiver_id}"
+          }
+        },
+        "Mode_S.kafka.IdentityReply": {
+          "name": "IdentityReply",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{icao24}/{receiver_id}"
+          }
+        },
+        "Mode_S.kafka.AcquisitionReply": {
+          "name": "AcquisitionReply",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{icao24}/{receiver_id}"
+          }
+        },
+        "Mode_S.kafka.CommBAltitude": {
+          "name": "CommBAltitude",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{icao24}/{receiver_id}"
+          }
+        },
+        "Mode_S.kafka.CommBIdentity": {
+          "name": "CommBIdentity",
+          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{icao24}/{receiver_id}"
+          }
+        }
+      }
+    },
     "Mode_S.mqtt": {
       "description": "MQTT/5.0 non-retained per-record Mode-S firehose. Each Downlink Format family (DF17/18 ADS-B, DF4 altitude reply, DF5 identity reply, DF11 all-call/acquisition reply, DF20/21 Comm-B) gets a dedicated topic so subscribers can wildcard per family. QoS 0, retain=false.",
       "messages": {
@@ -266,7 +319,7 @@
       "messages": {
         "Mode_S.amqp.ADSB": {
           "name": "ADSB",
-          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.ADSB",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.ADSB",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -287,7 +340,7 @@
         },
         "Mode_S.amqp.AltitudeReply": {
           "name": "AltitudeReply",
-          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.AltitudeReply",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -308,7 +361,7 @@
         },
         "Mode_S.amqp.IdentityReply": {
           "name": "IdentityReply",
-          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.IdentityReply",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -329,7 +382,7 @@
         },
         "Mode_S.amqp.AcquisitionReply": {
           "name": "AcquisitionReply",
-          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.AcquisitionReply",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -350,7 +403,7 @@
         },
         "Mode_S.amqp.CommBAltitude": {
           "name": "CommBAltitude",
-          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.CommBAltitude",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {
@@ -371,7 +424,7 @@
         },
         "Mode_S.amqp.CommBIdentity": {
           "name": "CommBIdentity",
-          "basemessageuri": "/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
+          "basemessageuri": "#/messagegroups/Mode_S/messages/Mode_S.CommBIdentity",
           "protocol": "AMQP/1.0",
           "protocoloptions": {
             "properties": {

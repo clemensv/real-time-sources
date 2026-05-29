@@ -8,7 +8,7 @@
 - Choose keys from stable domain identifiers only.
 - If event families use different identity shapes, split them into separate message groups or endpoints.
 - JsonStructure schema `$id` values must be globally unique.
-- Regenerate with `xrcg` `0.10.1` after changing subject or key modeling.
+- Regenerate with `xrcg` `0.10.7` after changing subject or key modeling.
 - **`$ref` must be nested inside the `type` attribute.** Write `"type": {"$ref": "..."}`, never a bare `"$ref"` at the property level. json-structure 0.6.1+ enforces `SCHEMA_REF_NOT_IN_TYPE` and Docker E2E schema validation will reject bare `$ref`.
 - **Nullable fields must use type unions.** If the upstream can send `null` for a field, declare it as a union: `"type": ["string", "null"]` or `"type": ["double", "null"]`. The JsonStructure type must match the Avro schema's nullable unions. The Docker E2E suite validates every emitted payload against the JsonStructure schema — a single upstream `null` in a non-nullable field fails the test.
 - **Key/subject template variables must match schema field names exactly.** If the key template is `{station_id}`, the data payload must contain a field literally named `station_id`. The E2E harness resolves templates from `dict(event) | dict(data)` — if the schema names the field `id` or `uuid` but the template says `{station_id}`, the test fails with "Could not resolve template". When upstream JSON uses a different name (e.g. `id`), rename the schema field to match the template variable and map the upstream name in the bridge code.

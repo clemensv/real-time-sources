@@ -1,42 +1,45 @@
 """ SupplyCapacity dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+from marshmallow import fields
+import json
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class SupplyCapacity:
     """
-    Daily reference schema for TEPCO Electricity Forecast supply capability and maximum usage summary.
-    Attributes:
-        date (str): Service date in ISO 8601 calendar-date form.
-        time (str): Stable key time component; supply capacity uses _supply_capacity_.
-        peak_supply_capacity_mw (float): Peak-time available supply capability converted from 万kW to MW.
-        peak_supply_capacity_jp_unit_value (int): Original peak supply capability value in 万kW.
-        peak_time_slot (str): Peak supply-capability time slot.
-        peak_reserve_margin_pct (float): Peak-time reserve margin percentage.
-        peak_usage_pct (float): Peak-time usage percentage.
-        daily_max_usage_pct (typing.Optional[float]): Daily maximum usage percentage.
-        daily_max_usage_time_slot (typing.Optional[str]): Time slot for the daily maximum usage percentage.
-        update_datetime (str): Supply-capability update timestamp converted to UTC RFC 3339.
-        update_datetime_local (str): Supply-capability update timestamp in JST RFC 3339.
-        area_code (str): Constant TEPCO area code.
-        area_name_jp (str): Japanese TEPCO service area name.
-        area_name_en (str): English TEPCO service area name."""
+    Daily reference schema for TEPCO Electricity Forecast supply capability and daily maximum-usage summary metadata. The source CSV is Shift-JIS encoded and section 1 reports peak supply capacity, reserve margin, usage percentage, and update time for the Tokyo Electric Power Company service area.
     
-    date: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date"))
+    Attributes:
+        date (datetime.date)
+        time (str)
+        peak_supply_capacity_mw (float)
+        peak_supply_capacity_jp_unit_value (int)
+        peak_time_slot (str)
+        peak_reserve_margin_pct (float)
+        peak_usage_pct (float)
+        daily_max_usage_pct (typing.Optional[float])
+        daily_max_usage_time_slot (typing.Optional[str])
+        update_datetime (datetime.datetime)
+        update_datetime_local (datetime.datetime)
+        area_code (str)
+        area_name_jp (str)
+        area_name_en (str)
+    """
+    
+    
+    date: datetime.date=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date"))
     time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time"))
     peak_supply_capacity_mw: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="peak_supply_capacity_mw"))
     peak_supply_capacity_jp_unit_value: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="peak_supply_capacity_jp_unit_value"))
@@ -45,32 +48,11 @@ class SupplyCapacity:
     peak_usage_pct: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="peak_usage_pct"))
     daily_max_usage_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="daily_max_usage_pct"))
     daily_max_usage_time_slot: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="daily_max_usage_time_slot"))
-    update_datetime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="update_datetime"))
-    update_datetime_local: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="update_datetime_local"))
+    update_datetime: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="update_datetime", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    update_datetime_local: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="update_datetime_local", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     area_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_code"))
     area_name_jp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_name_jp"))
     area_name_en: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_name_en"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"SupplyCapacity\", \"namespace\": \"jp.tepco.denkiyoho\", \"doc\": \"Daily reference schema for TEPCO Electricity Forecast supply capability and maximum usage summary.\", \"fields\": [{\"name\": \"date\", \"type\": \"string\", \"doc\": \"Service date in ISO 8601 calendar-date form.\"}, {\"name\": \"time\", \"type\": \"string\", \"doc\": \"Stable key time component; supply capacity uses _supply_capacity_.\"}, {\"name\": \"peak_supply_capacity_mw\", \"type\": \"double\", \"doc\": \"Peak-time available supply capability converted from \u4e07kW to MW.\"}, {\"name\": \"peak_supply_capacity_jp_unit_value\", \"type\": \"int\", \"doc\": \"Original peak supply capability value in \u4e07kW.\"}, {\"name\": \"peak_time_slot\", \"type\": \"string\", \"doc\": \"Peak supply-capability time slot.\"}, {\"name\": \"peak_reserve_margin_pct\", \"type\": \"double\", \"doc\": \"Peak-time reserve margin percentage.\"}, {\"name\": \"peak_usage_pct\", \"type\": \"double\", \"doc\": \"Peak-time usage percentage.\"}, {\"name\": \"daily_max_usage_pct\", \"type\": [\"null\", \"double\"], \"doc\": \"Daily maximum usage percentage.\", \"default\": null}, {\"name\": \"daily_max_usage_time_slot\", \"type\": [\"null\", \"string\"], \"doc\": \"Time slot for the daily maximum usage percentage.\", \"default\": null}, {\"name\": \"update_datetime\", \"type\": \"string\", \"doc\": \"Supply-capability update timestamp converted to UTC RFC 3339.\"}, {\"name\": \"update_datetime_local\", \"type\": \"string\", \"doc\": \"Supply-capability update timestamp in JST RFC 3339.\"}, {\"name\": \"area_code\", \"type\": \"string\", \"doc\": \"Constant TEPCO area code.\"}, {\"name\": \"area_name_jp\", \"type\": \"string\", \"doc\": \"Japanese TEPCO service area name.\"}, {\"name\": \"area_name_en\", \"type\": \"string\", \"doc\": \"English TEPCO service area name.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.date=str(self.date)
-        self.time=str(self.time)
-        self.peak_supply_capacity_mw=float(self.peak_supply_capacity_mw)
-        self.peak_supply_capacity_jp_unit_value=int(self.peak_supply_capacity_jp_unit_value)
-        self.peak_time_slot=str(self.peak_time_slot)
-        self.peak_reserve_margin_pct=float(self.peak_reserve_margin_pct)
-        self.peak_usage_pct=float(self.peak_usage_pct)
-        self.daily_max_usage_pct=float(self.daily_max_usage_pct) if self.daily_max_usage_pct else None
-        self.daily_max_usage_time_slot=str(self.daily_max_usage_time_slot) if self.daily_max_usage_time_slot else None
-        self.update_datetime=str(self.update_datetime)
-        self.update_datetime_local=str(self.update_datetime_local)
-        self.area_code=str(self.area_code)
-        self.area_name_jp=str(self.area_name_jp)
-        self.area_name_en=str(self.area_name_en)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'SupplyCapacity':
@@ -81,7 +63,7 @@ class SupplyCapacity:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -100,7 +82,7 @@ class SupplyCapacity:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -114,8 +96,6 @@ class SupplyCapacity:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -128,12 +108,6 @@ class SupplyCapacity:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -162,10 +136,6 @@ class SupplyCapacity:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -191,18 +161,6 @@ class SupplyCapacity:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return SupplyCapacity.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -210,5 +168,29 @@ class SupplyCapacity:
                 return SupplyCapacity.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'SupplyCapacity':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            date=datetime.date.today(),
+            time='vicyxhuctsgserzcruee',
+            peak_supply_capacity_mw=float(82.68022467617017),
+            peak_supply_capacity_jp_unit_value=int(43),
+            peak_time_slot='akvhkgaxhshmthoapswi',
+            peak_reserve_margin_pct=float(30.756738673464458),
+            peak_usage_pct=float(14.949959834640769),
+            daily_max_usage_pct=float(36.442153563749415),
+            daily_max_usage_time_slot='hdzbqmnxasxyencdajcg',
+            update_datetime=datetime.datetime.now(datetime.timezone.utc),
+            update_datetime_local=datetime.datetime.now(datetime.timezone.utc),
+            area_code='lctznzfgoyflscdyljjs',
+            area_name_jp='bimbqqujwuwiqazxnqze',
+            area_name_en='ugwfuuucmhxfnercbrkh'
+        )

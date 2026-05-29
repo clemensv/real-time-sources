@@ -32,16 +32,14 @@ from confluent_kafka import Producer as KafkaProducer
 
 # imports the producer clients for the message group(s)
 
-from gios_poland_producer_kafka_producer.producer import PlGovGiosAirqualityEventProducer
-from gios_poland_producer_kafka_producer.producer import PlGovGiosAirqualityMqttEventProducer
-from gios_poland_producer_kafka_producer.producer import PlGovGiosAirqualityAmqpEventProducer
+from gios_poland_producer_kafka_producer.producer import PlGovGiosAirqualityKafkaEventProducer
 
 # imports for the data classes for each event
 
 from gios_poland_producer_data.station import Station
+from gios_poland_producer_data.airqualityindex import AirQualityIndex
 from gios_poland_producer_data.sensor import Sensor
 from gios_poland_producer_data.measurement import Measurement
-from gios_poland_producer_data.airqualityindex import AirQualityIndex
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -55,123 +53,43 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
         # or an Azure Event Hubs connection string
-        pl_gov_gios_airquality_event_producer = PlGovGiosAirqualityEventProducer.from_connection_string(connection_string, topic, 'binary')
+        pl_gov_gios_airquality_kafka_event_producer = PlGovGiosAirqualityKafkaEventProducer.from_connection_string(connection_string, topic, 'binary')
     else:
         # use a Kafka producer configuration provided as JSON text
         kafka_producer = KafkaProducer(json.loads(producer_config))
-        pl_gov_gios_airquality_event_producer = PlGovGiosAirqualityEventProducer(kafka_producer, topic, 'binary')
+        pl_gov_gios_airquality_kafka_event_producer = PlGovGiosAirqualityKafkaEventProducer(kafka_producer, topic, 'binary')
 
-    # ---- pl.gov.gios.airquality.Station ----
-    # TODO: Supply event data for the pl.gov.gios.airquality.Station event
+    # ---- pl.gov.gios.airquality.kafka.Station ----
+    # TODO: Supply event data for the pl.gov.gios.airquality.kafka.Station event
     _station = Station()
 
-    # sends the 'pl.gov.gios.airquality.Station' event to Kafka topic.
-    await pl_gov_gios_airquality_event_producer.send_pl_gov_gios_airquality_station(_station_id = 'TODO: replace me', data = _station)
-    print(f"Sent 'pl.gov.gios.airquality.Station' event: {_station.to_json()}")
+    # sends the 'pl.gov.gios.airquality.kafka.Station' event to Kafka topic.
+    await pl_gov_gios_airquality_kafka_event_producer.send_pl_gov_gios_airquality_kafka_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'pl.gov.gios.airquality.kafka.Station' event: {_station.to_json()}")
 
-    # ---- pl.gov.gios.airquality.Sensor ----
-    # TODO: Supply event data for the pl.gov.gios.airquality.Sensor event
-    _sensor = Sensor()
-
-    # sends the 'pl.gov.gios.airquality.Sensor' event to Kafka topic.
-    await pl_gov_gios_airquality_event_producer.send_pl_gov_gios_airquality_sensor(_station_id = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _sensor)
-    print(f"Sent 'pl.gov.gios.airquality.Sensor' event: {_sensor.to_json()}")
-
-    # ---- pl.gov.gios.airquality.Measurement ----
-    # TODO: Supply event data for the pl.gov.gios.airquality.Measurement event
-    _measurement = Measurement()
-
-    # sends the 'pl.gov.gios.airquality.Measurement' event to Kafka topic.
-    await pl_gov_gios_airquality_event_producer.send_pl_gov_gios_airquality_measurement(_station_id = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _measurement)
-    print(f"Sent 'pl.gov.gios.airquality.Measurement' event: {_measurement.to_json()}")
-
-    # ---- pl.gov.gios.airquality.AirQualityIndex ----
-    # TODO: Supply event data for the pl.gov.gios.airquality.AirQualityIndex event
+    # ---- pl.gov.gios.airquality.kafka.AirQualityIndex ----
+    # TODO: Supply event data for the pl.gov.gios.airquality.kafka.AirQualityIndex event
     _air_quality_index = AirQualityIndex()
 
-    # sends the 'pl.gov.gios.airquality.AirQualityIndex' event to Kafka topic.
-    await pl_gov_gios_airquality_event_producer.send_pl_gov_gios_airquality_air_quality_index(_station_id = 'TODO: replace me', data = _air_quality_index)
-    print(f"Sent 'pl.gov.gios.airquality.AirQualityIndex' event: {_air_quality_index.to_json()}")
-    if connection_string:
-        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
-        # or an Azure Event Hubs connection string
-        pl_gov_gios_airquality_mqtt_event_producer = PlGovGiosAirqualityMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
-    else:
-        # use a Kafka producer configuration provided as JSON text
-        kafka_producer = KafkaProducer(json.loads(producer_config))
-        pl_gov_gios_airquality_mqtt_event_producer = PlGovGiosAirqualityMqttEventProducer(kafka_producer, topic, 'binary')
+    # sends the 'pl.gov.gios.airquality.kafka.AirQualityIndex' event to Kafka topic.
+    await pl_gov_gios_airquality_kafka_event_producer.send_pl_gov_gios_airquality_kafka_air_quality_index(_station_id = 'TODO: replace me', data = _air_quality_index)
+    print(f"Sent 'pl.gov.gios.airquality.kafka.AirQualityIndex' event: {_air_quality_index.to_json()}")
 
-    # ---- pl.gov.gios.airquality.mqtt.Station ----
-    # TODO: Supply event data for the pl.gov.gios.airquality.mqtt.Station event
-    _station = Station()
-
-    # sends the 'pl.gov.gios.airquality.mqtt.Station' event to Kafka topic.
-    await pl_gov_gios_airquality_mqtt_event_producer.send_pl_gov_gios_airquality_mqtt_station(_station_id = 'TODO: replace me', data = _station)
-    print(f"Sent 'pl.gov.gios.airquality.mqtt.Station' event: {_station.to_json()}")
-
-    # ---- pl.gov.gios.airquality.mqtt.Sensor ----
-    # TODO: Supply event data for the pl.gov.gios.airquality.mqtt.Sensor event
+    # ---- pl.gov.gios.airquality.kafka.Sensor ----
+    # TODO: Supply event data for the pl.gov.gios.airquality.kafka.Sensor event
     _sensor = Sensor()
 
-    # sends the 'pl.gov.gios.airquality.mqtt.Sensor' event to Kafka topic.
-    await pl_gov_gios_airquality_mqtt_event_producer.send_pl_gov_gios_airquality_mqtt_sensor(_station_id = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _sensor)
-    print(f"Sent 'pl.gov.gios.airquality.mqtt.Sensor' event: {_sensor.to_json()}")
+    # sends the 'pl.gov.gios.airquality.kafka.Sensor' event to Kafka topic.
+    await pl_gov_gios_airquality_kafka_event_producer.send_pl_gov_gios_airquality_kafka_sensor(_station_id = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _sensor)
+    print(f"Sent 'pl.gov.gios.airquality.kafka.Sensor' event: {_sensor.to_json()}")
 
-    # ---- pl.gov.gios.airquality.mqtt.Measurement ----
-    # TODO: Supply event data for the pl.gov.gios.airquality.mqtt.Measurement event
+    # ---- pl.gov.gios.airquality.kafka.Measurement ----
+    # TODO: Supply event data for the pl.gov.gios.airquality.kafka.Measurement event
     _measurement = Measurement()
 
-    # sends the 'pl.gov.gios.airquality.mqtt.Measurement' event to Kafka topic.
-    await pl_gov_gios_airquality_mqtt_event_producer.send_pl_gov_gios_airquality_mqtt_measurement(_station_id = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _measurement)
-    print(f"Sent 'pl.gov.gios.airquality.mqtt.Measurement' event: {_measurement.to_json()}")
-
-    # ---- pl.gov.gios.airquality.mqtt.AirQualityIndex ----
-    # TODO: Supply event data for the pl.gov.gios.airquality.mqtt.AirQualityIndex event
-    _air_quality_index = AirQualityIndex()
-
-    # sends the 'pl.gov.gios.airquality.mqtt.AirQualityIndex' event to Kafka topic.
-    await pl_gov_gios_airquality_mqtt_event_producer.send_pl_gov_gios_airquality_mqtt_air_quality_index(_station_id = 'TODO: replace me', data = _air_quality_index)
-    print(f"Sent 'pl.gov.gios.airquality.mqtt.AirQualityIndex' event: {_air_quality_index.to_json()}")
-    if connection_string:
-        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
-        # or an Azure Event Hubs connection string
-        pl_gov_gios_airquality_amqp_event_producer = PlGovGiosAirqualityAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
-    else:
-        # use a Kafka producer configuration provided as JSON text
-        kafka_producer = KafkaProducer(json.loads(producer_config))
-        pl_gov_gios_airquality_amqp_event_producer = PlGovGiosAirqualityAmqpEventProducer(kafka_producer, topic, 'binary')
-
-    # ---- pl.gov.gios.airquality.amqp.Station ----
-    # TODO: Supply event data for the pl.gov.gios.airquality.amqp.Station event
-    _station = Station()
-
-    # sends the 'pl.gov.gios.airquality.amqp.Station' event to Kafka topic.
-    await pl_gov_gios_airquality_amqp_event_producer.send_pl_gov_gios_airquality_amqp_station(_station_id = 'TODO: replace me', data = _station)
-    print(f"Sent 'pl.gov.gios.airquality.amqp.Station' event: {_station.to_json()}")
-
-    # ---- pl.gov.gios.airquality.amqp.Sensor ----
-    # TODO: Supply event data for the pl.gov.gios.airquality.amqp.Sensor event
-    _sensor = Sensor()
-
-    # sends the 'pl.gov.gios.airquality.amqp.Sensor' event to Kafka topic.
-    await pl_gov_gios_airquality_amqp_event_producer.send_pl_gov_gios_airquality_amqp_sensor(_station_id = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _sensor)
-    print(f"Sent 'pl.gov.gios.airquality.amqp.Sensor' event: {_sensor.to_json()}")
-
-    # ---- pl.gov.gios.airquality.amqp.Measurement ----
-    # TODO: Supply event data for the pl.gov.gios.airquality.amqp.Measurement event
-    _measurement = Measurement()
-
-    # sends the 'pl.gov.gios.airquality.amqp.Measurement' event to Kafka topic.
-    await pl_gov_gios_airquality_amqp_event_producer.send_pl_gov_gios_airquality_amqp_measurement(_station_id = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _measurement)
-    print(f"Sent 'pl.gov.gios.airquality.amqp.Measurement' event: {_measurement.to_json()}")
-
-    # ---- pl.gov.gios.airquality.amqp.AirQualityIndex ----
-    # TODO: Supply event data for the pl.gov.gios.airquality.amqp.AirQualityIndex event
-    _air_quality_index = AirQualityIndex()
-
-    # sends the 'pl.gov.gios.airquality.amqp.AirQualityIndex' event to Kafka topic.
-    await pl_gov_gios_airquality_amqp_event_producer.send_pl_gov_gios_airquality_amqp_air_quality_index(_station_id = 'TODO: replace me', data = _air_quality_index)
-    print(f"Sent 'pl.gov.gios.airquality.amqp.AirQualityIndex' event: {_air_quality_index.to_json()}")
+    # sends the 'pl.gov.gios.airquality.kafka.Measurement' event to Kafka topic.
+    await pl_gov_gios_airquality_kafka_event_producer.send_pl_gov_gios_airquality_kafka_measurement(_station_id = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _measurement)
+    print(f"Sent 'pl.gov.gios.airquality.kafka.Measurement' event: {_measurement.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")

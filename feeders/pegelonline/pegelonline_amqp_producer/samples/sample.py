@@ -28,8 +28,8 @@ def main():
         
         # Send Station message
         print("Sending Station message...")
-        # TODO: Create a Station instance with actual data
-        # data = Station(...)
+        # TODO: Create a object instance with actual data
+        # data = object(...)
         # producer.send_station(
         #     data=data,
         #     content_type="application/json"
@@ -40,8 +40,8 @@ def main():
         
         # Send CurrentMeasurement message
         print("Sending CurrentMeasurement message...")
-        # TODO: Create a CurrentMeasurement instance with actual data
-        # data = CurrentMeasurement(...)
+        # TODO: Create a object instance with actual data
+        # data = object(...)
         # producer.send_current_measurement(
         #     data=data,
         #     content_type="application/json"

@@ -18,17 +18,15 @@ from confluent_kafka.admin import AdminClient, NewTopic
 from cloudevents.abstract import CloudEvent
 from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
-from gios_poland_producer_kafka_producer.producer import PlGovGiosAirqualityEventProducer
+from gios_poland_producer_kafka_producer.producer import PlGovGiosAirqualityKafkaEventProducer
 from gios_poland_producer_data import Station
 from test_gios_poland_producer_data_station import Test_Station
+from gios_poland_producer_data import AirQualityIndex
+from test_gios_poland_producer_data_airqualityindex import Test_AirQualityIndex
 from gios_poland_producer_data import Sensor
 from test_gios_poland_producer_data_sensor import Test_Sensor
 from gios_poland_producer_data import Measurement
 from test_gios_poland_producer_data_measurement import Test_Measurement
-from gios_poland_producer_data import AirQualityIndex
-from test_gios_poland_producer_data_airqualityindex import Test_AirQualityIndex
-from gios_poland_producer_kafka_producer.producer import PlGovGiosAirqualityMqttEventProducer
-from gios_poland_producer_kafka_producer.producer import PlGovGiosAirqualityAmqpEventProducer
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -62,8 +60,8 @@ def parse_cloudevent(msg: Message) -> CloudEvent:
     return ce
 
 
-def test_pl_gov_gios_airquality_plgovgiosairqualitystation(kafka_emulator):
-    """Test the PlGovGiosAirqualityStation event from the Pl.Gov.Gios.Airquality message group"""
+def test_pl_gov_gios_airquality_kafka_plgovgiosairqualitykafkastation(kafka_emulator):
+    """Test the PlGovGiosAirqualityKafkaStation event from the Pl.Gov.Gios.Airquality.Kafka message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -71,7 +69,7 @@ def test_pl_gov_gios_airquality_plgovgiosairqualitystation(kafka_emulator):
     producer = Producer({'bootstrap.servers': bootstrap_servers})
     consumer = Consumer({
         'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_pl_gov_gios_airquality_plgovgiosairqualitystation',  # Unique group per test
+        'group.id': 'test_pl_gov_gios_airquality_kafka_plgovgiosairqualitykafkastation',  # Unique group per test
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
@@ -101,17 +99,17 @@ def test_pl_gov_gios_airquality_plgovgiosairqualitystation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.Station":
+            if cloudevent['type'] == "pl.gov.gios.airquality.kafka.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = PlGovGiosAirqualityEventProducer(kafka_producer, topic, 'binary')
+    producer_instance = PlGovGiosAirqualityKafkaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Station.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_pl_gov_gios_airquality_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_pl_gov_gios_airquality_kafka_station(_station_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -125,8 +123,8 @@ def test_pl_gov_gios_airquality_plgovgiosairqualitystation(kafka_emulator):
     consumer.close()
 
 
-def test_pl_gov_gios_airquality_plgovgiosairqualitysensor(kafka_emulator):
-    """Test the PlGovGiosAirqualitySensor event from the Pl.Gov.Gios.Airquality message group"""
+def test_pl_gov_gios_airquality_kafka_plgovgiosairqualitykafkaairqualityindex(kafka_emulator):
+    """Test the PlGovGiosAirqualityKafkaAirQualityIndex event from the Pl.Gov.Gios.Airquality.Kafka message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -134,7 +132,7 @@ def test_pl_gov_gios_airquality_plgovgiosairqualitysensor(kafka_emulator):
     producer = Producer({'bootstrap.servers': bootstrap_servers})
     consumer = Consumer({
         'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_pl_gov_gios_airquality_plgovgiosairqualitysensor',  # Unique group per test
+        'group.id': 'test_pl_gov_gios_airquality_kafka_plgovgiosairqualitykafkaairqualityindex',  # Unique group per test
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
@@ -164,143 +162,17 @@ def test_pl_gov_gios_airquality_plgovgiosairqualitysensor(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.Sensor":
+            if cloudevent['type'] == "pl.gov.gios.airquality.kafka.AirQualityIndex":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = PlGovGiosAirqualityEventProducer(kafka_producer, topic, 'binary')
-    # Create valid test data using the test helper
-    event_data = Test_Sensor.create_instance()
-    
-    # Send 5 messages to test message settlement and ordering
-    for i in range(5):
-        producer_instance.send_pl_gov_gios_airquality_sensor(_station_id = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
-    
-    # Flush producer to ensure messages are sent before consumer polling
-    kafka_producer.flush(timeout=5.0)
-
-    # Verify all 5 messages received and assert Kafka key
-    for i in range(5):
-        received_key = on_event()
-        assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{station_id}".format(station_id=f'test_{i}')
-        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
-    consumer.close()
-
-
-def test_pl_gov_gios_airquality_plgovgiosairqualitymeasurement(kafka_emulator):
-    """Test the PlGovGiosAirqualityMeasurement event from the Pl.Gov.Gios.Airquality message group"""
-
-    bootstrap_servers = kafka_emulator["bootstrap_servers"]
-    topic = kafka_emulator["topic"]
-
-    producer = Producer({'bootstrap.servers': bootstrap_servers})
-    consumer = Consumer({
-        'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_pl_gov_gios_airquality_plgovgiosairqualitymeasurement',  # Unique group per test
-        'auto.offset.reset': 'earliest'
-    })
-    consumer.subscribe([topic])
-    
-    # Wait for partition assignment before producing messages
-    import time
-    assignment_timeout = time.time() + 10
-    while not consumer.assignment() and time.time() < assignment_timeout:
-        consumer.poll(0.1)
-    
-    # Verify partition assignment succeeded
-    if not consumer.assignment():
-        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-    
-    # Give consumer time to stabilize and seek to beginning
-    time.sleep(1)
-
-    def on_event():
-        import time
-        timeout = time.time() + 20  # 20 second timeout for CI robustness
-        while True:
-            if time.time() > timeout:
-                return None
-            msg = consumer.poll(1.0)
-            if msg is None:
-                continue
-            if msg.error():
-                continue
-            cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.Measurement":
-                return msg.key().decode('utf-8') if msg.key() else None
-
-    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = PlGovGiosAirqualityEventProducer(kafka_producer, topic, 'binary')
-    # Create valid test data using the test helper
-    event_data = Test_Measurement.create_instance()
-    
-    # Send 5 messages to test message settlement and ordering
-    for i in range(5):
-        producer_instance.send_pl_gov_gios_airquality_measurement(_station_id = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
-    
-    # Flush producer to ensure messages are sent before consumer polling
-    kafka_producer.flush(timeout=5.0)
-
-    # Verify all 5 messages received and assert Kafka key
-    for i in range(5):
-        received_key = on_event()
-        assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{station_id}".format(station_id=f'test_{i}')
-        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
-    consumer.close()
-
-
-def test_pl_gov_gios_airquality_plgovgiosairqualityairqualityindex(kafka_emulator):
-    """Test the PlGovGiosAirqualityAirQualityIndex event from the Pl.Gov.Gios.Airquality message group"""
-
-    bootstrap_servers = kafka_emulator["bootstrap_servers"]
-    topic = kafka_emulator["topic"]
-
-    producer = Producer({'bootstrap.servers': bootstrap_servers})
-    consumer = Consumer({
-        'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_pl_gov_gios_airquality_plgovgiosairqualityairqualityindex',  # Unique group per test
-        'auto.offset.reset': 'earliest'
-    })
-    consumer.subscribe([topic])
-    
-    # Wait for partition assignment before producing messages
-    import time
-    assignment_timeout = time.time() + 10
-    while not consumer.assignment() and time.time() < assignment_timeout:
-        consumer.poll(0.1)
-    
-    # Verify partition assignment succeeded
-    if not consumer.assignment():
-        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-    
-    # Give consumer time to stabilize and seek to beginning
-    time.sleep(1)
-
-    def on_event():
-        import time
-        timeout = time.time() + 20  # 20 second timeout for CI robustness
-        while True:
-            if time.time() > timeout:
-                return None
-            msg = consumer.poll(1.0)
-            if msg is None:
-                continue
-            if msg.error():
-                continue
-            cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.AirQualityIndex":
-                return msg.key().decode('utf-8') if msg.key() else None
-
-    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = PlGovGiosAirqualityEventProducer(kafka_producer, topic, 'binary')
+    producer_instance = PlGovGiosAirqualityKafkaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_AirQualityIndex.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_pl_gov_gios_airquality_air_quality_index(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_pl_gov_gios_airquality_kafka_air_quality_index(_station_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -314,8 +186,8 @@ def test_pl_gov_gios_airquality_plgovgiosairqualityairqualityindex(kafka_emulato
     consumer.close()
 
 
-def test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttstation(kafka_emulator):
-    """Test the PlGovGiosAirqualityMqttStation event from the Pl.Gov.Gios.Airquality.Mqtt message group"""
+def test_pl_gov_gios_airquality_kafka_plgovgiosairqualitykafkasensor(kafka_emulator):
+    """Test the PlGovGiosAirqualityKafkaSensor event from the Pl.Gov.Gios.Airquality.Kafka message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -323,7 +195,7 @@ def test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttstation(kafka_emulat
     producer = Producer({'bootstrap.servers': bootstrap_servers})
     consumer = Consumer({
         'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttstation',  # Unique group per test
+        'group.id': 'test_pl_gov_gios_airquality_kafka_plgovgiosairqualitykafkasensor',  # Unique group per test
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
@@ -353,78 +225,17 @@ def test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttstation(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.mqtt.Station":
+            if cloudevent['type'] == "pl.gov.gios.airquality.kafka.Sensor":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = PlGovGiosAirqualityMqttEventProducer(kafka_producer, topic, 'binary')
-    # Create valid test data using the test helper
-    event_data = Test_Station.create_instance()
-    
-    # Send 5 messages to test message settlement and ordering
-    for i in range(5):
-        producer_instance.send_pl_gov_gios_airquality_mqtt_station(_station_id = f'test_{i}', data = event_data)
-    
-    # Flush producer to ensure messages are sent before consumer polling
-    kafka_producer.flush(timeout=5.0)
-
-    # Verify all 5 messages received and assert Kafka key
-    for i in range(5):
-        received_key = on_event()
-        assert received_key is not None, f"Failed to receive message {i+1} of 5"
-    consumer.close()
-
-
-def test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttsensor(kafka_emulator):
-    """Test the PlGovGiosAirqualityMqttSensor event from the Pl.Gov.Gios.Airquality.Mqtt message group"""
-
-    bootstrap_servers = kafka_emulator["bootstrap_servers"]
-    topic = kafka_emulator["topic"]
-
-    producer = Producer({'bootstrap.servers': bootstrap_servers})
-    consumer = Consumer({
-        'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttsensor',  # Unique group per test
-        'auto.offset.reset': 'earliest'
-    })
-    consumer.subscribe([topic])
-    
-    # Wait for partition assignment before producing messages
-    import time
-    assignment_timeout = time.time() + 10
-    while not consumer.assignment() and time.time() < assignment_timeout:
-        consumer.poll(0.1)
-    
-    # Verify partition assignment succeeded
-    if not consumer.assignment():
-        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-    
-    # Give consumer time to stabilize and seek to beginning
-    time.sleep(1)
-
-    def on_event():
-        import time
-        timeout = time.time() + 20  # 20 second timeout for CI robustness
-        while True:
-            if time.time() > timeout:
-                return None
-            msg = consumer.poll(1.0)
-            if msg is None:
-                continue
-            if msg.error():
-                continue
-            cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.mqtt.Sensor":
-                return msg.key().decode('utf-8') if msg.key() else None
-
-    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = PlGovGiosAirqualityMqttEventProducer(kafka_producer, topic, 'binary')
+    producer_instance = PlGovGiosAirqualityKafkaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Sensor.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_pl_gov_gios_airquality_mqtt_sensor(_station_id = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
+        producer_instance.send_pl_gov_gios_airquality_kafka_sensor(_station_id = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -433,11 +244,13 @@ def test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttsensor(kafka_emulato
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
+        expected_key = "{station_id}/{sensor_id}".format(station_id=f'test_{i}', sensor_id=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
 
-def test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttmeasurement(kafka_emulator):
-    """Test the PlGovGiosAirqualityMqttMeasurement event from the Pl.Gov.Gios.Airquality.Mqtt message group"""
+def test_pl_gov_gios_airquality_kafka_plgovgiosairqualitykafkameasurement(kafka_emulator):
+    """Test the PlGovGiosAirqualityKafkaMeasurement event from the Pl.Gov.Gios.Airquality.Kafka message group"""
 
     bootstrap_servers = kafka_emulator["bootstrap_servers"]
     topic = kafka_emulator["topic"]
@@ -445,7 +258,7 @@ def test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttmeasurement(kafka_em
     producer = Producer({'bootstrap.servers': bootstrap_servers})
     consumer = Consumer({
         'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttmeasurement',  # Unique group per test
+        'group.id': 'test_pl_gov_gios_airquality_kafka_plgovgiosairqualitykafkameasurement',  # Unique group per test
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
@@ -475,17 +288,17 @@ def test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttmeasurement(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.mqtt.Measurement":
+            if cloudevent['type'] == "pl.gov.gios.airquality.kafka.Measurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = PlGovGiosAirqualityMqttEventProducer(kafka_producer, topic, 'binary')
+    producer_instance = PlGovGiosAirqualityKafkaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Measurement.create_instance()
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_pl_gov_gios_airquality_mqtt_measurement(_station_id = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
+        producer_instance.send_pl_gov_gios_airquality_kafka_measurement(_station_id = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -494,366 +307,6 @@ def test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttmeasurement(kafka_em
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-    consumer.close()
-
-
-def test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttairqualityindex(kafka_emulator):
-    """Test the PlGovGiosAirqualityMqttAirQualityIndex event from the Pl.Gov.Gios.Airquality.Mqtt message group"""
-
-    bootstrap_servers = kafka_emulator["bootstrap_servers"]
-    topic = kafka_emulator["topic"]
-
-    producer = Producer({'bootstrap.servers': bootstrap_servers})
-    consumer = Consumer({
-        'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_pl_gov_gios_airquality_mqtt_plgovgiosairqualitymqttairqualityindex',  # Unique group per test
-        'auto.offset.reset': 'earliest'
-    })
-    consumer.subscribe([topic])
-    
-    # Wait for partition assignment before producing messages
-    import time
-    assignment_timeout = time.time() + 10
-    while not consumer.assignment() and time.time() < assignment_timeout:
-        consumer.poll(0.1)
-    
-    # Verify partition assignment succeeded
-    if not consumer.assignment():
-        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-    
-    # Give consumer time to stabilize and seek to beginning
-    time.sleep(1)
-
-    def on_event():
-        import time
-        timeout = time.time() + 20  # 20 second timeout for CI robustness
-        while True:
-            if time.time() > timeout:
-                return None
-            msg = consumer.poll(1.0)
-            if msg is None:
-                continue
-            if msg.error():
-                continue
-            cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.mqtt.AirQualityIndex":
-                return msg.key().decode('utf-8') if msg.key() else None
-
-    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = PlGovGiosAirqualityMqttEventProducer(kafka_producer, topic, 'binary')
-    # Create valid test data using the test helper
-    event_data = Test_AirQualityIndex.create_instance()
-    
-    # Send 5 messages to test message settlement and ordering
-    for i in range(5):
-        producer_instance.send_pl_gov_gios_airquality_mqtt_air_quality_index(_station_id = f'test_{i}', data = event_data)
-    
-    # Flush producer to ensure messages are sent before consumer polling
-    kafka_producer.flush(timeout=5.0)
-
-    # Verify all 5 messages received and assert Kafka key
-    for i in range(5):
-        received_key = on_event()
-        assert received_key is not None, f"Failed to receive message {i+1} of 5"
-    consumer.close()
-
-
-def test_pl_gov_gios_airquality_amqp_plgovgiosairqualityamqpstation(kafka_emulator):
-    """Test the PlGovGiosAirqualityAmqpStation event from the Pl.Gov.Gios.Airquality.Amqp message group"""
-
-    bootstrap_servers = kafka_emulator["bootstrap_servers"]
-    topic = kafka_emulator["topic"]
-
-    producer = Producer({'bootstrap.servers': bootstrap_servers})
-    consumer = Consumer({
-        'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_pl_gov_gios_airquality_amqp_plgovgiosairqualityamqpstation',  # Unique group per test
-        'auto.offset.reset': 'earliest'
-    })
-    consumer.subscribe([topic])
-    
-    # Wait for partition assignment before producing messages
-    import time
-    assignment_timeout = time.time() + 10
-    while not consumer.assignment() and time.time() < assignment_timeout:
-        consumer.poll(0.1)
-    
-    # Verify partition assignment succeeded
-    if not consumer.assignment():
-        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-    
-    # Give consumer time to stabilize and seek to beginning
-    time.sleep(1)
-
-    def on_event():
-        import time
-        timeout = time.time() + 20  # 20 second timeout for CI robustness
-        while True:
-            if time.time() > timeout:
-                return None
-            msg = consumer.poll(1.0)
-            if msg is None:
-                continue
-            if msg.error():
-                continue
-            cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.amqp.Station":
-                return msg.key().decode('utf-8') if msg.key() else None
-
-    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = PlGovGiosAirqualityAmqpEventProducer(kafka_producer, topic, 'binary')
-    # Create valid test data using the test helper
-    event_data = Test_Station.create_instance()
-    
-    # Send 5 messages to test message settlement and ordering
-    for i in range(5):
-        producer_instance.send_pl_gov_gios_airquality_amqp_station(_station_id = f'test_{i}', data = event_data)
-    
-    # Flush producer to ensure messages are sent before consumer polling
-    kafka_producer.flush(timeout=5.0)
-
-    # Verify all 5 messages received and assert Kafka key
-    for i in range(5):
-        received_key = on_event()
-        assert received_key is not None, f"Failed to receive message {i+1} of 5"
-    consumer.close()
-
-
-def test_pl_gov_gios_airquality_amqp_plgovgiosairqualityamqpsensor(kafka_emulator):
-    """Test the PlGovGiosAirqualityAmqpSensor event from the Pl.Gov.Gios.Airquality.Amqp message group"""
-
-    bootstrap_servers = kafka_emulator["bootstrap_servers"]
-    topic = kafka_emulator["topic"]
-
-    producer = Producer({'bootstrap.servers': bootstrap_servers})
-    consumer = Consumer({
-        'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_pl_gov_gios_airquality_amqp_plgovgiosairqualityamqpsensor',  # Unique group per test
-        'auto.offset.reset': 'earliest'
-    })
-    consumer.subscribe([topic])
-    
-    # Wait for partition assignment before producing messages
-    import time
-    assignment_timeout = time.time() + 10
-    while not consumer.assignment() and time.time() < assignment_timeout:
-        consumer.poll(0.1)
-    
-    # Verify partition assignment succeeded
-    if not consumer.assignment():
-        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-    
-    # Give consumer time to stabilize and seek to beginning
-    time.sleep(1)
-
-    def on_event():
-        import time
-        timeout = time.time() + 20  # 20 second timeout for CI robustness
-        while True:
-            if time.time() > timeout:
-                return None
-            msg = consumer.poll(1.0)
-            if msg is None:
-                continue
-            if msg.error():
-                continue
-            cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.amqp.Sensor":
-                return msg.key().decode('utf-8') if msg.key() else None
-
-    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = PlGovGiosAirqualityAmqpEventProducer(kafka_producer, topic, 'binary')
-    # Create valid test data using the test helper
-    event_data = Test_Sensor.create_instance()
-    
-    # Send 5 messages to test message settlement and ordering
-    for i in range(5):
-        producer_instance.send_pl_gov_gios_airquality_amqp_sensor(_station_id = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
-    
-    # Flush producer to ensure messages are sent before consumer polling
-    kafka_producer.flush(timeout=5.0)
-
-    # Verify all 5 messages received and assert Kafka key
-    for i in range(5):
-        received_key = on_event()
-        assert received_key is not None, f"Failed to receive message {i+1} of 5"
-    consumer.close()
-
-
-def test_pl_gov_gios_airquality_amqp_plgovgiosairqualityamqpmeasurement(kafka_emulator):
-    """Test the PlGovGiosAirqualityAmqpMeasurement event from the Pl.Gov.Gios.Airquality.Amqp message group"""
-
-    bootstrap_servers = kafka_emulator["bootstrap_servers"]
-    topic = kafka_emulator["topic"]
-
-    producer = Producer({'bootstrap.servers': bootstrap_servers})
-    consumer = Consumer({
-        'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_pl_gov_gios_airquality_amqp_plgovgiosairqualityamqpmeasurement',  # Unique group per test
-        'auto.offset.reset': 'earliest'
-    })
-    consumer.subscribe([topic])
-    
-    # Wait for partition assignment before producing messages
-    import time
-    assignment_timeout = time.time() + 10
-    while not consumer.assignment() and time.time() < assignment_timeout:
-        consumer.poll(0.1)
-    
-    # Verify partition assignment succeeded
-    if not consumer.assignment():
-        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-    
-    # Give consumer time to stabilize and seek to beginning
-    time.sleep(1)
-
-    def on_event():
-        import time
-        timeout = time.time() + 20  # 20 second timeout for CI robustness
-        while True:
-            if time.time() > timeout:
-                return None
-            msg = consumer.poll(1.0)
-            if msg is None:
-                continue
-            if msg.error():
-                continue
-            cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.amqp.Measurement":
-                return msg.key().decode('utf-8') if msg.key() else None
-
-    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = PlGovGiosAirqualityAmqpEventProducer(kafka_producer, topic, 'binary')
-    # Create valid test data using the test helper
-    event_data = Test_Measurement.create_instance()
-    
-    # Send 5 messages to test message settlement and ordering
-    for i in range(5):
-        producer_instance.send_pl_gov_gios_airquality_amqp_measurement(_station_id = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
-    
-    # Flush producer to ensure messages are sent before consumer polling
-    kafka_producer.flush(timeout=5.0)
-
-    # Verify all 5 messages received and assert Kafka key
-    for i in range(5):
-        received_key = on_event()
-        assert received_key is not None, f"Failed to receive message {i+1} of 5"
-    consumer.close()
-
-
-def test_pl_gov_gios_airquality_amqp_plgovgiosairqualityamqpairqualityindex(kafka_emulator):
-    """Test the PlGovGiosAirqualityAmqpAirQualityIndex event from the Pl.Gov.Gios.Airquality.Amqp message group"""
-
-    bootstrap_servers = kafka_emulator["bootstrap_servers"]
-    topic = kafka_emulator["topic"]
-
-    producer = Producer({'bootstrap.servers': bootstrap_servers})
-    consumer = Consumer({
-        'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_pl_gov_gios_airquality_amqp_plgovgiosairqualityamqpairqualityindex',  # Unique group per test
-        'auto.offset.reset': 'earliest'
-    })
-    consumer.subscribe([topic])
-    
-    # Wait for partition assignment before producing messages
-    import time
-    assignment_timeout = time.time() + 10
-    while not consumer.assignment() and time.time() < assignment_timeout:
-        consumer.poll(0.1)
-    
-    # Verify partition assignment succeeded
-    if not consumer.assignment():
-        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-    
-    # Give consumer time to stabilize and seek to beginning
-    time.sleep(1)
-
-    def on_event():
-        import time
-        timeout = time.time() + 20  # 20 second timeout for CI robustness
-        while True:
-            if time.time() > timeout:
-                return None
-            msg = consumer.poll(1.0)
-            if msg is None:
-                continue
-            if msg.error():
-                continue
-            cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.amqp.AirQualityIndex":
-                return msg.key().decode('utf-8') if msg.key() else None
-
-    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = PlGovGiosAirqualityAmqpEventProducer(kafka_producer, topic, 'binary')
-    # Create valid test data using the test helper
-    event_data = Test_AirQualityIndex.create_instance()
-    
-    # Send 5 messages to test message settlement and ordering
-    for i in range(5):
-        producer_instance.send_pl_gov_gios_airquality_amqp_air_quality_index(_station_id = f'test_{i}', data = event_data)
-    
-    # Flush producer to ensure messages are sent before consumer polling
-    kafka_producer.flush(timeout=5.0)
-
-    # Verify all 5 messages received and assert Kafka key
-    for i in range(5):
-        received_key = on_event()
-        assert received_key is not None, f"Failed to receive message {i+1} of 5"
-    consumer.close()
-
-
-def test_pl_gov_gios_airquality_cross_event_type_kafka_key(kafka_emulator):
-    """Test that different event types in Pl.Gov.Gios.Airquality produce the same Kafka key for the same placeholder values"""
-
-    bootstrap_servers = kafka_emulator["bootstrap_servers"]
-    topic = kafka_emulator["topic"]
-
-    consumer = Consumer({
-        'bootstrap.servers': bootstrap_servers,
-        'group.id': 'test_pl_gov_gios_airquality_cross_key',
-        'auto.offset.reset': 'latest'
-    })
-    consumer.subscribe([topic])
-
-    import time
-    assignment_timeout = time.time() + 10
-    while not consumer.assignment() and time.time() < assignment_timeout:
-        consumer.poll(0.1)
-    if not consumer.assignment():
-        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-    # Drain any pre-existing messages before producing our test messages
-    drain_timeout = time.time() + 3
-    while time.time() < drain_timeout:
-        msg = consumer.poll(0.5)
-    time.sleep(1)
-
-    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
-    producer_instance = PlGovGiosAirqualityEventProducer(kafka_producer, topic, 'binary')
-
-    shared_key_value = "shared_entity_42"
-    data1 = Test_Station.create_instance()
-    data2 = Test_Sensor.create_instance()
-
-    producer_instance.send_pl_gov_gios_airquality_station(_station_id = shared_key_value, data = data1)
-    producer_instance.send_pl_gov_gios_airquality_sensor(_station_id = shared_key_value, _sensor_id = shared_key_value, data = data2)
-    kafka_producer.flush(timeout=5.0)
-
-    # Collect keys from both messages
-    collected_keys = []
-    timeout = time.time() + 20
-    while len(collected_keys) < 2 and time.time() < timeout:
-        msg = consumer.poll(1.0)
-        if msg is None or msg.error():
-            continue
-        cloudevent = parse_cloudevent(msg)
-        if cloudevent['type'] in ["pl.gov.gios.airquality.Station", "pl.gov.gios.airquality.Sensor"]:
-            key = msg.key().decode('utf-8') if msg.key() else None
-            collected_keys.append(key)
-
-    assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
-    assert collected_keys[0] == collected_keys[1], \
-        f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
-    expected_key = "{station_id}".format(station_id=shared_key_value)
-    assert collected_keys[0] == expected_key, \
-        f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
+        expected_key = "{station_id}/{sensor_id}".format(station_id=f'test_{i}', sensor_id=f'test_{i}')
+        assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()

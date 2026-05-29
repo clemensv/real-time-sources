@@ -13,14 +13,13 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "gios-poland",
-          "key": "{station_id}"
+          "topic": "gios-poland"
         }
       },
       "messagegroups": [
-        "#/messagegroups/pl.gov.gios.airquality"
+        "#/messagegroups/pl.gov.gios.airquality.kafka"
       ],
-      "description": "Kafka producer endpoint for GIOŚ Poland Air Quality CloudEvents on the `gios-poland` topic keyed by `{station_id}`."
+      "description": "Kafka producer endpoint for GIOŚ Poland Air Quality CloudEvents on the `gios-poland` topic with per-message keys matching CloudEvent subjects."
     },
     "pl.gov.gios.airquality.Mqtt": {
       "usage": [
@@ -148,6 +147,43 @@
         }
       },
       "description": "Events from GIOŚ Poland Air Quality covering Polish air-quality monitoring stations. Reference records identify stations, sites, or areas; measurement and forecast records carry the current source data."
+    },
+    "pl.gov.gios.airquality.kafka": {
+      "description": "Kafka variant of pl.gov.gios.airquality events with per-message keys matching CloudEvent subjects.",
+      "messages": {
+        "pl.gov.gios.airquality.kafka.Station": {
+          "name": "Station",
+          "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Station",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{station_id}"
+          }
+        },
+        "pl.gov.gios.airquality.kafka.AirQualityIndex": {
+          "name": "AirQualityIndex",
+          "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.AirQualityIndex",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{station_id}"
+          }
+        },
+        "pl.gov.gios.airquality.kafka.Sensor": {
+          "name": "Sensor",
+          "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Sensor",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{station_id}/{sensor_id}"
+          }
+        },
+        "pl.gov.gios.airquality.kafka.Measurement": {
+          "name": "Measurement",
+          "basemessageuri": "/messagegroups/pl.gov.gios.airquality/messages/pl.gov.gios.airquality.Measurement",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{station_id}/{sensor_id}"
+          }
+        }
+      }
     },
     "pl.gov.gios.airquality.mqtt": {
       "description": "MQTT 5 variant of pl.gov.gios.airquality events with subscriber-friendly UNS topics.",

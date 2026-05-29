@@ -53,16 +53,16 @@ class FakeEventProducer:
         self.events = []
         self.flush_remaining = flush_remaining
 
-    def send_jp_tepco_denkiyoho_supply_capacity(self, **kwargs):
+    def send_jp_tepco_denkiyoho_kafka_supply_capacity(self, **kwargs):
         self.events.append(("supply", kwargs))
 
-    def send_jp_tepco_denkiyoho_peak_demand_forecast(self, **kwargs):
+    def send_jp_tepco_denkiyoho_kafka_peak_demand_forecast(self, **kwargs):
         self.events.append(("peak_forecast", kwargs))
 
-    def send_jp_tepco_denkiyoho_demand_actual(self, **kwargs):
+    def send_jp_tepco_denkiyoho_kafka_demand_actual(self, **kwargs):
         self.events.append(("actual", kwargs))
 
-    def send_jp_tepco_denkiyoho_demand_forecast(self, **kwargs):
+    def send_jp_tepco_denkiyoho_kafka_demand_forecast(self, **kwargs):
         self.events.append(("forecast", kwargs))
 
     def flush(self, timeout=30.0):
@@ -168,13 +168,18 @@ def test_poll_once_emits_and_deduplicates_per_type(shift_jis_fixture):
     assert len(state.forecast_seen) == 2
 
     supply_event = producer.events[0][1]
-    assert supply_event["_time"] == SUPPLY_CAPACITY_TIME_SENTINEL
+    assert supply_event["_area_code"] == "TEPCO"
+    assert "_date" not in supply_event
+    assert "_time" not in supply_event
+    assert supply_event["data"].time == SUPPLY_CAPACITY_TIME_SENTINEL
     assert supply_event["data"].daily_max_usage_pct == 88.0
     peak_event = producer.events[1][1]
-    assert peak_event["_time"] == PEAK_FORECAST_TIME_SENTINEL
+    assert peak_event["_area_code"] == "TEPCO"
+    assert peak_event["data"].time == PEAK_FORECAST_TIME_SENTINEL
     assert peak_event["data"].peak_demand_forecast_jp_unit_value == 3363
     five_min_actual_event = producer.events[4][1]
-    assert five_min_actual_event["_time"] == "00:00"
+    assert five_min_actual_event["_area_code"] == "TEPCO"
+    assert five_min_actual_event["data"].time == "00:00"
     assert five_min_actual_event["data"].solar_generation_jp_unit_value == 0
     assert five_min_actual_event["data"].solar_generation_mw == 0.0
     assert five_min_actual_event["data"].solar_share_pct == 0.0

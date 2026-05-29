@@ -30,23 +30,23 @@ class Test_SupplyCapacity(unittest.TestCase):
         """
         instance = SupplyCapacity(
             date=datetime.date.today(),
-            time='atijzyyuyenpuludzedt',
-            peak_supply_capacity_mw=float(82.78519443065142),
-            peak_supply_capacity_jp_unit_value=int(64),
-            peak_time_slot='kimhmueeevybdrrzgexp',
-            peak_reserve_margin_pct=float(10.50601014575534),
-            peak_usage_pct=float(91.31799679867008),
-            daily_max_usage_pct=float(39.00229264555213),
-            daily_max_usage_time_slot='ybdaciyojwsxzztanagc',
+            time='vicyxhuctsgserzcruee',
+            peak_supply_capacity_mw=float(82.68022467617017),
+            peak_supply_capacity_jp_unit_value=int(43),
+            peak_time_slot='akvhkgaxhshmthoapswi',
+            peak_reserve_margin_pct=float(30.756738673464458),
+            peak_usage_pct=float(14.949959834640769),
+            daily_max_usage_pct=float(36.442153563749415),
+            daily_max_usage_time_slot='hdzbqmnxasxyencdajcg',
             update_datetime=datetime.datetime.now(datetime.timezone.utc),
             update_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            area_code='axghmuyhhjabozihlxgu',
-            area_name_jp='jixeywovtzpvflgajzcw',
-            area_name_en='kqavryxozudrbhmymadi'
+            area_code='lctznzfgoyflscdyljjs',
+            area_name_jp='bimbqqujwuwiqazxnqze',
+            area_name_en='ugwfuuucmhxfnercbrkh'
         )
         return instance
 
-
+    
     def test_date_property(self):
         """
         Test date property
@@ -54,71 +54,71 @@ class Test_SupplyCapacity(unittest.TestCase):
         test_value = datetime.date.today()
         self.instance.date = test_value
         self.assertEqual(self.instance.date, test_value)
-
+    
     def test_time_property(self):
         """
         Test time property
         """
-        test_value = 'atijzyyuyenpuludzedt'
+        test_value = 'vicyxhuctsgserzcruee'
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
-
+    
     def test_peak_supply_capacity_mw_property(self):
         """
         Test peak_supply_capacity_mw property
         """
-        test_value = float(82.78519443065142)
+        test_value = float(82.68022467617017)
         self.instance.peak_supply_capacity_mw = test_value
         self.assertEqual(self.instance.peak_supply_capacity_mw, test_value)
-
+    
     def test_peak_supply_capacity_jp_unit_value_property(self):
         """
         Test peak_supply_capacity_jp_unit_value property
         """
-        test_value = int(64)
+        test_value = int(43)
         self.instance.peak_supply_capacity_jp_unit_value = test_value
         self.assertEqual(self.instance.peak_supply_capacity_jp_unit_value, test_value)
-
+    
     def test_peak_time_slot_property(self):
         """
         Test peak_time_slot property
         """
-        test_value = 'kimhmueeevybdrrzgexp'
+        test_value = 'akvhkgaxhshmthoapswi'
         self.instance.peak_time_slot = test_value
         self.assertEqual(self.instance.peak_time_slot, test_value)
-
+    
     def test_peak_reserve_margin_pct_property(self):
         """
         Test peak_reserve_margin_pct property
         """
-        test_value = float(10.50601014575534)
+        test_value = float(30.756738673464458)
         self.instance.peak_reserve_margin_pct = test_value
         self.assertEqual(self.instance.peak_reserve_margin_pct, test_value)
-
+    
     def test_peak_usage_pct_property(self):
         """
         Test peak_usage_pct property
         """
-        test_value = float(91.31799679867008)
+        test_value = float(14.949959834640769)
         self.instance.peak_usage_pct = test_value
         self.assertEqual(self.instance.peak_usage_pct, test_value)
-
+    
     def test_daily_max_usage_pct_property(self):
         """
         Test daily_max_usage_pct property
         """
-        test_value = float(39.00229264555213)
+        test_value = float(36.442153563749415)
         self.instance.daily_max_usage_pct = test_value
         self.assertEqual(self.instance.daily_max_usage_pct, test_value)
-
+    
     def test_daily_max_usage_time_slot_property(self):
         """
         Test daily_max_usage_time_slot property
         """
-        test_value = 'ybdaciyojwsxzztanagc'
+        test_value = 'hdzbqmnxasxyencdajcg'
         self.instance.daily_max_usage_time_slot = test_value
         self.assertEqual(self.instance.daily_max_usage_time_slot, test_value)
-
+    
     def test_update_datetime_property(self):
         """
         Test update_datetime property
@@ -126,7 +126,7 @@ class Test_SupplyCapacity(unittest.TestCase):
         test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.update_datetime = test_value
         self.assertEqual(self.instance.update_datetime, test_value)
-
+    
     def test_update_datetime_local_property(self):
         """
         Test update_datetime_local property
@@ -134,40 +134,31 @@ class Test_SupplyCapacity(unittest.TestCase):
         test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.update_datetime_local = test_value
         self.assertEqual(self.instance.update_datetime_local, test_value)
-
+    
     def test_area_code_property(self):
         """
         Test area_code property
         """
-        test_value = 'axghmuyhhjabozihlxgu'
+        test_value = 'lctznzfgoyflscdyljjs'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
-
+    
     def test_area_name_jp_property(self):
         """
         Test area_name_jp property
         """
-        test_value = 'jixeywovtzpvflgajzcw'
+        test_value = 'bimbqqujwuwiqazxnqze'
         self.instance.area_name_jp = test_value
         self.assertEqual(self.instance.area_name_jp, test_value)
-
+    
     def test_area_name_en_property(self):
         """
         Test area_name_en property
         """
-        test_value = 'kqavryxozudrbhmymadi'
+        test_value = 'ugwfuuucmhxfnercbrkh'
         self.instance.area_name_en = test_value
         self.assertEqual(self.instance.area_name_en, test_value)
-
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = SupplyCapacity.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
+    
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

@@ -28,12 +28,12 @@ class Test_Sensor(unittest.TestCase):
         Create instance of Sensor for testing
         """
         instance = Sensor(
-            sensor_id=int(31),
-            station_id=int(41),
-            parameter_name='frfsxqhussxhoumzqpts',
-            parameter_formula='yfigndtxishyznocdmik',
-            parameter_code='kiqywetkgbtzhplvlanb',
-            parameter_id=int(51)
+            sensor_id=int(28),
+            station_id=int(100),
+            parameter_name='krrcnzrliafgsdbbojxl',
+            parameter_formula='qwdosgrpdbewpoyvvlyr',
+            parameter_code='auisnsyzomljfilmyzsy',
+            parameter_id=int(76)
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Sensor(unittest.TestCase):
         """
         Test sensor_id property
         """
-        test_value = int(31)
+        test_value = int(28)
         self.instance.sensor_id = test_value
         self.assertEqual(self.instance.sensor_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_Sensor(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = int(41)
+        test_value = int(100)
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_Sensor(unittest.TestCase):
         """
         Test parameter_name property
         """
-        test_value = 'frfsxqhussxhoumzqpts'
+        test_value = 'krrcnzrliafgsdbbojxl'
         self.instance.parameter_name = test_value
         self.assertEqual(self.instance.parameter_name, test_value)
     
@@ -66,7 +66,7 @@ class Test_Sensor(unittest.TestCase):
         """
         Test parameter_formula property
         """
-        test_value = 'yfigndtxishyznocdmik'
+        test_value = 'qwdosgrpdbewpoyvvlyr'
         self.instance.parameter_formula = test_value
         self.assertEqual(self.instance.parameter_formula, test_value)
     
@@ -74,7 +74,7 @@ class Test_Sensor(unittest.TestCase):
         """
         Test parameter_code property
         """
-        test_value = 'kiqywetkgbtzhplvlanb'
+        test_value = 'auisnsyzomljfilmyzsy'
         self.instance.parameter_code = test_value
         self.assertEqual(self.instance.parameter_code, test_value)
     
@@ -82,7 +82,7 @@ class Test_Sensor(unittest.TestCase):
         """
         Test parameter_id property
         """
-        test_value = int(51)
+        test_value = int(76)
         self.instance.parameter_id = test_value
         self.assertEqual(self.instance.parameter_id, test_value)
     

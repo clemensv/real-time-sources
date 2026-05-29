@@ -1,64 +1,50 @@
 """ PeakDemandForecast dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+from marshmallow import fields
+import json
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class PeakDemandForecast:
     """
-    Daily peak demand forecast record from TEPCO Electricity Forecast.
-    Attributes:
-        date (str): Operating date in ISO 8601 calendar-date form.
-        time (str): Stable key time component; peak demand forecast uses _peak_forecast_.
-        peak_demand_forecast_mw (float): Forecast maximum demand converted from 万kW to MW.
-        peak_demand_forecast_jp_unit_value (int): Original forecast maximum demand value in 万kW.
-        peak_time_slot (str): Forecast maximum-demand time slot.
-        update_datetime (str): Peak-demand forecast update timestamp converted to UTC RFC 3339.
-        update_datetime_local (str): Peak-demand forecast update timestamp in JST RFC 3339.
-        area_code (str): Constant TEPCO area code.
-        area_name_jp (str): Japanese TEPCO service area name.
-        area_name_en (str): English TEPCO service area name."""
+    Daily reference schema for TEPCO Electricity Forecast section 2 peak-demand forecast metadata for the Tokyo Electric Power Company service area.
     
-    date: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date"))
+    Attributes:
+        date (datetime.date)
+        time (str)
+        peak_demand_forecast_mw (float)
+        peak_demand_forecast_jp_unit_value (int)
+        peak_time_slot (str)
+        update_datetime (datetime.datetime)
+        update_datetime_local (datetime.datetime)
+        area_code (str)
+        area_name_jp (str)
+        area_name_en (str)
+    """
+    
+    
+    date: datetime.date=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date"))
     time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time"))
     peak_demand_forecast_mw: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="peak_demand_forecast_mw"))
     peak_demand_forecast_jp_unit_value: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="peak_demand_forecast_jp_unit_value"))
     peak_time_slot: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="peak_time_slot"))
-    update_datetime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="update_datetime"))
-    update_datetime_local: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="update_datetime_local"))
+    update_datetime: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="update_datetime", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    update_datetime_local: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="update_datetime_local", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     area_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_code"))
     area_name_jp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_name_jp"))
     area_name_en: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_name_en"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"PeakDemandForecast\", \"namespace\": \"jp.tepco.denkiyoho\", \"doc\": \"Daily peak demand forecast record from TEPCO Electricity Forecast.\", \"fields\": [{\"name\": \"date\", \"type\": \"string\", \"doc\": \"Operating date in ISO 8601 calendar-date form.\"}, {\"name\": \"time\", \"type\": \"string\", \"doc\": \"Stable key time component; peak demand forecast uses _peak_forecast_.\"}, {\"name\": \"peak_demand_forecast_mw\", \"type\": \"double\", \"doc\": \"Forecast maximum demand converted from \u4e07kW to MW.\"}, {\"name\": \"peak_demand_forecast_jp_unit_value\", \"type\": \"int\", \"doc\": \"Original forecast maximum demand value in \u4e07kW.\"}, {\"name\": \"peak_time_slot\", \"type\": \"string\", \"doc\": \"Forecast maximum-demand time slot.\"}, {\"name\": \"update_datetime\", \"type\": \"string\", \"doc\": \"Peak-demand forecast update timestamp converted to UTC RFC 3339.\"}, {\"name\": \"update_datetime_local\", \"type\": \"string\", \"doc\": \"Peak-demand forecast update timestamp in JST RFC 3339.\"}, {\"name\": \"area_code\", \"type\": \"string\", \"doc\": \"Constant TEPCO area code.\"}, {\"name\": \"area_name_jp\", \"type\": \"string\", \"doc\": \"Japanese TEPCO service area name.\"}, {\"name\": \"area_name_en\", \"type\": \"string\", \"doc\": \"English TEPCO service area name.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.date=str(self.date)
-        self.time=str(self.time)
-        self.peak_demand_forecast_mw=float(self.peak_demand_forecast_mw)
-        self.peak_demand_forecast_jp_unit_value=int(self.peak_demand_forecast_jp_unit_value)
-        self.peak_time_slot=str(self.peak_time_slot)
-        self.update_datetime=str(self.update_datetime)
-        self.update_datetime_local=str(self.update_datetime_local)
-        self.area_code=str(self.area_code)
-        self.area_name_jp=str(self.area_name_jp)
-        self.area_name_en=str(self.area_name_en)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'PeakDemandForecast':
@@ -69,7 +55,7 @@ class PeakDemandForecast:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -88,7 +74,7 @@ class PeakDemandForecast:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -102,8 +88,6 @@ class PeakDemandForecast:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -116,12 +100,6 @@ class PeakDemandForecast:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -150,10 +128,6 @@ class PeakDemandForecast:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -179,18 +153,6 @@ class PeakDemandForecast:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return PeakDemandForecast.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -198,5 +160,25 @@ class PeakDemandForecast:
                 return PeakDemandForecast.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'PeakDemandForecast':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            date=datetime.date.today(),
+            time='ovuecilovnyhufrpidyi',
+            peak_demand_forecast_mw=float(86.78209372175262),
+            peak_demand_forecast_jp_unit_value=int(26),
+            peak_time_slot='wygozcshpulrybprmzqj',
+            update_datetime=datetime.datetime.now(datetime.timezone.utc),
+            update_datetime_local=datetime.datetime.now(datetime.timezone.utc),
+            area_code='xdjhqipcrpbmwajtldem',
+            area_name_jp='eklhobqvhqtcimulszdz',
+            area_name_en='vkkhhjoujhyhkcuuhmgj'
+        )

@@ -19,9 +19,10 @@ import argparse
 import math
 import pyModeS as pms
 from pyModeS.extra.tcpclient import TcpClient
+from mode_s_producer_data import Record
 from mode_s_producer_data.mode_s.modes_adsb_record import ModeS_ADSB_Record
 from mode_s_producer_data.mode_s.messages import Messages
-from mode_s_producer_kafka_producer.producer import ModeSEventProducer
+from mode_s_producer_kafka_producer.producer import ModeSKafkaEventProducer
 from collections import deque
 from confluent_kafka import Producer
 
@@ -36,7 +37,7 @@ logger.propagate = False
 
 
 class ADSBClient(TcpClient):
-    def __init__(self, host, port, producer: ModeSEventProducer, rawtype='beast', ref_lat=0, ref_lon=0, stationid='station1'):
+    def __init__(self, host, port, producer: ModeSKafkaEventProducer, rawtype='beast', ref_lat=0, ref_lon=0, stationid='station1'):
         super(ADSBClient, self).__init__(host, port, rawtype)
         self.ref_lat = ref_lat
         self.ref_lon = ref_lon
@@ -146,6 +147,56 @@ class ADSBClient(TcpClient):
             # we're going to observe a moment of silence and hope the problem goes away
             time.sleep(0.1)
 
+    def _to_record(self, source: ModeS_ADSB_Record, msg_type: str) -> Record:
+        return Record(
+            icao24=source.icao.lower(),
+            receiver_id=self.stationid,
+            msg_type=msg_type,
+            ts=source.ts,
+            df=source.df,
+            tc=source.tc,
+            bcode=source.bcode,
+            alt=source.alt,
+            cs=source.cs,
+            sq=source.sq,
+            lat=source.lat,
+            lon=source.lon,
+            spd=source.spd,
+            ang=source.ang,
+            vr=source.vr,
+            rssi=source.rssi,
+        )
+
+    def _send_record(self, source: ModeS_ADSB_Record) -> bool:
+        if not source.icao:
+            logger.debug("Skipping Mode-S DF%d record without ICAO address", source.df)
+            return False
+
+        dispatch = {
+            17: ("df17-adsb", self.producer.send_mode_s_kafka_adsb),
+            18: ("df17-adsb", self.producer.send_mode_s_kafka_adsb),
+            4: ("df4-altitude", self.producer.send_mode_s_kafka_altitude_reply),
+            5: ("df5-identity", self.producer.send_mode_s_kafka_identity_reply),
+            11: ("df11-acquisition", self.producer.send_mode_s_kafka_acquisition_reply),
+            20: ("df20-comm-b", self.producer.send_mode_s_kafka_comm_baltitude),
+            21: ("df21-comm-b", self.producer.send_mode_s_kafka_comm_bidentity),
+        }
+        target = dispatch.get(source.df)
+        if target is None:
+            logger.debug("Skipping unsupported Mode-S DF%d record", source.df)
+            return False
+
+        msg_type, send = target
+        data = self._to_record(source, msg_type)
+        send(
+            _feedurl=self.feedurl,
+            _icao24=data.icao24,
+            _receiver_id=data.receiver_id,
+            data=data,
+            content_type="application/json",
+            flush_producer=False,
+        )
+        return True
 
     async def queue_consumer(self, stop_event: threading.Event):
         try:
@@ -161,13 +212,12 @@ class ADSBClient(TcpClient):
                         self.records_since_last_flush += len(bundle.messages)
                         messages_since_last_log += 1
                         records_since_last_log += len(bundle.messages)
-                        self.producer.send_mode_s_messages(
-                            _feedurl=self.feedurl,
-                            _stationid=self.stationid,
-                            data=bundle,
-                            content_type="application/json",
-                            flush_producer=False
-                        )
+                        sent_records = 0
+                        for record in bundle.messages:
+                            if self._send_record(record):
+                                sent_records += 1
+                        self.records_since_last_flush -= len(bundle.messages) - sent_records
+                        records_since_last_log -= len(bundle.messages) - sent_records
                         flush_interval_s = int(os.environ.get('MODE_S_FLUSH_INTERVAL_SECONDS', '10'))
                         flush_record_threshold = int(os.environ.get('MODE_S_FLUSH_RECORD_THRESHOLD', '50000'))
                         if (datetime.now() - last_flush) > timedelta(seconds=flush_interval_s) or self.records_since_last_flush >= flush_record_threshold:
@@ -343,7 +393,7 @@ async def run():
             print("Error: Could not create Kafka producer.")
             return
 
-        producer = ModeSEventProducer(kafka_producer, topic=kafka_topic, content_mode=args.content_mode)
+        producer = ModeSKafkaEventProducer(kafka_producer, topic=kafka_topic, content_mode=args.content_mode)
 
         client = ADSBClient(
             host=args.host,

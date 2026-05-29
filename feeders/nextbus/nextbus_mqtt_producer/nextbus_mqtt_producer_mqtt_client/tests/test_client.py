@@ -97,7 +97,6 @@ async def test_nextbus_mqtt_nextbus_vehicle_position_mqtt_py(mosquitto_broker):
             agency_id=f"test_agency_id_{i}",
             route_tag=f"test_route_tag_{i}",
             vehicle_id=f"test_vehicle_id_{i}",
-            timestamp=f"test_timestamp_{i}",
             data=test_data,
             content_type="application/json"
         )
@@ -165,7 +164,6 @@ async def test_nextbus_mqtt_nextbus_route_config_mqtt_py(mosquitto_broker):
             agency_id=f"test_agency_id_{i}",
             route_tag=f"test_route_tag_{i}",
             stop_or_vehicle_id=f"test_stop_or_vehicle_id_{i}",
-            timestamp=f"test_timestamp_{i}",
             data=test_data,
             content_type="application/json"
         )
@@ -233,7 +231,6 @@ async def test_nextbus_mqtt_nextbus_schedule_mqtt_py(mosquitto_broker):
             agency_id=f"test_agency_id_{i}",
             route_tag=f"test_route_tag_{i}",
             stop_or_vehicle_id=f"test_stop_or_vehicle_id_{i}",
-            timestamp=f"test_timestamp_{i}",
             data=test_data,
             content_type="application/json"
         )
@@ -301,7 +298,6 @@ async def test_nextbus_mqtt_nextbus_message_mqtt_py(mosquitto_broker):
             agency_id=f"test_agency_id_{i}",
             route_tag=f"test_route_tag_{i}",
             stop_or_vehicle_id=f"test_stop_or_vehicle_id_{i}",
-            timestamp=f"test_timestamp_{i}",
             data=test_data,
             content_type="application/json"
         )

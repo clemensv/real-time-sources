@@ -15,7 +15,7 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - NextbusEventDispatcher
+3. [Quick Start](#quick-start)    - NextbusKafkaEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -38,7 +38,7 @@ methods to handle various types of events.
 
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
-- NextbusProducersolution for event-driven applications.
+- NextbusKafkaProducersolution for event-driven applications.
 
 
 
@@ -54,11 +54,11 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - **Provides durability** through log-based storage with configurable retention
 
-- **Scales horizontally** across multiple brokers and partitions### NextbusEventDispatcher
+- **Scales horizontally** across multiple brokers and partitions### NextbusKafkaEventDispatcher
 
 - **Enables pub/sub messaging** with topic-based routing
 
-`NextbusEventDispatcher` handles events for the nextbus message group.
+`NextbusKafkaEventDispatcher` handles events for the nextbus.kafka message group.
 
 Use cases: Event streaming, log aggregation, real-time analytics, data integration.
 
@@ -86,13 +86,13 @@ Initializes the dispatcher.
 
 ```python
 
-from nextbus_producer import NextbusProducer```python
+from nextbus_producer import NextbusKafkaProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
 # Create producer```
 
-producer = NextbusProducer(
+producer = NextbusKafkaProducer(
 
     bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
 
@@ -106,7 +106,7 @@ producer = NextbusProducer(
 
 # Send single message
 
-await producer.send_nextbus_vehicle_position(```python
+await producer.send_nextbus_kafka_vehicle_position(```python
 
     data=VehiclePosition(...),add_consumer(self, consumer: KafkaConsumer)
 
@@ -126,28 +126,28 @@ await producer.close()- `consumer`: The Kafka consumer.
 
 ### With SSL/SASL
 
-The NextbusEventDispatcher defines the following event handler hooks.
+The NextbusKafkaEventDispatcher defines the following event handler hooks.
 
 ```python
 
-producer = NextbusProducer(
+producer = NextbusKafkaProducer(
 
     bootstrap_servers='localhost:9093',
 
-    security_protocol='SASL_SSL',##### `nextbus_vehicle_position_async`
+    security_protocol='SASL_SSL',##### `nextbus_kafka_vehicle_position_async`
 
     sasl_mechanism='PLAIN',
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'nextbus_vehicle_position_async:  Callable[[ConsumerRecord, CloudEvent,
+    sasl_password='your-password'nextbus_kafka_vehicle_position_async:  Callable[[ConsumerRecord, CloudEvent,
 VehiclePosition], Awaitable[None]]
 
 )```
 
 ```
 
-Asynchronous handler hook for `nextbus.VehiclePosition`: Nextbus VehiclePosition event.
+Asynchronous handler hook for `nextbus.kafka.VehiclePosition`: Nextbus VehiclePosition event.
 
 ## Generated Producer Classes
 
@@ -157,22 +157,22 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### NextbusProducer- `data`: The event data of type `nextbus_producer_data.VehiclePosition`.
+### NextbusKafkaProducer- `data`: The event data of type `nextbus_producer_data.VehiclePosition`.
 
 
 
-Producer for `nextbus` message group.Example:
+Producer for `nextbus.kafka` message group.Example:
 
 
 
 #### Constructor```python
 
-async def nextbus_vehicle_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data: VehiclePosition) ->
-None:
+async def nextbus_kafka_vehicle_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data: VehiclePosition)
+-> None:
 
 ```python    # Process the event data
 
-NextbusProducer(    await some_processing_function(record, cloud_event, data)
+NextbusKafkaProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -185,7 +185,7 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-nextbus_dispatcher.nextbus_vehicle_position_async = nextbus_vehicle_position_event
+nextbus_kafka_dispatcher.nextbus_kafka_vehicle_position_async = nextbus_kafka_vehicle_position_event
 
 **Parameters:**```
 
@@ -197,20 +197,20 @@ nextbus_dispatcher.nextbus_vehicle_position_async = nextbus_vehicle_position_eve
 
     bootstrap_servers='localhost:9093',
 
-    security_protocol='SASL_SSL',##### `nextbus_route_config_async`
+    security_protocol='SASL_SSL',##### `nextbus_kafka_route_config_async`
 
     sasl_mechanism='PLAIN',
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'nextbus_route_config_async:  Callable[[ConsumerRecord, CloudEvent, RouteConfig],
+    sasl_password='your-password'nextbus_kafka_route_config_async:  Callable[[ConsumerRecord, CloudEvent, RouteConfig],
 Awaitable[None]]
 
 )```
 
 ```
 
-Asynchronous handler hook for `nextbus.RouteConfig`: Nextbus RouteConfig event.
+Asynchronous handler hook for `nextbus.kafka.RouteConfig`: Nextbus RouteConfig event.
 
 ## Generated Producer Classes
 
@@ -220,21 +220,21 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### NextbusProducer- `data`: The event data of type `nextbus_producer_data.RouteConfig`.
+### NextbusKafkaProducer- `data`: The event data of type `nextbus_producer_data.RouteConfig`.
 
 
 
-Producer for `nextbus` message group.Example:
+Producer for `nextbus.kafka` message group.Example:
 
 
 
 #### Constructor```python
 
-async def nextbus_route_config_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RouteConfig) -> None:
+async def nextbus_kafka_route_config_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RouteConfig) -> None:
 
 ```python    # Process the event data
 
-NextbusProducer(    await some_processing_function(record, cloud_event, data)
+NextbusKafkaProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -247,7 +247,7 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-nextbus_dispatcher.nextbus_route_config_async = nextbus_route_config_event
+nextbus_kafka_dispatcher.nextbus_kafka_route_config_async = nextbus_kafka_route_config_event
 
 **Parameters:**```
 
@@ -259,20 +259,20 @@ nextbus_dispatcher.nextbus_route_config_async = nextbus_route_config_event
 
     bootstrap_servers='localhost:9093',
 
-    security_protocol='SASL_SSL',##### `nextbus_schedule_async`
+    security_protocol='SASL_SSL',##### `nextbus_kafka_schedule_async`
 
     sasl_mechanism='PLAIN',
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'nextbus_schedule_async:  Callable[[ConsumerRecord, CloudEvent, Schedule],
+    sasl_password='your-password'nextbus_kafka_schedule_async:  Callable[[ConsumerRecord, CloudEvent, Schedule],
 Awaitable[None]]
 
 )```
 
 ```
 
-Asynchronous handler hook for `nextbus.Schedule`: Nextbus Schedule event.
+Asynchronous handler hook for `nextbus.kafka.Schedule`: Nextbus Schedule event.
 
 ## Generated Producer Classes
 
@@ -282,21 +282,21 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### NextbusProducer- `data`: The event data of type `nextbus_producer_data.Schedule`.
+### NextbusKafkaProducer- `data`: The event data of type `nextbus_producer_data.Schedule`.
 
 
 
-Producer for `nextbus` message group.Example:
+Producer for `nextbus.kafka` message group.Example:
 
 
 
 #### Constructor```python
 
-async def nextbus_schedule_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Schedule) -> None:
+async def nextbus_kafka_schedule_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Schedule) -> None:
 
 ```python    # Process the event data
 
-NextbusProducer(    await some_processing_function(record, cloud_event, data)
+NextbusKafkaProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -309,7 +309,7 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-nextbus_dispatcher.nextbus_schedule_async = nextbus_schedule_event
+nextbus_kafka_dispatcher.nextbus_kafka_schedule_async = nextbus_kafka_schedule_event
 
 **Parameters:**```
 
@@ -321,20 +321,20 @@ nextbus_dispatcher.nextbus_schedule_async = nextbus_schedule_event
 
     bootstrap_servers='localhost:9093',
 
-    security_protocol='SASL_SSL',##### `nextbus_message_async`
+    security_protocol='SASL_SSL',##### `nextbus_kafka_message_async`
 
     sasl_mechanism='PLAIN',
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'nextbus_message_async:  Callable[[ConsumerRecord, CloudEvent, Message],
+    sasl_password='your-password'nextbus_kafka_message_async:  Callable[[ConsumerRecord, CloudEvent, Message],
 Awaitable[None]]
 
 )```
 
 ```
 
-Asynchronous handler hook for `nextbus.Message`: Nextbus Message event.
+Asynchronous handler hook for `nextbus.kafka.Message`: Nextbus Message event.
 
 ## Generated Producer Classes
 
@@ -344,21 +344,21 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### NextbusProducer- `data`: The event data of type `nextbus_producer_data.Message`.
+### NextbusKafkaProducer- `data`: The event data of type `nextbus_producer_data.Message`.
 
 
 
-Producer for `nextbus` message group.Example:
+Producer for `nextbus.kafka` message group.Example:
 
 
 
 #### Constructor```python
 
-async def nextbus_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Message) -> None:
+async def nextbus_kafka_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Message) -> None:
 
 ```python    # Process the event data
 
-NextbusProducer(    await some_processing_function(record, cloud_event, data)
+NextbusKafkaProducer(    await some_processing_function(record, cloud_event, data)
 
     bootstrap_servers: str,```
 
@@ -371,7 +371,7 @@ responsible for calling the appropriate handler function when a message is recei
 
 ``````python
 
-nextbus_dispatcher.nextbus_message_async = nextbus_message_event
+nextbus_kafka_dispatcher.nextbus_kafka_message_async = nextbus_kafka_message_event
 
 **Parameters:**```
 
@@ -389,13 +389,13 @@ nextbus_dispatcher.nextbus_message_async = nextbus_message_event
 
 ### Dispatchers
 
-##### `send_nextbus_vehicle_position`Dispatchers have the following protected methods:
+##### `send_nextbus_kafka_vehicle_position`Dispatchers have the following protected methods:
 
 
 
 ```python### Methods:
 
-async def send_nextbus_vehicle_position(
+async def send_nextbus_kafka_vehicle_position(
 
     self,##### `_process_event`
 
@@ -413,7 +413,7 @@ async def send_nextbus_vehicle_position(
 
 
 
-Send a single `nextbus.VehiclePosition` message. Nextbus VehiclePosition event.Args:
+Send a single `nextbus.kafka.VehiclePosition` message. Nextbus VehiclePosition event.Args:
 
 - `record`: The Kafka record.
 
@@ -435,7 +435,7 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 ```pythonDispatches a CloudEvent to the appropriate handler.
 
-await producer.send_nextbus_vehicle_position(
+await producer.send_nextbus_kafka_vehicle_position(
 
     data=VehiclePosition(...),Args:
 
@@ -447,7 +447,29 @@ await producer.send_nextbus_vehicle_position(
 
 ```
 
-Send multiple `nextbus.VehiclePosition` messages in a batch.
+##### `send_nextbus_kafka_vehicle_position_batch`##### `_dispatch_record`
+
+
+
+```python```python
+
+async def send_nextbus_kafka_vehicle_position_batch(_dispatch_record(self, record)
+
+    self,```
+
+    messages: List[VehiclePosition],
+
+    partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
+
+    headers: Optional[Dict[str, str]] = None,
+
+    topic: Optional[str] = NoneArgs:
+
+) -> None- `record`: The Kafka record.
+
+```
+
+Send multiple `nextbus.kafka.VehiclePosition` messages in a batch.
 
 ### EventProcessorRunner
 
@@ -470,7 +492,7 @@ dispatching events to the appropriate handlers.
 
 ```python__init__(consumer: KafkaConsumer)
 
-await producer.send_nextbus_vehicle_position_batch(```
+await producer.send_nextbus_kafka_vehicle_position_batch(```
 
     messages=[
 
@@ -492,13 +514,13 @@ Enters the asynchronous context and starts the processor.
 
 ### Dispatchers
 
-##### `send_nextbus_route_config`Dispatchers have the following protected methods:
+##### `send_nextbus_kafka_route_config`Dispatchers have the following protected methods:
 
 
 
 ```python### Methods:
 
-async def send_nextbus_route_config(
+async def send_nextbus_kafka_route_config(
 
     self,##### `_process_event`
 
@@ -516,7 +538,7 @@ async def send_nextbus_route_config(
 
 
 
-Send a single `nextbus.RouteConfig` message. Nextbus RouteConfig event.Args:
+Send a single `nextbus.kafka.RouteConfig` message. Nextbus RouteConfig event.Args:
 
 - `record`: The Kafka record.
 
@@ -538,7 +560,7 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 ```pythonDispatches a CloudEvent to the appropriate handler.
 
-await producer.send_nextbus_route_config(
+await producer.send_nextbus_kafka_route_config(
 
     data=RouteConfig(...),Args:
 
@@ -550,7 +572,29 @@ await producer.send_nextbus_route_config(
 
 ```
 
-Send multiple `nextbus.RouteConfig` messages in a batch.
+##### `send_nextbus_kafka_route_config_batch`##### `_dispatch_record`
+
+
+
+```python```python
+
+async def send_nextbus_kafka_route_config_batch(_dispatch_record(self, record)
+
+    self,```
+
+    messages: List[RouteConfig],
+
+    partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
+
+    headers: Optional[Dict[str, str]] = None,
+
+    topic: Optional[str] = NoneArgs:
+
+) -> None- `record`: The Kafka record.
+
+```
+
+Send multiple `nextbus.kafka.RouteConfig` messages in a batch.
 
 ### EventProcessorRunner
 
@@ -573,7 +617,7 @@ dispatching events to the appropriate handlers.
 
 ```python__init__(consumer: KafkaConsumer)
 
-await producer.send_nextbus_route_config_batch(```
+await producer.send_nextbus_kafka_route_config_batch(```
 
     messages=[
 
@@ -595,13 +639,13 @@ Enters the asynchronous context and starts the processor.
 
 ### Dispatchers
 
-##### `send_nextbus_schedule`Dispatchers have the following protected methods:
+##### `send_nextbus_kafka_schedule`Dispatchers have the following protected methods:
 
 
 
 ```python### Methods:
 
-async def send_nextbus_schedule(
+async def send_nextbus_kafka_schedule(
 
     self,##### `_process_event`
 
@@ -619,7 +663,7 @@ async def send_nextbus_schedule(
 
 
 
-Send a single `nextbus.Schedule` message. Nextbus Schedule event.Args:
+Send a single `nextbus.kafka.Schedule` message. Nextbus Schedule event.Args:
 
 - `record`: The Kafka record.
 
@@ -641,7 +685,7 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 ```pythonDispatches a CloudEvent to the appropriate handler.
 
-await producer.send_nextbus_schedule(
+await producer.send_nextbus_kafka_schedule(
 
     data=Schedule(...),Args:
 
@@ -653,7 +697,29 @@ await producer.send_nextbus_schedule(
 
 ```
 
-Send multiple `nextbus.Schedule` messages in a batch.
+##### `send_nextbus_kafka_schedule_batch`##### `_dispatch_record`
+
+
+
+```python```python
+
+async def send_nextbus_kafka_schedule_batch(_dispatch_record(self, record)
+
+    self,```
+
+    messages: List[Schedule],
+
+    partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
+
+    headers: Optional[Dict[str, str]] = None,
+
+    topic: Optional[str] = NoneArgs:
+
+) -> None- `record`: The Kafka record.
+
+```
+
+Send multiple `nextbus.kafka.Schedule` messages in a batch.
 
 ### EventProcessorRunner
 
@@ -676,7 +742,7 @@ dispatching events to the appropriate handlers.
 
 ```python__init__(consumer: KafkaConsumer)
 
-await producer.send_nextbus_schedule_batch(```
+await producer.send_nextbus_kafka_schedule_batch(```
 
     messages=[
 
@@ -698,13 +764,13 @@ Enters the asynchronous context and starts the processor.
 
 ### Dispatchers
 
-##### `send_nextbus_message`Dispatchers have the following protected methods:
+##### `send_nextbus_kafka_message`Dispatchers have the following protected methods:
 
 
 
 ```python### Methods:
 
-async def send_nextbus_message(
+async def send_nextbus_kafka_message(
 
     self,##### `_process_event`
 
@@ -722,7 +788,7 @@ async def send_nextbus_message(
 
 
 
-Send a single `nextbus.Message` message. Nextbus Message event.Args:
+Send a single `nextbus.kafka.Message` message. Nextbus Message event.Args:
 
 - `record`: The Kafka record.
 
@@ -744,7 +810,7 @@ _dispatch_cloud_event(self, record, cloud_event)
 
 ```pythonDispatches a CloudEvent to the appropriate handler.
 
-await producer.send_nextbus_message(
+await producer.send_nextbus_kafka_message(
 
     data=Message(...),Args:
 
@@ -756,7 +822,29 @@ await producer.send_nextbus_message(
 
 ```
 
-Send multiple `nextbus.Message` messages in a batch.
+##### `send_nextbus_kafka_message_batch`##### `_dispatch_record`
+
+
+
+```python```python
+
+async def send_nextbus_kafka_message_batch(_dispatch_record(self, record)
+
+    self,```
+
+    messages: List[Message],
+
+    partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
+
+    headers: Optional[Dict[str, str]] = None,
+
+    topic: Optional[str] = NoneArgs:
+
+) -> None- `record`: The Kafka record.
+
+```
+
+Send multiple `nextbus.kafka.Message` messages in a batch.
 
 ### EventProcessorRunner
 
@@ -779,7 +867,7 @@ dispatching events to the appropriate handlers.
 
 ```python__init__(consumer: KafkaConsumer)
 
-await producer.send_nextbus_message_batch(```
+await producer.send_nextbus_kafka_message_batch(```
 
     messages=[
 

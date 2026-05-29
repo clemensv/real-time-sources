@@ -97,8 +97,7 @@ async def test_jp_tepco_denkiyoho_mqtt_jp_tepco_denkiyoho_mqtt_supply_capacity_p
         await publisher_client.publish_jp_tepco_denkiyoho_mqtt_supply_capacity(
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
-            date=f"test_date_{i}",
-            time=f"test_time_{i}",
+            area_code=f"test_area_code_{i}",
             data=test_data,
             content_type="application/json"
         )
@@ -164,8 +163,7 @@ async def test_jp_tepco_denkiyoho_mqtt_jp_tepco_denkiyoho_mqtt_peak_demand_forec
         await publisher_client.publish_jp_tepco_denkiyoho_mqtt_peak_demand_forecast(
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
-            date=f"test_date_{i}",
-            time=f"test_time_{i}",
+            area_code=f"test_area_code_{i}",
             data=test_data,
             content_type="application/json"
         )
@@ -231,8 +229,7 @@ async def test_jp_tepco_denkiyoho_mqtt_jp_tepco_denkiyoho_mqtt_demand_actual_py(
         await publisher_client.publish_jp_tepco_denkiyoho_mqtt_demand_actual(
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
-            date=f"test_date_{i}",
-            time=f"test_time_{i}",
+            area_code=f"test_area_code_{i}",
             data=test_data,
             content_type="application/json"
         )
@@ -298,8 +295,7 @@ async def test_jp_tepco_denkiyoho_mqtt_jp_tepco_denkiyoho_mqtt_demand_forecast_p
         await publisher_client.publish_jp_tepco_denkiyoho_mqtt_demand_forecast(
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
-            date=f"test_date_{i}",
-            time=f"test_time_{i}",
+            area_code=f"test_area_code_{i}",
             data=test_data,
             content_type="application/json"
         )

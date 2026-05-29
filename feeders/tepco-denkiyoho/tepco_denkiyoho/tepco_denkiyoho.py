@@ -21,7 +21,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from tepco_denkiyoho_producer_data import DemandActual, DemandForecast, PeakDemandForecast, SupplyCapacity
-from tepco_denkiyoho_producer_kafka_producer.producer import JPTEPCODenkiyohoEventProducer
+from tepco_denkiyoho_producer_kafka_producer.producer import JPTEPCODenkiyohoKafkaEventProducer
 
 DAILY_CSV_URL = "https://www.tepco.co.jp/forecast/html/images/juyo-d1-j.csv"
 DEFAULT_TOPIC = "tepco-denkiyoho"
@@ -446,11 +446,7 @@ def forecast_key(record: DemandForecastRecord) -> str:
 
 
 def _generated_kwargs(record: Any) -> dict[str, Any]:
-    values = dict(record.__dict__)
-    for name, value in list(values.items()):
-        if value is not None and isinstance(value, (int, float)) and value == 0:
-            values[name] = str(value)
-    return values
+    return dict(record.__dict__)
 
 
 def _flush(producer: Any, timeout: float = 30.0) -> None:
@@ -481,10 +477,9 @@ class TepcoDenkiyohoAPI:
 
         supply = parsed.supply_capacity
         if supply_capacity_key(supply) not in next_state.supply_capacity_seen:
-            event_producer.send_jp_tepco_denkiyoho_supply_capacity(
+            event_producer.send_jp_tepco_denkiyoho_kafka_supply_capacity(
                 _feedurl=self.url,
-                _date=supply.date,
-                _time=supply.time,
+                _area_code=supply.area_code,
                 data=SupplyCapacity(**_generated_kwargs(supply)),
                 flush_producer=False,
             )
@@ -493,10 +488,9 @@ class TepcoDenkiyohoAPI:
 
         peak = parsed.peak_demand_forecast
         if peak_forecast_key(peak) not in next_state.peak_forecast_seen:
-            event_producer.send_jp_tepco_denkiyoho_peak_demand_forecast(
+            event_producer.send_jp_tepco_denkiyoho_kafka_peak_demand_forecast(
                 _feedurl=self.url,
-                _date=peak.date,
-                _time=peak.time,
+                _area_code=peak.area_code,
                 data=PeakDemandForecast(**_generated_kwargs(peak)),
                 flush_producer=False,
             )
@@ -506,10 +500,9 @@ class TepcoDenkiyohoAPI:
         for actual in parsed.actuals:
             if actual_key(actual) in next_state.actual_seen:
                 continue
-            event_producer.send_jp_tepco_denkiyoho_demand_actual(
+            event_producer.send_jp_tepco_denkiyoho_kafka_demand_actual(
                 _feedurl=self.url,
-                _date=actual.date,
-                _time=actual.time,
+                _area_code=actual.area_code,
                 data=DemandActual(**_generated_kwargs(actual)),
                 flush_producer=False,
             )
@@ -519,10 +512,9 @@ class TepcoDenkiyohoAPI:
         for forecast in parsed.forecasts:
             if forecast_key(forecast) in next_state.forecast_seen:
                 continue
-            event_producer.send_jp_tepco_denkiyoho_demand_forecast(
+            event_producer.send_jp_tepco_denkiyoho_kafka_demand_forecast(
                 _feedurl=self.url,
-                _date=forecast.date,
-                _time=forecast.time,
+                _area_code=forecast.area_code,
                 data=DemandForecast(**_generated_kwargs(forecast)),
                 flush_producer=False,
             )
@@ -559,7 +551,7 @@ class TepcoDenkiyohoAPI:
 
     def feed(self, kafka_config: dict[str, str], kafka_topic: str, polling_interval: int, state_file: str, once: bool = False) -> None:
         producer = Producer(kafka_config)
-        event_producer = JPTEPCODenkiyohoEventProducer(producer, kafka_topic)
+        event_producer = JPTEPCODenkiyohoKafkaEventProducer(producer, kafka_topic)
         state = load_state(state_file)
         while True:
             start = time_module.monotonic()

@@ -17,6 +17,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../nextbus_amqp_producer_data/src')))
@@ -265,7 +266,6 @@ class TestNextbusAmqpProducer:
                     _agency_id="value",
                     _route_tag="value",
                     _vehicle_id="value",
-                    _timestamp="value",
                     content_type="application/json"
                 )
 
@@ -273,6 +273,7 @@ class TestNextbusAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -294,6 +295,7 @@ class TestNextbusAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{agency_id}/{route_tag}/vehicle/{vehicle_id}".format(agency_id="value", route_tag="value", vehicle_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{agency_id}/{route_tag}/vehicle/{vehicle_id}".format(agency_id="value", route_tag="value", vehicle_id="value"))[:128]
         finally:
             producer.close()
     
@@ -324,7 +326,6 @@ class TestNextbusAmqpProducer:
                     _agency_id="value",
                     _route_tag="value",
                     _stop_or_vehicle_id="value",
-                    _timestamp="value",
                     content_type="application/json"
                 )
 
@@ -332,6 +333,7 @@ class TestNextbusAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -353,6 +355,7 @@ class TestNextbusAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}".format(agency_id="value", route_tag="value", stop_or_vehicle_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}".format(agency_id="value", route_tag="value", stop_or_vehicle_id="value"))[:128]
         finally:
             producer.close()
     
@@ -383,7 +386,6 @@ class TestNextbusAmqpProducer:
                     _agency_id="value",
                     _route_tag="value",
                     _stop_or_vehicle_id="value",
-                    _timestamp="value",
                     content_type="application/json"
                 )
 
@@ -391,6 +393,7 @@ class TestNextbusAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -412,6 +415,7 @@ class TestNextbusAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}".format(agency_id="value", route_tag="value", stop_or_vehicle_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}".format(agency_id="value", route_tag="value", stop_or_vehicle_id="value"))[:128]
         finally:
             producer.close()
     
@@ -442,7 +446,6 @@ class TestNextbusAmqpProducer:
                     _agency_id="value",
                     _route_tag="value",
                     _stop_or_vehicle_id="value",
-                    _timestamp="value",
                     content_type="application/json"
                 )
 
@@ -450,6 +453,7 @@ class TestNextbusAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -471,6 +475,7 @@ class TestNextbusAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{agency_id}/{route_tag}/message/{stop_or_vehicle_id}".format(agency_id="value", route_tag="value", stop_or_vehicle_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{agency_id}/{route_tag}/message/{stop_or_vehicle_id}".format(agency_id="value", route_tag="value", stop_or_vehicle_id="value"))[:128]
         finally:
             producer.close()
 

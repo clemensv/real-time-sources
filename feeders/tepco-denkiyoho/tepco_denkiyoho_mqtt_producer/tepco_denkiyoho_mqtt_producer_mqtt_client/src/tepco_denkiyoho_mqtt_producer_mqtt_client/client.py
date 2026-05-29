@@ -406,8 +406,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
     
     async def publish_jp_tepco_denkiyoho_mqtt_supply_capacity(self,
         feedurl: str,
-        date: str,
-        time: str,
+        area_code: str,
         data: tepco_denkiyoho_mqtt_producer_data.SupplyCapacity,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -419,8 +418,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
         Args:
         
             feedurl: URI template variable for 'feedurl'
-            date: URI template variable for 'date'
-            time: URI template variable for 'time'
+            area_code: URI template variable for 'area_code'
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'energy/jp/tepco/tepco-denkiyoho/jp-tepco/supply-capacity'
                 with URI template placeholders substituted from the keyword arguments.
@@ -431,8 +429,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
         target_topic = topic if topic is not None else "energy/jp/tepco/tepco-denkiyoho/jp-tepco/supply-capacity"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
-            "date": str(date),
-            "time": str(time),
+            "area_code": str(area_code),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
@@ -440,7 +437,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
         attributes = {
              "type":"JP.TEPCO.Denkiyoho.SupplyCapacity",
              "source":"{feedurl}".format(feedurl = feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = date,time = time)
+             "subject":"{area_code}".format(area_code = area_code)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -485,8 +482,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
     
     async def publish_jp_tepco_denkiyoho_mqtt_peak_demand_forecast(self,
         feedurl: str,
-        date: str,
-        time: str,
+        area_code: str,
         data: tepco_denkiyoho_mqtt_producer_data.PeakDemandForecast,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -498,8 +494,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
         Args:
         
             feedurl: URI template variable for 'feedurl'
-            date: URI template variable for 'date'
-            time: URI template variable for 'time'
+            area_code: URI template variable for 'area_code'
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'energy/jp/tepco/tepco-denkiyoho/jp-tepco/peak-demand-forecast'
                 with URI template placeholders substituted from the keyword arguments.
@@ -510,8 +505,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
         target_topic = topic if topic is not None else "energy/jp/tepco/tepco-denkiyoho/jp-tepco/peak-demand-forecast"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
-            "date": str(date),
-            "time": str(time),
+            "area_code": str(area_code),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
@@ -519,7 +513,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
         attributes = {
              "type":"JP.TEPCO.Denkiyoho.PeakDemandForecast",
              "source":"{feedurl}".format(feedurl = feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = date,time = time)
+             "subject":"{area_code}".format(area_code = area_code)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -564,8 +558,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
     
     async def publish_jp_tepco_denkiyoho_mqtt_demand_actual(self,
         feedurl: str,
-        date: str,
-        time: str,
+        area_code: str,
         data: tepco_denkiyoho_mqtt_producer_data.DemandActual,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -577,8 +570,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
         Args:
         
             feedurl: URI template variable for 'feedurl'
-            date: URI template variable for 'date'
-            time: URI template variable for 'time'
+            area_code: URI template variable for 'area_code'
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'energy/jp/tepco/tepco-denkiyoho/jp-tepco/demand-actual'
                 with URI template placeholders substituted from the keyword arguments.
@@ -589,8 +581,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
         target_topic = topic if topic is not None else "energy/jp/tepco/tepco-denkiyoho/jp-tepco/demand-actual"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
-            "date": str(date),
-            "time": str(time),
+            "area_code": str(area_code),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
@@ -598,7 +589,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
         attributes = {
              "type":"JP.TEPCO.Denkiyoho.DemandActual",
              "source":"{feedurl}".format(feedurl = feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = date,time = time)
+             "subject":"{area_code}".format(area_code = area_code)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''
@@ -643,8 +634,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
     
     async def publish_jp_tepco_denkiyoho_mqtt_demand_forecast(self,
         feedurl: str,
-        date: str,
-        time: str,
+        area_code: str,
         data: tepco_denkiyoho_mqtt_producer_data.DemandForecast,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -656,8 +646,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
         Args:
         
             feedurl: URI template variable for 'feedurl'
-            date: URI template variable for 'date'
-            time: URI template variable for 'time'
+            area_code: URI template variable for 'area_code'
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'energy/jp/tepco/tepco-denkiyoho/jp-tepco/demand-forecast'
                 with URI template placeholders substituted from the keyword arguments.
@@ -668,8 +657,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
         target_topic = topic if topic is not None else "energy/jp/tepco/tepco-denkiyoho/jp-tepco/demand-forecast"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
-            "date": str(date),
-            "time": str(time),
+            "area_code": str(area_code),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
@@ -677,7 +665,7 @@ class JPTEPCODenkiyohoMqttMqttClient(_ClientBase):
         attributes = {
              "type":"JP.TEPCO.Denkiyoho.DemandForecast",
              "source":"{feedurl}".format(feedurl = feedurl),
-             "subject":"jp.tepco.denkiyoho/{date}/{time}".format(date = date,time = time)
+             "subject":"{area_code}".format(area_code = area_code)
         }
         attributes["datacontenttype"] = content_type
         byte_data = data.to_byte_array(content_type) if data is not None else b''

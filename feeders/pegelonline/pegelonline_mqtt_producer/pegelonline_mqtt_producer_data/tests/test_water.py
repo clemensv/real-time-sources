@@ -28,8 +28,8 @@ class Test_Water(unittest.TestCase):
         Create instance of Water for testing
         """
         instance = Water(
-            shortname='lewyhgvqvuqoenxuiwpg',
-            longname='wsrtqiwwtnwxhsovibmi'
+            shortname='ahlkcubdjmzktrhmjfxm',
+            longname='yeeovcomgbpjhzqmuimw'
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_Water(unittest.TestCase):
         """
         Test shortname property
         """
-        test_value = 'lewyhgvqvuqoenxuiwpg'
+        test_value = 'ahlkcubdjmzktrhmjfxm'
         self.instance.shortname = test_value
         self.assertEqual(self.instance.shortname, test_value)
     
@@ -46,10 +46,19 @@ class Test_Water(unittest.TestCase):
         """
         Test longname property
         """
-        test_value = 'wsrtqiwwtnwxhsovibmi'
+        test_value = 'yeeovcomgbpjhzqmuimw'
         self.instance.longname = test_value
         self.assertEqual(self.instance.longname, test_value)
     
+    def test_to_byte_array_avro(self):
+        """
+        Test to_byte_array method with avro media type
+        """
+        media_type = "application/vnd.apache.avro+avro"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Water.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

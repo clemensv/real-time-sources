@@ -19,7 +19,9 @@ from gios_poland_producer_data import Station
 from gios_poland_producer_data import Sensor
 from gios_poland_producer_data import Measurement
 from gios_poland_producer_data import AirQualityIndex
-from gios_poland_producer_kafka_producer.producer import PlGovGiosAirqualityEventProducer
+from gios_poland_producer_kafka_producer.producer import (
+    PlGovGiosAirqualityKafkaEventProducer as PlGovGiosAirqualityEventProducer,
+)
 
 
 # Polish-to-English field mappings for each API endpoint
@@ -460,7 +462,7 @@ class GIOSPolandPoller:
         print("Fetching GIOŚ monitoring stations...")
         stations = self.fetch_stations()
         for station in stations:
-            self.producer.send_pl_gov_gios_airquality_station(
+            self.producer.send_pl_gov_gios_airquality_kafka_station(
                 str(station.station_id), station, flush_producer=False)
         self.producer.producer.flush()
         print(f"Sent {len(stations)} station reference events")
@@ -476,7 +478,7 @@ class GIOSPolandPoller:
             sensor_map[station.station_id] = sensors
             for sensor in sensors:
                 sensor_station_map[sensor.sensor_id] = station.station_id
-                self.producer.send_pl_gov_gios_airquality_sensor(
+                self.producer.send_pl_gov_gios_airquality_kafka_sensor(
                     str(station.station_id), str(sensor.sensor_id),
                     sensor, flush_producer=False)
                 total_sensors += 1
@@ -503,7 +505,7 @@ class GIOSPolandPoller:
                             ts_key = f"{sensor.sensor_id}:{measurement.timestamp.isoformat()}"
                             if ts_key in measurement_timestamps:
                                 continue
-                            self.producer.send_pl_gov_gios_airquality_measurement(
+                            self.producer.send_pl_gov_gios_airquality_kafka_measurement(
                                 str(station_id), str(sensor.sensor_id),
                                 measurement, flush_producer=False)
                             measurement_timestamps[ts_key] = measurement.timestamp.isoformat()
@@ -521,7 +523,7 @@ class GIOSPolandPoller:
                     aqi_key = f"{station.station_id}:{aqi.calculation_timestamp.isoformat()}"
                     if aqi_key in aqi_timestamps:
                         continue
-                    self.producer.send_pl_gov_gios_airquality_air_quality_index(
+                    self.producer.send_pl_gov_gios_airquality_kafka_air_quality_index(
                         str(station.station_id), aqi, flush_producer=False)
                     aqi_timestamps[aqi_key] = aqi.calculation_timestamp.isoformat()
                     new_count += 1

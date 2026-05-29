@@ -172,13 +172,13 @@ class DemandForecast:
         """
         return cls(
             date=datetime.date.today(),
-            time='zdtcxxhztsrujoqkwmnn',
+            time='kafeqbyzxldwskejpukl',
             datetime=datetime.datetime.now(datetime.timezone.utc),
             datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            forecast_demand_mw=float(78.78770920127286),
-            forecast_demand_jp_unit_value=int(70),
-            usage_pct=float(74.01924865977999),
-            supply_capacity_mw=float(16.02651151575899),
-            supply_capacity_jp_unit_value=int(44),
-            area_code='scjurrjfhgjghodypdus'
+            forecast_demand_mw=float(11.443472765181905),
+            forecast_demand_jp_unit_value=int(18),
+            usage_pct=float(61.08591580248146),
+            supply_capacity_mw=float(66.56002110289538),
+            supply_capacity_jp_unit_value=int(49),
+            area_code='yulreyktgzrbgqdvqacm'
         )

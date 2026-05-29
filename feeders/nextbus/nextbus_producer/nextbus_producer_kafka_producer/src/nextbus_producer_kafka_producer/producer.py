@@ -12,7 +12,7 @@ from nextbus_producer_data import RouteConfig
 from nextbus_producer_data import Schedule
 from nextbus_producer_data import Message
 
-class NextbusEventProducer:
+class NextbusKafkaEventProducer:
     def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
         """
         Initializes the Kafka producer
@@ -43,27 +43,26 @@ class NextbusEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_nextbus_vehicle_position(self,_agency_id : str, _route_tag : str, _vehicle_id : str, _timestamp : str, data: VehiclePosition, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, VehiclePosition], str]=None) -> None:
+    def send_nextbus_kafka_vehicle_position(self,_agency_id : str, _route_tag : str, _vehicle_id : str, data: VehiclePosition, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, VehiclePosition], str]=None) -> None:
         """
-        Sends the 'nextbus.VehiclePosition' event to the Kafka topic
+        Sends the 'nextbus.kafka.VehiclePosition' event to the Kafka topic
 
         Args:
             _agency_id(str):  Value for placeholder agency_id in attribute subject
             _route_tag(str):  Value for placeholder route_tag in attribute subject
             _vehicle_id(str):  Value for placeholder vehicle_id in attribute subject
-            _timestamp(str):  Value for placeholder timestamp in attribute time
             data: (VehiclePosition): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, VehiclePosition], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration '{agency_id}/{route_tag}'
+                The default key is derived from the xRegistry Kafka key declaration '{agency_id}/{route_tag}/vehicle/{vehicle_id}'
         """
-        kafka_key = "{agency_id}/{route_tag}".format(agency_id=_agency_id, route_tag=_route_tag)
+        kafka_key = "{agency_id}/{route_tag}/vehicle/{vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, vehicle_id=_vehicle_id)
         attributes = {
              "type":"nextbus.VehiclePosition",
              "source":"https://retro.umoiq.com/service/publicXMLFeed",
              "subject":"{agency_id}/{route_tag}/vehicle/{vehicle_id}".format(agency_id = _agency_id,route_tag = _route_tag,vehicle_id = _vehicle_id),
-             "time":"{timestamp}".format(timestamp = _timestamp)
+             "time":"{timestamp}"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -79,27 +78,26 @@ class NextbusEventProducer:
             self.producer.flush()
 
 
-    def send_nextbus_route_config(self,_agency_id : str, _route_tag : str, _stop_or_vehicle_id : str, _timestamp : str, data: RouteConfig, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RouteConfig], str]=None) -> None:
+    def send_nextbus_kafka_route_config(self,_agency_id : str, _route_tag : str, _stop_or_vehicle_id : str, data: RouteConfig, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RouteConfig], str]=None) -> None:
         """
-        Sends the 'nextbus.RouteConfig' event to the Kafka topic
+        Sends the 'nextbus.kafka.RouteConfig' event to the Kafka topic
 
         Args:
             _agency_id(str):  Value for placeholder agency_id in attribute subject
             _route_tag(str):  Value for placeholder route_tag in attribute subject
             _stop_or_vehicle_id(str):  Value for placeholder stop_or_vehicle_id in attribute subject
-            _timestamp(str):  Value for placeholder timestamp in attribute time
             data: (RouteConfig): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, RouteConfig], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration '{agency_id}/{route_tag}'
+                The default key is derived from the xRegistry Kafka key declaration '{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}'
         """
-        kafka_key = "{agency_id}/{route_tag}".format(agency_id=_agency_id, route_tag=_route_tag)
+        kafka_key = "{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id)
         attributes = {
              "type":"nextbus.RouteConfig",
              "source":"https://retro.umoiq.com/service/publicXMLFeed",
              "subject":"{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}".format(agency_id = _agency_id,route_tag = _route_tag,stop_or_vehicle_id = _stop_or_vehicle_id),
-             "time":"{timestamp}".format(timestamp = _timestamp)
+             "time":"{timestamp}"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -115,27 +113,26 @@ class NextbusEventProducer:
             self.producer.flush()
 
 
-    def send_nextbus_schedule(self,_agency_id : str, _route_tag : str, _stop_or_vehicle_id : str, _timestamp : str, data: Schedule, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Schedule], str]=None) -> None:
+    def send_nextbus_kafka_schedule(self,_agency_id : str, _route_tag : str, _stop_or_vehicle_id : str, data: Schedule, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Schedule], str]=None) -> None:
         """
-        Sends the 'nextbus.Schedule' event to the Kafka topic
+        Sends the 'nextbus.kafka.Schedule' event to the Kafka topic
 
         Args:
             _agency_id(str):  Value for placeholder agency_id in attribute subject
             _route_tag(str):  Value for placeholder route_tag in attribute subject
             _stop_or_vehicle_id(str):  Value for placeholder stop_or_vehicle_id in attribute subject
-            _timestamp(str):  Value for placeholder timestamp in attribute time
             data: (Schedule): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Schedule], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration '{agency_id}/{route_tag}'
+                The default key is derived from the xRegistry Kafka key declaration '{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}'
         """
-        kafka_key = "{agency_id}/{route_tag}".format(agency_id=_agency_id, route_tag=_route_tag)
+        kafka_key = "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id)
         attributes = {
              "type":"nextbus.Schedule",
              "source":"https://retro.umoiq.com/service/publicXMLFeed",
              "subject":"{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}".format(agency_id = _agency_id,route_tag = _route_tag,stop_or_vehicle_id = _stop_or_vehicle_id),
-             "time":"{timestamp}".format(timestamp = _timestamp)
+             "time":"{timestamp}"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -151,27 +148,26 @@ class NextbusEventProducer:
             self.producer.flush()
 
 
-    def send_nextbus_message(self,_agency_id : str, _route_tag : str, _stop_or_vehicle_id : str, _timestamp : str, data: Message, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Message], str]=None) -> None:
+    def send_nextbus_kafka_message(self,_agency_id : str, _route_tag : str, _stop_or_vehicle_id : str, data: Message, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Message], str]=None) -> None:
         """
-        Sends the 'nextbus.Message' event to the Kafka topic
+        Sends the 'nextbus.kafka.Message' event to the Kafka topic
 
         Args:
             _agency_id(str):  Value for placeholder agency_id in attribute subject
             _route_tag(str):  Value for placeholder route_tag in attribute subject
             _stop_or_vehicle_id(str):  Value for placeholder stop_or_vehicle_id in attribute subject
-            _timestamp(str):  Value for placeholder timestamp in attribute time
             data: (Message): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Message], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-                The default key is derived from the xRegistry Kafka key declaration '{agency_id}/{route_tag}'
+                The default key is derived from the xRegistry Kafka key declaration '{agency_id}/{route_tag}/message/{stop_or_vehicle_id}'
         """
-        kafka_key = "{agency_id}/{route_tag}".format(agency_id=_agency_id, route_tag=_route_tag)
+        kafka_key = "{agency_id}/{route_tag}/message/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id)
         attributes = {
              "type":"nextbus.Message",
              "source":"https://retro.umoiq.com/service/publicXMLFeed",
              "subject":"{agency_id}/{route_tag}/message/{stop_or_vehicle_id}".format(agency_id = _agency_id,route_tag = _route_tag,stop_or_vehicle_id = _stop_or_vehicle_id),
-             "time":"{timestamp}".format(timestamp = _timestamp)
+             "time":"{timestamp}"
         }
         attributes["datacontenttype"] = content_type
         event = CloudEvent.create(attributes, data)
@@ -217,7 +213,7 @@ class NextbusEventProducer:
         return config_dict, kafka_topic
 
     @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'NextbusEventProducer':
+    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'NextbusKafkaEventProducer':
         """
         Create a Kafka producer from a connection string and a topic name.
 

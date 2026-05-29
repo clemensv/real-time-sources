@@ -15,14 +15,13 @@
       "protocoloptions": {
         "deployed": false,
         "options": {
-          "topic": "nextbus",
-          "key": "{agency_id}/{route_tag}"
+          "topic": "nextbus"
         }
       },
       "messagegroups": [
-        "#/messagegroups/nextbus"
+        "#/messagegroups/nextbus.kafka"
       ],
-      "description": "Kafka endpoint for Nextbus events."
+      "description": "Kafka endpoint for Nextbus events. Per-message partition keys are declared on the messages of the nextbus.kafka overlay group and mirror each message's CloudEvents subject."
     },
     "nextbus.Mqtt": {
       "usage": [
@@ -296,6 +295,43 @@
                 "description": "Partition key mirrors the CloudEvents subject."
               }
             }
+          }
+        }
+      }
+    },
+    "nextbus.kafka": {
+      "description": "Kafka transport overlay for nextbus. Each message inherits envelope and envelopemetadata from the transport-neutral message in the nextbus group via basemessageuri and declares a per-message Kafka partition key that exactly matches its CloudEvents subject.",
+      "messages": {
+        "nextbus.kafka.VehiclePosition": {
+          "name": "VehiclePosition",
+          "basemessageuri": "/messagegroups/nextbus/messages/nextbus.VehiclePosition",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{agency_id}/{route_tag}/vehicle/{vehicle_id}"
+          }
+        },
+        "nextbus.kafka.RouteConfig": {
+          "name": "RouteConfig",
+          "basemessageuri": "/messagegroups/nextbus/messages/nextbus.RouteConfig",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}"
+          }
+        },
+        "nextbus.kafka.Schedule": {
+          "name": "Schedule",
+          "basemessageuri": "/messagegroups/nextbus/messages/nextbus.Schedule",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}"
+          }
+        },
+        "nextbus.kafka.Message": {
+          "name": "Message",
+          "basemessageuri": "/messagegroups/nextbus/messages/nextbus.Message",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{agency_id}/{route_tag}/message/{stop_or_vehicle_id}"
           }
         }
       }

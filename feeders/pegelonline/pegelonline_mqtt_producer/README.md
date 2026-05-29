@@ -149,16 +149,13 @@ make build
 
 ## Test```python
 
-de_wsv_pegelonline_mqtt_station_async:  Callable[[PartitionContext, EventData, CloudEvent, Station], Awaitable[None]]
+de_wsv_pegelonline_mqtt_station_async:  Callable[[PartitionContext, EventData, CloudEvent, object], Awaitable[None]]
 
 ```bash```
 
 make test
 
-```Asynchronous handler hook for `de.wsv.pegelonline.mqtt.Station`: Reference catalog entry for one WSV PegelOnline
-gauge installation. Emitted at bridge startup and periodically refreshed so downstream consumers can interpret
-CurrentMeasurement events without an out-of-band lookup. Sourced from `GET /stations.json` on the PegelOnline REST API
-v2.
+```Asynchronous handler hook for `de.wsv.pegelonline.mqtt.Station`:
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -166,13 +163,13 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 - `partition_context`: The partition context.
 - `event`: The event data.
 - `cloud_event`: The CloudEvent.
-- `data`: The event data of type `pegelonline_mqtt_producer_data.Station`.
+- `data`: The event data of type `object`.
 
 Example:
 
 ```python
 async def de_wsv_pegelonline_mqtt_station_event(partition_context: PartitionContext, event: EventData, cloud_event:
-CloudEvent, data: Station) -> None:
+CloudEvent, data: object) -> None:
     # Process the event data
     await partition_context.update_checkpoint(event)
 ```
@@ -194,16 +191,14 @@ make build
 
 ## Test```python
 
-de_wsv_pegelonline_mqtt_current_measurement_async:  Callable[[PartitionContext, EventData, CloudEvent,
-CurrentMeasurement], Awaitable[None]]
+de_wsv_pegelonline_mqtt_current_measurement_async:  Callable[[PartitionContext, EventData, CloudEvent, object],
+Awaitable[None]]
 
 ```bash```
 
 make test
 
-```Asynchronous handler hook for `de.wsv.pegelonline.mqtt.CurrentMeasurement`: Latest 15-minute water-level reading (W
-timeseries) for one WSV PegelOnline gauge. Sourced from `GET /stations/{uuid}/W/currentmeasurement.json` on the
-PegelOnline REST API v2. Telemetry counterpart to the Station reference event; both share the `station_id` keying.
+```Asynchronous handler hook for `de.wsv.pegelonline.mqtt.CurrentMeasurement`:
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -211,13 +206,13 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 - `partition_context`: The partition context.
 - `event`: The event data.
 - `cloud_event`: The CloudEvent.
-- `data`: The event data of type `pegelonline_mqtt_producer_data.CurrentMeasurement`.
+- `data`: The event data of type `object`.
 
 Example:
 
 ```python
 async def de_wsv_pegelonline_mqtt_current_measurement_event(partition_context: PartitionContext, event: EventData,
-cloud_event: CloudEvent, data: CurrentMeasurement) -> None:
+cloud_event: CloudEvent, data: object) -> None:
     # Process the event data
     await partition_context.update_checkpoint(event)
 ```

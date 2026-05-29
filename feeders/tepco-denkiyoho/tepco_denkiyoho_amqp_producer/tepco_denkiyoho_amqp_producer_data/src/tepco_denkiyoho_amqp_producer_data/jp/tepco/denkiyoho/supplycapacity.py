@@ -180,17 +180,17 @@ class SupplyCapacity:
         """
         return cls(
             date=datetime.date.today(),
-            time='pjsanaxzoesvjhrperlt',
-            peak_supply_capacity_mw=float(1.6292195127458609),
-            peak_supply_capacity_jp_unit_value=int(12),
-            peak_time_slot='kiwnoizlzwfurearrnts',
-            peak_reserve_margin_pct=float(8.533238177213498),
-            peak_usage_pct=float(40.94300282527949),
-            daily_max_usage_pct=float(14.03725008093869),
-            daily_max_usage_time_slot='dvnfzrtayhkkbmdvhhck',
+            time='qvyboylzpbrzmlhhvgnu',
+            peak_supply_capacity_mw=float(11.700064617868156),
+            peak_supply_capacity_jp_unit_value=int(23),
+            peak_time_slot='nhbismyxbbtjlvaufcpg',
+            peak_reserve_margin_pct=float(24.83994003470551),
+            peak_usage_pct=float(18.342413113864286),
+            daily_max_usage_pct=float(5.263853277139885),
+            daily_max_usage_time_slot='qgwpdtbtvnqbpzstxfqw',
             update_datetime=datetime.datetime.now(datetime.timezone.utc),
             update_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            area_code='ctnfpkqwtulzualmtkkk',
-            area_name_jp='zabmulnajppsbtkllloi',
-            area_name_en='wzeblebwcmglacizvaeg'
+            area_code='qvkzgecbqyifcfnejgoq',
+            area_name_jp='quahxztigouxywtycohb',
+            area_name_en='nwfyamosenejpfwvlmuy'
         )
