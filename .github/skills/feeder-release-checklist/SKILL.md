@@ -28,7 +28,8 @@ checklist before ticking the relevant bullets.
 
 | When you reach… | Delegate to | What to ask for |
 |---|---|---|
-| Section 1 — schema descriptions, JsonStructure extensions, key/subject design, **Avro/JsonStructure parity and per-field `doc`/`description` coverage in both formats** | **xRegistry Expert** + **JSON Structure Expert** (parallel) | Full review of `xreg/<source>.xreg.json` for contract correctness, key/subject alignment, exhaustive field descriptions grounded in upstream docs **on every record/field of every schema in every format (JsonStructure AND Avro)**, JSON Structure extension coverage on every measured value, anyOf/composition violations, `$id`/`name` uniqueness, Avro/JsonStructure drift |
+| Section 1 — schema descriptions, JsonStructure extensions, key/subject design, **Avro/JsonStructure parity and per-field `doc`/`description` coverage in both formats** | **xRegistry Expert** + **JSON Structure Expert** + **Avro Schema Expert** (parallel) | Full review of `xreg/<source>.xreg.json` for contract correctness, key/subject alignment, exhaustive field descriptions grounded in upstream docs **on every record/field of every schema in every format (JsonStructure AND Avro)**, JSON Structure extension coverage on every measured value, anyOf/composition violations, `$id`/`name` uniqueness, Avro round-trip stability, Avro nullability mirror, identifier validity, Avro/JsonStructure drift |
+| Section 1a — upstream API re-audit | **explore** (or general-purpose) | Re-walk the upstream API docs as of the merge date, diff the live endpoint/field set against what the xreg manifest models, and produce a keep/drop/missing report. Required for new sources AND for any contract-changing PR. |
 | Section 4 — test rigor | **code-review** | High-signal review of new/changed test files for spec-compliant assertions, missing reference-event validation, hidden workarounds for upstream bugs |
 | Section 5 / 6 — Dockerfile, ARM template, identity / role-assignment correctness | **code-review** | Review Dockerfile + every `azure-template-*.json` for missing OCI labels, broken `path =` refs, missing UAMI / role assignments, missing state file share |
 | Any KQL ships under `kql/` or `fabric/` | **KQL Optimizer** | Review every `.kql` file for performance, table/column drift against the current xreg schema, and idiomatic Kusto |
@@ -56,10 +57,13 @@ a replacement for it.
 
 ## 1. xRegistry contract quality (`xreg/<source>.xreg.json`)
 
-> **Delegate first:** launch **xRegistry Expert** and **JSON Structure
-> Expert** in parallel via `task` against `xreg/<source>.xreg.json`.
-> Use their findings to tick the bullets below. If neither agent is
-> available locally, self-review and annotate `(no specialist)`.
+> **Delegate first:** launch **xRegistry Expert**, **JSON Structure
+> Expert**, and **Avro Schema Expert** in parallel via `task` against
+> `xreg/<source>.xreg.json`. Use their findings to tick the bullets
+> below. All three reviews are mandatory per repo policy ("Mandatory
+> Expert Review" in repo conventions); a PR with a missing reviewer
+> verdict must not merge. If an agent is not available locally,
+> self-review and annotate `(no specialist)`.
 
 - [ ] **Subject + Kafka key alignment.** Every CloudEvents message
       declares a `subject` of type `uritemplate`. Every Kafka endpoint
@@ -109,7 +113,49 @@ a replacement for it.
       must be updated in the same PR. Drift between the two formats
       is a blocker.
 
-## 2. Generated producer code (per transport)
+## 1a. Upstream API re-audit (BLOCKING for new sources and contract changes)
+
+> The upstream audit done at design time (per the `bootstrap-real-time-source`
+> and `xreg-source-contract` skills) can go stale between design and
+> merge. Upstreams add endpoints, broaden payloads, deprecate fields,
+> and rename labels. This gate re-runs the audit at merge time so the
+> contract that ships actually matches the upstream that exists today.
+
+> **Delegate first:** launch **explore** (or **general-purpose**) via
+> `task` with the upstream API docs URL set and ask it to enumerate
+> every endpoint / topic / channel, fetch one representative live
+> payload per endpoint, and produce the keep/drop/missing diff against
+> the xreg manifest.
+
+- [ ] **Endpoint coverage re-confirmed.** Every endpoint / topic /
+      channel the upstream currently exposes is either modeled in
+      `xreg/<source>.xreg.json` or has a one-line skip justification
+      in the PR body. New endpoints that appeared since design time
+      are explicitly addressed (added, deferred with issue link, or
+      declared out of scope).
+- [ ] **Field coverage re-confirmed.** For each modeled endpoint,
+      every field present in a current live payload is either in the
+      schema (with non-stub description) or explicitly skipped. New
+      fields that appeared upstream since design time are addressed.
+- [ ] **Label / enum coverage re-confirmed.** For each enum-typed
+      field, the documented label set in the upstream docs is mirrored
+      via `altenums` + `descriptions`. New labels added by the
+      upstream since design time are merged in.
+- [ ] **Upstream documentation links in `README.md` resolve** and
+      point at the current revision of the upstream docs — not a
+      cached / redirected / moved page.
+- [ ] **Upstream T&Cs, licence, and rate-limit recorded in `README.md`.**
+      Attribution string (e.g. "Data © ECCC, Open Government Licence
+      Canada"), commercial-use clauses, and documented rate limits.
+      Required for compliance and to justify the default polling
+      cadence vs. the upstream's published rate limit. If no rate
+      limit is documented upstream, state that fact explicitly.
+- [ ] **Default polling cadence (where applicable) sits below the
+      documented upstream rate limit** with margin. Justify the
+      chosen `POLLING_INTERVAL` default in the PR body for pollers.
+      Streaming sources note "N/A — streaming" with one line.
+
+
 
 - [ ] **Generator pinned and current.** `tools/require-xrcg.ps1`
       points at the xrcg version required. The release was tested
@@ -200,10 +246,25 @@ targets per transport are:
 For each in-scope target the following items are **BLOCKING REVIEW
 CRITERIA**. A PR that fails any of them must not merge, even if all
 other checks have signed off. The reviewer must run the verification
-script (`tools/verify-arm-template.ps1`) and the validator
+script (`tools/verify-arm-template.ps1`) and the static auditor
 (`tools/validate-arm-templates.ps1`) against the changed templates
 and paste the PASS lines into the PR body.
 
+- [ ] **Static audit clean.** Run
+      `pwsh tools/validate-arm-templates.ps1 -FeederSlug <slug>` and
+      paste the report into the PR body. The auditor enforces, per
+      variant: (1) non-empty `resources`; (2) container image suffix
+      matches transport family (resolved through `parameters` and
+      `variables` defaults, so `-amqp` / `-mqtt` baked into either
+      the expression or the parameter default counts); (3) storage
+      account + file share present when the bridge reads a
+      `*_STATE_FILE` env var; (4) every parameter has a non-stub
+      `metadata.description`; (5) every feeder env var the bridge
+      reads is wired into the container `environmentVariables`; (6)
+      every feeder-prefixed env var the template exposes is also
+      documented in `CONTAINER.md` (CONTAINER.md ↔ ARM symmetry).
+      Blockers MUST be zero. Warnings MUST be triaged in the PR body —
+      each unfixed warning gets a one-line justification.
 - [ ] **ARM template exists and is NON-EMPTY** at the canonical
       filename above. An `azure-template-*.json` whose `resources`
       array is empty (`"resources": []`) is a release blocker — it
@@ -218,24 +279,40 @@ and paste the PASS lines into the PR body.
       argparse help text — not a generic "X configuration value"
       placeholder. The parameter must be wired into the container
       `environmentVariables` array using `value` (non-secret) or
-      `secureValue` (secret). Run
-      `pwsh tools/validate-arm-templates.ps1 -FeederSlug <slug>` and
-      paste the report into the PR body. Missing required-secret
-      parameter is an `error` and blocks merge; missing non-secret
-      parameter is a `warning` and blocks merge unless the env var
-      is explicitly justified as not user-tunable in the PR body.
+      `secureValue` (secret). Missing required-secret parameter is an
+      `error` and blocks merge; missing non-secret parameter is a
+      `warning` and blocks merge unless the env var is explicitly
+      justified as not user-tunable in the PR body.
 - [ ] **Image suffix matches transport family.** kafka + eventhub →
       base image (no suffix), servicebus + amqp → `-amqp:latest`,
-      mqtt + eventgrid-mqtt → `-mqtt:latest`. Mismatches cause the
-      wrong container variant to run and silently break the
-      deployment.
+      mqtt + eventgrid-mqtt → `-mqtt:latest`. The suffix may live in
+      the resource `image` expression OR in the `imageName` parameter
+      `defaultValue` (whichever the generator emits) — the static
+      auditor resolves both. Mismatches cause the wrong container
+      variant to run and silently break the deployment.
 - [ ] **Template provisions identity + role assignment** where Entra
       ID is the auth path (UAMI + the right
       `Microsoft.Authorization/roleAssignments` per resource).
 - [ ] **Storage account + file share** mounted for persistent dedupe
-      state on kafka / eventhub / servicebus variants. MQTT variants
-      do not require a state share — follow the aisstream reference
-      shape.
+      state on kafka / eventhub / servicebus variants **when the
+      bridge reads a `*_STATE_FILE` env var**. Stateless streaming
+      sources (e.g. raw WebSocket / MQTT fan-out) ship without a
+      state share — declare so in the PR body and the static auditor
+      will accept the `no-state-share` info-level finding.
+- [ ] **Generator regeneration produces no diff.** Re-run the ARM
+      template regenerator (`python tools/generate-arm-templates.py
+      --filter <slug>`) and confirm `git diff -- feeders/<slug>/azure-template*.json`
+      is empty. A non-empty diff means a reviewer or a prior commit
+      hand-edited a generated template; the hand-edit must be moved
+      into the generator or `fleet-catalog.json` and the templates
+      re-emitted.
+- [ ] **CONTAINER.md image-variant catalog table present.** The
+      gold-standard `pegelonline/CONTAINER.md` ships an "Image
+      contract" table mapping every published tag (`:latest`,
+      `-amqp:latest`, `-mqtt:latest`) to its transport, base
+      Dockerfile, and state-share requirement. Mirror that table in
+      every source's `CONTAINER.md`; the static auditor flags
+      template ↔ docs drift but cannot infer the table shape itself.
 - [ ] **Template validated end-to-end against a live Azure
       subscription** within the last 30 days via
       `pwsh tools/verify-arm-template.ps1 -FeederSlug <slug>
@@ -244,8 +321,22 @@ and paste the PASS lines into the PR body.
       provisioned broker (eventhub / servicebus / eventgrid-mqtt) or
       validates container-group shape (amqp / mqtt BYO variants),
       and tears the RG down in a `finally` block. Paste the script's
-      `PASS` line into the PR body. A PR that has not been live-
-      verified against Azure is not mergeable.
+      `PASS` line **including the ISO-8601 timestamp** into the PR
+      body so the 30-day window is auditable. A PR that has not been
+      live-verified against Azure is not mergeable. Use
+      `pwsh tools/verify-arm-fleet.ps1 -FeederSlug <slug>` to run
+      every variant of one source in parallel.
+- [ ] **KQL update-policy script applies cleanly** when `kql/<slug>.kql`
+      exists. For notebook-shipping sources this is exercised
+      automatically by § 7a's live deploy. For Kafka/Eventhub-only
+      sources, run
+      `pwsh tools/validate-fabric-deployment.ps1 -FeederSlug <slug>
+      -ApplyKqlOnly -KqlWorkspace ContosoRealTimeTest` and paste the
+      PASS line — a `.create-or-alter` script that compiles locally
+      can still fail when applied (missing table, syntax variant the
+      Kusto engine rejects, dependency on a table that update-policy
+      hasn't yet created). The Fabric timing-bug class of regressions
+      ONLY shows up against a live Eventhouse.
 
 ## 7. ghpages portal (`catalog.json` + `app.js`)
 
@@ -308,10 +399,32 @@ enforces, per source:
       one of the well-known `$Context` keys (`WorkspaceId`,
       `EventhouseId`, `DatabaseId`, `EventstreamId`), and every sibling
       file it `Join-Path $PSScriptRoot`s exists on disk.
-- [ ] **Live deploy + scheduled run + tear-down** succeeded **in a
-      real Fabric workspace** within the last 30 days for any
-      notebook touched by this PR. Capture the workspace name + run
-      ID and paste into the PR body.
+- [ ] **Live deploy + scheduled run + tear-down** succeeded in the
+      `ContosoRealTimeTest` Fabric workspace within the last 30 days
+      for any notebook touched by this PR. Capture the workspace
+      name, the immediate-run `runId`, and the **ISO-8601 timestamp**
+      and paste into the PR body so the 30-day window is auditable.
+      `ContosoRealTimeTest` is the canonical shared test workspace
+      for this repo — using it concentrates orphan-environment
+      cleanup in one place (the Fabric environment-delete REST bug
+      occasionally leaves dangling envs behind).
+- [ ] **KQL data-flow evidence is two-level.** Query the source's
+      KQL DB after the live run and confirm BOTH counts are non-zero:
+      `['_cloudevents_dispatch'] | count` (raw landing table) AND
+      at least one typed table `['<TypedTable>'] | count` (post
+      update-policy projection). A non-zero dispatch count with a
+      zero typed-table count means the update policy never fired —
+      this is exactly the failure mode the Fabric eventstream
+      timing bug produced and the wait gate in
+      `deploy-fabric.ps1::Wait-EventStreamTopologyReady` now prevents.
+      Reporting only the dispatch count hides update-policy
+      regressions.
+- [ ] **Workspace orphan check.** After teardown, list workspace
+      items (`fab` CLI or REST) and confirm no leftover items for
+      this source were left behind. Fabric's environment-delete API
+      occasionally returns 400 UnknownError — when it does, note the
+      orphaned environment ID in the PR body so cleanup can be
+      attempted later.
 
 A PR that introduces or modifies a notebook MUST include the
 validator's `PASS` line and the live-deploy evidence in the PR body.
@@ -384,14 +497,26 @@ validator's `PASS` line and the live-deploy evidence in the PR body.
 
 - [ ] **Branch rebased on `main`.** No merge commits introduced by
       the rebase.
+- [ ] **All required CI checks green** on the PR head commit. At
+      minimum the `build_containers` workflow must succeed — a red
+      container build means the published image will be broken even
+      if every other gate above passes.
 - [ ] **All checks above ticked** in the PR description with the
       observable artifact (test exit code, file path, deployed URL,
-      etc.). Items declared N/A include a one-line justification.
+      ISO-8601 timestamp for live deploys, etc.). Items declared N/A
+      include a one-line justification.
 - [ ] **Co-authored-by trailer** present on the merge commit (see
       `<git_commit_trailer>` in repo conventions).
 - [ ] **Upstream issues filed** for any generator / spec bug that
       forced a workaround. The PR cross-references them and the
       workaround is tagged `WORKAROUND(<issue>):` in code.
+- [ ] **No secrets committed.** Verify `git diff --stat origin/main`
+      contains no `.env`, no `*.pfx`, no key material, and no inline
+      connection string with an embedded `SharedAccessKey=`.
+- [ ] **Bridge observability sane.** Container respects `LOG_LEVEL`
+      env var (or documents that it does not), does not log
+      `CONNECTION_STRING` / SAS / Entra tokens at any level, and
+      emits a startup banner identifying source, transport, version.
 
 ## Outputs
 

@@ -34,9 +34,13 @@ checks, and the reviewer MUST paste evidence into the PR body:
 - [ ] **Every shipped `azure-template-*.json` has a non-empty
       `resources` array.** Quick check:
       `(Get-Content <tpl> -Raw | ConvertFrom-Json).resources.Count -gt 0`.
-      Repo-wide scan:
-      `pwsh tools/validate-arm-templates.ps1 -RepoRoot .` lists
-      every empty template across the fleet — there must be zero.
+      Repo-wide static audit:
+      `pwsh tools/validate-arm-templates.ps1 -RepoRoot .` enforces
+      six checks per template (empty-resources, image suffix per
+      transport, storage+share when the bridge reads a `*_STATE_FILE`
+      env var, non-stub `metadata.description`, env-var coverage,
+      and CONTAINER.md ↔ ARM symmetry). Blockers MUST be zero;
+      warnings triaged in the PR body.
 - [ ] **Every required feeder env var is exposed as an ARM
       parameter** with appropriate `type` (`string` or
       `securestring`), `defaultValue` where one applies, and a real
@@ -44,10 +48,24 @@ checks, and the reviewer MUST paste evidence into the PR body:
       argparse help text (not a placeholder phrase). The parameter
       must be wired into the container's `environmentVariables`
       array. Missing required-secret parameters block merge.
+- [ ] **CONTAINER.md ↔ ARM parameter symmetry.** Every
+      feeder-prefixed env var the template exposes must also appear
+      in `CONTAINER.md`'s env-var table. The static auditor enforces
+      this; drift between the two artifacts is the default once two
+      authors can edit them independently.
 - [ ] **Image suffix matches transport family.** kafka + eventhub
       use the base image (`:latest` no suffix), servicebus + amqp
       use `-amqp:latest`, mqtt + eventgrid-mqtt use `-mqtt:latest`.
-      Mismatches deploy the wrong container variant.
+      The suffix may live in the resource `image` expression OR in
+      the `imageName` parameter `defaultValue` — the static auditor
+      resolves both forms. Mismatches deploy the wrong container
+      variant.
+- [ ] **Generator regeneration produces no diff.** Re-run
+      `python tools/generate-arm-templates.py --filter <slug>` and
+      confirm `git diff -- feeders/<slug>/azure-template*.json` is
+      empty. Non-empty diff means a reviewer hand-edited a
+      generated template; move the change into the generator or
+      `fleet-catalog.json` and re-emit.
 - [ ] **Identity + role assignments correct** where Entra ID is the
       auth path (UAMI + the right
       `Microsoft.Authorization/roleAssignments` per resource scope).
@@ -57,8 +75,16 @@ checks, and the reviewer MUST paste evidence into the PR body:
       script creates a real RG, deploys the template, validates
       data flow on the provisioned broker (or container-group
       shape for BYO-broker variants), and tears the RG down in
-      `finally`. Paste the PASS line into the PR body. A PR that
-      has not been live-verified against Azure is not mergeable.
+      `finally`. Paste the PASS line **with ISO-8601 timestamp**
+      into the PR body. A PR that has not been live-verified
+      against Azure within the last 30 days is not mergeable.
+- [ ] **KQL update-policy apply check** when `kql/<slug>.kql`
+      exists and the source ships no Fabric notebook (notebook
+      sources exercise this automatically). Apply the script to a
+      scratch Eventhouse — a script that compiles locally can still
+      fail when applied (table missing, syntax variant the Kusto
+      engine rejects, ordering dependency on an update-policy that
+      hasn't materialized).
 
 Run the regenerator (`python tools/generate-arm-templates.py`)
 rather than hand-editing per-feeder templates when the change is a

@@ -135,6 +135,11 @@ The cell-level error is **not** in the REST response. To diagnose:
 
 ## E2E Verification (mandatory before declaring done)
 
+The canonical test workspace for this repo is **`ContosoRealTimeTest`**.
+Use it for every pre-merge live deploy so orphan environments
+(occasional Fabric 400 UnknownError on env-delete) concentrate in one
+place that the maintainers know to sweep.
+
 Query the KQL DB via REST with the `https://kusto.kusto.windows.net`
 audience (NOT `kusto.fabric.microsoft.com`):
 
@@ -145,9 +150,24 @@ irm "https://<cluster>.z1.kusto.fabric.microsoft.com/v2/rest/query" -Method Post
   -Headers @{Authorization="Bearer $tok"; 'Content-Type'='application/json'} -Body $body
 ```
 
-The deployment is verified when both **reference** and **telemetry** counts
-are non-zero. Pegelonline reference: 785 stations × 1 = 785; telemetry: 736
-measurements after one cycle.
+The deployment is verified when **both** of the following are
+non-zero:
+
+1. `['_cloudevents_dispatch'] | count` — the raw landing table fed by
+   the eventstream.
+2. At least one typed table such as `['Measurement'] | count` —
+   produced by the update-policy projection over `_cloudevents_dispatch`.
+
+A non-zero dispatch count with a zero typed-table count means the
+update policy never fired against the new events. This is exactly the
+failure mode the eventstream-topology timing bug produced before
+`Wait-EventStreamTopologyReady` was added to `deploy-fabric.ps1`.
+Reporting only the dispatch count hides update-policy regressions, so
+both counts must be captured and pasted into the PR body alongside the
+ISO-8601 timestamp of the run.
+
+Pegelonline reference: 785 stations × 1 = 785 reference rows;
+telemetry: 736 measurements after one cycle.
 
 ## Things That Are Not Allowed
 
