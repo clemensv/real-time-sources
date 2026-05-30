@@ -891,6 +891,12 @@
     },
     {
       "dir": "feeders/canada-eccc-wateroffice",
+      "image": "canada-eccc-wateroffice",
+      "file": "Dockerfile",
+      "module": "canada_eccc_wateroffice"
+    },
+    {
+      "dir": "feeders/canada-eccc-wateroffice",
       "image": "canada-eccc-wateroffice-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "canada_eccc_wateroffice_mqtt"
@@ -2421,6 +2427,12 @@
       "image": "tepco-denkiyoho-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestTepcoDenkiyohoAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/canada-eccc-wateroffice",
+      "image": "canada-eccc-wateroffice",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestCanadaEcccWaterofficeDockerFlow"
     },
     {
       "dir": "feeders/canada-eccc-wateroffice",

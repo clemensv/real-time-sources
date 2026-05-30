@@ -222,6 +222,7 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 
 | Variable | Description |
 |---|---|
+| `STATE_FILE` | Path to the JSON state file that persists the last-seen station observations across restarts. Mount durable storage at `/mnt/bridge-state` or `/state` when you need dedupe continuity. |
 | `POLLING_INTERVAL` | Polling interval in seconds for observation fetches. Default `300` (5 minutes). |
 
 ### Kafka image

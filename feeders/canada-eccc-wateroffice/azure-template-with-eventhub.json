@@ -22,7 +22,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the broker that receives Canada ECCC Water Office station and observation CloudEvents."
       }
     },
     "location": {
@@ -173,7 +173,7 @@
                   "value": "INFO"
                 },
                 {
-                  "name": "CANADA_ECCC_WATEROFFICE_STATE_FILE",
+                  "name": "STATE_FILE",
                   "value": "/mnt/bridge-state/canada_eccc_wateroffice_state.json"
                 },
                 {
