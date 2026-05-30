@@ -28,25 +28,25 @@ class Test_RoadEvent(unittest.TestCase):
         Create instance of RoadEvent for testing
         """
         instance = RoadEvent(
-            situation_id='vnrvwseyboabpngfgwjt',
-            record_id='houzecqwybsjzmuybije',
-            version='qhwxzqqwztkkepvyxfbx',
-            severity='kacdaaromyuvdfmcuvpq',
-            record_type='ziaplounepdxmfzbvxes',
-            probability='awmdslwqkgkvmlxsdpdv',
-            latitude=float(56.99311613470175),
-            longitude=float(32.27127886637179),
-            road_number='khzebemyplmmkwzhacji',
-            town_name='rsovajrxodbcqzpmwdnm',
-            direction='tqxzpihtmhembdlmcvci',
-            description='fzopgitbtgrdwgraugsy',
-            location_description='xquuwcuvdtpxufyvdrpd',
-            source_name='dvuqecnoksizqftjovrf',
-            validity_status='gendkofodfikannllubw',
-            overall_start_time='ucryvkzwegtnpasaacso',
-            overall_end_time='huoawseimvmqnsyhzoln',
-            creation_time='hrgcuupwizxxhuktpkcx',
-            observation_time='idleulbtdkokfjnfztef'
+            situation_id='vtcgsufhslelnfpvrlmp',
+            record_id='ssjkscecjdcglnehfxps',
+            version='ttxdfnuevndmpngugfyj',
+            severity='nmrlokvugnqualeouyow',
+            record_type='ugufyhurzxmdngujvbnt',
+            probability='roxuzphgadqsntlkuhtt',
+            latitude=float(10.66167778243119),
+            longitude=float(5.7030086717870905),
+            road_number='mcrrrnwkuhlzooburyzg',
+            town_name='asueguwczoqvlxpuyvpk',
+            direction='dcosdbbkytbyncwmcuao',
+            description='dpzmbdrsokshgwqgbcoa',
+            location_description='fcfyluktltbgntdjxyjl',
+            source_name='qjoniksfgfvvdcezvmzd',
+            validity_status='snrijdsoslbnnpqdqdqu',
+            overall_start_time='qypegdmpneihsvotfemn',
+            overall_end_time='tjfpvsdbfisredgcpsfe',
+            creation_time='xcdhzncvnpkizlidvxcp',
+            observation_time='umdvvlougwqvjvjcenrp'
         )
         return instance
 
@@ -55,7 +55,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test situation_id property
         """
-        test_value = 'vnrvwseyboabpngfgwjt'
+        test_value = 'vtcgsufhslelnfpvrlmp'
         self.instance.situation_id = test_value
         self.assertEqual(self.instance.situation_id, test_value)
     
@@ -63,7 +63,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test record_id property
         """
-        test_value = 'houzecqwybsjzmuybije'
+        test_value = 'ssjkscecjdcglnehfxps'
         self.instance.record_id = test_value
         self.assertEqual(self.instance.record_id, test_value)
     
@@ -71,7 +71,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test version property
         """
-        test_value = 'qhwxzqqwztkkepvyxfbx'
+        test_value = 'ttxdfnuevndmpngugfyj'
         self.instance.version = test_value
         self.assertEqual(self.instance.version, test_value)
     
@@ -79,7 +79,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = 'kacdaaromyuvdfmcuvpq'
+        test_value = 'nmrlokvugnqualeouyow'
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     
@@ -87,7 +87,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test record_type property
         """
-        test_value = 'ziaplounepdxmfzbvxes'
+        test_value = 'ugufyhurzxmdngujvbnt'
         self.instance.record_type = test_value
         self.assertEqual(self.instance.record_type, test_value)
     
@@ -95,7 +95,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test probability property
         """
-        test_value = 'awmdslwqkgkvmlxsdpdv'
+        test_value = 'roxuzphgadqsntlkuhtt'
         self.instance.probability = test_value
         self.assertEqual(self.instance.probability, test_value)
     
@@ -103,7 +103,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(56.99311613470175)
+        test_value = float(10.66167778243119)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -111,7 +111,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(32.27127886637179)
+        test_value = float(5.7030086717870905)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -119,7 +119,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test road_number property
         """
-        test_value = 'khzebemyplmmkwzhacji'
+        test_value = 'mcrrrnwkuhlzooburyzg'
         self.instance.road_number = test_value
         self.assertEqual(self.instance.road_number, test_value)
     
@@ -127,7 +127,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test town_name property
         """
-        test_value = 'rsovajrxodbcqzpmwdnm'
+        test_value = 'asueguwczoqvlxpuyvpk'
         self.instance.town_name = test_value
         self.assertEqual(self.instance.town_name, test_value)
     
@@ -135,7 +135,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test direction property
         """
-        test_value = 'tqxzpihtmhembdlmcvci'
+        test_value = 'dcosdbbkytbyncwmcuao'
         self.instance.direction = test_value
         self.assertEqual(self.instance.direction, test_value)
     
@@ -143,7 +143,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'fzopgitbtgrdwgraugsy'
+        test_value = 'dpzmbdrsokshgwqgbcoa'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -151,7 +151,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test location_description property
         """
-        test_value = 'xquuwcuvdtpxufyvdrpd'
+        test_value = 'fcfyluktltbgntdjxyjl'
         self.instance.location_description = test_value
         self.assertEqual(self.instance.location_description, test_value)
     
@@ -159,7 +159,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test source_name property
         """
-        test_value = 'dvuqecnoksizqftjovrf'
+        test_value = 'qjoniksfgfvvdcezvmzd'
         self.instance.source_name = test_value
         self.assertEqual(self.instance.source_name, test_value)
     
@@ -167,7 +167,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test validity_status property
         """
-        test_value = 'gendkofodfikannllubw'
+        test_value = 'snrijdsoslbnnpqdqdqu'
         self.instance.validity_status = test_value
         self.assertEqual(self.instance.validity_status, test_value)
     
@@ -175,7 +175,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test overall_start_time property
         """
-        test_value = 'ucryvkzwegtnpasaacso'
+        test_value = 'qypegdmpneihsvotfemn'
         self.instance.overall_start_time = test_value
         self.assertEqual(self.instance.overall_start_time, test_value)
     
@@ -183,7 +183,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test overall_end_time property
         """
-        test_value = 'huoawseimvmqnsyhzoln'
+        test_value = 'tjfpvsdbfisredgcpsfe'
         self.instance.overall_end_time = test_value
         self.assertEqual(self.instance.overall_end_time, test_value)
     
@@ -191,7 +191,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test creation_time property
         """
-        test_value = 'hrgcuupwizxxhuktpkcx'
+        test_value = 'xcdhzncvnpkizlidvxcp'
         self.instance.creation_time = test_value
         self.assertEqual(self.instance.creation_time, test_value)
     
@@ -199,7 +199,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test observation_time property
         """
-        test_value = 'idleulbtdkokfjnfztef'
+        test_value = 'umdvvlougwqvjvjcenrp'
         self.instance.observation_time = test_value
         self.assertEqual(self.instance.observation_time, test_value)
     

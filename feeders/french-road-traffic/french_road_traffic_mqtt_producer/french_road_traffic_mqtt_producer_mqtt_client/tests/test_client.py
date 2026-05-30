@@ -16,9 +16,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import french_road_traffic_mqtt_producer_data
 from french_road_traffic_mqtt_producer_data import TrafficFlowMeasurement
-from test_french_road_traffic_mqtt_producer_data_trafficflowmeasurement import Test_TrafficFlowMeasurement
+from test_trafficflowmeasurement import Test_TrafficFlowMeasurement
 from french_road_traffic_mqtt_producer_data import RoadEvent
-from test_french_road_traffic_mqtt_producer_data_roadevent import Test_RoadEvent
+from test_roadevent import Test_RoadEvent
 from french_road_traffic_mqtt_producer_mqtt_client import FrGouvTransportBisonFuteTrafficFlowMqttMqttClient
 from french_road_traffic_mqtt_producer_mqtt_client import FrGouvTransportBisonFuteRoadEventMqttMqttClient
 

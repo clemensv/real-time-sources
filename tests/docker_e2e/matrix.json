@@ -1201,6 +1201,12 @@
     },
     {
       "dir": "feeders/french-road-traffic",
+      "image": "french-road-traffic",
+      "file": "Dockerfile",
+      "module": "french_road_traffic"
+    },
+    {
+      "dir": "feeders/french-road-traffic",
       "image": "french-road-traffic-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "french_road_traffic_mqtt"
@@ -2978,6 +2984,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestJmaBosaiVolcanoAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/french-road-traffic",
+      "image": "french-road-traffic",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestFrenchRoadTrafficDockerFlow"
     },
     {
       "dir": "feeders/french-road-traffic",

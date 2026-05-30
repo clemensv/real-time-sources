@@ -17,6 +17,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../french_road_traffic_amqp_producer_data/src')))
@@ -25,9 +26,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from french_road_traffic_amqp_producer_amqp_producer import *
 from french_road_traffic_amqp_producer_data import TrafficFlowMeasurement
-from test_french_road_traffic_amqp_producer_data_trafficflowmeasurement import Test_TrafficFlowMeasurement
+from test_trafficflowmeasurement import Test_TrafficFlowMeasurement
 from french_road_traffic_amqp_producer_data import RoadEvent
-from test_french_road_traffic_amqp_producer_data_roadevent import Test_RoadEvent
+from test_roadevent import Test_RoadEvent
 
 
 
@@ -267,6 +268,7 @@ class TestFrGouvTransportBisonFuteTrafficFlowAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -288,6 +290,7 @@ class TestFrGouvTransportBisonFuteTrafficFlowAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{site_id}".format(site_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{site_id}".format(site_id="value"))[:128]
         finally:
             producer.close()
 
@@ -345,6 +348,7 @@ class TestFrGouvTransportBisonFuteRoadEventAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -366,6 +370,7 @@ class TestFrGouvTransportBisonFuteRoadEventAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{situation_id}".format(situation_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]
         finally:
             producer.close()
 

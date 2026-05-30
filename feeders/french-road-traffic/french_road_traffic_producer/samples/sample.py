@@ -33,10 +33,15 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from french_road_traffic_producer_kafka_producer.producer import FrGouvTransportBisonFuteTrafficFlowEventProducer
+from french_road_traffic_producer_kafka_producer.producer import FrGouvTransportBisonFuteRoadEventEventProducer
+from french_road_traffic_producer_kafka_producer.producer import FrGouvTransportBisonFuteTrafficFlowMqttEventProducer
+from french_road_traffic_producer_kafka_producer.producer import FrGouvTransportBisonFuteRoadEventMqttEventProducer
+from french_road_traffic_producer_kafka_producer.producer import FrGouvTransportBisonFuteTrafficFlowAmqpEventProducer
+from french_road_traffic_producer_kafka_producer.producer import FrGouvTransportBisonFuteRoadEventAmqpEventProducer
 
 # imports for the data classes for each event
 
-from french_road_traffic_producer_data.trafficflowmeasurement import TrafficFlowMeasurement
+from french_road_traffic_producer_data import TrafficFlowMeasurement, RoadEvent
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -63,12 +68,92 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'fr.gouv.transport.bison_fute.TrafficFlowMeasurement' event to Kafka topic.
     await fr_gouv_transport_bison_fute_traffic_flow_event_producer.send_fr_gouv_transport_bison_fute_traffic_flow_measurement(_feedurl = 'TODO: replace me', _site_id = 'TODO: replace me', data = _traffic_flow_measurement)
     print(f"Sent 'fr.gouv.transport.bison_fute.TrafficFlowMeasurement' event: {_traffic_flow_measurement.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fr_gouv_transport_bison_fute_road_event_event_producer = FrGouvTransportBisonFuteRoadEventEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fr_gouv_transport_bison_fute_road_event_event_producer = FrGouvTransportBisonFuteRoadEventEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fr.gouv.transport.bison_fute.RoadEvent ----
+    # TODO: Supply event data for the fr.gouv.transport.bison_fute.RoadEvent event
+    _road_event = RoadEvent()
+
+    # sends the 'fr.gouv.transport.bison_fute.RoadEvent' event to Kafka topic.
+    await fr_gouv_transport_bison_fute_road_event_event_producer.send_fr_gouv_transport_bison_fute_road_event(_feedurl = 'TODO: replace me', _situation_id = 'TODO: replace me', data = _road_event)
+    print(f"Sent 'fr.gouv.transport.bison_fute.RoadEvent' event: {_road_event.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fr_gouv_transport_bison_fute_traffic_flow_mqtt_event_producer = FrGouvTransportBisonFuteTrafficFlowMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fr_gouv_transport_bison_fute_traffic_flow_mqtt_event_producer = FrGouvTransportBisonFuteTrafficFlowMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fr.gouv.transport.bison_fute.TrafficFlowMeasurement.mqtt ----
+    # TODO: Supply event data for the fr.gouv.transport.bison_fute.TrafficFlowMeasurement.mqtt event
+    _traffic_flow_measurement = TrafficFlowMeasurement()
+
+    # sends the 'fr.gouv.transport.bison_fute.TrafficFlowMeasurement.mqtt' event to Kafka topic.
+    await fr_gouv_transport_bison_fute_traffic_flow_mqtt_event_producer.send_fr_gouv_transport_bison_fute_traffic_flow_measurement_mqtt(_feedurl = 'TODO: replace me', _site_id = 'TODO: replace me', data = _traffic_flow_measurement)
+    print(f"Sent 'fr.gouv.transport.bison_fute.TrafficFlowMeasurement.mqtt' event: {_traffic_flow_measurement.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fr_gouv_transport_bison_fute_road_event_mqtt_event_producer = FrGouvTransportBisonFuteRoadEventMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fr_gouv_transport_bison_fute_road_event_mqtt_event_producer = FrGouvTransportBisonFuteRoadEventMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fr.gouv.transport.bison_fute.RoadEvent.mqtt ----
+    # TODO: Supply event data for the fr.gouv.transport.bison_fute.RoadEvent.mqtt event
+    _road_event = RoadEvent()
+
+    # sends the 'fr.gouv.transport.bison_fute.RoadEvent.mqtt' event to Kafka topic.
+    await fr_gouv_transport_bison_fute_road_event_mqtt_event_producer.send_fr_gouv_transport_bison_fute_road_event_mqtt(_feedurl = 'TODO: replace me', _situation_id = 'TODO: replace me', data = _road_event)
+    print(f"Sent 'fr.gouv.transport.bison_fute.RoadEvent.mqtt' event: {_road_event.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fr_gouv_transport_bison_fute_traffic_flow_amqp_event_producer = FrGouvTransportBisonFuteTrafficFlowAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fr_gouv_transport_bison_fute_traffic_flow_amqp_event_producer = FrGouvTransportBisonFuteTrafficFlowAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fr.gouv.transport.bison_fute.TrafficFlowMeasurement.amqp ----
+    # TODO: Supply event data for the fr.gouv.transport.bison_fute.TrafficFlowMeasurement.amqp event
+    _traffic_flow_measurement = TrafficFlowMeasurement()
+
+    # sends the 'fr.gouv.transport.bison_fute.TrafficFlowMeasurement.amqp' event to Kafka topic.
+    await fr_gouv_transport_bison_fute_traffic_flow_amqp_event_producer.send_fr_gouv_transport_bison_fute_traffic_flow_measurement_amqp(_feedurl = 'TODO: replace me', _site_id = 'TODO: replace me', data = _traffic_flow_measurement)
+    print(f"Sent 'fr.gouv.transport.bison_fute.TrafficFlowMeasurement.amqp' event: {_traffic_flow_measurement.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fr_gouv_transport_bison_fute_road_event_amqp_event_producer = FrGouvTransportBisonFuteRoadEventAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fr_gouv_transport_bison_fute_road_event_amqp_event_producer = FrGouvTransportBisonFuteRoadEventAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fr.gouv.transport.bison_fute.RoadEvent.amqp ----
+    # TODO: Supply event data for the fr.gouv.transport.bison_fute.RoadEvent.amqp event
+    _road_event = RoadEvent()
+
+    # sends the 'fr.gouv.transport.bison_fute.RoadEvent.amqp' event to Kafka topic.
+    await fr_gouv_transport_bison_fute_road_event_amqp_event_producer.send_fr_gouv_transport_bison_fute_road_event_amqp(_feedurl = 'TODO: replace me', _situation_id = 'TODO: replace me', data = _road_event)
+    print(f"Sent 'fr.gouv.transport.bison_fute.RoadEvent.amqp' event: {_road_event.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 
