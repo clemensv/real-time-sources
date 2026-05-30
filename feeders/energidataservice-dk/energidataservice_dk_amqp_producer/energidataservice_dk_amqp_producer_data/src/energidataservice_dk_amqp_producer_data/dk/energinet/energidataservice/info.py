@@ -1,4 +1,4 @@
-""" SpotPrice dataclass. """
+""" Info dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -15,27 +15,43 @@ import json
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class SpotPrice:
+class Info:
     """
-    Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool). One record per hour per price area.
+    Reference information for the source, area, or event collection used by MQTT retained topics and AMQP consumers to discover the logical feed scope.
     
     Attributes:
-        hour_utc (str)
-        hour_dk (str)
-        price_area (str)
-        spot_price_dkk (typing.Optional[float])
-        spot_price_eur (typing.Optional[float])
+        info_id (str)
+        name (str)
+        country (typing.Optional[str])
+        city (typing.Optional[str])
+        category (typing.Optional[str])
+        price_area (typing.Optional[str])
+        settlement_date (typing.Optional[str])
+        settlement_period (typing.Optional[int])
+        area_code (typing.Optional[str])
+        segment (typing.Optional[str])
+        entity_id (typing.Optional[str])
+        event_id (typing.Optional[str])
+        venue_id (typing.Optional[str])
     """
     
     
-    hour_utc: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="hour_utc"))
-    hour_dk: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="hour_dk"))
-    price_area: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="price_area"))
-    spot_price_dkk: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="spot_price_dkk"))
-    spot_price_eur: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="spot_price_eur"))
+    info_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="info_id"))
+    name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
+    country: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
+    city: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="city"))
+    category: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="category"))
+    price_area: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="price_area"))
+    settlement_date: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="settlement_date"))
+    settlement_period: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="settlement_period"))
+    area_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_code"))
+    segment: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="segment"))
+    entity_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="entity_id"))
+    event_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_id"))
+    venue_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="venue_id"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'SpotPrice':
+    def from_serializer_dict(cls, data: dict) -> 'Info':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -108,7 +124,7 @@ class SpotPrice:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['SpotPrice']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Info']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -145,13 +161,13 @@ class SpotPrice:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return SpotPrice.from_serializer_dict(_record)
+                return Info.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'SpotPrice':
+    def create_instance(cls) -> 'Info':
         """
         Creates an instance of the dataclass with test values.
         
@@ -159,9 +175,17 @@ class SpotPrice:
             An instance of the dataclass.
         """
         return cls(
-            hour_utc='vpnylvqzqhxdxmgahnyp',
-            hour_dk='bzfihybrczcjzwkyehpi',
-            price_area='ygxeuxjppygjkyfisxzk',
-            spot_price_dkk=float(77.82213827081763),
-            spot_price_eur=float(45.624637136400324)
+            info_id='rupnbumqarfekexnfotu',
+            name='lrsmajekyympmipovuza',
+            country='midaefwfaopxtjtjqdzb',
+            city='eggtsaxttoheebkvbxlx',
+            category='jrpkgoptlxegdtpeuxif',
+            price_area='wrojwxkqoxplcypaamil',
+            settlement_date='sayylkdgtlctjnzzmtre',
+            settlement_period=int(93),
+            area_code='xulesglapvtkmimicmsl',
+            segment='zqzbsgaesqksztllanxq',
+            entity_id='stmfdyttjusmaumvqtvz',
+            event_id='ydvpwwxarsynqjmqyufs',
+            venue_id='cbortwjuzehkwydxmvfc'
         )

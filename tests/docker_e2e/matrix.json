@@ -837,6 +837,12 @@
     },
     {
       "dir": "feeders/energidataservice-dk",
+      "image": "energidataservice-dk",
+      "file": "Dockerfile",
+      "module": "energidataservice_dk"
+    },
+    {
+      "dir": "feeders/energidataservice-dk",
       "image": "energidataservice-dk-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "energidataservice_dk_mqtt"
@@ -2448,6 +2454,13 @@
       "image": "elexon-bmrs-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestElexonBmrsAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/energidataservice-dk",
+      "image": "energidataservice-dk",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestEnergidataserviceDkDockerFlow"
     },
     {
       "dir": "feeders/energidataservice-dk",

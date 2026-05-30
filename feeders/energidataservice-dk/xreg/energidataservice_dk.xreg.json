@@ -536,99 +536,111 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
-                "$id": "https://github.com/clemensv/real-time-sources/schemas/energidataservice-dk/Info",
-                "type": "object",
+                "$id": "https://github.com/clemensv/real-time-sources/schemas/dk/energinet/energidataservice/Info",
                 "name": "Info",
-                "description": "Reference information for the source, area, or event collection used by MQTT retained topics and AMQP consumers to discover the logical feed scope.",
-                "required": [
-                  "info_id",
-                  "name"
-                ],
-                "properties": {
-                  "info_id": {
-                    "type": "string",
-                    "description": "Stable identifier for the reference information record; used as the CloudEvents subject when no more specific upstream entity exists."
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "Human-readable name for the source, area, or event collection represented by this reference information record."
-                  },
-                  "country": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "Lower-case ISO 3166-1 alpha-2 country code or intl when the feed spans countries."
-                  },
-                  "city": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "City segment used in civic-events topic routing, or null when not applicable."
-                  },
-                  "category": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "Event category segment used in topic routing, or null when not applicable."
-                  },
-                  "price_area": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "Energy market price area or bidding zone represented by this reference record, when applicable."
-                  },
-                  "settlement_date": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "GB settlement date for Elexon retained information topics when applicable."
-                  },
-                  "settlement_period": {
-                    "type": [
-                      "int32",
-                      "null"
-                    ],
-                    "description": "GB settlement period for Elexon retained information topics when applicable."
-                  },
-                  "area_code": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "Electricity control area or utility service area code represented by this record when applicable."
-                  },
-                  "segment": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "Ticketmaster classification segment used for wildcard topic routing, when applicable."
-                  },
-                  "entity_id": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "Stable upstream entity identifier for reference topics, when applicable."
-                  },
-                  "event_id": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "Stable upstream event identifier for event-scoped reference topics, when applicable."
-                  },
-                  "venue_id": {
-                    "type": [
-                      "string",
-                      "null"
-                    ],
-                    "description": "Stable venue identifier for venue-scoped civic event topics, when applicable."
+                "$root": "#/definitions/dk/energinet/energidataservice/Info",
+                "definitions": {
+                  "dk": {
+                    "energinet": {
+                      "energidataservice": {
+                        "Info": {
+                          "name": "Info",
+                          "type": "object",
+                          "description": "Reference information for the source, area, or event collection used by MQTT retained topics and AMQP consumers to discover the logical feed scope.",
+                          "required": [
+                            "info_id",
+                            "name"
+                          ],
+                          "properties": {
+                            "info_id": {
+                              "type": "string",
+                              "description": "Stable identifier for the reference information record; used as the CloudEvents subject when no more specific upstream entity exists."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Human-readable name for the source, area, or event collection represented by this reference information record."
+                            },
+                            "country": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Lower-case ISO 3166-1 alpha-2 country code or intl when the feed spans countries."
+                            },
+                            "city": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "City segment used in civic-events topic routing, or null when not applicable."
+                            },
+                            "category": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Event category segment used in topic routing, or null when not applicable."
+                            },
+                            "price_area": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Energy market price area or bidding zone represented by this reference record, when applicable."
+                            },
+                            "settlement_date": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "GB settlement date for Elexon retained information topics when applicable."
+                            },
+                            "settlement_period": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "GB settlement period for Elexon retained information topics when applicable."
+                            },
+                            "area_code": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Electricity control area or utility service area code represented by this record when applicable."
+                            },
+                            "segment": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Ticketmaster classification segment used for wildcard topic routing, when applicable."
+                            },
+                            "entity_id": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Stable upstream entity identifier for reference topics, when applicable."
+                            },
+                            "event_id": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Stable upstream event identifier for event-scoped reference topics, when applicable."
+                            },
+                            "venue_id": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Stable venue identifier for venue-scoped civic event topics, when applicable."
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }

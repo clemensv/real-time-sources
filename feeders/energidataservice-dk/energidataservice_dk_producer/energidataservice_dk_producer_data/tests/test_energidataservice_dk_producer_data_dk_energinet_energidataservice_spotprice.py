@@ -28,55 +28,55 @@ class Test_SpotPrice(unittest.TestCase):
         Create instance of SpotPrice for testing
         """
         instance = SpotPrice(
-            hour_utc='tbjcmpegvnbxiplqhyor',
-            hour_dk='jjiujoinbjcsrnvtzizm',
-            price_area='pikhnjyaqiifywxdnieg',
-            spot_price_dkk=float(97.30775301399709),
-            spot_price_eur=float(8.556922304749504)
+            hour_utc='pukqqguqoybwocrogpig',
+            hour_dk='eajdugnuoflngkxoispc',
+            price_area='ebcjzrbduembetdhlmwr',
+            spot_price_dkk=float(47.51983524341099),
+            spot_price_eur=float(79.88004528998984)
         )
         return instance
 
-
+    
     def test_hour_utc_property(self):
         """
         Test hour_utc property
         """
-        test_value = 'tbjcmpegvnbxiplqhyor'
+        test_value = 'pukqqguqoybwocrogpig'
         self.instance.hour_utc = test_value
         self.assertEqual(self.instance.hour_utc, test_value)
-
+    
     def test_hour_dk_property(self):
         """
         Test hour_dk property
         """
-        test_value = 'jjiujoinbjcsrnvtzizm'
+        test_value = 'eajdugnuoflngkxoispc'
         self.instance.hour_dk = test_value
         self.assertEqual(self.instance.hour_dk, test_value)
-
+    
     def test_price_area_property(self):
         """
         Test price_area property
         """
-        test_value = 'pikhnjyaqiifywxdnieg'
+        test_value = 'ebcjzrbduembetdhlmwr'
         self.instance.price_area = test_value
         self.assertEqual(self.instance.price_area, test_value)
-
+    
     def test_spot_price_dkk_property(self):
         """
         Test spot_price_dkk property
         """
-        test_value = float(97.30775301399709)
+        test_value = float(47.51983524341099)
         self.instance.spot_price_dkk = test_value
         self.assertEqual(self.instance.spot_price_dkk, test_value)
-
+    
     def test_spot_price_eur_property(self):
         """
         Test spot_price_eur property
         """
-        test_value = float(8.556922304749504)
+        test_value = float(79.88004528998984)
         self.instance.spot_price_eur = test_value
         self.assertEqual(self.instance.spot_price_eur, test_value)
-
+    
     def test_to_byte_array_avro(self):
         """
         Test to_byte_array method with avro media type

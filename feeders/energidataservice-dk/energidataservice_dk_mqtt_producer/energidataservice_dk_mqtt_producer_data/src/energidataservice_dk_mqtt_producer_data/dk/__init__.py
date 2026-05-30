@@ -1,3 +1,3 @@
-from .energinet import PowerSystemSnapshot, SpotPrice
+from .energinet import SpotPrice, PowerSystemSnapshot, Info
 
-__all__ = ["PowerSystemSnapshot", "SpotPrice"]
+__all__ = ["SpotPrice", "PowerSystemSnapshot", "Info"]
