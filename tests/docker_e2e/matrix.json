@@ -1449,6 +1449,12 @@
     },
     {
       "dir": "feeders/geosphere-austria",
+      "image": "geosphere-austria",
+      "file": "Dockerfile",
+      "module": "geosphere_austria"
+    },
+    {
+      "dir": "feeders/geosphere-austria",
       "image": "geosphere-austria-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "geosphere_austria_mqtt"
@@ -3258,6 +3264,13 @@
       "image": "environment-canada-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestEnvironmentCanadaAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/geosphere-austria",
+      "image": "geosphere-austria",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestGeosphereAustriaDockerFlow"
     },
     {
       "dir": "feeders/geosphere-austria",
