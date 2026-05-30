@@ -45,6 +45,13 @@
         "description": "Topic-space root for the MQTT/UNS publish surface. Defaults to radiation/# which covers all eurdep-radiation output (hydro/de/wsv/eurdep-radiation/...)."
       }
     },
+    "eurdepRadiationSampleMode": {
+      "type": "string",
+      "defaultValue": "false",
+      "metadata": {
+        "description": "Set true only for sample-data smoke tests; production deployments should leave it false to poll the live EURDEP feed."
+      }
+    },
     "imageName": {
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-eurdep-radiation-mqtt:latest",
@@ -211,6 +218,10 @@
                 {
                   "name": "MQTT_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
+                },
+                {
+                  "name": "EURDEP_RADIATION_SAMPLE_MODE",
+                  "value": "[parameters('eurdepRadiationSampleMode')]"
                 },
                 { "name": "LOG_LEVEL", "value": "INFO" },
                 { "name": "PYTHONUNBUFFERED", "value": "1" }

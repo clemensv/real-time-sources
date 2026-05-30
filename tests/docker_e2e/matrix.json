@@ -791,6 +791,12 @@
     },
     {
       "dir": "feeders/eurdep-radiation",
+      "image": "eurdep-radiation",
+      "file": "Dockerfile",
+      "module": "eurdep_radiation"
+    },
+    {
+      "dir": "feeders/eurdep-radiation",
       "image": "eurdep-radiation-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "eurdep_radiation_mqtt"
@@ -2406,6 +2412,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestInpeDeterBrazilAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/eurdep-radiation",
+      "image": "eurdep-radiation",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestEurdepRadiationDockerFlow"
     },
     {
       "dir": "feeders/eurdep-radiation",

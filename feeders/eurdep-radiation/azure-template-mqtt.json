@@ -41,6 +41,13 @@
       "metadata": {
         "description": "Azure region for all resources."
       }
+    },
+    "eurdepRadiationSampleMode": {
+      "type": "string",
+      "defaultValue": "false",
+      "metadata": {
+        "description": "Set true only for sample-data smoke tests; production deployments should leave it false to poll the live EURDEP feed."
+      }
     }
   },
   "variables": {
@@ -138,6 +145,10 @@
                 {
                   "name": "MQTT_PASSWORD",
                   "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "EURDEP_RADIATION_SAMPLE_MODE",
+                  "value": "[parameters('eurdepRadiationSampleMode')]"
                 },
                 {
                   "name": "LOG_LEVEL",
