@@ -92,7 +92,8 @@ docker run --rm   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/bil
 | `POLLING_INTERVAL` | Core configuration for this image variant. |
 | `BILLETTO_API_KEYPAIR` | **Required.** Billetto API key pair used to authenticate upstream public-events API requests; obtain it from the Billetto developer portal before deployment. |
 | `BILLETTO_BASE_URL` | Core configuration for this image variant. |
-| `BILLETTO_CATEGORY` | Core configuration for this image variant. |
+| `BILLETTO_CATEGORY` | Optional Billetto category slug to filter by. |
+| `BILLETTO_SUBCATEGORY` | Optional Billetto subcategory slug to filter by within the chosen category. |
 | `BILLETTO_EVENT_TYPE` | Core configuration for this image variant. |
 | `BILLETTO_REGION` | Core configuration for this image variant. |
 | `BILLETTO_SUBREGION` | Core configuration for this image variant. |

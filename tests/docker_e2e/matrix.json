@@ -837,6 +837,12 @@
     },
     {
       "dir": "feeders/billetto",
+      "image": "billetto-kafka",
+      "file": "Dockerfile",
+      "module": "billetto"
+    },
+    {
+      "dir": "feeders/billetto",
       "image": "billetto-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "billetto_mqtt"
@@ -2333,6 +2339,13 @@
       "image": "energy-charts-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestEnergyChartsAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/billetto",
+      "image": "billetto-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestBillettoDockerFlow"
     },
     {
       "dir": "feeders/billetto",
