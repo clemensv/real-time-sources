@@ -468,6 +468,24 @@
       "module": "gdacs_mqtt"
     },
     {
+      "dir": "feeders/gios-poland",
+      "image": "gios-poland",
+      "file": "Dockerfile",
+      "module": "gios_poland"
+    },
+    {
+      "dir": "feeders/gios-poland",
+      "image": "gios-poland-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "gios_poland_mqtt"
+    },
+    {
+      "dir": "feeders/gios-poland",
+      "image": "gios-poland-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "gios_poland_amqp"
+    },
+    {
       "dir": "feeders/meteoalarm",
       "module": "meteoalarm"
     },
@@ -2031,6 +2049,20 @@
       "test_class": "TestGdacsMqttDockerFlow"
     },
     {
+      "dir": "feeders/gios-poland",
+      "image": "gios-poland",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestGiosPolandDockerFlow"
+    },
+    {
+      "dir": "feeders/gios-poland",
+      "image": "gios-poland-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestGiosPolandMqttDockerFlow"
+    },
+    {
       "dir": "feeders/meteoalarm",
       "image": "meteoalarm-mqtt",
       "file": "Dockerfile.mqtt",
@@ -2365,6 +2397,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestGdacsAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/gios-poland",
+      "image": "gios-poland-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestGiosPolandAmqpDockerFlow"
     },
     {
       "dir": "feeders/eaws-albina",
