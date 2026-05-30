@@ -11,15 +11,15 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from aisstream_producer_data.area import Area
 from aisstream_producer_data.unicast import Unicast
+from aisstream_producer_data.area import Area
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class ChannelManagement:
     """
-    ChannelManagement
+    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
     
     Attributes:
         MessageID (int)
@@ -183,20 +183,20 @@ class ChannelManagement:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(14),
-            RepeatIndicator=int(14),
-            UserID=int(90),
-            Valid=True,
-            Spare1=int(13),
-            ChannelA=int(22),
-            ChannelB=int(99),
-            TxRxMode=int(66),
-            LowPower=True,
+            MessageID=int(74),
+            RepeatIndicator=int(78),
+            UserID=int(41),
+            Valid=False,
+            Spare1=int(38),
+            ChannelA=int(71),
+            ChannelB=int(40),
+            TxRxMode=int(62),
+            LowPower=False,
             Area=None,
             Unicast=None,
-            IsAddressed=True,
+            IsAddressed=False,
             BwA=True,
-            BwB=True,
-            TransitionalZoneSize=int(86),
-            Spare4=int(12)
+            BwB=False,
+            TransitionalZoneSize=int(98),
+            Spare4=int(45)
         )

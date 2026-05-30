@@ -18,7 +18,7 @@ from aisstream_amqp_producer_data.msgtypeenum import MsgTypeenum
 @dataclass
 class PositionReport:
     """
-    Position report (Type 1/2/3/4/9/18/19/27) projected onto the UNS axes.
+    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
     
     Attributes:
         mmsi (str)
@@ -184,21 +184,21 @@ class PositionReport:
             An instance of the dataclass.
         """
         return cls(
-            mmsi='bdxjsqccqgqhzlonqokl',
-            flag='zgqeuspjyodjbeetadxf',
-            ship_type='jxkznnclonvciauvlgju',
-            geohash5='zrpioyippghnjavtionj',
+            mmsi='rozsjwermajimqvmuilb',
+            flag='xqniqmhbentpvcpwztxc',
+            ship_type='xprhcevyprjohlttjsdn',
+            geohash5='eimmjznhtzlcfrwvrrct',
             msg_type=MsgTypeenum.position_report,
-            user_id=int(44),
-            latitude=float(6.818818015944594),
-            longitude=float(70.92976939737038),
-            sog=float(93.4240762207308),
-            cog=float(65.67268007038523),
-            true_heading=int(25),
-            navigational_status=int(6),
-            rate_of_turn=int(60),
-            position_accuracy=True,
-            timestamp=int(29),
-            raim=True,
-            message_id=int(25)
+            user_id=int(38),
+            latitude=float(85.36370969764076),
+            longitude=float(17.178817025082893),
+            sog=float(36.04159478762368),
+            cog=float(49.70055887470903),
+            true_heading=int(56),
+            navigational_status=int(95),
+            rate_of_turn=int(38),
+            position_accuracy=False,
+            timestamp=int(4),
+            raim=False,
+            message_id=int(15)
         )

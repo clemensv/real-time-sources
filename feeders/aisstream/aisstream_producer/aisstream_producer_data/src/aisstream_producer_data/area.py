@@ -17,7 +17,7 @@ import json
 @dataclass
 class Area:
     """
-    Area
+    Provider field for area in this record.
     
     Attributes:
         Longitude1 (float)
@@ -157,8 +157,8 @@ class Area:
             An instance of the dataclass.
         """
         return cls(
-            Longitude1=float(63.07902709078347),
-            Latitude1=float(7.153115684831823),
-            Longitude2=float(14.460047486589744),
-            Latitude2=float(48.52182896074907)
+            Longitude1=float(12.500562861802521),
+            Latitude1=float(30.392647526351123),
+            Longitude2=float(20.88945895435872),
+            Latitude2=float(70.4056628608138)
         )

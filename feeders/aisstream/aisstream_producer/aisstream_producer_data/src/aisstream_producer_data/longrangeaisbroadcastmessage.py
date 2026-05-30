@@ -17,7 +17,7 @@ import json
 @dataclass
 class LongRangeAisBroadcastMessage:
     """
-    LongRangeAisBroadcastMessage
+    A vehicle or vessel update from AISStream public AIS firehose. It reports the latest position, movement, identity, or voyage information available from the upstream feed.
     
     Attributes:
         MessageID (int)
@@ -175,17 +175,17 @@ class LongRangeAisBroadcastMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(94),
-            RepeatIndicator=int(96),
-            UserID=int(3),
+            MessageID=int(32),
+            RepeatIndicator=int(26),
+            UserID=int(34),
             Valid=True,
-            PositionAccuracy=False,
-            Raim=True,
-            NavigationalStatus=int(13),
-            Longitude=float(4.590061848369887),
-            Latitude=float(14.810029386007573),
-            Sog=float(25.82777492783349),
-            Cog=float(2.0241213890948795),
-            PositionLatency=True,
-            Spare=False
+            PositionAccuracy=True,
+            Raim=False,
+            NavigationalStatus=int(45),
+            Longitude=float(46.234343316543516),
+            Latitude=float(98.79153677675961),
+            Sog=float(98.90725227046525),
+            Cog=float(23.234577018232404),
+            PositionLatency=False,
+            Spare=True
         )

@@ -17,7 +17,7 @@ import json
 @dataclass
 class BaseStationReport:
     """
-    BaseStationReport
+    A reference record from AISStream public AIS firehose for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
     
     Attributes:
         MessageID (int)
@@ -185,22 +185,22 @@ class BaseStationReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(62),
-            RepeatIndicator=int(27),
-            UserID=int(91),
-            Valid=False,
-            UtcYear=int(33),
-            UtcMonth=int(75),
-            UtcDay=int(66),
-            UtcHour=int(96),
-            UtcMinute=int(70),
-            UtcSecond=int(67),
-            PositionAccuracy=True,
-            Longitude=float(83.97713754513033),
-            Latitude=float(46.867344704830124),
-            FixType=int(59),
-            LongRangeEnable=True,
-            Spare=int(54),
+            MessageID=int(70),
+            RepeatIndicator=int(88),
+            UserID=int(24),
+            Valid=True,
+            UtcYear=int(85),
+            UtcMonth=int(62),
+            UtcDay=int(2),
+            UtcHour=int(32),
+            UtcMinute=int(85),
+            UtcSecond=int(25),
+            PositionAccuracy=False,
+            Longitude=float(12.558276859895678),
+            Latitude=float(84.25096906568868),
+            FixType=int(21),
+            LongRangeEnable=False,
+            Spare=int(61),
             Raim=False,
-            CommunicationState=int(13)
+            CommunicationState=int(53)
         )

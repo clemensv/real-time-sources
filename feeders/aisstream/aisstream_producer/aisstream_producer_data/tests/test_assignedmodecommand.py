@@ -28,12 +28,12 @@ class Test_AssignedModeCommand(unittest.TestCase):
         Create instance of AssignedModeCommand for testing
         """
         instance = AssignedModeCommand(
-            MessageID=int(2),
-            RepeatIndicator=int(7),
-            UserID=int(3),
+            MessageID=int(58),
+            RepeatIndicator=int(73),
+            UserID=int(100),
             Valid=False,
-            Spare=int(62),
-            Commands={'ldsfectrkkdwkjnapjuo': 'kfzmbdzjiledirlxjvwh'}
+            Spare=int(67),
+            Commands={'ucshnapnkkmjegsfhfst': 'rwdrqenmojryypdasqeh', 'lsjwhzgzzsewltdvaphc': 'wrnqchmfbdxkwedvkfgl', 'pzzdwivcxlmtajpdvyrm': 'eighzonjfhcwxngxtmxz'}
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_AssignedModeCommand(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(2)
+        test_value = int(58)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -50,7 +50,7 @@ class Test_AssignedModeCommand(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(7)
+        test_value = int(73)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -58,7 +58,7 @@ class Test_AssignedModeCommand(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(3)
+        test_value = int(100)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -74,7 +74,7 @@ class Test_AssignedModeCommand(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(62)
+        test_value = int(67)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -82,7 +82,7 @@ class Test_AssignedModeCommand(unittest.TestCase):
         """
         Test Commands property
         """
-        test_value = {'ldsfectrkkdwkjnapjuo': 'kfzmbdzjiledirlxjvwh'}
+        test_value = {'ucshnapnkkmjegsfhfst': 'rwdrqenmojryypdasqeh', 'lsjwhzgzzsewltdvaphc': 'wrnqchmfbdxkwedvkfgl', 'pzzdwivcxlmtajpdvyrm': 'eighzonjfhcwxngxtmxz'}
         self.instance.Commands = test_value
         self.assertEqual(self.instance.Commands, test_value)
     

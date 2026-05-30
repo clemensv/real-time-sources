@@ -29,16 +29,16 @@ class Test_SingleSlotBinaryMessage(unittest.TestCase):
         Create instance of SingleSlotBinaryMessage for testing
         """
         instance = SingleSlotBinaryMessage(
-            MessageID=int(17),
-            RepeatIndicator=int(95),
-            UserID=int(8),
+            MessageID=int(70),
+            RepeatIndicator=int(56),
+            UserID=int(18),
             Valid=True,
-            DestinationIDValid=False,
-            ApplicationIDValid=True,
-            DestinationID=int(57),
-            Spare=int(83),
+            DestinationIDValid=True,
+            ApplicationIDValid=False,
+            DestinationID=int(46),
+            Spare=int(74),
             ApplicationID=None,
-            Payload='owykfjmwrldfazzebekl'
+            Payload='foogibkxbaklneareyjl'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_SingleSlotBinaryMessage(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(17)
+        test_value = int(70)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -55,7 +55,7 @@ class Test_SingleSlotBinaryMessage(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(95)
+        test_value = int(56)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -63,7 +63,7 @@ class Test_SingleSlotBinaryMessage(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(8)
+        test_value = int(18)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -79,7 +79,7 @@ class Test_SingleSlotBinaryMessage(unittest.TestCase):
         """
         Test DestinationIDValid property
         """
-        test_value = False
+        test_value = True
         self.instance.DestinationIDValid = test_value
         self.assertEqual(self.instance.DestinationIDValid, test_value)
     
@@ -87,7 +87,7 @@ class Test_SingleSlotBinaryMessage(unittest.TestCase):
         """
         Test ApplicationIDValid property
         """
-        test_value = True
+        test_value = False
         self.instance.ApplicationIDValid = test_value
         self.assertEqual(self.instance.ApplicationIDValid, test_value)
     
@@ -95,7 +95,7 @@ class Test_SingleSlotBinaryMessage(unittest.TestCase):
         """
         Test DestinationID property
         """
-        test_value = int(57)
+        test_value = int(46)
         self.instance.DestinationID = test_value
         self.assertEqual(self.instance.DestinationID, test_value)
     
@@ -103,7 +103,7 @@ class Test_SingleSlotBinaryMessage(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(83)
+        test_value = int(74)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -119,7 +119,7 @@ class Test_SingleSlotBinaryMessage(unittest.TestCase):
         """
         Test Payload property
         """
-        test_value = 'owykfjmwrldfazzebekl'
+        test_value = 'foogibkxbaklneareyjl'
         self.instance.Payload = test_value
         self.assertEqual(self.instance.Payload, test_value)
     

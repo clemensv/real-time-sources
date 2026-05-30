@@ -17,7 +17,7 @@ import json
 @dataclass
 class ApplicationID:
     """
-    ApplicationID
+    Provider field for application i d in this record.
     
     Attributes:
         Valid (bool)
@@ -156,6 +156,6 @@ class ApplicationID:
         """
         return cls(
             Valid=False,
-            DesignatedAreaCode=int(7),
-            FunctionIdentifier=int(27)
+            DesignatedAreaCode=int(75),
+            FunctionIdentifier=int(30)
         )

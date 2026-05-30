@@ -30,12 +30,12 @@ class Test_StaticDataReport(unittest.TestCase):
         Create instance of StaticDataReport for testing
         """
         instance = StaticDataReport(
-            MessageID=int(8),
-            RepeatIndicator=int(2),
-            UserID=int(61),
+            MessageID=int(36),
+            RepeatIndicator=int(64),
+            UserID=int(48),
             Valid=True,
-            Reserved=int(49),
-            PartNumber=False,
+            Reserved=int(44),
+            PartNumber=True,
             ReportA=None,
             ReportB=None
         )
@@ -46,7 +46,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(8)
+        test_value = int(36)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -54,7 +54,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(2)
+        test_value = int(64)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -62,7 +62,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(61)
+        test_value = int(48)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -78,7 +78,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test Reserved property
         """
-        test_value = int(49)
+        test_value = int(44)
         self.instance.Reserved = test_value
         self.assertEqual(self.instance.Reserved, test_value)
     
@@ -86,7 +86,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test PartNumber property
         """
-        test_value = False
+        test_value = True
         self.instance.PartNumber = test_value
         self.assertEqual(self.instance.PartNumber, test_value)
     

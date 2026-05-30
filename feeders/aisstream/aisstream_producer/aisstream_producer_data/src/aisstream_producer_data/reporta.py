@@ -17,7 +17,7 @@ import json
 @dataclass
 class ReportA:
     """
-    ReportA
+    Provider field for report a in this record.
     
     Attributes:
         Valid (bool)
@@ -153,6 +153,6 @@ class ReportA:
             An instance of the dataclass.
         """
         return cls(
-            Valid=False,
-            Name='qkmhedinzryyjvxsvhnq'
+            Valid=True,
+            Name='bcxasdvfbkxtkmxcnydh'
         )

@@ -11,15 +11,15 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from aisstream_producer_data.eta import Eta
 from aisstream_producer_data.dimension import Dimension
+from aisstream_producer_data.eta import Eta
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class ShipStaticData:
     """
-    ShipStaticData
+    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
     
     Attributes:
         MessageID (int)
@@ -183,20 +183,20 @@ class ShipStaticData:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(85),
-            RepeatIndicator=int(2),
-            UserID=int(69),
-            Valid=True,
-            AisVersion=int(81),
-            ImoNumber=int(36),
-            CallSign='hzvqtuqhfxrojhygrnuk',
-            Name='jwywahblppunbaukojxl',
-            Type=int(1),
+            MessageID=int(41),
+            RepeatIndicator=int(87),
+            UserID=int(35),
+            Valid=False,
+            AisVersion=int(90),
+            ImoNumber=int(7),
+            CallSign='msuvllnbvnnoxgjmukoo',
+            Name='fykrcsfpsuberjrrrrig',
+            Type=int(6),
             Dimension=None,
-            FixType=int(53),
+            FixType=int(67),
             Eta=None,
-            MaximumStaticDraught=float(86.8943602858409),
-            Destination='tdmkupdewofldbgzlzvc',
-            Dte=True,
-            Spare=False
+            MaximumStaticDraught=float(28.148274515794903),
+            Destination='nijzstnpvgxpqyoralcq',
+            Dte=False,
+            Spare=True
         )

@@ -8,8 +8,8 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from aisstream_amqp_producer_data.shipstatic import ShipStatic
-from aisstream_amqp_producer_data.msgtypeenum import MsgTypeenum
+from aisstream_producer_data.shipstatic import ShipStatic
+from aisstream_producer_data.msgtypeenum import MsgTypeenum
 
 
 class Test_ShipStatic(unittest.TestCase):
@@ -29,24 +29,24 @@ class Test_ShipStatic(unittest.TestCase):
         Create instance of ShipStatic for testing
         """
         instance = ShipStatic(
-            mmsi='uhecjojpbxllsjobtmxa',
-            flag='xwnaicthckknqbrwmbtb',
-            ship_type='hzytposlwxfbhyyrqsqi',
-            geohash5='ubjawlbycyxdkaewccbe',
+            mmsi='ngkmmqqqhtrjxqdswzis',
+            flag='mknhhhenfxjpfkixfgmr',
+            ship_type='ebgzyxipnxdypzhmddne',
+            geohash5='hluoewmnhbwellalqhyz',
             msg_type=MsgTypeenum.position_report,
-            user_id=int(71),
-            name='tymlmrtfrnuwzargwmwn',
-            call_sign='bbqssyqwmpieyozqyakz',
-            imo_number=int(7),
-            ship_type_code=int(94),
-            destination='ufoxnovvxyjgyzrzcpix',
-            eta='nyntwnvpmroxqtcolnhi',
-            draught=float(65.78079593296943),
-            dim_to_bow=int(16),
-            dim_to_stern=int(81),
-            dim_to_port=int(47),
-            dim_to_starboard=int(2),
-            message_id=int(13)
+            user_id=int(57),
+            name='bcfeydqthxgtvzabkjvc',
+            call_sign='opbxyqffskzgvbegfzkj',
+            imo_number=int(69),
+            ship_type_code=int(54),
+            destination='omfuoiavzhdunemtqygf',
+            eta='wbypqvcvyjkhtmshlydl',
+            draught=float(70.4749415821612),
+            dim_to_bow=int(61),
+            dim_to_stern=int(25),
+            dim_to_port=int(5),
+            dim_to_starboard=int(5),
+            message_id=int(27)
         )
         return instance
 
@@ -55,7 +55,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = 'uhecjojpbxllsjobtmxa'
+        test_value = 'ngkmmqqqhtrjxqdswzis'
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -63,7 +63,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test flag property
         """
-        test_value = 'xwnaicthckknqbrwmbtb'
+        test_value = 'mknhhhenfxjpfkixfgmr'
         self.instance.flag = test_value
         self.assertEqual(self.instance.flag, test_value)
     
@@ -71,7 +71,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test ship_type property
         """
-        test_value = 'hzytposlwxfbhyyrqsqi'
+        test_value = 'ebgzyxipnxdypzhmddne'
         self.instance.ship_type = test_value
         self.assertEqual(self.instance.ship_type, test_value)
     
@@ -79,7 +79,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test geohash5 property
         """
-        test_value = 'ubjawlbycyxdkaewccbe'
+        test_value = 'hluoewmnhbwellalqhyz'
         self.instance.geohash5 = test_value
         self.assertEqual(self.instance.geohash5, test_value)
     
@@ -95,7 +95,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test user_id property
         """
-        test_value = int(71)
+        test_value = int(57)
         self.instance.user_id = test_value
         self.assertEqual(self.instance.user_id, test_value)
     
@@ -103,7 +103,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'tymlmrtfrnuwzargwmwn'
+        test_value = 'bcfeydqthxgtvzabkjvc'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -111,7 +111,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test call_sign property
         """
-        test_value = 'bbqssyqwmpieyozqyakz'
+        test_value = 'opbxyqffskzgvbegfzkj'
         self.instance.call_sign = test_value
         self.assertEqual(self.instance.call_sign, test_value)
     
@@ -119,7 +119,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test imo_number property
         """
-        test_value = int(7)
+        test_value = int(69)
         self.instance.imo_number = test_value
         self.assertEqual(self.instance.imo_number, test_value)
     
@@ -127,7 +127,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test ship_type_code property
         """
-        test_value = int(94)
+        test_value = int(54)
         self.instance.ship_type_code = test_value
         self.assertEqual(self.instance.ship_type_code, test_value)
     
@@ -135,7 +135,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test destination property
         """
-        test_value = 'ufoxnovvxyjgyzrzcpix'
+        test_value = 'omfuoiavzhdunemtqygf'
         self.instance.destination = test_value
         self.assertEqual(self.instance.destination, test_value)
     
@@ -143,7 +143,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test eta property
         """
-        test_value = 'nyntwnvpmroxqtcolnhi'
+        test_value = 'wbypqvcvyjkhtmshlydl'
         self.instance.eta = test_value
         self.assertEqual(self.instance.eta, test_value)
     
@@ -151,7 +151,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test draught property
         """
-        test_value = float(65.78079593296943)
+        test_value = float(70.4749415821612)
         self.instance.draught = test_value
         self.assertEqual(self.instance.draught, test_value)
     
@@ -159,7 +159,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test dim_to_bow property
         """
-        test_value = int(16)
+        test_value = int(61)
         self.instance.dim_to_bow = test_value
         self.assertEqual(self.instance.dim_to_bow, test_value)
     
@@ -167,7 +167,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test dim_to_stern property
         """
-        test_value = int(81)
+        test_value = int(25)
         self.instance.dim_to_stern = test_value
         self.assertEqual(self.instance.dim_to_stern, test_value)
     
@@ -175,7 +175,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test dim_to_port property
         """
-        test_value = int(47)
+        test_value = int(5)
         self.instance.dim_to_port = test_value
         self.assertEqual(self.instance.dim_to_port, test_value)
     
@@ -183,7 +183,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test dim_to_starboard property
         """
-        test_value = int(2)
+        test_value = int(5)
         self.instance.dim_to_starboard = test_value
         self.assertEqual(self.instance.dim_to_starboard, test_value)
     
@@ -191,7 +191,7 @@ class Test_ShipStatic(unittest.TestCase):
         """
         Test message_id property
         """
-        test_value = int(13)
+        test_value = int(27)
         self.instance.message_id = test_value
         self.assertEqual(self.instance.message_id, test_value)
     

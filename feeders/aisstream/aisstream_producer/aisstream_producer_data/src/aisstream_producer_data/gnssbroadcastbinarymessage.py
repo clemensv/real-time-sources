@@ -17,7 +17,7 @@ import json
 @dataclass
 class GnssBroadcastBinaryMessage:
     """
-    GnssBroadcastBinaryMessage
+    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
     
     Attributes:
         MessageID (int)
@@ -167,13 +167,13 @@ class GnssBroadcastBinaryMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(52),
-            RepeatIndicator=int(31),
-            UserID=int(61),
-            Valid=True,
-            Spare1=int(7),
-            Longitude=float(70.44564767641226),
-            Latitude=float(99.26537648386066),
-            Spare2=int(20),
-            Data='ypwnkrltiidlvemhygiv'
+            MessageID=int(36),
+            RepeatIndicator=int(92),
+            UserID=int(94),
+            Valid=False,
+            Spare1=int(50),
+            Longitude=float(86.97697841436121),
+            Latitude=float(44.57103008114082),
+            Spare2=int(16),
+            Data='ebjlhdlsocyxuojikdqa'
         )

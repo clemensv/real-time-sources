@@ -7,7 +7,7 @@ AISStream publishes vessel position, voyage, safety, and static AIS messages fro
 - **Event types:** 26 documented event types (29 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 25 telemetry event types.
-- **Identity:** `{mmsi}` identifies the resource each event is about.
+- **Identity:** `{UserID}`, `{mmsi}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
@@ -17,7 +17,7 @@ These examples show the smallest useful consumer for each transport declared by 
 
 ### Kafka
 
-Subscribe to `aisstream`. The record key is `{mmsi}`. In plain language, `{mmsi}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+Subscribe to `aisstream`. The record key is `{UserID}`. In plain language, `{UserID}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
 ```python
 from confluent_kafka import Consumer
@@ -70,13 +70,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -139,13 +139,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -234,13 +234,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -313,13 +313,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -404,13 +404,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -491,13 +491,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -590,13 +590,13 @@ A reference record from AISStream public AIS firehose for a station, stop, route
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -661,13 +661,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -708,13 +708,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -781,13 +781,13 @@ A vehicle or vessel update from AISStream public AIS firehose. It reports the la
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -842,13 +842,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -895,13 +895,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -962,13 +962,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -1009,13 +1009,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -1056,13 +1056,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -1117,13 +1117,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -1212,13 +1212,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -1261,13 +1261,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -1308,13 +1308,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -1361,13 +1361,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -1428,13 +1428,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -1525,13 +1525,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -1598,13 +1598,13 @@ A transport update from AISStream public AIS firehose. It carries vessel positio
 
 #### Identity
 
-Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is a payload field with the same name. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{UserID}`. `{UserID}` is provider field for user i d in this record. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `aisstream`, key `{mmsi}` |
+| `KAFKA` | topic `aisstream`, key `{UserID}` |
 
 #### Payload
 
@@ -1672,7 +1672,7 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source 
 | Transport | Location |
 | --- | --- |
 | `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/position-report`, retain `false`, QoS `0` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{mmsi}`; application properties flag `{flag}`, ship_type `{ship_type}`, geohash5 `{geohash5}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{mmsi}` |
 
 #### Payload
 
@@ -1747,7 +1747,7 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source 
 | Transport | Location |
 | --- | --- |
 | `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/static`, retain `false`, QoS `0` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{mmsi}`; application properties flag `{flag}`, ship_type `{ship_type}`, geohash5 `{geohash5}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{mmsi}` |
 
 #### Payload
 
@@ -1824,7 +1824,7 @@ Each event identifies the real-world resource with `{mmsi}`. `{mmsi}` is source 
 | Transport | Location |
 | --- | --- |
 | `MQTT/5.0` | topic `maritime/intl/aisstream/aisstream/{flag}/{ship_type}/{geohash5}/{mmsi}/aid-to-navigation`, retain `false`, QoS `0` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{mmsi}`; application properties flag `{flag}`, ship_type `{ship_type}`, geohash5 `{geohash5}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/aisstream`, message subject `{mmsi}` |
 
 #### Payload
 

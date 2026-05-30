@@ -17,7 +17,7 @@ import json
 @dataclass
 class Dimension:
     """
-    Dimension
+    Provider field for dimension in this record.
     
     Attributes:
         A (int)
@@ -157,8 +157,8 @@ class Dimension:
             An instance of the dataclass.
         """
         return cls(
-            A=int(29),
-            B=int(15),
-            C=int(1),
-            D=int(76)
+            A=int(42),
+            B=int(22),
+            C=int(97),
+            D=int(97)
         )

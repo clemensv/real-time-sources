@@ -18,7 +18,7 @@ from aisstream_producer_data.dimension import Dimension
 @dataclass
 class AidsToNavigationReport:
     """
-    AidsToNavigationReport
+    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
     
     Attributes:
         MessageID (int)
@@ -188,23 +188,23 @@ class AidsToNavigationReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(97),
-            RepeatIndicator=int(49),
-            UserID=int(18),
-            Valid=True,
-            Type=int(11),
-            Name='gctnntwrozmndozujrip',
+            MessageID=int(51),
+            RepeatIndicator=int(84),
+            UserID=int(91),
+            Valid=False,
+            Type=int(15),
+            Name='opkzytqfonsitmjbylcy',
             PositionAccuracy=False,
-            Longitude=float(16.965667825285802),
-            Latitude=float(10.501100499568816),
+            Longitude=float(42.871218705469694),
+            Latitude=float(17.995401783225528),
             Dimension=None,
-            Fixtype=int(70),
-            Timestamp=int(42),
-            OffPosition=True,
-            AtoN=int(46),
-            Raim=True,
-            VirtualAtoN=True,
+            Fixtype=int(89),
+            Timestamp=int(62),
+            OffPosition=False,
+            AtoN=int(36),
+            Raim=False,
+            VirtualAtoN=False,
             AssignedMode=True,
             Spare=False,
-            NameExtension='jitdifvdhqohfopgtvds'
+            NameExtension='vawqhqpoxhxjztkqvewd'
         )

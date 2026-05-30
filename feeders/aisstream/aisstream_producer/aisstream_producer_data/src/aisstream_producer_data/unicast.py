@@ -17,7 +17,7 @@ import json
 @dataclass
 class Unicast:
     """
-    Unicast
+    Provider field for unicast in this record.
     
     Attributes:
         AddressStation1 (int)
@@ -157,8 +157,8 @@ class Unicast:
             An instance of the dataclass.
         """
         return cls(
-            AddressStation1=int(45),
-            Spare2=int(91),
-            AddressStation2=int(23),
-            Spare3=int(85)
+            AddressStation1=int(9),
+            Spare2=int(61),
+            AddressStation2=int(99),
+            Spare3=int(0)
         )

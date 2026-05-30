@@ -1,6 +1,6 @@
 from .msgtypeenum import MsgTypeenum
-from .positionreport import PositionReport
-from .shipstatic import ShipStatic
 from .aidtonavigation import AidToNavigation
+from .shipstatic import ShipStatic
+from .positionreport import PositionReport
 
-__all__ = ["MsgTypeenum", "PositionReport", "ShipStatic", "AidToNavigation"]
+__all__ = ["MsgTypeenum", "AidToNavigation", "ShipStatic", "PositionReport"]

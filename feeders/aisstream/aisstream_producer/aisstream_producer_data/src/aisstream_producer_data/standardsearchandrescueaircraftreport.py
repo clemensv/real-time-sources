@@ -17,7 +17,7 @@ import json
 @dataclass
 class StandardSearchAndRescueAircraftReport:
     """
-    StandardSearchAndRescueAircraftReport
+    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
     
     Attributes:
         MessageID (int)
@@ -187,23 +187,23 @@ class StandardSearchAndRescueAircraftReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(35),
-            RepeatIndicator=int(11),
-            UserID=int(75),
+            MessageID=int(68),
+            RepeatIndicator=int(64),
+            UserID=int(54),
             Valid=False,
-            Altitude=int(46),
-            Sog=float(73.6158608572867),
+            Altitude=int(7),
+            Sog=float(70.5249823796638),
             PositionAccuracy=True,
-            Longitude=float(75.49484557113493),
-            Latitude=float(61.58170240319072),
-            Cog=float(60.840752761746465),
-            Timestamp=int(49),
+            Longitude=float(50.505197920716384),
+            Latitude=float(91.97464840094784),
+            Cog=float(90.13370506440228),
+            Timestamp=int(80),
             AltFromBaro=True,
-            Spare1=int(55),
+            Spare1=int(14),
             Dte=False,
-            Spare2=int(68),
+            Spare2=int(37),
             AssignedMode=False,
             Raim=False,
             CommunicationStateIsItdma=True,
-            CommunicationState=int(96)
+            CommunicationState=int(83)
         )
