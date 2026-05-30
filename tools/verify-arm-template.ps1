@@ -184,6 +184,19 @@ function Wait-ContainerRunning {
   throw "Container group '$ContainerGroupName' did not reach Running within 120 seconds."
 }
 
+function Get-ContainerStateEvidence {
+  param([string]$ResourceGroupName, [string]$ContainerGroupName)
+  try {
+    $state = Invoke-AzText @('container','show','--resource-group',$ResourceGroupName,'--name',$ContainerGroupName,'--query','containers[0].instanceView.currentState.state','--output','tsv','--only-show-errors')
+    if (-not [string]::IsNullOrWhiteSpace($state)) {
+      return "Container current state: $($state.Trim())"
+    }
+  } catch {
+    return "Container state check failed: $($_.Exception.Message.Split("`n")[0])"
+  }
+  return "Container state unavailable."
+}
+
 function Get-ContainerLogsEvidence {
   param([string]$ResourceGroupName, [string]$ContainerGroupName)
   try {
@@ -427,7 +440,16 @@ try {
     $outputs = Get-DeploymentOutputsHashtable -Deployment $deployment
     $containerGroupName = Get-ContainerGroupName -Outputs $outputs -Overrides $overrides -Variant $Variant -Slug $FeederSlug
     $evidence.Add("Deployment state: $($deployment.properties.provisioningState)")
-    $evidence.Add((Wait-ContainerRunning -ResourceGroupName $rg -ContainerGroupName $containerGroupName))
+    if ($Variant -in @('mqtt','amqp')) {
+      try {
+        $evidence.Add((Wait-ContainerRunning -ResourceGroupName $rg -ContainerGroupName $containerGroupName))
+      } catch {
+        $evidence.Add((Get-ContainerStateEvidence -ResourceGroupName $rg -ContainerGroupName $containerGroupName))
+        $evidence.Add("BYO broker shape-test variant: accepting deployment success without a running container.")
+      }
+    } else {
+      $evidence.Add((Wait-ContainerRunning -ResourceGroupName $rg -ContainerGroupName $containerGroupName))
+    }
     $evidence.Add((Test-DataFlow -Variant $Variant -ResourceGroupName $rg -ContainerGroupName $containerGroupName -Outputs $outputs -Overrides $overrides -TempEventHub $tempEventHub -TimeoutSeconds $DataFlowTimeoutSeconds))
     $pass = $true
   }

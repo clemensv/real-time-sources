@@ -9,11 +9,17 @@
       "type": "string",
       "defaultValue": "digitraffic-maritime",
       "minLength": 3,
-      "maxLength": 24
+      "maxLength": 24,
+      "metadata": {
+        "description": "Prefix used to derive unique Azure resource names for the Digitraffic Maritime Service Bus deployment."
+      }
     },
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]"
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for the Digitraffic Maritime Service Bus namespace, managed identity, and container group."
+      }
     },
     "queueName": {
       "type": "string",
@@ -24,7 +30,10 @@
     },
     "imageName": {
       "type": "string",
-      "defaultValue": "ghcr.io/clemensv/real-time-sources-digitraffic-maritime-amqp:latest"
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-digitraffic-maritime-amqp:latest",
+      "metadata": {
+        "description": "Container image to deploy for the Digitraffic Maritime AMQP bridge. Use the -amqp tag published from this repository."
+      }
     }
   },
   "variables": {
