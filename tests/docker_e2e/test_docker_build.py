@@ -27,6 +27,9 @@ from helpers import build_image
 PROJECTS = [
     ('bluesky', 'bluesky', 'Dockerfile'),
     ('chmi-hydro', 'chmi_hydro', 'Dockerfile'),
+    ('dmi', 'dmi_kafka', 'Dockerfile.kafka'),
+    ('dmi', 'dmi_mqtt', 'Dockerfile.mqtt'),
+    ('dmi', 'dmi_amqp', 'Dockerfile.amqp'),
     ('digitraffic-maritime', 'digitraffic_maritime', 'Dockerfile'),
     ('digitraffic-maritime', 'digitraffic_maritime_mqtt', 'Dockerfile.mqtt'),
     ('digitraffic-maritime', 'digitraffic_maritime_amqp', 'Dockerfile.amqp'),

@@ -68,6 +68,13 @@
       "metadata": {
         "description": "Per-API key for the Lightning API (Kafka and AMQP images)."
       }
+    },
+    "dmiObservationPeriod": {
+      "type": "string",
+      "defaultValue": "latest-hour",
+      "metadata": {
+        "description": "DMI period filter for MetObs and OceanObs queries. Default latest-hour."
+      }
     }
   },
   "variables": {
@@ -275,6 +282,10 @@
                 {
                   "name": "DMI_LIGHTNING_API_KEY",
                   "secureValue": "[parameters('dmiLightningApiKey')]"
+                },
+                {
+                  "name": "DMI_OBSERVATION_PERIOD",
+                  "value": "[parameters('dmiObservationPeriod')]"
                 },
                 {
                   "name": "POLLING_INTERVAL",

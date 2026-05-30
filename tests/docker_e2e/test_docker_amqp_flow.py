@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import socket
+import os
 import time
 import urllib.parse
 from contextlib import closing
@@ -738,6 +739,32 @@ class TestCanadaAqhiAmqpDockerFlow(AmqpDockerFlowBase):
     env = {'CANADA_AQHI_MOCK': 'true', 'ONCE_MODE': 'true'}
     expected_types = {'ca.gc.weather.aqhi.Forecast', 'ca.gc.weather.aqhi.Community', 'ca.gc.weather.aqhi.Observation'}
     expected_count = 3
+
+
+@pytest.mark.skipif(
+    not os.environ.get("DMI_METOBS_API_KEY", "")
+    or not os.environ.get("DMI_OCEANOBS_API_KEY", "")
+    or not os.environ.get("DMI_LIGHTNING_API_KEY", ""),
+    reason="DMI_METOBS_API_KEY / DMI_OCEANOBS_API_KEY / DMI_LIGHTNING_API_KEY not set",
+)
+class TestDMIAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "dmi"
+    image = "dmi-amqp"
+    env = {
+        "DMI_METOBS_API_KEY": os.environ.get("DMI_METOBS_API_KEY", ""),
+        "DMI_OCEANOBS_API_KEY": os.environ.get("DMI_OCEANOBS_API_KEY", ""),
+        "DMI_LIGHTNING_API_KEY": os.environ.get("DMI_LIGHTNING_API_KEY", ""),
+        "ONCE_MODE": "true",
+    }
+    expected_types = {
+        "dk.dmi.metObs.MetObsStation",
+        "dk.dmi.metObs.MetObsObservation",
+        "dk.dmi.oceanObs.OceanStation",
+        "dk.dmi.oceanObs.OceanObservation",
+        "dk.dmi.oceanObs.TidewaterStation",
+        "dk.dmi.lightning.LightningSensor",
+    }
+    expected_count = 6
 
 class TestDefraAurnAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = 'defra-aurn'

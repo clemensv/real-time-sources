@@ -55,6 +55,20 @@ work with any Apache Kafka–compatible service that supports TLS with
 SASL/PLAIN, any MQTT 5.0 broker, and AMQP 1.0 brokers ranging from
 generic SASL PLAIN peers to Azure Service Bus / Event Hubs with Entra ID.
 
+## Image contract
+
+All three images share the same operational contract:
+
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.10-slim` |
+| Default entry point | `python -m dmi_{kafka,mqtt,amqp} feed` |
+| Default user | root (no `USER` directive) |
+| Exposed ports | none — the feeder is an outbound publisher only |
+| Health check | none defined; treat process liveness as health |
+| Persistent state | `STATE_FILE`; defaults are `~/.dmi_state.json` (Kafka / shared core), `~/.dmi_mqtt_state.json`, and `~/.dmi_amqp_state.json`. Mount a volume to keep dedupe state across restarts. |
+| Image tags | `:latest` tracks the default branch; immutable release tags and `:sha-<git-sha>` tags are published with repository releases. |
+
 ## Database Schemas and Handling
 
 If you want to build a full data pipeline with all events ingested into a

@@ -67,6 +67,13 @@
       "metadata": {
         "description": "Per-API key for the OceanObs API."
       }
+    },
+    "dmiObservationPeriod": {
+      "type": "string",
+      "defaultValue": "latest-hour",
+      "metadata": {
+        "description": "DMI period filter for MetObs and OceanObs queries. Default latest-hour."
+      }
     }
   },
   "variables": {
@@ -258,6 +265,10 @@
                 {
                   "name": "DMI_OCEANOBS_API_KEY",
                   "secureValue": "[parameters('dmiOceanObsApiKey')]"
+                },
+                {
+                  "name": "DMI_OBSERVATION_PERIOD",
+                  "value": "[parameters('dmiObservationPeriod')]"
                 },
                 {
                   "name": "POLLING_INTERVAL",

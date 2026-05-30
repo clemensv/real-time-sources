@@ -105,6 +105,18 @@
     },
     {
       "dir": "feeders/dmi",
+      "image": "dmi-kafka",
+      "file": "Dockerfile.kafka",
+      "module": "dmi_kafka"
+    },
+    {
+      "dir": "feeders/dmi",
+      "image": "dmi-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "dmi_mqtt"
+    },
+    {
+      "dir": "feeders/dmi",
       "image": "dmi-amqp",
       "file": "Dockerfile.amqp",
       "module": "dmi_amqp"
@@ -2366,6 +2378,27 @@
       "image": "xceed-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestXceedAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/dmi",
+      "image": "dmi-kafka",
+      "file": "Dockerfile.kafka",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestDMIDockerFlow"
+    },
+    {
+      "dir": "feeders/dmi",
+      "image": "dmi-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestDMIMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/dmi",
+      "image": "dmi-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestDMIAmqpDockerFlow"
     },
     {
       "dir": "feeders/elexon-bmrs",
