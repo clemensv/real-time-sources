@@ -100,6 +100,7 @@ function Get-FeederEnvVars {
     $vars = New-Object System.Collections.Generic.HashSet[string]
     foreach ($py in $pyFiles) {
         $text = Get-Content $py.FullName -Raw
+        if ($null -eq $text) { continue }
         # os.getenv("X"...) and os.environ["X"] and os.environ.get("X"...)
         $matches = [regex]::Matches($text, '(?:os\.getenv|os\.environ(?:\.get)?)\s*[\[(]\s*["'']([A-Z][A-Z0-9_]*)["'']')
         foreach ($m in $matches) {
@@ -110,6 +111,41 @@ function Get-FeederEnvVars {
     return @($vars)
 }
 
+function Get-TemplateTransport {
+    param([string]$templatePath)
+    $name = [IO.Path]::GetFileName($templatePath).ToLowerInvariant()
+    if ($name -match 'mqtt') { return 'mqtt' }
+    if ($name -match 'amqp|servicebus') { return 'amqp' }
+    return 'kafka'
+}
+
+function Get-TemplateFeederEnvVars {
+    param(
+        [string]$feederDir,
+        [string]$slug,
+        [string]$slugUpper,
+        [string]$templatePath
+    )
+    $slugUnderscore = $slug -replace '-', '_'
+    $transport = Get-TemplateTransport -templatePath $templatePath
+    $bridgeDirName = switch ($transport) {
+        'mqtt' { "${slugUnderscore}_mqtt" }
+        'amqp' { "${slugUnderscore}_amqp" }
+        default { $slugUnderscore }
+    }
+    $bridgeDir = Join-Path $feederDir $bridgeDirName
+    if (Test-Path $bridgeDir) {
+        return Get-FeederEnvVars -bridgeDir $bridgeDir -slugUpper $slugUpper
+    }
+    if ($transport -ne 'kafka') {
+        $fallbackDir = Join-Path $feederDir $slugUnderscore
+        if (Test-Path $fallbackDir) {
+            return Get-FeederEnvVars -bridgeDir $fallbackDir -slugUpper $slugUpper
+        }
+    }
+    return @()
+}
+
 function Get-TemplateEnvVars {
     param($template)
     $cg = $template.resources | Where-Object { $_.type -eq 'Microsoft.ContainerInstance/containerGroups' } | Select-Object -First 1
@@ -117,6 +153,16 @@ function Get-TemplateEnvVars {
     $container = $cg.properties.containers | Select-Object -First 1
     if (-not $container) { return @() }
     return @($container.properties.environmentVariables | ForEach-Object { $_.name })
+}
+
+function Test-TemplateEnvCoverage {
+    param(
+        [string]$envVar,
+        [string[]]$templateEnvNames
+    )
+    if ($templateEnvNames -contains $envVar) { return $true }
+    if ($envVar -match '(_STATE_FILE|LAST_POLLED_FILE)$' -and $templateEnvNames -contains 'STATE_FILE') { return $true }
+    return $false
 }
 
 function Get-ContainerMdEnvVars {
@@ -201,7 +247,7 @@ function Audit-Template {
     # Check 3: storage + file share for stateful variants.
     # Only block when the bridge actually reads a *_STATE_FILE env var.
     if ($rules.stateful) {
-        $needsState = $feederEnvVars | Where-Object { $_ -match '_STATE_FILE$' }
+        $needsState = $feederEnvVars | Where-Object { $_ -match '(_STATE_FILE|LAST_POLLED_FILE)$' }
         $hasStorage = $template.resources | Where-Object { $_.type -eq 'Microsoft.Storage/storageAccounts' }
         $hasShare   = $template.resources | Where-Object { $_.type -eq 'Microsoft.Storage/storageAccounts/fileServices/shares' }
         if ($needsState) {
@@ -230,7 +276,7 @@ function Audit-Template {
     if ($feederEnvVars.Count -gt 0) {
         $templateEnvNames = Get-TemplateEnvVars -template $template
         foreach ($v in $feederEnvVars) {
-            if ($templateEnvNames -notcontains $v) {
+            if (-not (Test-TemplateEnvCoverage -envVar $v -templateEnvNames $templateEnvNames)) {
                 & $addIssue 'warning' 'env-var-missing' "feeder reads `$env:$v but it is not declared in this template's container environmentVariables"
             }
         }
@@ -270,9 +316,6 @@ foreach ($slug in $slugs) {
         continue
     }
     $slugUpper = $slug.ToUpper() -replace '-', '_'
-    $bridgeDir = Get-ChildItem $feederDir -Directory -ErrorAction SilentlyContinue |
-        Where-Object { $_.Name -eq ($slug -replace '-', '_') } | Select-Object -First 1
-    $feederEnvVars = if ($bridgeDir) { Get-FeederEnvVars -bridgeDir $bridgeDir.FullName -slugUpper $slugUpper } else { @() }
     $containerMdVars = Get-ContainerMdEnvVars -containerMdPath (Join-Path $feederDir 'CONTAINER.md')
 
     # find all azure-template*.json (root + infra/)
@@ -284,6 +327,7 @@ foreach ($slug in $slugs) {
     }
 
     foreach ($t in $templates) {
+        $feederEnvVars = Get-TemplateFeederEnvVars -feederDir $feederDir -slug $slug -slugUpper $slugUpper -templatePath $t.FullName
         $result = Audit-Template -path $t.FullName -slug $slug -slugUpper $slugUpper -feederEnvVars $feederEnvVars -containerMdVars $containerMdVars
         if ($null -eq $result) { continue }
         $result.slug = $slug

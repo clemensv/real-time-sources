@@ -164,7 +164,7 @@ docker run --rm \
 | `SASL_USERNAME`, `SASL_PASSWORD` | SASL PLAIN credentials when needed. |
 | `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka. |
 | `ONCE_MODE` | Run one cycle and exit (where supported). |
-| State variable | `CARBON_INTENSITY_LAST_POLLED_FILE` |
+| `CARBON_INTENSITY_LAST_POLLED_FILE` | Path to the JSON state file that remembers the last successfully published forecast timestamp across restarts. Mount durable storage at `/state` when you need dedupe continuity. |
 
 ### MQTT image
 
@@ -174,7 +174,7 @@ docker run --rm \
 | `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional broker credentials. |
 | `MQTT_CLIENT_ID` | Optional explicit client ID. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` where supported. |
-| State variable | `CARBON_INTENSITY_MQTT_STATE_FILE` |
+| `CARBON_INTENSITY_MQTT_STATE_FILE` | Path to the JSON state file that remembers the last successfully published forecast timestamp for the MQTT bridge across restarts. Mount durable storage at `/state` when you need dedupe continuity. |
 
 ### AMQP image
 
@@ -185,7 +185,7 @@ docker run --rm \
 | `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials (if used). |
 | `AMQP_AUTH_MODE` | Auth mode where supported (`password`/`entra`/`sas`). |
 | `AMQP_TLS` | Enable TLS where supported. |
-| State variable | `CARBON_INTENSITY_AMQP_STATE_FILE` |
+| `CARBON_INTENSITY_AMQP_STATE_FILE` | Path to the JSON state file that remembers the last successfully published forecast timestamp for the AMQP bridge across restarts. Mount durable storage at `/state` when you need dedupe continuity. |
 
 ## Deploying into Microsoft Fabric
 

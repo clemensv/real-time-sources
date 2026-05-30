@@ -343,6 +343,12 @@
     },
     {
       "dir": "feeders/carbon-intensity",
+      "image": "carbon-intensity",
+      "file": "Dockerfile",
+      "module": "carbon_intensity"
+    },
+    {
+      "dir": "feeders/carbon-intensity",
       "image": "carbon-intensity-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "carbon_intensity_mqtt"
@@ -1779,6 +1785,12 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestCbpBorderWaitMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/carbon-intensity",
+      "image": "carbon-intensity",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestCarbonIntensityDockerFlow"
     },
     {
       "dir": "feeders/carbon-intensity",
