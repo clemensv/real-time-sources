@@ -75,17 +75,17 @@ def test_info_energycharts_infoenergychartspublicpower(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -108,11 +108,11 @@ def test_info_energycharts_infoenergychartspublicpower(kafka_emulator):
     producer_instance = InfoEnergyChartsEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_PublicPower.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_info_energy_charts_public_power(_country = f'test_{i}', data = event_data)
-
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -138,17 +138,17 @@ def test_info_energycharts_infoenergychartsspotprice(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -171,11 +171,11 @@ def test_info_energycharts_infoenergychartsspotprice(kafka_emulator):
     producer_instance = InfoEnergyChartsEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_SpotPrice.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_info_energy_charts_spot_price(_country = f'test_{i}', data = event_data)
-
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -201,17 +201,17 @@ def test_info_energycharts_infoenergychartsgridsignal(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -234,11 +234,11 @@ def test_info_energycharts_infoenergychartsgridsignal(kafka_emulator):
     producer_instance = InfoEnergyChartsEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_GridSignal.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_info_energy_charts_grid_signal(_country = f'test_{i}', data = event_data)
-
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -264,17 +264,17 @@ def test_info_energycharts_infoenergychartsinfo(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -297,11 +297,11 @@ def test_info_energycharts_infoenergychartsinfo(kafka_emulator):
     producer_instance = InfoEnergyChartsEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Info.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_info_energy_charts_info(_country = f'test_{i}', data = event_data)
-
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -327,17 +327,17 @@ def test_info_energycharts_mqtt_infoenergychartsmqttpublicpower(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -360,11 +360,11 @@ def test_info_energycharts_mqtt_infoenergychartsmqttpublicpower(kafka_emulator):
     producer_instance = InfoEnergyChartsMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_PublicPower.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_info_energy_charts_mqtt_public_power(_country = f'test_{i}', data = event_data)
-
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -388,17 +388,17 @@ def test_info_energycharts_mqtt_infoenergychartsmqttspotprice(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -421,11 +421,11 @@ def test_info_energycharts_mqtt_infoenergychartsmqttspotprice(kafka_emulator):
     producer_instance = InfoEnergyChartsMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_SpotPrice.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_info_energy_charts_mqtt_spot_price(_country = f'test_{i}', data = event_data)
-
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -449,17 +449,17 @@ def test_info_energycharts_mqtt_infoenergychartsmqttgridsignal(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -482,11 +482,11 @@ def test_info_energycharts_mqtt_infoenergychartsmqttgridsignal(kafka_emulator):
     producer_instance = InfoEnergyChartsMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_GridSignal.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_info_energy_charts_mqtt_grid_signal(_country = f'test_{i}', data = event_data)
-
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -510,17 +510,17 @@ def test_info_energycharts_mqtt_infoenergychartsmqttinfo(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -543,11 +543,11 @@ def test_info_energycharts_mqtt_infoenergychartsmqttinfo(kafka_emulator):
     producer_instance = InfoEnergyChartsMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Info.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_info_energy_charts_mqtt_info(_country = f'test_{i}', data = event_data)
-
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -571,17 +571,17 @@ def test_info_energycharts_amqp_infoenergychartsamqppublicpower(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -604,11 +604,11 @@ def test_info_energycharts_amqp_infoenergychartsamqppublicpower(kafka_emulator):
     producer_instance = InfoEnergyChartsAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_PublicPower.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_info_energy_charts_amqp_public_power(_country = f'test_{i}', data = event_data)
-
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -632,17 +632,17 @@ def test_info_energycharts_amqp_infoenergychartsamqpspotprice(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -665,11 +665,11 @@ def test_info_energycharts_amqp_infoenergychartsamqpspotprice(kafka_emulator):
     producer_instance = InfoEnergyChartsAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_SpotPrice.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_info_energy_charts_amqp_spot_price(_country = f'test_{i}', data = event_data)
-
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -693,17 +693,17 @@ def test_info_energycharts_amqp_infoenergychartsamqpgridsignal(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -726,11 +726,11 @@ def test_info_energycharts_amqp_infoenergychartsamqpgridsignal(kafka_emulator):
     producer_instance = InfoEnergyChartsAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_GridSignal.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_info_energy_charts_amqp_grid_signal(_country = f'test_{i}', data = event_data)
-
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -754,17 +754,17 @@ def test_info_energycharts_amqp_infoenergychartsamqpinfo(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -787,11 +787,11 @@ def test_info_energycharts_amqp_infoenergychartsamqpinfo(kafka_emulator):
     producer_instance = InfoEnergyChartsAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Info.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
         producer_instance.send_info_energy_charts_amqp_info(_country = f'test_{i}', data = event_data)
-
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 

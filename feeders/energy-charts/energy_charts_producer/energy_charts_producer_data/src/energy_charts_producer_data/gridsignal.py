@@ -22,7 +22,7 @@ import datetime
 class GridSignal:
     """
     Grid carbon signal for a given country at a specific timestamp. Sourced from the Energy-Charts /signal endpoint (Fraunhofer ISE). Provides a traffic-light signal (0=green, 1=yellow, 2=red) indicating how carbon-intensive the current electricity mix is. Green (0) means high renewable share and low carbon intensity — a good time to consume electricity. Red (2) means low renewable share and high carbon intensity. The renewable share percentage is also included for precise analysis.
-
+    
     Attributes:
         country (str)
         timestamp (datetime.datetime)
@@ -31,12 +31,12 @@ class GridSignal:
         renewable_share_pct (typing.Optional[float])
         substitute (typing.Optional[bool])
     """
-
+    
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
         "{\"type\": \"record\", \"name\": \"GridSignal\", \"doc\": \"Grid carbon signal for a given country at a specific timestamp. Sourced from the Energy-Charts /signal endpoint (Fraunhofer ISE). Provides a traffic-light signal (0=green, 1=yellow, 2=red) indicating how carbon-intensive the current electricity mix is. Green (0) means high renewable share and low carbon intensity \u2014 a good time to consume electricity. Red (2) means low renewable share and high carbon intensity. The renewable share percentage is also included for precise analysis.\", \"fields\": [{\"name\": \"country\", \"type\": \"string\", \"doc\": \"ISO 3166-1 alpha-2 country code identifying the electricity market area (e.g. 'de' for Germany). Used as the query parameter in the Energy-Charts API.\"}, {\"name\": \"timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}, \"doc\": \"UTC timestamp derived from the unix_seconds value. Marks the start of the 15-minute measurement interval.\"}, {\"name\": \"unix_seconds\", \"type\": \"long\", \"doc\": \"Unix epoch timestamp in seconds as returned by the Energy-Charts API.\"}, {\"name\": \"signal\", \"type\": [\"int\", \"null\"], \"doc\": \"Traffic-light carbon signal: 0 = green (high renewable share, low carbon \u2014 good time to consume), 1 = yellow (moderate renewable share), 2 = red (low renewable share, high carbon \u2014 avoid consumption if possible). The thresholds are defined by Fraunhofer ISE based on the renewable share of generation.\", \"default\": null}, {\"name\": \"renewable_share_pct\", \"type\": [\"double\", \"null\"], \"doc\": \"Renewable share of generation as a percentage (0\u2013100) at this timestamp. This is the precise numerical value underlying the traffic-light signal.\", \"default\": null}, {\"name\": \"substitute\", \"type\": [\"boolean\", \"null\"], \"doc\": \"Whether this signal value is a substitute (forecast or estimate) rather than based on actual metered data. True indicates the value is projected; false indicates it is based on real measurements.\", \"default\": null}]}"
     )
-
-
+    
+    
     country: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     unix_seconds: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unix_seconds"))
@@ -48,10 +48,10 @@ class GridSignal:
     def from_serializer_dict(cls, data: dict) -> 'GridSignal':
         """
         Converts a dictionary to a dataclass instance.
-
+        
         Args:
             data: The dictionary to convert to a dataclass.
-
+        
         Returns:
             The dataclass representation of the dataclass.
         """
@@ -62,10 +62,10 @@ class GridSignal:
         Converts a dictionary from Avro deserialization to a dataclass instance.
         Handles conversion of string representations back to Python types for
         extended logical types.
-
+        
         Args:
             data: The dictionary from Avro deserialization.
-
+        
         Returns:
             The dataclass representation.
         """
@@ -85,7 +85,7 @@ class GridSignal:
             value = converted['renewable_share_pct']
         if 'substitute' in converted and converted['substitute'] is not None:
             value = converted['substitute']
-
+        
         return cls(**converted)
 
     def to_serializer_dict(self) -> dict:
@@ -101,7 +101,7 @@ class GridSignal:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """
+        """ 
         def _resolve_enum(v):
             if isinstance(v, enum.Enum):
                 return v.value
@@ -121,19 +121,19 @@ class GridSignal:
         """
         result = self.to_serializer_dict()
         converted = result.copy()
-
+        
         # Convert specific fields based on their source types
         if 'timestamp' in converted and converted['timestamp'] is not None:
             value = converted['timestamp']
             if isinstance(value, datetime.datetime):
                 converted['timestamp'] = value.isoformat()
-
+        
         return converted
 
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-
+        
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -144,11 +144,11 @@ class GridSignal:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.
+            The byte array representation of the dataclass.        
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
@@ -181,10 +181,10 @@ class GridSignal:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['GridSignal']:
         """
         Converts the data to a dataclass based on the content type string.
-
+        
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to.
+            content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                     'avro/binary': Attempts to decode the data from Avro binary format.
@@ -210,7 +210,7 @@ class GridSignal:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
@@ -236,15 +236,15 @@ class GridSignal:
     def create_instance(cls) -> 'GridSignal':
         """
         Creates an instance of the dataclass with test values.
-
+        
         Returns:
             An instance of the dataclass.
         """
         return cls(
-            country='sxfojwsqavpzicphrojd',
+            country='tmtnqyghwvfvnipbfafi',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(79),
-            signal=int(93),
-            renewable_share_pct=float(77.02720144970795),
+            unix_seconds=int(72),
+            signal=int(14),
+            renewable_share_pct=float(96.66500513689328),
             substitute=True
         )

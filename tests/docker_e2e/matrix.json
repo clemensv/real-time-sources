@@ -855,6 +855,12 @@
     },
     {
       "dir": "feeders/energy-charts",
+      "image": "energy-charts",
+      "file": "Dockerfile",
+      "module": "energy_charts"
+    },
+    {
+      "dir": "feeders/energy-charts",
       "image": "energy-charts-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "energy_charts_mqtt"
@@ -2473,6 +2479,13 @@
       "image": "energidataservice-dk-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestEnergidataserviceDkAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/energy-charts",
+      "image": "energy-charts",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestEnergyChartsDockerFlow"
     },
     {
       "dir": "feeders/energy-charts",

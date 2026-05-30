@@ -28,127 +28,127 @@ class Test_Info(unittest.TestCase):
         Create instance of Info for testing
         """
         instance = Info(
-            info_id='xztoovewdxflqojdauwx',
-            name='nnvpyjxybnjxypvgjrin',
-            country='xgqdfgydfeyaasllhhvs',
-            city='gtaliruwcbogjmycrfev',
-            category='ajggmwiupdbsohzkgzyl',
-            price_area='zyelzluwlynefgidlvby',
-            settlement_date='uovihknbpccoskmvcglp',
-            settlement_period=int(31),
-            area_code='jpobbmlaplylprpznrvp',
-            segment='lomxnegarvxuhzsvdbat',
-            entity_id='fchdqtkyyxtpgsamnqog',
-            event_id='lapzsclevuyinxjxadoz',
-            venue_id='lizzvetztggoxyziqhux'
+            info_id='eqsqcuexbvugpdglgfio',
+            name='ewdaahbehtiggiuxvgnu',
+            country='bwpvbtaivbksngvvitbi',
+            city='qrwiakmdmilamgulvmta',
+            category='xypzhvbugsnavfdrcwku',
+            price_area='foauzikinirxprdqibgp',
+            settlement_date='kpuiylrxdtbzzonhawqf',
+            settlement_period=int(72),
+            area_code='rcwjyzafkbmodrupxuzx',
+            segment='trrorhyhxitiycxhbfwg',
+            entity_id='jqqroqsitsbnecugvuen',
+            event_id='cfiltwbaiqbgvgzijnoz',
+            venue_id='ibhstcjiqssmqmztlttd'
         )
         return instance
 
-
+    
     def test_info_id_property(self):
         """
         Test info_id property
         """
-        test_value = 'xztoovewdxflqojdauwx'
+        test_value = 'eqsqcuexbvugpdglgfio'
         self.instance.info_id = test_value
         self.assertEqual(self.instance.info_id, test_value)
-
+    
     def test_name_property(self):
         """
         Test name property
         """
-        test_value = 'nnvpyjxybnjxypvgjrin'
+        test_value = 'ewdaahbehtiggiuxvgnu'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
-
+    
     def test_country_property(self):
         """
         Test country property
         """
-        test_value = 'xgqdfgydfeyaasllhhvs'
+        test_value = 'bwpvbtaivbksngvvitbi'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
-
+    
     def test_city_property(self):
         """
         Test city property
         """
-        test_value = 'gtaliruwcbogjmycrfev'
+        test_value = 'qrwiakmdmilamgulvmta'
         self.instance.city = test_value
         self.assertEqual(self.instance.city, test_value)
-
+    
     def test_category_property(self):
         """
         Test category property
         """
-        test_value = 'ajggmwiupdbsohzkgzyl'
+        test_value = 'xypzhvbugsnavfdrcwku'
         self.instance.category = test_value
         self.assertEqual(self.instance.category, test_value)
-
+    
     def test_price_area_property(self):
         """
         Test price_area property
         """
-        test_value = 'zyelzluwlynefgidlvby'
+        test_value = 'foauzikinirxprdqibgp'
         self.instance.price_area = test_value
         self.assertEqual(self.instance.price_area, test_value)
-
+    
     def test_settlement_date_property(self):
         """
         Test settlement_date property
         """
-        test_value = 'uovihknbpccoskmvcglp'
+        test_value = 'kpuiylrxdtbzzonhawqf'
         self.instance.settlement_date = test_value
         self.assertEqual(self.instance.settlement_date, test_value)
-
+    
     def test_settlement_period_property(self):
         """
         Test settlement_period property
         """
-        test_value = int(31)
+        test_value = int(72)
         self.instance.settlement_period = test_value
         self.assertEqual(self.instance.settlement_period, test_value)
-
+    
     def test_area_code_property(self):
         """
         Test area_code property
         """
-        test_value = 'jpobbmlaplylprpznrvp'
+        test_value = 'rcwjyzafkbmodrupxuzx'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
-
+    
     def test_segment_property(self):
         """
         Test segment property
         """
-        test_value = 'lomxnegarvxuhzsvdbat'
+        test_value = 'trrorhyhxitiycxhbfwg'
         self.instance.segment = test_value
         self.assertEqual(self.instance.segment, test_value)
-
+    
     def test_entity_id_property(self):
         """
         Test entity_id property
         """
-        test_value = 'fchdqtkyyxtpgsamnqog'
+        test_value = 'jqqroqsitsbnecugvuen'
         self.instance.entity_id = test_value
         self.assertEqual(self.instance.entity_id, test_value)
-
+    
     def test_event_id_property(self):
         """
         Test event_id property
         """
-        test_value = 'lapzsclevuyinxjxadoz'
+        test_value = 'cfiltwbaiqbgvgzijnoz'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
-
+    
     def test_venue_id_property(self):
         """
         Test venue_id property
         """
-        test_value = 'lizzvetztggoxyziqhux'
+        test_value = 'ibhstcjiqssmqmztlttd'
         self.instance.venue_id = test_value
         self.assertEqual(self.instance.venue_id, test_value)
-
+    
     def test_to_byte_array_avro(self):
         """
         Test to_byte_array method with avro media type

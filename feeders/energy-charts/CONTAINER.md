@@ -159,8 +159,10 @@ docker run --rm \
 | `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC` | Explicit Kafka destination. |
 | `SASL_USERNAME`, `SASL_PASSWORD` | SASL PLAIN credentials when needed. |
 | `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka. |
+| `COUNTRY` | Two-letter country code for the Energy Charts scope to poll. Defaults to `de`. |
+| `BIDDING_ZONE` | ENTSO-E bidding-zone code used for spot-price and public-power slices. Defaults to `DE-LU`. |
+| `ENERGY_CHARTS_LAST_POLLED_FILE` | Path to the JSON state file used by the Kafka poller to persist the last emitted upstream timestamps between runs. |
 | `ONCE_MODE` | Run one cycle and exit (where supported). |
-| State variable | `ENERGY_CHARTS_LAST_POLLED_FILE` |
 
 ### MQTT image
 
@@ -170,6 +172,9 @@ docker run --rm \
 | `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional broker credentials. |
 | `MQTT_CLIENT_ID` | Optional explicit client ID. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` where supported. |
+| `COUNTRY` | Two-letter country code for the Energy Charts scope to poll. Defaults to `de`. |
+| `BIDDING_ZONE` | ENTSO-E bidding-zone code used for spot-price and public-power slices. Defaults to `DE-LU`. |
+| `ENERGY_CHARTS_LAST_POLLED_FILE` | Present on Azure templates for shared state-share wiring; the current MQTT companion app does not read it. |
 | State variable | Not used by current MQTT companion app |
 
 ### AMQP image
@@ -181,6 +186,9 @@ docker run --rm \
 | `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials (if used). |
 | `AMQP_AUTH_MODE` | Auth mode where supported (`password`/`entra`/`sas`). |
 | `AMQP_TLS` | Enable TLS where supported. |
+| `COUNTRY` | Two-letter country code for the Energy Charts scope to poll. Defaults to `de`. |
+| `BIDDING_ZONE` | ENTSO-E bidding-zone code used for spot-price and public-power slices. Defaults to `DE-LU`. |
+| `ENERGY_CHARTS_LAST_POLLED_FILE` | Present on Azure templates for shared state-share wiring; the current AMQP companion app does not read it. |
 | State variable | Not used by current AMQP companion app |
 
 ## Deploying into Microsoft Fabric

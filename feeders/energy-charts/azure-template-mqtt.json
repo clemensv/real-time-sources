@@ -59,28 +59,28 @@
     "biddingZone": {
       "type": "string",
       "metadata": {
-        "description": "Bidding zone option used to filter or tune the energy-charts upstream feeder."
+        "description": "ENTSO-E bidding-zone code used for spot-price and public-power slices. Defaults to DE-LU."
       },
       "defaultValue": "DE-LU"
     },
     "country": {
       "type": "string",
       "metadata": {
-        "description": "Country option used to filter or tune the energy-charts upstream feeder."
+        "description": "Two-letter country code for the Energy Charts scope to poll. Defaults to de."
       },
       "defaultValue": "de"
     },
     "energyChartsLastPolledFile": {
       "type": "string",
       "metadata": {
-        "description": "Path to the feeder-specific JSON state file used for upstream poll resume and dedupe."
+        "description": "Path to the JSON state file used by the Kafka poller to persist the last emitted upstream timestamps between runs. Not used by current MQTT companion app Not used by current AMQP companion app"
       },
       "defaultValue": ""
     },
     "onceMode": {
       "type": "string",
       "metadata": {
-        "description": "Run one cycle and exit (where supported). ENERGY_CHARTS_LAST_POLLED_FILE"
+        "description": "Run one cycle and exit (where supported)."
       },
       "defaultValue": ""
     }

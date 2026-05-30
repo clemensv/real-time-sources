@@ -22,7 +22,7 @@ import datetime
 class SpotPrice:
     """
     Day-ahead electricity spot price for a given bidding zone at a specific timestamp. Sourced from the Energy-Charts /price endpoint (Fraunhofer ISE) which provides wholesale electricity market prices from ENTSO-E and national exchanges. Prices are the day-ahead auction clearing price in EUR per MWh. The bidding zone identifies the market area (e.g. 'DE-LU' for the Germany-Luxembourg zone).
-
+    
     Attributes:
         country (str)
         bidding_zone (str)
@@ -31,12 +31,12 @@ class SpotPrice:
         price_eur_per_mwh (typing.Optional[float])
         unit (typing.Optional[str])
     """
-
+    
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
         "{\"type\": \"record\", \"name\": \"SpotPrice\", \"doc\": \"Day-ahead electricity spot price for a given bidding zone at a specific timestamp. Sourced from the Energy-Charts /price endpoint (Fraunhofer ISE) which provides wholesale electricity market prices from ENTSO-E and national exchanges. Prices are the day-ahead auction clearing price in EUR per MWh. The bidding zone identifies the market area (e.g. 'DE-LU' for the Germany-Luxembourg zone).\", \"fields\": [{\"name\": \"country\", \"type\": \"string\", \"doc\": \"ISO 3166-1 alpha-2 country code derived from the bidding zone (e.g. 'de' from 'DE-LU'). Used for Kafka key partitioning.\"}, {\"name\": \"bidding_zone\", \"type\": \"string\", \"doc\": \"European electricity bidding zone identifier as used by ENTSO-E (e.g. 'DE-LU' for Germany-Luxembourg, 'FR' for France, 'NO1' for Norway zone 1). The bzn parameter in the Energy-Charts /price API.\"}, {\"name\": \"timestamp\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}, \"doc\": \"UTC timestamp derived from the unix_seconds value. Marks the start of the price interval (typically 15-minute or hourly depending on the market).\"}, {\"name\": \"unix_seconds\", \"type\": \"long\", \"doc\": \"Unix epoch timestamp in seconds as returned by the Energy-Charts API.\"}, {\"name\": \"price_eur_per_mwh\", \"type\": [\"double\", \"null\"], \"doc\": \"Day-ahead electricity spot price in EUR per megawatt-hour (EUR/MWh). This is the clearing price from the day-ahead auction on the relevant power exchange. Can be negative during periods of excess generation.\", \"default\": null}, {\"name\": \"unit\", \"type\": [\"string\", \"null\"], \"doc\": \"Unit label as returned by the Energy-Charts API (e.g. 'EUR / MWh'). Included for traceability with the upstream response.\", \"default\": null}]}"
     )
-
-
+    
+    
     country: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
     bidding_zone: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bidding_zone"))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
@@ -48,10 +48,10 @@ class SpotPrice:
     def from_serializer_dict(cls, data: dict) -> 'SpotPrice':
         """
         Converts a dictionary to a dataclass instance.
-
+        
         Args:
             data: The dictionary to convert to a dataclass.
-
+        
         Returns:
             The dataclass representation of the dataclass.
         """
@@ -62,10 +62,10 @@ class SpotPrice:
         Converts a dictionary from Avro deserialization to a dataclass instance.
         Handles conversion of string representations back to Python types for
         extended logical types.
-
+        
         Args:
             data: The dictionary from Avro deserialization.
-
+        
         Returns:
             The dataclass representation.
         """
@@ -85,7 +85,7 @@ class SpotPrice:
             value = converted['price_eur_per_mwh']
         if 'unit' in converted and converted['unit'] is not None:
             value = converted['unit']
-
+        
         return cls(**converted)
 
     def to_serializer_dict(self) -> dict:
@@ -101,7 +101,7 @@ class SpotPrice:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """
+        """ 
         def _resolve_enum(v):
             if isinstance(v, enum.Enum):
                 return v.value
@@ -121,19 +121,19 @@ class SpotPrice:
         """
         result = self.to_serializer_dict()
         converted = result.copy()
-
+        
         # Convert specific fields based on their source types
         if 'timestamp' in converted and converted['timestamp'] is not None:
             value = converted['timestamp']
             if isinstance(value, datetime.datetime):
                 converted['timestamp'] = value.isoformat()
-
+        
         return converted
 
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-
+        
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -144,11 +144,11 @@ class SpotPrice:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.
+            The byte array representation of the dataclass.        
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
@@ -181,10 +181,10 @@ class SpotPrice:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['SpotPrice']:
         """
         Converts the data to a dataclass based on the content type string.
-
+        
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to.
+            content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                     'avro/binary': Attempts to decode the data from Avro binary format.
@@ -210,7 +210,7 @@ class SpotPrice:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
@@ -236,15 +236,15 @@ class SpotPrice:
     def create_instance(cls) -> 'SpotPrice':
         """
         Creates an instance of the dataclass with test values.
-
+        
         Returns:
             An instance of the dataclass.
         """
         return cls(
-            country='bgtwuixdnyvwnekqbzcr',
-            bidding_zone='oegludapwxeoaltjjpij',
+            country='uqoamjxxxtqvwrtyghuu',
+            bidding_zone='fpsbblitlrgsiqrskzni',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(9),
-            price_eur_per_mwh=float(45.860063566150224),
-            unit='jzaeferrbisiilkyqqqo'
+            unix_seconds=int(27),
+            price_eur_per_mwh=float(83.39963619899264),
+            unit='rehdoziuiypdouwqbjny'
         )

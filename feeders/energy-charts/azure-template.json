@@ -32,14 +32,14 @@
       "type": "string",
       "defaultValue": "de",
       "metadata": {
-        "description": "Configuration value. See feeders/energy-charts/CONTAINER.md for details."
+        "description": "Two-letter country code for the Energy Charts scope to poll. Defaults to de."
       }
     },
     "biddingZone": {
       "type": "string",
       "defaultValue": "DE-LU",
       "metadata": {
-        "description": "Zone. See feeders/energy-charts/CONTAINER.md for details."
+        "description": "ENTSO-E bidding-zone code used for spot-price and public-power slices. Defaults to DE-LU."
       }
     }
   },
