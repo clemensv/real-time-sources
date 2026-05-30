@@ -317,6 +317,8 @@ class AviationWeatherPoller:
             severity=cls.safe_int(raw.get("severity")),
             raw_sigmet=raw.get("rawAirSigmet"),
             coords=coords_str,
+            sigmet_id=series_id.lower(),
+            region=icao_id.lower(),
         )
 
     @classmethod
@@ -358,6 +360,8 @@ class AviationWeatherPoller:
             severity=None,
             raw_sigmet=raw.get("rawSigmet"),
             coords=coords_str,
+            sigmet_id=series_id.lower(),
+            region=icao_id.lower(),
         )
 
     @staticmethod
