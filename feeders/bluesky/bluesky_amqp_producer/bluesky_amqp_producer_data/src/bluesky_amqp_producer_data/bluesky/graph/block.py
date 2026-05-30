@@ -171,15 +171,15 @@ class Block:
             An instance of the dataclass.
         """
         return cls(
-            uri='gmahuykeyxsnsbfdgeer',
-            cid='wtuesqdrhiisuntpmifj',
-            did='hsypyhfkzmycljllnxny',
-            handle='zxzddlrukachfuuahrtx',
-            subject='xxjcduimrkvhdluyfgpe',
-            subject_handle='lvwacmztdpugkdupdjud',
-            created_at='lhtebyaixqztgasvnxrl',
-            indexed_at='sdtotdktohrqcqjgiydr',
-            seq=int(90),
-            collection='asrqoofbwwgviduewmpi',
-            lang='zjdygjilkgikphspfpzy'
+            uri='ejfgrjnnlnkxtpkvwxcq',
+            cid='jkduqtcogmgmtodwkbmv',
+            did='ucybnzwmawskpdqvvxwc',
+            handle='dihfqmbkjerkewimsuqa',
+            subject='cbuiiccmzesasvltqgei',
+            subject_handle='aeevnltcswqccsejvtqe',
+            created_at='kqfxydsdumqqmkrnodgm',
+            indexed_at='inmeopgtbhgmrslvupbx',
+            seq=int(72),
+            collection='cpedbqgwzplzvaxcllmr',
+            lang='pnbayaofanonihomzxgd'
         )

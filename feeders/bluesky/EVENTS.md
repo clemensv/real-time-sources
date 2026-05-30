@@ -1,6 +1,6 @@
-# Bluesky Firehose feeder Events
+# Bluesky Firehose Events
 
-MQTT/5.0 non-retained firehose variants of the Bluesky CloudEvents. Each record family gets a dedicated topic with the kebab record name baked as the trailing segment so subscribers can wildcard per family. QoS 0, retain=false — there is no LKV slot for a firehose.
+<sub>posts, likes, reposts, follows · Kafka · MQTT · AMQP · <a href="https://bsky.app/">upstream</a> · <a href="https://docs.bsky.app/">API docs</a></sub>
 
 ## At a glance
 
@@ -8,6 +8,7 @@ MQTT/5.0 non-retained firehose variants of the Bluesky CloudEvents. Each record 
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 0 reference/catalog event types and 6 telemetry event types.
 - **Identity:** `{did}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -86,18 +87,18 @@ Each event identifies the real-world resource with `{did}`. `{did}` is decentral
 - **`uri`** (string, required): AT-URI of the post (at://did:plc:xxx/app.bsky.feed.post/xxx)
 - **`cid`** (string, required): Content Identifier (CID) of the post
 - **`did`** (string, required): Decentralized Identifier of the author
-- **`handle`** (string, optional): Handle of the author
+- **`handle`** (string or null, optional): Handle of the author
 - **`text`** (string, required): Text content of the post
 - **`langs`** (array of string, required): Language codes for the post
-- **`reply_parent`** (string, optional): AT-URI of parent post if this is a reply
-- **`reply_root`** (string, optional): AT-URI of root post in thread
-- **`embed_type`** (string, optional): Type of embedded content (images, external, record, etc.)
-- **`embed_uri`** (string, optional): URI of embedded content
-- **`facets`** (string, optional): JSON string of rich text facets (mentions, links, tags)
+- **`reply_parent`** (string or null, optional): AT-URI of parent post if this is a reply
+- **`reply_root`** (string or null, optional): AT-URI of root post in thread
+- **`embed_type`** (string or null, optional): Type of embedded content (images, external, record, etc.)
+- **`embed_uri`** (string or null, optional): URI of embedded content
+- **`facets`** (string or null, optional): JSON string of rich text facets (mentions, links, tags)
 - **`tags`** (array of string, required): Hashtags in the post
 - **`created_at`** (string, required): ISO 8601 timestamp of post creation
 - **`indexed_at`** (string, required): ISO 8601 timestamp of when the post was indexed
-- **`seq`** (int64, required): Firehose sequence number
+- **`seq`** (integer, required): Firehose sequence number
 - **`collection`** (string, required): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
 - **`lang`** (string, required): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.
 #### Example payload
@@ -157,12 +158,12 @@ Each event identifies the real-world resource with `{did}`. `{did}` is DID of th
 - **`uri`** (string, required): AT-URI of the like record
 - **`cid`** (string, required): Content Identifier of the like
 - **`did`** (string, required): DID of the user who liked
-- **`handle`** (string, optional): Handle of the user who liked
+- **`handle`** (string or null, optional): Handle of the user who liked
 - **`subject_uri`** (string, required): AT-URI of the liked post
 - **`subject_cid`** (string, required): CID of the liked post
 - **`created_at`** (string, required): ISO 8601 timestamp of like creation
 - **`indexed_at`** (string, required): ISO 8601 timestamp of indexing
-- **`seq`** (int64, required): Firehose sequence number
+- **`seq`** (integer, required): Firehose sequence number
 - **`collection`** (string, required): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
 - **`lang`** (string, required): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.
 #### Example payload
@@ -216,12 +217,12 @@ Each event identifies the real-world resource with `{did}`. `{did}` is DID of th
 - **`uri`** (string, required): AT-URI of the repost record
 - **`cid`** (string, required): Content Identifier of the repost
 - **`did`** (string, required): DID of the user who reposted
-- **`handle`** (string, optional): Handle of the user who reposted
+- **`handle`** (string or null, optional): Handle of the user who reposted
 - **`subject_uri`** (string, required): AT-URI of the reposted post
 - **`subject_cid`** (string, required): CID of the reposted post
 - **`created_at`** (string, required): ISO 8601 timestamp of repost creation
 - **`indexed_at`** (string, required): ISO 8601 timestamp of indexing
-- **`seq`** (int64, required): Firehose sequence number
+- **`seq`** (integer, required): Firehose sequence number
 - **`collection`** (string, required): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
 - **`lang`** (string, required): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.
 #### Example payload
@@ -275,12 +276,12 @@ Each event identifies the real-world resource with `{did}`. `{did}` is DID of th
 - **`uri`** (string, required): AT-URI of the follow record
 - **`cid`** (string, required): Content Identifier of the follow
 - **`did`** (string, required): DID of the follower
-- **`handle`** (string, optional): Handle of the follower
+- **`handle`** (string or null, optional): Handle of the follower
 - **`subject`** (string, required): DID of the followed user
-- **`subject_handle`** (string, optional): Handle of the followed user
+- **`subject_handle`** (string or null, optional): Handle of the followed user
 - **`created_at`** (string, required): ISO 8601 timestamp of follow creation
 - **`indexed_at`** (string, required): ISO 8601 timestamp of indexing
-- **`seq`** (int64, required): Firehose sequence number
+- **`seq`** (integer, required): Firehose sequence number
 - **`collection`** (string, required): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
 - **`lang`** (string, required): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.
 #### Example payload
@@ -334,12 +335,12 @@ Each event identifies the real-world resource with `{did}`. `{did}` is DID of th
 - **`uri`** (string, required): AT-URI of the block record
 - **`cid`** (string, required): Content Identifier of the block
 - **`did`** (string, required): DID of the blocker
-- **`handle`** (string, optional): Handle of the blocker
+- **`handle`** (string or null, optional): Handle of the blocker
 - **`subject`** (string, required): DID of the blocked user
-- **`subject_handle`** (string, optional): Handle of the blocked user
+- **`subject_handle`** (string or null, optional): Handle of the blocked user
 - **`created_at`** (string, required): ISO 8601 timestamp of block creation
 - **`indexed_at`** (string, required): ISO 8601 timestamp of indexing
-- **`seq`** (int64, required): Firehose sequence number
+- **`seq`** (integer, required): Firehose sequence number
 - **`collection`** (string, required): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
 - **`lang`** (string, required): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.
 #### Example payload
@@ -391,14 +392,14 @@ Each event identifies the real-world resource with `{did}`. `{did}` is decentral
 `Profile` payloads are JSON object. Required fields: `did`, `handle`, `created_at`, `indexed_at`, `seq`, `collection`, `lang`.
 
 - **`did`** (string, required): Decentralized Identifier
-- **`handle`** (string, required): User handle
-- **`display_name`** (string, optional): Display name
-- **`description`** (string, optional): Bio/description
-- **`avatar`** (string, optional): Avatar image URL
-- **`banner`** (string, optional): Banner image URL
+- **`handle`** (string or null, required): User handle
+- **`display_name`** (string or null, optional): Display name
+- **`description`** (string or null, optional): Bio/description
+- **`avatar`** (string or null, optional): Avatar image URL
+- **`banner`** (string or null, optional): Banner image URL
 - **`created_at`** (string, required): ISO 8601 timestamp of profile creation
 - **`indexed_at`** (string, required): ISO 8601 timestamp of indexing
-- **`seq`** (int64, required): Firehose sequence number
+- **`seq`** (integer, required): Firehose sequence number
 - **`collection`** (string, required): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
 - **`lang`** (string, required): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`.
 #### Example payload
@@ -442,10 +443,11 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/bluesky.xreg.json`](xreg/bluesky.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

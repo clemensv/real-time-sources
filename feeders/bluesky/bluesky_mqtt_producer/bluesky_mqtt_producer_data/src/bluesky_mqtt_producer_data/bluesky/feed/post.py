@@ -183,21 +183,21 @@ class Post:
             An instance of the dataclass.
         """
         return cls(
-            uri='srumjisunfiriktmqnjb',
-            cid='hfkvlfwjlzfsvlobluuj',
-            did='jiwmlalcggnazboaxvuh',
-            handle='tvbyngbxqexlcdbibnlf',
-            text='nrqbuxwqbwkjeejhxpcc',
-            langs=['hsbfkgtfnjkgibdxbhdk', 'lwqmxjjaakrgfniodvfc', 'hkxlbygjclhqezhubxyk', 'rfqmrxmohxzioelcjqqo', 'tiqnnmxtpzjnbqpcdzuo'],
-            reply_parent='mutyelztxvyzdqqvkmxt',
-            reply_root='gtarrmoplueyztnyxosm',
-            embed_type='jxmdywrcggfxisaeqati',
-            embed_uri='hsilddretjcpchioajgj',
-            facets='qehusmbqnkxirkpcwgpx',
-            tags=['qejyejcojljdxzoybcrw', 'uhdvwmtwbrxxyxlwlcma', 'zzawqrlvrppjaofjnqgc', 'giaiszvfdxlmtmqjxulj', 'ikvbdmexefxnqmhkizgk'],
-            created_at='gpeknevfrpzqwjyasmzk',
-            indexed_at='uzhdytyvtkylmmuahvmz',
-            seq=int(81),
-            collection='pwmvatmoheqyaexsybhz',
-            lang='nezuaugdonivthblcjiz'
+            uri='eaclgqrlfmoyirvaqyry',
+            cid='xfudtzudfgbpthhwyipq',
+            did='brdfgxyfgekkkjzlxhdl',
+            handle='zaddzggzdxpouioqofbt',
+            text='rnmetoawhvnplphccrig',
+            langs=['jchwkuujiqkxqssfffbi', 'dspjqcjeypjlthuqnytx', 'xvipbkqwjpmucgosrcji', 'niaffdjkdktjgzhpgzhm', 'rtcvhiqtavnptykrilet'],
+            reply_parent='gohmtgbsnzdcvwbaongg',
+            reply_root='crmggnubzppyagfzmyhi',
+            embed_type='lgcfvslkpapcyvbsvsyr',
+            embed_uri='jmdjaevvljqqeptgaujp',
+            facets='runcjpetjohhiyxckhac',
+            tags=['uzapwrymkidxiwasscea', 'kgheujkpnvzvlzguscwc', 'fpiayyofbaymtkyeliyv', 'rtxosgjtuswoyjbsjggz'],
+            created_at='nayuwkeetcwzxigjyzcw',
+            indexed_at='hsgxwfldkfpsalptrgqe',
+            seq=int(18),
+            collection='gsfdjpfmtnzprxbcforf',
+            lang='powpdynlumemcsiuuvhw'
         )

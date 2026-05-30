@@ -28,17 +28,17 @@ class Test_Follow(unittest.TestCase):
         Create instance of Follow for testing
         """
         instance = Follow(
-            uri='unjverlpuclvwqqhanpu',
-            cid='wmbcfepxyeycjdbuxarb',
-            did='umbgjgpxgesrondauaqc',
-            handle='tptqhbtmiomqfxwrgwne',
-            subject='tlwoclsbwymiclzbcmvz',
-            subject_handle='avarfwicsgvwpjyjgofp',
-            created_at='rduywteaipaareyqhdqk',
-            indexed_at='umoecizblopkphervsyl',
-            seq=int(56),
-            collection='marpfndoohicedvboagx',
-            lang='qrybufmzxfeavdbjjkef'
+            uri='wdmghohldondaltfhgvl',
+            cid='vqyiwdpcomtrvgnsponc',
+            did='egsgcwvaikumvdczzhvp',
+            handle='qyraznnyshwhohyyghhw',
+            subject='roxilftorokuowpiejyb',
+            subject_handle='cpajxenvwmkbnrosbdsz',
+            created_at='rrnmaveezrunfuflyaue',
+            indexed_at='hbrcblqfuimefvirsqoi',
+            seq=int(40),
+            collection='pkourzezfbxgjnbvtdjb',
+            lang='oywxbatkwleppffrzjgl'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test uri property
         """
-        test_value = 'unjverlpuclvwqqhanpu'
+        test_value = 'wdmghohldondaltfhgvl'
         self.instance.uri = test_value
         self.assertEqual(self.instance.uri, test_value)
     
@@ -55,7 +55,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test cid property
         """
-        test_value = 'wmbcfepxyeycjdbuxarb'
+        test_value = 'vqyiwdpcomtrvgnsponc'
         self.instance.cid = test_value
         self.assertEqual(self.instance.cid, test_value)
     
@@ -63,7 +63,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test did property
         """
-        test_value = 'umbgjgpxgesrondauaqc'
+        test_value = 'egsgcwvaikumvdczzhvp'
         self.instance.did = test_value
         self.assertEqual(self.instance.did, test_value)
     
@@ -71,7 +71,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test handle property
         """
-        test_value = 'tptqhbtmiomqfxwrgwne'
+        test_value = 'qyraznnyshwhohyyghhw'
         self.instance.handle = test_value
         self.assertEqual(self.instance.handle, test_value)
     
@@ -79,7 +79,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test subject property
         """
-        test_value = 'tlwoclsbwymiclzbcmvz'
+        test_value = 'roxilftorokuowpiejyb'
         self.instance.subject = test_value
         self.assertEqual(self.instance.subject, test_value)
     
@@ -87,7 +87,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test subject_handle property
         """
-        test_value = 'avarfwicsgvwpjyjgofp'
+        test_value = 'cpajxenvwmkbnrosbdsz'
         self.instance.subject_handle = test_value
         self.assertEqual(self.instance.subject_handle, test_value)
     
@@ -95,7 +95,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test created_at property
         """
-        test_value = 'rduywteaipaareyqhdqk'
+        test_value = 'rrnmaveezrunfuflyaue'
         self.instance.created_at = test_value
         self.assertEqual(self.instance.created_at, test_value)
     
@@ -103,7 +103,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test indexed_at property
         """
-        test_value = 'umoecizblopkphervsyl'
+        test_value = 'hbrcblqfuimefvirsqoi'
         self.instance.indexed_at = test_value
         self.assertEqual(self.instance.indexed_at, test_value)
     
@@ -111,7 +111,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test seq property
         """
-        test_value = int(56)
+        test_value = int(40)
         self.instance.seq = test_value
         self.assertEqual(self.instance.seq, test_value)
     
@@ -119,7 +119,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test collection property
         """
-        test_value = 'marpfndoohicedvboagx'
+        test_value = 'pkourzezfbxgjnbvtdjb'
         self.instance.collection = test_value
         self.assertEqual(self.instance.collection, test_value)
     
@@ -127,7 +127,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test lang property
         """
-        test_value = 'qrybufmzxfeavdbjjkef'
+        test_value = 'oywxbatkwleppffrzjgl'
         self.instance.lang = test_value
         self.assertEqual(self.instance.lang, test_value)
     

@@ -2105,6 +2105,20 @@
     },
     {
       "dir": "feeders/bluesky",
+      "image": "bluesky-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestBlueskyDockerFlow"
+    },
+    {
+      "dir": "feeders/bluesky",
+      "image": "bluesky-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestBlueskyMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/bluesky",
       "image": "bluesky-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",

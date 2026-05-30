@@ -171,15 +171,15 @@ class Like:
             An instance of the dataclass.
         """
         return cls(
-            uri='mvmnaglhmohvkscgjdgg',
-            cid='tfaiaobirbkrvskhyzeu',
-            did='iwocwbxphamxmhtvsnpb',
-            handle='vxgjrozfqxrrmkzcczyb',
-            subject_uri='qwcykveiebbkvmzmzgum',
-            subject_cid='oxgjyrqjcslqyykxqamw',
-            created_at='bkwnrmxuohmkzglmxcmj',
-            indexed_at='wezoavmuajmabdhrmjdf',
-            seq=int(85),
-            collection='zdicpmkukyskfgwtamba',
-            lang='nsrpithlaecsxfkgdfef'
+            uri='teywadjyhmybbbkambrs',
+            cid='vzyrxgiqetpivfrubvgw',
+            did='zubosllbrhvzjzrtigra',
+            handle='xvarlqyrdmdlebyeslmz',
+            subject_uri='wluyiojgofnmrksedxav',
+            subject_cid='yovgskctpvpvcegfpkfd',
+            created_at='cfduzgcxewgipoolbrni',
+            indexed_at='ytwkblcghqbluxxqnfed',
+            seq=int(42),
+            collection='pamdlymesddxwrdjeasd',
+            lang='ktvcwawgtzlvpnscmhjr'
         )

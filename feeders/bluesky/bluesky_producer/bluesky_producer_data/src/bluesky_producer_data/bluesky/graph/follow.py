@@ -29,7 +29,9 @@ class Follow:
         subject_handle (typing.Optional[str]): Handle of the followed user
         created_at (str): ISO 8601 timestamp of follow creation
         indexed_at (str): ISO 8601 timestamp of indexing
-        seq (int): Firehose sequence number"""
+        seq (int): Firehose sequence number
+        collection (str): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
+        lang (str): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."""
     
     uri: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="uri"))
     cid: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cid"))
@@ -40,9 +42,11 @@ class Follow:
     created_at: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="created_at"))
     indexed_at: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="indexed_at"))
     seq: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="seq"))
+    collection: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="collection"))
+    lang: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lang"))
     
     AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Follow\", \"namespace\": \"Bluesky.Graph\", \"fields\": [{\"name\": \"uri\", \"type\": \"string\", \"doc\": \"AT-URI of the follow record\"}, {\"name\": \"cid\", \"type\": \"string\", \"doc\": \"Content Identifier of the follow\"}, {\"name\": \"did\", \"type\": \"string\", \"doc\": \"DID of the follower\"}, {\"name\": \"handle\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Handle of the follower\"}, {\"name\": \"subject\", \"type\": \"string\", \"doc\": \"DID of the followed user\"}, {\"name\": \"subject_handle\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Handle of the followed user\"}, {\"name\": \"created_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of follow creation\"}, {\"name\": \"indexed_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of indexing\"}, {\"name\": \"seq\", \"type\": \"long\", \"doc\": \"Firehose sequence number\"}], \"doc\": \"A follow relationship between users\"}"), avro.name.Names()
+        json.loads("{\"type\": \"record\", \"name\": \"Follow\", \"namespace\": \"Bluesky.Graph\", \"fields\": [{\"name\": \"uri\", \"type\": \"string\", \"doc\": \"AT-URI of the follow record\"}, {\"name\": \"cid\", \"type\": \"string\", \"doc\": \"Content Identifier of the follow\"}, {\"name\": \"did\", \"type\": \"string\", \"doc\": \"DID of the follower\"}, {\"name\": \"handle\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Handle of the follower\"}, {\"name\": \"subject\", \"type\": \"string\", \"doc\": \"DID of the followed user\"}, {\"name\": \"subject_handle\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Handle of the followed user\"}, {\"name\": \"created_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of follow creation\"}, {\"name\": \"indexed_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of indexing\"}, {\"name\": \"seq\", \"type\": \"long\", \"doc\": \"Firehose sequence number\"}, {\"name\": \"collection\", \"type\": \"string\", \"doc\": \"AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.\"}, {\"name\": \"lang\", \"type\": \"string\", \"doc\": \"Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `\u2026/ja/+/+`.\", \"default\": \"und\"}], \"doc\": \"A follow relationship between users\"}"), avro.name.Names()
     )
 
     def __post_init__(self):
@@ -56,6 +60,8 @@ class Follow:
         self.created_at=str(self.created_at)
         self.indexed_at=str(self.indexed_at)
         self.seq=int(self.seq)
+        self.collection=str(self.collection)
+        self.lang=str(self.lang)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Follow':

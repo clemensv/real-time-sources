@@ -15,7 +15,11 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - BlueskyFirehoseEventDispatcher
+3. [Quick Start](#quick-start)    - BlueskyFirehoseEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    BlueskyFirehoseMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    BlueskyFirehoseAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +43,14 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - BlueskyFirehoseProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- BlueskyFirehoseMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- BlueskyFirehoseAmqpProducersolution for event-driven applications.
 
 
 
@@ -189,6 +201,80 @@ bluesky_firehose_dispatcher.bluesky_feed_post_async = bluesky_feed_post_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Post`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_post_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Post) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_feed_post_async = bluesky_feed_post_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Post`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_post_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Post) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_feed_post_async = bluesky_feed_post_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -245,6 +331,80 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 bluesky_firehose_dispatcher.bluesky_feed_like_async = bluesky_feed_like_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Like`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_like_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Like) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_feed_like_async = bluesky_feed_like_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Like`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_like_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Like) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_feed_like_async = bluesky_feed_like_event
 
 **Parameters:**```
 
@@ -312,6 +472,80 @@ bluesky_firehose_dispatcher.bluesky_feed_repost_async = bluesky_feed_repost_even
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Repost`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_repost_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Repost) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_feed_repost_async = bluesky_feed_repost_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Repost`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_repost_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Repost) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_feed_repost_async = bluesky_feed_repost_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -369,6 +603,80 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 bluesky_firehose_dispatcher.bluesky_graph_follow_async = bluesky_graph_follow_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Follow`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_graph_follow_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Follow) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_graph_follow_async = bluesky_graph_follow_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Follow`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_graph_follow_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Follow) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_graph_follow_async = bluesky_graph_follow_event
 
 **Parameters:**```
 
@@ -436,6 +744,80 @@ bluesky_firehose_dispatcher.bluesky_graph_block_async = bluesky_graph_block_even
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Block`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_graph_block_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Block) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_graph_block_async = bluesky_graph_block_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Block`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_graph_block_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Block) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_graph_block_async = bluesky_graph_block_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -493,6 +875,80 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 bluesky_firehose_dispatcher.bluesky_actor_profile_async = bluesky_actor_profile_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Profile`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_actor_profile_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Profile) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_actor_profile_async = bluesky_actor_profile_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Profile`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_actor_profile_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Profile) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_actor_profile_async = bluesky_actor_profile_event
 
 **Parameters:**```
 
@@ -1107,6 +1563,3062 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_bluesky_actor_profile_batch(```
+
+    messages=[
+
+        Profile(...),Initializes the runner with a Kafka consumer.
+
+        Profile(...),
+
+        Profile(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### BlueskyFirehoseMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`BlueskyFirehoseMqttEventDispatcher` handles events for the BlueskyFirehose.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from bluesky_producer import BlueskyFirehoseProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = BlueskyFirehoseProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_bluesky_feed_post(```python
+
+    data=Post(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The BlueskyFirehoseMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = BlueskyFirehoseProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `bluesky_feed_post_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'bluesky_feed_post_mqtt_async:  Callable[[ConsumerRecord, CloudEvent, Post],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Bluesky.Feed.Post.mqtt`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Post`.
+
+
+
+Producer for `BlueskyFirehose` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_post_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Post) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_dispatcher.bluesky_feed_post_mqtt_async = bluesky_feed_post_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Post`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_post_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Post) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_feed_post_mqtt_async = bluesky_feed_post_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Post`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_post_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Post) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_feed_post_mqtt_async = bluesky_feed_post_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `bluesky_feed_like_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'bluesky_feed_like_mqtt_async:  Callable[[ConsumerRecord, CloudEvent, Like],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Bluesky.Feed.Like.mqtt`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Like`.
+
+
+
+Producer for `BlueskyFirehose` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_like_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Like) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_dispatcher.bluesky_feed_like_mqtt_async = bluesky_feed_like_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Like`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_like_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Like) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_feed_like_mqtt_async = bluesky_feed_like_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Like`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_like_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Like) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_feed_like_mqtt_async = bluesky_feed_like_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `bluesky_feed_repost_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'bluesky_feed_repost_mqtt_async:  Callable[[ConsumerRecord, CloudEvent, Repost],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Bluesky.Feed.Repost.mqtt`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Repost`.
+
+
+
+Producer for `BlueskyFirehose` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_repost_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Repost) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_dispatcher.bluesky_feed_repost_mqtt_async = bluesky_feed_repost_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Repost`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_repost_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Repost) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_feed_repost_mqtt_async = bluesky_feed_repost_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Repost`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_feed_repost_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Repost) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_feed_repost_mqtt_async = bluesky_feed_repost_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `bluesky_graph_follow_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'bluesky_graph_follow_mqtt_async:  Callable[[ConsumerRecord, CloudEvent, Follow],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Bluesky.Graph.Follow.mqtt`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Follow`.
+
+
+
+Producer for `BlueskyFirehose` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_graph_follow_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Follow) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_dispatcher.bluesky_graph_follow_mqtt_async = bluesky_graph_follow_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Follow`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_graph_follow_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Follow) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_graph_follow_mqtt_async = bluesky_graph_follow_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Follow`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_graph_follow_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Follow) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_graph_follow_mqtt_async = bluesky_graph_follow_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `bluesky_graph_block_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'bluesky_graph_block_mqtt_async:  Callable[[ConsumerRecord, CloudEvent, Block],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Bluesky.Graph.Block.mqtt`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Block`.
+
+
+
+Producer for `BlueskyFirehose` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_graph_block_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Block) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_dispatcher.bluesky_graph_block_mqtt_async = bluesky_graph_block_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Block`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_graph_block_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Block) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_graph_block_mqtt_async = bluesky_graph_block_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Block`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_graph_block_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Block) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_graph_block_mqtt_async = bluesky_graph_block_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `bluesky_actor_profile_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'bluesky_actor_profile_mqtt_async:  Callable[[ConsumerRecord, CloudEvent, Profile],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `Bluesky.Actor.Profile.mqtt`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Profile`.
+
+
+
+Producer for `BlueskyFirehose` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_actor_profile_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Profile) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_dispatcher.bluesky_actor_profile_mqtt_async = bluesky_actor_profile_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Profile`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_actor_profile_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Profile) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_actor_profile_mqtt_async = bluesky_actor_profile_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Profile`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_actor_profile_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Profile) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_actor_profile_mqtt_async = bluesky_actor_profile_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_bluesky_feed_post_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_bluesky_feed_post_mqtt(
+
+    self,##### `_process_event`
+
+    data: Post,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Bluesky.Feed.Post.mqtt` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Post`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_bluesky_feed_post_mqtt(
+
+    data=Post(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Bluesky.Feed.Post.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_bluesky_feed_post_mqtt_batch(```
+
+    messages=[
+
+        Post(...),Initializes the runner with a Kafka consumer.
+
+        Post(...),
+
+        Post(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_bluesky_feed_like_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_bluesky_feed_like_mqtt(
+
+    self,##### `_process_event`
+
+    data: Like,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Bluesky.Feed.Like.mqtt` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Like`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_bluesky_feed_like_mqtt(
+
+    data=Like(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Bluesky.Feed.Like.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_bluesky_feed_like_mqtt_batch(```
+
+    messages=[
+
+        Like(...),Initializes the runner with a Kafka consumer.
+
+        Like(...),
+
+        Like(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_bluesky_feed_repost_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_bluesky_feed_repost_mqtt(
+
+    self,##### `_process_event`
+
+    data: Repost,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Bluesky.Feed.Repost.mqtt` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Repost`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_bluesky_feed_repost_mqtt(
+
+    data=Repost(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Bluesky.Feed.Repost.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_bluesky_feed_repost_mqtt_batch(```
+
+    messages=[
+
+        Repost(...),Initializes the runner with a Kafka consumer.
+
+        Repost(...),
+
+        Repost(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_bluesky_graph_follow_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_bluesky_graph_follow_mqtt(
+
+    self,##### `_process_event`
+
+    data: Follow,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Bluesky.Graph.Follow.mqtt` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Follow`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_bluesky_graph_follow_mqtt(
+
+    data=Follow(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Bluesky.Graph.Follow.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_bluesky_graph_follow_mqtt_batch(```
+
+    messages=[
+
+        Follow(...),Initializes the runner with a Kafka consumer.
+
+        Follow(...),
+
+        Follow(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_bluesky_graph_block_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_bluesky_graph_block_mqtt(
+
+    self,##### `_process_event`
+
+    data: Block,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Bluesky.Graph.Block.mqtt` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Block`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_bluesky_graph_block_mqtt(
+
+    data=Block(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Bluesky.Graph.Block.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_bluesky_graph_block_mqtt_batch(```
+
+    messages=[
+
+        Block(...),Initializes the runner with a Kafka consumer.
+
+        Block(...),
+
+        Block(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_bluesky_actor_profile_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_bluesky_actor_profile_mqtt(
+
+    self,##### `_process_event`
+
+    data: Profile,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `Bluesky.Actor.Profile.mqtt` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Profile`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_bluesky_actor_profile_mqtt(
+
+    data=Profile(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `Bluesky.Actor.Profile.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_bluesky_actor_profile_mqtt_batch(```
+
+    messages=[
+
+        Profile(...),Initializes the runner with a Kafka consumer.
+
+        Profile(...),
+
+        Profile(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### BlueskyFirehoseAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`BlueskyFirehoseAmqpEventDispatcher` handles events for the BlueskyFirehose.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from bluesky_producer import BlueskyFirehoseProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = BlueskyFirehoseProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_bluesky_feed_post(```python
+
+    data=Post(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The BlueskyFirehoseAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = BlueskyFirehoseProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `bluesky_firehose_amqp_post_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'bluesky_firehose_amqp_post_async:  Callable[[ConsumerRecord, CloudEvent, Post],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `BlueskyFirehose.amqp.Post`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Post`.
+
+
+
+Producer for `BlueskyFirehose` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_post_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Post) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_dispatcher.bluesky_firehose_amqp_post_async = bluesky_firehose_amqp_post_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Post`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_post_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Post) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_firehose_amqp_post_async = bluesky_firehose_amqp_post_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Post`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_post_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Post) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_firehose_amqp_post_async = bluesky_firehose_amqp_post_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `bluesky_firehose_amqp_like_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'bluesky_firehose_amqp_like_async:  Callable[[ConsumerRecord, CloudEvent, Like],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `BlueskyFirehose.amqp.Like`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Like`.
+
+
+
+Producer for `BlueskyFirehose` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_like_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Like) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_dispatcher.bluesky_firehose_amqp_like_async = bluesky_firehose_amqp_like_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Like`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_like_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Like) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_firehose_amqp_like_async = bluesky_firehose_amqp_like_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Like`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_like_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Like) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_firehose_amqp_like_async = bluesky_firehose_amqp_like_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `bluesky_firehose_amqp_repost_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'bluesky_firehose_amqp_repost_async:  Callable[[ConsumerRecord, CloudEvent, Repost],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `BlueskyFirehose.amqp.Repost`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Repost`.
+
+
+
+Producer for `BlueskyFirehose` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_repost_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Repost) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_dispatcher.bluesky_firehose_amqp_repost_async = bluesky_firehose_amqp_repost_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Repost`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_repost_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Repost) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_firehose_amqp_repost_async = bluesky_firehose_amqp_repost_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Repost`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_repost_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Repost) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_firehose_amqp_repost_async = bluesky_firehose_amqp_repost_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `bluesky_firehose_amqp_follow_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'bluesky_firehose_amqp_follow_async:  Callable[[ConsumerRecord, CloudEvent, Follow],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `BlueskyFirehose.amqp.Follow`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Follow`.
+
+
+
+Producer for `BlueskyFirehose` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_follow_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Follow) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_dispatcher.bluesky_firehose_amqp_follow_async = bluesky_firehose_amqp_follow_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Follow`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_follow_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Follow) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_firehose_amqp_follow_async = bluesky_firehose_amqp_follow_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Follow`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_follow_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Follow) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_firehose_amqp_follow_async = bluesky_firehose_amqp_follow_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `bluesky_firehose_amqp_block_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'bluesky_firehose_amqp_block_async:  Callable[[ConsumerRecord, CloudEvent, Block],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `BlueskyFirehose.amqp.Block`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Block`.
+
+
+
+Producer for `BlueskyFirehose` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_block_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Block) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_dispatcher.bluesky_firehose_amqp_block_async = bluesky_firehose_amqp_block_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Block`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_block_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Block) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_firehose_amqp_block_async = bluesky_firehose_amqp_block_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Block`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_block_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Block) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_firehose_amqp_block_async = bluesky_firehose_amqp_block_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `bluesky_firehose_amqp_profile_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'bluesky_firehose_amqp_profile_async:  Callable[[ConsumerRecord, CloudEvent, Profile],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `BlueskyFirehose.amqp.Profile`:
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseProducer- `data`: The event data of type `bluesky_producer_data.Profile`.
+
+
+
+Producer for `BlueskyFirehose` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_profile_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Profile) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_dispatcher.bluesky_firehose_amqp_profile_async = bluesky_firehose_amqp_profile_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseMqttProducer- `data`: The event data of type `bluesky_producer_data.Profile`.
+
+
+
+Producer for `BlueskyFirehose.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_profile_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Profile) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_mqtt_dispatcher.bluesky_firehose_amqp_profile_async = bluesky_firehose_amqp_profile_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BlueskyFirehoseAmqpProducer- `data`: The event data of type `bluesky_producer_data.Profile`.
+
+
+
+Producer for `BlueskyFirehose.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def bluesky_firehose_amqp_profile_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Profile) -> None:
+
+```python    # Process the event data
+
+BlueskyFirehoseAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+bluesky_firehose_amqp_dispatcher.bluesky_firehose_amqp_profile_async = bluesky_firehose_amqp_profile_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_bluesky_firehose_amqp_post`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_bluesky_firehose_amqp_post(
+
+    self,##### `_process_event`
+
+    data: Post,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `BlueskyFirehose.amqp.Post` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Post`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_bluesky_firehose_amqp_post(
+
+    data=Post(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `BlueskyFirehose.amqp.Post` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_bluesky_firehose_amqp_post_batch(```
+
+    messages=[
+
+        Post(...),Initializes the runner with a Kafka consumer.
+
+        Post(...),
+
+        Post(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_bluesky_firehose_amqp_like`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_bluesky_firehose_amqp_like(
+
+    self,##### `_process_event`
+
+    data: Like,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `BlueskyFirehose.amqp.Like` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Like`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_bluesky_firehose_amqp_like(
+
+    data=Like(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `BlueskyFirehose.amqp.Like` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_bluesky_firehose_amqp_like_batch(```
+
+    messages=[
+
+        Like(...),Initializes the runner with a Kafka consumer.
+
+        Like(...),
+
+        Like(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_bluesky_firehose_amqp_repost`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_bluesky_firehose_amqp_repost(
+
+    self,##### `_process_event`
+
+    data: Repost,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `BlueskyFirehose.amqp.Repost` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Repost`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_bluesky_firehose_amqp_repost(
+
+    data=Repost(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `BlueskyFirehose.amqp.Repost` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_bluesky_firehose_amqp_repost_batch(```
+
+    messages=[
+
+        Repost(...),Initializes the runner with a Kafka consumer.
+
+        Repost(...),
+
+        Repost(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_bluesky_firehose_amqp_follow`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_bluesky_firehose_amqp_follow(
+
+    self,##### `_process_event`
+
+    data: Follow,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `BlueskyFirehose.amqp.Follow` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Follow`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_bluesky_firehose_amqp_follow(
+
+    data=Follow(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `BlueskyFirehose.amqp.Follow` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_bluesky_firehose_amqp_follow_batch(```
+
+    messages=[
+
+        Follow(...),Initializes the runner with a Kafka consumer.
+
+        Follow(...),
+
+        Follow(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_bluesky_firehose_amqp_block`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_bluesky_firehose_amqp_block(
+
+    self,##### `_process_event`
+
+    data: Block,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `BlueskyFirehose.amqp.Block` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Block`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_bluesky_firehose_amqp_block(
+
+    data=Block(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `BlueskyFirehose.amqp.Block` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_bluesky_firehose_amqp_block_batch(```
+
+    messages=[
+
+        Block(...),Initializes the runner with a Kafka consumer.
+
+        Block(...),
+
+        Block(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_bluesky_firehose_amqp_profile`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_bluesky_firehose_amqp_profile(
+
+    self,##### `_process_event`
+
+    data: Profile,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `BlueskyFirehose.amqp.Profile` message.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Profile`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_bluesky_firehose_amqp_profile(
+
+    data=Profile(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `BlueskyFirehose.amqp.Profile` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_bluesky_firehose_amqp_profile_batch(```
 
     messages=[
 

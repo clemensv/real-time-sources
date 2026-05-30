@@ -105,6 +105,22 @@ class BlueskyFirehose:
         return self.sample_rate >= 1.0 or random.random() < self.sample_rate
 
     @staticmethod
+    def _normalize_langs(raw_langs: Any) -> List[str]:
+        """Normalize AT Protocol language tags to lowercase BCP-47 strings."""
+        if not isinstance(raw_langs, list):
+            return []
+        return [lang.strip().lower() for lang in raw_langs if isinstance(lang, str) and lang.strip()]
+
+    @classmethod
+    def _common_record_fields(cls, uri: AtUri, record: Optional[dict] = None) -> Dict[str, str]:
+        """Populate transport-facing record metadata shared across event families."""
+        langs = cls._normalize_langs(record.get('langs') if isinstance(record, dict) else None)
+        return {
+            'collection': uri.collection,
+            'lang': langs[0] if langs else 'und',
+        }
+
+    @staticmethod
     def parse_connection_string(connection_string: str) -> Dict[str, str]:
         """
         Parse Event Hubs connection string.
@@ -294,6 +310,7 @@ class BlueskyFirehose:
         reply = record.get('reply', {})
         reply_parent = reply.get('parent', {})
         reply_root = reply.get('root', {})
+        langs = self._normalize_langs(record.get('langs'))
         
         # Extract embed information
         embed = record.get('embed', {})
@@ -315,7 +332,7 @@ class BlueskyFirehose:
             'did': commit.repo,
             'handle': None,  # Handle not available in firehose, would need separate DID resolution
             'text': record.get('text', ''),
-            'langs': record.get('langs', []),
+            'langs': langs,
             'reply_parent': reply_parent.get('uri'),
             'reply_parent_cid': reply_parent.get('cid'),
             'reply_root': reply_root.get('uri'),
@@ -327,7 +344,8 @@ class BlueskyFirehose:
             'tags': record.get('tags', []),
             'created_at': record.get('createdAt', ''),
             'indexed_at': commit.time,
-            'seq': commit.seq
+            'seq': commit.seq,
+            **self._common_record_fields(uri, record),
         }
         self.send_cloudevent('Bluesky.Feed.Post', self.firehose_url, commit.repo, data)
 
@@ -343,7 +361,8 @@ class BlueskyFirehose:
             'subject_cid': subject.get('cid', ''),
             'created_at': record.get('createdAt', ''),
             'indexed_at': commit.time,
-            'seq': commit.seq
+            'seq': commit.seq,
+            **self._common_record_fields(uri),
         }
         self.send_cloudevent('Bluesky.Feed.Like', self.firehose_url, commit.repo, data)
 
@@ -359,7 +378,8 @@ class BlueskyFirehose:
             'subject_cid': subject.get('cid', ''),
             'created_at': record.get('createdAt', ''),
             'indexed_at': commit.time,
-            'seq': commit.seq
+            'seq': commit.seq,
+            **self._common_record_fields(uri),
         }
         self.send_cloudevent('Bluesky.Feed.Repost', self.firehose_url, commit.repo, data)
 
@@ -374,7 +394,8 @@ class BlueskyFirehose:
             'subject_handle': None,
             'created_at': record.get('createdAt', ''),
             'indexed_at': commit.time,
-            'seq': commit.seq
+            'seq': commit.seq,
+            **self._common_record_fields(uri),
         }
         self.send_cloudevent('Bluesky.Graph.Follow', self.firehose_url, commit.repo, data)
 
@@ -389,7 +410,8 @@ class BlueskyFirehose:
             'subject_handle': None,
             'created_at': record.get('createdAt', ''),
             'indexed_at': commit.time,
-            'seq': commit.seq
+            'seq': commit.seq,
+            **self._common_record_fields(uri),
         }
         self.send_cloudevent('Bluesky.Graph.Block', self.firehose_url, commit.repo, data)
 
@@ -417,9 +439,76 @@ class BlueskyFirehose:
             'banner': safe_get_link(banner_value),
             'created_at': record.get('createdAt', ''),
             'indexed_at': commit.time,
-            'seq': commit.seq
+            'seq': commit.seq,
+            **self._common_record_fields(uri),
         }
         self.send_cloudevent('Bluesky.Actor.Profile', self.firehose_url, commit.repo, data)
+
+    def emit_mock_corpus(self) -> None:
+        """Emit one synthetic event per supported Bluesky family."""
+
+        class _MockCommit:
+            def __init__(self, repo: str, seq: int, time_iso: str) -> None:
+                self.repo = repo
+                self.seq = seq
+                self.time = time_iso
+
+        seq = 1
+        time_iso = '2024-01-01T00:00:00.000Z'
+        commit = _MockCommit('did:plc:mockuser0000000000001', seq, time_iso)
+        base_uri = f'at://{commit.repo}'
+
+        post_uri = AtUri.from_str(f'{base_uri}/app.bsky.feed.post/aaaaaaaaaa')
+        self.process_post(
+            commit,
+            post_uri,
+            {
+                'text': 'hello kafka',
+                'langs': ['en'],
+                'createdAt': time_iso,
+            },
+            'bafyreigmockpost00000000000000000000000000000000000000000000',
+        )
+
+        subject = {
+            'uri': str(post_uri),
+            'cid': 'bafyreigmocklikesubject0000000000000000000000000000000000000000',
+        }
+        self.process_like(
+            commit,
+            AtUri.from_str(f'{base_uri}/app.bsky.feed.like/bbbbbbbbbb'),
+            {'subject': subject, 'createdAt': time_iso},
+            'bafyreigmocklike000000000000000000000000000000000000000000000',
+        )
+        self.process_repost(
+            commit,
+            AtUri.from_str(f'{base_uri}/app.bsky.feed.repost/cccccccccc'),
+            {'subject': subject, 'createdAt': time_iso},
+            'bafyreigmockrepost00000000000000000000000000000000000000000000',
+        )
+        self.process_follow(
+            commit,
+            AtUri.from_str(f'{base_uri}/app.bsky.graph.follow/dddddddddd'),
+            {'subject': 'did:plc:targetfollow0000000000001', 'createdAt': time_iso},
+            'bafyreigmockfollow00000000000000000000000000000000000000000000',
+        )
+        self.process_block(
+            commit,
+            AtUri.from_str(f'{base_uri}/app.bsky.graph.block/eeeeeeeeee'),
+            {'subject': 'did:plc:targetblock0000000000001', 'createdAt': time_iso},
+            'bafyreigmockblock000000000000000000000000000000000000000000000',
+        )
+        self.process_profile(
+            commit,
+            AtUri.from_str(f'{base_uri}/app.bsky.actor.profile/self'),
+            {
+                'displayName': 'Mock User',
+                'description': 'Synthetic profile for Kafka Docker E2E tests',
+                'createdAt': time_iso,
+            },
+            'bafyreigmockprofile000000000000000000000000000000000000000000',
+        )
+        self.producer.flush()
 
     async def run(self) -> None:
         """Connect to the firehose and process events."""
@@ -547,6 +636,9 @@ def main():
                               type=float,
                               default=float(os.getenv('BLUESKY_SAMPLE_RATE', '1.0')),
                               help='Sampling rate (0.0 to 1.0)')
+    stream_parser.add_argument('--mock',
+                              action='store_true',
+                              help='Emit a synthetic corpus and exit without connecting to the live firehose')
     
     # CloudEvents configuration
     stream_parser.add_argument('--content-mode',
@@ -630,6 +722,10 @@ def main():
     )
     
     try:
+        if args.mock:
+            logging.info("Mock mode: emitting synthetic corpus and exiting")
+            firehose.emit_mock_corpus()
+            return 0
         asyncio.run(firehose.run())
     except KeyboardInterrupt:
         logging.info("Shutting down...")

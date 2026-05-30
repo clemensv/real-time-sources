@@ -1,5 +1,5 @@
 """
-Test case for Follow
+Test case for Like
 """
 
 import os
@@ -8,37 +8,37 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from bluesky_producer_data.bluesky.graph.follow import Follow
+from bluesky_producer_data.bluesky.feed.like import Like
 
 
-class Test_Follow(unittest.TestCase):
+class Test_Like(unittest.TestCase):
     """
-    Test case for Follow
+    Test case for Like
     """
 
     def setUp(self):
         """
         Set up test case
         """
-        self.instance = Test_Follow.create_instance()
+        self.instance = Test_Like.create_instance()
 
     @staticmethod
     def create_instance():
         """
-        Create instance of Follow for testing
+        Create instance of Like for testing
         """
-        instance = Follow(
-            uri='yqtpacicdmephqkfokxq',
-            cid='bevldjbcnkykhqyamsyj',
-            did='qmogjzggpthchiddiouy',
-            handle='litpqvbpvxakjpxwgluc',
-            subject='zngyluxbdwqtshjcbdir',
-            subject_handle='yaklmvhwsjzavjwbizma',
-            created_at='cxqeddcpbktfsktesdzp',
-            indexed_at='uiycuclocgvqcitqmrbv',
-            seq=int(86),
-            collection='qmnmhqsblcodsoybgnrb',
-            lang='wgqssxvybzaibxvnjrke'
+        instance = Like(
+            uri='btuqbjkomclxihypynfl',
+            cid='evzlpdpvprttsaobbuzx',
+            did='bfafvrsilscsbymzsfvh',
+            handle='shakeiwlvwemexpelswy',
+            subject_uri='jjchyfeulnbgsmswtipe',
+            subject_cid='ygbwnhzioyyciznzdkus',
+            created_at='pyrqsvnudjsswdtqshgs',
+            indexed_at='htsvmbcznahduwjotdjd',
+            seq=int(83),
+            collection='ajucwkxhrnrqxgwizbrp',
+            lang='yzpvmaoxtytjcdygxsga'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test uri property
         """
-        test_value = 'yqtpacicdmephqkfokxq'
+        test_value = 'btuqbjkomclxihypynfl'
         self.instance.uri = test_value
         self.assertEqual(self.instance.uri, test_value)
     
@@ -55,7 +55,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test cid property
         """
-        test_value = 'bevldjbcnkykhqyamsyj'
+        test_value = 'evzlpdpvprttsaobbuzx'
         self.instance.cid = test_value
         self.assertEqual(self.instance.cid, test_value)
     
@@ -63,7 +63,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test did property
         """
-        test_value = 'qmogjzggpthchiddiouy'
+        test_value = 'bfafvrsilscsbymzsfvh'
         self.instance.did = test_value
         self.assertEqual(self.instance.did, test_value)
     
@@ -71,31 +71,31 @@ class Test_Follow(unittest.TestCase):
         """
         Test handle property
         """
-        test_value = 'litpqvbpvxakjpxwgluc'
+        test_value = 'shakeiwlvwemexpelswy'
         self.instance.handle = test_value
         self.assertEqual(self.instance.handle, test_value)
     
-    def test_subject_property(self):
+    def test_subject_uri_property(self):
         """
-        Test subject property
+        Test subject_uri property
         """
-        test_value = 'zngyluxbdwqtshjcbdir'
-        self.instance.subject = test_value
-        self.assertEqual(self.instance.subject, test_value)
+        test_value = 'jjchyfeulnbgsmswtipe'
+        self.instance.subject_uri = test_value
+        self.assertEqual(self.instance.subject_uri, test_value)
     
-    def test_subject_handle_property(self):
+    def test_subject_cid_property(self):
         """
-        Test subject_handle property
+        Test subject_cid property
         """
-        test_value = 'yaklmvhwsjzavjwbizma'
-        self.instance.subject_handle = test_value
-        self.assertEqual(self.instance.subject_handle, test_value)
+        test_value = 'ygbwnhzioyyciznzdkus'
+        self.instance.subject_cid = test_value
+        self.assertEqual(self.instance.subject_cid, test_value)
     
     def test_created_at_property(self):
         """
         Test created_at property
         """
-        test_value = 'cxqeddcpbktfsktesdzp'
+        test_value = 'pyrqsvnudjsswdtqshgs'
         self.instance.created_at = test_value
         self.assertEqual(self.instance.created_at, test_value)
     
@@ -103,7 +103,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test indexed_at property
         """
-        test_value = 'uiycuclocgvqcitqmrbv'
+        test_value = 'htsvmbcznahduwjotdjd'
         self.instance.indexed_at = test_value
         self.assertEqual(self.instance.indexed_at, test_value)
     
@@ -111,7 +111,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test seq property
         """
-        test_value = int(86)
+        test_value = int(83)
         self.instance.seq = test_value
         self.assertEqual(self.instance.seq, test_value)
     
@@ -119,7 +119,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test collection property
         """
-        test_value = 'qmnmhqsblcodsoybgnrb'
+        test_value = 'ajucwkxhrnrqxgwizbrp'
         self.instance.collection = test_value
         self.assertEqual(self.instance.collection, test_value)
     
@@ -127,7 +127,7 @@ class Test_Follow(unittest.TestCase):
         """
         Test lang property
         """
-        test_value = 'wgqssxvybzaibxvnjrke'
+        test_value = 'yzpvmaoxtytjcdygxsga'
         self.instance.lang = test_value
         self.assertEqual(self.instance.lang, test_value)
     
@@ -137,6 +137,25 @@ class Test_Follow(unittest.TestCase):
         """
         media_type = "application/vnd.apache.avro+avro"
         bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Follow.from_data(bytes_data, media_type)
+        new_instance = Like.from_data(bytes_data, media_type)
         bytes_data2 = new_instance.to_byte_array(media_type)
         self.assertEqual(bytes_data, bytes_data2)
+    def test_to_byte_array_json(self):
+        """
+        Test to_byte_array method with json media type
+        """
+        media_type = "application/json"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Like.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = Like.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

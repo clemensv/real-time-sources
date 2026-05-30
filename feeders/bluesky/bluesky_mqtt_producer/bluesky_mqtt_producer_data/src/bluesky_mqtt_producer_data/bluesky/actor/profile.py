@@ -21,7 +21,7 @@ class Profile:
     
     Attributes:
         did (str)
-        handle (str)
+        handle (typing.Optional[str])
         display_name (typing.Optional[str])
         description (typing.Optional[str])
         avatar (typing.Optional[str])
@@ -35,7 +35,7 @@ class Profile:
     
     
     did: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="did"))
-    handle: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="handle"))
+    handle: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="handle"))
     display_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="display_name"))
     description: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description"))
     avatar: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="avatar"))
@@ -171,15 +171,15 @@ class Profile:
             An instance of the dataclass.
         """
         return cls(
-            did='sngbeipfsibbtgaecxbw',
-            handle='mgjvnehdyncrzapcjlzd',
-            display_name='dbaosqymelbcpsyxnvux',
-            description='fxxnvnepcacjalhkbysc',
-            avatar='tlzzwaibfpgvuzrjjohn',
-            banner='zzjstfktydpuyestxlah',
-            created_at='lazjnegvagmbujtqoykb',
-            indexed_at='sjmorpynceewqrolozcg',
-            seq=int(34),
-            collection='etwsqztbnfeordinsgwj',
-            lang='ynbkngxzypfdiaizxjnu'
+            did='nmevwaurjqzyixarspsf',
+            handle='bhzumetvqjlpfhxpqohk',
+            display_name='vkwpvpmikejkwmgqhhij',
+            description='rdhaqwjggjxyqljcsojo',
+            avatar='usagqpltmvhltlxsstez',
+            banner='siwvsbubjzwngwwnxpdx',
+            created_at='pnlhtijukwsjsxvxxtmb',
+            indexed_at='epzaljdjjlgohhbqomdp',
+            seq=int(73),
+            collection='jxhnciqjsjaxnplfaayy',
+            lang='sxeifckhqqqlnqfrtejl'
         )

@@ -487,7 +487,10 @@
                             "description": "Decentralized Identifier of the author"
                           },
                           "handle": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Handle of the author"
                           },
@@ -504,27 +507,42 @@
                             "description": "Language codes for the post"
                           },
                           "reply_parent": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "AT-URI of parent post if this is a reply"
                           },
                           "reply_root": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "AT-URI of root post in thread"
                           },
                           "embed_type": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Type of embedded content (images, external, record, etc.)"
                           },
                           "embed_uri": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "URI of embedded content"
                           },
                           "facets": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "JSON string of rich text facets (mentions, links, tags)"
                           },
@@ -545,7 +563,7 @@
                             "description": "ISO 8601 timestamp of when the post was indexed"
                           },
                           "seq": {
-                            "type": "int64",
+                            "type": "integer",
                             "description": "Firehose sequence number"
                           },
                           "collection": {
@@ -611,7 +629,10 @@
                             "description": "DID of the user who liked"
                           },
                           "handle": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Handle of the user who liked"
                           },
@@ -632,7 +653,7 @@
                             "description": "ISO 8601 timestamp of indexing"
                           },
                           "seq": {
-                            "type": "int64",
+                            "type": "integer",
                             "description": "Firehose sequence number"
                           },
                           "collection": {
@@ -697,7 +718,10 @@
                             "description": "DID of the user who reposted"
                           },
                           "handle": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Handle of the user who reposted"
                           },
@@ -718,7 +742,7 @@
                             "description": "ISO 8601 timestamp of indexing"
                           },
                           "seq": {
-                            "type": "int64",
+                            "type": "integer",
                             "description": "Firehose sequence number"
                           },
                           "collection": {
@@ -783,7 +807,10 @@
                             "description": "DID of the follower"
                           },
                           "handle": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Handle of the follower"
                           },
@@ -792,7 +819,10 @@
                             "description": "DID of the followed user"
                           },
                           "subject_handle": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Handle of the followed user"
                           },
@@ -805,7 +835,7 @@
                             "description": "ISO 8601 timestamp of indexing"
                           },
                           "seq": {
-                            "type": "int64",
+                            "type": "integer",
                             "description": "Firehose sequence number"
                           },
                           "collection": {
@@ -869,7 +899,10 @@
                             "description": "DID of the blocker"
                           },
                           "handle": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Handle of the blocker"
                           },
@@ -878,7 +911,10 @@
                             "description": "DID of the blocked user"
                           },
                           "subject_handle": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Handle of the blocked user"
                           },
@@ -891,7 +927,7 @@
                             "description": "ISO 8601 timestamp of indexing"
                           },
                           "seq": {
-                            "type": "int64",
+                            "type": "integer",
                             "description": "Firehose sequence number"
                           },
                           "collection": {
@@ -947,26 +983,42 @@
                             "description": "Decentralized Identifier"
                           },
                           "handle": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "default": null,
                             "description": "User handle"
                           },
                           "display_name": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Display name"
                           },
                           "description": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Bio/description"
                           },
                           "avatar": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Avatar image URL"
                           },
                           "banner": {
-                            "type": "string",
+                            "type": [
+                              "string",
+                              "null"
+                            ],
                             "default": null,
                             "description": "Banner image URL"
                           },
@@ -979,7 +1031,7 @@
                             "description": "ISO 8601 timestamp of indexing"
                           },
                           "seq": {
-                            "type": "int64",
+                            "type": "integer",
                             "description": "Firehose sequence number"
                           },
                           "collection": {
@@ -1509,7 +1561,11 @@
                   },
                   {
                     "name": "handle",
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "doc": "User handle"
                   },
                   {

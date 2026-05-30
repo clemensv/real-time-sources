@@ -155,7 +155,7 @@
                   "value": "/mnt/bridge-state/bluesky_cursor"
                 },
                 {
-                  "name": "SAMPLE_RATE",
+                  "name": "BLUESKY_SAMPLE_RATE",
                   "value": "[parameters('sampleRate')]"
                 },
                 {

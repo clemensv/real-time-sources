@@ -101,6 +101,10 @@ def aisstream_image():
     return build_image('aisstream')
 
 @pytest.fixture(scope='module')
+def bluesky_kafka_image():
+    return build_image('bluesky')
+
+@pytest.fixture(scope='module')
 def entsoe_kafka_image():
     return build_image('entsoe', dockerfile='Dockerfile.kafka')
 
@@ -415,6 +419,7 @@ def _run_kafka_flow_test(
     image,
     topic: str,
     *,
+    project_dir: Optional[str] = None,
     reference_types: Optional[List[str]] = None,
     telemetry_types: Optional[List[str]] = None,
     required_types: Optional[List[str]] = None,
@@ -448,7 +453,7 @@ def _run_kafka_flow_test(
         min_messages: Minimum total messages to consume.
         timeout: Seconds to wait for all expected event categories.
     """
-    project_dir = project_dir_from_image(image)
+    project_dir = project_dir or project_dir_from_image(image)
     kafka.create_topic(topic, partitions=4)
     env = {
         'CONNECTION_STRING': f'BootstrapServer={kafka.internal_address};EntityPath={topic}',
@@ -952,6 +957,31 @@ class TestBlitzortungDockerFlow:
             telemetry_types=['LightningStroke'],
             extra_env={'KAFKA_TOPIC': self.TOPIC},
             min_messages=1,
+            timeout=180,
+        )
+
+
+class TestBlueskyDockerFlow:
+    TOPIC = 'bluesky'
+
+    def test_emits_mock_firehose_events(self, kafka: KafkaFixture, bluesky_kafka_image):
+        _run_kafka_flow_test(
+            kafka,
+            bluesky_kafka_image,
+            self.TOPIC,
+            project_dir='bluesky',
+            reference_types=None,
+            telemetry_types=['Bluesky.Feed.Post'],
+            required_exact_types=[
+                'Bluesky.Feed.Post',
+                'Bluesky.Feed.Like',
+                'Bluesky.Feed.Repost',
+                'Bluesky.Graph.Follow',
+                'Bluesky.Graph.Block',
+                'Bluesky.Actor.Profile',
+            ],
+            command=['python', '-m', 'bluesky', 'stream', '--mock'],
+            min_messages=6,
             timeout=180,
         )
 

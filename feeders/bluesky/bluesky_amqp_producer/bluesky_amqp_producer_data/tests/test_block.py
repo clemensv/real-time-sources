@@ -28,17 +28,17 @@ class Test_Block(unittest.TestCase):
         Create instance of Block for testing
         """
         instance = Block(
-            uri='gmahuykeyxsnsbfdgeer',
-            cid='wtuesqdrhiisuntpmifj',
-            did='hsypyhfkzmycljllnxny',
-            handle='zxzddlrukachfuuahrtx',
-            subject='xxjcduimrkvhdluyfgpe',
-            subject_handle='lvwacmztdpugkdupdjud',
-            created_at='lhtebyaixqztgasvnxrl',
-            indexed_at='sdtotdktohrqcqjgiydr',
-            seq=int(90),
-            collection='asrqoofbwwgviduewmpi',
-            lang='zjdygjilkgikphspfpzy'
+            uri='ejfgrjnnlnkxtpkvwxcq',
+            cid='jkduqtcogmgmtodwkbmv',
+            did='ucybnzwmawskpdqvvxwc',
+            handle='dihfqmbkjerkewimsuqa',
+            subject='cbuiiccmzesasvltqgei',
+            subject_handle='aeevnltcswqccsejvtqe',
+            created_at='kqfxydsdumqqmkrnodgm',
+            indexed_at='inmeopgtbhgmrslvupbx',
+            seq=int(72),
+            collection='cpedbqgwzplzvaxcllmr',
+            lang='pnbayaofanonihomzxgd'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Block(unittest.TestCase):
         """
         Test uri property
         """
-        test_value = 'gmahuykeyxsnsbfdgeer'
+        test_value = 'ejfgrjnnlnkxtpkvwxcq'
         self.instance.uri = test_value
         self.assertEqual(self.instance.uri, test_value)
     
@@ -55,7 +55,7 @@ class Test_Block(unittest.TestCase):
         """
         Test cid property
         """
-        test_value = 'wtuesqdrhiisuntpmifj'
+        test_value = 'jkduqtcogmgmtodwkbmv'
         self.instance.cid = test_value
         self.assertEqual(self.instance.cid, test_value)
     
@@ -63,7 +63,7 @@ class Test_Block(unittest.TestCase):
         """
         Test did property
         """
-        test_value = 'hsypyhfkzmycljllnxny'
+        test_value = 'ucybnzwmawskpdqvvxwc'
         self.instance.did = test_value
         self.assertEqual(self.instance.did, test_value)
     
@@ -71,7 +71,7 @@ class Test_Block(unittest.TestCase):
         """
         Test handle property
         """
-        test_value = 'zxzddlrukachfuuahrtx'
+        test_value = 'dihfqmbkjerkewimsuqa'
         self.instance.handle = test_value
         self.assertEqual(self.instance.handle, test_value)
     
@@ -79,7 +79,7 @@ class Test_Block(unittest.TestCase):
         """
         Test subject property
         """
-        test_value = 'xxjcduimrkvhdluyfgpe'
+        test_value = 'cbuiiccmzesasvltqgei'
         self.instance.subject = test_value
         self.assertEqual(self.instance.subject, test_value)
     
@@ -87,7 +87,7 @@ class Test_Block(unittest.TestCase):
         """
         Test subject_handle property
         """
-        test_value = 'lvwacmztdpugkdupdjud'
+        test_value = 'aeevnltcswqccsejvtqe'
         self.instance.subject_handle = test_value
         self.assertEqual(self.instance.subject_handle, test_value)
     
@@ -95,7 +95,7 @@ class Test_Block(unittest.TestCase):
         """
         Test created_at property
         """
-        test_value = 'lhtebyaixqztgasvnxrl'
+        test_value = 'kqfxydsdumqqmkrnodgm'
         self.instance.created_at = test_value
         self.assertEqual(self.instance.created_at, test_value)
     
@@ -103,7 +103,7 @@ class Test_Block(unittest.TestCase):
         """
         Test indexed_at property
         """
-        test_value = 'sdtotdktohrqcqjgiydr'
+        test_value = 'inmeopgtbhgmrslvupbx'
         self.instance.indexed_at = test_value
         self.assertEqual(self.instance.indexed_at, test_value)
     
@@ -111,7 +111,7 @@ class Test_Block(unittest.TestCase):
         """
         Test seq property
         """
-        test_value = int(90)
+        test_value = int(72)
         self.instance.seq = test_value
         self.assertEqual(self.instance.seq, test_value)
     
@@ -119,7 +119,7 @@ class Test_Block(unittest.TestCase):
         """
         Test collection property
         """
-        test_value = 'asrqoofbwwgviduewmpi'
+        test_value = 'cpedbqgwzplzvaxcllmr'
         self.instance.collection = test_value
         self.assertEqual(self.instance.collection, test_value)
     
@@ -127,7 +127,7 @@ class Test_Block(unittest.TestCase):
         """
         Test lang property
         """
-        test_value = 'zjdygjilkgikphspfpzy'
+        test_value = 'pnbayaofanonihomzxgd'
         self.instance.lang = test_value
         self.assertEqual(self.instance.lang, test_value)
     

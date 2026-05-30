@@ -7,10 +7,14 @@ These tests do not require Kafka/Docker and can run quickly.
 
 import os
 import sys
+from types import SimpleNamespace
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../bluesky_producer/bluesky_producer_data/src')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../bluesky_producer/bluesky_producer_kafka_producer/src')))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import pytest
+from atproto import AtUri
 from bluesky.bluesky import BlueskyFirehose
 
 
@@ -160,3 +164,75 @@ def test_kafka_config_structure():
     
     # Verify config is stored properly
     assert hasattr(firehose, 'producer') or hasattr(firehose, 'kafka_config')
+
+
+def test_process_post_populates_collection_and_primary_lang(monkeypatch):
+    kafka_config = {'bootstrap.servers': 'localhost:9092'}
+    firehose = BlueskyFirehose(
+        kafka_config=kafka_config,
+        kafka_topic="test",
+        firehose_url="wss://test.example.com",
+        collections=[],
+        cursor_file=None,
+        sample_rate=1.0
+    )
+
+    captured = {}
+    monkeypatch.setattr(
+        firehose,
+        'send_cloudevent',
+        lambda event_type, source, subject, data: captured.update(
+            {'event_type': event_type, 'source': source, 'subject': subject, 'data': data}
+        )
+    )
+
+    commit = SimpleNamespace(repo='did:plc:mockuser', seq=7, time='2024-01-01T00:00:00.000Z')
+    uri = AtUri.from_str('at://did:plc:mockuser/app.bsky.feed.post/abcdef')
+
+    firehose.process_post(
+        commit,
+        uri,
+        {'text': 'hello', 'langs': ['EN', 'de'], 'createdAt': '2024-01-01T00:00:00.000Z'},
+        'bafyreimockcid',
+    )
+
+    assert captured['event_type'] == 'Bluesky.Feed.Post'
+    assert captured['data']['collection'] == 'app.bsky.feed.post'
+    assert captured['data']['lang'] == 'en'
+    assert captured['data']['langs'] == ['en', 'de']
+
+
+def test_process_profile_uses_und_lang_and_null_handle(monkeypatch):
+    kafka_config = {'bootstrap.servers': 'localhost:9092'}
+    firehose = BlueskyFirehose(
+        kafka_config=kafka_config,
+        kafka_topic="test",
+        firehose_url="wss://test.example.com",
+        collections=[],
+        cursor_file=None,
+        sample_rate=1.0
+    )
+
+    captured = {}
+    monkeypatch.setattr(
+        firehose,
+        'send_cloudevent',
+        lambda event_type, source, subject, data: captured.update(
+            {'event_type': event_type, 'source': source, 'subject': subject, 'data': data}
+        )
+    )
+
+    commit = SimpleNamespace(repo='did:plc:mockuser', seq=8, time='2024-01-01T00:00:00.000Z')
+    uri = AtUri.from_str('at://did:plc:mockuser/app.bsky.actor.profile/self')
+
+    firehose.process_profile(
+        commit,
+        uri,
+        {'displayName': 'Mock User', 'createdAt': '2024-01-01T00:00:00.000Z'},
+        'bafyreimockprofile',
+    )
+
+    assert captured['event_type'] == 'Bluesky.Actor.Profile'
+    assert captured['data']['collection'] == 'app.bsky.actor.profile'
+    assert captured['data']['lang'] == 'und'
+    assert captured['data']['handle'] is None
