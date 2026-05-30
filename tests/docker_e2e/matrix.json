@@ -921,6 +921,12 @@
     },
     {
       "dir": "feeders/cdec-reservoirs",
+      "image": "cdec-reservoirs",
+      "file": "Dockerfile",
+      "module": "cdec_reservoirs"
+    },
+    {
+      "dir": "feeders/cdec-reservoirs",
       "image": "cdec-reservoirs-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "cdec_reservoirs_mqtt"
@@ -2471,6 +2477,12 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestCanadaEcccWaterofficeAmqpArtemisFlow"
+    },
+    {
+      "dir": "feeders/cdec-reservoirs",
+      "image": "cdec-reservoirs",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestCdecReservoirsDockerFlow"
     },
     {
       "dir": "feeders/cdec-reservoirs",
