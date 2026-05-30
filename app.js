@@ -134,7 +134,7 @@ const SOURCES = [
   { id: "wikimedia-eventstreams", name: "Wikimedia EventStreams", cat: "Social", key: false, desc: "Global — Wikipedia, Wikidata, Commons recent changes", mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
 
   // ── Public Events ──
-  { id: "billetto", name: "Billetto", cat: "Public Events", key: false, desc: "Europe — pan-European ticketed public events", kql: false, mqtt: true, amqp: true },
+  { id: "billetto", name: "Billetto", cat: "Public Events", key: false, desc: "Europe — pan-European ticketed public events", kql: false, notebook: true, mqtt: true, amqp: true },
   { id: "fienta", name: "Fienta", cat: "Public Events", key: false, desc: "Europe — ticketed public events with sale-status signals", mqtt: true, amqp: true },
   { id: "ticketmaster", name: "Ticketmaster", cat: "Public Events", key: true, desc: "Global — concerts, sports, theater, arts via Discovery API", kql: false, mqtt: true, amqp: true },
 
@@ -897,4 +897,3 @@ async function selectFromHash() {
 }
 window.addEventListener("hashchange", selectFromHash);
 selectFromHash();
-
