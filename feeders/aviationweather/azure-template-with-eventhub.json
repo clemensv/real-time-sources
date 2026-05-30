@@ -22,7 +22,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the broker that receives AviationWeather.gov CloudEvents."
       }
     },
     "location": {
@@ -31,6 +31,13 @@
       "metadata": {
         "description": "Azure region for all resources."
       }
+    },
+    "aviationweatherStations": {
+      "type": "string",
+      "metadata": {
+        "description": "Comma-separated upstream station identifiers to include; empty means all available stations."
+      },
+      "defaultValue": "KJFK,KLAX,KORD,KATL,EGLL,LFPG,EDDF,RJTT,YSSY,ZBAA"
     }
   },
   "variables": {
@@ -175,6 +182,10 @@
                 {
                   "name": "AVIATIONWEATHER_LAST_POLLED_FILE",
                   "value": "/mnt/bridge-state/aviationweather_last_polled.json"
+                },
+                {
+                  "name": "AVIATIONWEATHER_STATIONS",
+                  "value": "[parameters('aviationweatherStations')]"
                 },
                 {
                   "name": "PYTHONUNBUFFERED",

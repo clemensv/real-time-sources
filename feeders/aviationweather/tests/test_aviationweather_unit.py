@@ -462,6 +462,8 @@ class TestParseUsSigmet:
         assert sigmet.movement_spd == "40"
         assert sigmet.severity == 5
         assert sigmet.qualifier is None
+        assert sigmet.sigmet_id == "6w"
+        assert sigmet.region == "kkci"
         assert "2026-04-08" in sigmet.valid_time_from
         assert "2026-04-08" in sigmet.valid_time_to
 
@@ -509,6 +511,8 @@ class TestParseIntlSigmet:
         assert sigmet.movement_dir == "NE"
         assert sigmet.movement_spd == "32"
         assert sigmet.severity is None
+        assert sigmet.sigmet_id == "8"
+        assert sigmet.region == "zhwh"
 
     def test_parse_intl_sigmet_coords(self):
         sigmet = AviationWeatherPoller.parse_intl_sigmet(SAMPLE_ISIGMET_RESPONSE[0])
@@ -547,6 +551,8 @@ class TestSigmetDedupKey:
             severity=5,
             raw_sigmet="test",
             coords=None,
+            sigmet_id="6w",
+            region="kkci",
         )
         key = AviationWeatherPoller.sigmet_dedup_key(sigmet)
         assert key == "KKCI:6W:2026-04-08T19:55:00+00:00:2026-04-08T21:55:00+00:00"
@@ -560,6 +566,7 @@ class TestSigmetDedupKey:
             altitude_hi=None, altitude_low=None,
             movement_dir=None, movement_spd=None,
             severity=None, raw_sigmet=None, coords=None,
+            sigmet_id="6w", region="kkci",
         )
         sigmet2 = Sigmet(
             icao_id="KKCI", series_id="7W",
@@ -569,6 +576,7 @@ class TestSigmetDedupKey:
             altitude_hi=None, altitude_low=None,
             movement_dir=None, movement_spd=None,
             severity=None, raw_sigmet=None, coords=None,
+            sigmet_id="7w", region="kkci",
         )
         assert AviationWeatherPoller.sigmet_dedup_key(sigmet1) != AviationWeatherPoller.sigmet_dedup_key(sigmet2)
 
@@ -820,6 +828,7 @@ class TestDataclassSerialization:
             altitude_hi=32000, altitude_low=None, movement_dir="180",
             movement_spd="40", severity=5, raw_sigmet="test",
             coords='[{"lat":41.88,"lon":-123.70}]',
+            sigmet_id="6w", region="kkci",
         )
         data = json.loads(sigmet.to_json())
         assert data["icao_id"] == "KKCI"

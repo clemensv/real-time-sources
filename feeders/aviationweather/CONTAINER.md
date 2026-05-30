@@ -132,6 +132,7 @@ docker run --rm   -v "$PWD/state:/state"   -e AVIATIONWEATHER_LAST_POLLED_FILE=/
 | Variable | Description |
 |---|---|
 | `AVIATIONWEATHER_LAST_POLLED_FILE` | Path to the dedupe/resume state file. Mount `/state` so it survives restarts. |
+| `AVIATIONWEATHER_STATIONS` | Comma-separated upstream station identifiers to include; empty means all available stations. |
 | `POLLING_INTERVAL` | Seconds between polling cycles. |
 
 ### Kafka image

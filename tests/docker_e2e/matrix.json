@@ -1251,6 +1251,12 @@
     },
     {
       "dir": "feeders/aviationweather",
+      "image": "aviationweather-kafka",
+      "file": "Dockerfile",
+      "module": "aviationweather"
+    },
+    {
+      "dir": "feeders/aviationweather",
       "image": "aviationweather-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "aviationweather_mqtt"
@@ -2824,6 +2830,13 @@
       "dir": "feeders/uba-airdata",
       "test_class": "TestUbaAirdataAmqpDockerFlow",
       "test_file": "test_docker_amqp_flow.py"
+    },
+    {
+      "dir": "feeders/aviationweather",
+      "image": "aviationweather-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestAviationweatherDockerFlow"
     },
     {
       "dir": "feeders/aviationweather",
