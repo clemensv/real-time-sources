@@ -72,7 +72,7 @@ const SOURCES = [
   // ── Disaster Alerts and Civil Protection ──
   { id: "australia-wildfires", name: "Australian Wildfires", cat: "Disasters", key: false, desc: "Australia — NSW, QLD, VIC bushfire incidents", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
   { id: "eaws-albina", name: "EAWS ALBINA Avalanche", cat: "Disasters", key: false, desc: "European Alps — daily avalanche bulletins, CAAMLv6", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
-  { id: "gdacs", name: "GDACS", cat: "Disasters", key: false, desc: "Global — earthquakes, floods, cyclones, volcanoes, droughts", mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
+  { id: "gdacs", name: "GDACS", cat: "Disasters", key: false, desc: "Global — earthquakes, floods, cyclones, volcanoes, droughts", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
   { id: "inpe-deter-brazil", name: "INPE DETER Brazil", cat: "Disasters", key: false, desc: "Brazil — Amazon & Cerrado deforestation alerts", mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
   { id: "jma-bosai-quake", name: "JMA Bosai Earthquake", cat: "Disasters", key: false, desc: "Japan — JMA earthquake / tsunami / hypocenter feeds", notebook: true, mqtt: true, amqp: true, kafka: false },
   { id: "jma-bosai-volcano", name: "JMA Bosai Volcano", cat: "Disasters", key: false, desc: "Japan — JMA volcanic activity bulletins and alerts", notebook: true, mqtt: true, amqp: true, kafka: false },
