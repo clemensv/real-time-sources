@@ -159,6 +159,12 @@ docker run --rm \
 |---|---|
 | `CONNECTION_STRING` | Event Hubs/Fabric-style connection string for Kafka-mode publishing. |
 | `KAFKA_ENABLE_TLS` | Set `false` for local/plain Kafka; default `true`. |
+| `GTFS_URLS` | Comma-separated GTFS schedule feed URLs to download before publishing static entities. |
+| `GTFS_HEADERS` | Optional headers used when fetching the GTFS schedule feed URLs. |
+| `GTFS_RT_URLS` | Comma-separated GTFS-Realtime feed URLs to poll for trip updates, alerts, and vehicle positions. |
+| `GTFS_RT_HEADERS` | Optional headers used when fetching the GTFS-Realtime feed URLs. |
+| `ROUTE` | Optional route ID filter; leave unset or `*` to publish all routes from the configured realtime feeds. |
+| `SCHEDULE_CACHE_DIR` | Directory used by the Azure companion templates to cache downloaded GTFS schedule archives between polling cycles. |
 
 ### Kafka image
 

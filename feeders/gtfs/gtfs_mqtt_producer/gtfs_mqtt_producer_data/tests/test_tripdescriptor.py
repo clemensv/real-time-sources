@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.tripdescriptor import TripDescriptor
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
 from typing import Any
 
 
@@ -29,11 +29,11 @@ class Test_TripDescriptor(unittest.TestCase):
         Create instance of TripDescriptor for testing
         """
         instance = TripDescriptor(
-            trip_id='hcedwbpvjucsjkbqnspd',
-            route_id='mglucnmldczscctqqivh',
-            direction_id=int(96),
-            start_time='wzcvafqitidfjqacvwlt',
-            start_date='diszxhiivmxyxpiysndq',
+            trip_id='mpvavsbvdridaguvrufy',
+            route_id='wbpuduuwpkbadlhinasq',
+            direction_id=int(75),
+            start_time='tptstupskvzpqzevappv',
+            start_date='rumayuxragizjjkjprqw',
             schedule_relationship=None
         )
         return instance
@@ -43,7 +43,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test trip_id property
         """
-        test_value = 'hcedwbpvjucsjkbqnspd'
+        test_value = 'mpvavsbvdridaguvrufy'
         self.instance.trip_id = test_value
         self.assertEqual(self.instance.trip_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test route_id property
         """
-        test_value = 'mglucnmldczscctqqivh'
+        test_value = 'wbpuduuwpkbadlhinasq'
         self.instance.route_id = test_value
         self.assertEqual(self.instance.route_id, test_value)
     
@@ -59,7 +59,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test direction_id property
         """
-        test_value = int(96)
+        test_value = int(75)
         self.instance.direction_id = test_value
         self.assertEqual(self.instance.direction_id, test_value)
     
@@ -67,7 +67,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'wzcvafqitidfjqacvwlt'
+        test_value = 'tptstupskvzpqzevappv'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -75,7 +75,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test start_date property
         """
-        test_value = 'diszxhiivmxyxpiysndq'
+        test_value = 'rumayuxragizjjkjprqw'
         self.instance.start_date = test_value
         self.assertEqual(self.instance.start_date, test_value)
     

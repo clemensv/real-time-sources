@@ -18,11 +18,10 @@
       "type": "string",
       "defaultValue": "Standard",
       "allowedValues": [
-        "Basic",
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the broker that receives GTFS static and realtime CloudEvents."
       }
     },
     "location": {
@@ -36,42 +35,42 @@
       "type": "string",
       "defaultValue": "http://api.bart.gov/gtfsrt/tripupdate.aspx,http://api.bart.gov/gtfsrt/alerts.aspx",
       "metadata": {
-        "description": "Rt URLs. See feeders/gtfs/CONTAINER.md for details."
+        "description": "Comma-separated GTFS-Realtime feed URLs to poll for trip updates, alerts, and vehicle positions."
       }
     },
     "gtfsUrls": {
       "type": "string",
       "defaultValue": "http://www.bart.gov/dev/schedules/google_transit.zip",
       "metadata": {
-        "description": "URLs. See feeders/gtfs/CONTAINER.md for details."
+        "description": "Comma-separated GTFS schedule feed URLs to download before publishing static entities."
       }
     },
     "route": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Configuration value. See feeders/gtfs/CONTAINER.md for details."
+        "description": "Optional route ID filter; leave unset or * to publish all routes from the configured realtime feeds."
       }
     },
     "gtfsRtHeaders": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Rt headers. See feeders/gtfs/CONTAINER.md for details."
+        "description": "Optional headers used when fetching the GTFS-Realtime feed URLs."
       }
     },
     "gtfsHeaders": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Headers. See feeders/gtfs/CONTAINER.md for details."
+        "description": "Optional headers used when fetching the GTFS schedule feed URLs."
       }
     },
     "scheduleCacheDir": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Cache dir. See feeders/gtfs/CONTAINER.md for details."
+        "description": "Directory used by the Azure companion templates to cache downloaded GTFS schedule archives between polling cycles."
       }
     }
   },

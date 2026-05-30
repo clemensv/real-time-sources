@@ -157,8 +157,8 @@ class BookingRules:
             An instance of the dataclass.
         """
         return cls(
-            bookingRuleId='jcchyijxwfadkvnqoebs',
-            bookingRuleName='gadjrgwzrlnwxbvdwxwf',
-            bookingRuleDesc='qhqtnwfqogzirogvofgs',
-            bookingRuleUrl='fbgfswduvbqsazvfksdp'
+            bookingRuleId='xantvkgexqnbglcapdgz',
+            bookingRuleName='kodzbwuyvwfiftxkdldf',
+            bookingRuleDesc='edmmkmqnofbniwjdqwvd',
+            bookingRuleUrl='thqzbrlhxggeyzxaubbb'
         )

@@ -28,12 +28,12 @@ class Test_FareLegRules(unittest.TestCase):
         Create instance of FareLegRules for testing
         """
         instance = FareLegRules(
-            fareLegRuleId='gxocyyqkhuolffztpzld',
-            fareProductId='gjxcugbjtljdshicthdy',
-            legGroupId='lvapewnzkmvroqiktkvk',
-            networkId='soudncgjepcpnqswpehx',
-            fromAreaId='cvhnbtexehnvlwqxbfgl',
-            toAreaId='rottnuhadscsbzeucadn'
+            fareLegRuleId='gfrwrrrfudorqkdwkber',
+            fareProductId='hoibjiyjhwekawguarnq',
+            legGroupId='dmphqthitqjxldvvmwni',
+            networkId='binmzlwyrmtqsrqwkrid',
+            fromAreaId='kvnwmqdhvmtwtskkaelq',
+            toAreaId='mfuiiwrpjpbapwhddzil'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_FareLegRules(unittest.TestCase):
         """
         Test fareLegRuleId property
         """
-        test_value = 'gxocyyqkhuolffztpzld'
+        test_value = 'gfrwrrrfudorqkdwkber'
         self.instance.fareLegRuleId = test_value
         self.assertEqual(self.instance.fareLegRuleId, test_value)
     
@@ -50,7 +50,7 @@ class Test_FareLegRules(unittest.TestCase):
         """
         Test fareProductId property
         """
-        test_value = 'gjxcugbjtljdshicthdy'
+        test_value = 'hoibjiyjhwekawguarnq'
         self.instance.fareProductId = test_value
         self.assertEqual(self.instance.fareProductId, test_value)
     
@@ -58,7 +58,7 @@ class Test_FareLegRules(unittest.TestCase):
         """
         Test legGroupId property
         """
-        test_value = 'lvapewnzkmvroqiktkvk'
+        test_value = 'dmphqthitqjxldvvmwni'
         self.instance.legGroupId = test_value
         self.assertEqual(self.instance.legGroupId, test_value)
     
@@ -66,7 +66,7 @@ class Test_FareLegRules(unittest.TestCase):
         """
         Test networkId property
         """
-        test_value = 'soudncgjepcpnqswpehx'
+        test_value = 'binmzlwyrmtqsrqwkrid'
         self.instance.networkId = test_value
         self.assertEqual(self.instance.networkId, test_value)
     
@@ -74,7 +74,7 @@ class Test_FareLegRules(unittest.TestCase):
         """
         Test fromAreaId property
         """
-        test_value = 'cvhnbtexehnvlwqxbfgl'
+        test_value = 'kvnwmqdhvmtwtskkaelq'
         self.instance.fromAreaId = test_value
         self.assertEqual(self.instance.fromAreaId, test_value)
     
@@ -82,7 +82,7 @@ class Test_FareLegRules(unittest.TestCase):
         """
         Test toAreaId property
         """
-        test_value = 'rottnuhadscsbzeucadn'
+        test_value = 'mfuiiwrpjpbapwhddzil'
         self.instance.toAreaId = test_value
         self.assertEqual(self.instance.toAreaId, test_value)
     

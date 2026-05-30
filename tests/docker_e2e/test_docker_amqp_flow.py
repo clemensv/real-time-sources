@@ -84,6 +84,7 @@ class AmqpDockerFlowBase:
                 remove=True,
                 network=network.name,
                 ports={"5672/tcp": host_port},
+                tmpfs={"/var/lib/artemis-instance": "rw,exec,size=512m,uid=1001,gid=1001"},
                 environment={
                     "ARTEMIS_USER": ARTEMIS_USER,
                     "ARTEMIS_PASSWORD": ARTEMIS_PASSWORD,

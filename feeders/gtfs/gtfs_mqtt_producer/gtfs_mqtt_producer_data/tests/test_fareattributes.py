@@ -28,13 +28,13 @@ class Test_FareAttributes(unittest.TestCase):
         Create instance of FareAttributes for testing
         """
         instance = FareAttributes(
-            fareId='eqiqfmfrvwgmthscdnvf',
-            price=float(61.45623592413304),
-            currencyType='awvwktjzvbuarondnfiw',
-            paymentMethod=int(9),
-            transfers=int(12),
-            agencyId='wcbiiekdqskxwgprjxqr',
-            transferDuration=int(39)
+            fareId='koofstvusiilytiijrmm',
+            price=float(69.01249618351937),
+            currencyType='rtpgriiiuityuddhjzes',
+            paymentMethod=int(77),
+            transfers=int(28),
+            agencyId='mlztkbvswhsightuvitx',
+            transferDuration=int(13)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_FareAttributes(unittest.TestCase):
         """
         Test fareId property
         """
-        test_value = 'eqiqfmfrvwgmthscdnvf'
+        test_value = 'koofstvusiilytiijrmm'
         self.instance.fareId = test_value
         self.assertEqual(self.instance.fareId, test_value)
     
@@ -51,7 +51,7 @@ class Test_FareAttributes(unittest.TestCase):
         """
         Test price property
         """
-        test_value = float(61.45623592413304)
+        test_value = float(69.01249618351937)
         self.instance.price = test_value
         self.assertEqual(self.instance.price, test_value)
     
@@ -59,7 +59,7 @@ class Test_FareAttributes(unittest.TestCase):
         """
         Test currencyType property
         """
-        test_value = 'awvwktjzvbuarondnfiw'
+        test_value = 'rtpgriiiuityuddhjzes'
         self.instance.currencyType = test_value
         self.assertEqual(self.instance.currencyType, test_value)
     
@@ -67,7 +67,7 @@ class Test_FareAttributes(unittest.TestCase):
         """
         Test paymentMethod property
         """
-        test_value = int(9)
+        test_value = int(77)
         self.instance.paymentMethod = test_value
         self.assertEqual(self.instance.paymentMethod, test_value)
     
@@ -75,7 +75,7 @@ class Test_FareAttributes(unittest.TestCase):
         """
         Test transfers property
         """
-        test_value = int(12)
+        test_value = int(28)
         self.instance.transfers = test_value
         self.assertEqual(self.instance.transfers, test_value)
     
@@ -83,7 +83,7 @@ class Test_FareAttributes(unittest.TestCase):
         """
         Test agencyId property
         """
-        test_value = 'wcbiiekdqskxwgprjxqr'
+        test_value = 'mlztkbvswhsightuvitx'
         self.instance.agencyId = test_value
         self.assertEqual(self.instance.agencyId, test_value)
     
@@ -91,7 +91,7 @@ class Test_FareAttributes(unittest.TestCase):
         """
         Test transferDuration property
         """
-        test_value = int(39)
+        test_value = int(13)
         self.instance.transferDuration = test_value
         self.assertEqual(self.instance.transferDuration, test_value)
     

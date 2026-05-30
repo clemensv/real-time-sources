@@ -349,10 +349,16 @@ def _resolve_message_inheritance(
 
 def _render_template(template: str, context: Mapping[str, Any]) -> str:
     missing: List[str] = []
+    normalized_context = {
+        re.sub(r'[^a-z0-9]+', '', key.lower()): value
+        for key, value in context.items()
+    }
 
     def _replace(match: re.Match[str]) -> str:
         field_name = match.group(1)
         value = context.get(field_name)
+        if value is None:
+            value = normalized_context.get(re.sub(r'[^a-z0-9]+', '', field_name.lower()))
         if value is None:
             missing.append(field_name)
             return match.group(0)
@@ -368,6 +374,31 @@ def _render_template(template: str, context: Mapping[str, Any]) -> str:
             f'Could not resolve template {template!r}; missing fields: {sorted(set(missing))}'
         )
     return rendered
+
+
+def _extract_template_context(template: str, value: str) -> Dict[str, str]:
+    pattern_parts: List[str] = []
+    last_index = 0
+    fields: List[str] = []
+
+    for match in _TEMPLATE_PATTERN.finditer(template):
+        pattern_parts.append(re.escape(template[last_index:match.start()]))
+        field_name = match.group(1)
+        fields.append(field_name)
+        pattern_parts.append(f'(?P<{field_name}>.+?)')
+        last_index = match.end()
+
+    pattern_parts.append(re.escape(template[last_index:]))
+    pattern = ''.join(pattern_parts)
+    subject_match = re.fullmatch(pattern, value)
+    if subject_match is None:
+        return {}
+
+    return {
+        field_name: field_value
+        for field_name, field_value in subject_match.groupdict().items()
+        if field_value is not None
+    }
 
 
 @lru_cache(maxsize=None)
@@ -505,6 +536,10 @@ def assert_kafka_contract(
 
         context = dict(event)
         context.update(data)
+        subject_template = contract['subject_template']
+        actual_subject = event.get('subject')
+        if subject_template and isinstance(actual_subject, str):
+            context.update(_extract_template_context(subject_template, actual_subject))
 
         actual_key = _decode_kafka_key(record.key)
         key_template = contract['key_template']
@@ -522,7 +557,6 @@ def assert_kafka_contract(
                 f'{previous_partition} -> {record.partition}'
             )
 
-        subject_template = contract['subject_template']
         if subject_template is not None:
             expected_subject = _render_template(subject_template, context)
             assert event.get('subject') == expected_subject, (

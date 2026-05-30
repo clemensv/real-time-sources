@@ -101,28 +101,28 @@
     "gtfsHeaders": {
       "type": "string",
       "metadata": {
-        "description": "HTTP header(s) expressed as \"key=value\", e.g. \"API-Key=abc."
+        "description": "Optional headers used when fetching the GTFS schedule feed URLs."
       },
       "defaultValue": ""
     },
     "gtfsRtHeaders": {
       "type": "string",
       "metadata": {
-        "description": "HTTP header(s) expressed as \"key=value\", e.g. \"API-Key=abc."
+        "description": "Optional headers used when fetching the GTFS-Realtime feed URLs."
       },
       "defaultValue": ""
     },
     "gtfsRtUrls": {
       "type": "string",
       "metadata": {
-        "description": "The URL(s) of the GTFS Realtime feed(s)."
+        "description": "Comma-separated GTFS-Realtime feed URLs to poll for trip updates, alerts, and vehicle positions."
       },
       "defaultValue": ""
     },
     "gtfsUrls": {
       "type": "string",
       "metadata": {
-        "description": "The URL(s) of the GTFS Schedule feed."
+        "description": "Comma-separated GTFS schedule feed URLs to download before publishing static entities."
       },
       "defaultValue": ""
     },
@@ -157,7 +157,7 @@
     "route": {
       "type": "string",
       "metadata": {
-        "description": "The route to poll vehicle locations for, omit or '*' to poll all routes."
+        "description": "Optional route ID filter; leave unset or * to publish all routes from the configured realtime feeds."
       },
       "defaultValue": ""
     },

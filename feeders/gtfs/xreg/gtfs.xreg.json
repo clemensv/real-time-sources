@@ -2561,7 +2561,9 @@
                           "stop_time_update": {
                             "type": "array",
                             "items": {
-                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/TripUpdate_types/StopTimeUpdate"
+                              "type": {
+                                "$ref": "#/definitions/GeneralTransitFeedRealTime/Trip/TripUpdate_types/StopTimeUpdate"
+                              }
                             },
                             "description": "Updates to StopTimes for the trip (both future, i.e., predictions, and in some cases, past ones, i.e., those that already happened). The updates must be sorted by stop_sequence, and apply for all the following stops of the trip up to the next specified one. Example 1: For a trip with 20 stops, a StopTimeUpdate with arrival delay and departure delay of 0 for stop_sequence of the current stop means that the trip is exactly on time. Example 2: For the same trip instance, 3 StopTimeUpdates are provided: - delay of 5 min for stop_sequence 3 - delay of 1 min for stop_sequence 8 - delay of unspecified duration for stop_sequence 10 This will be interpreted as: - stop_sequences 3,4,5,6,7 have delay of 5 min. - stop_sequences 8,9 have delay of 1 min. - stop_sequences 10,... have unknown delay. Moment at which the vehicle's real-time progress was measured. In POSIX"
                           },
@@ -2754,7 +2756,9 @@
                           "translation": {
                             "type": "array",
                             "items": {
-                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TranslatedString_types/Translation"
+                              "type": {
+                                "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TranslatedString_types/Translation"
+                              }
                             },
                             "description": "At least one translation must be provided."
                           }
@@ -2771,14 +2775,18 @@
                           "active_period": {
                             "type": "array",
                             "items": {
-                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TimeRange"
+                              "type": {
+                                "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/TimeRange"
+                              }
                             },
                             "description": "Time when the alert should be shown to the user. If missing, the alert will be shown as long as it appears in the feed. If multiple ranges are given, the alert will be shown during all of them."
                           },
                           "informed_entity": {
                             "type": "array",
                             "items": {
-                              "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/EntitySelector"
+                              "type": {
+                                "$ref": "#/definitions/GeneralTransitFeedRealTime/Alert/EntitySelector"
+                              }
                             },
                             "description": "Entities whose users we should notify of this alert."
                           },
@@ -5437,10 +5445,14 @@
                           "type": "choice",
                           "choices": {
                             "Calendar": {
-                              "$ref": "#/definitions/GeneralTransitFeedStatic/Calendar"
+                              "type": {
+                                "$ref": "#/definitions/GeneralTransitFeedStatic/Calendar"
+                              }
                             },
                             "CalendarDates": {
-                              "$ref": "#/definitions/GeneralTransitFeedStatic/CalendarDates"
+                              "type": {
+                                "$ref": "#/definitions/GeneralTransitFeedStatic/CalendarDates"
+                              }
                             }
                           },
                           "description": "Identifies a set of dates when service is available for one or more routes."
@@ -5730,7 +5742,9 @@
                         "serviceExceptions": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/definitions/GeneralTransitFeedStatic/CalendarDates"
+                            "type": {
+                              "$ref": "#/definitions/GeneralTransitFeedStatic/CalendarDates"
+                            }
                           }
                         },
                         "tripId": {

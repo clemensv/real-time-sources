@@ -28,9 +28,9 @@ class Test_VehicleDescriptor(unittest.TestCase):
         Create instance of VehicleDescriptor for testing
         """
         instance = VehicleDescriptor(
-            id='littmmyboiexhmjwqorl',
-            label='kkiqspphvdtswzomsyso',
-            license_plate='gcekfjvmclrisccxlpek'
+            id='qdnbicbolgmhsffhszcx',
+            label='sqllrnnablwywzdaihpu',
+            license_plate='dwmxrphknpkixvgystpt'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_VehicleDescriptor(unittest.TestCase):
         """
         Test id property
         """
-        test_value = 'littmmyboiexhmjwqorl'
+        test_value = 'qdnbicbolgmhsffhszcx'
         self.instance.id = test_value
         self.assertEqual(self.instance.id, test_value)
     
@@ -47,7 +47,7 @@ class Test_VehicleDescriptor(unittest.TestCase):
         """
         Test label property
         """
-        test_value = 'kkiqspphvdtswzomsyso'
+        test_value = 'sqllrnnablwywzdaihpu'
         self.instance.label = test_value
         self.assertEqual(self.instance.label, test_value)
     
@@ -55,7 +55,7 @@ class Test_VehicleDescriptor(unittest.TestCase):
         """
         Test license_plate property
         """
-        test_value = 'gcekfjvmclrisccxlpek'
+        test_value = 'dwmxrphknpkixvgystpt'
         self.instance.license_plate = test_value
         self.assertEqual(self.instance.license_plate, test_value)
     

@@ -161,8 +161,8 @@ class StopTimeUpdate:
             An instance of the dataclass.
         """
         return cls(
-            stop_sequence=int(10),
-            stop_id='xrxeexgumjmwgmrgpzcp',
+            stop_sequence=int(39),
+            stop_id='wbwdckxvvsmbfymyuatc',
             arrival=None,
             departure=None,
             schedule_relationship=None

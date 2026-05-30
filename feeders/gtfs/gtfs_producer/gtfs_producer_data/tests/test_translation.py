@@ -28,8 +28,8 @@ class Test_Translation(unittest.TestCase):
         Create instance of Translation for testing
         """
         instance = Translation(
-            text='gkfbxiuxzukddidwksgi',
-            language='bugjzufzedfrdbiruuso'
+            text='sztbktlnaqhwzqrgvcpx',
+            language='ekliqanqdymkvakgqplc'
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_Translation(unittest.TestCase):
         """
         Test text property
         """
-        test_value = 'gkfbxiuxzukddidwksgi'
+        test_value = 'sztbktlnaqhwzqrgvcpx'
         self.instance.text = test_value
         self.assertEqual(self.instance.text, test_value)
     
@@ -46,7 +46,7 @@ class Test_Translation(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'bugjzufzedfrdbiruuso'
+        test_value = 'ekliqanqdymkvakgqplc'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     

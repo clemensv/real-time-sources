@@ -28,13 +28,13 @@ class Test_FareTransferRules(unittest.TestCase):
         Create instance of FareTransferRules for testing
         """
         instance = FareTransferRules(
-            fareTransferRuleId='kigehydsiiiijtcdcszm',
-            fareProductId='rsylbdqquavcyodchujo',
-            transferCount=int(94),
-            fromLegGroupId='aicmnyeipnreyngybvmd',
-            toLegGroupId='ctpeduoxbathlrjnwjbq',
-            duration=int(9),
-            durationType='sskvyrnngitynleaamsu'
+            fareTransferRuleId='yipvsppaenwtoxnwluux',
+            fareProductId='mlchfujremvshzjhphcz',
+            transferCount=int(88),
+            fromLegGroupId='bxhnhwxgyjuvxlexkprs',
+            toLegGroupId='pnqqcvvuefmbpxgehtok',
+            duration=int(17),
+            durationType='pwmbfqxnofktilnndnoi'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_FareTransferRules(unittest.TestCase):
         """
         Test fareTransferRuleId property
         """
-        test_value = 'kigehydsiiiijtcdcszm'
+        test_value = 'yipvsppaenwtoxnwluux'
         self.instance.fareTransferRuleId = test_value
         self.assertEqual(self.instance.fareTransferRuleId, test_value)
     
@@ -51,7 +51,7 @@ class Test_FareTransferRules(unittest.TestCase):
         """
         Test fareProductId property
         """
-        test_value = 'rsylbdqquavcyodchujo'
+        test_value = 'mlchfujremvshzjhphcz'
         self.instance.fareProductId = test_value
         self.assertEqual(self.instance.fareProductId, test_value)
     
@@ -59,7 +59,7 @@ class Test_FareTransferRules(unittest.TestCase):
         """
         Test transferCount property
         """
-        test_value = int(94)
+        test_value = int(88)
         self.instance.transferCount = test_value
         self.assertEqual(self.instance.transferCount, test_value)
     
@@ -67,7 +67,7 @@ class Test_FareTransferRules(unittest.TestCase):
         """
         Test fromLegGroupId property
         """
-        test_value = 'aicmnyeipnreyngybvmd'
+        test_value = 'bxhnhwxgyjuvxlexkprs'
         self.instance.fromLegGroupId = test_value
         self.assertEqual(self.instance.fromLegGroupId, test_value)
     
@@ -75,7 +75,7 @@ class Test_FareTransferRules(unittest.TestCase):
         """
         Test toLegGroupId property
         """
-        test_value = 'ctpeduoxbathlrjnwjbq'
+        test_value = 'pnqqcvvuefmbpxgehtok'
         self.instance.toLegGroupId = test_value
         self.assertEqual(self.instance.toLegGroupId, test_value)
     
@@ -83,7 +83,7 @@ class Test_FareTransferRules(unittest.TestCase):
         """
         Test duration property
         """
-        test_value = int(9)
+        test_value = int(17)
         self.instance.duration = test_value
         self.assertEqual(self.instance.duration, test_value)
     
@@ -91,7 +91,7 @@ class Test_FareTransferRules(unittest.TestCase):
         """
         Test durationType property
         """
-        test_value = 'sskvyrnngitynleaamsu'
+        test_value = 'pwmbfqxnofktilnndnoi'
         self.instance.durationType = test_value
         self.assertEqual(self.instance.durationType, test_value)
     

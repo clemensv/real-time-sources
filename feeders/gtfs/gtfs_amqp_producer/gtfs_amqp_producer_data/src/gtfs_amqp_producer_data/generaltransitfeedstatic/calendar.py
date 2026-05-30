@@ -170,7 +170,7 @@ class Calendar:
             An instance of the dataclass.
         """
         return cls(
-            serviceId='xsxgsowpqbycgfrxxvml',
+            serviceId='zzgzghksatyntuapofqp',
             monday=None,
             tuesday=None,
             wednesday=None,
@@ -178,6 +178,6 @@ class Calendar:
             friday=None,
             saturday=None,
             sunday=None,
-            startDate='dupscurgiupyanekpjdy',
-            endDate='cpuieivwuhbhzpzbgvvu'
+            startDate='kwecjuqdvcisbcsrinrc',
+            endDate='tkxjglacbjxrfwotavjz'
         )

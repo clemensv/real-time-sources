@@ -177,13 +177,14 @@ def mqtt_feed() -> None:
 
 def amqp_feed() -> None:
     from proton import Message
+    from proton.reactor import AtMostOnce
     from proton.utils import BlockingConnection
     from urllib.parse import quote
     host=os.getenv('AMQP_HOST','localhost'); port=int(os.getenv('AMQP_PORT','5672')); address=os.getenv('AMQP_ADDRESS') or PROJECT_DIR
     user=os.getenv('AMQP_USERNAME'); pwd=os.getenv('AMQP_PASSWORD') or ''
     auth = f"{quote(user)}:{quote(pwd)}@" if user else ''
-    conn=BlockingConnection(f"amqp://{auth}{host}:{port}", timeout=30, allowed_mechs='PLAIN' if user else None)
-    sender=conn.create_sender(address)
+    conn=BlockingConnection(f"amqp://{auth}{host}:{port}", timeout=120, allowed_mechs='PLAIN' if user else None)
+    sender=conn.create_sender(address, options=AtMostOnce())
     for c in iter_contracts('AMQP'):
         props={f'cloudEvents:{k}':str(v) for k,v in {'specversion':'1.0','type':c['type'],'source':c['source'],'subject':c['subject'],'id':c['id'],'time':c['time']}.items()}
         sender.send(Message(body=json.dumps(c['data'], ensure_ascii=False), subject=c['subject'], properties=props, content_type='application/json'))

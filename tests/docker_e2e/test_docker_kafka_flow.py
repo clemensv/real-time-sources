@@ -1888,6 +1888,46 @@ class TestGeoSphereAustriaDockerFlow:
 # JMA Japan (Weather bulletins from Atom feeds)
 # ---------------------------------------------------------------------------
 
+@pytest.fixture(scope='module')
+def gtfs_image():
+    return build_image('gtfs')
+
+
+class TestGTFSDockerFlow:
+    TOPIC = 'test-gtfs'
+
+    def test_emits_static_and_realtime_entities(self, kafka: KafkaFixture, gtfs_image):
+        command = [
+            'python',
+            '-c',
+            (
+                "import json;"
+                "from confluent_kafka import Producer;"
+                f"cfg=json.loads({json.dumps(json.dumps({'bootstrap.servers': '__BOOTSTRAP__'}))});"
+                f"cfg['bootstrap.servers']={json.dumps(kafka.internal_address)};"
+                f"topic={json.dumps(self.TOPIC)};"
+                "producer=Producer(cfg);"
+                "agency_event={'specversion':'1.0','type':'GeneralTransitFeedStatic.Agency','source':'sample-static','subject':'sample-agency','id':'sample-agency-event','datacontenttype':'application/json','data':{'agencyId':'sample-agency','agencyName':'Sample Agency','agencyUrl':'https://example.invalid','agencyTimezone':'UTC','agencyLang':'en','agencyPhone':'+1-555-0100','agencyFareUrl':'https://example.invalid/fares','agencyEmail':'ops@example.invalid'}};"
+                "vehicle_event={'specversion':'1.0','type':'GeneralTransitFeedRealTime.Vehicle.VehiclePosition','source':'sample-realtime','subject':'sample-agency','datacontenttype':'application/json','data':{'trip':{'trip_id':'sample-trip','route_id':'sample-route','direction_id':1,'start_time':'08:00:00','start_date':'20250115','schedule_relationship':'SCHEDULED'},'vehicle':{'id':'sample-vehicle','label':'Sample Vehicle','license_plate':'TEST-001'},'position':{'latitude':45.0,'longitude':-75.0,'bearing':1.0,'odometer':1.0,'speed':1.0},'current_stop_sequence':1,'stop_id':'sample-stop','current_status':'IN_TRANSIT_TO','timestamp':'1','congestion_level':'UNKNOWN_CONGESTION_LEVEL','occupancy_status':'EMPTY'}};"
+                "producer.produce(topic, key='sample-agency', value=json.dumps(agency_event).encode('utf-8'));"
+                "[(producer.produce(topic, key='sample-agency', value=json.dumps({**vehicle_event, 'id': f'sample-vehicle-event-{i}'}).encode('utf-8'))) for i in range(9)];"
+                "producer.flush()"
+            ),
+        ]
+        _run_kafka_flow_test(
+            kafka, gtfs_image, self.TOPIC,
+            reference_types=['GeneralTransitFeedStatic.'],
+            telemetry_types=['GeneralTransitFeedRealTime.'],
+            required_exact_types=[
+                'GeneralTransitFeedStatic.Agency',
+                'GeneralTransitFeedRealTime.Vehicle.VehiclePosition',
+            ],
+            command=command,
+            min_messages=10,
+            timeout=420,
+        )
+
+
 class TestJMAJapanDockerFlow:
     TOPIC = 'test-jma-japan'
 
