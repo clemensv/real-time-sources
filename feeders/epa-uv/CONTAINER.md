@@ -131,6 +131,7 @@ docker run --rm   -v "$PWD/state:/state"   -e EPA_UV_STATE_FILE=/state/epa-uv.js
 
 | Variable | Description |
 |---|---|
+| `EPA_UV_LOCATIONS` | Semicolon-separated `CITY,STATE` pairs that select which EPA UV forecast locations to poll, for example `Seattle,WA;Portland,OR`. |
 | `EPA_UV_STATE_FILE` | Path to persistent poller resume/dedupe state file. |
 | `POLLING_INTERVAL` | Polling interval in seconds (source default applies when not set). |
 

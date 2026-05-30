@@ -127,6 +127,8 @@
     },
     {
       "dir": "feeders/epa-uv",
+      "image": "epa-uv",
+      "file": "Dockerfile",
       "module": "epa_uv"
     },
     {
@@ -1645,6 +1647,9 @@
     },
     {
       "dir": "feeders/epa-uv",
+      "image": "epa-uv",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
       "test_class": "TestEPAUVDockerFlow"
     },
     {

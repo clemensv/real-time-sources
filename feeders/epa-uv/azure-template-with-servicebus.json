@@ -41,6 +41,13 @@
         "description": "Destination queue/topic/address."
       }
     },
+    "epaUvLocations": {
+      "type": "string",
+      "defaultValue": "Seattle,WA",
+      "metadata": {
+        "description": "Semicolon-separated CITY,STATE pairs that select which EPA UV forecast locations to poll."
+      }
+    },
     "imageName": {
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-epa-uv-amqp:latest",
@@ -240,7 +247,11 @@
                   "value": "21600"
                 },
                 {
-                  "name": "STATE_FILE",
+                  "name": "EPA_UV_LOCATIONS",
+                  "value": "[parameters('epaUvLocations')]"
+                },
+                {
+                  "name": "EPA_UV_STATE_FILE",
                   "value": "/mnt/bridge-state/epa_uv_state.json"
                 },
                 {
