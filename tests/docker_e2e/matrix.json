@@ -179,6 +179,8 @@
     },
     {
       "dir": "feeders/gtfs",
+      "image": "gtfs",
+      "file": "Dockerfile",
       "module": "gtfs_rt_bridge"
     },
     {
@@ -1493,6 +1495,12 @@
     },
     {
       "dir": "feeders/hko-hong-kong",
+      "image": "hko-hong-kong",
+      "file": "Dockerfile",
+      "module": "hko_hong_kong"
+    },
+    {
+      "dir": "feeders/hko-hong-kong",
       "image": "hko-hong-kong-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "hko_hong_kong_mqtt"
@@ -1782,6 +1790,10 @@
     {
       "dir": "feeders/gracedb",
       "test_class": "TestGraceDBDockerFlow"
+    },
+    {
+      "dir": "feeders/gtfs",
+      "test_class": "TestGTFSDockerFlow"
     },
     {
       "dir": "feeders/noaa",
@@ -3341,6 +3353,12 @@
       "image": "geosphere-austria-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestGeosphereAustriaAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/hko-hong-kong",
+      "image": "hko-hong-kong",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestHKODockerFlow"
     },
     {
       "dir": "feeders/hko-hong-kong",
