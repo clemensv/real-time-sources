@@ -265,6 +265,12 @@
     },
     {
       "dir": "feeders/autobahn",
+      "image": "autobahn-kafka",
+      "file": "Dockerfile",
+      "module": "autobahn"
+    },
+    {
+      "dir": "feeders/autobahn",
       "image": "autobahn-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "autobahn_mqtt"
@@ -1638,6 +1644,13 @@
     {
       "dir": "feeders/xceed",
       "test_class": "TestXceedDockerFlow"
+    },
+    {
+      "dir": "feeders/autobahn",
+      "image": "autobahn-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestAutobahnDockerFlow"
     },
     {
       "dir": "feeders/autobahn",
