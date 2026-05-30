@@ -165,6 +165,7 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/hongkong-epd.jso
 | `AMQP_USERNAME` / `AMQP_PASSWORD` | Credentials for `password` mode. |
 | `AMQP_ENTRA_CLIENT_ID` | Managed identity client id for `entra` mode (optional). |
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | Required when `AMQP_AUTH_MODE=sas`. |
+| `HONGKONG_EPD_MOCK` | Set to `true` to publish deterministic sample AQHI station and reading events instead of polling the live EPD endpoint. Primarily for local validation and canary diagnostics. |
 
 ## Deploying into Azure Container Instances
 

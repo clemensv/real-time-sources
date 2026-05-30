@@ -47,6 +47,17 @@
       "metadata": {
         "description": "Container image reference for the AMQP companion feeder."
       }
+    },
+    "hongkongEpdMock": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "true",
+        "false"
+      ],
+      "metadata": {
+        "description": "Set to true to emit deterministic sample Hong Kong EPD AQHI events instead of polling the live upstream API."
+      }
     }
   },
   "variables": {
@@ -238,6 +249,10 @@
                 {
                   "name": "POLLING_INTERVAL",
                   "value": "3600"
+                },
+                {
+                  "name": "HONGKONG_EPD_MOCK",
+                  "value": "[parameters('hongkongEpdMock')]"
                 },
                 {
                   "name": "STATE_FILE",
