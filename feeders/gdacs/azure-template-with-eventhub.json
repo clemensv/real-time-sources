@@ -18,11 +18,10 @@
       "type": "string",
       "defaultValue": "Standard",
       "allowedValues": [
-        "Basic",
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the broker that receives GDACS disaster-alert CloudEvents."
       }
     },
     "location": {
@@ -167,6 +166,14 @@
                 {
                   "name": "CONNECTION_STRING",
                   "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
+                },
+                {
+                  "name": "GDACS_CONNECTION_STRING",
+                  "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
+                },
+                {
+                  "name": "GDACS_STATE_FILE",
+                  "value": "/mnt/bridge-state/gdacs_state.json"
                 },
                 {
                   "name": "LOG_LEVEL",

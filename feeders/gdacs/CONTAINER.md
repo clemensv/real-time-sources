@@ -79,6 +79,14 @@ To use it as a base image in a Dockerfile:
 FROM ghcr.io/clemensv/real-time-sources-gdacs:latest
 ```
 
+## Image contract
+
+| Image | Dockerfile | Transport | Persistent state |
+|---|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-gdacs:latest` | `Dockerfile` | Kafka / Event Hubs | Yes (`GDACS_STATE_FILE`) |
+| `ghcr.io/clemensv/real-time-sources-gdacs-mqtt:latest` | `Dockerfile.mqtt` | MQTT 5.0 | Yes (`STATE_FILE` when configured) |
+| `ghcr.io/clemensv/real-time-sources-gdacs-amqp:latest` | `Dockerfile.amqp` | AMQP 1.0 | Yes (`STATE_FILE`) |
+
 ## Using the Container Image
 
 The container defines a command that starts the bridge, reading disaster alerts
@@ -115,6 +123,7 @@ $ docker run --rm \
 | Variable | Description | Required |
 |---|---|---|
 | `CONNECTION_STRING` | Azure Event Hubs or Fabric Event Stream connection string | Yes (or use `KAFKA_BOOTSTRAP_SERVERS`) |
+| `GDACS_CONNECTION_STRING` | Feeder-specific alias for `CONNECTION_STRING`; Azure templates set both so the bridge works with either name. | No |
 | `KAFKA_BOOTSTRAP_SERVERS` | Comma-separated list of Kafka bootstrap servers | Yes (or use `CONNECTION_STRING`) |
 | `KAFKA_TOPIC` | Kafka topic name (default from connection string) | No |
 | `SASL_USERNAME` | SASL PLAIN username | No |

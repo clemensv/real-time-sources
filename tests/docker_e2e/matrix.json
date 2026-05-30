@@ -451,6 +451,8 @@
     },
     {
       "dir": "feeders/gdacs",
+      "image": "gdacs",
+      "file": "Dockerfile",
       "module": "gdacs"
     },
     {
@@ -1994,6 +1996,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestEawsAlbinaMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/gdacs",
+      "image": "gdacs",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestGdacsDockerFlow"
     },
     {
       "dir": "feeders/gdacs",

@@ -36,6 +36,13 @@ NAMESPACES = {
 }
 
 
+def _env_bool(name: str, default: bool = False) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.lower() in ('1', 'true', 'yes', 'on')
+
+
 def _text(element: ET.Element, tag: str, ns: Optional[str] = None) -> Optional[str]:
     """Extract text content from an XML child element."""
     if ns:
@@ -339,6 +346,18 @@ class GDACSPoller:
             await asyncio.sleep(self.poll_interval)
 
 
+def emit_mock_alert(event_producer: GDACSAlertsEventProducer) -> None:
+    """Publish one deterministic sample alert for local and container smoke tests."""
+    alert = DisasterAlert.create_instance()
+    event_type = alert.event_type.value if hasattr(alert.event_type, 'value') else str(alert.event_type)
+    event_producer.send_gdacs_disaster_alert(
+        _event_type=event_type,
+        _event_id=alert.event_id,
+        data=alert,
+        flush_producer=True,
+    )
+
+
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
     """
     Parse an Azure Event Hubs or Fabric Event Stream connection string and
@@ -383,8 +402,11 @@ def main():
                         help='File to persist seen event state across restarts')
     parser.add_argument('--poll-interval', type=int, default=300,
                         help='Polling interval in seconds (default: 300)')
-    parser.add_argument('--once', action='store_true',
+    parser.add_argument('--once', action='store_true', default=_env_bool('ONCE_MODE', False),
                         help='Poll once and exit')
+    parser.add_argument('--mock-mode', action='store_true',
+                        default=_env_bool('GDACS_MOCK', False) or _env_bool('GDACS_SAMPLE_MODE', False),
+                        help='Publish one deterministic mock alert and exit')
     parser.add_argument('--log-level', type=str, default='INFO',
                         help='Logging level (default: INFO)')
     args = parser.parse_args()
@@ -448,6 +470,11 @@ def main():
         state_file=args.state_file,
         poll_interval=args.poll_interval,
     )
+
+    if args.mock_mode:
+        emit_mock_alert(poller.event_producer)
+        logger.info("Published 1 mock GDACS alert")
+        return
 
     asyncio.run(poller.poll_and_send(once=args.once))
 

@@ -118,6 +118,14 @@
                   "secureValue": "[parameters('connectionString')]"
                 },
                 {
+                  "name": "GDACS_CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionString')]"
+                },
+                {
+                  "name": "GDACS_STATE_FILE",
+                  "value": "/mnt/bridge-state/gdacs_state.json"
+                },
+                {
                   "name": "LOG_LEVEL",
                   "value": "INFO"
                 },

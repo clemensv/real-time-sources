@@ -1736,6 +1736,25 @@ class TestEurdepRadiationDockerFlow:
 # French Road Traffic (DATEX II – flow measurements & road events)
 # ---------------------------------------------------------------------------
 
+@pytest.fixture(scope='module')
+def gdacs_image():
+    return build_image('gdacs')
+
+
+class TestGdacsDockerFlow:
+    TOPIC = 'test-gdacs'
+
+    def test_emits_disaster_alerts(self, kafka: KafkaFixture, gdacs_image):
+        _run_kafka_flow_test(
+            kafka, gdacs_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['DisasterAlert'],
+            required_exact_types=['GDACS.DisasterAlert'],
+            extra_env={'GDACS_MOCK': 'true', 'ONCE_MODE': 'true'},
+            min_messages=1,
+        )
+
+
 class TestFrenchRoadTrafficDockerFlow:
     TOPIC = 'test-french-road-traffic'
 
