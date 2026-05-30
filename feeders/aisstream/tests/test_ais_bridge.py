@@ -194,3 +194,21 @@ class TestAISBridgeFiltering:
         }
         bridge._on_message(msg)
         event_prod.send_io_aisstream_position_report.assert_called_once()
+
+    def test_emit_mock_corpus_sends_three_events_and_flushes(self):
+        ws = MagicMock()
+        kafka = MagicMock()
+        event_prod = MagicMock()
+
+        bridge = AISBridge(
+            ws_source=ws,
+            kafka_producer=kafka,
+            event_producer=event_prod,
+        )
+
+        bridge.emit_mock_corpus()
+
+        event_prod.send_io_aisstream_ship_static_data.assert_called_once()
+        event_prod.send_io_aisstream_position_report.assert_called_once()
+        event_prod.send_io_aisstream_aids_to_navigation_report.assert_called_once()
+        kafka.flush.assert_called_once()

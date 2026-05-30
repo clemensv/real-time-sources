@@ -122,6 +122,104 @@ def _parse_bounding_boxes(bbox_str: str):
     return boxes
 
 
+def _mock_envelopes() -> list[dict[str, Any]]:
+    return [
+        {
+            "MessageType": "ShipStaticData",
+            "Message": {
+                "ShipStaticData": {
+                    "MessageID": 5,
+                    "RepeatIndicator": 0,
+                    "UserID": 219000001,
+                    "Valid": True,
+                    "AisVersion": 1,
+                    "ImoNumber": 1234567,
+                    "CallSign": "OXAI1",
+                    "Name": "AISSTREAM MOCK STATIC",
+                    "Type": 70,
+                    "Dimension": {"A": 10, "B": 90, "C": 8, "D": 8},
+                    "FixType": 1,
+                    "Eta": {"Month": 6, "Day": 1, "Hour": 12, "Minute": 0},
+                    "MaximumStaticDraught": 6.5,
+                    "Destination": "AARHUS",
+                    "Dte": False,
+                    "Spare": False,
+                }
+            },
+            "MetaData": {
+                "MMSI": 219000001,
+                "ShipName": "AISSTREAM MOCK STATIC",
+                "latitude": 56.15,
+                "longitude": 10.21,
+                "time_utc": "2025-01-01T00:00:00Z",
+            },
+        },
+        {
+            "MessageType": "PositionReport",
+            "Message": {
+                "PositionReport": {
+                    "MessageID": 1,
+                    "RepeatIndicator": 0,
+                    "UserID": 219000001,
+                    "Valid": True,
+                    "NavigationalStatus": 0,
+                    "RateOfTurn": 0,
+                    "Sog": 12.0,
+                    "PositionAccuracy": True,
+                    "Longitude": 10.21,
+                    "Latitude": 56.15,
+                    "Cog": 90.5,
+                    "TrueHeading": 90,
+                    "Timestamp": 30,
+                    "SpecialManoeuvreIndicator": 0,
+                    "Spare": 0,
+                    "Raim": False,
+                    "CommunicationState": 0,
+                }
+            },
+            "MetaData": {
+                "MMSI": 219000001,
+                "ShipName": "AISSTREAM MOCK STATIC",
+                "latitude": 56.15,
+                "longitude": 10.21,
+                "time_utc": "2025-01-01T00:00:10Z",
+            },
+        },
+        {
+            "MessageType": "AidsToNavigationReport",
+            "Message": {
+                "AidsToNavigationReport": {
+                    "MessageID": 21,
+                    "RepeatIndicator": 0,
+                    "UserID": 992190001,
+                    "Valid": True,
+                    "Type": 5,
+                    "Name": "MOCK BUOY",
+                    "PositionAccuracy": True,
+                    "Longitude": 10.25,
+                    "Latitude": 56.17,
+                    "Dimension": {"A": 2, "B": 2, "C": 1, "D": 1},
+                    "Fixtype": 1,
+                    "Timestamp": 20,
+                    "OffPosition": False,
+                    "AtoN": 0,
+                    "Raim": False,
+                    "VirtualAtoN": False,
+                    "AssignedMode": False,
+                    "Spare": False,
+                    "NameExtension": "",
+                }
+            },
+            "MetaData": {
+                "MMSI": 992190001,
+                "latitude": 56.17,
+                "longitude": 10.25,
+                "time_utc": "2025-01-01T00:00:20Z",
+            },
+        },
+    ]
+
+
 class AISBridge:
     """Connects AISstream.io WebSocket to Kafka via CloudEvents."""
 
@@ -180,6 +278,13 @@ class AISBridge:
                         self._count, self._total, self._skipped, rate)
             self._count = 0
 
+    def emit_mock_corpus(self) -> None:
+        self._start_time = time.time()
+        for envelope in _mock_envelopes():
+            self._on_message(envelope)
+        self._kafka.flush()
+        self._count = 0
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(
@@ -210,6 +315,11 @@ def main() -> None:
     stream_p.add_argument("--flush-interval", type=int,
                           default=int(os.getenv("AISSTREAM_FLUSH_INTERVAL", "1000")),
                           help="Flush Kafka producer every N events")
+    stream_p.add_argument(
+        "--mock",
+        action="store_true",
+        help="Emit a deterministic three-message AIS sample corpus and exit",
+    )
 
     # --- probe ---
     probe_p = subparsers.add_parser("probe", help="Connect to WebSocket and print messages")
@@ -232,7 +342,7 @@ def main() -> None:
         return
 
     if args.command == "stream":
-        if not args.api_key:
+        if not args.mock and not args.api_key:
             print("Error: AISstream API key required (--api-key or AISSTREAM_API_KEY).")
             sys.exit(1)
 
@@ -277,7 +387,7 @@ def main() -> None:
             mmsi_filter = set(m.strip() for m in args.mmsi_filter.split(",") if m.strip())
 
         ws = WebSocketSource(
-            api_key=args.api_key,
+            api_key=args.api_key or "mock",
             bounding_boxes=bounding_boxes,
             message_type_filter=message_type_filter,
             mmsi_filter=[m for m in mmsi_filter] if mmsi_filter else None,
@@ -294,7 +404,11 @@ def main() -> None:
         )
 
         try:
-            bridge.run()
+            if args.mock:
+                logger.info("Running AISstream bridge in mock mode")
+                bridge.emit_mock_corpus()
+            else:
+                bridge.run()
         except KeyboardInterrupt:
             logger.info("Shutting down...")
         finally:

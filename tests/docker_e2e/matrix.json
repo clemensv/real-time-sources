@@ -1984,6 +1984,20 @@
     },
     {
       "dir": "feeders/aisstream",
+      "image": "aisstream-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestAisstreamKafkaDockerFlow"
+    },
+    {
+      "dir": "feeders/aisstream",
+      "image": "aisstream-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestAisstreamMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/aisstream",
       "image": "aisstream-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
