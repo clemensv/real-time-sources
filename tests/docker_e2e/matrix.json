@@ -1482,6 +1482,13 @@
     },
     {
       "dir": "feeders/bfs-odl",
+      "image": "bfs-odl-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestBfsOdlDockerFlow"
+    },
+    {
+      "dir": "feeders/bfs-odl",
       "image": "bfs-odl-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
