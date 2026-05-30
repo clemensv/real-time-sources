@@ -118,6 +118,10 @@
                   "secureValue": "[parameters('connectionString')]"
                 },
                 {
+                  "name": "GRACEDB_LAST_POLLED_FILE",
+                  "value": "/mnt/bridge-state/gracedb.json"
+                },
+                {
                   "name": "LOG_LEVEL",
                   "value": "INFO"
                 },

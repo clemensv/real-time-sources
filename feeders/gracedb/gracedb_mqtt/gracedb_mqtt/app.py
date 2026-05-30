@@ -98,7 +98,13 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="GraceDB MQTT/UNS bridge")
     parser.add_argument("feed_command", nargs="?", default="feed")
     parser.add_argument("--broker-url", default=os.getenv("MQTT_BROKER_URL", "mqtt://localhost:1883"))
-    parser.add_argument("--last-polled-file", default=os.getenv("GRACEDB_MQTT_LAST_POLLED_FILE", os.path.expanduser("~/.gracedb_seen_mqtt.json")))
+    parser.add_argument(
+        "--last-polled-file",
+        default=os.getenv(
+            "GRACEDB_MQTT_LAST_POLLED_FILE",
+            os.getenv("GRACEDB_LAST_POLLED_FILE", os.path.expanduser("~/.gracedb_seen_mqtt.json")),
+        ),
+    )
     parser.add_argument("--poll-count", type=int, default=int(os.getenv("GRACEDB_POLL_COUNT", str(DEFAULT_POLL_COUNT))))
     parser.add_argument("--categories", default=os.getenv("GRACEDB_CATEGORIES", DEFAULT_CATEGORIES))
     parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))

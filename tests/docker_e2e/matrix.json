@@ -537,6 +537,8 @@
     },
     {
       "dir": "feeders/gracedb",
+      "image": "gracedb",
+      "file": "Dockerfile",
       "module": "gracedb"
     },
     {
@@ -1776,6 +1778,10 @@
     {
       "dir": "feeders/luchtmeetnet-nl",
       "test_class": "TestLuchtmeetnetNLDockerFlow"
+    },
+    {
+      "dir": "feeders/gracedb",
+      "test_class": "TestGraceDBDockerFlow"
     },
     {
       "dir": "feeders/noaa",

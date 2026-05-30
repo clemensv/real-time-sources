@@ -18,11 +18,10 @@
       "type": "string",
       "defaultValue": "Standard",
       "allowedValues": [
-        "Basic",
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the broker that receives GraceDB gravitational-wave candidate CloudEvents."
       }
     },
     "location": {
@@ -167,6 +166,10 @@
                 {
                   "name": "CONNECTION_STRING",
                   "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
+                },
+                {
+                  "name": "GRACEDB_LAST_POLLED_FILE",
+                  "value": "/mnt/bridge-state/gracedb.json"
                 },
                 {
                   "name": "LOG_LEVEL",

@@ -163,8 +163,8 @@ docker run --rm \
 | `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC` | Explicit Kafka destination. |
 | `SASL_USERNAME`, `SASL_PASSWORD` | SASL PLAIN credentials when needed. |
 | `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka. |
+| `GRACEDB_LAST_POLLED_FILE` | Path to the JSON state file used by the Kafka bridge to persist the last seen GraceDB superevent between runs. |
 | `ONCE_MODE` | Run one cycle and exit (where supported). |
-| State variable | `GRACEDB_LAST_POLLED_FILE` |
 
 ### MQTT image
 
@@ -174,7 +174,8 @@ docker run --rm \
 | `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional broker credentials. |
 | `MQTT_CLIENT_ID` | Optional explicit client ID. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` where supported. |
-| State variable | `GRACEDB_MQTT_LAST_POLLED_FILE` |
+| `GRACEDB_MQTT_LAST_POLLED_FILE` | Transport-specific state file path for the MQTT companion. |
+| `GRACEDB_LAST_POLLED_FILE` | Generic state file alias used by the generated Azure MQTT templates; the MQTT companion accepts either this or `GRACEDB_MQTT_LAST_POLLED_FILE`. |
 
 ### AMQP image
 
@@ -185,7 +186,8 @@ docker run --rm \
 | `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials (if used). |
 | `AMQP_AUTH_MODE` | Auth mode where supported (`password`/`entra`/`sas`). |
 | `AMQP_TLS` | Enable TLS where supported. |
-| State variable | `GRACEDB_AMQP_LAST_POLLED_FILE` |
+| `GRACEDB_AMQP_LAST_POLLED_FILE` | Transport-specific state file path for the AMQP companion. |
+| `GRACEDB_LAST_POLLED_FILE` | Generic state file alias used by generated Azure companion templates; the AMQP companion also falls back to this name. |
 
 ## Deploying into Microsoft Fabric
 
