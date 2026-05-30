@@ -134,7 +134,7 @@ class TestParseStation:
     def test_parse_station_from_observation(self):
         station = BOMAustraliaAPI.parse_station("IDN60901", SAMPLE_OBS_RESPONSE)
         assert station is not None
-        assert station.station_wmo == 94767
+        assert station.station_wmo == "94767"
         assert station.name == "Sydney Airport"
         assert station.product_id == "IDN60901"
         assert station.state == "New South Wales"
@@ -153,9 +153,13 @@ class TestParseStation:
 
 class TestParseObservation:
     def test_parse_observation_success(self):
-        obs = BOMAustraliaAPI.parse_observation(SAMPLE_OBS_RESPONSE["observations"]["data"][0])
+        obs = BOMAustraliaAPI.parse_observation(
+            SAMPLE_OBS_RESPONSE["observations"]["data"][0],
+            default_state=SAMPLE_OBS_RESPONSE["observations"]["header"][0]["state"],
+        )
         assert obs is not None
-        assert obs.station_wmo == 94767
+        assert obs.station_wmo == "94767"
+        assert obs.state == "New South Wales"
         assert obs.air_temp == 27.0
         assert obs.apparent_temp == 26.2
         assert obs.dewpt == 16.0
@@ -174,7 +178,10 @@ class TestParseObservation:
         assert "2026-04-07T06:30:00" in obs.observation_time_utc
 
     def test_parse_observation_null_fields(self):
-        obs = BOMAustraliaAPI.parse_observation(SAMPLE_OBS_RESPONSE["observations"]["data"][0])
+        obs = BOMAustraliaAPI.parse_observation(
+            SAMPLE_OBS_RESPONSE["observations"]["data"][0],
+            default_state=SAMPLE_OBS_RESPONSE["observations"]["header"][0]["state"],
+        )
         assert obs is not None
         assert obs.swell_height is None
         assert obs.swell_period is None
@@ -191,7 +198,10 @@ class TestParseObservation:
         rec["press_tend"] = "-"
         rec["cloud_type"] = "-"
         rec["weather"] = "-"
-        obs = BOMAustraliaAPI.parse_observation(rec)
+        obs = BOMAustraliaAPI.parse_observation(
+            rec,
+            default_state=SAMPLE_OBS_RESPONSE["observations"]["header"][0]["state"],
+        )
         assert obs is not None
         assert obs.press_tend is None
         assert obs.cloud_type is None
@@ -216,6 +226,8 @@ class TestParseWarningFeed:
         assert bulletin.issued_local_time_text == "08/16:29 EST"
         assert bulletin.warning_type == "Severe Weather Warning"
         assert bulletin.affected_area_text == "parts of Snowy Mountains Forecast District."
+        assert bulletin.severity == "severe"
+        assert bulletin.state == "nsw"
 
     def test_parse_warning_feed_invalid_xml(self):
         assert BOMAustraliaAPI.parse_warning_feed("https://www.bom.gov.au/fwo/test.xml", "<rss") == []

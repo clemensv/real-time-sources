@@ -1293,6 +1293,12 @@
     },
     {
       "dir": "feeders/bom-australia",
+      "image": "bom-australia",
+      "file": "Dockerfile",
+      "module": "bom_australia"
+    },
+    {
+      "dir": "feeders/bom-australia",
       "image": "bom-australia-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "bom_australia_mqtt"
@@ -2943,6 +2949,12 @@
       "image": "aviationweather-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestAviationweatherAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/bom-australia",
+      "image": "bom-australia",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestBOMAustraliaDockerFlow"
     },
     {
       "dir": "feeders/bom-australia",

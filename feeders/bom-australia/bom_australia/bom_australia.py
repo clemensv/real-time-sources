@@ -85,6 +85,7 @@ WARNING_FEEDS = [
 WARNING_TITLE_PATTERN = re.compile(
     r"^(?P<issued_local_time_text>\d{2}/\d{2}:\d{2}\s+[A-Z]{2,4})\s+(?P<warning_type>.+?)(?:\s+for\s+(?P<affected_area_text>.+))?$"
 )
+WARNING_FEED_STATE_PATTERN = re.compile(r"warnings_(?P<state>[a-z]+)\.xml$", re.IGNORECASE)
 
 
 class BOMAustraliaAPI:
@@ -217,7 +218,7 @@ class BOMAustraliaAPI:
         if wmo is None:
             return None
         return Station(
-            station_wmo=int(wmo),
+            station_wmo=str(wmo),
             name=first_obs.get("name", hdr.get("name", "")),
             product_id=product_id,
             state=hdr.get("state", ""),
@@ -227,7 +228,7 @@ class BOMAustraliaAPI:
         )
 
     @staticmethod
-    def parse_observation(obs_record: dict) -> typing.Optional[WeatherObservation]:
+    def parse_observation(obs_record: dict, default_state: typing.Optional[str] = None) -> typing.Optional[WeatherObservation]:
         """Parse a single observation record from the BOM JSON data array."""
         wmo = obs_record.get("wmo")
         utc_str = obs_record.get("aifstime_utc")
@@ -260,7 +261,7 @@ class BOMAustraliaAPI:
             return str(v)
 
         return WeatherObservation(
-            station_wmo=int(wmo),
+            station_wmo=str(wmo),
             station_name=obs_record.get("name", ""),
             observation_time_utc=ts,
             local_time=obs_record.get("local_date_time_full", ""),
@@ -291,6 +292,7 @@ class BOMAustraliaAPI:
             swell_period=to_float(obs_record.get("swell_period")),
             latitude=float(obs_record.get("lat", 0.0)),
             longitude=float(obs_record.get("lon", 0.0)),
+            state=to_str(obs_record.get("state")) or to_str(default_state),
         )
 
     @staticmethod
@@ -335,6 +337,16 @@ class BOMAustraliaAPI:
                 warning_type = match.group("warning_type")
                 affected_area_text = match.group("affected_area_text")
 
+            severity = None
+            if warning_type:
+                severity_token = warning_type.split()[0].strip().lower()
+                severity = re.sub(r"[^a-z0-9]+", "-", severity_token).strip("-") or None
+
+            state = None
+            state_match = WARNING_FEED_STATE_PATTERN.search(feed_url)
+            if state_match:
+                state = state_match.group("state").lower()
+
             warnings.append(WarningBulletin(
                 warning_id=warning_id,
                 warning_url=warning_url,
@@ -345,6 +357,8 @@ class BOMAustraliaAPI:
                 issued_local_time_text=issued_local_time_text,
                 warning_type=warning_type,
                 affected_area_text=affected_area_text,
+                severity=severity,
+                state=state,
             ))
 
         return warnings
@@ -529,8 +543,9 @@ def feed_observations(api: BOMAustraliaAPI, producer: AUGovBOMWeatherEventProduc
         records = obs_data.get("observations", {}).get("data", [])
         if not records:
             return
+        header = (obs_data.get("observations", {}).get("header") or [{}])[0]
         latest = records[0]
-        obs = api.parse_observation(latest)
+        obs = api.parse_observation(latest, default_state=header.get("state"))
         if not obs:
             return
         reading_key = f"{obs.station_wmo}:{obs.observation_time_utc}"
