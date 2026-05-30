@@ -113,7 +113,7 @@ const SOURCES = [
   { id: "wsdot", name: "WSDOT", cat: "Transport", key: true, desc: "Washington State — ~1,000 traffic flow sensors (requires free key)", notebook: true, mqtt: true, amqp: true, amqpSb: false },
 
   // ── Railway ──
-  { id: "entur-norway", name: "Entur Norway", cat: "Railway", key: false, desc: "Norway — national real-time transit, SIRI ET/VM/SX", mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
+  { id: "entur-norway", name: "Entur Norway", cat: "Railway", key: false, desc: "Norway — national real-time transit, SIRI ET/VM/SX", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
   { id: "irail", name: "iRail", cat: "Railway", key: false, desc: "Belgium — ~600 NMBS/SNCB stations, departures, delays", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
 
   // ── Nightlife and Live Entertainment ──
