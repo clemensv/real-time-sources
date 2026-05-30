@@ -1401,6 +1401,12 @@
     },
     {
       "dir": "feeders/environment-canada",
+      "image": "environment-canada",
+      "file": "Dockerfile",
+      "module": "environment_canada"
+    },
+    {
+      "dir": "feeders/environment-canada",
       "image": "environment-canada-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "environment_canada_mqtt"
@@ -3162,6 +3168,13 @@
       "file": "Dockerfile",
       "test_file": "test_docker_kafka_flow.py",
       "test_class": "TestElexonBMRSDockerFlow"
+    },
+    {
+      "dir": "feeders/environment-canada",
+      "image": "environment-canada",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestEnvironmentCanadaDockerFlow"
     },
     {
       "dir": "feeders/environment-canada",
