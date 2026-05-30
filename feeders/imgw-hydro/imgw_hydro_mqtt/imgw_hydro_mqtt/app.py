@@ -9,6 +9,8 @@ def _sample_value(name, annotation):
     lname = name.lower().rstrip('_')
     if lname in ('station_id','station_number','code_station','station_ref','station_reference','site_number'):
         return 'mock-station'
+    if lname in ('ice_phenomenon_code', 'overgrowth_code'):
+        return '1'
     if lname in ('sensor_num',): return 1
     if lname in ('parameter_code',): return '00010'
     if lname in ('state',): return 'CA'

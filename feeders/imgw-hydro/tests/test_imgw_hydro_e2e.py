@@ -79,7 +79,7 @@ class TestIMGWHydroE2E:
         stations = [api.parse_station(r) for r in records]
         # At least some stations should have Polish diacritics
         has_polish_chars = any(
-            any(c in s.stacja for c in 'ąćęłńóśźżĄĆĘŁŃÓŚŹŻ') for s in stations
+            any(c in s.station_name for c in 'ąćęłńóśźżĄĆĘŁŃÓŚŹŻ') for s in stations
         )
         assert has_polish_chars, "Expected some stations with Polish diacritical characters"
 
