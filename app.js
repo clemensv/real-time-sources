@@ -37,7 +37,7 @@ const SOURCES = [
   { id: "aviationweather", name: "AviationWeather.gov", cat: "Weather", key: false, desc: "Global — METAR, SIGMET advisories", notebook: true, mqtt: true, amqp: true },
   { id: "blitzortung", name: "Blitzortung", cat: "Weather", key: false, desc: "Global — community lightning strokes, seconds latency", mqtt: true, amqp: true },
   { id: "bom-australia", name: "BOM Australia", cat: "Weather", key: false, desc: "Australia — ~8 capital city airports, half-hourly obs", notebook: true, mqtt: true, amqp: true },
-  { id: "dwd", name: "DWD", cat: "Weather", key: false, desc: "Germany — ~1,450 stations, observations and CAP alerts", mqtt: true, amqp: true },
+  { id: "dwd", name: "DWD", cat: "Weather", key: false, desc: "Germany — ~1,450 stations, observations and CAP alerts", notebook: true, mqtt: true, amqp: true },
   { id: "dwd-pollenflug", name: "DWD Pollenflug", cat: "Weather", key: false, desc: "Germany — daily pollen forecasts, 27 regions", notebook: true, mqtt: true, amqp: true },
   { id: "dmi", name: "DMI Denmark", cat: "Weather", key: true, desc: "Denmark — Danish Meteorological Institute observations", notebook: true, mqtt: true, amqp: true },
   { id: "environment-canada", name: "Environment Canada", cat: "Weather", key: false, desc: "Canada — ~963 SWOB stations, hourly obs", notebook: true, mqtt: true, amqp: true },
