@@ -124,7 +124,7 @@ const SOURCES = [
   { id: "elexon-bmrs", name: "Elexon BMRS", cat: "Energy", key: false, desc: "Great Britain — electricity market, generation, demand", notebook: true, mqtt: true, amqp: true },
   { id: "energidataservice-dk", name: "Energi Data Service", cat: "Energy", key: false, desc: "Denmark — power system, spot prices, CO₂", notebook: true, mqtt: true, amqp: true },
   { id: "energy-charts", name: "Energy-Charts", cat: "Energy", key: false, desc: "Europe — 40+ countries, electricity generation & prices", notebook: true, mqtt: true, amqp: true },
-  { id: "entsoe", name: "ENTSO-E", cat: "Energy", key: true, desc: "Europe — electricity generation, prices, load, flows (requires token)", mqtt: true, amqp: true },
+  { id: "entsoe", name: "ENTSO-E", cat: "Energy", key: true, desc: "Europe — electricity generation, prices, load, flows (requires token)", notebook: true, mqtt: true, amqp: true },
   { id: "tepco-denkiyoho", name: "TEPCO Denkiyoho", cat: "Energy", key: false, desc: "Japan / Kanto — TEPCO electricity supply, hourly forecast, 5-min actuals + solar", notebook: true, mqtt: true, amqp: true, kafka: false },
 
   // ── Social Media and News ──
