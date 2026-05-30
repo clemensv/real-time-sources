@@ -1382,6 +1382,12 @@
       "module": "dwd_pollenflug_amqp"
     },
     {
+      "dir": "feeders/elexon-bmrs",
+      "image": "elexon-bmrs",
+      "file": "Dockerfile",
+      "module": "elexon_bmrs"
+    },
+    {
       "dir": "feeders/environment-canada",
       "image": "environment-canada-mqtt",
       "file": "Dockerfile.mqtt",
@@ -3115,6 +3121,13 @@
       "image": "dwd-pollenflug-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestDwdPollenflugAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/elexon-bmrs",
+      "image": "elexon-bmrs",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestElexonBMRSDockerFlow"
     },
     {
       "dir": "feeders/environment-canada",

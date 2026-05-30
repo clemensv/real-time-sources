@@ -22,7 +22,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the broker that receives Elexon BMRS generation, demand, and balancing telemetry CloudEvents."
       }
     },
     "location": {
