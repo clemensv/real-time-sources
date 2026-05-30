@@ -45,6 +45,27 @@
         "description": "Topic-space root for the MQTT/UNS publish surface. Defaults to hydro/# which covers all digitraffic-road output (hydro/de/wsv/digitraffic-road/...)."
       }
     },
+    "subscribe": {
+      "type": "string",
+      "defaultValue": "tms,weather,traffic-messages,maintenance",
+      "metadata": {
+        "description": "Comma-separated source families to subscribe to: tms, weather, traffic-messages, maintenance."
+      }
+    },
+    "stationFilter": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Comma-separated station IDs to include for sensor topics only. Leave empty to receive all stations."
+      }
+    },
+    "flushInterval": {
+      "type": "string",
+      "defaultValue": "1000",
+      "metadata": {
+        "description": "Flush the producer every N events. Lower values reduce latency; higher values favor throughput."
+      }
+    },
     "imageName": {
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-digitraffic-road-mqtt:latest",
@@ -211,6 +232,18 @@
                 {
                   "name": "MQTT_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
+                },
+                {
+                  "name": "DIGITRAFFIC_ROAD_SUBSCRIBE",
+                  "value": "[parameters('subscribe')]"
+                },
+                {
+                  "name": "DIGITRAFFIC_ROAD_STATION_FILTER",
+                  "value": "[parameters('stationFilter')]"
+                },
+                {
+                  "name": "DIGITRAFFIC_ROAD_FLUSH_INTERVAL",
+                  "value": "[parameters('flushInterval')]"
                 },
                 { "name": "LOG_LEVEL", "value": "INFO" },
                 { "name": "PYTHONUNBUFFERED", "value": "1" }

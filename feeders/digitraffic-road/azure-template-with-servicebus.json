@@ -41,6 +41,27 @@
         "description": "Queue, topic, or node name. Default digitraffic-road."
       }
     },
+    "subscribe": {
+      "type": "string",
+      "defaultValue": "tms,weather,traffic-messages,maintenance",
+      "metadata": {
+        "description": "Comma-separated source families to subscribe to: tms, weather, traffic-messages, maintenance."
+      }
+    },
+    "stationFilter": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Comma-separated station IDs to include for sensor topics only. Leave empty to receive all stations."
+      }
+    },
+    "flushInterval": {
+      "type": "string",
+      "defaultValue": "1000",
+      "metadata": {
+        "description": "Flush the producer every N events. Lower values reduce latency; higher values favor throughput."
+      }
+    },
     "imageName": {
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-digitraffic-road-amqp:latest",
@@ -234,6 +255,18 @@
                 {
                   "name": "AMQP_CONTENT_MODE",
                   "value": "binary"
+                },
+                {
+                  "name": "DIGITRAFFIC_ROAD_SUBSCRIBE",
+                  "value": "[parameters('subscribe')]"
+                },
+                {
+                  "name": "DIGITRAFFIC_ROAD_STATION_FILTER",
+                  "value": "[parameters('stationFilter')]"
+                },
+                {
+                  "name": "DIGITRAFFIC_ROAD_FLUSH_INTERVAL",
+                  "value": "[parameters('flushInterval')]"
                 },
                 {
                   "name": "POLLING_INTERVAL",

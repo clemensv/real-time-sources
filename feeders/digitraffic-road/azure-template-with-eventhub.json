@@ -22,7 +22,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the broker that receives Digitraffic Road sensor, traffic-message, and maintenance CloudEvents."
       }
     },
     "location": {
@@ -30,6 +30,27 @@
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Azure region for all resources."
+      }
+    },
+    "subscribe": {
+      "type": "string",
+      "defaultValue": "tms,weather,traffic-messages,maintenance",
+      "metadata": {
+        "description": "Comma-separated source families to subscribe to: tms, weather, traffic-messages, maintenance."
+      }
+    },
+    "stationFilter": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Comma-separated station IDs to include for sensor topics only. Leave empty to receive all stations."
+      }
+    },
+    "flushInterval": {
+      "type": "string",
+      "defaultValue": "1000",
+      "metadata": {
+        "description": "Flush the producer every N events. Lower values reduce latency; higher values favor throughput."
       }
     },
     "kafkaTopicSensors": {
@@ -204,6 +225,18 @@
                 {
                   "name": "KAFKA_TOPIC_MAINTENANCE",
                   "value": "[parameters('kafkaTopicMaintenance')]"
+                },
+                {
+                  "name": "DIGITRAFFIC_ROAD_SUBSCRIBE",
+                  "value": "[parameters('subscribe')]"
+                },
+                {
+                  "name": "DIGITRAFFIC_ROAD_STATION_FILTER",
+                  "value": "[parameters('stationFilter')]"
+                },
+                {
+                  "name": "DIGITRAFFIC_ROAD_FLUSH_INTERVAL",
+                  "value": "[parameters('flushInterval')]"
                 },
                 {
                   "name": "PYTHONUNBUFFERED",
