@@ -17,7 +17,7 @@ import json
 @dataclass
 class Station1Msg2:
     """
-    Station1Msg2
+    Provider field for station1 msg2 in this record.
     
     Attributes:
         Valid (bool)
@@ -158,7 +158,7 @@ class Station1Msg2:
         """
         return cls(
             Valid=False,
-            Spare=int(99),
-            MessageID=int(94),
-            SlotOffset=int(88)
+            Spare=int(17),
+            MessageID=int(56),
+            SlotOffset=int(90)
         )

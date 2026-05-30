@@ -17,7 +17,7 @@ import json
 @dataclass
 class Eta:
     """
-    Eta
+    Provider field for eta in this record.
     
     Attributes:
         Month (int)
@@ -157,8 +157,8 @@ class Eta:
             An instance of the dataclass.
         """
         return cls(
-            Month=int(82),
-            Day=int(33),
-            Hour=int(64),
-            Minute=int(58)
+            Month=int(60),
+            Day=int(68),
+            Hour=int(52),
+            Minute=int(34)
         )

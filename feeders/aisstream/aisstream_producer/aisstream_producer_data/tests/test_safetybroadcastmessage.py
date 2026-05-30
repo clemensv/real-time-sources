@@ -28,12 +28,12 @@ class Test_SafetyBroadcastMessage(unittest.TestCase):
         Create instance of SafetyBroadcastMessage for testing
         """
         instance = SafetyBroadcastMessage(
-            MessageID=int(38),
-            RepeatIndicator=int(63),
-            UserID=int(45),
+            MessageID=int(39),
+            RepeatIndicator=int(87),
+            UserID=int(51),
             Valid=False,
-            Spare=int(52),
-            Text='ltzpfmzkwfvtwdoywtrw'
+            Spare=int(79),
+            Text='bxguoklortqdhudglzha'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_SafetyBroadcastMessage(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(38)
+        test_value = int(39)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -50,7 +50,7 @@ class Test_SafetyBroadcastMessage(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(63)
+        test_value = int(87)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -58,7 +58,7 @@ class Test_SafetyBroadcastMessage(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(45)
+        test_value = int(51)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -74,7 +74,7 @@ class Test_SafetyBroadcastMessage(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(52)
+        test_value = int(79)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -82,7 +82,7 @@ class Test_SafetyBroadcastMessage(unittest.TestCase):
         """
         Test Text property
         """
-        test_value = 'ltzpfmzkwfvtwdoywtrw'
+        test_value = 'bxguoklortqdhudglzha'
         self.instance.Text = test_value
         self.assertEqual(self.instance.Text, test_value)
     

@@ -11,16 +11,16 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from aisstream_producer_data.station2 import Station2
 from aisstream_producer_data.station1msg1 import Station1Msg1
 from aisstream_producer_data.station1msg2 import Station1Msg2
-from aisstream_producer_data.station2 import Station2
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Interrogation:
     """
-    Interrogation
+    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
     
     Attributes:
         MessageID (int)
@@ -168,11 +168,11 @@ class Interrogation:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(3),
-            RepeatIndicator=int(42),
-            UserID=int(88),
+            MessageID=int(65),
+            RepeatIndicator=int(59),
+            UserID=int(85),
             Valid=True,
-            Spare=int(46),
+            Spare=int(99),
             Station1Msg1=None,
             Station1Msg2=None,
             Station2=None

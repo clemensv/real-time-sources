@@ -18,7 +18,7 @@ from aisstream_amqp_producer_data.msgtypeenum import MsgTypeenum
 @dataclass
 class ShipStatic:
     """
-    Static and voyage-related data (Type 5 ShipStaticData / Type 24 StaticDataReport).
+    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
     
     Attributes:
         mmsi (str)
@@ -186,22 +186,22 @@ class ShipStatic:
             An instance of the dataclass.
         """
         return cls(
-            mmsi='vuupfqtnhhdotmsbhnxg',
-            flag='xkdexjpnrcihunxupfel',
-            ship_type='qefggtdjckacxlxkeuah',
-            geohash5='pzcgisclamdgeqdjvnic',
+            mmsi='uhecjojpbxllsjobtmxa',
+            flag='xwnaicthckknqbrwmbtb',
+            ship_type='hzytposlwxfbhyyrqsqi',
+            geohash5='ubjawlbycyxdkaewccbe',
             msg_type=MsgTypeenum.position_report,
-            user_id=int(51),
-            name='ayvyjlteucbfpynrhpyh',
-            call_sign='pvfgefsbacusllxctprq',
-            imo_number=int(42),
-            ship_type_code=int(48),
-            destination='wfooxvxqjshpqnhetpim',
-            eta='ocyvzovruzzymsylpbxo',
-            draught=float(94.93266975296007),
-            dim_to_bow=int(81),
-            dim_to_stern=int(99),
-            dim_to_port=int(59),
-            dim_to_starboard=int(51),
-            message_id=int(59)
+            user_id=int(71),
+            name='tymlmrtfrnuwzargwmwn',
+            call_sign='bbqssyqwmpieyozqyakz',
+            imo_number=int(7),
+            ship_type_code=int(94),
+            destination='ufoxnovvxyjgyzrzcpix',
+            eta='nyntwnvpmroxqtcolnhi',
+            draught=float(65.78079593296943),
+            dim_to_bow=int(16),
+            dim_to_stern=int(81),
+            dim_to_port=int(47),
+            dim_to_starboard=int(2),
+            message_id=int(13)
         )

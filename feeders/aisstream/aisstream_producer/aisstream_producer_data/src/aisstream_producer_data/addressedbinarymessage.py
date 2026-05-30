@@ -18,7 +18,7 @@ from aisstream_producer_data.applicationid import ApplicationID
 @dataclass
 class AddressedBinaryMessage:
     """
-    AddressedBinaryMessage
+    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
     
     Attributes:
         MessageID (int)
@@ -170,14 +170,14 @@ class AddressedBinaryMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(35),
-            RepeatIndicator=int(99),
-            UserID=int(14),
+            MessageID=int(96),
+            RepeatIndicator=int(89),
+            UserID=int(9),
             Valid=False,
-            Sequenceinteger=int(31),
-            DestinationID=int(23),
+            Sequenceinteger=int(47),
+            DestinationID=int(61),
             Retransmission=False,
             Spare=False,
             ApplicationID=None,
-            BinaryData='pwcpgaadirseyvejvvaz'
+            BinaryData='yozsaxqwqekqhpvbwxqi'
         )

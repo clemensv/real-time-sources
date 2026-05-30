@@ -1,4 +1,4 @@
-""" ExtendedClassBPositionReport dataclass. """
+""" ShipStatic dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
 from __future__ import annotations
@@ -11,64 +11,58 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from aisstream_producer_data.dimension import Dimension
+from aisstream_producer_data.msgtypeenum import MsgTypeenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
-class ExtendedClassBPositionReport:
+class ShipStatic:
     """
     A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
     
     Attributes:
-        MessageID (int)
-        RepeatIndicator (typing.Optional[int])
-        UserID (int)
-        Valid (bool)
-        Spare1 (typing.Optional[int])
-        Sog (typing.Optional[float])
-        PositionAccuracy (typing.Optional[bool])
-        Longitude (float)
-        Latitude (float)
-        Cog (typing.Optional[float])
-        TrueHeading (typing.Optional[int])
-        Timestamp (typing.Optional[int])
-        Spare2 (typing.Optional[int])
-        Name (typing.Optional[str])
-        Type (typing.Optional[int])
-        Dimension (typing.Optional[Dimension])
-        FixType (typing.Optional[int])
-        Raim (typing.Optional[bool])
-        Dte (typing.Optional[bool])
-        AssignedMode (typing.Optional[bool])
-        Spare3 (typing.Optional[int])
+        mmsi (str)
+        flag (str)
+        ship_type (str)
+        geohash5 (str)
+        msg_type (MsgTypeenum)
+        user_id (int)
+        name (str)
+        call_sign (typing.Optional[str])
+        imo_number (typing.Optional[int])
+        ship_type_code (int)
+        destination (typing.Optional[str])
+        eta (typing.Optional[str])
+        draught (typing.Optional[float])
+        dim_to_bow (typing.Optional[int])
+        dim_to_stern (typing.Optional[int])
+        dim_to_port (typing.Optional[int])
+        dim_to_starboard (typing.Optional[int])
+        message_id (int)
     """
     
     
-    MessageID: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="MessageID"))
-    RepeatIndicator: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="RepeatIndicator"))
-    UserID: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="UserID"))
-    Valid: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Valid"))
-    Spare1: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Spare1"))
-    Sog: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Sog"))
-    PositionAccuracy: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="PositionAccuracy"))
-    Longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Longitude"))
-    Latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Latitude"))
-    Cog: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Cog"))
-    TrueHeading: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="TrueHeading"))
-    Timestamp: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Timestamp"))
-    Spare2: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Spare2"))
-    Name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Name"))
-    Type: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Type"))
-    Dimension: typing.Optional[Dimension]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Dimension"))
-    FixType: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="FixType"))
-    Raim: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Raim"))
-    Dte: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Dte"))
-    AssignedMode: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="AssignedMode"))
-    Spare3: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="Spare3"))
+    mmsi: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="mmsi"))
+    flag: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="flag"))
+    ship_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_type"))
+    geohash5: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
+    msg_type: MsgTypeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="msg_type"))
+    user_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="user_id"))
+    name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
+    call_sign: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="call_sign"))
+    imo_number: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="imo_number"))
+    ship_type_code: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ship_type_code"))
+    destination: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="destination"))
+    eta: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta"))
+    draught: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="draught"))
+    dim_to_bow: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dim_to_bow"))
+    dim_to_stern: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dim_to_stern"))
+    dim_to_port: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dim_to_port"))
+    dim_to_starboard: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dim_to_starboard"))
+    message_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="message_id"))
 
     @classmethod
-    def from_serializer_dict(cls, data: dict) -> 'ExtendedClassBPositionReport':
+    def from_serializer_dict(cls, data: dict) -> 'ShipStatic':
         """
         Converts a dictionary to a dataclass instance.
         
@@ -141,7 +135,7 @@ class ExtendedClassBPositionReport:
         return result
 
     @classmethod
-    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['ExtendedClassBPositionReport']:
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['ShipStatic']:
         """
         Converts the data to a dataclass based on the content type string.
         
@@ -178,13 +172,13 @@ class ExtendedClassBPositionReport:
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
                 _record = json.loads(data_str)
-                return ExtendedClassBPositionReport.from_serializer_dict(_record)
+                return ShipStatic.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
         raise NotImplementedError(f'Unsupported media type {content_type}')
 
     @classmethod
-    def create_instance(cls) -> 'ExtendedClassBPositionReport':
+    def create_instance(cls) -> 'ShipStatic':
         """
         Creates an instance of the dataclass with test values.
         
@@ -192,25 +186,22 @@ class ExtendedClassBPositionReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(3),
-            RepeatIndicator=int(87),
-            UserID=int(46),
-            Valid=False,
-            Spare1=int(67),
-            Sog=float(49.14683957718301),
-            PositionAccuracy=True,
-            Longitude=float(96.84369760736708),
-            Latitude=float(37.91590017712691),
-            Cog=float(13.885778316055376),
-            TrueHeading=int(83),
-            Timestamp=int(22),
-            Spare2=int(51),
-            Name='pquxvtzmvjfhyvhlrgpc',
-            Type=int(68),
-            Dimension=None,
-            FixType=int(82),
-            Raim=True,
-            Dte=True,
-            AssignedMode=False,
-            Spare3=int(57)
+            mmsi='ngkmmqqqhtrjxqdswzis',
+            flag='mknhhhenfxjpfkixfgmr',
+            ship_type='ebgzyxipnxdypzhmddne',
+            geohash5='hluoewmnhbwellalqhyz',
+            msg_type=MsgTypeenum.position_report,
+            user_id=int(57),
+            name='bcfeydqthxgtvzabkjvc',
+            call_sign='opbxyqffskzgvbegfzkj',
+            imo_number=int(69),
+            ship_type_code=int(54),
+            destination='omfuoiavzhdunemtqygf',
+            eta='wbypqvcvyjkhtmshlydl',
+            draught=float(70.4749415821612),
+            dim_to_bow=int(61),
+            dim_to_stern=int(25),
+            dim_to_port=int(5),
+            dim_to_starboard=int(5),
+            message_id=int(27)
         )

@@ -17,7 +17,7 @@ import json
 @dataclass
 class SafetyBroadcastMessage:
     """
-    SafetyBroadcastMessage
+    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
     
     Attributes:
         MessageID (int)
@@ -161,10 +161,10 @@ class SafetyBroadcastMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(38),
-            RepeatIndicator=int(63),
-            UserID=int(45),
+            MessageID=int(39),
+            RepeatIndicator=int(87),
+            UserID=int(51),
             Valid=False,
-            Spare=int(52),
-            Text='ltzpfmzkwfvtwdoywtrw'
+            Spare=int(79),
+            Text='bxguoklortqdhudglzha'
         )

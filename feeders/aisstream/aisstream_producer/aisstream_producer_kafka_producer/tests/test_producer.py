@@ -65,6 +65,12 @@ from aisstream_producer_data import MultiSlotBinaryMessage
 from test_aisstream_producer_data_multislotbinarymessage import Test_MultiSlotBinaryMessage
 from aisstream_producer_data import SingleSlotBinaryMessage
 from test_aisstream_producer_data_singleslotbinarymessage import Test_SingleSlotBinaryMessage
+from aisstream_producer_kafka_producer.producer import IOAISstreamMqttEventProducer
+from aisstream_producer_data import ShipStatic
+from test_aisstream_producer_data_shipstatic import Test_ShipStatic
+from aisstream_producer_data import AidToNavigation
+from test_aisstream_producer_data_aidtonavigation import Test_AidToNavigation
+from aisstream_producer_kafka_producer.producer import IOAISstreamAmqpEventProducer
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -147,7 +153,7 @@ def test_io_aisstream_ioaisstreampositionreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_position_report(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_position_report(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -156,7 +162,7 @@ def test_io_aisstream_ioaisstreampositionreport(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -210,7 +216,7 @@ def test_io_aisstream_ioaisstreamshipstaticdata(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_ship_static_data(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_ship_static_data(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -219,7 +225,7 @@ def test_io_aisstream_ioaisstreamshipstaticdata(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -273,7 +279,7 @@ def test_io_aisstream_ioaisstreamstandardclassbpositionreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_standard_class_bposition_report(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_standard_class_bposition_report(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -282,7 +288,7 @@ def test_io_aisstream_ioaisstreamstandardclassbpositionreport(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -336,7 +342,7 @@ def test_io_aisstream_ioaisstreamextendedclassbpositionreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_extended_class_bposition_report(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_extended_class_bposition_report(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -345,7 +351,7 @@ def test_io_aisstream_ioaisstreamextendedclassbpositionreport(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -399,7 +405,7 @@ def test_io_aisstream_ioaisstreamaidstonavigationreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_aids_to_navigation_report(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_aids_to_navigation_report(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -408,7 +414,7 @@ def test_io_aisstream_ioaisstreamaidstonavigationreport(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -462,7 +468,7 @@ def test_io_aisstream_ioaisstreamstaticdatareport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_static_data_report(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_static_data_report(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -471,7 +477,7 @@ def test_io_aisstream_ioaisstreamstaticdatareport(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -525,7 +531,7 @@ def test_io_aisstream_ioaisstreambasestationreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_base_station_report(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_base_station_report(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -534,7 +540,7 @@ def test_io_aisstream_ioaisstreambasestationreport(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -588,7 +594,7 @@ def test_io_aisstream_ioaisstreamsafetybroadcastmessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_safety_broadcast_message(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_safety_broadcast_message(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -597,7 +603,7 @@ def test_io_aisstream_ioaisstreamsafetybroadcastmessage(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -651,7 +657,7 @@ def test_io_aisstream_ioaisstreamstandardsearchandrescueaircraftreport(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_standard_search_and_rescue_aircraft_report(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_standard_search_and_rescue_aircraft_report(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -660,7 +666,7 @@ def test_io_aisstream_ioaisstreamstandardsearchandrescueaircraftreport(kafka_emu
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -714,7 +720,7 @@ def test_io_aisstream_ioaisstreamlongrangeaisbroadcastmessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_long_range_ais_broadcast_message(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_long_range_ais_broadcast_message(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -723,7 +729,7 @@ def test_io_aisstream_ioaisstreamlongrangeaisbroadcastmessage(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -777,7 +783,7 @@ def test_io_aisstream_ioaisstreamaddressedsafetymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_addressed_safety_message(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_addressed_safety_message(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -786,7 +792,7 @@ def test_io_aisstream_ioaisstreamaddressedsafetymessage(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -840,7 +846,7 @@ def test_io_aisstream_ioaisstreamaddressedbinarymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_addressed_binary_message(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_addressed_binary_message(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -849,7 +855,7 @@ def test_io_aisstream_ioaisstreamaddressedbinarymessage(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -903,7 +909,7 @@ def test_io_aisstream_ioaisstreamassignedmodecommand(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_assigned_mode_command(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_assigned_mode_command(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -912,7 +918,7 @@ def test_io_aisstream_ioaisstreamassignedmodecommand(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -966,7 +972,7 @@ def test_io_aisstream_ioaisstreambinaryacknowledge(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_binary_acknowledge(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_binary_acknowledge(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -975,7 +981,7 @@ def test_io_aisstream_ioaisstreambinaryacknowledge(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -1029,7 +1035,7 @@ def test_io_aisstream_ioaisstreambinarybroadcastmessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_binary_broadcast_message(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_binary_broadcast_message(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1038,7 +1044,7 @@ def test_io_aisstream_ioaisstreambinarybroadcastmessage(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -1092,7 +1098,7 @@ def test_io_aisstream_ioaisstreamchannelmanagement(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_channel_management(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_channel_management(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1101,7 +1107,7 @@ def test_io_aisstream_ioaisstreamchannelmanagement(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -1155,7 +1161,7 @@ def test_io_aisstream_ioaisstreamcoordinatedutcinquiry(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_coordinated_utcinquiry(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_coordinated_utcinquiry(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1164,7 +1170,7 @@ def test_io_aisstream_ioaisstreamcoordinatedutcinquiry(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -1218,7 +1224,7 @@ def test_io_aisstream_ioaisstreamdatalinkmanagementmessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_data_link_management_message(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_data_link_management_message(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1227,7 +1233,7 @@ def test_io_aisstream_ioaisstreamdatalinkmanagementmessage(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -1281,7 +1287,7 @@ def test_io_aisstream_ioaisstreamgnssbroadcastbinarymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_gnss_broadcast_binary_message(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_gnss_broadcast_binary_message(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1290,7 +1296,7 @@ def test_io_aisstream_ioaisstreamgnssbroadcastbinarymessage(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -1344,7 +1350,7 @@ def test_io_aisstream_ioaisstreamgroupassignmentcommand(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_group_assignment_command(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_group_assignment_command(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1353,7 +1359,7 @@ def test_io_aisstream_ioaisstreamgroupassignmentcommand(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -1407,7 +1413,7 @@ def test_io_aisstream_ioaisstreaminterrogation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_interrogation(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_interrogation(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1416,7 +1422,7 @@ def test_io_aisstream_ioaisstreaminterrogation(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -1470,7 +1476,7 @@ def test_io_aisstream_ioaisstreammultislotbinarymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_multi_slot_binary_message(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_multi_slot_binary_message(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1479,7 +1485,7 @@ def test_io_aisstream_ioaisstreammultislotbinarymessage(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
 
@@ -1533,7 +1539,7 @@ def test_io_aisstream_ioaisstreamsingleslotbinarymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_single_slot_binary_message(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_single_slot_binary_message(_user_id = f'test_{i}', data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1542,8 +1548,374 @@ def test_io_aisstream_ioaisstreamsingleslotbinarymessage(kafka_emulator):
     for i in range(5):
         received_key = on_event()
         assert received_key is not None, f"Failed to receive message {i+1} of 5"
-        expected_key = "{mmsi}".format(mmsi=f'test_{i}')
+        expected_key = "{UserID}".format(UserID=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
+    consumer.close()
+
+
+def test_io_aisstream_mqtt_ioaisstreammqttpositionreport(kafka_emulator):
+    """Test the IOAISstreamMqttPositionReport event from the IO.AISstream.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_io_aisstream_mqtt_ioaisstreammqttpositionreport',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "IO.AISstream.mqtt.PositionReport":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = IOAISstreamMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_PositionReport.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_io_aisstream_mqtt_position_report(_mmsi = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_io_aisstream_mqtt_ioaisstreammqttshipstatic(kafka_emulator):
+    """Test the IOAISstreamMqttShipStatic event from the IO.AISstream.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_io_aisstream_mqtt_ioaisstreammqttshipstatic',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "IO.AISstream.mqtt.ShipStatic":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = IOAISstreamMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_ShipStatic.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_io_aisstream_mqtt_ship_static(_mmsi = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_io_aisstream_mqtt_ioaisstreammqttaidtonavigation(kafka_emulator):
+    """Test the IOAISstreamMqttAidToNavigation event from the IO.AISstream.Mqtt message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_io_aisstream_mqtt_ioaisstreammqttaidtonavigation',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "IO.AISstream.mqtt.AidToNavigation":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = IOAISstreamMqttEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_AidToNavigation.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_io_aisstream_mqtt_aid_to_navigation(_mmsi = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_io_aisstream_amqp_ioaisstreamamqppositionreport(kafka_emulator):
+    """Test the IOAISstreamAmqpPositionReport event from the IO.AISstream.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_io_aisstream_amqp_ioaisstreamamqppositionreport',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "IO.AISstream.amqp.PositionReport":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = IOAISstreamAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_PositionReport.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_io_aisstream_amqp_position_report(_mmsi = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_io_aisstream_amqp_ioaisstreamamqpshipstatic(kafka_emulator):
+    """Test the IOAISstreamAmqpShipStatic event from the IO.AISstream.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_io_aisstream_amqp_ioaisstreamamqpshipstatic',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "IO.AISstream.amqp.ShipStatic":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = IOAISstreamAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_ShipStatic.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_io_aisstream_amqp_ship_static(_mmsi = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_io_aisstream_amqp_ioaisstreamamqpaidtonavigation(kafka_emulator):
+    """Test the IOAISstreamAmqpAidToNavigation event from the IO.AISstream.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_io_aisstream_amqp_ioaisstreamamqpaidtonavigation',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "IO.AISstream.amqp.AidToNavigation":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = IOAISstreamAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_AidToNavigation.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_io_aisstream_amqp_aid_to_navigation(_mmsi = f'test_{i}', data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
     consumer.close()
 
 
@@ -1579,8 +1951,8 @@ def test_io_aisstream_cross_event_type_kafka_key(kafka_emulator):
     data1 = Test_PositionReport.create_instance()
     data2 = Test_ShipStaticData.create_instance()
 
-    producer_instance.send_io_aisstream_position_report(_mmsi = shared_key_value, data = data1)
-    producer_instance.send_io_aisstream_ship_static_data(_mmsi = shared_key_value, data = data2)
+    producer_instance.send_io_aisstream_position_report(_user_id = shared_key_value, data = data1)
+    producer_instance.send_io_aisstream_ship_static_data(_user_id = shared_key_value, data = data2)
     kafka_producer.flush(timeout=5.0)
 
     # Collect keys from both messages
@@ -1598,7 +1970,7 @@ def test_io_aisstream_cross_event_type_kafka_key(kafka_emulator):
     assert len(collected_keys) == 2, f"Expected 2 messages but received {len(collected_keys)}"
     assert collected_keys[0] == collected_keys[1], \
         f"Expected same Kafka key for different event types but got '{collected_keys[0]}' and '{collected_keys[1]}'"
-    expected_key = "{mmsi}".format(mmsi=shared_key_value)
+    expected_key = "{UserID}".format(UserID=shared_key_value)
     assert collected_keys[0] == expected_key, \
         f"Expected Kafka key '{expected_key}' but got '{collected_keys[0]}'"
     consumer.close()

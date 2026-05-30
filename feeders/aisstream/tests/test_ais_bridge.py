@@ -63,7 +63,7 @@ class TestEmitEvent:
         _emit_event(producer, "PositionReport", payload)
 
         call = producer.send_io_aisstream_position_report.call_args
-        assert call.kwargs["_mmsi"] == "311000255"
+        assert call.kwargs["_user_id"] == "311000255"
         assert call.kwargs["flush_producer"] is False
         assert call.kwargs["key_mapper"] is _mmsi_key_mapper
 

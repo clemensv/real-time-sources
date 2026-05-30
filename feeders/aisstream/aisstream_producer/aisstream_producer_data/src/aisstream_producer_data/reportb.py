@@ -18,7 +18,7 @@ from aisstream_producer_data.dimension import Dimension
 @dataclass
 class ReportB:
     """
-    ReportB
+    Provider field for report b in this record.
     
     Attributes:
         Valid (bool)
@@ -168,13 +168,13 @@ class ReportB:
             An instance of the dataclass.
         """
         return cls(
-            Valid=True,
-            ShipType=int(81),
-            VendorIDName='xnqvjiilewelwzzimksp',
-            VenderIDModel=int(17),
-            VenderIDSerial=int(93),
-            CallSign='wlodnzakicshidnlooai',
+            Valid=False,
+            ShipType=int(22),
+            VendorIDName='rcbyvbeerzypfzndkwxf',
+            VenderIDModel=int(74),
+            VenderIDSerial=int(64),
+            CallSign='biluvviacdfalnxcjmbt',
             Dimension=None,
-            FixType=int(47),
-            Spare=int(98)
+            FixType=int(5),
+            Spare=int(53)
         )

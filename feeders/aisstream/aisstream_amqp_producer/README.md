@@ -169,6 +169,8 @@ The producer constructor accepts:
 
 
 ##### `send_position_report()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
 
 **Parameters:**
 - `data` (PositionReport): The message data object
@@ -187,6 +189,8 @@ Send multiple PositionReport messages in sequence.
 
 
 ##### `send_ship_static()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
 
 **Parameters:**
 - `data` (ShipStatic): The message data object
@@ -205,6 +209,8 @@ Send multiple ShipStatic messages in sequence.
 
 
 ##### `send_aid_to_navigation()`
+A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS
+messages for AIS-equipped vessels received by the AISStream network.
 
 **Parameters:**
 - `data` (AidToNavigation): The message data object

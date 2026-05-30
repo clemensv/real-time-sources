@@ -28,12 +28,12 @@ class Test_BinaryAcknowledge(unittest.TestCase):
         Create instance of BinaryAcknowledge for testing
         """
         instance = BinaryAcknowledge(
-            MessageID=int(51),
-            RepeatIndicator=int(98),
-            UserID=int(22),
+            MessageID=int(65),
+            RepeatIndicator=int(78),
+            UserID=int(9),
             Valid=True,
-            Spare=int(45),
-            Destinations={'vvbtufnqwahfaotmufmw': 'iltjkryzdxbwscxxnlet', 'cinmrofstpagwgtdlknl': 'tpbjbgoghjynvitzmgeb', 'srljijcokxrqytcvorzt': 'bqopyhpugkkivnjogjhi', 'frcfjxftauyuctypjtkz': 'kvgiiqjqgnybhkattals'}
+            Spare=int(93),
+            Destinations={'ksfyzdexeofqidomiifs': 'wnnmubglzlragembkdyw'}
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_BinaryAcknowledge(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(51)
+        test_value = int(65)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -50,7 +50,7 @@ class Test_BinaryAcknowledge(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(98)
+        test_value = int(78)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -58,7 +58,7 @@ class Test_BinaryAcknowledge(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(22)
+        test_value = int(9)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -74,7 +74,7 @@ class Test_BinaryAcknowledge(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(45)
+        test_value = int(93)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -82,7 +82,7 @@ class Test_BinaryAcknowledge(unittest.TestCase):
         """
         Test Destinations property
         """
-        test_value = {'vvbtufnqwahfaotmufmw': 'iltjkryzdxbwscxxnlet', 'cinmrofstpagwgtdlknl': 'tpbjbgoghjynvitzmgeb', 'srljijcokxrqytcvorzt': 'bqopyhpugkkivnjogjhi', 'frcfjxftauyuctypjtkz': 'kvgiiqjqgnybhkattals'}
+        test_value = {'ksfyzdexeofqidomiifs': 'wnnmubglzlragembkdyw'}
         self.instance.Destinations = test_value
         self.assertEqual(self.instance.Destinations, test_value)
     

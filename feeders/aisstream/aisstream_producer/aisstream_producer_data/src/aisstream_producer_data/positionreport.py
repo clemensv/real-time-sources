@@ -17,7 +17,7 @@ import json
 @dataclass
 class PositionReport:
     """
-    PositionReport
+    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
     
     Attributes:
         MessageID (int)
@@ -183,21 +183,21 @@ class PositionReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(1),
-            RepeatIndicator=int(73),
-            UserID=int(29),
-            Valid=True,
-            NavigationalStatus=int(25),
-            RateOfTurn=int(49),
-            Sog=float(36.63539777323174),
-            PositionAccuracy=True,
-            Longitude=float(50.630061595428465),
-            Latitude=float(98.21375403267139),
-            Cog=float(67.89615354910097),
-            TrueHeading=int(66),
-            Timestamp=int(99),
-            SpecialManoeuvreIndicator=int(80),
-            Spare=int(93),
-            Raim=True,
-            CommunicationState=int(88)
+            MessageID=int(9),
+            RepeatIndicator=int(37),
+            UserID=int(45),
+            Valid=False,
+            NavigationalStatus=int(100),
+            RateOfTurn=int(78),
+            Sog=float(64.67989494059734),
+            PositionAccuracy=False,
+            Longitude=float(13.19175976443302),
+            Latitude=float(43.7046839827776),
+            Cog=float(55.56021401270327),
+            TrueHeading=int(2),
+            Timestamp=int(63),
+            SpecialManoeuvreIndicator=int(12),
+            Spare=int(87),
+            Raim=False,
+            CommunicationState=int(42)
         )

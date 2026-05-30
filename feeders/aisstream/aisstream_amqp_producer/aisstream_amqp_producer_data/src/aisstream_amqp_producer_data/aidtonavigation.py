@@ -18,7 +18,7 @@ from aisstream_amqp_producer_data.msgtypeenum import MsgTypeenum
 @dataclass
 class AidToNavigation:
     """
-    Aid-to-Navigation report (Type 21).
+    A transport update from AISStream public AIS firehose. It carries vessel position, voyage, safety, and static AIS messages for AIS-equipped vessels received by the AISStream network.
     
     Attributes:
         mmsi (str)
@@ -176,17 +176,17 @@ class AidToNavigation:
             An instance of the dataclass.
         """
         return cls(
-            mmsi='wcbxisgfxjnyyjdlwddg',
-            flag='wydppzsbtlgcxckhquad',
-            ship_type='wrztbbksgitruijfczpw',
-            geohash5='nqosvlezbzlbnasypfkk',
+            mmsi='pmwzonhdlwltwfbwlfgc',
+            flag='qlsrgxwbvelqhbimjfqn',
+            ship_type='sibgqqfsgmnczpijewbq',
+            geohash5='hainrqkggsysuxpxgyrh',
             msg_type=MsgTypeenum.position_report,
-            user_id=int(17),
-            name='hahkyabccdmesmvzcygh',
-            type=int(69),
-            latitude=float(33.56272274865656),
-            longitude=float(37.62316254670641),
-            off_position=False,
+            user_id=int(12),
+            name='iboeolvwkubbcgqhbjvi',
+            type=int(92),
+            latitude=float(9.784750388684982),
+            longitude=float(5.345737961441488),
+            off_position=True,
             virtual_atoN=True,
-            message_id=int(30)
+            message_id=int(87)
         )
