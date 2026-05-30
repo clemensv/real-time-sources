@@ -48,7 +48,7 @@ These images package the ENTSO-E Transparency Platform bridge runtime so teams c
 
 | Image | Dockerfile | Purpose |
 |---|---|---|
-| `ghcr.io/clemensv/real-time-sources-entsoe-kafka:latest` | `Dockerfile` | Kafka-compatible publishing path |
+| `ghcr.io/clemensv/real-time-sources-entsoe:latest` | `Dockerfile` | Kafka-compatible publishing path |
 | `ghcr.io/clemensv/real-time-sources-entsoe-mqtt:latest` | `Dockerfile.mqtt` | MQTT 5.0 publishing path |
 | `ghcr.io/clemensv/real-time-sources-entsoe-amqp:latest` | `Dockerfile.amqp` | AMQP 1.0 publishing path |
 
@@ -64,7 +64,7 @@ These images package the ENTSO-E Transparency Platform bridge runtime so teams c
 ## Kafka image quick start
 
 ```bash
-docker run --rm   -e ENTSOE_SECURITY_TOKEN="<token>" -e CONNECTION_STRING="<connection-string>"   ghcr.io/clemensv/real-time-sources-entsoe-kafka:latest
+docker run --rm   -e ENTSOE_SECURITY_TOKEN="<token>" -e CONNECTION_STRING="<connection-string>"   ghcr.io/clemensv/real-time-sources-entsoe:latest
 ```
 
 ## MQTT image quick start
@@ -81,16 +81,18 @@ docker run --rm   -e ENTSOE_SECURITY_TOKEN="<token>" -e AMQP_BROKER_URL="amqp://
 
 ## Environment variable matrix
 
-### Kafka image (`ghcr.io/clemensv/real-time-sources-entsoe-kafka:latest`)
+### Kafka image (`ghcr.io/clemensv/real-time-sources-entsoe:latest`)
 
 | Variable | Purpose |
 |---|---|
-| `ENTSOE_SECURITY_TOKEN` | Core configuration for this image variant. |
+| `ENTSOE_SECURITY_TOKEN` | ENTSO-E Transparency Platform security token used to authenticate upstream API requests. |
 | `CONNECTION_STRING or KAFKA_BOOTSTRAP_SERVERS` | Core configuration for this image variant. |
 | `KAFKA_TOPIC` | Core configuration for this image variant. |
-| `ENTSOE_DOMAINS` | Core configuration for this image variant. |
-| `ENTSOE_DOCUMENT_TYPES` | Core configuration for this image variant. |
-| `ENTSOE_CROSS_BORDER_PAIRS` | Core configuration for this image variant. |
+| `ENTSOE_DOMAINS` | Comma-separated ENTSO-E domain identifiers to poll, such as `10Y1001A1001A83F` for the DE-LU bidding zone. |
+| `ENTSOE_DOCUMENT_TYPES` | Comma-separated ENTSO-E document type codes to fetch, such as `A75` (prices), `A65` (load), `A11` (generation), or `A09` (cross-border flows). |
+| `ENTSOE_LOOKBACK_HOURS` | Number of hours of upstream history to re-read on startup so the feeder can backfill gaps after downtime. Defaults to `24`. |
+| `ENTSOE_CROSS_BORDER_PAIRS` | Optional comma-separated `in>out` EIC domain pairs that narrow cross-border flow polling to specific interconnectors. |
+| `ENTSOE_SAMPLE_MODE` | Set to `true` only for sample-data smoke tests; production deployments should leave it `false`. |
 | `POLLING_INTERVAL` | Core configuration for this image variant. |
 | `STATE_FILE` | Core configuration for this image variant. |
 
@@ -98,7 +100,12 @@ docker run --rm   -e ENTSOE_SECURITY_TOKEN="<token>" -e AMQP_BROKER_URL="amqp://
 
 | Variable | Purpose |
 |---|---|
-| `ENTSOE_SECURITY_TOKEN` | Core configuration for this image variant. |
+| `ENTSOE_SECURITY_TOKEN` | ENTSO-E Transparency Platform security token used to authenticate upstream API requests. |
+| `ENTSOE_DOMAINS` | Comma-separated ENTSO-E domain identifiers to poll, such as `10Y1001A1001A83F` for the DE-LU bidding zone. |
+| `ENTSOE_DOCUMENT_TYPES` | Comma-separated ENTSO-E document type codes to fetch, such as `A75` (prices), `A65` (load), `A11` (generation), or `A09` (cross-border flows). |
+| `ENTSOE_LOOKBACK_HOURS` | Number of hours of upstream history to re-read on startup so the feeder can backfill gaps after downtime. Defaults to `24`. |
+| `ENTSOE_CROSS_BORDER_PAIRS` | Optional comma-separated `in>out` EIC domain pairs that narrow cross-border flow polling to specific interconnectors. |
+| `ENTSOE_SAMPLE_MODE` | Set to `true` only for sample-data smoke tests; production deployments should leave it `false`. |
 | `MQTT_BROKER_URL` | Core configuration for this image variant. |
 | `MQTT_AUTH_MODE` | Core configuration for this image variant. |
 | `MQTT_USERNAME / MQTT_PASSWORD` | Core configuration for this image variant. |
@@ -108,7 +115,12 @@ docker run --rm   -e ENTSOE_SECURITY_TOKEN="<token>" -e AMQP_BROKER_URL="amqp://
 
 | Variable | Purpose |
 |---|---|
-| `ENTSOE_SECURITY_TOKEN` | Core configuration for this image variant. |
+| `ENTSOE_SECURITY_TOKEN` | ENTSO-E Transparency Platform security token used to authenticate upstream API requests. |
+| `ENTSOE_DOMAINS` | Comma-separated ENTSO-E domain identifiers to poll, such as `10Y1001A1001A83F` for the DE-LU bidding zone. |
+| `ENTSOE_DOCUMENT_TYPES` | Comma-separated ENTSO-E document type codes to fetch, such as `A75` (prices), `A65` (load), `A11` (generation), or `A09` (cross-border flows). |
+| `ENTSOE_LOOKBACK_HOURS` | Number of hours of upstream history to re-read on startup so the feeder can backfill gaps after downtime. Defaults to `24`. |
+| `ENTSOE_CROSS_BORDER_PAIRS` | Optional comma-separated `in>out` EIC domain pairs that narrow cross-border flow polling to specific interconnectors. |
+| `ENTSOE_SAMPLE_MODE` | Set to `true` only for sample-data smoke tests; production deployments should leave it `false`. |
 | `AMQP_BROKER_URL` | Core configuration for this image variant. |
 | `AMQP_ADDRESS` | Core configuration for this image variant. |
 | `AMQP_AUTH_MODE` | Core configuration for this image variant. |

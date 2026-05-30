@@ -106,7 +106,7 @@ def bluesky_kafka_image():
 
 @pytest.fixture(scope='module')
 def entsoe_kafka_image():
-    return build_image('entsoe', dockerfile='Dockerfile.kafka')
+    return build_image('entsoe', dockerfile='Dockerfile')
 
 @pytest.fixture(scope='module')
 def hubeau_image():

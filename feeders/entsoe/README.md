@@ -55,7 +55,7 @@ This bridge ingests **ENTSO-E Transparency Platform REST API** and republishes n
 
 | Variant | Dockerfile | Image | Default delivery shape |
 |---|---|---|---|
-| Kafka | `Dockerfile` | `ghcr.io/clemensv/real-time-sources-entsoe-kafka:latest` | CloudEvents to Kafka-compatible endpoints |
+| Kafka | `Dockerfile` | `ghcr.io/clemensv/real-time-sources-entsoe:latest` | CloudEvents to Kafka-compatible endpoints |
 | MQTT | `Dockerfile.mqtt` | `ghcr.io/clemensv/real-time-sources-entsoe-mqtt:latest` | CloudEvents over MQTT 5.0 topic hierarchy |
 | AMQP | `Dockerfile.amqp` | `ghcr.io/clemensv/real-time-sources-entsoe-amqp:latest` | CloudEvents over AMQP 1.0 address |
 
@@ -104,7 +104,7 @@ entsoe/
 ```bash
 docker run --rm \
   -e ENTSOE_SECURITY_TOKEN="<token>" -e CONNECTION_STRING="<connection-string>" \
-  ghcr.io/clemensv/real-time-sources-entsoe-kafka:latest
+  ghcr.io/clemensv/real-time-sources-entsoe:latest
 ```
 
 ### MQTT

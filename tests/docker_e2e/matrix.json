@@ -526,7 +526,7 @@
     {
       "dir": "feeders/entsoe",
       "image": "entsoe-kafka",
-      "file": "Dockerfile.kafka",
+      "file": "Dockerfile",
       "module": "entsoe_kafka"
     },
     {
@@ -2021,7 +2021,8 @@
     {
       "dir": "feeders/entsoe",
       "image": "entsoe-kafka",
-      "file": "Dockerfile.kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
       "test_class": "TestEntsoeKafkaDockerFlow"
     },
     {

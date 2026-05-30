@@ -22,7 +22,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the broker that receives ENTSO-E generation, price, load, and cross-border flow CloudEvents."
       }
     },
     "location": {
@@ -37,6 +37,41 @@
       "defaultValue": "",
       "metadata": {
         "description": "ENTSO-E security token used to authenticate upstream requests. Register for or retrieve it from the upstream provider's account/API portal before deployment. See feeders/entsoe/CONTAINER.md for details."
+      }
+    },
+    "entsoeDomains": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Comma-separated ENTSO-E domain identifiers to poll, such as 10Y1001A1001A83F for the DE-LU bidding zone. Leave empty to use the feeder default."
+      }
+    },
+    "entsoeDocumentTypes": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Comma-separated ENTSO-E document type codes to request from the Transparency Platform, such as A75 prices, A65 load, A11 generation, or A09 cross-border flows. Leave empty to use the feeder default mix."
+      }
+    },
+    "entsoeLookbackHours": {
+      "type": "string",
+      "defaultValue": "24",
+      "metadata": {
+        "description": "How many hours of recent upstream history to re-read on startup so the feeder can backfill gaps after downtime."
+      }
+    },
+    "entsoeCrossBorderPairs": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional comma-separated source>target EIC domain pairs that narrow cross-border flow polling to specific interconnectors."
+      }
+    },
+    "entsoeSampleMode": {
+      "type": "string",
+      "defaultValue": "false",
+      "metadata": {
+        "description": "Set true only to run against the feeder's built-in sample payloads for smoke testing instead of the live ENTSO-E API."
       }
     }
   },
@@ -186,6 +221,26 @@
                 {
                   "name": "ENTSOE_SECURITY_TOKEN",
                   "secureValue": "[parameters('entsoeSecurityToken')]"
+                },
+                {
+                  "name": "ENTSOE_DOMAINS",
+                  "value": "[parameters('entsoeDomains')]"
+                },
+                {
+                  "name": "ENTSOE_DOCUMENT_TYPES",
+                  "value": "[parameters('entsoeDocumentTypes')]"
+                },
+                {
+                  "name": "ENTSOE_LOOKBACK_HOURS",
+                  "value": "[parameters('entsoeLookbackHours')]"
+                },
+                {
+                  "name": "ENTSOE_CROSS_BORDER_PAIRS",
+                  "value": "[parameters('entsoeCrossBorderPairs')]"
+                },
+                {
+                  "name": "ENTSOE_SAMPLE_MODE",
+                  "value": "[parameters('entsoeSampleMode')]"
                 },
                 {
                   "name": "PYTHONUNBUFFERED",
