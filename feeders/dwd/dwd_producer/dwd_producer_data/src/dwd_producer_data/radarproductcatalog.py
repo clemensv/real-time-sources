@@ -17,18 +17,22 @@ import json
 @dataclass
 class RadarProductCatalog:
     """
-    Reference (catalog) event describing a single DWD radar composite product family. One event is emitted per product directory the first time the bridge observes it, so consumers can build a catalog of available products and the URLs from which their files can be discovered.
+    A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
     
     Attributes:
         product (str)
         file_url (str)
         description (typing.Optional[str])
+        state (typing.Optional[str])
+        kind (typing.Optional[str])
     """
     
     
     product: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="product"))
     file_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_url"))
     description: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
+    kind: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="kind"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'RadarProductCatalog':
@@ -155,7 +159,9 @@ class RadarProductCatalog:
             An instance of the dataclass.
         """
         return cls(
-            product='qguxipdycvjcynmglvln',
-            file_url='tbwiztcevmzqudqeeemq',
-            description='nuzqsdkovzphvooczssy'
+            product='kmsrkozwlkgtbinwwfcd',
+            file_url='fcjirvzrnzuoowrgfktb',
+            description='mtjjbmwvyprnmmhmxcim',
+            state='dprnhypwzfstcrbkycpk',
+            kind='viclbxkkpnigwjhgavwz'
         )

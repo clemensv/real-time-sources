@@ -17,7 +17,7 @@ import json
 @dataclass
 class Alert:
     """
-    Alert
+    A weather or environmental alert from Germany's Deutscher Wetterdienst (DWD). It fires when the upstream source publishes or updates a warning that may affect the covered area.
     
     Attributes:
         identifier (str)
@@ -36,6 +36,7 @@ class Alert:
         expires (typing.Optional[str])
         area_desc (typing.Optional[str])
         geocodes (typing.Optional[str])
+        state (typing.Optional[str])
     """
     
     
@@ -55,6 +56,7 @@ class Alert:
     expires: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="expires"))
     area_desc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_desc"))
     geocodes: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geocodes"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Alert':
@@ -181,20 +183,21 @@ class Alert:
             An instance of the dataclass.
         """
         return cls(
-            identifier='mbxluyuvkfhcfmlqvecx',
-            sender='mskdxcvnmeencjgdafal',
-            sent='fzjbfjtncoepbyzkkkuh',
-            status='lnmdnomifxjikdkoxhab',
-            msg_type='neesplyfkxcabqxbikep',
-            severity='bcwajfdlsqlyzrwizyfn',
-            urgency='nowtipyxgdgksdqhvqki',
-            certainty='qwphlxyfmfjcbpoqcasy',
-            event='sxlmhwwgnymthnnzyexu',
-            headline='uxbvvlxassndwgysauae',
-            description='djmjfbpahlluxvuqducd',
-            effective='azcstzrtwjmyuzfrrezn',
-            onset='wanvcpxgtuzuycfbogch',
-            expires='sqgmdxxzvzpclcrdctqo',
-            area_desc='adnlxigkdtvcqapmghfr',
-            geocodes='yrzvkajprptamswjvbcp'
+            identifier='airgvxphhtnrcdksytkn',
+            sender='axjgyugnskspixigqyho',
+            sent='fdolidcclbdopmmyljac',
+            status='zsnwuvsytbsalinfrqru',
+            msg_type='lkodoeokwleiledqlfia',
+            severity='ocdxwzsadimqdtxflypd',
+            urgency='odvrbibzhmzgwlsvcnpg',
+            certainty='sfhhalesznpryvjtmbdf',
+            event='oanwjoxwkynvynfmcoqo',
+            headline='sivmquqryzrzxddyksyq',
+            description='mubrrdvnxfhmxfsuoiaf',
+            effective='dywoismvhuxcglytfdme',
+            onset='covljepfimmnenxwrlzc',
+            expires='mdzpybgixqovdsqvjmve',
+            area_desc='fvfuwhharjqxeeqqthbc',
+            geocodes='ylncseaqljcusnixvzqt',
+            state='pousijqydlhcqommkcer'
         )

@@ -17,7 +17,7 @@ import json
 @dataclass
 class ExtremeWind10Min:
     """
-    ExtremeWind10Min
+    A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
     
     Attributes:
         station_id (str)
@@ -26,6 +26,7 @@ class ExtremeWind10Min:
         wind_speed_maximum (typing.Optional[float])
         wind_speed_minimum (typing.Optional[float])
         wind_direction_at_maximum (typing.Optional[float])
+        state (typing.Optional[str])
     """
     
     
@@ -35,6 +36,7 @@ class ExtremeWind10Min:
     wind_speed_maximum: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_speed_maximum"))
     wind_speed_minimum: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_speed_minimum"))
     wind_direction_at_maximum: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_direction_at_maximum"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'ExtremeWind10Min':
@@ -161,10 +163,11 @@ class ExtremeWind10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='dlbpsjqcjneblniputko',
-            timestamp='iydcabadzhptfoqvlczx',
-            quality_level=int(8),
-            wind_speed_maximum=float(11.27415002549732),
-            wind_speed_minimum=float(16.80454720760114),
-            wind_direction_at_maximum=float(3.936125623032438)
+            station_id='nhjamuejdxnyywzlnoyy',
+            timestamp='gblrlwilnifzvlitymxp',
+            quality_level=int(88),
+            wind_speed_maximum=float(97.2358658126792),
+            wind_speed_minimum=float(65.2054557855107),
+            wind_direction_at_maximum=float(46.16873052709371),
+            state='qrgwtvnjimjqrshurdtz'
         )

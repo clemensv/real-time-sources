@@ -17,7 +17,7 @@ import json
 @dataclass
 class IconD2ForecastFile:
     """
-    Telemetry-style event announcing that a single ICON-D2 GRIB2 forecast file has appeared or been updated on the DWD Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload.
+    A forecast from Germany's Deutscher Wetterdienst (DWD) for one area or station. It carries weather observations, warnings, and forecast product updates for the period published by the upstream source.
     
     Attributes:
         file_url (str)
@@ -30,6 +30,9 @@ class IconD2ForecastFile:
         level (typing.Optional[str])
         modified (str)
         size_bytes (typing.Optional[int])
+        state (typing.Optional[str])
+        variable (typing.Optional[str])
+        file_id (typing.Optional[str])
     """
     
     
@@ -43,6 +46,9 @@ class IconD2ForecastFile:
     level: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="level"))
     modified: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="modified"))
     size_bytes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="size_bytes"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
+    variable: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="variable"))
+    file_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_id"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'IconD2ForecastFile':
@@ -169,14 +175,17 @@ class IconD2ForecastFile:
             An instance of the dataclass.
         """
         return cls(
-            file_url='rkfmnzauwdbgxonffndw',
-            model='ssldtayrxwgtrmivobrm',
-            file_name='iplccujqglbujxhudqtw',
-            run='oymffhlpttjkimyteibw',
-            forecast_hour=int(21),
-            parameter='kvjmnrojxhegfwqwigrs',
-            level_type='vzmpdyhsnijoervanrqm',
-            level='szihwndpvxppepvcogkt',
-            modified='lnzqzwwjhtbcxwqdsahw',
-            size_bytes=int(55)
+            file_url='dbiblstjywjioniwcptj',
+            model='nbnmmptphtyudlurriub',
+            file_name='ojwybytfkhxcstosprfv',
+            run='sctejqzmqpdntvxnpdky',
+            forecast_hour=int(14),
+            parameter='wvoceckmlthrymqgqliu',
+            level_type='rzonlfmceqlgvmrawhwp',
+            level='uezxawhlnyiljbzxfrnd',
+            modified='poiehosforrncrfozppj',
+            size_bytes=int(64),
+            state='scboofczqgqukszbqoit',
+            variable='jorvhumsuhxwcjuyawhp',
+            file_id='msyfvfpzrmurfrxrkifp'
         )

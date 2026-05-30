@@ -17,7 +17,7 @@ import json
 @dataclass
 class ExtremeTemperature10Min:
     """
-    ExtremeTemperature10Min
+    A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
     
     Attributes:
         station_id (str)
@@ -25,6 +25,7 @@ class ExtremeTemperature10Min:
         quality_level (typing.Optional[int])
         air_temperature_maximum_2m (typing.Optional[float])
         air_temperature_minimum_5cm (typing.Optional[float])
+        state (typing.Optional[str])
     """
     
     
@@ -33,6 +34,7 @@ class ExtremeTemperature10Min:
     quality_level: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality_level"))
     air_temperature_maximum_2m: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature_maximum_2m"))
     air_temperature_minimum_5cm: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature_minimum_5cm"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'ExtremeTemperature10Min':
@@ -159,9 +161,10 @@ class ExtremeTemperature10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='noxeetwwftjvrohntnvo',
-            timestamp='oivcqfuolrfhvbihiqpk',
-            quality_level=int(12),
-            air_temperature_maximum_2m=float(42.02168570478453),
-            air_temperature_minimum_5cm=float(57.65981172989354)
+            station_id='rebfcjpzfkqnwsgxrmyp',
+            timestamp='rdtmhvjlzqpgttluufou',
+            quality_level=int(8),
+            air_temperature_maximum_2m=float(47.66505643287593),
+            air_temperature_minimum_5cm=float(71.20816999199896),
+            state='tojteceatcvecpourzow'
         )

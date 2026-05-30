@@ -17,7 +17,7 @@ import json
 @dataclass
 class Precipitation10Min:
     """
-    Precipitation10Min
+    A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
     
     Attributes:
         station_id (str)
@@ -25,6 +25,7 @@ class Precipitation10Min:
         quality_level (typing.Optional[int])
         precipitation_height (typing.Optional[float])
         precipitation_indicator (typing.Optional[int])
+        state (typing.Optional[str])
     """
     
     
@@ -33,6 +34,7 @@ class Precipitation10Min:
     quality_level: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality_level"))
     precipitation_height: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation_height"))
     precipitation_indicator: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation_indicator"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Precipitation10Min':
@@ -159,9 +161,10 @@ class Precipitation10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='yylywqifsztxlxgzhwio',
-            timestamp='jwuoyctgrjcqgsilrpiq',
-            quality_level=int(21),
-            precipitation_height=float(95.92026568739396),
-            precipitation_indicator=int(9)
+            station_id='iazbyymyscjvagdrttrt',
+            timestamp='ccsulgupcgljpxclchss',
+            quality_level=int(39),
+            precipitation_height=float(39.81128506093303),
+            precipitation_indicator=int(26),
+            state='bjxfzlixnqtucuohmvsi'
         )

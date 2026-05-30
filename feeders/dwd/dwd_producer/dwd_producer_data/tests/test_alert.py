@@ -28,22 +28,23 @@ class Test_Alert(unittest.TestCase):
         Create instance of Alert for testing
         """
         instance = Alert(
-            identifier='mbxluyuvkfhcfmlqvecx',
-            sender='mskdxcvnmeencjgdafal',
-            sent='fzjbfjtncoepbyzkkkuh',
-            status='lnmdnomifxjikdkoxhab',
-            msg_type='neesplyfkxcabqxbikep',
-            severity='bcwajfdlsqlyzrwizyfn',
-            urgency='nowtipyxgdgksdqhvqki',
-            certainty='qwphlxyfmfjcbpoqcasy',
-            event='sxlmhwwgnymthnnzyexu',
-            headline='uxbvvlxassndwgysauae',
-            description='djmjfbpahlluxvuqducd',
-            effective='azcstzrtwjmyuzfrrezn',
-            onset='wanvcpxgtuzuycfbogch',
-            expires='sqgmdxxzvzpclcrdctqo',
-            area_desc='adnlxigkdtvcqapmghfr',
-            geocodes='yrzvkajprptamswjvbcp'
+            identifier='airgvxphhtnrcdksytkn',
+            sender='axjgyugnskspixigqyho',
+            sent='fdolidcclbdopmmyljac',
+            status='zsnwuvsytbsalinfrqru',
+            msg_type='lkodoeokwleiledqlfia',
+            severity='ocdxwzsadimqdtxflypd',
+            urgency='odvrbibzhmzgwlsvcnpg',
+            certainty='sfhhalesznpryvjtmbdf',
+            event='oanwjoxwkynvynfmcoqo',
+            headline='sivmquqryzrzxddyksyq',
+            description='mubrrdvnxfhmxfsuoiaf',
+            effective='dywoismvhuxcglytfdme',
+            onset='covljepfimmnenxwrlzc',
+            expires='mdzpybgixqovdsqvjmve',
+            area_desc='fvfuwhharjqxeeqqthbc',
+            geocodes='ylncseaqljcusnixvzqt',
+            state='pousijqydlhcqommkcer'
         )
         return instance
 
@@ -52,7 +53,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test identifier property
         """
-        test_value = 'mbxluyuvkfhcfmlqvecx'
+        test_value = 'airgvxphhtnrcdksytkn'
         self.instance.identifier = test_value
         self.assertEqual(self.instance.identifier, test_value)
     
@@ -60,7 +61,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test sender property
         """
-        test_value = 'mskdxcvnmeencjgdafal'
+        test_value = 'axjgyugnskspixigqyho'
         self.instance.sender = test_value
         self.assertEqual(self.instance.sender, test_value)
     
@@ -68,7 +69,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test sent property
         """
-        test_value = 'fzjbfjtncoepbyzkkkuh'
+        test_value = 'fdolidcclbdopmmyljac'
         self.instance.sent = test_value
         self.assertEqual(self.instance.sent, test_value)
     
@@ -76,7 +77,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test status property
         """
-        test_value = 'lnmdnomifxjikdkoxhab'
+        test_value = 'zsnwuvsytbsalinfrqru'
         self.instance.status = test_value
         self.assertEqual(self.instance.status, test_value)
     
@@ -84,7 +85,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test msg_type property
         """
-        test_value = 'neesplyfkxcabqxbikep'
+        test_value = 'lkodoeokwleiledqlfia'
         self.instance.msg_type = test_value
         self.assertEqual(self.instance.msg_type, test_value)
     
@@ -92,7 +93,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = 'bcwajfdlsqlyzrwizyfn'
+        test_value = 'ocdxwzsadimqdtxflypd'
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     
@@ -100,7 +101,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test urgency property
         """
-        test_value = 'nowtipyxgdgksdqhvqki'
+        test_value = 'odvrbibzhmzgwlsvcnpg'
         self.instance.urgency = test_value
         self.assertEqual(self.instance.urgency, test_value)
     
@@ -108,7 +109,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test certainty property
         """
-        test_value = 'qwphlxyfmfjcbpoqcasy'
+        test_value = 'sfhhalesznpryvjtmbdf'
         self.instance.certainty = test_value
         self.assertEqual(self.instance.certainty, test_value)
     
@@ -116,7 +117,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test event property
         """
-        test_value = 'sxlmhwwgnymthnnzyexu'
+        test_value = 'oanwjoxwkynvynfmcoqo'
         self.instance.event = test_value
         self.assertEqual(self.instance.event, test_value)
     
@@ -124,7 +125,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test headline property
         """
-        test_value = 'uxbvvlxassndwgysauae'
+        test_value = 'sivmquqryzrzxddyksyq'
         self.instance.headline = test_value
         self.assertEqual(self.instance.headline, test_value)
     
@@ -132,7 +133,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'djmjfbpahlluxvuqducd'
+        test_value = 'mubrrdvnxfhmxfsuoiaf'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -140,7 +141,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test effective property
         """
-        test_value = 'azcstzrtwjmyuzfrrezn'
+        test_value = 'dywoismvhuxcglytfdme'
         self.instance.effective = test_value
         self.assertEqual(self.instance.effective, test_value)
     
@@ -148,7 +149,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test onset property
         """
-        test_value = 'wanvcpxgtuzuycfbogch'
+        test_value = 'covljepfimmnenxwrlzc'
         self.instance.onset = test_value
         self.assertEqual(self.instance.onset, test_value)
     
@@ -156,7 +157,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test expires property
         """
-        test_value = 'sqgmdxxzvzpclcrdctqo'
+        test_value = 'mdzpybgixqovdsqvjmve'
         self.instance.expires = test_value
         self.assertEqual(self.instance.expires, test_value)
     
@@ -164,7 +165,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test area_desc property
         """
-        test_value = 'adnlxigkdtvcqapmghfr'
+        test_value = 'fvfuwhharjqxeeqqthbc'
         self.instance.area_desc = test_value
         self.assertEqual(self.instance.area_desc, test_value)
     
@@ -172,9 +173,17 @@ class Test_Alert(unittest.TestCase):
         """
         Test geocodes property
         """
-        test_value = 'yrzvkajprptamswjvbcp'
+        test_value = 'ylncseaqljcusnixvzqt'
         self.instance.geocodes = test_value
         self.assertEqual(self.instance.geocodes, test_value)
+    
+    def test_state_property(self):
+        """
+        Test state property
+        """
+        test_value = 'pousijqydlhcqommkcer'
+        self.instance.state = test_value
+        self.assertEqual(self.instance.state, test_value)
     
     def test_to_byte_array_json(self):
         """

@@ -17,7 +17,7 @@ import json
 @dataclass
 class HourlyObservation:
     """
-    HourlyObservation
+    A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
     
     Attributes:
         station_id (str)
@@ -26,6 +26,7 @@ class HourlyObservation:
         parameter (str)
         value (typing.Optional[float])
         unit (typing.Optional[str])
+        state (typing.Optional[str])
     """
     
     
@@ -35,6 +36,7 @@ class HourlyObservation:
     parameter: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter"))
     value: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     unit: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unit"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'HourlyObservation':
@@ -161,10 +163,11 @@ class HourlyObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='whbezysxazvpruzbygpp',
-            timestamp='yijydeddhswvxhpfrybg',
-            quality_level=int(1),
-            parameter='oceecawgbysuvtwlnufs',
-            value=float(99.18777440635115),
-            unit='tglizdeonvylhiyyxtvc'
+            station_id='lqvzeafltbohrybpkngb',
+            timestamp='qguilmbrdbpxadjzgqyp',
+            quality_level=int(21),
+            parameter='eplydilonfrpgormleti',
+            value=float(32.86905648008067),
+            unit='iguwmrmvttssnlwserfy',
+            state='uktpubanaalodqckifpe'
         )

@@ -1261,7 +1261,11 @@
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "pressure_station_level": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "PP_10"
                     },
@@ -1296,7 +1300,11 @@
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "state": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -1358,7 +1366,11 @@
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "state": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -1420,7 +1432,11 @@
                     "description": "Wind direction reported by the station."
                   },
                   "state": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -1496,7 +1512,11 @@
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "state": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -1557,7 +1577,11 @@
                     "description": "Unit used for the reported value."
                   },
                   "state": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -1651,7 +1675,11 @@
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "state": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -1720,7 +1748,11 @@
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "state": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -1782,7 +1814,11 @@
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "state": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -1825,11 +1861,19 @@
                     "description": "Optional human-readable description of the radar product as configured by the bridge. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata."
                   },
                   "state": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   },
                   "kind": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'kind' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -1885,7 +1929,11 @@
                     "description": "Normalized routing field 'file_id' added for MQTT/AMQP subscriber filtering."
                   },
                   "state": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   },
                   "product_type": {
@@ -1932,11 +1980,19 @@
                     "description": "Optional human-readable description of the forecast model emitted as reference data. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata."
                   },
                   "state": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   },
                   "kind": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'kind' added for MQTT/AMQP subscriber filtering."
                   }
                 },
@@ -2023,7 +2079,11 @@
                     "description": "File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size rely on the Content-Length header from the actual GET on file_url. Individual ICON-D2 .grib2.bz2 files are typically well below 1 MB compressed."
                   },
                   "state": {
-                    "type": "string",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
                     "description": "Normalized routing field 'state' added for MQTT/AMQP subscriber filtering."
                   },
                   "variable": {

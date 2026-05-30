@@ -253,6 +253,7 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 | `DWD_MODULES_DISABLED` | Comma-separated module names to disable. |
 | `DWD_10MIN_PARAMS` | Comma-separated 10-minute categories such as `air_temperature,precipitation,wind,solar`. |
 | `DWD_STATIONS` | Comma-separated list of station ids to include. Default: all stations. |
+| `DWD_BASE_URL` | Override URL for the upstream DWD opendata endpoint. Default `https://opendata.dwd.de`. |
 | `DWD_MOCK` | `true` emits mock events for Docker E2E and smoke testing. |
 
 ### MQTT image

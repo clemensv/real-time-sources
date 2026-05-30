@@ -17,7 +17,7 @@ import json
 @dataclass
 class StationMetadata:
     """
-    StationMetadata
+    A reference record published by Germany's Deutscher Wetterdienst (DWD). It lets consumers label, group, and route the live measurement or forecast events.
     
     Attributes:
         station_id (str)
@@ -165,12 +165,12 @@ class StationMetadata:
             An instance of the dataclass.
         """
         return cls(
-            station_id='bbxczjabtcoxnutbqryk',
-            station_name='wtxsxmfkwxaazymolgsv',
-            latitude=float(12.12342266324482),
-            longitude=float(66.33852314812091),
-            elevation=float(78.02314607078537),
-            state='ogzaqylxsqkrisomdfxg',
-            from_date='qbasnsiaowjpaavottns',
-            to_date='aobeavtsldgyupyvmoms'
+            station_id='isacqoiswlxqdryuxzfv',
+            station_name='kbtavzbglpnaotkjjvrx',
+            latitude=float(90.29245743692206),
+            longitude=float(35.68891290471936),
+            elevation=float(62.55508001698033),
+            state='fcchcyjsrtnhactteoop',
+            from_date='hgopdhrlbferpigyjxhm',
+            to_date='pbilmoymevbnlnukyxik'
         )

@@ -17,7 +17,7 @@ import json
 @dataclass
 class RadarFileProduct:
     """
-    Telemetry-style event announcing that a single DWD radar composite product file has appeared or been updated on the Open Data server. The event carries enough metadata to fetch the file directly via an unauthenticated HTTPS GET against file_url; it does not embed the file payload.
+    A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
     
     Attributes:
         file_url (str)
@@ -25,6 +25,9 @@ class RadarFileProduct:
         file_name (str)
         modified (str)
         size_bytes (typing.Optional[int])
+        file_id (typing.Optional[str])
+        state (typing.Optional[str])
+        product_type (typing.Optional[str])
     """
     
     
@@ -33,6 +36,9 @@ class RadarFileProduct:
     file_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_name"))
     modified: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="modified"))
     size_bytes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="size_bytes"))
+    file_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_id"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
+    product_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="product_type"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'RadarFileProduct':
@@ -159,9 +165,12 @@ class RadarFileProduct:
             An instance of the dataclass.
         """
         return cls(
-            file_url='weooxoavwfemfmvraxlv',
-            product='yqgqglixcbmhlkgkiyeq',
-            file_name='kkjjfddkhanoxanvjxlq',
-            modified='xfqtxruduouwydiwabfd',
-            size_bytes=int(47)
+            file_url='ltbjxxpzcdqjbuljrszv',
+            product='yjptefiucckrficieipn',
+            file_name='dkcyrparsfniffqgqxih',
+            modified='mkpejjvaadmrxlqwwirg',
+            size_bytes=int(41),
+            file_id='qwkfcpydbdmajrpwvtwr',
+            state='umegdwjpaxbpxdydtebd',
+            product_type='usbkxnfcbiazyoydgetx'
         )

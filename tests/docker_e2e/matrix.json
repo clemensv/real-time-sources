@@ -1347,6 +1347,12 @@
     },
     {
       "dir": "feeders/dwd",
+      "image": "dwd",
+      "file": "Dockerfile",
+      "module": "dwd"
+    },
+    {
+      "dir": "feeders/dwd",
       "image": "dwd-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "dwd_mqtt"
@@ -3048,6 +3054,12 @@
       "image": "bom-australia-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestBomAustraliaAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/dwd",
+      "image": "dwd",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestDWDDockerFlow"
     },
     {
       "dir": "feeders/dwd",

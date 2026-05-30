@@ -22,7 +22,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the broker that receives DWD observations, CAP weather alerts, station metadata, and ICON-D2 grid CloudEvents."
       }
     },
     "location": {
@@ -44,6 +44,27 @@
       "defaultValue": "",
       "metadata": {
         "description": "Comma-separated module names to disable."
+      }
+    },
+    "dwd10minParams": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Comma-separated 10-minute categories such as air_temperature,precipitation,wind,solar."
+      }
+    },
+    "dwdStations": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Comma-separated list of station ids to include. Default: all stations."
+      }
+    },
+    "dwdBaseUrl": {
+      "type": "string",
+      "defaultValue": "https://opendata.dwd.de",
+      "metadata": {
+        "description": "Override URL for the upstream DWD opendata endpoint. Default https://opendata.dwd.de."
       }
     },
     "pollingInterval": {
@@ -200,6 +221,18 @@
                 {
                   "name": "DWD_MODULES_DISABLED",
                   "value": "[parameters('dwdModulesDisabled')]"
+                },
+                {
+                  "name": "DWD_10MIN_PARAMS",
+                  "value": "[parameters('dwd10minParams')]"
+                },
+                {
+                  "name": "DWD_STATIONS",
+                  "value": "[parameters('dwdStations')]"
+                },
+                {
+                  "name": "DWD_BASE_URL",
+                  "value": "[parameters('dwdBaseUrl')]"
                 },
                 {
                   "name": "POLLING_INTERVAL",

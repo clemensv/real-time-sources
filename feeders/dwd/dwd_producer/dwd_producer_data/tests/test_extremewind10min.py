@@ -28,12 +28,13 @@ class Test_ExtremeWind10Min(unittest.TestCase):
         Create instance of ExtremeWind10Min for testing
         """
         instance = ExtremeWind10Min(
-            station_id='dlbpsjqcjneblniputko',
-            timestamp='iydcabadzhptfoqvlczx',
-            quality_level=int(8),
-            wind_speed_maximum=float(11.27415002549732),
-            wind_speed_minimum=float(16.80454720760114),
-            wind_direction_at_maximum=float(3.936125623032438)
+            station_id='nhjamuejdxnyywzlnoyy',
+            timestamp='gblrlwilnifzvlitymxp',
+            quality_level=int(88),
+            wind_speed_maximum=float(97.2358658126792),
+            wind_speed_minimum=float(65.2054557855107),
+            wind_direction_at_maximum=float(46.16873052709371),
+            state='qrgwtvnjimjqrshurdtz'
         )
         return instance
 
@@ -42,7 +43,7 @@ class Test_ExtremeWind10Min(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'dlbpsjqcjneblniputko'
+        test_value = 'nhjamuejdxnyywzlnoyy'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +51,7 @@ class Test_ExtremeWind10Min(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'iydcabadzhptfoqvlczx'
+        test_value = 'gblrlwilnifzvlitymxp'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -58,7 +59,7 @@ class Test_ExtremeWind10Min(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(8)
+        test_value = int(88)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
@@ -66,7 +67,7 @@ class Test_ExtremeWind10Min(unittest.TestCase):
         """
         Test wind_speed_maximum property
         """
-        test_value = float(11.27415002549732)
+        test_value = float(97.2358658126792)
         self.instance.wind_speed_maximum = test_value
         self.assertEqual(self.instance.wind_speed_maximum, test_value)
     
@@ -74,7 +75,7 @@ class Test_ExtremeWind10Min(unittest.TestCase):
         """
         Test wind_speed_minimum property
         """
-        test_value = float(16.80454720760114)
+        test_value = float(65.2054557855107)
         self.instance.wind_speed_minimum = test_value
         self.assertEqual(self.instance.wind_speed_minimum, test_value)
     
@@ -82,9 +83,17 @@ class Test_ExtremeWind10Min(unittest.TestCase):
         """
         Test wind_direction_at_maximum property
         """
-        test_value = float(3.936125623032438)
+        test_value = float(46.16873052709371)
         self.instance.wind_direction_at_maximum = test_value
         self.assertEqual(self.instance.wind_direction_at_maximum, test_value)
+    
+    def test_state_property(self):
+        """
+        Test state property
+        """
+        test_value = 'qrgwtvnjimjqrshurdtz'
+        self.instance.state = test_value
+        self.assertEqual(self.instance.state, test_value)
     
     def test_to_byte_array_json(self):
         """

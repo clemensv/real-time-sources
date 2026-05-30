@@ -28,9 +28,11 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         Create instance of ForecastModelCatalog for testing
         """
         instance = ForecastModelCatalog(
-            model='gojaklqgmltoqkjwhrht',
-            file_url='xxaehrrzkdziboffsmvt',
-            description='wcuwamxeicqmhwzerggc'
+            model='cwlfvacdumnqoymxogbt',
+            file_url='lvyirujueblxjsgqmdzp',
+            description='gbjsgropzblhnuzswtsr',
+            state='fdfbgutpgnkimkkmxjwv',
+            kind='kwjdpoldujoworuggxbs'
         )
         return instance
 
@@ -39,7 +41,7 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         """
         Test model property
         """
-        test_value = 'gojaklqgmltoqkjwhrht'
+        test_value = 'cwlfvacdumnqoymxogbt'
         self.instance.model = test_value
         self.assertEqual(self.instance.model, test_value)
     
@@ -47,7 +49,7 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         """
         Test file_url property
         """
-        test_value = 'xxaehrrzkdziboffsmvt'
+        test_value = 'lvyirujueblxjsgqmdzp'
         self.instance.file_url = test_value
         self.assertEqual(self.instance.file_url, test_value)
     
@@ -55,9 +57,25 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'wcuwamxeicqmhwzerggc'
+        test_value = 'gbjsgropzblhnuzswtsr'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
+    
+    def test_state_property(self):
+        """
+        Test state property
+        """
+        test_value = 'fdfbgutpgnkimkkmxjwv'
+        self.instance.state = test_value
+        self.assertEqual(self.instance.state, test_value)
+    
+    def test_kind_property(self):
+        """
+        Test kind property
+        """
+        test_value = 'kwjdpoldujoworuggxbs'
+        self.instance.kind = test_value
+        self.assertEqual(self.instance.kind, test_value)
     
     def test_to_byte_array_json(self):
         """

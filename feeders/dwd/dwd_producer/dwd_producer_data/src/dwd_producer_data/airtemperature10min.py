@@ -17,7 +17,7 @@ import json
 @dataclass
 class AirTemperature10Min:
     """
-    AirTemperature10Min
+    A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
     
     Attributes:
         station_id (str)
@@ -28,6 +28,7 @@ class AirTemperature10Min:
         air_temperature_5cm (typing.Optional[float])
         relative_humidity (typing.Optional[float])
         dew_point_temperature (typing.Optional[float])
+        state (typing.Optional[str])
     """
     
     
@@ -39,6 +40,7 @@ class AirTemperature10Min:
     air_temperature_5cm: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="air_temperature_5cm"))
     relative_humidity: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="relative_humidity"))
     dew_point_temperature: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="dew_point_temperature"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'AirTemperature10Min':
@@ -165,12 +167,13 @@ class AirTemperature10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='psnaabrrsibrnjgsmqqs',
-            timestamp='kjwslurqxfvtulbutndr',
-            quality_level=int(96),
-            pressure_station_level=float(96.827412553205),
-            air_temperature_2m=float(25.55480890266232),
-            air_temperature_5cm=float(86.12134358845825),
-            relative_humidity=float(56.219561099188574),
-            dew_point_temperature=float(19.322643739604473)
+            station_id='gdkuktndhpiaaiiqnfql',
+            timestamp='uwlqcsurgkprwsqpjhct',
+            quality_level=int(16),
+            pressure_station_level=float(84.90244971661595),
+            air_temperature_2m=float(58.9329974236785),
+            air_temperature_5cm=float(95.78392558053304),
+            relative_humidity=float(43.048923151962214),
+            dew_point_temperature=float(31.529882109160745),
+            state='pmieisvblfahickrdbiy'
         )

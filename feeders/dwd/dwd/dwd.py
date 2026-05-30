@@ -154,7 +154,30 @@ def _emit_event(cdc_event_producer: DEDWDCDCEventProducer,
                  event: Dict[str, Any]) -> None:
     """Send a single event through the typed Kafka producer."""
     etype = event["type"]
-    data = event["data"]
+    data = dict(event["data"])
+
+    if etype in {
+        "air_temperature_10min",
+        "precipitation_10min",
+        "wind_10min",
+        "solar_10min",
+        "hourly_observation",
+        "extreme_wind_10min",
+        "extreme_temperature_10min",
+        "weather_alert",
+    }:
+        data.setdefault("state", None)
+    elif etype in {"radar_product_catalog", "forecast_model_catalog"}:
+        data.setdefault("state", None)
+        data.setdefault("kind", None)
+    elif etype == "radar_file_product":
+        data.setdefault("file_id", None)
+        data.setdefault("state", None)
+        data.setdefault("product_type", None)
+    elif etype == "icon_d2_forecast_file":
+        data.setdefault("state", None)
+        data.setdefault("variable", None)
+        data.setdefault("file_id", None)
 
     if etype == "station_metadata":
         cdc_event_producer.send_de_dwd_cdc_station_metadata(

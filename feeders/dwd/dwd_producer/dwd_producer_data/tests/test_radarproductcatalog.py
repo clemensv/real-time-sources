@@ -28,9 +28,11 @@ class Test_RadarProductCatalog(unittest.TestCase):
         Create instance of RadarProductCatalog for testing
         """
         instance = RadarProductCatalog(
-            product='qguxipdycvjcynmglvln',
-            file_url='tbwiztcevmzqudqeeemq',
-            description='nuzqsdkovzphvooczssy'
+            product='kmsrkozwlkgtbinwwfcd',
+            file_url='fcjirvzrnzuoowrgfktb',
+            description='mtjjbmwvyprnmmhmxcim',
+            state='dprnhypwzfstcrbkycpk',
+            kind='viclbxkkpnigwjhgavwz'
         )
         return instance
 
@@ -39,7 +41,7 @@ class Test_RadarProductCatalog(unittest.TestCase):
         """
         Test product property
         """
-        test_value = 'qguxipdycvjcynmglvln'
+        test_value = 'kmsrkozwlkgtbinwwfcd'
         self.instance.product = test_value
         self.assertEqual(self.instance.product, test_value)
     
@@ -47,7 +49,7 @@ class Test_RadarProductCatalog(unittest.TestCase):
         """
         Test file_url property
         """
-        test_value = 'tbwiztcevmzqudqeeemq'
+        test_value = 'fcjirvzrnzuoowrgfktb'
         self.instance.file_url = test_value
         self.assertEqual(self.instance.file_url, test_value)
     
@@ -55,9 +57,25 @@ class Test_RadarProductCatalog(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'nuzqsdkovzphvooczssy'
+        test_value = 'mtjjbmwvyprnmmhmxcim'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
+    
+    def test_state_property(self):
+        """
+        Test state property
+        """
+        test_value = 'dprnhypwzfstcrbkycpk'
+        self.instance.state = test_value
+        self.assertEqual(self.instance.state, test_value)
+    
+    def test_kind_property(self):
+        """
+        Test kind property
+        """
+        test_value = 'viclbxkkpnigwjhgavwz'
+        self.instance.kind = test_value
+        self.assertEqual(self.instance.kind, test_value)
     
     def test_to_byte_array_json(self):
         """

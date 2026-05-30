@@ -17,7 +17,7 @@ import json
 @dataclass
 class Wind10Min:
     """
-    Wind10Min
+    A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
     
     Attributes:
         station_id (str)
@@ -25,6 +25,7 @@ class Wind10Min:
         quality_level (typing.Optional[int])
         wind_speed (typing.Optional[float])
         wind_direction (typing.Optional[float])
+        state (typing.Optional[str])
     """
     
     
@@ -33,6 +34,7 @@ class Wind10Min:
     quality_level: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality_level"))
     wind_speed: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_speed"))
     wind_direction: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_direction"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Wind10Min':
@@ -159,9 +161,10 @@ class Wind10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='ieubosulkgsjsuchdsye',
-            timestamp='mqvronqxlvaygtwgbvng',
-            quality_level=int(60),
-            wind_speed=float(14.633271742233433),
-            wind_direction=float(7.462553315399301)
+            station_id='zpmptzwvlfqiwjddpdsl',
+            timestamp='eiurpdugnzwtwcbhdhdd',
+            quality_level=int(19),
+            wind_speed=float(80.27748528051835),
+            wind_direction=float(60.2995461868538),
+            state='ifuqlazchxbndauosrrl'
         )

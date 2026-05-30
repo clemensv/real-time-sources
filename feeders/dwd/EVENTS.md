@@ -1,14 +1,14 @@
-# DWD Open Data Bridge Usage Guide Events
+# DWD Events
 
 DWD Weather publishes weather observations, warnings, and forecast product updates from Germany's Deutscher Wetterdienst (DWD) for German weather stations, alerts, radar, and forecast products. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 13 documented event types.
-- **Transports:** KAFKA
+- **Event types:** 13 documented event types (39 transport bindings in the manifest).
+- **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 12 telemetry event types.
 - **Identity:** `{station_id}`, `{identifier}`, `{file_url}` identifies the resource each event is about.
-- **Operations:** The bridge documentation mentions ETag-aware polling, so consumers should expect unchanged upstream responses to be skipped.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -29,6 +29,34 @@ while True:
 ```
 
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
+### MQTT 5
+
+Connect to `mqtt://localhost:1883` and subscribe to `weather/de/dwd/dwd/+/+/info`, `weather/de/dwd/dwd/+/+/air-temperature-10min`, `weather/de/dwd/dwd/+/+/precipitation-10min`, `weather/de/dwd/dwd/+/+/wind-10min`, `weather/de/dwd/dwd/+/+/solar-10min`, `weather/de/dwd/dwd/+/+/hourly-observation`, `weather/de/dwd/dwd/+/+/extreme-wind-10min`, `weather/de/dwd/dwd/+/+/extreme-temperature-10min`, `alerts/de/dwd/dwd/+/+/+/alert`, `weather/de/dwd/dwd/catalogs/+/catalog`, `weather/de/dwd/dwd/products/radar/+/+/file`, `weather/de/dwd/dwd/products/icon-d2/+/+/file`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+
+```python
+import paho.mqtt.client as mqtt
+c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
+c.connect('localhost',1883)
+c.subscribe(('weather/de/dwd/dwd/+/+/info', 1))
+c.loop_forever()
+```
+
+Subscribe at QoS 1 with a stable client id, `CleanStart=false`, and a finite non-zero session expiry when you need at-least-once delivery across reconnects. Retained messages are delivered subject to MQTT 5 Retain Handling, and publishing an empty retained payload clears the retained value. MQTT 5 user properties carry CloudEvents metadata; MQTT 3.1.1 clients need structured CloudEvents because they do not have user properties.
+### AMQP 1.0
+
+Attach a link with `role=receiver` whose **source** is `dwd`. The source terminus is the broker-side node you consume from; source filters such as selectors, Event Hubs offsets, or subscription filters further select which messages flow. The target is your client-side terminus. Generic brokers use their advertised SASL mechanisms (often PLAIN over TLS, EXTERNAL with mTLS, or ANONYMOUS on trusted links). Azure Service Bus and Event Hubs can use SASL PLAIN for SAS credentials on short-lived connections; CBS `put-token` on `$cbs` installs and refreshes Entra ID JWTs or SAS tokens for long-lived AMQP connections.
+
+```python
+from proton.handlers import MessagingHandler
+from proton.reactor import Container
+class H(MessagingHandler):
+    def on_start(self,e): e.container.create_receiver('amqps://user:pass@localhost:5671/dwd')
+    def on_message(self,e): print(e.message.subject, e.message.properties, e.message.body)
+Container(H()).run()
+```
+
+The examples use AMQP binary content mode: the JSON payload is the message body, `datacontenttype` maps to the AMQP `content-type`, and CloudEvents attributes map to application properties named `cloudEvents:<attribute>`.
 
 ## Event catalog
 
@@ -49,6 +77,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd`, key `{station_id}` |
+| `MQTT/5.0` | topic `weather/de/dwd/dwd/{state}/{station_id}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd`, message subject `{station_id}` |
 
 #### Payload
 
@@ -100,6 +130,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd`, key `{station_id}` |
+| `MQTT/5.0` | topic `weather/de/dwd/dwd/{state}/{station_id}/air-temperature-10min`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd`, message subject `{station_id}` |
 
 #### Payload
 
@@ -108,11 +140,12 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
 - **`timestamp`** (string, required): Time when the provider recorded or published the value.
 - **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`pressure_station_level`** (double, optional): Reference details for a station, monitoring site, or reporting area in the DWD Weather source.
+- **`pressure_station_level`** (null or double, optional): Reference details for a station, monitoring site, or reporting area in the DWD Weather source.
 - **`air_temperature_2m`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`air_temperature_5cm`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`relative_humidity`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`dew_point_temperature`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -126,7 +159,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "air_temperature_2m": 0,
   "air_temperature_5cm": 0,
   "relative_humidity": 0,
-  "dew_point_temperature": 0
+  "dew_point_temperature": 0,
+  "state": "string"
 }
 ```
 
@@ -151,6 +185,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd`, key `{station_id}` |
+| `MQTT/5.0` | topic `weather/de/dwd/dwd/{state}/{station_id}/precipitation-10min`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd`, message subject `{station_id}` |
 
 #### Payload
 
@@ -161,6 +197,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`precipitation_height`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`precipitation_indicator`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -171,7 +208,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "timestamp": "string",
   "quality_level": 0,
   "precipitation_height": 0,
-  "precipitation_indicator": 0
+  "precipitation_indicator": 0,
+  "state": "string"
 }
 ```
 
@@ -196,6 +234,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd`, key `{station_id}` |
+| `MQTT/5.0` | topic `weather/de/dwd/dwd/{state}/{station_id}/wind-10min`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd`, message subject `{station_id}` |
 
 #### Payload
 
@@ -206,6 +246,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`wind_speed`** (double, optional): Wind speed reported by the station.
 - **`wind_direction`** (double, optional): Wind direction reported by the station.
+- **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -216,7 +257,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "timestamp": "string",
   "quality_level": 0,
   "wind_speed": 0,
-  "wind_direction": 0
+  "wind_direction": 0,
+  "state": "string"
 }
 ```
 
@@ -241,6 +283,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd`, key `{station_id}` |
+| `MQTT/5.0` | topic `weather/de/dwd/dwd/{state}/{station_id}/solar-10min`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd`, message subject `{station_id}` |
 
 #### Payload
 
@@ -253,6 +297,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`sunshine_duration`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`diffuse_radiation`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`longwave_radiation`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -265,7 +310,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "global_radiation": 0,
   "sunshine_duration": 0,
   "diffuse_radiation": 0,
-  "longwave_radiation": 0
+  "longwave_radiation": 0,
+  "state": "string"
 }
 ```
 
@@ -290,6 +336,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd`, key `{station_id}` |
+| `MQTT/5.0` | topic `weather/de/dwd/dwd/{state}/{station_id}/hourly-observation`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd`, message subject `{station_id}` |
 
 #### Payload
 
@@ -301,6 +349,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`parameter`** (string, required): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`value`** (double, optional): Measured or forecast value reported by the upstream provider.
 - **`unit`** (string, optional): Unit used for the reported value.
+- **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -312,7 +361,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "quality_level": 0,
   "parameter": "string",
   "value": 0,
-  "unit": "string"
+  "unit": "string",
+  "state": "string"
 }
 ```
 
@@ -337,6 +387,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd`, key `{station_id}` |
+| `MQTT/5.0` | topic `weather/de/dwd/dwd/{state}/{station_id}/extreme-wind-10min`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd`, message subject `{station_id}` |
 
 #### Payload
 
@@ -348,6 +400,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`wind_speed_maximum`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`wind_speed_minimum`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`wind_direction_at_maximum`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -359,7 +412,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "quality_level": 0,
   "wind_speed_maximum": 0,
   "wind_speed_minimum": 0,
-  "wind_direction_at_maximum": 0
+  "wind_direction_at_maximum": 0,
+  "state": "string"
 }
 ```
 
@@ -384,6 +438,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd`, key `{station_id}` |
+| `MQTT/5.0` | topic `weather/de/dwd/dwd/{state}/{station_id}/extreme-temperature-10min`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd`, message subject `{station_id}` |
 
 #### Payload
 
@@ -394,6 +450,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`air_temperature_maximum_2m`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`air_temperature_minimum_5cm`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -404,7 +461,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "timestamp": "string",
   "quality_level": 0,
   "air_temperature_maximum_2m": 0,
-  "air_temperature_minimum_5cm": 0
+  "air_temperature_minimum_5cm": 0,
+  "state": "string"
 }
 ```
 
@@ -429,6 +487,8 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd`, key `{identifier}` |
+| `MQTT/5.0` | topic `alerts/de/dwd/dwd/{state}/{severity}/{identifier}/alert`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd`, message subject `{state}/{severity}/{identifier}` |
 
 #### Payload
 
@@ -450,6 +510,7 @@ Each event identifies the real-world resource with `{identifier}`. `{identifier}
 - **`expires`** (string, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`area_desc`** (string, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`geocodes`** (string, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -471,7 +532,8 @@ Synthetic example values are generated deterministically from the schema: consta
   "onset": "string",
   "expires": "string",
   "area_desc": "string",
-  "geocodes": "string"
+  "geocodes": "string",
+  "state": "string"
 }
 ```
 
@@ -496,6 +558,8 @@ Each event identifies the real-world resource with `{file_url}`. `{file_url}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd`, key `{file_url}` |
+| `MQTT/5.0` | topic `weather/de/dwd/dwd/catalogs/{kind}/catalog`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd`, message subject `{kind}` |
 
 #### Payload
 
@@ -504,6 +568,8 @@ Each event identifies the real-world resource with `{file_url}`. `{file_url}` is
 - **`product`** (string, required): Short identifier of the DWD radar composite product family (for example 'wn', 'rv', 'rs', 'dmax', 'hg', 'hx', 'pg', 'vii', 'hymecng'). Derived from the first-level directory name under https://opendata.dwd.de/weather/radar/composite/. All RadarFileProduct events for files inside this directory carry the same product value.
 - **`file_url`** (string, required): Absolute HTTPS URL of the DWD Open Data directory that holds all files for this radar product. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing, so consumers can enumerate current and historical product files without credentials. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/radar/composite/wn/'.
 - **`description`** (string, optional): Optional human-readable description of the radar product as configured by the bridge. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata.
+- **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
+- **`kind`** (null or string, optional): Normalized routing field 'kind' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -512,7 +578,9 @@ Synthetic example values are generated deterministically from the schema: consta
 {
   "product": "string",
   "file_url": "string",
-  "description": "string"
+  "description": "string",
+  "state": "string",
+  "kind": "string"
 }
 ```
 
@@ -537,6 +605,8 @@ Each event identifies the real-world resource with `{file_url}`. `{file_url}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd`, key `{file_url}` |
+| `MQTT/5.0` | topic `weather/de/dwd/dwd/products/radar/{product_type}/{file_id}/file`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd`, message subject `{product_type}/{file_id}` |
 
 #### Payload
 
@@ -547,6 +617,9 @@ Each event identifies the real-world resource with `{file_url}`. `{file_url}` is
 - **`file_name`** (string, required): Bare file name (no directory component) as listed in the DWD Apache directory index. Convenient for parsing the embedded product code and observation timestamp without having to split file_url.
 - **`modified`** (string, required): Upstream Last-Modified timestamp of the file as reported by the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new RadarFileProduct event whenever this value changes for a known file_url, so consumers can use it for change detection and de-duplication.
 - **`size_bytes`** (int64 or null, optional): File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size consumers should rely on the Content-Length header returned by the actual GET on file_url. Radar composite files typically range from tens of KB (BUFR products) up to roughly 10 MB (large HDF5 composites).
+- **`file_id`** (string, optional): Normalized routing field 'file_id' added for MQTT/AMQP subscriber filtering.
+- **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
+- **`product_type`** (string, optional): Normalized routing field 'product_type' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -557,7 +630,10 @@ Synthetic example values are generated deterministically from the schema: consta
   "product": "string",
   "file_name": "string",
   "modified": "string",
-  "size_bytes": 0
+  "size_bytes": 0,
+  "file_id": "string",
+  "state": "string",
+  "product_type": "string"
 }
 ```
 
@@ -582,6 +658,8 @@ Each event identifies the real-world resource with `{file_url}`. `{file_url}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd`, key `{file_url}` |
+| `MQTT/5.0` | topic `weather/de/dwd/dwd/catalogs/{kind}/catalog`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd`, message subject `{kind}` |
 
 #### Payload
 
@@ -590,6 +668,8 @@ Each event identifies the real-world resource with `{file_url}`. `{file_url}` is
 - **`model`** (string, required): Identifier of the numerical weather prediction (NWP) model. For this bridge release the value is 'icon-d2', referring to the DWD ICON-D2 convection-permitting regional model covering Germany and surrounding areas with ~2 km horizontal resolution and forecast lead times up to 48 hours.
 - **`file_url`** (string, required): Absolute HTTPS URL of the DWD Open Data root directory under which all GRIB2 files for this forecast model are published. The URL is publicly fetchable with an unauthenticated HTTP GET and returns an Apache autoindex HTML listing. Run-hour subdirectories (e.g. '00/', '03/', '06/', ...) and per-variable subdirectories live below this URL. Also used verbatim as the CloudEvents 'subject' and the Kafka partition key for catalog events. Example: 'https://opendata.dwd.de/weather/nwp/icon-d2/grib/'.
 - **`description`** (string, optional): Optional human-readable description of the forecast model emitted as reference data. Intended for catalog browsers, documentation, and operator UIs; not derived from upstream metadata.
+- **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
+- **`kind`** (null or string, optional): Normalized routing field 'kind' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -598,13 +678,15 @@ Synthetic example values are generated deterministically from the schema: consta
 {
   "model": "string",
   "file_url": "string",
-  "description": "string"
+  "description": "string",
+  "state": "string",
+  "kind": "string"
 }
 ```
 
 #### Reference vs telemetry
 
-This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity.
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
 
 ### Icon D2 Forecast File
 
@@ -623,6 +705,8 @@ Each event identifies the real-world resource with `{file_url}`. `{file_url}` is
 | Transport | Location |
 | --- | --- |
 | `KAFKA` | topic `dwd`, key `{file_url}` |
+| `MQTT/5.0` | topic `weather/de/dwd/dwd/products/icon-d2/{variable}/{file_id}/file`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/dwd`, message subject `{variable}/{file_id}` |
 
 #### Payload
 
@@ -638,6 +722,9 @@ Each event identifies the real-world resource with `{file_url}`. `{file_url}` is
 - **`level`** (string or null, optional): Vertical level value token parsed from file_name. The interpretation depends on level_type: model-level uses an integer level index, pressure-level uses pressure in hPa, single-level may carry a short surface tag or be omitted.
 - **`modified`** (string, required): Upstream Last-Modified timestamp from the DWD Apache directory listing, expressed as an ISO 8601 UTC string. The bridge emits a new IconD2ForecastFile event whenever this value changes for a known file_url, enabling change detection and de-duplication.
 - **`size_bytes`** (int64 or null, optional): File size in bytes as parsed from the DWD directory listing, or null when the listing does not expose a size. Indicative only; for an authoritative size rely on the Content-Length header from the actual GET on file_url. Individual ICON-D2 .grib2.bz2 files are typically well below 1 MB compressed.
+- **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
+- **`variable`** (string, optional): Normalized routing field 'variable' added for MQTT/AMQP subscriber filtering.
+- **`file_id`** (string, optional): Normalized routing field 'file_id' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -653,7 +740,10 @@ Synthetic example values are generated deterministically from the schema: consta
   "level_type": "string",
   "level": "string",
   "modified": "string",
-  "size_bytes": 0
+  "size_bytes": 0,
+  "state": "string",
+  "variable": "string",
+  "file_id": "string"
 }
 ```
 
@@ -678,21 +768,14 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## Operational notes
 
-- The bridge documentation mentions ETag-aware polling, so consumers should expect unchanged upstream responses to be skipped.
 - The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
+- The MQTT variant publishes with QoS 1 and retained-message Last-Known-Value semantics where declared in the event catalog.
 
 ## References
 
 - xRegistry manifest: [`xreg/dwd.xreg.json`](xreg/dwd.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>
 - opendata.dwd.de: <https://opendata.dwd.de/>
-
-## MQTT and AMQP companion transports
-
-This source now ships Kafka plus dedicated MQTT and AMQP companion containers. MQTT publishes binary-mode CloudEvents into the source-specific UNS topic tree declared in `xreg/`; AMQP publishes the same CloudEvents to the configured queue or topic address (`dwd`). Docker E2E mock mode is available through `DWD_MOCK=true`.
-
-- MQTT image: `ghcr.io/clemensv/real-time-sources/dwd-mqtt`
-- AMQP image: `ghcr.io/clemensv/real-time-sources/dwd-amqp`
-- MQTT templates: `azure-template-mqtt.json`, `azure-template-with-eventgrid-mqtt.json`
-- AMQP templates: `azure-template-amqp.json`, `azure-template-with-servicebus.json`
+- Azure Service Bus emulator: <https://learn.microsoft.com/azure/service-bus-messaging/test-locally-with-service-bus-emulator>

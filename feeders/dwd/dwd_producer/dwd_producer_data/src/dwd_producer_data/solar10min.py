@@ -17,7 +17,7 @@ import json
 @dataclass
 class Solar10Min:
     """
-    Solar10Min
+    A current environmental measurement from Germany's Deutscher Wetterdienst (DWD). It carries weather observations, warnings, and forecast product updates when the upstream feed reports a new or refreshed value.
     
     Attributes:
         station_id (str)
@@ -27,6 +27,7 @@ class Solar10Min:
         sunshine_duration (typing.Optional[float])
         diffuse_radiation (typing.Optional[float])
         longwave_radiation (typing.Optional[float])
+        state (typing.Optional[str])
     """
     
     
@@ -37,6 +38,7 @@ class Solar10Min:
     sunshine_duration: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sunshine_duration"))
     diffuse_radiation: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="diffuse_radiation"))
     longwave_radiation: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longwave_radiation"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Solar10Min':
@@ -163,11 +165,12 @@ class Solar10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='pegymrrgvbtinvqtorza',
-            timestamp='uobxdqmntxybktwvecbv',
-            quality_level=int(51),
-            global_radiation=float(54.20901520955316),
-            sunshine_duration=float(80.82510383008497),
-            diffuse_radiation=float(56.09601215536979),
-            longwave_radiation=float(70.21618906535917)
+            station_id='boedbgzbyopitffjpuvt',
+            timestamp='dezosfihijjxobytkpto',
+            quality_level=int(27),
+            global_radiation=float(65.70551458561256),
+            sunshine_duration=float(59.91239724878529),
+            diffuse_radiation=float(78.21627756109696),
+            longwave_radiation=float(1.1791892378967384),
+            state='bnzongumqlmjwhcvhrkz'
         )
