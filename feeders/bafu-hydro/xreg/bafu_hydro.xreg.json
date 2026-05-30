@@ -261,7 +261,10 @@
                     "description": "Name of the water body the station observes (BAFU/FOEN 'water-body-name' field, e.g. 'Rhein', 'Aare', 'Bodensee'). Sourced by the bridge from the station catalog (existenz.ch /apiv1/hydro/locations endpoint, details.water-body-name) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river / lake. Used as the {water_body_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing."
                   },
                   "water_level": {
-                    "type": "double",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Current water level reported for the station."
                   },
                   "water_level_unit": {
@@ -269,11 +272,17 @@
                     "description": "Unit used for the water-level value."
                   },
                   "water_level_timestamp": {
-                    "type": "datetime",
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Time associated with the water-level measurement."
                   },
                   "discharge": {
-                    "type": "double",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Current streamflow or discharge reported for the station."
                   },
                   "discharge_unit": {
@@ -281,11 +290,17 @@
                     "description": "Unit used for the discharge value."
                   },
                   "discharge_timestamp": {
-                    "type": "datetime",
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Time associated with the discharge measurement."
                   },
                   "water_temperature": {
-                    "type": "double",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
                     "description": "Current water temperature reported for the station."
                   },
                   "water_temperature_unit": {
@@ -293,7 +308,10 @@
                     "description": "Unit used for the water-temperature value."
                   },
                   "water_temperature_timestamp": {
-                    "type": "datetime",
+                    "type": [
+                      "datetime",
+                      "null"
+                    ],
                     "description": "Time associated with the water-temperature measurement."
                   }
                 },

@@ -75,6 +75,12 @@
     },
     {
       "dir": "feeders/bafu-hydro",
+      "image": "bafu-hydro-kafka",
+      "file": "Dockerfile",
+      "module": "bafu_hydro"
+    },
+    {
+      "dir": "feeders/bafu-hydro",
       "image": "bafu-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "bafu_hydro_mqtt"
@@ -1487,6 +1493,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestBfsOdlAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/bafu-hydro",
+      "image": "bafu-hydro-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestBafuHydroDockerFlow"
     },
     {
       "dir": "feeders/bafu-hydro",

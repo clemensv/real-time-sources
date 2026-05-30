@@ -200,6 +200,7 @@ class TestDataClasses:
     def test_water_level_observation_roundtrip(self):
         obs = WaterLevelObservation(
             station_id="2018",
+            water_body_name="Rhein",
             water_level=2.56,
             water_level_unit="m",
             water_level_timestamp="2023-11-14T22:13:20+00:00",
@@ -350,6 +351,7 @@ class TestProducerClient:
         prod = CHBAFUHydrologyEventProducer(mock_kafka, "bafu-topic")
         obs = WaterLevelObservation(
             station_id="2018",
+            water_body_name="Rhein",
             water_level=2.56, water_level_unit="m",
             water_level_timestamp="2023-11-14T22:13:20+00:00",
             discharge=None, discharge_unit="m3/s", discharge_timestamp="",
