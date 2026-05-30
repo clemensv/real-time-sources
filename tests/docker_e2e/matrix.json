@@ -137,7 +137,21 @@
     },
     {
       "dir": "feeders/fmi-finland",
+      "image": "fmi-finland",
+      "file": "Dockerfile",
       "module": "fmi_finland"
+    },
+    {
+      "dir": "feeders/fmi-finland",
+      "image": "fmi-finland-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "fmi_finland_mqtt"
+    },
+    {
+      "dir": "feeders/fmi-finland",
+      "image": "fmi-finland-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "fmi_finland_amqp"
     },
     {
       "dir": "feeders/hongkong-epd",
@@ -1660,7 +1674,24 @@
     },
     {
       "dir": "feeders/fmi-finland",
+      "image": "fmi-finland",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
       "test_class": "TestFMIFinlandDockerFlow"
+    },
+    {
+      "dir": "feeders/fmi-finland",
+      "image": "fmi-finland-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestFmiFinlandMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/fmi-finland",
+      "image": "fmi-finland-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestFmiFinlandAmqpDockerFlow"
     },
     {
       "dir": "feeders/fienta",
