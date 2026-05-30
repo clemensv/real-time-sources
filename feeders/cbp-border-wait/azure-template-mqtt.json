@@ -9,7 +9,7 @@
       "type": "string",
       "minLength": 1,
       "metadata": {
-        "description": "MQTT broker endpoint."
+        "description": "MQTT broker URL for the broker that receives CBP border wait crossing and lane CloudEvents, for example mqtt://host:1883 or mqtts://host:8883."
       }
     },
     "brokerUsername": {

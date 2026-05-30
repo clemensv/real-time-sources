@@ -337,6 +337,12 @@
     },
     {
       "dir": "feeders/cbp-border-wait",
+      "image": "cbp-border-wait",
+      "file": "Dockerfile",
+      "module": "cbp_border_wait"
+    },
+    {
+      "dir": "feeders/cbp-border-wait",
       "image": "cbp-border-wait-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "cbp_border_wait_mqtt"
@@ -1778,6 +1784,12 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestIRailMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/cbp-border-wait",
+      "image": "cbp-border-wait",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestCBPBorderWaitDockerFlow"
     },
     {
       "dir": "feeders/cbp-border-wait",

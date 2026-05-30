@@ -22,7 +22,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the broker that receives CBP border wait crossing and lane CloudEvents."
       }
     },
     "location": {
