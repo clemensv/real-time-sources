@@ -1911,6 +1911,13 @@
     },
     {
       "dir": "feeders/eaws-albina",
+      "image": "eaws-albina",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestEAWSAlbinaDockerFlow"
+    },
+    {
+      "dir": "feeders/eaws-albina",
       "image": "eaws-albina-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",

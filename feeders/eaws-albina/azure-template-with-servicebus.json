@@ -41,6 +41,20 @@
         "description": "Target AMQP address (queue/topic)."
       }
     },
+    "regions": {
+      "type": "string",
+      "defaultValue": "AT-07-01",
+      "metadata": {
+        "description": "Comma-separated ALBINA region ids to ingest for the AMQP bridge."
+      }
+    },
+    "lang": {
+      "type": "string",
+      "defaultValue": "en",
+      "metadata": {
+        "description": "Bulletin language for the AMQP bridge (en, de, or it)."
+      }
+    },
     "imageName": {
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-eaws-albina-amqp:latest",
@@ -234,6 +248,14 @@
                 {
                   "name": "AMQP_CONTENT_MODE",
                   "value": "binary"
+                },
+                {
+                  "name": "EAWS_ALBINA_REGIONS",
+                  "value": "[parameters('regions')]"
+                },
+                {
+                  "name": "EAWS_ALBINA_LANG",
+                  "value": "[parameters('lang')]"
                 },
                 {
                   "name": "POLLING_INTERVAL",

@@ -45,6 +45,20 @@
         "description": "Topic-space root for the MQTT/UNS publish surface. Defaults to alerts/at/eaws/eaws-albina/# which covers all EAWS ALBINA output."
       }
     },
+    "regions": {
+      "type": "string",
+      "defaultValue": "AT-07-01",
+      "metadata": {
+        "description": "Comma-separated ALBINA region ids to ingest for the MQTT bridge."
+      }
+    },
+    "lang": {
+      "type": "string",
+      "defaultValue": "en",
+      "metadata": {
+        "description": "Bulletin language for the MQTT bridge (en, de, or it)."
+      }
+    },
     "imageName": {
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-eaws-albina-mqtt:latest",
@@ -211,6 +225,14 @@
                 {
                   "name": "MQTT_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
+                },
+                {
+                  "name": "EAWS_ALBINA_REGIONS",
+                  "value": "[parameters('regions')]"
+                },
+                {
+                  "name": "EAWS_ALBINA_LANG",
+                  "value": "[parameters('lang')]"
                 },
                 { "name": "LOG_LEVEL", "value": "INFO" },
                 { "name": "PYTHONUNBUFFERED", "value": "1" },

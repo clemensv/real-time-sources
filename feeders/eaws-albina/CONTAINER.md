@@ -196,6 +196,8 @@ docker run --rm \
 | `MQTT_ENTRA_CLIENT_ID` | User-assigned managed identity client id (optional). |
 | `MQTT_CLIENT_ID` | MQTT client identifier (must be unique per broker). |
 | `MQTT_CONTENT_MODE` | CloudEvents mode: `binary` (default) or `structured`. |
+| `EAWS_ALBINA_REGIONS` | Comma-separated ALBINA region ids to ingest for the MQTT bridge. |
+| `EAWS_ALBINA_LANG` | Bulletin language for the MQTT bridge (`en`, `de`, or `it`). |
 
 ### AMQP image variables
 
@@ -209,6 +211,8 @@ docker run --rm \
 | `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra auth settings for `AMQP_AUTH_MODE=entra`. |
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS policy/key pair for `AMQP_AUTH_MODE=sas`. |
 | `AMQP_CONTENT_MODE` | CloudEvents mode: `binary` (default) or `structured`. |
+| `EAWS_ALBINA_REGIONS` | Comma-separated ALBINA region ids to ingest for the AMQP bridge. |
+| `EAWS_ALBINA_LANG` | Bulletin language for the AMQP bridge (`en`, `de`, or `it`). |
 
 ## Deploying into Microsoft Fabric
 
