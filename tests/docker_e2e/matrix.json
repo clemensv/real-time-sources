@@ -1459,6 +1459,13 @@
     },
     {
       "dir": "feeders/blitzortung",
+      "image": "blitzortung-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestBlitzortungDockerFlow"
+    },
+    {
+      "dir": "feeders/blitzortung",
       "image": "blitzortung-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",

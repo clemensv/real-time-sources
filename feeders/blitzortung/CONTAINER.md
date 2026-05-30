@@ -225,7 +225,16 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 
 | Variable | Description |
 |---|---|
-| `BLITZORTUNG_WEBSOCKET_URL` | Upstream websocket URL. Default `wss://live.lightningmaps.org:443/`; failover to `wss://live2.lightningmaps.org:443/` is automatic. |
+| `BLITZORTUNG_WS_URLS` | Comma-separated websocket endpoint URLs used for upstream connection failover. Default `wss://live.lightningmaps.org:443/,wss://live2.lightningmaps.org:443/`. |
+| `BLITZORTUNG_WEBSOCKET_URL` | Legacy single-endpoint alias for `BLITZORTUNG_WS_URLS`. If `BLITZORTUNG_WS_URLS` is unset, the feeder uses this single websocket URL instead. |
+| `BLITZORTUNG_BBOX` | Geographic bounding box filter for upstream events, expressed as `north,east,south,west`. Empty means the default global bounding box. |
+| `BLITZORTUNG_INCLUDE_STATIONS` | Whether to request detector participation details (`true` / `false`). Default `true`. |
+| `BLITZORTUNG_SOURCE_MASK` | Blitzortung source mask option used to filter or tune the upstream feeder. Default `4`. |
+| `BLITZORTUNG_FLUSH_INTERVAL` | Producer flush interval in milliseconds for batched event publishing. Default `250`. |
+| `BLITZORTUNG_MAX_RETRY_DELAY` | Maximum reconnect backoff delay in seconds after upstream failures. Default `60`. |
+| `BLITZORTUNG_STATE_FILE` | Path to the feeder-specific JSON state file used for websocket resume and dedupe state. |
+| `BLITZORTUNG_DEDUPE_SIZE` | Maximum number of event identifiers retained in the in-memory dedupe cache. Default `5000`. |
+| `BLITZORTUNG_USER_AGENT` | HTTP User-Agent header sent to the upstream service. |
 
 ### Kafka image
 

@@ -45,49 +45,49 @@
     "blitzortungBbox": {
       "type": "string",
       "metadata": {
-        "description": "Geographic bounding box filter for upstream events, expressed as comma-separated coordinates."
+        "description": "Geographic bounding box filter for upstream events, expressed as north,east,south,west. Empty means the default global bounding box."
       },
       "defaultValue": ""
     },
     "blitzortungDedupeSize": {
       "type": "string",
       "metadata": {
-        "description": "Maximum number of event identifiers retained in the in-memory dedupe cache."
+        "description": "Maximum number of event identifiers retained in the in-memory dedupe cache. Default 5000."
       },
       "defaultValue": "5000"
     },
     "blitzortungFlushInterval": {
       "type": "string",
       "metadata": {
-        "description": "Producer flush interval in milliseconds for batched event publishing."
+        "description": "Producer flush interval in milliseconds for batched event publishing. Default 250."
       },
       "defaultValue": "250"
     },
     "blitzortungIncludeStations": {
       "type": "string",
       "metadata": {
-        "description": "Whether to request detector participation details (true/false)."
+        "description": "Whether to request detector participation details (true / false). Default true."
       },
       "defaultValue": "true"
     },
     "blitzortungMaxRetryDelay": {
       "type": "string",
       "metadata": {
-        "description": "Maximum reconnect backoff delay in seconds after upstream failures."
+        "description": "Maximum reconnect backoff delay in seconds after upstream failures. Default 60."
       },
       "defaultValue": "60"
     },
     "blitzortungSourceMask": {
       "type": "string",
       "metadata": {
-        "description": "Blitzortung source mask option used to filter or tune the blitzortung upstream feeder."
+        "description": "Blitzortung source mask option used to filter or tune the upstream feeder. Default 4."
       },
       "defaultValue": "4"
     },
     "blitzortungStateFile": {
       "type": "string",
       "metadata": {
-        "description": "Path to the feeder-specific JSON state file used for upstream poll resume and dedupe."
+        "description": "Path to the feeder-specific JSON state file used for websocket resume and dedupe state."
       },
       "defaultValue": ""
     },
@@ -101,14 +101,14 @@
     "blitzortungWebsocketUrl": {
       "type": "string",
       "metadata": {
-        "description": "Upstream websocket URL. Default wss://live.lightningmaps.org:443/; failover to wss://live2.lightningmaps.org:443/ is automatic."
+        "description": "Legacy single-endpoint alias for BLITZORTUNG_WS_URLS. If BLITZORTUNG_WS_URLS is unset, the feeder uses this single websocket URL instead."
       },
       "defaultValue": ""
     },
     "blitzortungWsUrls": {
       "type": "string",
       "metadata": {
-        "description": "Comma-separated websocket endpoint URLs used for upstream connection failover."
+        "description": "Comma-separated websocket endpoint URLs used for upstream connection failover. Default wss://live.lightningmaps.org:443/,wss://live2.lightningmaps.org:443/."
       },
       "defaultValue": ""
     }
