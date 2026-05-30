@@ -77,6 +77,13 @@
         "description": "Comma-separated list of MMSI numbers to include (client-side filter applied after the server-side AISstream.io filter). Default: all vessels."
       }
     },
+    "aisstreamFlushInterval": {
+      "type": "string",
+      "defaultValue": "100",
+      "metadata": {
+        "description": "Flush the MQTT producer after this many AIS messages. Lower values reduce shutdown lag; higher values improve throughput."
+      }
+    },
     "mqttClientId": {
       "type": "string",
       "defaultValue": "",
@@ -162,6 +169,10 @@
                 {
                   "name": "AISSTREAM_FILTER_MMSI",
                   "value": "[parameters('aisstreamFilterMmsi')]"
+                },
+                {
+                  "name": "AISSTREAM_FLUSH_INTERVAL",
+                  "value": "[parameters('aisstreamFlushInterval')]"
                 },
                 {
                   "name": "LOG_LEVEL",

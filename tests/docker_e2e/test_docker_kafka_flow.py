@@ -97,6 +97,10 @@ def pegelonline_image():
     return build_image('pegelonline', dockerfile='Dockerfile.kafka')
 
 @pytest.fixture(scope='module')
+def aisstream_image():
+    return build_image('aisstream')
+
+@pytest.fixture(scope='module')
 def entsoe_kafka_image():
     return build_image('entsoe', dockerfile='Dockerfile.kafka')
 
@@ -983,6 +987,25 @@ class TestPegelonlineDockerFlow:
             kafka, pegelonline_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['CurrentMeasurement'],
+        )
+
+
+class TestAisstreamKafkaDockerFlow:
+    TOPIC = 'test-aisstream'
+
+    def test_emits_mock_ais_events(self, kafka: KafkaFixture, aisstream_image):
+        _run_kafka_flow_test(
+            kafka, aisstream_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['PositionReport'],
+            required_exact_types=[
+                'IO.AISstream.PositionReport',
+                'IO.AISstream.ShipStaticData',
+                'IO.AISstream.AidsToNavigationReport',
+            ],
+            command=['python', '-m', 'aisstream', 'stream', '--mock'],
+            min_messages=3,
+            timeout=120,
         )
 
 

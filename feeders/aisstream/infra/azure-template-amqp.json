@@ -47,6 +47,41 @@
       "metadata": {
         "description": "Container image reference for the AMQP companion feeder."
       }
+    },
+    "aisstreamApiKey": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "AISstream.io API key. Obtain one by registering at aisstream.io via GitHub OAuth (free)."
+      }
+    },
+    "aisstreamBoundingBoxes": {
+      "type": "string",
+      "defaultValue": "-90,-180,90,180",
+      "metadata": {
+        "description": "Server-side geographic filter as semicolon-separated bounding boxes: lat1,lon1,lat2,lon2;... Default -90,-180,90,180 (global)."
+      }
+    },
+    "aisstreamMessageTypes": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Comma-separated list of AIS message-type names to subscribe to. Default: all 23 types."
+      }
+    },
+    "aisstreamFilterMmsi": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Comma-separated list of MMSI numbers to include (client-side filter applied after the server-side AISstream.io filter). Default: all vessels."
+      }
+    },
+    "aisstreamFlushInterval": {
+      "type": "string",
+      "defaultValue": "100",
+      "metadata": {
+        "description": "Flush the AMQP producer after this many AIS messages. Lower values reduce shutdown lag; higher values improve throughput."
+      }
     }
   },
   "variables": {
@@ -253,7 +288,23 @@
                 },
                 {
                   "name": "AISSTREAM_API_KEY",
-                  "value": ""
+                  "secureValue": "[parameters('aisstreamApiKey')]"
+                },
+                {
+                  "name": "AISSTREAM_BOUNDING_BOXES",
+                  "value": "[parameters('aisstreamBoundingBoxes')]"
+                },
+                {
+                  "name": "AISSTREAM_MESSAGE_TYPES",
+                  "value": "[parameters('aisstreamMessageTypes')]"
+                },
+                {
+                  "name": "AISSTREAM_FILTER_MMSI",
+                  "value": "[parameters('aisstreamFilterMmsi')]"
+                },
+                {
+                  "name": "AISSTREAM_FLUSH_INTERVAL",
+                  "value": "[parameters('aisstreamFlushInterval')]"
                 }
               ],
               "volumeMounts": [
