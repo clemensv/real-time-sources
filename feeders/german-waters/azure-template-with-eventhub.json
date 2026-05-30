@@ -18,11 +18,10 @@
       "type": "string",
       "defaultValue": "Standard",
       "allowedValues": [
-        "Basic",
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the broker that receives German Waters station and water-level CloudEvents."
       }
     },
     "location": {

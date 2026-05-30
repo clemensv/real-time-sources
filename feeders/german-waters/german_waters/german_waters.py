@@ -7,7 +7,7 @@ import sys
 import time
 import argparse
 import json
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 
 from confluent_kafka import Producer
 from german_waters_producer_data.de.waters.hydrology.station import Station
@@ -149,10 +149,12 @@ def _station_to_event(s: StationData) -> Station:
     )
 
 
-def _obs_to_event(o: ObservationData) -> WaterLevelObservation:
+def _obs_to_event(o: ObservationData, water_body: Optional[str] = None) -> WaterLevelObservation:
+    resolved_water_body = water_body if water_body is not None else o.water_body
     return WaterLevelObservation(
         station_id=o.station_id,
         provider=o.provider,
+        water_body=resolved_water_body,
         water_level=o.water_level,
         water_level_unit=o.water_level_unit,
         water_level_timestamp=o.water_level_timestamp,
@@ -175,11 +177,33 @@ def send_stations(producer_client: DEWatersHydrologyEventProducer,
     return count
 
 
+def _refresh_station_metadata(producer_client: DEWatersHydrologyEventProducer,
+                              provider: BaseProvider,
+                              published_station_ids: Set[str],
+                              station_water_bodies: Dict[str, str]) -> None:
+    try:
+        stations = provider.get_stations()
+    except Exception as e:
+        logger.error("Error refreshing stations from %s: %s", provider.name, e, exc_info=True)
+        return
+    for station in stations:
+        if station.water_body:
+            station_water_bodies[station.station_id] = station.water_body
+        if station.station_id not in published_station_ids:
+            producer_client.send_de_waters_hydrology_station(
+                data=_station_to_event(station), flush_producer=False)
+            published_station_ids.add(station.station_id)
+
+
 def feed_observations(producer_client: DEWatersHydrologyEventProducer,
                       providers: List[BaseProvider],
                       previous_readings: Dict[str, str],
-                      kafka_producer: Producer) -> int:
+                      kafka_producer: Producer,
+                      station_water_bodies: Optional[Dict[str, str]] = None,
+                      published_station_ids: Optional[Set[str]] = None) -> int:
     """Emit WaterLevelObservation events, deduplicating by timestamp. Returns count sent."""
+    station_water_bodies = station_water_bodies or {}
+    published_station_ids = published_station_ids or set()
     count = 0
     for provider in providers:
         try:
@@ -191,11 +215,18 @@ def feed_observations(producer_client: DEWatersHydrologyEventProducer,
             ts_key = o.water_level_timestamp or o.discharge_timestamp
             if not ts_key:
                 continue
+            water_body = o.water_body or station_water_bodies.get(o.station_id, "")
+            if not water_body:
+                _refresh_station_metadata(producer_client, provider, published_station_ids, station_water_bodies)
+                water_body = o.water_body or station_water_bodies.get(o.station_id, "")
+            if not water_body:
+                logger.warning("Skipping observation for %s from %s because no water_body is known", o.station_id, o.provider)
+                continue
             prev_ts = previous_readings.get(o.station_id)
             if prev_ts == ts_key:
                 continue
             producer_client.send_de_waters_hydrology_water_level_observation(
-                data=_obs_to_event(o), flush_producer=False)
+                data=_obs_to_event(o, water_body=water_body), flush_producer=False)
             previous_readings[o.station_id] = ts_key
             count += 1
     kafka_producer.flush()
@@ -206,6 +237,8 @@ def run_feed(kafka_config: dict, kafka_topic: str, polling_interval: int,
              state_file: str, providers: List[BaseProvider]) -> None:
     """Main feed loop: emit stations once, then poll observations."""
     previous_readings: Dict[str, str] = _load_state(state_file)
+    station_water_bodies: Dict[str, str] = {}
+    published_station_ids: Set[str] = set()
     kafka_producer = Producer(kafka_config)
     event_producer = DEWatersHydrologyEventProducer(kafka_producer, kafka_topic)
 
@@ -218,6 +251,10 @@ def run_feed(kafka_config: dict, kafka_topic: str, polling_interval: int,
     for provider in providers:
         try:
             stations = provider.get_stations()
+            for station in stations:
+                if station.water_body:
+                    station_water_bodies[station.station_id] = station.water_body
+                published_station_ids.add(station.station_id)
             n = send_stations(event_producer, stations)
             total_stations += n
             logger.info("Sent %d station records from %s", n, provider.name)
@@ -233,7 +270,14 @@ def run_feed(kafka_config: dict, kafka_topic: str, polling_interval: int,
             for provider in providers:
                 if hasattr(provider, 'invalidate'):
                     provider.invalidate()
-            n = feed_observations(event_producer, providers, previous_readings, kafka_producer)
+            n = feed_observations(
+                event_producer,
+                providers,
+                previous_readings,
+                kafka_producer,
+                station_water_bodies,
+                published_station_ids,
+            )
             elapsed = (datetime.now(timezone.utc) - start).total_seconds()
             wait = max(0, polling_interval - elapsed)
             logger.info("Sent %d observations in %.1fs. Next poll at %s.",

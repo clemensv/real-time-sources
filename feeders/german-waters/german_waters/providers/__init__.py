@@ -30,6 +30,7 @@ class ObservationData:
     """Internal observation representation across all providers."""
     station_id: str
     provider: str
+    water_body: str = ""
     water_level: float = 0.0
     water_level_unit: str = "cm"
     water_level_timestamp: str = ""

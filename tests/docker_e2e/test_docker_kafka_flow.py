@@ -1854,6 +1854,24 @@ class TestSnotelDockerFlow:
 # GeoSphere Austria TAWES (10-minute weather observations)
 # ---------------------------------------------------------------------------
 
+@pytest.fixture(scope='module')
+def german_waters_image():
+    return build_image('german-waters')
+
+
+class TestGermanWatersDockerFlow:
+    TOPIC = 'test-german-waters'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, german_waters_image):
+        _run_kafka_flow_test(
+            kafka, german_waters_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WaterLevelObservation'],
+            required_types=['Station', 'WaterLevelObservation'],
+            extra_env={'ONCE_MODE': 'true', 'PROVIDERS': 'bayern_gkd,nrw_hygon'},
+        )
+
+
 class TestGeoSphereAustriaDockerFlow:
     TOPIC = 'test-geosphere-austria'
 

@@ -42,10 +42,11 @@ def _make_station(station_id: str = "by_12345", provider: str = "bayern_gkd") ->
     )
 
 
-def _make_obs(station_id: str = "by_12345", ts: str = "2026-04-01T12:00:00+01:00") -> ObservationData:
+def _make_obs(station_id: str = "by_12345", ts: str = "2026-04-01T12:00:00+01:00", water_body: str = "Donau") -> ObservationData:
     return ObservationData(
         station_id=station_id,
         provider="bayern_gkd",
+        water_body=water_body,
         water_level=325.0,
         water_level_unit="cm",
         water_level_timestamp=ts,
@@ -223,7 +224,7 @@ class TestStationToEvent:
         assert evt.warn_level_m3s == src.warn_level_m3s
         assert evt.alarm_level_m3s == src.alarm_level_m3s
 
-    def test_optional_fields_default_zero(self):
+    def test_optional_fields_default_none(self):
         src = StationData(
             station_id="nrw_99",
             station_name="Köln",
@@ -231,12 +232,12 @@ class TestStationToEvent:
             provider="nrw_hygon",
         )
         evt = _station_to_event(src)
-        assert evt.latitude == 0.0
-        assert evt.longitude == 0.0
-        assert evt.river_km == 0.0
-        assert evt.altitude == 0.0
-        assert evt.warn_level_cm == 0.0
-        assert evt.alarm_level_cm == 0.0
+        assert evt.latitude is None
+        assert evt.longitude is None
+        assert evt.river_km is None
+        assert evt.altitude is None
+        assert evt.warn_level_cm is None
+        assert evt.alarm_level_cm is None
 
 
 # ---------------------------------------------------------------------------
@@ -252,6 +253,7 @@ class TestObsToEvent:
         assert isinstance(evt, WaterLevelObservation)
         assert evt.station_id == src.station_id
         assert evt.provider == src.provider
+        assert evt.water_body == src.water_body
         assert evt.water_level == src.water_level
         assert evt.water_level_unit == src.water_level_unit
         assert evt.water_level_timestamp == src.water_level_timestamp
@@ -262,12 +264,15 @@ class TestObsToEvent:
         assert evt.situation == src.situation
 
     def test_defaults_survive_mapping(self):
-        src = ObservationData(station_id="sh_001", provider="sh_lkn")
+        src = ObservationData(station_id="sh_001", provider="sh_lkn", water_body="Elbe")
         evt = _obs_to_event(src)
-        assert evt.water_level == 0.0
-        assert evt.discharge == 0.0
-        assert evt.trend == 0
-        assert evt.situation == 0
+        assert evt.water_body == "Elbe"
+        assert evt.water_level is None
+        assert evt.water_level_timestamp is None
+        assert evt.discharge is None
+        assert evt.discharge_timestamp is None
+        assert evt.trend is None
+        assert evt.situation is None
         assert evt.water_level_unit == "cm"
         assert evt.discharge_unit == "m3/s"
 
@@ -352,6 +357,7 @@ class TestFeedObservations:
         obs = ObservationData(
             station_id="by_99",
             provider="bayern_gkd",
+            water_body="Donau",
             water_level=100.0,
             water_level_timestamp="",
             discharge_timestamp="",
@@ -387,6 +393,18 @@ class TestFeedObservations:
         _, mock_producer, _, _ = self._run([provider])
         _, kwargs = mock_producer.send_de_waters_hydrology_water_level_observation.call_args
         assert kwargs.get("flush_producer") is False
+
+    def test_refreshes_station_catalog_on_water_body_miss(self):
+        obs = _make_obs("by_1", "2026-04-01T10:00:00+01:00", water_body="")
+        station = _make_station(station_id="by_1", water_body="Donau", provider="p1")
+        provider = _StubProvider("p1", stations=[station], observations=[obs])
+
+        count, mock_producer, _, _ = self._run([provider])
+
+        assert count == 1
+        mock_producer.send_de_waters_hydrology_station.assert_called_once()
+        _, kwargs = mock_producer.send_de_waters_hydrology_water_level_observation.call_args
+        assert kwargs["data"].water_body == "Donau"
 
 
 # ---------------------------------------------------------------------------

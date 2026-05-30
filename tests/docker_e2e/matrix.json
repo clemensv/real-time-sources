@@ -99,6 +99,12 @@
     },
     {
       "dir": "feeders/german-waters",
+      "image": "german-waters",
+      "file": "Dockerfile",
+      "module": "german_waters"
+    },
+    {
+      "dir": "feeders/german-waters",
       "image": "german-waters-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "german_waters_mqtt"
@@ -1667,6 +1673,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestWalloniaIssepMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/german-waters",
+      "image": "german-waters",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestGermanWatersDockerFlow"
     },
     {
       "dir": "feeders/german-waters",
