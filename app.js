@@ -135,7 +135,7 @@ const SOURCES = [
 
   // ── Public Events ──
   { id: "billetto", name: "Billetto", cat: "Public Events", key: false, desc: "Europe — pan-European ticketed public events", kql: false, notebook: true, mqtt: true, amqp: true },
-  { id: "fienta", name: "Fienta", cat: "Public Events", key: false, desc: "Europe — ticketed public events with sale-status signals", mqtt: true, amqp: true },
+  { id: "fienta", name: "Fienta", cat: "Public Events", key: false, desc: "Europe — ticketed public events with sale-status signals", notebook: true, mqtt: true, amqp: true },
   { id: "ticketmaster", name: "Ticketmaster", cat: "Public Events", key: true, desc: "Global — concerts, sports, theater, arts via Discovery API", kql: false, mqtt: true, amqp: true },
 
   // ── Scientific Research ──
