@@ -343,6 +343,12 @@
     },
     {
       "dir": "feeders/australia-wildfires",
+      "image": "australia-wildfires-kafka",
+      "file": "Dockerfile",
+      "module": "australia_wildfires"
+    },
+    {
+      "dir": "feeders/australia-wildfires",
       "image": "australia-wildfires-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "australia_wildfires_mqtt"
@@ -1723,6 +1729,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestParisBicycleCountersMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/australia-wildfires",
+      "image": "australia-wildfires-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestAustraliaWildfiresDockerFlow"
     },
     {
       "dir": "feeders/australia-wildfires",
