@@ -1999,6 +1999,13 @@
     },
     {
       "dir": "feeders/entur-norway",
+      "image": "entur-norway",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestEnturNorwayDockerFlow"
+    },
+    {
+      "dir": "feeders/entur-norway",
       "image": "entur-norway-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",

@@ -862,7 +862,9 @@
                           "estimated_calls": {
                             "type": "array",
                             "items": {
-                              "$ref": "#/definitions/no/entur/EstimatedCall"
+                              "type": {
+                                "$ref": "#/definitions/no/entur/EstimatedCall"
+                              }
                             },
                             "description": "Ordered list of estimated arrival and departure times for each stop along the journey. May be a partial list if is_complete_stop_sequence is false."
                           }
@@ -1302,7 +1304,9 @@
                           "validity_periods": {
                             "type": "array",
                             "items": {
-                              "$ref": "#/definitions/no/entur/ValidityPeriod"
+                              "type": {
+                                "$ref": "#/definitions/no/entur/ValidityPeriod"
+                              }
                             },
                             "description": "One or more time windows during which this situation is active, from the SIRI ValidityPeriod elements."
                           }

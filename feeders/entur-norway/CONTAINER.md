@@ -91,7 +91,7 @@ docker run --rm   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/ent
 | `CONNECTION_STRING` | Core configuration for this image variant. |
 | `KAFKA_ENABLE_TLS` | Core configuration for this image variant. |
 | `POLLING_INTERVAL` | Core configuration for this image variant. |
-| `STATE_FILE` | Core configuration for this image variant. |
+| `ENTUR_NORWAY_STATE_FILE` | Path to the JSON state file used by the Kafka poller to persist the last successful Entur cursor between runs. |
 | `MAX_SIZE` | Core configuration for this image variant. |
 
 ### MQTT image (`ghcr.io/clemensv/real-time-sources-entur-norway-mqtt:latest`)
