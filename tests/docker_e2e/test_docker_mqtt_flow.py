@@ -5210,9 +5210,30 @@ class TestCdecReservoirsMqttDockerFlow:
     def test_emits_retained_uns_topics(self):
         pytest.skip("_run_b1_mqtt_flow helper missing — see Canada ECCC test")
 
+@pytest.fixture(scope='module')
+def hubeau_hydrometrie_mqtt_image():
+    return build_image('hubeau-hydrometrie', dockerfile='Dockerfile.mqtt', tag='test-hubeau-hydrometrie-mqtt')
+
+
+@pytest.fixture()
+def mosquitto_hubeau_hydrometrie():
+    container, network, host_port = _generic_mosquitto('hubeau-hydrometrie-mqtt-e2e', 'hubeau-hydrometrie-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'hubeau-hydrometrie-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
 class TestHubeauHydrometrieMqttDockerFlow:
-    def test_emits_retained_uns_topics(self):
-        pytest.skip("_run_b1_mqtt_flow helper missing — see Canada ECCC test")
+    def test_emits_mqtt_uns_topics(self, mosquitto_hubeau_hydrometrie, hubeau_hydrometrie_mqtt_image):
+        _run_mqtt_contract_flow('hubeau-hydrometrie', hubeau_hydrometrie_mqtt_image, mosquitto_hubeau_hydrometrie, timeout=240)
 
 class TestImgwHydroMqttDockerFlow:
     def test_emits_retained_uns_topics(self):

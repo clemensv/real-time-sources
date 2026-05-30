@@ -100,9 +100,9 @@ class TestHubEauContainerIntegration:
         mock_obs.return_value = SAMPLE_OBSERVATIONS_RESPONSE["data"]
 
         from hubeau_hydrometrie.hubeau_hydrometrie import HubEauHydrometrieAPI
-        from hubeau_hydrometrie.hubeau_hydrometrie_producer.producer_client import FRGovEaufranceHubEauHydrometrieEventProducer
-        from hubeau_hydrometrie.hubeau_hydrometrie_producer.fr.gov.eaufrance.hubeau.hydrometrie.station import Station
-        from hubeau_hydrometrie.hubeau_hydrometrie_producer.fr.gov.eaufrance.hubeau.hydrometrie.observation import Observation
+        from hubeau_hydrometrie_producer_kafka_producer.producer import FRGovEaufranceHubEauHydrometrieEventProducer
+        from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.station import Station
+        from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.observation import Observation
         from confluent_kafka import Producer
 
         producer = Producer(kafka_config)
@@ -121,8 +121,8 @@ class TestHubEauContainerIntegration:
                 en_service=s.get("en_service", False),
                 date_ouverture_station=s.get("date_ouverture_station", "")
             )
-            hubeau_producer.send_fr_gov_eaufrance_hubeau_hydrometrie_station(
-                station_data, flush_producer=False)
+            hubeau_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_station(
+                station_data.code_station, station_data, flush_producer=False)
 
         observations = api.get_latest_observations()
         for obs in observations:
@@ -133,8 +133,8 @@ class TestHubEauContainerIntegration:
                 libelle_methode_obs=obs.get("libelle_methode_obs", ""),
                 libelle_qualification_obs=obs.get("libelle_qualification_obs", "")
             )
-            hubeau_producer.send_fr_gov_eaufrance_hubeau_hydrometrie_observation(
-                obs_data, flush_producer=False)
+            hubeau_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_observation(
+                obs_data.code_station, obs_data, flush_producer=False)
         producer.flush()
 
         from confluent_kafka import Consumer
@@ -185,8 +185,8 @@ class TestHubEauLiveContainerIntegration:
         topic = 'test-hubeau-live-stations'
         self._create_topic(kafka_container, topic)
 
-        from hubeau_hydrometrie.hubeau_hydrometrie_producer.producer_client import FRGovEaufranceHubEauHydrometrieEventProducer
-        from hubeau_hydrometrie.hubeau_hydrometrie_producer.fr.gov.eaufrance.hubeau.hydrometrie.station import Station
+        from hubeau_hydrometrie_producer_kafka_producer.producer import FRGovEaufranceHubEauHydrometrieEventProducer
+        from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.station import Station
         from confluent_kafka import Producer
         import requests
 
@@ -215,8 +215,8 @@ class TestHubEauLiveContainerIntegration:
                 en_service=s.get("en_service", False) or False,
                 date_ouverture_station=s.get("date_ouverture_station", "") or ""
             )
-            hubeau_producer.send_fr_gov_eaufrance_hubeau_hydrometrie_station(
-                station_data, flush_producer=False)
+            hubeau_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_station(
+                station_data.code_station, station_data, flush_producer=False)
         producer.flush()
 
         from confluent_kafka import Consumer
@@ -245,8 +245,8 @@ class TestHubEauLiveContainerIntegration:
         topic = 'test-hubeau-live-obs'
         self._create_topic(kafka_container, topic)
 
-        from hubeau_hydrometrie.hubeau_hydrometrie_producer.producer_client import FRGovEaufranceHubEauHydrometrieEventProducer
-        from hubeau_hydrometrie.hubeau_hydrometrie_producer.fr.gov.eaufrance.hubeau.hydrometrie.observation import Observation
+        from hubeau_hydrometrie_producer_kafka_producer.producer import FRGovEaufranceHubEauHydrometrieEventProducer
+        from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.observation import Observation
         from confluent_kafka import Producer
         import requests
 
@@ -274,8 +274,8 @@ class TestHubEauLiveContainerIntegration:
                 libelle_methode_obs=obs.get("libelle_methode_obs", "") or "",
                 libelle_qualification_obs=obs.get("libelle_qualification_obs", "") or ""
             )
-            hubeau_producer.send_fr_gov_eaufrance_hubeau_hydrometrie_observation(
-                obs_data, flush_producer=False)
+            hubeau_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_observation(
+                obs_data.code_station, obs_data, flush_producer=False)
             sent += 1
         producer.flush()
 
