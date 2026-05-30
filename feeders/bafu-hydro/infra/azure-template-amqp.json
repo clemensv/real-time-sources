@@ -38,7 +38,7 @@
       "minLength": 1,
       "maxLength": 50,
       "metadata": {
-        "description": "AMQP node/address name."
+        "description": "Azure Service Bus queue name that receives BAFU Hydro AMQP messages."
       }
     },
     "imageName": {
