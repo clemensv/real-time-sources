@@ -17,6 +17,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../dwd_pollenflug_amqp_producer_data/src')))
@@ -266,6 +267,7 @@ class TestDEDWDPollenflugAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -323,6 +325,7 @@ class TestDEDWDPollenflugAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body

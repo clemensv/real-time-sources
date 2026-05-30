@@ -109,19 +109,19 @@ class TestGetRegionId:
 
     def test_subregion_uses_partregion_id(self):
         item = {"region_id": 10, "partregion_id": 11, "partregion_name": "Inseln und Marschen"}
-        assert get_region_id(item) == 11
+        assert get_region_id(item) == "11"
 
     def test_no_subregion_uses_region_id(self):
         item = {"region_id": 20, "partregion_id": -1, "partregion_name": ""}
-        assert get_region_id(item) == 20
+        assert get_region_id(item) == "20"
 
     def test_partregion_id_zero_uses_region_id(self):
         item = {"region_id": 50, "partregion_id": 0}
-        assert get_region_id(item) == 50
+        assert get_region_id(item) == "50"
 
     def test_missing_partregion_id_uses_region_id(self):
         item = {"region_id": 30}
-        assert get_region_id(item) == 30
+        assert get_region_id(item) == "30"
 
 
 @pytest.mark.unit
@@ -152,7 +152,7 @@ class TestParseRegions:
     def test_subregion_parsed(self):
         regions = parse_regions(SAMPLE_API_RESPONSE)
         r = regions[0]
-        assert r.region_id == 11
+        assert r.region_id == "11"
         assert r.region_name == "Schleswig-Holstein und Hamburg"
         assert r.partregion_id == 11
         assert r.partregion_name == "Inseln und Marschen"
@@ -160,7 +160,7 @@ class TestParseRegions:
     def test_no_subregion_parsed(self):
         regions = parse_regions(SAMPLE_API_RESPONSE)
         r = regions[1]
-        assert r.region_id == 20
+        assert r.region_id == "20"
         assert r.region_name == "Mecklenburg-Vorpommern"
         assert r.partregion_id is None
         assert r.partregion_name is None
@@ -185,11 +185,12 @@ class TestParseForecasts:
     def test_forecast_metadata(self):
         forecasts = parse_forecasts(SAMPLE_API_RESPONSE)
         f = forecasts[0]
-        assert f.region_id == 11
+        assert f.region_id == "11"
         assert f.region_name == "Inseln und Marschen"
         assert f.last_update == "2025-04-08 11:00 Uhr"
         assert f.next_update == "2025-04-09 11:00 Uhr"
         assert f.sender == "Deutscher Wetterdienst - Medizin-Meteorologie"
+        assert f.pollen_type is None
 
     def test_birch_mapped_correctly(self):
         forecasts = parse_forecasts(SAMPLE_API_RESPONSE)
@@ -266,7 +267,7 @@ class TestParseForecasts:
     def test_no_subregion_uses_region_name(self):
         forecasts = parse_forecasts(SAMPLE_API_RESPONSE)
         f = forecasts[1]
-        assert f.region_id == 20
+        assert f.region_id == "20"
         assert f.region_name == "Mecklenburg-Vorpommern"
 
     def test_missing_pollen_data_yields_none(self):
@@ -299,16 +300,17 @@ class TestNullFieldHandling:
     """Tests for null and missing field handling."""
 
     def test_region_null_partregion_fields(self):
-        r = Region(region_id=20, region_name="Test", partregion_id=None, partregion_name=None)
+        r = Region(region_id="20", region_name="Test", partregion_id=None, partregion_name=None)
         assert r.partregion_id is None
         assert r.partregion_name is None
 
     def test_forecast_null_pollen_fields(self):
         f = PollenForecast(
-            region_id=10, region_name="Test",
+            region_id="10", region_name="Test",
             last_update="2025-04-08 11:00 Uhr",
             next_update="2025-04-09 11:00 Uhr",
             sender=None,
+            pollen_type=None,
             hazel_today=None, hazel_tomorrow=None, hazel_dayafter_to=None,
             alder_today=None, alder_tomorrow=None, alder_dayafter_to=None,
             birch_today=None, birch_tomorrow=None, birch_dayafter_to=None,
@@ -352,7 +354,7 @@ class TestSerializationRoundtrip:
     """Tests for data class serialization and deserialization."""
 
     def test_region_roundtrip(self):
-        r = Region(region_id=11, region_name="Schleswig-Holstein und Hamburg",
+        r = Region(region_id="11", region_name="Schleswig-Holstein und Hamburg",
                     partregion_id=11, partregion_name="Inseln und Marschen")
         json_str = r.to_json()
         r2 = Region.from_json(json_str)
@@ -362,7 +364,7 @@ class TestSerializationRoundtrip:
         assert r2.partregion_name == r.partregion_name
 
     def test_region_nullable_roundtrip(self):
-        r = Region(region_id=20, region_name="Mecklenburg-Vorpommern",
+        r = Region(region_id="20", region_name="Mecklenburg-Vorpommern",
                     partregion_id=None, partregion_name=None)
         json_str = r.to_json()
         r2 = Region.from_json(json_str)
@@ -371,10 +373,11 @@ class TestSerializationRoundtrip:
 
     def test_forecast_roundtrip(self):
         f = PollenForecast(
-            region_id=11, region_name="Inseln und Marschen",
+            region_id="11", region_name="Inseln und Marschen",
             last_update="2025-04-08 11:00 Uhr",
             next_update="2025-04-09 11:00 Uhr",
             sender="DWD",
+            pollen_type=None,
             hazel_today="0", hazel_tomorrow="0", hazel_dayafter_to="0",
             alder_today="0-1", alder_tomorrow="0-1", alder_dayafter_to="0-1",
             birch_today="2-3", birch_tomorrow="2-3", birch_dayafter_to="2",

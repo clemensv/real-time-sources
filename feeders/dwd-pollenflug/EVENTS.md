@@ -1,4 +1,4 @@
-# DWD Pollenflug feeder Events
+# DWD Pollenflug Events
 
 DWD Pollenflug publishes pollen exposure forecasts by region and plant type from Germany's Deutscher Wetterdienst (DWD) for German pollen forecast regions. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
@@ -158,7 +158,7 @@ Each event identifies the real-world resource with `{region_id}`. `{region_id}` 
 - **`ragweed_today`** (string or null, optional): Pollen intensity for Ambrosia (ragweed) today.
 - **`ragweed_tomorrow`** (string or null, optional): Pollen intensity for Ambrosia (ragweed) tomorrow.
 - **`ragweed_dayafter_to`** (string or null, optional): Pollen intensity for Ambrosia (ragweed) the day after tomorrow.
-- **`pollen_type`** (string, optional): Normalized routing field 'pollen_type' added for MQTT/AMQP subscriber filtering.
+- **`pollen_type`** (null or string, optional): Normalized routing field 'pollen_type' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -226,3 +226,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/dwd_pollenflug.xreg.json`](xreg/dwd_pollenflug.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

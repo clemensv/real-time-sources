@@ -31,7 +31,7 @@ FORECAST_API_URL = "https://opendata.dwd.de/climate_environment/health/alerts/s3
 POLL_INTERVAL_SECONDS = 3600  # 1 hour
 
 
-def get_region_id(item: dict) -> int:
+def get_region_id(item: dict) -> str:
     """Derive the unique region identifier for a forecast area.
 
     If the area is a sub-region (partregion_id > 0), use partregion_id.
@@ -39,8 +39,8 @@ def get_region_id(item: dict) -> int:
     """
     partregion_id = item.get("partregion_id", -1)
     if partregion_id is not None and partregion_id > 0:
-        return int(partregion_id)
-    return int(item["region_id"])
+        return str(int(partregion_id))
+    return str(int(item["region_id"]))
 
 
 def get_region_display_name(item: dict) -> str:
@@ -94,6 +94,7 @@ def parse_forecasts(data: dict) -> List[PollenForecast]:
             last_update=last_update,
             next_update=next_update,
             sender=sender,
+            pollen_type=None,
             **kwargs,
         ))
     return forecasts

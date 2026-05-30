@@ -1364,6 +1364,24 @@
       "module": "dwd_amqp"
     },
     {
+      "dir": "feeders/dwd-pollenflug",
+      "image": "dwd-pollenflug",
+      "file": "Dockerfile",
+      "module": "dwd_pollenflug"
+    },
+    {
+      "dir": "feeders/dwd-pollenflug",
+      "image": "dwd-pollenflug-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "dwd_pollenflug_mqtt"
+    },
+    {
+      "dir": "feeders/dwd-pollenflug",
+      "image": "dwd-pollenflug-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "dwd_pollenflug_amqp"
+    },
+    {
       "dir": "feeders/environment-canada",
       "image": "environment-canada-mqtt",
       "file": "Dockerfile.mqtt",
@@ -3072,6 +3090,24 @@
       "image": "dwd-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestDwdAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/dwd-pollenflug",
+      "image": "dwd-pollenflug",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestDwdPollenflugDockerFlow"
+    },
+    {
+      "dir": "feeders/dwd-pollenflug",
+      "image": "dwd-pollenflug-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestDwdPollenflugMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/dwd-pollenflug",
+      "image": "dwd-pollenflug-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestDwdPollenflugAmqpDockerFlow"
     },
     {
       "dir": "feeders/environment-canada",
