@@ -1555,6 +1555,12 @@
     },
     {
       "dir": "feeders/kmi-belgium",
+      "image": "kmi-belgium-kafka",
+      "file": "Dockerfile",
+      "module": "kmi_belgium"
+    },
+    {
+      "dir": "feeders/kmi-belgium",
       "image": "kmi-belgium-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "kmi_belgium_mqtt"
@@ -3483,6 +3489,13 @@
       "image": "jma-japan-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestJmaJapanAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/kmi-belgium",
+      "image": "kmi-belgium-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestKMIBelgiumDockerFlow"
     },
     {
       "dir": "feeders/kmi-belgium",
