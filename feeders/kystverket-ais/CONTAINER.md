@@ -176,6 +176,8 @@ docker run --rm \
 | `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for password mode. |
 | `MQTT_AUTH_MODE` | `password` (default) or `entra` for Microsoft Entra JWT. |
 | `MQTT_CLIENT_ID` | Client identifier; must be unique per broker namespace. |
+| `KYSTVERKET_AIS_MOCK` | Set to `true` to publish deterministic sample AIS events instead of opening the live TCP feed. |
+| `KYSTVERKET_AIS_MAX_EVENTS` | Optional cap on the number of AIS events to publish before exiting. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
 
 ### AMQP image
@@ -189,6 +191,8 @@ docker run --rm \
 | `AMQP_AUTH_MODE` | `password`, `entra`, or `sas`. |
 | `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra ID token settings for CBS auth mode. |
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token settings for SAS CBS auth mode. |
+| `KYSTVERKET_AIS_MOCK` | Set to `true` to publish deterministic sample AIS events instead of opening the live TCP feed. |
+| `KYSTVERKET_AIS_MAX_EVENTS` | Optional cap on the number of AIS events to publish before exiting. |
 | `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
 
 ## Deploying into Azure Container Instances
@@ -210,4 +214,4 @@ One deploy button is provided per ARM template file present in this folder:
 
 - [README.md](README.md) — source overview and quick-start guidance.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract and schemas.
-- [`xreg/ais.xreg.json`](xreg/ais.xreg.json) — authoritative xRegistry manifest.
+- [`xreg/kystverket-ais.xreg.json`](xreg/kystverket-ais.xreg.json) — authoritative xRegistry manifest.

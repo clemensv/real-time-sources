@@ -90,6 +90,20 @@
         "description": "Port number of the upstream TCP feed."
       },
       "defaultValue": "5631"
+    },
+    "kystverketAisMaxEvents": {
+      "type": "string",
+      "metadata": {
+        "description": "Optional cap on the number of AIS events to publish before exiting."
+      },
+      "defaultValue": "0"
+    },
+    "kystverketAisMock": {
+      "type": "string",
+      "metadata": {
+        "description": "Set to true to publish deterministic sample AIS events instead of opening the live TCP feed."
+      },
+      "defaultValue": "false"
     }
   },
   "variables": {
@@ -173,6 +187,14 @@
                 {
                   "name": "AIS_TCP_PORT",
                   "value": "[parameters('aisTcpPort')]"
+                },
+                {
+                  "name": "KYSTVERKET_AIS_MAX_EVENTS",
+                  "value": "[parameters('kystverketAisMaxEvents')]"
+                },
+                {
+                  "name": "KYSTVERKET_AIS_MOCK",
+                  "value": "[parameters('kystverketAisMock')]"
                 },
                 {
                   "name": "LOG_LEVEL",

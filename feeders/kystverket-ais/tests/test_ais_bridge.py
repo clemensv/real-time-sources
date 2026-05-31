@@ -91,6 +91,8 @@ class TestEmitEvent:
             "mmsi": 992651067, "aid_type": 3, "name": "PLATFORM",
             "position_accuracy": 1, "longitude": 11.9, "latitude": 57.69,
             "timestamp": "2026-04-02T07:00:00+00:00", "station_id": "2573115",
+            "flag": "NO", "ship_type": "aid-to-navigation", "geohash5": "u4xjt",
+            "msg_type": "aid-to-navigation", "ais_msg_type": 21,
         }
         decoded = _make_decoded("aid_to_navigation", 21, 992651067, fields)
         _emit_event(producer, decoded)

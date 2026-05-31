@@ -1,11 +1,11 @@
 # Generate the Kystverket AIS data producer using xrcg
 
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = $scriptDir
-$xregFile = Join-Path $projectRoot "xreg\ais.xreg.json"
+$xregFile = Join-Path $projectRoot "xreg\kystverket-ais.xreg.json"
 $outputDir = Join-Path $projectRoot "kystverket_ais_producer"
 
 Write-Host "Generating Kystverket AIS producer from xRegistry definitions..." -ForegroundColor Cyan
@@ -37,7 +37,7 @@ if ($LASTEXITCODE -eq 0) {
 xrcg generate `
     --style amqpproducer `
     --language py `
-    --definitions xreg\ais.xreg.json `
+    --definitions xreg\kystverket-ais.xreg.json `
     --endpoint NO.Kystverket.AIS.Amqp `
     --projectname kystverket_ais_amqp_producer `
     --template-args azure_cbs_target=servicebus `

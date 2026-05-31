@@ -67,7 +67,7 @@ This bridge provides one reusable feed for common scenarios:
 
 All variants share:
 
-- The xRegistry contract (`xreg/ais.xreg.json`).
+- The xRegistry contract (`xreg/kystverket-ais.xreg.json`).
 - A common upstream acquisition path and normalized event payloads.
 - Stable CloudEvents subject/key identity derived from source-native identifiers.
 

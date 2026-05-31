@@ -101,6 +101,10 @@ def aisstream_image():
     return build_image('aisstream')
 
 @pytest.fixture(scope='module')
+def kystverket_ais_image():
+    return build_image('kystverket-ais')
+
+@pytest.fixture(scope='module')
 def bluesky_kafka_image():
     return build_image('bluesky')
 
@@ -1035,6 +1039,49 @@ class TestAisstreamKafkaDockerFlow:
             ],
             command=['python', '-m', 'aisstream', 'stream', '--mock'],
             min_messages=3,
+            timeout=120,
+        )
+
+
+class TestKystverketAisDockerFlow:
+    TOPIC = 'test-kystverket-ais'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, kystverket_ais_image):
+        command = [
+            'python',
+            '-c',
+            (
+                "import json;"
+                "from confluent_kafka import Producer;"
+                "from kystverket_ais_producer_data.positionreportclassa import PositionReportClassA;"
+                "from kystverket_ais_producer_data.staticvoyagedata import StaticVoyageData;"
+                "from kystverket_ais_producer_kafka_producer.producer import NOKystverketAISEventProducer;"
+                f"cfg=json.loads({json.dumps(json.dumps({'bootstrap.servers': '__BOOTSTRAP__'}))});"
+                f"cfg['bootstrap.servers']={json.dumps(kafka.internal_address)};"
+                f"topic={json.dumps(self.TOPIC)};"
+                "producer=Producer(cfg);"
+                "event_producer=NOKystverketAISEventProducer(producer, topic);"
+                "event_producer.send_no_kystverket_ais_static_voyage_data("
+                "_mmsi='258028380',"
+                "data=StaticVoyageData(mmsi=258028380, imo_number=1234567, callsign='ABCD', ship_name='TEST', ship_type=70, dimension_to_bow=50, dimension_to_stern=20, dimension_to_port=10, dimension_to_starboard=10, draught=5.5, destination='BERGEN', eta_month=4, eta_day=2, eta_hour=12, eta_minute=0, timestamp='2026-04-02T07:00:00+00:00', station_id='2573315'),"
+                "flush_producer=False);"
+                "[event_producer.send_no_kystverket_ais_position_report_class_a("
+                "_mmsi='258028380',"
+                "data=PositionReportClassA(mmsi=258028380, navigation_status=0, rate_of_turn=0.0, speed_over_ground=4.8, position_accuracy=1, longitude=10.94, latitude=59.21, course_over_ground=170.0, true_heading=170, timestamp='2026-04-02T07:00:00+00:00', station_id='2573315', msg_type=1),"
+                "flush_producer=False) for _ in range(3)];"
+                "producer.flush()"
+            ),
+        ]
+        _run_kafka_flow_test(
+            kafka, kystverket_ais_image, self.TOPIC,
+            reference_types=['StaticVoyageData'],
+            telemetry_types=['PositionReportClassA'],
+            required_exact_types=[
+                'NO.Kystverket.AIS.StaticVoyageData',
+                'NO.Kystverket.AIS.PositionReportClassA',
+            ],
+            command=command,
+            min_messages=4,
             timeout=120,
         )
 

@@ -47,6 +47,24 @@
       "metadata": {
         "description": "Container image reference for the AMQP companion feeder."
       }
+    },
+    "kystverketAisMock": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "true",
+        "false"
+      ],
+      "metadata": {
+        "description": "Set to true to publish deterministic sample AIS events instead of opening the live TCP feed."
+      }
+    },
+    "kystverketAisMaxEvents": {
+      "type": "string",
+      "defaultValue": "0",
+      "metadata": {
+        "description": "Optional cap on the number of AIS events to publish before exiting."
+      }
     }
   },
   "variables": {
@@ -242,6 +260,14 @@
                 {
                   "name": "STATE_FILE",
                   "value": "/mnt/bridge-state/state.json"
+                },
+                {
+                  "name": "KYSTVERKET_AIS_MAX_EVENTS",
+                  "value": "[parameters('kystverketAisMaxEvents')]"
+                },
+                {
+                  "name": "KYSTVERKET_AIS_MOCK",
+                  "value": "[parameters('kystverketAisMock')]"
                 },
                 {
                   "name": "LOG_LEVEL",

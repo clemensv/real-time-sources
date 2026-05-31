@@ -13,6 +13,8 @@
     },
     {
       "dir": "feeders/kystverket-ais",
+      "image": "kystverket-ais-kafka",
+      "file": "Dockerfile",
       "module": "kystverket_ais"
     },
     {
@@ -3496,6 +3498,13 @@
       "file": "Dockerfile",
       "test_file": "test_docker_kafka_flow.py",
       "test_class": "TestKMIBelgiumDockerFlow"
+    },
+    {
+      "dir": "feeders/kystverket-ais",
+      "image": "kystverket-ais-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestKystverketAisDockerFlow"
     },
     {
       "dir": "feeders/kmi-belgium",

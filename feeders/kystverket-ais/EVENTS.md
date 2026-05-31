@@ -542,6 +542,6 @@ No source-specific polling cadence, rate limit, or stream characteristic is docu
 
 ## References
 
-- xRegistry manifest: [`xreg/ais.xreg.json`](xreg/ais.xreg.json)
+- xRegistry manifest: [`xreg/kystverket-ais.xreg.json`](xreg/kystverket-ais.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
