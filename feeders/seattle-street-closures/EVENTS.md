@@ -156,6 +156,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## References
 
-- xRegistry manifest: [`xreg/seattle_street_closures.xreg.json`](xreg/seattle_street_closures.xreg.json)
+- xRegistry manifest: [`xreg/seattle-street-closures.xreg.json`](xreg/seattle-street-closures.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

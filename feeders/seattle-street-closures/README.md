@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#seattle-street-closures/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/seattle_street_closures.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/seattle-street-closures.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://data.seattle.gov/)
 
 </td></tr></table>
@@ -65,7 +65,7 @@ City operations, construction logistics, emergency routing, and traveler-informa
 
 All variants share:
 
-- The same xRegistry contract (`xreg/seattle_street_closures.xreg.json`).
+- The same xRegistry contract (`xreg/seattle-street-closures.xreg.json`).
 - The same event-family model and schema set.
 - Poll-based acquisition logic with periodic refresh cycles.
 
@@ -81,7 +81,7 @@ All variants share:
 
 ```text
 seattle-street-closures/
-  xreg/seattle_street_closures.xreg.json
+  xreg/seattle-street-closures.xreg.json
   seattle_street_closures/
   seattle_street_closures_mqtt/
   seattle_street_closures_amqp/

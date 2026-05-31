@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#seattle-street-closures/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/seattle_street_closures.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/seattle-street-closures.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://data.seattle.gov/)
 
 </td></tr></table>
@@ -248,4 +248,4 @@ Deploy the AMQP container together with a new [Azure Service Bus Standard namesp
 
 - [README.md](README.md) — project overview and hosting options.
 - [EVENTS.md](EVENTS.md) — event contract and schema details.
-- [`xreg/seattle_street_closures.xreg.json`](xreg/seattle_street_closures.xreg.json) — authoritative contract source.
+- [`xreg/seattle-street-closures.xreg.json`](xreg/seattle-street-closures.xreg.json) — authoritative contract source.
