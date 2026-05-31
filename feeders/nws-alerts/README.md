@@ -21,7 +21,7 @@
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#nws-alerts) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/nws_alerts.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/nws-alerts.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.weather.gov/)
 
 </td></tr></table>

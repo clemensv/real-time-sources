@@ -373,6 +373,12 @@
     },
     {
       "dir": "feeders/nws-alerts",
+      "image": "nws-alerts",
+      "file": "Dockerfile",
+      "module": "nws_alerts"
+    },
+    {
+      "dir": "feeders/nws-alerts",
       "image": "nws-alerts-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "nws_alerts_mqtt"
@@ -2040,6 +2046,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestWikimediaEventstreamsMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/nws-alerts",
+      "image": "nws-alerts",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestNwsAlertsKafkaDockerFlow"
     },
     {
       "dir": "feeders/nws-alerts",

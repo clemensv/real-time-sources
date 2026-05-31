@@ -1584,7 +1584,7 @@ class TestAutobahnMqttDockerFlow:
 
 
 def _load_nws_alerts_mqtt_schema() -> Dict[str, Dict[str, Any]]:
-    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'nws-alerts', 'xreg', 'nws_alerts.xreg.json')
+    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'nws-alerts', 'xreg', 'nws-alerts.xreg.json')
     with open(xreg_path, 'r', encoding='utf-8') as fh:
         manifest = json.load(fh)
     schema = manifest['schemagroups']['NWS.jstruct']['schemas']['NWS.WeatherAlert']['versions']['1']['schema']

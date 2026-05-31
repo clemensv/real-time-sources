@@ -77,6 +77,10 @@ def noaa_nws_image():
     return build_image('noaa-nws')
 
 @pytest.fixture(scope='module')
+def nws_alerts_image():
+    return build_image('nws-alerts')
+
+@pytest.fixture(scope='module')
 def nws_forecasts_image():
     return build_image('nws-forecasts')
 
@@ -2438,6 +2442,39 @@ class TestNoaaSwpcL1DockerFlow:
                 # 300 s _run_kafka_flow_test consume window.
                 'BACKFILL_MINUTES': '1440',
             },
+        )
+
+
+# ---------------------------------------------------------------------------
+# NWS CAP Alerts (United States weather alerts)
+# ---------------------------------------------------------------------------
+
+class TestNwsAlertsKafkaDockerFlow:
+    TOPIC = 'test-nws-alerts'
+
+    def test_emits_weather_alerts(self, kafka: KafkaFixture, nws_alerts_image):
+        command = [
+            'python',
+            '-c',
+            (
+                "import json;"
+                "from confluent_kafka import Producer;"
+                f"cfg={{'bootstrap.servers': {json.dumps(kafka.internal_address)}}};"
+                f"topic={json.dumps(self.TOPIC)};"
+                "producer=Producer(cfg);"
+                "event={'specversion':'1.0','type':'NWS.WeatherAlert','source':'https://api.weather.gov/alerts','subject':'urn:oid:2.49.0.1.840.0.abc123','id':'nws-alert-sample-1','datacontenttype':'application/json','data':{'alert_id':'urn:oid:2.49.0.1.840.0.abc123','area_desc':'Montgomery County','same_codes':'024031','ugc_codes':'MDC031','sent':'2026-04-07T10:00:00Z','effective':'2026-04-07T10:00:00Z','onset':'2026-04-07T12:00:00Z','expires':'2026-04-07T20:00:00Z','ends':'2026-04-07T22:00:00Z','status':'Actual','message_type':'Alert','category':'Met','severity':'Severe','certainty':'Likely','urgency':'Immediate','event':'Tornado Warning','sender':'w-nws.webmaster@noaa.gov','sender_name':'NWS Tulsa OK','headline':'Tornado Warning for Montgomery County','description':'A tornado warning has been issued.','instruction':'Take shelter immediately.','response':'Shelter','scope':'Public','code':'IPAWSv1.0','web':'https://www.weather.gov','state':'md','event_type':'tornado-warning','nws_headline':'Tornado Warning','vtec':'/O.NEW.KTSA.TO.W.0001.260407T1200Z-260407T2200Z/'}};"
+                "producer.produce(topic, key='urn:oid:2.49.0.1.840.0.abc123', value=json.dumps(event).encode('utf-8'));"
+                "producer.flush()"
+            ),
+        ]
+        _run_kafka_flow_test(
+            kafka, nws_alerts_image, self.TOPIC,
+            reference_types=None,
+            telemetry_types=['NWS.WeatherAlert'],
+            required_exact_types=['NWS.WeatherAlert'],
+            command=command,
+            min_messages=1,
+            timeout=120,
         )
 
 

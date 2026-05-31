@@ -1,10 +1,10 @@
 $ErrorActionPreference = 'Stop'
 
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$xregFile = Join-Path (Join-Path $scriptDir "xreg") "nws_alerts.xreg.json"
+$xregFile = Join-Path (Join-Path $scriptDir "xreg") "nws-alerts.xreg.json"
 $outputDir = Join-Path $scriptDir "nws_alerts_producer"
 
 Write-Host "Generating NWS Alerts producer from $xregFile"

@@ -21,7 +21,7 @@
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#nws-alerts) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/nws_alerts.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/nws-alerts.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.weather.gov/)
 
 </td></tr></table>
@@ -45,6 +45,14 @@ docker run --rm -e CONNECTION_STRING="<your-connection-string>" nws-alerts
 docker build -f Dockerfile.mqtt -t nws-alerts-mqtt .
 docker run --rm -e MQTT_BROKER_URL="mqtt://broker:1883" nws-alerts-mqtt
 ```
+
+## Image contract
+
+| Image tag | Transport | Dockerfile | Persistent state share |
+|---|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-nws-alerts:latest` | Kafka / Event Hubs | `Dockerfile` | Yes - stores `NWS_ALERTS_STATE_FILE` dedupe state |
+| `ghcr.io/clemensv/real-time-sources-nws-alerts-mqtt:latest` | MQTT 5 | `Dockerfile.mqtt` | No |
+| `ghcr.io/clemensv/real-time-sources-nws-alerts-amqp:latest` | AMQP 1.0 | `Dockerfile.amqp` | Yes - stores `STATE_FILE` dedupe state |
 
 ## Description
 
