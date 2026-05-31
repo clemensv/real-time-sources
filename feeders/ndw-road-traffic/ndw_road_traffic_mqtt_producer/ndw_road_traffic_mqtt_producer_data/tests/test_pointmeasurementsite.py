@@ -28,15 +28,15 @@ class Test_PointMeasurementSite(unittest.TestCase):
         Create instance of PointMeasurementSite for testing
         """
         instance = PointMeasurementSite(
-            measurement_site_id='wbnddtjrebdzydlgejer',
-            name='jcroajpxvqzaafngbxjg',
-            measurement_site_type='ekenqnkmlgzuhvfvqbra',
-            period=int(0),
-            latitude=float(0.7054100220146298),
-            longitude=float(47.65532993143462),
-            road_name='gwnsukflwjqmowqnwnvx',
-            lane_count=int(87),
-            carriageway_type='gkkjgonkpifnffmkpzcs'
+            measurement_site_id='tutqwsjedjzlenvlwwsy',
+            name='flfturipxatlhbgqyrgs',
+            measurement_site_type='ydpwfubirdrkabgrbmhz',
+            period=int(44),
+            latitude=float(48.58245679285329),
+            longitude=float(98.76254828458246),
+            road_name='odpwmvnjffwpeczsnhpa',
+            lane_count=int(100),
+            carriageway_type='ordhgzgadjpdmyehrmml'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_PointMeasurementSite(unittest.TestCase):
         """
         Test measurement_site_id property
         """
-        test_value = 'wbnddtjrebdzydlgejer'
+        test_value = 'tutqwsjedjzlenvlwwsy'
         self.instance.measurement_site_id = test_value
         self.assertEqual(self.instance.measurement_site_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_PointMeasurementSite(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'jcroajpxvqzaafngbxjg'
+        test_value = 'flfturipxatlhbgqyrgs'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -61,7 +61,7 @@ class Test_PointMeasurementSite(unittest.TestCase):
         """
         Test measurement_site_type property
         """
-        test_value = 'ekenqnkmlgzuhvfvqbra'
+        test_value = 'ydpwfubirdrkabgrbmhz'
         self.instance.measurement_site_type = test_value
         self.assertEqual(self.instance.measurement_site_type, test_value)
     
@@ -69,7 +69,7 @@ class Test_PointMeasurementSite(unittest.TestCase):
         """
         Test period property
         """
-        test_value = int(0)
+        test_value = int(44)
         self.instance.period = test_value
         self.assertEqual(self.instance.period, test_value)
     
@@ -77,7 +77,7 @@ class Test_PointMeasurementSite(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(0.7054100220146298)
+        test_value = float(48.58245679285329)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -85,7 +85,7 @@ class Test_PointMeasurementSite(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(47.65532993143462)
+        test_value = float(98.76254828458246)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -93,7 +93,7 @@ class Test_PointMeasurementSite(unittest.TestCase):
         """
         Test road_name property
         """
-        test_value = 'gwnsukflwjqmowqnwnvx'
+        test_value = 'odpwmvnjffwpeczsnhpa'
         self.instance.road_name = test_value
         self.assertEqual(self.instance.road_name, test_value)
     
@@ -101,7 +101,7 @@ class Test_PointMeasurementSite(unittest.TestCase):
         """
         Test lane_count property
         """
-        test_value = int(87)
+        test_value = int(100)
         self.instance.lane_count = test_value
         self.assertEqual(self.instance.lane_count, test_value)
     
@@ -109,7 +109,7 @@ class Test_PointMeasurementSite(unittest.TestCase):
         """
         Test carriageway_type property
         """
-        test_value = 'gkkjgonkpifnffmkpzcs'
+        test_value = 'ordhgzgadjpdmyehrmml'
         self.instance.carriageway_type = test_value
         self.assertEqual(self.instance.carriageway_type, test_value)
     

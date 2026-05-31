@@ -163,11 +163,11 @@ class TravelTimeObservation:
             An instance of the dataclass.
         """
         return cls(
-            measurement_site_id='xuumqhsiaztuwzzjvalb',
-            measurement_time='bqyefnfzkxiwbptberlk',
-            duration=float(86.70045980209834),
-            reference_duration=float(44.50756567738252),
-            accuracy=float(30.123578204199564),
-            data_quality=float(61.718122564921764),
-            number_of_input_values=int(5)
+            measurement_site_id='hoclzmxglxyuhplfzdqv',
+            measurement_time='qtcdepwhsndhajmyopat',
+            duration=float(20.793737055685202),
+            reference_duration=float(38.07312442537308),
+            accuracy=float(40.651886868777254),
+            data_quality=float(56.27305658910172),
+            number_of_input_values=int(21)
         )

@@ -28,11 +28,11 @@ class Test_MsiDisplayState(unittest.TestCase):
         Create instance of MsiDisplayState for testing
         """
         instance = MsiDisplayState(
-            sign_id='lrkpvyvqmefsyadasjoa',
-            publication_time='jbowpfeqntjltanobbho',
-            image_code='aqhymvmawqosdcjnzelq',
-            state='bqllnbscxgbehfcmlziu',
-            speed_limit=int(40)
+            sign_id='owjsvlidwklhbtvkukbi',
+            publication_time='whbxazrbqladpxirsqyl',
+            image_code='olxrlafujcooakihmbac',
+            state='pslbswbqmlagadmpddus',
+            speed_limit=int(54)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_MsiDisplayState(unittest.TestCase):
         """
         Test sign_id property
         """
-        test_value = 'lrkpvyvqmefsyadasjoa'
+        test_value = 'owjsvlidwklhbtvkukbi'
         self.instance.sign_id = test_value
         self.assertEqual(self.instance.sign_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_MsiDisplayState(unittest.TestCase):
         """
         Test publication_time property
         """
-        test_value = 'jbowpfeqntjltanobbho'
+        test_value = 'whbxazrbqladpxirsqyl'
         self.instance.publication_time = test_value
         self.assertEqual(self.instance.publication_time, test_value)
     
@@ -57,7 +57,7 @@ class Test_MsiDisplayState(unittest.TestCase):
         """
         Test image_code property
         """
-        test_value = 'aqhymvmawqosdcjnzelq'
+        test_value = 'olxrlafujcooakihmbac'
         self.instance.image_code = test_value
         self.assertEqual(self.instance.image_code, test_value)
     
@@ -65,7 +65,7 @@ class Test_MsiDisplayState(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'bqllnbscxgbehfcmlziu'
+        test_value = 'pslbswbqmlagadmpddus'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -73,7 +73,7 @@ class Test_MsiDisplayState(unittest.TestCase):
         """
         Test speed_limit property
         """
-        test_value = int(40)
+        test_value = int(54)
         self.instance.speed_limit = test_value
         self.assertEqual(self.instance.speed_limit, test_value)
     

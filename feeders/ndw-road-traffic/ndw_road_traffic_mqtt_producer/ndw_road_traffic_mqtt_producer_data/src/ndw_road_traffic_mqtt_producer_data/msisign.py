@@ -163,11 +163,11 @@ class MsiSign:
             An instance of the dataclass.
         """
         return cls(
-            sign_id='axtvkpkhnpfujwraeews',
-            sign_type='tkitznafkjikzahwcrgm',
-            latitude=float(27.116918269780122),
-            longitude=float(79.31002039664195),
-            road_name='iliaarkmidbsvjwvmblp',
-            lane='mchsykgplwpfobmxjqgx',
-            description='ginglywpljsjnrsxryuc'
+            sign_id='fdrgdqandbccdsnrqbut',
+            sign_type='fazokfkxannwkzzsomyn',
+            latitude=float(63.63831206049393),
+            longitude=float(28.64560568083032),
+            road_name='ppwxdvzsuozmrnaccxap',
+            lane='hyrbjuoranyullwtwnte',
+            description='onkihmwvzqqctftrsugk'
         )

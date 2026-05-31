@@ -17,6 +17,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../ndw_road_traffic_amqp_producer_data/src')))
@@ -288,6 +289,7 @@ class TestNLNDWAVGAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -309,6 +311,7 @@ class TestNLNDWAVGAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "measurement-sites/{measurement_site_id}".format(measurement_site_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
         finally:
             producer.close()
     
@@ -344,6 +347,7 @@ class TestNLNDWAVGAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -365,6 +369,7 @@ class TestNLNDWAVGAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "measurement-sites/{measurement_site_id}".format(measurement_site_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
         finally:
             producer.close()
     
@@ -400,6 +405,7 @@ class TestNLNDWAVGAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -421,6 +427,7 @@ class TestNLNDWAVGAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "measurement-sites/{measurement_site_id}".format(measurement_site_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
         finally:
             producer.close()
     
@@ -456,6 +463,7 @@ class TestNLNDWAVGAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -477,6 +485,7 @@ class TestNLNDWAVGAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "measurement-sites/{measurement_site_id}".format(measurement_site_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
         finally:
             producer.close()
 
@@ -534,6 +543,7 @@ class TestNLNDWDRIPAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -555,6 +565,7 @@ class TestNLNDWDRIPAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "drips/{vms_controller_id}/{vms_index}".format(vms_controller_id="value", vms_index="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("drips/{vms_controller_id}/{vms_index}".format(vms_controller_id="value", vms_index="value"))[:128]
         finally:
             producer.close()
     
@@ -591,6 +602,7 @@ class TestNLNDWDRIPAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -612,6 +624,7 @@ class TestNLNDWDRIPAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "drips/{vms_controller_id}/{vms_index}".format(vms_controller_id="value", vms_index="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("drips/{vms_controller_id}/{vms_index}".format(vms_controller_id="value", vms_index="value"))[:128]
         finally:
             producer.close()
 
@@ -668,6 +681,7 @@ class TestNLNDWMSIAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -689,6 +703,7 @@ class TestNLNDWMSIAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "msi-signs/{sign_id}".format(sign_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("msi-signs/{sign_id}".format(sign_id="value"))[:128]
         finally:
             producer.close()
     
@@ -724,6 +739,7 @@ class TestNLNDWMSIAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -745,6 +761,7 @@ class TestNLNDWMSIAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "msi-signs/{sign_id}".format(sign_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("msi-signs/{sign_id}".format(sign_id="value"))[:128]
         finally:
             producer.close()
 
@@ -801,6 +818,7 @@ class TestNLNDWSituationsAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -822,6 +840,7 @@ class TestNLNDWSituationsAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
         finally:
             producer.close()
     
@@ -857,6 +876,7 @@ class TestNLNDWSituationsAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -878,6 +898,7 @@ class TestNLNDWSituationsAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
         finally:
             producer.close()
     
@@ -913,6 +934,7 @@ class TestNLNDWSituationsAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -934,6 +956,7 @@ class TestNLNDWSituationsAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
         finally:
             producer.close()
     
@@ -969,6 +992,7 @@ class TestNLNDWSituationsAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -990,6 +1014,7 @@ class TestNLNDWSituationsAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
         finally:
             producer.close()
     
@@ -1025,6 +1050,7 @@ class TestNLNDWSituationsAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -1046,6 +1072,7 @@ class TestNLNDWSituationsAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
         finally:
             producer.close()
 

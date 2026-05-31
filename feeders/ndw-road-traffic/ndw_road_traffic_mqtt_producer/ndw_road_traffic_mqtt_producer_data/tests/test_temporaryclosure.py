@@ -28,15 +28,15 @@ class Test_TemporaryClosure(unittest.TestCase):
         Create instance of TemporaryClosure for testing
         """
         instance = TemporaryClosure(
-            situation_record_id='tlxuzqrvrgggkddcqwql',
-            version_time='wdbdkxnyiquxcxmazxxd',
-            validity_status='pbhndipxxrlshycpuwhz',
-            start_time='mnminkazjygmwrwbxsfj',
-            end_time='ldpwuaehsvqbgiejueot',
-            road_name='tjgdvdwfhwhlamfmrpya',
-            description='ybfttysakuswypfsxicy',
-            location_description='flflwwiagtxstgkgucrz',
-            severity='gyivitnrfrukqibvoocx'
+            situation_record_id='qjzmiaightyknetvpzfd',
+            version_time='zyrusexyfaiuksjyvwko',
+            validity_status='fvehkaozqtyzbezvjund',
+            start_time='pomyuqvarebjredjyhyi',
+            end_time='upmtbqcxlhpuwrjxiyht',
+            road_name='pzbfcporngrcucnpbfzr',
+            description='fsxueedzzyrahajhjqhh',
+            location_description='pzfmfbuefmdfdoxicikv',
+            severity='uvvqunxxcypwdjoldrsl'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_TemporaryClosure(unittest.TestCase):
         """
         Test situation_record_id property
         """
-        test_value = 'tlxuzqrvrgggkddcqwql'
+        test_value = 'qjzmiaightyknetvpzfd'
         self.instance.situation_record_id = test_value
         self.assertEqual(self.instance.situation_record_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_TemporaryClosure(unittest.TestCase):
         """
         Test version_time property
         """
-        test_value = 'wdbdkxnyiquxcxmazxxd'
+        test_value = 'zyrusexyfaiuksjyvwko'
         self.instance.version_time = test_value
         self.assertEqual(self.instance.version_time, test_value)
     
@@ -61,7 +61,7 @@ class Test_TemporaryClosure(unittest.TestCase):
         """
         Test validity_status property
         """
-        test_value = 'pbhndipxxrlshycpuwhz'
+        test_value = 'fvehkaozqtyzbezvjund'
         self.instance.validity_status = test_value
         self.assertEqual(self.instance.validity_status, test_value)
     
@@ -69,7 +69,7 @@ class Test_TemporaryClosure(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'mnminkazjygmwrwbxsfj'
+        test_value = 'pomyuqvarebjredjyhyi'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -77,7 +77,7 @@ class Test_TemporaryClosure(unittest.TestCase):
         """
         Test end_time property
         """
-        test_value = 'ldpwuaehsvqbgiejueot'
+        test_value = 'upmtbqcxlhpuwrjxiyht'
         self.instance.end_time = test_value
         self.assertEqual(self.instance.end_time, test_value)
     
@@ -85,7 +85,7 @@ class Test_TemporaryClosure(unittest.TestCase):
         """
         Test road_name property
         """
-        test_value = 'tjgdvdwfhwhlamfmrpya'
+        test_value = 'pzbfcporngrcucnpbfzr'
         self.instance.road_name = test_value
         self.assertEqual(self.instance.road_name, test_value)
     
@@ -93,7 +93,7 @@ class Test_TemporaryClosure(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'ybfttysakuswypfsxicy'
+        test_value = 'fsxueedzzyrahajhjqhh'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -101,7 +101,7 @@ class Test_TemporaryClosure(unittest.TestCase):
         """
         Test location_description property
         """
-        test_value = 'flflwwiagtxstgkgucrz'
+        test_value = 'pzfmfbuefmdfdoxicikv'
         self.instance.location_description = test_value
         self.assertEqual(self.instance.location_description, test_value)
     
@@ -109,7 +109,7 @@ class Test_TemporaryClosure(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = 'gyivitnrfrukqibvoocx'
+        test_value = 'uvvqunxxcypwdjoldrsl'
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     

@@ -1329,6 +1329,12 @@
     },
     {
       "dir": "feeders/ndw-road-traffic",
+      "image": "ndw-road-traffic",
+      "file": "Dockerfile",
+      "module": "ndw_road_traffic"
+    },
+    {
+      "dir": "feeders/ndw-road-traffic",
       "image": "ndw-road-traffic-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "ndw_road_traffic_mqtt"
@@ -3298,6 +3304,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestMadridTrafficAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/ndw-road-traffic",
+      "image": "ndw-road-traffic",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestNDWRoadTrafficDockerFlow"
     },
     {
       "dir": "feeders/ndw-road-traffic",

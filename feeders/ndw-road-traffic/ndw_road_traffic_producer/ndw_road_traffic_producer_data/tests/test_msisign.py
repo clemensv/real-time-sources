@@ -28,13 +28,13 @@ class Test_MsiSign(unittest.TestCase):
         Create instance of MsiSign for testing
         """
         instance = MsiSign(
-            sign_id='zywaixuzimrealzyxzyo',
-            sign_type='nfztpjsfzpluezaqppen',
-            latitude=float(74.6967715924889),
-            longitude=float(92.74530501539456),
-            road_name='dwhduvqxcxvyepefeayc',
-            lane='jfeztrezegbjotiiudeg',
-            description='cskmjamwjlnonwtoujcn'
+            sign_id='zfrzmimqgfvdfxdksltc',
+            sign_type='intyjvlovirakhhrgcje',
+            latitude=float(28.046197739600885),
+            longitude=float(36.25866790542804),
+            road_name='kxgdbmoplpnalmhgfusi',
+            lane='fzluodhyjisvsgxckkfw',
+            description='tqerckeddpkuyomqevsm'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_MsiSign(unittest.TestCase):
         """
         Test sign_id property
         """
-        test_value = 'zywaixuzimrealzyxzyo'
+        test_value = 'zfrzmimqgfvdfxdksltc'
         self.instance.sign_id = test_value
         self.assertEqual(self.instance.sign_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_MsiSign(unittest.TestCase):
         """
         Test sign_type property
         """
-        test_value = 'nfztpjsfzpluezaqppen'
+        test_value = 'intyjvlovirakhhrgcje'
         self.instance.sign_type = test_value
         self.assertEqual(self.instance.sign_type, test_value)
     
@@ -59,7 +59,7 @@ class Test_MsiSign(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(74.6967715924889)
+        test_value = float(28.046197739600885)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -67,7 +67,7 @@ class Test_MsiSign(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(92.74530501539456)
+        test_value = float(36.25866790542804)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -75,7 +75,7 @@ class Test_MsiSign(unittest.TestCase):
         """
         Test road_name property
         """
-        test_value = 'dwhduvqxcxvyepefeayc'
+        test_value = 'kxgdbmoplpnalmhgfusi'
         self.instance.road_name = test_value
         self.assertEqual(self.instance.road_name, test_value)
     
@@ -83,7 +83,7 @@ class Test_MsiSign(unittest.TestCase):
         """
         Test lane property
         """
-        test_value = 'jfeztrezegbjotiiudeg'
+        test_value = 'fzluodhyjisvsgxckkfw'
         self.instance.lane = test_value
         self.assertEqual(self.instance.lane, test_value)
     
@@ -91,7 +91,7 @@ class Test_MsiSign(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'cskmjamwjlnonwtoujcn'
+        test_value = 'tqerckeddpkuyomqevsm'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     

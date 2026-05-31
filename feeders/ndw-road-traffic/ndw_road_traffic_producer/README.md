@@ -15,7 +15,29 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - NLNDWAVGEventDispatcher
+3. [Quick Start](#quick-start)    - NLNDWAVGEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NLNDWDRIPEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NLNDWMSIEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NLNDWSituationsEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NLNDWAVGMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NLNDWDRIPMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NLNDWMSIMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NLNDWSituationsMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NLNDWAVGAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NLNDWDRIPAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NLNDWMSIAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NLNDWSituationsAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +61,50 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - NLNDWAVGProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NLNDWDRIPProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NLNDWMSIProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NLNDWSituationsProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NLNDWAVGMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NLNDWDRIPMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NLNDWMSIMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NLNDWSituationsMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NLNDWAVGAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NLNDWDRIPAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NLNDWMSIAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NLNDWSituationsAmqpProducersolution for event-driven applications.
 
 
 
@@ -193,6 +259,424 @@ nl_ndw_avg_dispatcher.nl_ndw_avg_point_measurement_site_async = nl_ndw_avg_point
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_avg_point_measurement_site_async = nl_ndw_avg_point_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_avg_point_measurement_site_async = nl_ndw_avg_point_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_avg_point_measurement_site_async = nl_ndw_avg_point_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_avg_point_measurement_site_async = nl_ndw_avg_point_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_avg_point_measurement_site_async = nl_ndw_avg_point_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_avg_point_measurement_site_async = nl_ndw_avg_point_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_avg_point_measurement_site_async = nl_ndw_avg_point_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_avg_point_measurement_site_async = nl_ndw_avg_point_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_avg_point_measurement_site_async = nl_ndw_avg_point_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_avg_point_measurement_site_async = nl_ndw_avg_point_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_avg_point_measurement_site_async = nl_ndw_avg_point_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -253,6 +737,424 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 nl_ndw_avg_dispatcher.nl_ndw_avg_route_measurement_site_async = nl_ndw_avg_route_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_avg_route_measurement_site_async = nl_ndw_avg_route_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_avg_route_measurement_site_async = nl_ndw_avg_route_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_avg_route_measurement_site_async = nl_ndw_avg_route_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_avg_route_measurement_site_async = nl_ndw_avg_route_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_avg_route_measurement_site_async = nl_ndw_avg_route_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_avg_route_measurement_site_async = nl_ndw_avg_route_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_avg_route_measurement_site_async = nl_ndw_avg_route_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_avg_route_measurement_site_async = nl_ndw_avg_route_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_avg_route_measurement_site_async = nl_ndw_avg_route_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_avg_route_measurement_site_async = nl_ndw_avg_route_measurement_site_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_avg_route_measurement_site_async = nl_ndw_avg_route_measurement_site_event
 
 **Parameters:**```
 
@@ -323,6 +1225,424 @@ nl_ndw_avg_dispatcher.nl_ndw_avg_traffic_observation_async = nl_ndw_avg_traffic_
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_avg_traffic_observation_async = nl_ndw_avg_traffic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_avg_traffic_observation_async = nl_ndw_avg_traffic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_avg_traffic_observation_async = nl_ndw_avg_traffic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_avg_traffic_observation_async = nl_ndw_avg_traffic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_avg_traffic_observation_async = nl_ndw_avg_traffic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_avg_traffic_observation_async = nl_ndw_avg_traffic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_avg_traffic_observation_async = nl_ndw_avg_traffic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_avg_traffic_observation_async = nl_ndw_avg_traffic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_avg_traffic_observation_async = nl_ndw_avg_traffic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_avg_traffic_observation_async = nl_ndw_avg_traffic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_avg_traffic_observation_async = nl_ndw_avg_traffic_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -383,6 +1703,424 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 nl_ndw_avg_dispatcher.nl_ndw_avg_travel_time_observation_async = nl_ndw_avg_travel_time_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_avg_travel_time_observation_async = nl_ndw_avg_travel_time_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_avg_travel_time_observation_async = nl_ndw_avg_travel_time_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_avg_travel_time_observation_async = nl_ndw_avg_travel_time_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_avg_travel_time_observation_async = nl_ndw_avg_travel_time_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_avg_travel_time_observation_async = nl_ndw_avg_travel_time_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_avg_travel_time_observation_async = nl_ndw_avg_travel_time_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_avg_travel_time_observation_async = nl_ndw_avg_travel_time_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_avg_travel_time_observation_async = nl_ndw_avg_travel_time_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_avg_travel_time_observation_async = nl_ndw_avg_travel_time_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_avg_travel_time_observation_async = nl_ndw_avg_travel_time_observation_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_avg_travel_time_observation_async = nl_ndw_avg_travel_time_observation_event
 
 **Parameters:**```
 
@@ -807,6 +2545,21635 @@ await producer.send_nl_ndw_avg_travel_time_observation_batch(```
         TravelTimeObservation(...),
 
         TravelTimeObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NLNDWDRIPEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NLNDWDRIPEventDispatcher` handles events for the NL.NDW.DRIP message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ndw_road_traffic_producer import NLNDWAVGProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_ndw_avg_point_measurement_site(```python
+
+    data=PointMeasurementSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NLNDWDRIPEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_drip_drip_sign_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_drip_drip_sign_async:  Callable[[ConsumerRecord, CloudEvent, DripSign],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.DRIP.DripSign`: Reference record for a Dynamic Route Information Panel (DRIP) sign
+from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Describes the physical installation, location, and
+type of an individual VMS sign unit.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_drip_drip_sign_async = nl_ndw_drip_drip_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_drip_drip_sign_async = nl_ndw_drip_drip_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_drip_drip_sign_async = nl_ndw_drip_drip_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_drip_drip_sign_async = nl_ndw_drip_drip_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_drip_drip_sign_async = nl_ndw_drip_drip_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_drip_drip_sign_async = nl_ndw_drip_drip_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_drip_drip_sign_async = nl_ndw_drip_drip_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_drip_drip_sign_async = nl_ndw_drip_drip_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_drip_drip_sign_async = nl_ndw_drip_drip_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_drip_drip_sign_async = nl_ndw_drip_drip_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_drip_drip_sign_async = nl_ndw_drip_drip_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_drip_drip_sign_async = nl_ndw_drip_drip_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_drip_drip_display_state_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_drip_drip_display_state_async:  Callable[[ConsumerRecord, CloudEvent,
+DripDisplayState], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.DRIP.DripDisplayState`: Current display state of a Dynamic Route Information Panel
+(DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text, pictogram
+codes, and operational state of the sign.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripDisplayState)
+-> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_drip_drip_display_state_async = nl_ndw_drip_drip_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripDisplayState)
+-> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_drip_drip_display_state_async = nl_ndw_drip_drip_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripDisplayState)
+-> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_drip_drip_display_state_async = nl_ndw_drip_drip_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripDisplayState)
+-> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_drip_drip_display_state_async = nl_ndw_drip_drip_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripDisplayState)
+-> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_drip_drip_display_state_async = nl_ndw_drip_drip_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripDisplayState)
+-> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_drip_drip_display_state_async = nl_ndw_drip_drip_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripDisplayState)
+-> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_drip_drip_display_state_async = nl_ndw_drip_drip_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripDisplayState)
+-> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_drip_drip_display_state_async = nl_ndw_drip_drip_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripDisplayState)
+-> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_drip_drip_display_state_async = nl_ndw_drip_drip_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripDisplayState)
+-> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_drip_drip_display_state_async = nl_ndw_drip_drip_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripDisplayState)
+-> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_drip_drip_display_state_async = nl_ndw_drip_drip_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripDisplayState)
+-> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_drip_drip_display_state_async = nl_ndw_drip_drip_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_ndw_drip_drip_sign`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_drip_drip_sign(
+
+    self,##### `_process_event`
+
+    data: DripSign,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.DRIP.DripSign` message. Reference record for a Dynamic Route Information Panel (DRIP) sign from
+the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Describes the physical installation, location, and type
+of an individual VMS sign unit.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DripSign`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_drip_drip_sign(
+
+    data=DripSign(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.DRIP.DripSign` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_drip_drip_sign_batch(```
+
+    messages=[
+
+        DripSign(...),Initializes the runner with a Kafka consumer.
+
+        DripSign(...),
+
+        DripSign(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_drip_drip_display_state`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_drip_drip_display_state(
+
+    self,##### `_process_event`
+
+    data: DripDisplayState,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.DRIP.DripDisplayState` message. Current display state of a Dynamic Route Information Panel (DRIP)
+sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text, pictogram codes, and
+operational state of the sign.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DripDisplayState`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_drip_drip_display_state(
+
+    data=DripDisplayState(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.DRIP.DripDisplayState` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_drip_drip_display_state_batch(```
+
+    messages=[
+
+        DripDisplayState(...),Initializes the runner with a Kafka consumer.
+
+        DripDisplayState(...),
+
+        DripDisplayState(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NLNDWMSIEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NLNDWMSIEventDispatcher` handles events for the NL.NDW.MSI message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ndw_road_traffic_producer import NLNDWAVGProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_ndw_avg_point_measurement_site(```python
+
+    data=PointMeasurementSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NLNDWMSIEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_msi_msi_sign_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_msi_msi_sign_async:  Callable[[ConsumerRecord, CloudEvent, MsiSign],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.MSI.MsiSign`: Reference record for a Matrix Signal Installation (MSI) sign from
+the Dutch NDW DATEX II Matrixsignaalinformatie feed. Describes the physical location, lane assignment, and type of a
+matrix signal sign above a motorway lane.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_msi_msi_sign_async = nl_ndw_msi_msi_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_msi_msi_sign_async = nl_ndw_msi_msi_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_msi_msi_sign_async = nl_ndw_msi_msi_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_msi_msi_sign_async = nl_ndw_msi_msi_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_msi_msi_sign_async = nl_ndw_msi_msi_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_msi_msi_sign_async = nl_ndw_msi_msi_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_msi_msi_sign_async = nl_ndw_msi_msi_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_msi_msi_sign_async = nl_ndw_msi_msi_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_msi_msi_sign_async = nl_ndw_msi_msi_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_msi_msi_sign_async = nl_ndw_msi_msi_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_msi_msi_sign_async = nl_ndw_msi_msi_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_msi_msi_sign_async = nl_ndw_msi_msi_sign_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_msi_msi_display_state_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_msi_msi_display_state_async:  Callable[[ConsumerRecord, CloudEvent,
+MsiDisplayState], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.MSI.MsiDisplayState`: Current display state of a Matrix Signal Installation (MSI)
+sign from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Captures the displayed image code, operational state, and
+any speed limit shown.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiDisplayState) ->
+None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_msi_msi_display_state_async = nl_ndw_msi_msi_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiDisplayState) ->
+None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_msi_msi_display_state_async = nl_ndw_msi_msi_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiDisplayState) ->
+None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_msi_msi_display_state_async = nl_ndw_msi_msi_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiDisplayState) ->
+None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_msi_msi_display_state_async = nl_ndw_msi_msi_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiDisplayState) ->
+None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_msi_msi_display_state_async = nl_ndw_msi_msi_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiDisplayState) ->
+None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_msi_msi_display_state_async = nl_ndw_msi_msi_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiDisplayState) ->
+None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_msi_msi_display_state_async = nl_ndw_msi_msi_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiDisplayState) ->
+None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_msi_msi_display_state_async = nl_ndw_msi_msi_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiDisplayState) ->
+None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_msi_msi_display_state_async = nl_ndw_msi_msi_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiDisplayState) ->
+None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_msi_msi_display_state_async = nl_ndw_msi_msi_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiDisplayState) ->
+None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_msi_msi_display_state_async = nl_ndw_msi_msi_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiDisplayState) ->
+None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_msi_msi_display_state_async = nl_ndw_msi_msi_display_state_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_ndw_msi_msi_sign`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_msi_msi_sign(
+
+    self,##### `_process_event`
+
+    data: MsiSign,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.MSI.MsiSign` message. Reference record for a Matrix Signal Installation (MSI) sign from the Dutch
+NDW DATEX II Matrixsignaalinformatie feed. Describes the physical location, lane assignment, and type of a matrix signal
+sign above a motorway lane.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `MsiSign`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_msi_msi_sign(
+
+    data=MsiSign(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.MSI.MsiSign` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_msi_msi_sign_batch(```
+
+    messages=[
+
+        MsiSign(...),Initializes the runner with a Kafka consumer.
+
+        MsiSign(...),
+
+        MsiSign(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_msi_msi_display_state`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_msi_msi_display_state(
+
+    self,##### `_process_event`
+
+    data: MsiDisplayState,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.MSI.MsiDisplayState` message. Current display state of a Matrix Signal Installation (MSI) sign
+from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Captures the displayed image code, operational state, and any
+speed limit shown.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `MsiDisplayState`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_msi_msi_display_state(
+
+    data=MsiDisplayState(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.MSI.MsiDisplayState` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_msi_msi_display_state_batch(```
+
+    messages=[
+
+        MsiDisplayState(...),Initializes the runner with a Kafka consumer.
+
+        MsiDisplayState(...),
+
+        MsiDisplayState(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NLNDWSituationsEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NLNDWSituationsEventDispatcher` handles events for the NL.NDW.Situations message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ndw_road_traffic_producer import NLNDWAVGProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_ndw_avg_point_measurement_site(```python
+
+    data=PointMeasurementSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NLNDWSituationsEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_roadwork_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_roadwork_async:  Callable[[ConsumerRecord, CloudEvent, Roadwork],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.Roadwork`: Road construction or maintenance work event from the Dutch
+NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on
+the Dutch national road network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_roadwork_async = nl_ndw_situations_roadwork_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_roadwork_async = nl_ndw_situations_roadwork_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_roadwork_async = nl_ndw_situations_roadwork_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_roadwork_async = nl_ndw_situations_roadwork_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_roadwork_async = nl_ndw_situations_roadwork_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_roadwork_async = nl_ndw_situations_roadwork_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_roadwork_async = nl_ndw_situations_roadwork_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_roadwork_async = nl_ndw_situations_roadwork_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_roadwork_async = nl_ndw_situations_roadwork_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_roadwork_async = nl_ndw_situations_roadwork_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_roadwork_async = nl_ndw_situations_roadwork_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_roadwork_async = nl_ndw_situations_roadwork_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_bridge_opening_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_bridge_opening_async:  Callable[[ConsumerRecord, CloudEvent,
+BridgeOpening], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.BridgeOpening`: Bridge opening event from the Dutch NDW DATEX II
+planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes temporary road closure.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_event(record: ConsumerRecord, cloud_event: CloudEvent, data: BridgeOpening)
+-> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_bridge_opening_async = nl_ndw_situations_bridge_opening_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_event(record: ConsumerRecord, cloud_event: CloudEvent, data: BridgeOpening)
+-> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_bridge_opening_async = nl_ndw_situations_bridge_opening_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_event(record: ConsumerRecord, cloud_event: CloudEvent, data: BridgeOpening)
+-> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_bridge_opening_async = nl_ndw_situations_bridge_opening_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_event(record: ConsumerRecord, cloud_event: CloudEvent, data: BridgeOpening)
+-> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_bridge_opening_async = nl_ndw_situations_bridge_opening_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_event(record: ConsumerRecord, cloud_event: CloudEvent, data: BridgeOpening)
+-> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_bridge_opening_async = nl_ndw_situations_bridge_opening_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_event(record: ConsumerRecord, cloud_event: CloudEvent, data: BridgeOpening)
+-> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_bridge_opening_async = nl_ndw_situations_bridge_opening_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_event(record: ConsumerRecord, cloud_event: CloudEvent, data: BridgeOpening)
+-> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_bridge_opening_async = nl_ndw_situations_bridge_opening_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_event(record: ConsumerRecord, cloud_event: CloudEvent, data: BridgeOpening)
+-> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_bridge_opening_async = nl_ndw_situations_bridge_opening_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_event(record: ConsumerRecord, cloud_event: CloudEvent, data: BridgeOpening)
+-> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_bridge_opening_async = nl_ndw_situations_bridge_opening_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_event(record: ConsumerRecord, cloud_event: CloudEvent, data: BridgeOpening)
+-> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_bridge_opening_async = nl_ndw_situations_bridge_opening_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_event(record: ConsumerRecord, cloud_event: CloudEvent, data: BridgeOpening)
+-> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_bridge_opening_async = nl_ndw_situations_bridge_opening_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_event(record: ConsumerRecord, cloud_event: CloudEvent, data: BridgeOpening)
+-> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_bridge_opening_async = nl_ndw_situations_bridge_opening_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_temporary_closure_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_temporary_closure_async:  Callable[[ConsumerRecord, CloudEvent,
+TemporaryClosure], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.TemporaryClosure`: Temporary road closure from the Dutch NDW DATEX II
+tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or lane on the Dutch
+national road network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_temporary_closure_async = nl_ndw_situations_temporary_closure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_temporary_closure_async = nl_ndw_situations_temporary_closure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_temporary_closure_async = nl_ndw_situations_temporary_closure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_temporary_closure_async = nl_ndw_situations_temporary_closure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_temporary_closure_async = nl_ndw_situations_temporary_closure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_temporary_closure_async = nl_ndw_situations_temporary_closure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_temporary_closure_async = nl_ndw_situations_temporary_closure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_temporary_closure_async = nl_ndw_situations_temporary_closure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_temporary_closure_async = nl_ndw_situations_temporary_closure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_temporary_closure_async = nl_ndw_situations_temporary_closure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_temporary_closure_async = nl_ndw_situations_temporary_closure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_temporary_closure_async = nl_ndw_situations_temporary_closure_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_temporary_speed_limit_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_temporary_speed_limit_async:  Callable[[ConsumerRecord, CloudEvent,
+TemporarySpeedLimit], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.TemporarySpeedLimit`: Temporary speed limit measure from the Dutch NDW
+DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in maximum speed on a
+section of the national road network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_temporary_speed_limit_async = nl_ndw_situations_temporary_speed_limit_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_temporary_speed_limit_async = nl_ndw_situations_temporary_speed_limit_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_temporary_speed_limit_async = nl_ndw_situations_temporary_speed_limit_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_temporary_speed_limit_async =
+nl_ndw_situations_temporary_speed_limit_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_temporary_speed_limit_async = nl_ndw_situations_temporary_speed_limit_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_temporary_speed_limit_async =
+nl_ndw_situations_temporary_speed_limit_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_temporary_speed_limit_async = nl_ndw_situations_temporary_speed_limit_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_temporary_speed_limit_async =
+nl_ndw_situations_temporary_speed_limit_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_temporary_speed_limit_async = nl_ndw_situations_temporary_speed_limit_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_temporary_speed_limit_async =
+nl_ndw_situations_temporary_speed_limit_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_temporary_speed_limit_async = nl_ndw_situations_temporary_speed_limit_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_temporary_speed_limit_async =
+nl_ndw_situations_temporary_speed_limit_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_safety_related_message_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_safety_related_message_async:  Callable[[ConsumerRecord, CloudEvent,
+SafetyRelatedMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.SafetyRelatedMessage`: Safety-related traffic information message from
+the Dutch NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard
+notifications on the national road network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_safety_related_message_async = nl_ndw_situations_safety_related_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_safety_related_message_async = nl_ndw_situations_safety_related_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_safety_related_message_async = nl_ndw_situations_safety_related_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_safety_related_message_async =
+nl_ndw_situations_safety_related_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_safety_related_message_async =
+nl_ndw_situations_safety_related_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_safety_related_message_async =
+nl_ndw_situations_safety_related_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_safety_related_message_async =
+nl_ndw_situations_safety_related_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_safety_related_message_async =
+nl_ndw_situations_safety_related_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_safety_related_message_async =
+nl_ndw_situations_safety_related_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_safety_related_message_async =
+nl_ndw_situations_safety_related_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_safety_related_message_async =
+nl_ndw_situations_safety_related_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_safety_related_message_async =
+nl_ndw_situations_safety_related_message_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_roadwork`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_roadwork(
+
+    self,##### `_process_event`
+
+    data: Roadwork,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.Roadwork` message. Road construction or maintenance work event from the Dutch NDW DATEX
+II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on the Dutch
+national road network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Roadwork`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_roadwork(
+
+    data=Roadwork(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.Roadwork` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_roadwork_batch(```
+
+    messages=[
+
+        Roadwork(...),Initializes the runner with a Kafka consumer.
+
+        Roadwork(...),
+
+        Roadwork(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_bridge_opening`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_bridge_opening(
+
+    self,##### `_process_event`
+
+    data: BridgeOpening,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.BridgeOpening` message. Bridge opening event from the Dutch NDW DATEX II
+planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes temporary road
+closure.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BridgeOpening`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_bridge_opening(
+
+    data=BridgeOpening(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.BridgeOpening` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_bridge_opening_batch(```
+
+    messages=[
+
+        BridgeOpening(...),Initializes the runner with a Kafka consumer.
+
+        BridgeOpening(...),
+
+        BridgeOpening(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_temporary_closure`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_temporary_closure(
+
+    self,##### `_process_event`
+
+    data: TemporaryClosure,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.TemporaryClosure` message. Temporary road closure from the Dutch NDW DATEX II
+tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or lane on the Dutch
+national road network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `TemporaryClosure`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_temporary_closure(
+
+    data=TemporaryClosure(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.TemporaryClosure` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_temporary_closure_batch(```
+
+    messages=[
+
+        TemporaryClosure(...),Initializes the runner with a Kafka consumer.
+
+        TemporaryClosure(...),
+
+        TemporaryClosure(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_temporary_speed_limit`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_temporary_speed_limit(
+
+    self,##### `_process_event`
+
+    data: TemporarySpeedLimit,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.TemporarySpeedLimit` message. Temporary speed limit measure from the Dutch NDW DATEX II
+tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in maximum speed on a section of
+the national road network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `TemporarySpeedLimit`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_temporary_speed_limit(
+
+    data=TemporarySpeedLimit(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.TemporarySpeedLimit` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_temporary_speed_limit_batch(```
+
+    messages=[
+
+        TemporarySpeedLimit(...),Initializes the runner with a Kafka consumer.
+
+        TemporarySpeedLimit(...),
+
+        TemporarySpeedLimit(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_safety_related_message`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_safety_related_message(
+
+    self,##### `_process_event`
+
+    data: SafetyRelatedMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.SafetyRelatedMessage` message. Safety-related traffic information message from the
+Dutch NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard notifications
+on the national road network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `SafetyRelatedMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_safety_related_message(
+
+    data=SafetyRelatedMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.SafetyRelatedMessage` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_safety_related_message_batch(```
+
+    messages=[
+
+        SafetyRelatedMessage(...),Initializes the runner with a Kafka consumer.
+
+        SafetyRelatedMessage(...),
+
+        SafetyRelatedMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NLNDWAVGMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NLNDWAVGMqttEventDispatcher` handles events for the NL.NDW.AVG.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ndw_road_traffic_producer import NLNDWAVGProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_ndw_avg_point_measurement_site(```python
+
+    data=PointMeasurementSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NLNDWAVGMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_avg_point_measurement_site_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_avg_point_measurement_site_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+PointMeasurementSite], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.AVG.PointMeasurementSite.mqtt`: Reference record for a point measurement site from
+the Dutch NDW DATEX II measurement_current feed. Contains location, sensor technology type, and lane configuration for a
+fixed inductive-loop or microwave sensor.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_avg_point_measurement_site_mqtt_async = nl_ndw_avg_point_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_avg_point_measurement_site_mqtt_async = nl_ndw_avg_point_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_avg_point_measurement_site_mqtt_async = nl_ndw_avg_point_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_avg_point_measurement_site_mqtt_async = nl_ndw_avg_point_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_avg_point_measurement_site_mqtt_async = nl_ndw_avg_point_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_avg_point_measurement_site_mqtt_async = nl_ndw_avg_point_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_avg_point_measurement_site_mqtt_async = nl_ndw_avg_point_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_avg_point_measurement_site_mqtt_async =
+nl_ndw_avg_point_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_avg_point_measurement_site_mqtt_async = nl_ndw_avg_point_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_avg_point_measurement_site_mqtt_async = nl_ndw_avg_point_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_avg_point_measurement_site_mqtt_async = nl_ndw_avg_point_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_avg_point_measurement_site_mqtt_async =
+nl_ndw_avg_point_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_avg_route_measurement_site_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_avg_route_measurement_site_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+RouteMeasurementSite], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.AVG.RouteMeasurementSite.mqtt`: Reference record for a route (section) measurement
+site from the Dutch NDW DATEX II measurement_current feed. Covers a road segment between two coordinates used for travel
+time computation.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_avg_route_measurement_site_mqtt_async = nl_ndw_avg_route_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_avg_route_measurement_site_mqtt_async = nl_ndw_avg_route_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_avg_route_measurement_site_mqtt_async = nl_ndw_avg_route_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_avg_route_measurement_site_mqtt_async = nl_ndw_avg_route_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_avg_route_measurement_site_mqtt_async = nl_ndw_avg_route_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_avg_route_measurement_site_mqtt_async = nl_ndw_avg_route_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_avg_route_measurement_site_mqtt_async = nl_ndw_avg_route_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_avg_route_measurement_site_mqtt_async =
+nl_ndw_avg_route_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_avg_route_measurement_site_mqtt_async = nl_ndw_avg_route_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_avg_route_measurement_site_mqtt_async = nl_ndw_avg_route_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_avg_route_measurement_site_mqtt_async = nl_ndw_avg_route_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_avg_route_measurement_site_mqtt_async =
+nl_ndw_avg_route_measurement_site_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_avg_traffic_observation_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_avg_traffic_observation_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+TrafficObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.AVG.TrafficObservation.mqtt`: Aggregated traffic speed and flow observation from
+the Dutch NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow
+summed across all reporting lanes.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_avg_traffic_observation_mqtt_async = nl_ndw_avg_traffic_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_avg_traffic_observation_mqtt_async = nl_ndw_avg_traffic_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_avg_traffic_observation_mqtt_async = nl_ndw_avg_traffic_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_avg_traffic_observation_mqtt_async = nl_ndw_avg_traffic_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_avg_traffic_observation_mqtt_async = nl_ndw_avg_traffic_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_avg_traffic_observation_mqtt_async = nl_ndw_avg_traffic_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_avg_traffic_observation_mqtt_async = nl_ndw_avg_traffic_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_avg_traffic_observation_mqtt_async = nl_ndw_avg_traffic_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_avg_traffic_observation_mqtt_async = nl_ndw_avg_traffic_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_avg_traffic_observation_mqtt_async = nl_ndw_avg_traffic_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_avg_traffic_observation_mqtt_async = nl_ndw_avg_traffic_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_avg_traffic_observation_mqtt_async = nl_ndw_avg_traffic_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_avg_travel_time_observation_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_avg_travel_time_observation_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+TravelTimeObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.AVG.TravelTimeObservation.mqtt`: Travel time observation for a road segment from
+the Dutch NDW DATEX II traveltime feed. Contains the actual measured travel time and the static free-flow reference time
+for a route measurement site.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_avg_travel_time_observation_mqtt_async = nl_ndw_avg_travel_time_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_avg_travel_time_observation_mqtt_async = nl_ndw_avg_travel_time_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_avg_travel_time_observation_mqtt_async = nl_ndw_avg_travel_time_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_avg_travel_time_observation_mqtt_async =
+nl_ndw_avg_travel_time_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_avg_travel_time_observation_mqtt_async = nl_ndw_avg_travel_time_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_avg_travel_time_observation_mqtt_async =
+nl_ndw_avg_travel_time_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_avg_travel_time_observation_mqtt_async = nl_ndw_avg_travel_time_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_avg_travel_time_observation_mqtt_async =
+nl_ndw_avg_travel_time_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_avg_travel_time_observation_mqtt_async = nl_ndw_avg_travel_time_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_avg_travel_time_observation_mqtt_async =
+nl_ndw_avg_travel_time_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_avg_travel_time_observation_mqtt_async = nl_ndw_avg_travel_time_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_avg_travel_time_observation_mqtt_async =
+nl_ndw_avg_travel_time_observation_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_ndw_avg_point_measurement_site_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_avg_point_measurement_site_mqtt(
+
+    self,##### `_process_event`
+
+    data: PointMeasurementSite,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.AVG.PointMeasurementSite.mqtt` message. Reference record for a point measurement site from the
+Dutch NDW DATEX II measurement_current feed. Contains location, sensor technology type, and lane configuration for a
+fixed inductive-loop or microwave sensor.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PointMeasurementSite`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_avg_point_measurement_site_mqtt(
+
+    data=PointMeasurementSite(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.AVG.PointMeasurementSite.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_avg_point_measurement_site_mqtt_batch(```
+
+    messages=[
+
+        PointMeasurementSite(...),Initializes the runner with a Kafka consumer.
+
+        PointMeasurementSite(...),
+
+        PointMeasurementSite(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_avg_route_measurement_site_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_avg_route_measurement_site_mqtt(
+
+    self,##### `_process_event`
+
+    data: RouteMeasurementSite,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.AVG.RouteMeasurementSite.mqtt` message. Reference record for a route (section) measurement site
+from the Dutch NDW DATEX II measurement_current feed. Covers a road segment between two coordinates used for travel time
+computation.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RouteMeasurementSite`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_avg_route_measurement_site_mqtt(
+
+    data=RouteMeasurementSite(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.AVG.RouteMeasurementSite.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_avg_route_measurement_site_mqtt_batch(```
+
+    messages=[
+
+        RouteMeasurementSite(...),Initializes the runner with a Kafka consumer.
+
+        RouteMeasurementSite(...),
+
+        RouteMeasurementSite(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_avg_traffic_observation_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_avg_traffic_observation_mqtt(
+
+    self,##### `_process_event`
+
+    data: TrafficObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.AVG.TrafficObservation.mqtt` message. Aggregated traffic speed and flow observation from the Dutch
+NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow summed across
+all reporting lanes.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `TrafficObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_avg_traffic_observation_mqtt(
+
+    data=TrafficObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.AVG.TrafficObservation.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_avg_traffic_observation_mqtt_batch(```
+
+    messages=[
+
+        TrafficObservation(...),Initializes the runner with a Kafka consumer.
+
+        TrafficObservation(...),
+
+        TrafficObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_avg_travel_time_observation_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_avg_travel_time_observation_mqtt(
+
+    self,##### `_process_event`
+
+    data: TravelTimeObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.AVG.TravelTimeObservation.mqtt` message. Travel time observation for a road segment from the Dutch
+NDW DATEX II traveltime feed. Contains the actual measured travel time and the static free-flow reference time for a
+route measurement site.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `TravelTimeObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_avg_travel_time_observation_mqtt(
+
+    data=TravelTimeObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.AVG.TravelTimeObservation.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_avg_travel_time_observation_mqtt_batch(```
+
+    messages=[
+
+        TravelTimeObservation(...),Initializes the runner with a Kafka consumer.
+
+        TravelTimeObservation(...),
+
+        TravelTimeObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NLNDWDRIPMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NLNDWDRIPMqttEventDispatcher` handles events for the NL.NDW.DRIP.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ndw_road_traffic_producer import NLNDWAVGProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_ndw_avg_point_measurement_site(```python
+
+    data=PointMeasurementSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NLNDWDRIPMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_drip_drip_sign_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_drip_drip_sign_mqtt_async:  Callable[[ConsumerRecord, CloudEvent, DripSign],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.DRIP.DripSign.mqtt`: Reference record for a Dynamic Route Information Panel (DRIP)
+sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Describes the physical installation, location,
+and type of an individual VMS sign unit.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_drip_drip_sign_mqtt_async = nl_ndw_drip_drip_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_drip_drip_sign_mqtt_async = nl_ndw_drip_drip_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_drip_drip_sign_mqtt_async = nl_ndw_drip_drip_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_drip_drip_sign_mqtt_async = nl_ndw_drip_drip_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_drip_drip_sign_mqtt_async = nl_ndw_drip_drip_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_drip_drip_sign_mqtt_async = nl_ndw_drip_drip_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_drip_drip_sign_mqtt_async = nl_ndw_drip_drip_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_drip_drip_sign_mqtt_async = nl_ndw_drip_drip_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_drip_drip_sign_mqtt_async = nl_ndw_drip_drip_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_drip_drip_sign_mqtt_async = nl_ndw_drip_drip_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_drip_drip_sign_mqtt_async = nl_ndw_drip_drip_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_drip_drip_sign_mqtt_async = nl_ndw_drip_drip_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_drip_drip_display_state_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_drip_drip_display_state_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+DripDisplayState], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.DRIP.DripDisplayState.mqtt`: Current display state of a Dynamic Route Information
+Panel (DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text,
+pictogram codes, and operational state of the sign.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_drip_drip_display_state_mqtt_async = nl_ndw_drip_drip_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_drip_drip_display_state_mqtt_async = nl_ndw_drip_drip_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_drip_drip_display_state_mqtt_async = nl_ndw_drip_drip_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_drip_drip_display_state_mqtt_async = nl_ndw_drip_drip_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_drip_drip_display_state_mqtt_async = nl_ndw_drip_drip_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_drip_drip_display_state_mqtt_async = nl_ndw_drip_drip_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_drip_drip_display_state_mqtt_async = nl_ndw_drip_drip_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_drip_drip_display_state_mqtt_async = nl_ndw_drip_drip_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_drip_drip_display_state_mqtt_async = nl_ndw_drip_drip_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_drip_drip_display_state_mqtt_async = nl_ndw_drip_drip_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_drip_drip_display_state_mqtt_async = nl_ndw_drip_drip_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_drip_drip_display_state_mqtt_async = nl_ndw_drip_drip_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_ndw_drip_drip_sign_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_drip_drip_sign_mqtt(
+
+    self,##### `_process_event`
+
+    data: DripSign,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.DRIP.DripSign.mqtt` message. Reference record for a Dynamic Route Information Panel (DRIP) sign
+from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Describes the physical installation, location, and
+type of an individual VMS sign unit.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DripSign`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_drip_drip_sign_mqtt(
+
+    data=DripSign(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.DRIP.DripSign.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_drip_drip_sign_mqtt_batch(```
+
+    messages=[
+
+        DripSign(...),Initializes the runner with a Kafka consumer.
+
+        DripSign(...),
+
+        DripSign(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_drip_drip_display_state_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_drip_drip_display_state_mqtt(
+
+    self,##### `_process_event`
+
+    data: DripDisplayState,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.DRIP.DripDisplayState.mqtt` message. Current display state of a Dynamic Route Information Panel
+(DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text, pictogram
+codes, and operational state of the sign.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DripDisplayState`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_drip_drip_display_state_mqtt(
+
+    data=DripDisplayState(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.DRIP.DripDisplayState.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_drip_drip_display_state_mqtt_batch(```
+
+    messages=[
+
+        DripDisplayState(...),Initializes the runner with a Kafka consumer.
+
+        DripDisplayState(...),
+
+        DripDisplayState(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NLNDWMSIMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NLNDWMSIMqttEventDispatcher` handles events for the NL.NDW.MSI.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ndw_road_traffic_producer import NLNDWAVGProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_ndw_avg_point_measurement_site(```python
+
+    data=PointMeasurementSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NLNDWMSIMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_msi_msi_sign_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_msi_msi_sign_mqtt_async:  Callable[[ConsumerRecord, CloudEvent, MsiSign],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.MSI.MsiSign.mqtt`: Reference record for a Matrix Signal Installation (MSI) sign
+from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Describes the physical location, lane assignment, and type of
+a matrix signal sign above a motorway lane.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_msi_msi_sign_mqtt_async = nl_ndw_msi_msi_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_msi_msi_sign_mqtt_async = nl_ndw_msi_msi_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_msi_msi_sign_mqtt_async = nl_ndw_msi_msi_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_msi_msi_sign_mqtt_async = nl_ndw_msi_msi_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_msi_msi_sign_mqtt_async = nl_ndw_msi_msi_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_msi_msi_sign_mqtt_async = nl_ndw_msi_msi_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_msi_msi_sign_mqtt_async = nl_ndw_msi_msi_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_msi_msi_sign_mqtt_async = nl_ndw_msi_msi_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_msi_msi_sign_mqtt_async = nl_ndw_msi_msi_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_msi_msi_sign_mqtt_async = nl_ndw_msi_msi_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_msi_msi_sign_mqtt_async = nl_ndw_msi_msi_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_msi_msi_sign_mqtt_async = nl_ndw_msi_msi_sign_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_msi_msi_display_state_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_msi_msi_display_state_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+MsiDisplayState], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.MSI.MsiDisplayState.mqtt`: Current display state of a Matrix Signal Installation
+(MSI) sign from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Captures the displayed image code, operational
+state, and any speed limit shown.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_msi_msi_display_state_mqtt_async = nl_ndw_msi_msi_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_msi_msi_display_state_mqtt_async = nl_ndw_msi_msi_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_msi_msi_display_state_mqtt_async = nl_ndw_msi_msi_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_msi_msi_display_state_mqtt_async = nl_ndw_msi_msi_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_msi_msi_display_state_mqtt_async = nl_ndw_msi_msi_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_msi_msi_display_state_mqtt_async = nl_ndw_msi_msi_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_msi_msi_display_state_mqtt_async = nl_ndw_msi_msi_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_msi_msi_display_state_mqtt_async = nl_ndw_msi_msi_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_msi_msi_display_state_mqtt_async = nl_ndw_msi_msi_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_msi_msi_display_state_mqtt_async = nl_ndw_msi_msi_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_msi_msi_display_state_mqtt_async = nl_ndw_msi_msi_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_msi_msi_display_state_mqtt_async = nl_ndw_msi_msi_display_state_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_ndw_msi_msi_sign_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_msi_msi_sign_mqtt(
+
+    self,##### `_process_event`
+
+    data: MsiSign,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.MSI.MsiSign.mqtt` message. Reference record for a Matrix Signal Installation (MSI) sign from the
+Dutch NDW DATEX II Matrixsignaalinformatie feed. Describes the physical location, lane assignment, and type of a matrix
+signal sign above a motorway lane.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `MsiSign`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_msi_msi_sign_mqtt(
+
+    data=MsiSign(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.MSI.MsiSign.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_msi_msi_sign_mqtt_batch(```
+
+    messages=[
+
+        MsiSign(...),Initializes the runner with a Kafka consumer.
+
+        MsiSign(...),
+
+        MsiSign(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_msi_msi_display_state_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_msi_msi_display_state_mqtt(
+
+    self,##### `_process_event`
+
+    data: MsiDisplayState,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.MSI.MsiDisplayState.mqtt` message. Current display state of a Matrix Signal Installation (MSI)
+sign from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Captures the displayed image code, operational state, and
+any speed limit shown.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `MsiDisplayState`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_msi_msi_display_state_mqtt(
+
+    data=MsiDisplayState(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.MSI.MsiDisplayState.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_msi_msi_display_state_mqtt_batch(```
+
+    messages=[
+
+        MsiDisplayState(...),Initializes the runner with a Kafka consumer.
+
+        MsiDisplayState(...),
+
+        MsiDisplayState(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NLNDWSituationsMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NLNDWSituationsMqttEventDispatcher` handles events for the NL.NDW.Situations.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ndw_road_traffic_producer import NLNDWAVGProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_ndw_avg_point_measurement_site(```python
+
+    data=PointMeasurementSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NLNDWSituationsMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_roadwork_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_roadwork_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+Roadwork], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.Roadwork.mqtt`: Road construction or maintenance work event from the
+Dutch NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation
+on the Dutch national road network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_roadwork_mqtt_async = nl_ndw_situations_roadwork_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_roadwork_mqtt_async = nl_ndw_situations_roadwork_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_roadwork_mqtt_async = nl_ndw_situations_roadwork_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_roadwork_mqtt_async = nl_ndw_situations_roadwork_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_roadwork_mqtt_async = nl_ndw_situations_roadwork_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_roadwork_mqtt_async = nl_ndw_situations_roadwork_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_roadwork_mqtt_async = nl_ndw_situations_roadwork_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_roadwork_mqtt_async = nl_ndw_situations_roadwork_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_roadwork_mqtt_async = nl_ndw_situations_roadwork_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_roadwork_mqtt_async = nl_ndw_situations_roadwork_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_roadwork_mqtt_async = nl_ndw_situations_roadwork_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_roadwork_mqtt_async = nl_ndw_situations_roadwork_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_bridge_opening_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_bridge_opening_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+BridgeOpening], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.BridgeOpening.mqtt`: Bridge opening event from the Dutch NDW DATEX II
+planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes temporary road closure.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_bridge_opening_mqtt_async = nl_ndw_situations_bridge_opening_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_bridge_opening_mqtt_async = nl_ndw_situations_bridge_opening_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_bridge_opening_mqtt_async = nl_ndw_situations_bridge_opening_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_bridge_opening_mqtt_async = nl_ndw_situations_bridge_opening_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_bridge_opening_mqtt_async = nl_ndw_situations_bridge_opening_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_bridge_opening_mqtt_async = nl_ndw_situations_bridge_opening_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_bridge_opening_mqtt_async = nl_ndw_situations_bridge_opening_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_bridge_opening_mqtt_async =
+nl_ndw_situations_bridge_opening_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_bridge_opening_mqtt_async = nl_ndw_situations_bridge_opening_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_bridge_opening_mqtt_async = nl_ndw_situations_bridge_opening_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_bridge_opening_mqtt_async = nl_ndw_situations_bridge_opening_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_bridge_opening_mqtt_async =
+nl_ndw_situations_bridge_opening_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_temporary_closure_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_temporary_closure_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+TemporaryClosure], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.TemporaryClosure.mqtt`: Temporary road closure from the Dutch NDW DATEX
+II tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or lane on the
+Dutch national road network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_temporary_closure_mqtt_async = nl_ndw_situations_temporary_closure_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_temporary_closure_mqtt_async = nl_ndw_situations_temporary_closure_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_temporary_closure_mqtt_async = nl_ndw_situations_temporary_closure_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_temporary_closure_mqtt_async =
+nl_ndw_situations_temporary_closure_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_temporary_closure_mqtt_async =
+nl_ndw_situations_temporary_closure_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_temporary_closure_mqtt_async =
+nl_ndw_situations_temporary_closure_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_temporary_closure_mqtt_async =
+nl_ndw_situations_temporary_closure_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_temporary_closure_mqtt_async =
+nl_ndw_situations_temporary_closure_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_temporary_closure_mqtt_async =
+nl_ndw_situations_temporary_closure_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_temporary_closure_mqtt_async =
+nl_ndw_situations_temporary_closure_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_temporary_closure_mqtt_async =
+nl_ndw_situations_temporary_closure_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_temporary_closure_mqtt_async =
+nl_ndw_situations_temporary_closure_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_temporary_speed_limit_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_temporary_speed_limit_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, TemporarySpeedLimit], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.TemporarySpeedLimit.mqtt`: Temporary speed limit measure from the Dutch
+NDW DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in maximum speed on
+a section of the national road network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_temporary_speed_limit_mqtt_async =
+nl_ndw_situations_temporary_speed_limit_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_temporary_speed_limit_mqtt_async =
+nl_ndw_situations_temporary_speed_limit_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_temporary_speed_limit_mqtt_async =
+nl_ndw_situations_temporary_speed_limit_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_temporary_speed_limit_mqtt_async =
+nl_ndw_situations_temporary_speed_limit_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_temporary_speed_limit_mqtt_async =
+nl_ndw_situations_temporary_speed_limit_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_temporary_speed_limit_mqtt_async =
+nl_ndw_situations_temporary_speed_limit_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_temporary_speed_limit_mqtt_async =
+nl_ndw_situations_temporary_speed_limit_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_temporary_speed_limit_mqtt_async =
+nl_ndw_situations_temporary_speed_limit_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_temporary_speed_limit_mqtt_async =
+nl_ndw_situations_temporary_speed_limit_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_temporary_speed_limit_mqtt_async =
+nl_ndw_situations_temporary_speed_limit_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_temporary_speed_limit_mqtt_async =
+nl_ndw_situations_temporary_speed_limit_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_temporary_speed_limit_mqtt_async =
+nl_ndw_situations_temporary_speed_limit_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_safety_related_message_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_safety_related_message_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, SafetyRelatedMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.SafetyRelatedMessage.mqtt`: Safety-related traffic information message
+from the Dutch NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard
+notifications on the national road network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_safety_related_message_mqtt_async =
+nl_ndw_situations_safety_related_message_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_safety_related_message_mqtt_async =
+nl_ndw_situations_safety_related_message_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_safety_related_message_mqtt_async =
+nl_ndw_situations_safety_related_message_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_safety_related_message_mqtt_async =
+nl_ndw_situations_safety_related_message_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_safety_related_message_mqtt_async =
+nl_ndw_situations_safety_related_message_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_safety_related_message_mqtt_async =
+nl_ndw_situations_safety_related_message_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_safety_related_message_mqtt_async =
+nl_ndw_situations_safety_related_message_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_safety_related_message_mqtt_async =
+nl_ndw_situations_safety_related_message_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_safety_related_message_mqtt_async =
+nl_ndw_situations_safety_related_message_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_safety_related_message_mqtt_async =
+nl_ndw_situations_safety_related_message_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_safety_related_message_mqtt_async =
+nl_ndw_situations_safety_related_message_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_safety_related_message_mqtt_async =
+nl_ndw_situations_safety_related_message_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_roadwork_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_roadwork_mqtt(
+
+    self,##### `_process_event`
+
+    data: Roadwork,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.Roadwork.mqtt` message. Road construction or maintenance work event from the Dutch NDW
+DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on the
+Dutch national road network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Roadwork`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_roadwork_mqtt(
+
+    data=Roadwork(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.Roadwork.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_roadwork_mqtt_batch(```
+
+    messages=[
+
+        Roadwork(...),Initializes the runner with a Kafka consumer.
+
+        Roadwork(...),
+
+        Roadwork(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_bridge_opening_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_bridge_opening_mqtt(
+
+    self,##### `_process_event`
+
+    data: BridgeOpening,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.BridgeOpening.mqtt` message. Bridge opening event from the Dutch NDW DATEX II
+planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes temporary road
+closure.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BridgeOpening`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_bridge_opening_mqtt(
+
+    data=BridgeOpening(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.BridgeOpening.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_bridge_opening_mqtt_batch(```
+
+    messages=[
+
+        BridgeOpening(...),Initializes the runner with a Kafka consumer.
+
+        BridgeOpening(...),
+
+        BridgeOpening(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_temporary_closure_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_temporary_closure_mqtt(
+
+    self,##### `_process_event`
+
+    data: TemporaryClosure,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.TemporaryClosure.mqtt` message. Temporary road closure from the Dutch NDW DATEX II
+tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or lane on the Dutch
+national road network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `TemporaryClosure`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_temporary_closure_mqtt(
+
+    data=TemporaryClosure(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.TemporaryClosure.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_temporary_closure_mqtt_batch(```
+
+    messages=[
+
+        TemporaryClosure(...),Initializes the runner with a Kafka consumer.
+
+        TemporaryClosure(...),
+
+        TemporaryClosure(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_temporary_speed_limit_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_temporary_speed_limit_mqtt(
+
+    self,##### `_process_event`
+
+    data: TemporarySpeedLimit,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.TemporarySpeedLimit.mqtt` message. Temporary speed limit measure from the Dutch NDW
+DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in maximum speed on a
+section of the national road network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `TemporarySpeedLimit`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_temporary_speed_limit_mqtt(
+
+    data=TemporarySpeedLimit(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.TemporarySpeedLimit.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_temporary_speed_limit_mqtt_batch(```
+
+    messages=[
+
+        TemporarySpeedLimit(...),Initializes the runner with a Kafka consumer.
+
+        TemporarySpeedLimit(...),
+
+        TemporarySpeedLimit(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_safety_related_message_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_safety_related_message_mqtt(
+
+    self,##### `_process_event`
+
+    data: SafetyRelatedMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.SafetyRelatedMessage.mqtt` message. Safety-related traffic information message from the
+Dutch NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard notifications
+on the national road network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `SafetyRelatedMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_safety_related_message_mqtt(
+
+    data=SafetyRelatedMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.SafetyRelatedMessage.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_safety_related_message_mqtt_batch(```
+
+    messages=[
+
+        SafetyRelatedMessage(...),Initializes the runner with a Kafka consumer.
+
+        SafetyRelatedMessage(...),
+
+        SafetyRelatedMessage(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NLNDWAVGAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NLNDWAVGAmqpEventDispatcher` handles events for the NL.NDW.AVG.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ndw_road_traffic_producer import NLNDWAVGProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_ndw_avg_point_measurement_site(```python
+
+    data=PointMeasurementSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NLNDWAVGAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_avg_point_measurement_site_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_avg_point_measurement_site_amqp_async:  Callable[[ConsumerRecord, CloudEvent,
+PointMeasurementSite], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.AVG.PointMeasurementSite.amqp`: Reference record for a point measurement site from
+the Dutch NDW DATEX II measurement_current feed. Contains location, sensor technology type, and lane configuration for a
+fixed inductive-loop or microwave sensor.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_avg_point_measurement_site_amqp_async = nl_ndw_avg_point_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_avg_point_measurement_site_amqp_async = nl_ndw_avg_point_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_avg_point_measurement_site_amqp_async = nl_ndw_avg_point_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_avg_point_measurement_site_amqp_async = nl_ndw_avg_point_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_avg_point_measurement_site_amqp_async = nl_ndw_avg_point_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_avg_point_measurement_site_amqp_async = nl_ndw_avg_point_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_avg_point_measurement_site_amqp_async = nl_ndw_avg_point_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_avg_point_measurement_site_amqp_async =
+nl_ndw_avg_point_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_avg_point_measurement_site_amqp_async = nl_ndw_avg_point_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_avg_point_measurement_site_amqp_async = nl_ndw_avg_point_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_avg_point_measurement_site_amqp_async = nl_ndw_avg_point_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.PointMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_point_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PointMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_avg_point_measurement_site_amqp_async =
+nl_ndw_avg_point_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_avg_route_measurement_site_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_avg_route_measurement_site_amqp_async:  Callable[[ConsumerRecord, CloudEvent,
+RouteMeasurementSite], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.AVG.RouteMeasurementSite.amqp`: Reference record for a route (section) measurement
+site from the Dutch NDW DATEX II measurement_current feed. Covers a road segment between two coordinates used for travel
+time computation.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_avg_route_measurement_site_amqp_async = nl_ndw_avg_route_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_avg_route_measurement_site_amqp_async = nl_ndw_avg_route_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_avg_route_measurement_site_amqp_async = nl_ndw_avg_route_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_avg_route_measurement_site_amqp_async = nl_ndw_avg_route_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_avg_route_measurement_site_amqp_async = nl_ndw_avg_route_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_avg_route_measurement_site_amqp_async = nl_ndw_avg_route_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_avg_route_measurement_site_amqp_async = nl_ndw_avg_route_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_avg_route_measurement_site_amqp_async =
+nl_ndw_avg_route_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_avg_route_measurement_site_amqp_async = nl_ndw_avg_route_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_avg_route_measurement_site_amqp_async = nl_ndw_avg_route_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_avg_route_measurement_site_amqp_async = nl_ndw_avg_route_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.RouteMeasurementSite`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_route_measurement_site_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RouteMeasurementSite) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_avg_route_measurement_site_amqp_async =
+nl_ndw_avg_route_measurement_site_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_avg_traffic_observation_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_avg_traffic_observation_amqp_async:  Callable[[ConsumerRecord, CloudEvent,
+TrafficObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.AVG.TrafficObservation.amqp`: Aggregated traffic speed and flow observation from
+the Dutch NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow
+summed across all reporting lanes.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_avg_traffic_observation_amqp_async = nl_ndw_avg_traffic_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_avg_traffic_observation_amqp_async = nl_ndw_avg_traffic_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_avg_traffic_observation_amqp_async = nl_ndw_avg_traffic_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_avg_traffic_observation_amqp_async = nl_ndw_avg_traffic_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_avg_traffic_observation_amqp_async = nl_ndw_avg_traffic_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_avg_traffic_observation_amqp_async = nl_ndw_avg_traffic_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_avg_traffic_observation_amqp_async = nl_ndw_avg_traffic_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_avg_traffic_observation_amqp_async = nl_ndw_avg_traffic_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_avg_traffic_observation_amqp_async = nl_ndw_avg_traffic_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_avg_traffic_observation_amqp_async = nl_ndw_avg_traffic_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_avg_traffic_observation_amqp_async = nl_ndw_avg_traffic_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TrafficObservation`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_traffic_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TrafficObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_avg_traffic_observation_amqp_async = nl_ndw_avg_traffic_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_avg_travel_time_observation_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_avg_travel_time_observation_amqp_async:  Callable[[ConsumerRecord, CloudEvent,
+TravelTimeObservation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.AVG.TravelTimeObservation.amqp`: Travel time observation for a road segment from
+the Dutch NDW DATEX II traveltime feed. Contains the actual measured travel time and the static free-flow reference time
+for a route measurement site.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_avg_travel_time_observation_amqp_async = nl_ndw_avg_travel_time_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_avg_travel_time_observation_amqp_async = nl_ndw_avg_travel_time_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_avg_travel_time_observation_amqp_async = nl_ndw_avg_travel_time_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_avg_travel_time_observation_amqp_async =
+nl_ndw_avg_travel_time_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_avg_travel_time_observation_amqp_async = nl_ndw_avg_travel_time_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_avg_travel_time_observation_amqp_async =
+nl_ndw_avg_travel_time_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_avg_travel_time_observation_amqp_async = nl_ndw_avg_travel_time_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_avg_travel_time_observation_amqp_async =
+nl_ndw_avg_travel_time_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_avg_travel_time_observation_amqp_async = nl_ndw_avg_travel_time_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_avg_travel_time_observation_amqp_async =
+nl_ndw_avg_travel_time_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_avg_travel_time_observation_amqp_async = nl_ndw_avg_travel_time_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TravelTimeObservation`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_avg_travel_time_observation_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TravelTimeObservation) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_avg_travel_time_observation_amqp_async =
+nl_ndw_avg_travel_time_observation_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_ndw_avg_point_measurement_site_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_avg_point_measurement_site_amqp(
+
+    self,##### `_process_event`
+
+    data: PointMeasurementSite,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.AVG.PointMeasurementSite.amqp` message. Reference record for a point measurement site from the
+Dutch NDW DATEX II measurement_current feed. Contains location, sensor technology type, and lane configuration for a
+fixed inductive-loop or microwave sensor.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PointMeasurementSite`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_avg_point_measurement_site_amqp(
+
+    data=PointMeasurementSite(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.AVG.PointMeasurementSite.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_avg_point_measurement_site_amqp_batch(```
+
+    messages=[
+
+        PointMeasurementSite(...),Initializes the runner with a Kafka consumer.
+
+        PointMeasurementSite(...),
+
+        PointMeasurementSite(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_avg_route_measurement_site_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_avg_route_measurement_site_amqp(
+
+    self,##### `_process_event`
+
+    data: RouteMeasurementSite,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.AVG.RouteMeasurementSite.amqp` message. Reference record for a route (section) measurement site
+from the Dutch NDW DATEX II measurement_current feed. Covers a road segment between two coordinates used for travel time
+computation.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RouteMeasurementSite`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_avg_route_measurement_site_amqp(
+
+    data=RouteMeasurementSite(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.AVG.RouteMeasurementSite.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_avg_route_measurement_site_amqp_batch(```
+
+    messages=[
+
+        RouteMeasurementSite(...),Initializes the runner with a Kafka consumer.
+
+        RouteMeasurementSite(...),
+
+        RouteMeasurementSite(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_avg_traffic_observation_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_avg_traffic_observation_amqp(
+
+    self,##### `_process_event`
+
+    data: TrafficObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.AVG.TrafficObservation.amqp` message. Aggregated traffic speed and flow observation from the Dutch
+NDW DATEX II trafficspeed feed. Each record represents one measurement site with speed averaged and flow summed across
+all reporting lanes.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `TrafficObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_avg_traffic_observation_amqp(
+
+    data=TrafficObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.AVG.TrafficObservation.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_avg_traffic_observation_amqp_batch(```
+
+    messages=[
+
+        TrafficObservation(...),Initializes the runner with a Kafka consumer.
+
+        TrafficObservation(...),
+
+        TrafficObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_avg_travel_time_observation_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_avg_travel_time_observation_amqp(
+
+    self,##### `_process_event`
+
+    data: TravelTimeObservation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.AVG.TravelTimeObservation.amqp` message. Travel time observation for a road segment from the Dutch
+NDW DATEX II traveltime feed. Contains the actual measured travel time and the static free-flow reference time for a
+route measurement site.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `TravelTimeObservation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_avg_travel_time_observation_amqp(
+
+    data=TravelTimeObservation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.AVG.TravelTimeObservation.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_avg_travel_time_observation_amqp_batch(```
+
+    messages=[
+
+        TravelTimeObservation(...),Initializes the runner with a Kafka consumer.
+
+        TravelTimeObservation(...),
+
+        TravelTimeObservation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NLNDWDRIPAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NLNDWDRIPAmqpEventDispatcher` handles events for the NL.NDW.DRIP.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ndw_road_traffic_producer import NLNDWAVGProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_ndw_avg_point_measurement_site(```python
+
+    data=PointMeasurementSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NLNDWDRIPAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_drip_drip_sign_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_drip_drip_sign_amqp_async:  Callable[[ConsumerRecord, CloudEvent, DripSign],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.DRIP.DripSign.amqp`: Reference record for a Dynamic Route Information Panel (DRIP)
+sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Describes the physical installation, location,
+and type of an individual VMS sign unit.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_drip_drip_sign_amqp_async = nl_ndw_drip_drip_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_drip_drip_sign_amqp_async = nl_ndw_drip_drip_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_drip_drip_sign_amqp_async = nl_ndw_drip_drip_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_drip_drip_sign_amqp_async = nl_ndw_drip_drip_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_drip_drip_sign_amqp_async = nl_ndw_drip_drip_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_drip_drip_sign_amqp_async = nl_ndw_drip_drip_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_drip_drip_sign_amqp_async = nl_ndw_drip_drip_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_drip_drip_sign_amqp_async = nl_ndw_drip_drip_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_drip_drip_sign_amqp_async = nl_ndw_drip_drip_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_drip_drip_sign_amqp_async = nl_ndw_drip_drip_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_drip_drip_sign_amqp_async = nl_ndw_drip_drip_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripSign`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: DripSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_drip_drip_sign_amqp_async = nl_ndw_drip_drip_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_drip_drip_display_state_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_drip_drip_display_state_amqp_async:  Callable[[ConsumerRecord, CloudEvent,
+DripDisplayState], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.DRIP.DripDisplayState.amqp`: Current display state of a Dynamic Route Information
+Panel (DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text,
+pictogram codes, and operational state of the sign.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_drip_drip_display_state_amqp_async = nl_ndw_drip_drip_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_drip_drip_display_state_amqp_async = nl_ndw_drip_drip_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_drip_drip_display_state_amqp_async = nl_ndw_drip_drip_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_drip_drip_display_state_amqp_async = nl_ndw_drip_drip_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_drip_drip_display_state_amqp_async = nl_ndw_drip_drip_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_drip_drip_display_state_amqp_async = nl_ndw_drip_drip_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_drip_drip_display_state_amqp_async = nl_ndw_drip_drip_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_drip_drip_display_state_amqp_async = nl_ndw_drip_drip_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_drip_drip_display_state_amqp_async = nl_ndw_drip_drip_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_drip_drip_display_state_amqp_async = nl_ndw_drip_drip_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_drip_drip_display_state_amqp_async = nl_ndw_drip_drip_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.DripDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_drip_drip_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DripDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_drip_drip_display_state_amqp_async = nl_ndw_drip_drip_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_ndw_drip_drip_sign_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_drip_drip_sign_amqp(
+
+    self,##### `_process_event`
+
+    data: DripSign,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.DRIP.DripSign.amqp` message. Reference record for a Dynamic Route Information Panel (DRIP) sign
+from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Describes the physical installation, location, and
+type of an individual VMS sign unit.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DripSign`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_drip_drip_sign_amqp(
+
+    data=DripSign(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.DRIP.DripSign.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_drip_drip_sign_amqp_batch(```
+
+    messages=[
+
+        DripSign(...),Initializes the runner with a Kafka consumer.
+
+        DripSign(...),
+
+        DripSign(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_drip_drip_display_state_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_drip_drip_display_state_amqp(
+
+    self,##### `_process_event`
+
+    data: DripDisplayState,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.DRIP.DripDisplayState.amqp` message. Current display state of a Dynamic Route Information Panel
+(DRIP) sign from the Dutch NDW DATEX II dynamische_route_informatie_paneel feed. Captures the active text, pictogram
+codes, and operational state of the sign.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `DripDisplayState`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_drip_drip_display_state_amqp(
+
+    data=DripDisplayState(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.DRIP.DripDisplayState.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_drip_drip_display_state_amqp_batch(```
+
+    messages=[
+
+        DripDisplayState(...),Initializes the runner with a Kafka consumer.
+
+        DripDisplayState(...),
+
+        DripDisplayState(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NLNDWMSIAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NLNDWMSIAmqpEventDispatcher` handles events for the NL.NDW.MSI.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ndw_road_traffic_producer import NLNDWAVGProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_ndw_avg_point_measurement_site(```python
+
+    data=PointMeasurementSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NLNDWMSIAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_msi_msi_sign_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_msi_msi_sign_amqp_async:  Callable[[ConsumerRecord, CloudEvent, MsiSign],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.MSI.MsiSign.amqp`: Reference record for a Matrix Signal Installation (MSI) sign
+from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Describes the physical location, lane assignment, and type of
+a matrix signal sign above a motorway lane.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_msi_msi_sign_amqp_async = nl_ndw_msi_msi_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_msi_msi_sign_amqp_async = nl_ndw_msi_msi_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_msi_msi_sign_amqp_async = nl_ndw_msi_msi_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_msi_msi_sign_amqp_async = nl_ndw_msi_msi_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_msi_msi_sign_amqp_async = nl_ndw_msi_msi_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_msi_msi_sign_amqp_async = nl_ndw_msi_msi_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_msi_msi_sign_amqp_async = nl_ndw_msi_msi_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_msi_msi_sign_amqp_async = nl_ndw_msi_msi_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_msi_msi_sign_amqp_async = nl_ndw_msi_msi_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_msi_msi_sign_amqp_async = nl_ndw_msi_msi_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_msi_msi_sign_amqp_async = nl_ndw_msi_msi_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiSign`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_sign_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: MsiSign) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_msi_msi_sign_amqp_async = nl_ndw_msi_msi_sign_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_msi_msi_display_state_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_msi_msi_display_state_amqp_async:  Callable[[ConsumerRecord, CloudEvent,
+MsiDisplayState], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.MSI.MsiDisplayState.amqp`: Current display state of a Matrix Signal Installation
+(MSI) sign from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Captures the displayed image code, operational
+state, and any speed limit shown.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_msi_msi_display_state_amqp_async = nl_ndw_msi_msi_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_msi_msi_display_state_amqp_async = nl_ndw_msi_msi_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_msi_msi_display_state_amqp_async = nl_ndw_msi_msi_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_msi_msi_display_state_amqp_async = nl_ndw_msi_msi_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_msi_msi_display_state_amqp_async = nl_ndw_msi_msi_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_msi_msi_display_state_amqp_async = nl_ndw_msi_msi_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_msi_msi_display_state_amqp_async = nl_ndw_msi_msi_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_msi_msi_display_state_amqp_async = nl_ndw_msi_msi_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_msi_msi_display_state_amqp_async = nl_ndw_msi_msi_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_msi_msi_display_state_amqp_async = nl_ndw_msi_msi_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_msi_msi_display_state_amqp_async = nl_ndw_msi_msi_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.MsiDisplayState`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_msi_msi_display_state_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MsiDisplayState) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_msi_msi_display_state_amqp_async = nl_ndw_msi_msi_display_state_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_ndw_msi_msi_sign_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_msi_msi_sign_amqp(
+
+    self,##### `_process_event`
+
+    data: MsiSign,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.MSI.MsiSign.amqp` message. Reference record for a Matrix Signal Installation (MSI) sign from the
+Dutch NDW DATEX II Matrixsignaalinformatie feed. Describes the physical location, lane assignment, and type of a matrix
+signal sign above a motorway lane.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `MsiSign`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_msi_msi_sign_amqp(
+
+    data=MsiSign(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.MSI.MsiSign.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_msi_msi_sign_amqp_batch(```
+
+    messages=[
+
+        MsiSign(...),Initializes the runner with a Kafka consumer.
+
+        MsiSign(...),
+
+        MsiSign(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_msi_msi_display_state_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_msi_msi_display_state_amqp(
+
+    self,##### `_process_event`
+
+    data: MsiDisplayState,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.MSI.MsiDisplayState.amqp` message. Current display state of a Matrix Signal Installation (MSI)
+sign from the Dutch NDW DATEX II Matrixsignaalinformatie feed. Captures the displayed image code, operational state, and
+any speed limit shown.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `MsiDisplayState`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_msi_msi_display_state_amqp(
+
+    data=MsiDisplayState(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.MSI.MsiDisplayState.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_msi_msi_display_state_amqp_batch(```
+
+    messages=[
+
+        MsiDisplayState(...),Initializes the runner with a Kafka consumer.
+
+        MsiDisplayState(...),
+
+        MsiDisplayState(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NLNDWSituationsAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NLNDWSituationsAmqpEventDispatcher` handles events for the NL.NDW.Situations.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from ndw_road_traffic_producer import NLNDWAVGProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_nl_ndw_avg_point_measurement_site(```python
+
+    data=PointMeasurementSite(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NLNDWSituationsAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NLNDWAVGProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_roadwork_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_roadwork_amqp_async:  Callable[[ConsumerRecord, CloudEvent,
+Roadwork], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.Roadwork.amqp`: Road construction or maintenance work event from the
+Dutch NDW DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation
+on the Dutch national road network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_roadwork_amqp_async = nl_ndw_situations_roadwork_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_roadwork_amqp_async = nl_ndw_situations_roadwork_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_roadwork_amqp_async = nl_ndw_situations_roadwork_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_roadwork_amqp_async = nl_ndw_situations_roadwork_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_roadwork_amqp_async = nl_ndw_situations_roadwork_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_roadwork_amqp_async = nl_ndw_situations_roadwork_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_roadwork_amqp_async = nl_ndw_situations_roadwork_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_roadwork_amqp_async = nl_ndw_situations_roadwork_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_roadwork_amqp_async = nl_ndw_situations_roadwork_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_roadwork_amqp_async = nl_ndw_situations_roadwork_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_roadwork_amqp_async = nl_ndw_situations_roadwork_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.Roadwork`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_roadwork_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Roadwork) ->
+None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_roadwork_amqp_async = nl_ndw_situations_roadwork_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_bridge_opening_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_bridge_opening_amqp_async:  Callable[[ConsumerRecord, CloudEvent,
+BridgeOpening], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.BridgeOpening.amqp`: Bridge opening event from the Dutch NDW DATEX II
+planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes temporary road closure.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_bridge_opening_amqp_async = nl_ndw_situations_bridge_opening_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_bridge_opening_amqp_async = nl_ndw_situations_bridge_opening_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_bridge_opening_amqp_async = nl_ndw_situations_bridge_opening_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_bridge_opening_amqp_async = nl_ndw_situations_bridge_opening_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_bridge_opening_amqp_async = nl_ndw_situations_bridge_opening_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_bridge_opening_amqp_async = nl_ndw_situations_bridge_opening_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_bridge_opening_amqp_async = nl_ndw_situations_bridge_opening_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_bridge_opening_amqp_async =
+nl_ndw_situations_bridge_opening_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_bridge_opening_amqp_async = nl_ndw_situations_bridge_opening_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_bridge_opening_amqp_async = nl_ndw_situations_bridge_opening_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_bridge_opening_amqp_async = nl_ndw_situations_bridge_opening_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.BridgeOpening`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_bridge_opening_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BridgeOpening) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_bridge_opening_amqp_async =
+nl_ndw_situations_bridge_opening_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_temporary_closure_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_temporary_closure_amqp_async:  Callable[[ConsumerRecord, CloudEvent,
+TemporaryClosure], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.TemporaryClosure.amqp`: Temporary road closure from the Dutch NDW DATEX
+II tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or lane on the
+Dutch national road network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_temporary_closure_amqp_async = nl_ndw_situations_temporary_closure_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_temporary_closure_amqp_async = nl_ndw_situations_temporary_closure_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_temporary_closure_amqp_async = nl_ndw_situations_temporary_closure_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_temporary_closure_amqp_async =
+nl_ndw_situations_temporary_closure_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_temporary_closure_amqp_async =
+nl_ndw_situations_temporary_closure_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_temporary_closure_amqp_async =
+nl_ndw_situations_temporary_closure_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_temporary_closure_amqp_async =
+nl_ndw_situations_temporary_closure_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_temporary_closure_amqp_async =
+nl_ndw_situations_temporary_closure_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_temporary_closure_amqp_async =
+nl_ndw_situations_temporary_closure_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_temporary_closure_amqp_async =
+nl_ndw_situations_temporary_closure_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_temporary_closure_amqp_async =
+nl_ndw_situations_temporary_closure_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporaryClosure`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_closure_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporaryClosure) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_temporary_closure_amqp_async =
+nl_ndw_situations_temporary_closure_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_temporary_speed_limit_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_temporary_speed_limit_amqp_async:  Callable[[ConsumerRecord,
+CloudEvent, TemporarySpeedLimit], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.TemporarySpeedLimit.amqp`: Temporary speed limit measure from the Dutch
+NDW DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in maximum speed on
+a section of the national road network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_temporary_speed_limit_amqp_async =
+nl_ndw_situations_temporary_speed_limit_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_temporary_speed_limit_amqp_async =
+nl_ndw_situations_temporary_speed_limit_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_temporary_speed_limit_amqp_async =
+nl_ndw_situations_temporary_speed_limit_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_temporary_speed_limit_amqp_async =
+nl_ndw_situations_temporary_speed_limit_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_temporary_speed_limit_amqp_async =
+nl_ndw_situations_temporary_speed_limit_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_temporary_speed_limit_amqp_async =
+nl_ndw_situations_temporary_speed_limit_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_temporary_speed_limit_amqp_async =
+nl_ndw_situations_temporary_speed_limit_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_temporary_speed_limit_amqp_async =
+nl_ndw_situations_temporary_speed_limit_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_temporary_speed_limit_amqp_async =
+nl_ndw_situations_temporary_speed_limit_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_temporary_speed_limit_amqp_async =
+nl_ndw_situations_temporary_speed_limit_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_temporary_speed_limit_amqp_async =
+nl_ndw_situations_temporary_speed_limit_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.TemporarySpeedLimit`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_temporary_speed_limit_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+TemporarySpeedLimit) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_temporary_speed_limit_amqp_async =
+nl_ndw_situations_temporary_speed_limit_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `nl_ndw_situations_safety_related_message_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'nl_ndw_situations_safety_related_message_amqp_async:  Callable[[ConsumerRecord,
+CloudEvent, SafetyRelatedMessage], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `NL.NDW.Situations.SafetyRelatedMessage.amqp`: Safety-related traffic information message
+from the Dutch NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard
+notifications on the national road network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.AVG` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_dispatcher.nl_ndw_situations_safety_related_message_amqp_async =
+nl_ndw_situations_safety_related_message_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.DRIP` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_dispatcher.nl_ndw_situations_safety_related_message_amqp_async =
+nl_ndw_situations_safety_related_message_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.MSI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_dispatcher.nl_ndw_situations_safety_related_message_amqp_async =
+nl_ndw_situations_safety_related_message_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.Situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_dispatcher.nl_ndw_situations_safety_related_message_amqp_async =
+nl_ndw_situations_safety_related_message_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.AVG.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_mqtt_dispatcher.nl_ndw_situations_safety_related_message_amqp_async =
+nl_ndw_situations_safety_related_message_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.DRIP.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_mqtt_dispatcher.nl_ndw_situations_safety_related_message_amqp_async =
+nl_ndw_situations_safety_related_message_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.MSI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_mqtt_dispatcher.nl_ndw_situations_safety_related_message_amqp_async =
+nl_ndw_situations_safety_related_message_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsMqttProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.Situations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_mqtt_dispatcher.nl_ndw_situations_safety_related_message_amqp_async =
+nl_ndw_situations_safety_related_message_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWAVGAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.AVG.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWAVGAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_avg_amqp_dispatcher.nl_ndw_situations_safety_related_message_amqp_async =
+nl_ndw_situations_safety_related_message_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWDRIPAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.DRIP.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWDRIPAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_drip_amqp_dispatcher.nl_ndw_situations_safety_related_message_amqp_async =
+nl_ndw_situations_safety_related_message_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWMSIAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.MSI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWMSIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_msi_amqp_dispatcher.nl_ndw_situations_safety_related_message_amqp_async =
+nl_ndw_situations_safety_related_message_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NLNDWSituationsAmqpProducer- `data`: The event data of type `ndw_road_traffic_producer_data.SafetyRelatedMessage`.
+
+
+
+Producer for `NL.NDW.Situations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def nl_ndw_situations_safety_related_message_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+SafetyRelatedMessage) -> None:
+
+```python    # Process the event data
+
+NLNDWSituationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+nl_ndw_situations_amqp_dispatcher.nl_ndw_situations_safety_related_message_amqp_async =
+nl_ndw_situations_safety_related_message_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_roadwork_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_roadwork_amqp(
+
+    self,##### `_process_event`
+
+    data: Roadwork,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.Roadwork.amqp` message. Road construction or maintenance work event from the Dutch NDW
+DATEX II planningsfeed_wegwerkzaamheden_en_evenementen feed. Represents a planned or active roadwork situation on the
+Dutch national road network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Roadwork`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_roadwork_amqp(
+
+    data=Roadwork(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.Roadwork.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_roadwork_amqp_batch(```
+
+    messages=[
+
+        Roadwork(...),Initializes the runner with a Kafka consumer.
+
+        Roadwork(...),
+
+        Roadwork(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_bridge_opening_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_bridge_opening_amqp(
+
+    self,##### `_process_event`
+
+    data: BridgeOpening,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.BridgeOpening.amqp` message. Bridge opening event from the Dutch NDW DATEX II
+planningsfeed_brugopeningen feed. Represents a scheduled or active bridge opening that causes temporary road
+closure.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BridgeOpening`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_bridge_opening_amqp(
+
+    data=BridgeOpening(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.BridgeOpening.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_bridge_opening_amqp_batch(```
+
+    messages=[
+
+        BridgeOpening(...),Initializes the runner with a Kafka consumer.
+
+        BridgeOpening(...),
+
+        BridgeOpening(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_temporary_closure_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_temporary_closure_amqp(
+
+    self,##### `_process_event`
+
+    data: TemporaryClosure,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.TemporaryClosure.amqp` message. Temporary road closure from the Dutch NDW DATEX II
+tijdelijke_verkeersmaatregelen_afsluitingen feed. Represents a temporary closure of a road section or lane on the Dutch
+national road network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `TemporaryClosure`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_temporary_closure_amqp(
+
+    data=TemporaryClosure(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.TemporaryClosure.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_temporary_closure_amqp_batch(```
+
+    messages=[
+
+        TemporaryClosure(...),Initializes the runner with a Kafka consumer.
+
+        TemporaryClosure(...),
+
+        TemporaryClosure(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_temporary_speed_limit_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_temporary_speed_limit_amqp(
+
+    self,##### `_process_event`
+
+    data: TemporarySpeedLimit,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.TemporarySpeedLimit.amqp` message. Temporary speed limit measure from the Dutch NDW
+DATEX II tijdelijke_verkeersmaatregelen_maximum_snelheden feed. Represents a temporary reduction in maximum speed on a
+section of the national road network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `TemporarySpeedLimit`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_temporary_speed_limit_amqp(
+
+    data=TemporarySpeedLimit(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.TemporarySpeedLimit.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_temporary_speed_limit_amqp_batch(```
+
+    messages=[
+
+        TemporarySpeedLimit(...),Initializes the runner with a Kafka consumer.
+
+        TemporarySpeedLimit(...),
+
+        TemporarySpeedLimit(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_nl_ndw_situations_safety_related_message_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_nl_ndw_situations_safety_related_message_amqp(
+
+    self,##### `_process_event`
+
+    data: SafetyRelatedMessage,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `NL.NDW.Situations.SafetyRelatedMessage.amqp` message. Safety-related traffic information message from the
+Dutch NDW DATEX II veiligheidsgerelateerde_berichten_srti feed. Contains urgent safety alerts and hazard notifications
+on the national road network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `SafetyRelatedMessage`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_nl_ndw_situations_safety_related_message_amqp(
+
+    data=SafetyRelatedMessage(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `NL.NDW.Situations.SafetyRelatedMessage.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_nl_ndw_situations_safety_related_message_amqp_batch(```
+
+    messages=[
+
+        SafetyRelatedMessage(...),Initializes the runner with a Kafka consumer.
+
+        SafetyRelatedMessage(...),
+
+        SafetyRelatedMessage(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

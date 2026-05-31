@@ -171,15 +171,15 @@ class Roadwork:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='zbhrmlhloafgfskzbuvi',
-            version_time='lcqfgzhfqesvvkhofnqu',
-            validity_status='xxppvnqcgffggkdztnqc',
-            start_time='rpvinihlrqrrianrpjcz',
-            end_time='rxtftjchehukbbmavvjx',
-            road_name='yuuzabbdtqfnkvrjtggi',
-            description='klvxksyrmhvyqyhqrggh',
-            location_description='skvbpdfwahcwpaiqvaac',
-            probability='xabujzvfgsiivslasbjv',
-            severity='njgvumfxkijwjfboypdu',
-            management_type='lhutiuzefqkmexszclkx'
+            situation_record_id='wbkojbazjvqjbukveoee',
+            version_time='hpzywbxikrgkdgzfqziu',
+            validity_status='jwkkcwqouiqzdkicmoos',
+            start_time='klbruvrhxjcxploqyfeq',
+            end_time='hijmpbqucmgftpprrzsm',
+            road_name='eehshokwexduheyzvekw',
+            description='qxebcmrwrzqfokuwfyoi',
+            location_description='nojbmvospfkhzvhazyxp',
+            probability='cuzzhkrqqjtybjnbewfb',
+            severity='darswoljfotydsduipwh',
+            management_type='nzktqlsszuojgnlwevjr'
         )

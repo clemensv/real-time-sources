@@ -169,14 +169,14 @@ class RouteMeasurementSite:
             An instance of the dataclass.
         """
         return cls(
-            measurement_site_id='wmhzvmcrlzismwyjavqo',
-            name='qrtzfhgizvlyzmjrxcrn',
-            measurement_site_type='rbylppheuwyrnlksffec',
-            period=int(44),
-            start_latitude=float(64.1840892834113),
-            start_longitude=float(7.897879712828337),
-            end_latitude=float(78.48399963750028),
-            end_longitude=float(78.86003108242966),
-            road_name='aonfzpwrdpquirnzmjaa',
-            length_metres=float(12.11014970022818)
+            measurement_site_id='ngdcgvcjtszwwjhjktal',
+            name='tvjgvafsohjkhswojuaw',
+            measurement_site_type='ieweqpbjwfsycqjsodtj',
+            period=int(60),
+            start_latitude=float(73.82903499489606),
+            start_longitude=float(55.55420112652341),
+            end_latitude=float(2.5172874171349724),
+            end_longitude=float(83.26643018077624),
+            road_name='tlikcoihkseiazwaocin',
+            length_metres=float(35.837418694097856)
         )

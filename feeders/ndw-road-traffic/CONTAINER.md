@@ -168,6 +168,7 @@ docker run --rm \
 | `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list (`host:port,...`). |
 | `KAFKA_TOPIC` | Destination topic (default from contract). |
 | `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials for Kafka-compatible brokers. |
+| `NDW_ROAD_TRAFFIC_STATE_FILE` | Optional path for persisted NDW fetch state when the Kafka/Event Hubs variants mount a state share. |
 
 ### MQTT image
 
