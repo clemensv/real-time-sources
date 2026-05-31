@@ -70,14 +70,28 @@ $cmds = [System.Text.RegularExpressions.Regex]::Split($src, "(?m)(?=^\.(create-o
 foreach ($c in $cmds) {
     $stmt = $c.Trim()
     if (-not $stmt) { continue }
+    $label = ($stmt -split "`n")[0]
     $bodyFile = New-TemporaryFile
     (@{ db = $KustoDatabase; csl = $stmt } | ConvertTo-Json -Compress -Depth 20) |
         Set-Content $bodyFile -Encoding utf8
     try {
-        Invoke-RestMethod -Uri $mgmt -Method Post -InFile $bodyFile `
-            -Headers @{ Authorization = "Bearer $kustoTok"; 'Content-Type' = 'application/json; charset=utf-8' } | Out-Null
-        $label = ($stmt -split "`n")[0]
-        Write-Host "      applied: $label"
+        # Retry transient 400s: just after kql/<source>.kql is applied the
+        # referenced tables / materialized views can briefly fail validation
+        # before the schema fully settles, which surfaces as a generic
+        # BadRequest. A short backoff makes the additive apply robust.
+        $maxAttempts = 4
+        for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+            try {
+                Invoke-RestMethod -Uri $mgmt -Method Post -InFile $bodyFile `
+                    -Headers @{ Authorization = "Bearer $kustoTok"; 'Content-Type' = 'application/json; charset=utf-8' } | Out-Null
+                Write-Host "      applied: $label"
+                break
+            } catch {
+                if ($attempt -eq $maxAttempts) { throw }
+                Write-Host "      retry ($attempt/$($maxAttempts-1)) after transient error: $label" -ForegroundColor DarkYellow
+                Start-Sleep -Seconds ($attempt * 5)
+            }
+        }
     } finally { Remove-Item $bodyFile -Force }
 }
 
