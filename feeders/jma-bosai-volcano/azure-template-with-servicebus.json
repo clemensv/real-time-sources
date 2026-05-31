@@ -47,6 +47,17 @@
       "metadata": {
         "description": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build."
       }
+    },
+    "jmaBosaiVolcanoMock": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "true",
+        "false"
+      ],
+      "metadata": {
+        "description": "Set to true to publish deterministic sample JMA Bosai Volcano events instead of polling the live upstream API."
+      }
     }
   },
   "variables": {
@@ -222,6 +233,10 @@
                 {
                   "name": "AMQP_AUTH_MODE",
                   "value": "entra"
+                },
+                {
+                  "name": "JMA_BOSAI_VOLCANO_MOCK",
+                  "value": "[parameters('jmaBosaiVolcanoMock')]"
                 },
                 {
                   "name": "AMQP_ENTRA_AUDIENCE",
