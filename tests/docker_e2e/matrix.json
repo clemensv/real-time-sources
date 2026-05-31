@@ -1057,6 +1057,12 @@
     },
     {
       "dir": "feeders/ireland-opw-waterlevel",
+      "image": "ireland-opw-waterlevel",
+      "file": "Dockerfile",
+      "module": "ireland_opw_waterlevel"
+    },
+    {
+      "dir": "feeders/ireland-opw-waterlevel",
       "image": "ireland-opw-waterlevel-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "ireland_opw_waterlevel_mqtt"
@@ -2821,6 +2827,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestImgwHydroAmqpArtemisFlow"
+    },
+    {
+      "dir": "feeders/ireland-opw-waterlevel",
+      "image": "ireland-opw-waterlevel",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestIrelandOPWWaterlevelDockerFlow"
     },
     {
       "dir": "feeders/ireland-opw-waterlevel",
