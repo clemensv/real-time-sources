@@ -8,10 +8,14 @@ Two Kusto-backed layers give an OSINT-oriented global view of active fires:
      cell (`FireHotspots()`), sized by detection count and coloured on a
      yellow->dark-red Fire-Radiative-Power ramp. Lets an analyst spot the
      world's most active fire regions at a glance.
-  2. **Active fire detections** (default-on, gated to mid/high zoom) — one
-     bubble per individual VIIRS/MODIS detection (`RecentFireDetections()`),
-     coloured by FRP and labelled with instrument / FRP / confidence. Reveals
-     the precise footprint of a fire complex once the analyst zooms in.
+  2. **Active fire detections** (default-on, mid zoom 3-8) — one bubble per
+     individual VIIRS/MODIS detection (`RecentFireDetections()`), coloured by
+     FRP and labelled with instrument / FRP / confidence. Reveals where a fire
+     complex sits once the analyst zooms in.
+  3. **Fire pixel footprints** (default-on, high zoom >= 8) — one filled GeoJSON
+     polygon per detection (`FireFootprints()`), the true scan x track ground
+     rectangle of the satellite pixel rather than a point, so the real extent of
+     each thermal anomaly is visible at high zoom.
 
 Both layers query helper functions applied to the live DB by
 `feeders/nasa-firms/fabric/helpers.kql`.
@@ -42,7 +46,8 @@ MAP_DESC = ("Global active-fire / thermal-anomaly detections from NASA FIRMS "
 
 NAME_HOTSPOTS = "nasa-firms hotspots"
 NAME_DETECTIONS = "nasa-firms detections"
-LAYER_NAMES = {NAME_HOTSPOTS, NAME_DETECTIONS}
+NAME_FOOTPRINTS = "nasa-firms footprints"
+LAYER_NAMES = {NAME_HOTSPOTS, NAME_DETECTIONS, NAME_FOOTPRINTS}
 
 # Yellow (low FRP) -> dark red (extreme FRP). Must match FireColor() in
 # helpers.kql so the map `match` expressions stay finite and aligned.
@@ -99,6 +104,12 @@ KQL_DETECTIONS = """RecentFireDetections(24h, 0)
 | project geometry, label, frp, brightness, confidence_level, daynight, satellite, instrument, source, acq_datetime, fill_color, radius
 """
 
+# True pixel footprints (scan x track rectangle) as GeoJSON polygons; shown at
+# high zoom where the real ground extent of each VIIRS/MODIS pixel is visible.
+KQL_FOOTPRINTS = """FireFootprints(24h, 0)
+| project geometry, label, frp, brightness, confidence_level, daynight, satellite, instrument, source, scan, track, acq_datetime, fill_color
+"""
+
 
 def _match_expr(get_col: str, colors: list[str]) -> list:
     expr = ["match", ["get", get_col]]
@@ -141,7 +152,7 @@ def detections_layer() -> dict:
         "filters": [],
         "options": {
             "type": "vector", "visible": True, "pointLayerType": "bubble",
-            "minZoom": 3.0,
+            "minZoom": 3.0, "maxZoom": 8.0,
             "bubbleOptions": {
                 "color": _match_expr("fill_color", FIRE_COLORS),
                 "radius": ["get", "radius"], "strokeColor": "#000000", "strokeWidth": 1,
@@ -154,6 +165,34 @@ def detections_layer() -> dict:
                                   "allowOverlap": True},
             "tooltipKeys": ["label", "frp", "brightness", "confidence_level", "daynight",
                             "satellite", "instrument", "source", "acq_datetime"],
+            "enablePopups": True,
+        },
+    }
+
+
+def footprints_layer() -> dict:
+    # Polygon (fill) layer: no pointLayerType; fill via polygonOptions, outline
+    # via the sibling lineOptions block (polygonOptions has no stroke fields).
+    return {
+        "name": NAME_FOOTPRINTS, "kql": KQL_FOOTPRINTS, "geometryColumnName": "geometry",
+        "filters": [],
+        "options": {
+            "type": "vector", "visible": True,
+            "minZoom": 8.0,
+            "polygonOptions": {
+                "fillColor": _match_expr("fill_color", FIRE_COLORS),
+                "fillOpacity": 0.55, "enableSeriesGroup": True,
+                "seriesGroup": "fill_color", "customColors": _custom_colors(FIRE_COLORS),
+            },
+            "lineOptions": {
+                "strokeColor": "#000000", "strokeWidth": 1, "strokeOpacity": 0.9,
+            },
+            "dataLabelKeys": ["label"],
+            "dataLabelOptions": {"enabled": False, "size": 11, "color": "#f5f5f5",
+                                  "textStrokeColor": "#000000", "textStrokeWidth": 2.5,
+                                  "allowOverlap": True},
+            "tooltipKeys": ["label", "frp", "brightness", "confidence_level", "daynight",
+                            "satellite", "instrument", "source", "scan", "track", "acq_datetime"],
             "enablePopups": True,
         },
     }
@@ -233,8 +272,8 @@ def main():
     for k in ("zoom", "scale", "style", "compass"):
         c.setdefault(k, True)
 
-    # wire layers (hotspots under detections)
-    for layer in (hotspots_layer(), detections_layer()):
+    # wire layers (hotspots under detections under footprints)
+    for layer in (hotspots_layer(), detections_layer(), footprints_layer()):
         src_id = str(uuid.uuid4())
         mp.setdefault("layerSources", []).append({
             "id": src_id, "name": layer["name"].replace(" ", "_") + "_kusto",

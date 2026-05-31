@@ -16,6 +16,9 @@
 //                               projected to a GeoJSON Point `geometry` column
 //                               plus OSINT attributes (FRP, confidence, day/
 //                               night, satellite, source) for the symbol layer.
+//   FireFootprints(...)       - same detection set projected as GeoJSON Polygon
+//                               pixel footprints (scan x track rectangle) for the
+//                               high-zoom fill layer showing true pixel extent.
 //   FireHeat(...)             - same detection set projected for the heatmap
 //                               layer with an FRP-derived `weight` column.
 //   FireHotspots(...)         - detections aggregated onto a coarse grid for a
@@ -64,6 +67,26 @@
     | extend label = strcat(toupper(tostring(instrument)), "  ", tostring(round(frp, 1)), " MW  ", confidence_level)
     | project geometry, latitude, longitude, frp, brightness, confidence_level,
               daynight, satellite, instrument, source, acq_datetime, fill_color, radius, label
+}
+
+.create-or-alter function with (docstring="Recent FIRMS detections as GeoJSON Polygon footprints for the Fabric Map fill layer. Each detection is a satellite pixel whose true ground footprint is a rectangle of scan (along-scan, km) by track (along-track, km) centred on the lat/lon centroid; this projects that rectangle as a closed GeoJSON Polygon (axis-aligned approximation, ignoring satellite heading) so high-zoom views show the real pixel extent rather than a point. lookback is an ingestion-time window (default 24h); min_confidence filters to low/nominal/high ordinal (0 = all).", folder="nasa-firms/map") FireFootprints(lookback:timespan = 24h, min_confidence:int = 0) {
+    ['NASA.FIRMS.FireDetection']
+    | where ___time > ago(lookback)
+    | where ConfidenceRank(confidence_level) >= min_confidence
+    | extend _scan = coalesce(scan, 0.375), _track = coalesce(track, 0.375)
+    // half-extents in degrees: 1 deg lat ~= 110.574 km; 1 deg lon ~= 111.320 km * cos(lat)
+    | extend dlat = (_track / 2.0) / 110.574
+    | extend dlon = (_scan / 2.0) / (111.320 * cos(radians(latitude)))
+    | extend geometry = bag_pack("type", "Polygon", "coordinates", pack_array(pack_array(
+        pack_array(longitude - dlon, latitude - dlat),
+        pack_array(longitude + dlon, latitude - dlat),
+        pack_array(longitude + dlon, latitude + dlat),
+        pack_array(longitude - dlon, latitude + dlat),
+        pack_array(longitude - dlon, latitude - dlat))))
+    | extend fill_color = FireColor(frp)
+    | extend label = strcat(toupper(tostring(instrument)), "  ", tostring(round(frp, 1)), " MW  ", confidence_level)
+    | project geometry, latitude, longitude, scan, track, frp, brightness, confidence_level,
+              daynight, satellite, instrument, source, acq_datetime, fill_color, label
 }
 
 .create-or-alter function with (docstring="Recent FIRMS detections projected for the Fabric Map heatmap layer with an FRP-derived weight (0..1).", folder="nasa-firms/map") FireHeat(lookback:timespan = 24h) {
