@@ -114,7 +114,7 @@ class TestSWPCContainerIntegration:
         mock_get.side_effect = self._mock_get_side_effect
 
         from noaa_goes.noaa_goes import SWPCPoller
-        from noaa_goes.noaa_goes_producer.microsoft.opendata.us.noaa.swpc.spaceweatheralert import SpaceWeatherAlert
+        from noaa_goes_producer_data.microsoft.opendata.us.noaa.swpc.spaceweatheralert import SpaceWeatherAlert
 
         poller = SWPCPoller(
             kafka_config=kafka_config,
@@ -134,11 +134,11 @@ class TestSWPCContainerIntegration:
                 issue_datetime=alert_data.get("issue_datetime", ""),
                 message=alert_data.get("message", "")
             )
-            poller.producer.send_microsoft_open_data_us_noaa_swpc_space_weather_alert(
-                alert, product_id, flush_producer=False)
+            poller.alerts_producer.send_microsoft_open_data_us_noaa_swpc_space_weather_alert(
+                product_id, alert, flush_producer=False)
             new_count += 1
 
-        poller.producer.producer.flush()
+        poller.kafka_producer.flush()
         assert new_count == 2
 
         # Consume messages from Kafka
@@ -176,7 +176,7 @@ class TestSWPCContainerIntegration:
         mock_get.side_effect = self._mock_get_side_effect
 
         from noaa_goes.noaa_goes import SWPCPoller
-        from noaa_goes.noaa_goes_producer.microsoft.opendata.us.noaa.swpc.planetarykindex import PlanetaryKIndex
+        from noaa_goes_producer_data.microsoft.opendata.us.noaa.swpc.planetarykindex import PlanetaryKIndex
 
         poller = SWPCPoller(
             kafka_config=kafka_config,
@@ -189,15 +189,15 @@ class TestSWPCContainerIntegration:
 
         for row in rows:
             kindex = PlanetaryKIndex(
-                time_tag=str(row["time_tag"]),
+                observation_time=str(row["time_tag"]),
                 kp=float(row["Kp"]),
                 a_running=float(row["a_running"]),
-                station_count=float(row["station_count"])
+                station_count=int(row["station_count"])
             )
-            poller.producer.send_microsoft_open_data_us_noaa_swpc_planetary_kindex(
-                kindex, str(row["time_tag"]), flush_producer=False)
+            poller.observations_producer.send_microsoft_open_data_us_noaa_swpc_planetary_kindex(
+                str(row["time_tag"]), kindex, flush_producer=False)
 
-        poller.producer.producer.flush()
+        poller.kafka_producer.flush()
 
         from confluent_kafka import Consumer
         consumer_config = {
@@ -228,7 +228,7 @@ class TestSWPCContainerIntegration:
         mock_get.side_effect = self._mock_get_side_effect
 
         from noaa_goes.noaa_goes import SWPCPoller
-        from noaa_goes.noaa_goes_producer.microsoft.opendata.us.noaa.swpc.solarwindsummary import SolarWindSummary
+        from noaa_goes_producer_data.microsoft.opendata.us.noaa.swpc.solarwindsummary import SolarWindSummary
 
         poller = SWPCPoller(
             kafka_config=kafka_config,
@@ -241,13 +241,13 @@ class TestSWPCContainerIntegration:
 
         record = records[0]
         summary = SolarWindSummary(
-            timestamp=record["timestamp"],
+            observation_time=record["timestamp"],
             wind_speed=record["wind_speed"],
             bt=record["bt"],
             bz=record["bz"]
         )
-        poller.producer.send_microsoft_open_data_us_noaa_swpc_solar_wind_summary(
-            summary, record["timestamp"], flush_producer=True)
+        poller.observations_producer.send_microsoft_open_data_us_noaa_swpc_solar_wind_summary(
+            record["timestamp"], summary, flush_producer=True)
 
         from confluent_kafka import Consumer
         consumer_config = {

@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#noaa-goes/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/noaa_goes.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/noaa-goes.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.swpc.noaa.gov/)
 
 </td></tr></table>
@@ -65,7 +65,7 @@ This source wraps the upstream NOAA GOES / SWPC APIs into a contract-first event
 All variants share:
 
 - The upstream polling runtime in this source folder.
-- The xRegistry contract at `xreg/noaa_goes.xreg.json`.
+- The xRegistry contract at `xreg/noaa-goes.xreg.json`.
 - The same CloudEvents event families and identity model.
 
 ## Key features

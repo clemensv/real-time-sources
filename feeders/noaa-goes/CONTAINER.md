@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#noaa-goes/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/noaa_goes.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/noaa-goes.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.swpc.noaa.gov/)
 
 </td></tr></table>
@@ -198,4 +198,4 @@ docker run --rm   -v "$PWD/state:/state"   -e SWPC_LAST_POLLED_FILE=/state/noaa-
 
 - [README.md](README.md) — project overview, use cases, and quick-start paths.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing metadata.
-- [`xreg/noaa_goes.xreg.json`](xreg/noaa_goes.xreg.json) — source contract used for generated producers and EVENTS.md.
+- [`xreg/noaa-goes.xreg.json`](xreg/noaa-goes.xreg.json) — source contract used for generated producers and EVENTS.md.
