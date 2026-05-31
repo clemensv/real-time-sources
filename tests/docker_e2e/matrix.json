@@ -1253,6 +1253,12 @@
     },
     {
       "dir": "feeders/singapore-nea",
+      "image": "singapore-nea",
+      "file": "Dockerfile",
+      "module": "singapore_nea"
+    },
+    {
+      "dir": "feeders/singapore-nea",
       "image": "singapore-nea-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "singapore_nea_mqtt"

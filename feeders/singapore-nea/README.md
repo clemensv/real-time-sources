@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#singapore-nea/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/singapore_nea.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/singapore-nea.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.nea.gov.sg/)
 
 </td></tr></table>
@@ -65,7 +65,7 @@ This source wraps the upstream Singapore NEA APIs into a contract-first event st
 All variants share:
 
 - The upstream polling runtime in this source folder.
-- The xRegistry contract at `xreg/singapore_nea.xreg.json`.
+- The xRegistry contract at `xreg/singapore-nea.xreg.json`.
 - The same CloudEvents event families and identity model.
 
 ## Key features

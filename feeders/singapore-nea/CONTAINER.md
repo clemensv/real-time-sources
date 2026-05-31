@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#singapore-nea/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/singapore_nea.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/singapore-nea.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.nea.gov.sg/)
 
 </td></tr></table>
