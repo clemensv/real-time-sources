@@ -2393,6 +2393,13 @@
     },
     {
       "dir": "feeders/vatsim",
+      "file": "Dockerfile",
+      "image": "vatsim",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestVatsimDockerFlow"
+    },
+    {
+      "dir": "feeders/vatsim",
       "image": "vatsim-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
