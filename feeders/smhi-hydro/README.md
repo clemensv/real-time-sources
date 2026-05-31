@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#smhi-hydro/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/smhi_hydro.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/smhi-hydro.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.smhi.se/)
 
 </td></tr></table>
@@ -66,7 +66,7 @@ This bridge publishes the SMHI Hydro source as a transport-agnostic event stream
 All variants share:
 
 - The same upstream polling logic and dedupe state model.
-- The same xRegistry contract (`xreg/smhi_hydro.xreg.json`).
+- The same xRegistry contract (`xreg/smhi-hydro.xreg.json`).
 - The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
 
 ## Key features
@@ -81,7 +81,7 @@ All variants share:
 
 ```text
 smhi-hydro/
-  xreg/smhi_hydro.xreg.json                 # shared xRegistry contract
+  xreg/smhi-hydro.xreg.json                 # shared xRegistry contract
   smhi_hydro/
   smhi_hydro_amqp/
   smhi_hydro_amqp_producer/

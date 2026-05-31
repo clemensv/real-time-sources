@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#smhi-hydro/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/smhi_hydro.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/smhi-hydro.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.smhi.se/)
 
 </td></tr></table>
@@ -222,4 +222,4 @@ docker run --rm \
 
 - [README.md](README.md) — project overview and deployment options.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
-- [`xreg/smhi_hydro.xreg.json`](xreg/smhi_hydro.xreg.json) — source contract used to generate producer bindings.
+- [`xreg/smhi-hydro.xreg.json`](xreg/smhi-hydro.xreg.json) — source contract used to generate producer bindings.

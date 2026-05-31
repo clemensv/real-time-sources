@@ -180,6 +180,7 @@ def feed_stations(api: SMHIHydroAPI, producer: SEGovSMHIHydroEventProducer) -> i
 
 def main():
     """Main entry point for the SMHI Hydro bridge."""
+    once_default = os.environ.get('ONCE_MODE', '').lower() in ('1', 'true', 'yes')
     parser = argparse.ArgumentParser(description="SMHI Hydrological Data Bridge")
     parser.add_argument('--connection-string', required=False, help='Kafka/Event Hubs connection string',
                         default=os.environ.get('KAFKA_CONNECTION_STRING') or os.environ.get('CONNECTION_STRING'))
@@ -189,13 +190,15 @@ def main():
     parser.add_argument('--state-file', type=str,
                         default=os.environ.get('STATE_FILE', os.path.expanduser('~/.smhi_hydro_state.json')))
     parser.add_argument('--once', action='store_true',
-                        default=os.environ.get('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                        default=once_default,
                         help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
     subparsers = parser.add_subparsers(dest='command')
     subparsers.add_parser('list', help='List all stations')
     obs_parser = subparsers.add_parser('observation', help='Get latest discharge for a station')
     obs_parser.add_argument('station_id', help='Station ID (e.g. 1583)')
-    subparsers.add_parser('feed', help='Feed data to Kafka')
+    feed_parser = subparsers.add_parser('feed', help='Feed data to Kafka')
+    feed_parser.add_argument('--once', action='store_true', default=once_default,
+                             help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
 
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO)
