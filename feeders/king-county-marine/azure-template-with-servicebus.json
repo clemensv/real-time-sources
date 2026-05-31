@@ -38,7 +38,25 @@
       "minLength": 1,
       "maxLength": 50,
       "metadata": {
-        "description": "AMQP node/address name."
+        "description": "Service Bus queue name that receives the King County Marine AMQP 1.0 event stream."
+      }
+    },
+    "kingCountyMarineStateFile": {
+      "type": "string",
+      "defaultValue": "/mnt/bridge-state/king-county-marine.json",
+      "metadata": {
+        "description": "Path inside the container where the AMQP bridge persists checkpoint and dedupe state."
+      }
+    },
+    "kingCountyMarineSampleMode": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "true",
+        "false"
+      ],
+      "metadata": {
+        "description": "Set to true to publish deterministic sample King County Marine station and reading events instead of polling the live upstream feed."
       }
     },
     "imageName": {
@@ -218,6 +236,14 @@
                 {
                   "name": "AMQP_ADDRESS",
                   "value": "[parameters('queueName')]"
+                },
+                {
+                  "name": "KING_COUNTY_MARINE_STATE_FILE",
+                  "value": "[parameters('kingCountyMarineStateFile')]"
+                },
+                {
+                  "name": "KING_COUNTY_MARINE_SAMPLE_MODE",
+                  "value": "[parameters('kingCountyMarineSampleMode')]"
                 },
                 {
                   "name": "AMQP_AUTH_MODE",

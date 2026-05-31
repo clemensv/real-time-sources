@@ -41,6 +41,17 @@
       "metadata": {
         "description": "Azure region for all resources."
       }
+    },
+    "kingCountyMarineSampleMode": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "true",
+        "false"
+      ],
+      "metadata": {
+        "description": "Set to true to publish deterministic sample King County Marine station and reading events instead of polling the live upstream feed."
+      }
     }
   },
   "variables": {
@@ -142,6 +153,10 @@
                 {
                   "name": "KING_COUNTY_MARINE_STATE_FILE",
                   "value": "/mnt/bridge-state/king_county_marine_state.json"
+                },
+                {
+                  "name": "KING_COUNTY_MARINE_SAMPLE_MODE",
+                  "value": "[parameters('kingCountyMarineSampleMode')]"
                 },
                 {
                   "name": "LOG_LEVEL",

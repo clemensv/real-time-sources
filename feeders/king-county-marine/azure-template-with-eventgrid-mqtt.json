@@ -51,6 +51,17 @@
       "metadata": {
         "description": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build."
       }
+    },
+    "kingCountyMarineSampleMode": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "true",
+        "false"
+      ],
+      "metadata": {
+        "description": "Set to true to publish deterministic sample King County Marine station and reading events instead of polling the live upstream feed."
+      }
     }
   },
   "variables": {
@@ -213,6 +224,7 @@
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
                 },
                 { "name": "KING_COUNTY_MARINE_STATE_FILE", "value": "/mnt/bridge-state/king_county_marine_state.json" },
+                { "name": "KING_COUNTY_MARINE_SAMPLE_MODE", "value": "[parameters('kingCountyMarineSampleMode')]" },
                 { "name": "LOG_LEVEL", "value": "INFO" },
                 { "name": "PYTHONUNBUFFERED", "value": "1" }
               ],

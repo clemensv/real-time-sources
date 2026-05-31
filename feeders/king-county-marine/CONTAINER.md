@@ -176,6 +176,7 @@ docker run --rm \
 | Variable | Description |
 |---|---|
 | `KING_COUNTY_MARINE_STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `KING_COUNTY_MARINE_SAMPLE_MODE` | Set to `true` to publish deterministic sample station and reading events instead of polling the live upstream feed. |
 | `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
 | `MQTT_USERNAME` / `MQTT_PASSWORD` | Credentials for `MQTT_AUTH_MODE=password`. |
 | `MQTT_AUTH_MODE` | `password` (default) or `entra`. |
@@ -188,6 +189,7 @@ docker run --rm \
 | Variable | Description |
 |---|---|
 | `KING_COUNTY_MARINE_STATE_FILE` | Path to dedupe/checkpoint state file. |
+| `KING_COUNTY_MARINE_SAMPLE_MODE` | Set to `true` to publish deterministic sample station and reading events instead of polling the live upstream feed. |
 | `AMQP_BROKER_URL` | Full AMQP URL form (`amqp://` or `amqps://`). |
 | `AMQP_HOST` / `AMQP_PORT` / `AMQP_TLS` | Component endpoint settings when URL form is not used. |
 | `AMQP_ADDRESS` | AMQP node/address name. |
