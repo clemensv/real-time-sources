@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#seattle-911/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/seattle_911.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/seattle-911.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://data.seattle.gov/)
 
 </td></tr></table>

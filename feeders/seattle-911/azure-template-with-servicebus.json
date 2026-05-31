@@ -244,6 +244,10 @@
                   "value": "/mnt/bridge-state/state.json"
                 },
                 {
+                  "name": "SEATTLE_911_LAST_POLLED_FILE",
+                  "value": "/mnt/bridge-state/state.json"
+                },
+                {
                   "name": "LOG_LEVEL",
                   "value": "INFO"
                 },

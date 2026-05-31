@@ -135,7 +135,7 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## References
 
-- xRegistry manifest: [`xreg/seattle_911.xreg.json`](xreg/seattle_911.xreg.json)
+- xRegistry manifest: [`xreg/seattle-911.xreg.json`](xreg/seattle-911.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
 - Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>
