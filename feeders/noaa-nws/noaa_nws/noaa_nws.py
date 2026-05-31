@@ -54,6 +54,7 @@ class NWSAlertPoller:
         self.observations_producer = MicrosoftOpenDataUSNOAANWSObservationsEventProducer(kafka_producer, kafka_topic)
         self.kafka_producer = kafka_producer
         self.station_ids: List[str] = []
+        self.station_context: Dict[str, Dict[str, str | None]] = {}
 
     def load_seen_alerts(self) -> Dict:
         """
@@ -131,6 +132,7 @@ class NWSAlertPoller:
                     elev_val = elev.get("value") if isinstance(elev, dict) else None
                     forecast_url = props.get("forecast", "")
                     forecast_zone = forecast_url.rsplit("/", 1)[-1] if forecast_url else None
+                    state = forecast_zone[:2] if forecast_zone and len(forecast_zone) >= 2 else None
                     county_url = props.get("county", "")
                     county_zone = county_url.rsplit("/", 1)[-1] if county_url else None
                     fire_url = props.get("fireWeatherZone", "")
@@ -143,8 +145,11 @@ class NWSAlertPoller:
                         forecast_zone=forecast_zone,
                         county=county_zone,
                         fire_weather_zone=fire_zone,
+                        state=state,
+                        zone_id=forecast_zone,
                     )
                     stations.append(station)
+                    self.station_context[sid] = {"state": state, "zone_id": forecast_zone}
                 pagination = data.get("pagination", {})
                 url = pagination.get("next") if pagination else None
         except Exception as err:
@@ -174,6 +179,7 @@ class NWSAlertPoller:
             ts = props.get("timestamp")
             if not ts:
                 return None
+            station_context = self.station_context.get(station_id, {})
             return WeatherObservation(
                 station_id=station_id,
                 timestamp=ts,
@@ -189,6 +195,8 @@ class NWSAlertPoller:
                 relative_humidity=self._extract_value(props.get("relativeHumidity")),
                 wind_chill=self._extract_value(props.get("windChill")),
                 heat_index=self._extract_value(props.get("heatIndex")),
+                state=station_context.get("state"),
+                zone_id=station_context.get("zone_id"),
             )
         except Exception as err:
             print(f"Error fetching observation for {station_id}: {err}")

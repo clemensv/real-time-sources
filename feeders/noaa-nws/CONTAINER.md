@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#noaa-nws/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/noaa_nws.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/noaa-nws.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.weather.gov/)
 
 </td></tr></table>
@@ -196,4 +196,4 @@ docker run --rm   -v "$PWD/state:/state"   -e NWS_LAST_POLLED_FILE=/state/noaa-n
 
 - [README.md](README.md) — project overview, use cases, and quick-start paths.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing metadata.
-- [`xreg/noaa_nws.xreg.json`](xreg/noaa_nws.xreg.json) — source contract used for generated producers and EVENTS.md.
+- [`xreg/noaa-nws.xreg.json`](xreg/noaa-nws.xreg.json) — source contract used for generated producers and EVENTS.md.

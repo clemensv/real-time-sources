@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#noaa-nws/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/noaa_nws.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/noaa-nws.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.weather.gov/)
 
 </td></tr></table>
@@ -65,7 +65,7 @@ This source wraps the upstream NOAA NWS APIs into a contract-first event stream 
 All variants share:
 
 - The upstream polling runtime in this source folder.
-- The xRegistry contract at `xreg/noaa_nws.xreg.json`.
+- The xRegistry contract at `xreg/noaa-nws.xreg.json`.
 - The same CloudEvents event families and identity model.
 
 ## Key features

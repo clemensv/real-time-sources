@@ -235,6 +235,8 @@ class TestFetchObservationStations:
         assert stations[0].forecast_zone == "NYZ178"
         assert stations[0].county == "NYC081"
         assert stations[0].fire_weather_zone == "NYZ178"
+        assert stations[0].state == "NY"
+        assert stations[0].zone_id == "NYZ178"
         assert stations[1].station_id == "KLAX"
 
     @patch('noaa_nws.noaa_nws.requests.get')
@@ -401,6 +403,8 @@ class TestDataclasses:
             forecast_zone="NYZ178",
             county="NYC081",
             fire_weather_zone="NYZ178",
+            state="NY",
+            zone_id="NYZ178",
         )
         assert station.station_id == "KJFK"
         assert station.elevation_m == 7.0
@@ -422,6 +426,8 @@ class TestDataclasses:
             relative_humidity=35.0,
             wind_chill=None,
             heat_index=None,
+            state="NY",
+            zone_id="NYZ178",
         )
         assert obs.station_id == "KJFK"
         assert obs.temperature == 11.0

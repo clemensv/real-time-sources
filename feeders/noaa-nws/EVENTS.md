@@ -374,6 +374,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## References
 
-- xRegistry manifest: [`xreg/noaa_nws.xreg.json`](xreg/noaa_nws.xreg.json)
+- xRegistry manifest: [`xreg/noaa-nws.xreg.json`](xreg/noaa-nws.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

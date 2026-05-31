@@ -1,11 +1,11 @@
 # Generate the NOAA NWS Weather Alerts producer using xrcg
 
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = $scriptDir
-$xregFile = Join-Path $projectRoot "xreg\noaa_nws.xreg.json"
+$xregFile = Join-Path $projectRoot "xreg\noaa-nws.xreg.json"
 $outputDir = Join-Path $projectRoot "noaa_nws_producer"
 
 Write-Host "Generating NOAA NWS producer from xRegistry definitions..." -ForegroundColor Cyan
@@ -56,4 +56,3 @@ if (Test-Path $dataInit) {
     }
     Set-Content -Path $dataInit -Value $content -NoNewline
 }
-

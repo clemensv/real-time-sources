@@ -160,7 +160,7 @@ class TestNWSContainerIntegration:
             if not alert_id or alert_id in seen_ids:
                 continue
 
-            from noaa_nws.noaa_nws_producer.microsoft.opendata.us.noaa.nws.weatheralert import WeatherAlert
+            from noaa_nws_producer_data import WeatherAlert
             alert = WeatherAlert(
                 alert_id=alert_id,
                 area_desc=props.get("areaDesc", ""),
@@ -179,12 +179,12 @@ class TestNWSContainerIntegration:
                 description=props.get("description", "")
             )
 
-            poller.producer.send_microsoft_open_data_us_noaa_nws_weather_alert(
-                alert, alert_id, flush_producer=False)
+            poller.alerts_producer.send_microsoft_open_data_us_noaa_nws_weather_alert(
+                alert_id, alert, flush_producer=False)
             seen_ids.add(alert_id)
             new_count += 1
 
-        poller.producer.producer.flush()
+        poller.kafka_producer.flush()
 
         assert new_count == 2, f"Expected 2 new alerts, got {new_count}"
 
@@ -323,9 +323,9 @@ class TestNWSContainerIntegration:
         assert len(zones) == 3
 
         for zone in zones:
-            poller.producer.send_microsoft_open_data_us_noaa_nws_zone(
-                zone, flush_producer=False)
-        poller.producer.producer.flush()
+            poller.zones_producer.send_microsoft_open_data_us_noaa_nws_zone(
+                zone.zone_id, zone, flush_producer=False)
+        poller.kafka_producer.flush()
 
         # Consume messages from Kafka and verify
         from confluent_kafka import Consumer
@@ -378,9 +378,9 @@ class TestNWSContainerIntegration:
         # Send a sample (first 5) to Kafka
         sample = zones[:5]
         for zone in sample:
-            poller.producer.send_microsoft_open_data_us_noaa_nws_zone(
-                zone, flush_producer=False)
-        poller.producer.producer.flush()
+            poller.zones_producer.send_microsoft_open_data_us_noaa_nws_zone(
+                zone.zone_id, zone, flush_producer=False)
+        poller.kafka_producer.flush()
 
         # Consume from Kafka and verify
         from confluent_kafka import Consumer
@@ -418,7 +418,7 @@ class TestNWSContainerIntegration:
         self._create_topic(kafka_container, topic)
 
         from noaa_nws.noaa_nws import NWSAlertPoller
-        from noaa_nws.noaa_nws_producer.microsoft.opendata.us.noaa.nws.weatheralert import WeatherAlert
+        from noaa_nws_producer_data import WeatherAlert
 
         poller = NWSAlertPoller(
             kafka_config=kafka_config,
@@ -452,10 +452,10 @@ class TestNWSContainerIntegration:
                 headline=props.get("headline", ""),
                 description=props.get("description", "")
             )
-            poller.producer.send_microsoft_open_data_us_noaa_nws_weather_alert(
-                alert, flush_producer=False)
+            poller.alerts_producer.send_microsoft_open_data_us_noaa_nws_weather_alert(
+                alert_id, alert, flush_producer=False)
             sent_count += 1
-        poller.producer.producer.flush()
+        poller.kafka_producer.flush()
 
         # Consume and verify what was sent
         if sent_count > 0:
