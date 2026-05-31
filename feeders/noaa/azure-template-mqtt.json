@@ -41,6 +41,13 @@
       "metadata": {
         "description": "Azure region for all resources."
       }
+    },
+    "noaaLastPolledFile": {
+      "type": "string",
+      "defaultValue": "/mnt/bridge-state/noaa_last_polled.json",
+      "metadata": {
+        "description": "Path inside the container where the feeder persists the last successful NOAA poll watermark."
+      }
     }
   },
   "variables": {
@@ -138,6 +145,10 @@
                 {
                   "name": "MQTT_PASSWORD",
                   "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "NOAA_LAST_POLLED_FILE",
+                  "value": "[parameters('noaaLastPolledFile')]"
                 },
                 {
                   "name": "LOG_LEVEL",
