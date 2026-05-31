@@ -109,6 +109,12 @@ param(
     [int]$PollingInterval = 900,
     [bool]$OnceMode = $true,
 
+    # Extra source-specific parameter overrides patched into the notebook's
+    # 'parameters'-tagged cell (e.g. @{ FIRMS_MAP_KEY = '...' }). Use this for
+    # feeder secrets/keys supplied at deploy time so they are never committed
+    # to the notebook in the repo.
+    [hashtable]$NotebookParam = @{},
+
     [string]$EnvironmentName,
     [switch]$SkipEnvironment,
     [switch]$BuildWheelsLocally,
@@ -593,7 +599,13 @@ foreach ($cell in $nb.cells) {
 
     $srcLines = @($cell.source) | ForEach-Object { $_ }
     $newLines = foreach ($line in $srcLines) {
-        if     ($line -match '^\s*EVENTSTREAM_NAME\s*=') { "EVENTSTREAM_NAME = `"$Source-ingest`"`n" }
+        $ovName = $null
+        if ($line -match '^\s*([A-Za-z_]\w*)\s*=') {
+            $cand = $matches[1]
+            if ($NotebookParam.ContainsKey($cand)) { $ovName = $cand }
+        }
+        if     ($ovName)                                 { "{0,-16} = `"{1}`"`n" -f $ovName, $NotebookParam[$ovName] }
+        elseif ($line -match '^\s*EVENTSTREAM_NAME\s*=') { "EVENTSTREAM_NAME = `"$Source-ingest`"`n" }
         elseif ($line -match '^\s*STATE_FILE\s*=')       { "STATE_FILE       = `"$StatePath/state.json`"`n" }
         elseif ($line -match '^\s*POLLING_INTERVAL\s*=') { "POLLING_INTERVAL = $PollingInterval`n" }
         elseif ($line -match '^\s*ONCE_MODE\s*=')        { "ONCE_MODE        = $onceLiteral`n" }

@@ -1,0 +1,537 @@
+{
+  "endpoints": {
+    "NASA.FIRMS.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "nasa-firms",
+          "key": "{source}/{record_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/NASA.FIRMS"
+      ]
+    },
+    "NASA.FIRMS.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "deployed": false,
+      "endpoints": [
+        {
+          "uri": "mqtt://localhost:1883"
+        }
+      ],
+      "messagegroups": [
+        "#/messagegroups/NASA.FIRMS.mqtt"
+      ]
+    },
+    "NASA.FIRMS.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/nasa-firms"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/NASA.FIRMS.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for NASA FIRMS CloudEvents."
+    }
+  },
+  "messagegroups": {
+    "NASA.FIRMS": {
+      "messages": {
+        "NASA.FIRMS.FireDetection": {
+          "name": "FireDetection",
+          "envelope": "CloudEvents/1.0",
+          "description": "A single active-fire / thermal-anomaly pixel detection from a NASA FIRMS satellite product (VIIRS or MODIS), normalised across sensors. Each event is one detection in one satellite overpass; the brightness fields populated depend on `instrument`.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NASA.FIRMS.FireDetection"
+            },
+            "source": {
+              "value": "{source_uri}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{source}/{record_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "timestamp"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.jstruct/schemas/NASA.FIRMS.FireDetection"
+        },
+        "NASA.FIRMS.DataAvailability": {
+          "name": "DataAvailability",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference record describing one FIRMS product source: its current data-availability window (min/max date), sensor family, platform, and nominal resolution. Emitted at bridge startup and refreshed periodically so consumers can interpret detection freshness and coverage on the same topic as the telemetry.",
+          "envelopemetadata": {
+            "type": {
+              "value": "NASA.FIRMS.DataAvailability"
+            },
+            "source": {
+              "value": "{source_uri}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{source}/{record_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "timestamp"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/NASA.FIRMS.jstruct/schemas/NASA.FIRMS.DataAvailability"
+        }
+      }
+    },
+    "NASA.FIRMS.mqtt": {
+      "description": "MQTT/5.0 transport variant for NASA FIRMS. Binary-mode CloudEvents routed under geo/fire/firms/<source>/... so consumers can subscribe by source, confidence and coarse geographic tile.",
+      "messages": {
+        "NASA.FIRMS.mqtt.FireDetection": {
+          "name": "FireDetection",
+          "basemessageuri": "/messagegroups/NASA.FIRMS/messages/NASA.FIRMS.FireDetection",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "geo/fire/firms/{source}/{confidence_level}/{tile}/detection",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "NASA.FIRMS.mqtt.DataAvailability": {
+          "name": "DataAvailability",
+          "basemessageuri": "/messagegroups/NASA.FIRMS/messages/NASA.FIRMS.DataAvailability",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "geo/fire/firms/{source}/availability",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "NASA.FIRMS.amqp": {
+      "description": "AMQP 1.0 transport variant for NASA FIRMS carrying the same CloudEvents and payload schemas on one broker address.",
+      "messages": {
+        "NASA.FIRMS.amqp.FireDetection": {
+          "name": "FireDetection",
+          "basemessageuri": "/messagegroups/NASA.FIRMS/messages/NASA.FIRMS.FireDetection",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{source}/{record_id}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvents subject and Kafka key."
+              }
+            }
+          }
+        },
+        "NASA.FIRMS.amqp.DataAvailability": {
+          "name": "DataAvailability",
+          "basemessageuri": "/messagegroups/NASA.FIRMS/messages/NASA.FIRMS.DataAvailability",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{source}/{record_id}",
+                "description": "AMQP message subject — stable entity identifier matching the CloudEvents subject and Kafka key."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "NASA.FIRMS.jstruct": {
+      "schemas": {
+        "NASA.FIRMS.FireDetection": {
+          "name": "FireDetection",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "$id": "https://schemas.vasters.com/NASA/FIRMS/FireDetection",
+                "name": "FireDetection",
+                "$root": "#/definitions/NASA/FIRMS/FireDetection",
+                "definitions": {
+                  "NASA": {
+                    "FIRMS": {
+                      "FireDetection": {
+                        "name": "FireDetection",
+                        "type": "object",
+                        "properties": {
+                          "source": {
+                            "type": "string",
+                            "description": "FIRMS product source identifier for the satellite/sensor that produced this detection, e.g. `VIIRS_SNPP_NRT`, `VIIRS_NOAA20_NRT`, `VIIRS_NOAA21_NRT`, `MODIS_NRT` (and the `*_SP` standard-processing variants). First segment of the stable identity key `{source}/{record_id}` and the leading MQTT topic level. Populated by the bridge from the requested FIRMS Area API source, not from a CSV column."
+                          },
+                          "record_id": {
+                            "type": "string",
+                            "description": "Deterministic detection identifier — second segment of the identity key `{source}/{record_id}`. Computed by the bridge as a stable 16-hex-character SHA-1 digest over the immutable detection tuple (source, latitude, longitude, acq_date, acq_time, satellite). Stable across polling cycles so the same fire pixel re-detected in overlapping day-range windows resolves to the same key and is de-duplicated downstream."
+                          },
+                          "latitude": {
+                            "type": "double",
+                            "unit": "deg",
+                            "altnames": {
+                              "json": "latitude"
+                            },
+                            "symbol": "°",
+                            "minimum": -90,
+                            "maximum": 90,
+                            "description": "Latitude of the centre of the nominal ~375 m (VIIRS) or ~1 km (MODIS) fire pixel, in decimal degrees (WGS84, positive north). Note this is the pixel centroid, not the precise location of the thermal anomaly within the pixel."
+                          },
+                          "longitude": {
+                            "type": "double",
+                            "unit": "deg",
+                            "altnames": {
+                              "json": "longitude"
+                            },
+                            "symbol": "°",
+                            "minimum": -180,
+                            "maximum": 180,
+                            "description": "Longitude of the centre of the nominal fire pixel, in decimal degrees (WGS84, positive east). Pixel centroid, not the precise anomaly location."
+                          },
+                          "brightness": {
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "unit": "K",
+                            "altnames": {
+                              "json": "brightness"
+                            },
+                            "symbol": "K",
+                            "description": "MODIS only: brightness temperature of the fire pixel measured in MODIS channel 21/22 (~4 µm), in Kelvin. Null for VIIRS detections (which report `bright_ti4`/`bright_ti5` instead). Sourced from the MODIS CSV `brightness` column."
+                          },
+                          "bright_t31": {
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "unit": "K",
+                            "altnames": {
+                              "json": "bright_t31"
+                            },
+                            "symbol": "K",
+                            "description": "MODIS only: brightness temperature of the fire pixel measured in MODIS channel 31 (~11 µm), in Kelvin. Used with `brightness` to characterise fire intensity and screen false alarms. Null for VIIRS detections. Sourced from the MODIS CSV `bright_t31` column."
+                          },
+                          "bright_ti4": {
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "unit": "K",
+                            "altnames": {
+                              "json": "bright_ti4"
+                            },
+                            "symbol": "K",
+                            "description": "VIIRS only: brightness temperature of the fire pixel measured in VIIRS I-4 channel (~3.74 µm), in Kelvin. Primary fire channel for VIIRS. Null for MODIS detections (which report `brightness` instead). Sourced from the VIIRS CSV `bright_ti4` column."
+                          },
+                          "bright_ti5": {
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "unit": "K",
+                            "altnames": {
+                              "json": "bright_ti5"
+                            },
+                            "symbol": "K",
+                            "description": "VIIRS only: brightness temperature of the fire pixel measured in VIIRS I-5 channel (~11.45 µm), in Kelvin. Background/context channel paired with `bright_ti4`. Null for MODIS detections. Sourced from the VIIRS CSV `bright_ti5` column."
+                          },
+                          "scan": {
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "unit": "km",
+                            "altnames": {
+                              "json": "scan"
+                            },
+                            "symbol": "km",
+                            "description": "Along-scan ground dimension of the detected pixel, in kilometres. Grows from nadir toward the swath edge; combined with `track` it gives the actual ground footprint (375 m / 1 km is the nominal nadir resolution only). Sourced from the CSV `scan` column."
+                          },
+                          "track": {
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "unit": "km",
+                            "altnames": {
+                              "json": "track"
+                            },
+                            "symbol": "km",
+                            "description": "Along-track ground dimension of the detected pixel, in kilometres. Combined with `scan` it gives the actual ground footprint of the detection. Sourced from the CSV `track` column."
+                          },
+                          "acq_date": {
+                            "type": "date",
+                            "altnames": {
+                              "json": "acq_date"
+                            },
+                            "description": "UTC acquisition date of the satellite overpass that produced the detection, formatted `YYYY-MM-DD`. Sourced from the CSV `acq_date` column."
+                          },
+                          "acq_time": {
+                            "type": "string",
+                            "altnames": {
+                              "json": "acq_time"
+                            },
+                            "pattern": "^([01][0-9]|2[0-3])[0-5][0-9]$",
+                            "description": "UTC acquisition time of the satellite overpass, formatted as a zero-padded `HHMM` string (e.g. `0218` = 02:18 UTC). Sourced from the CSV `acq_time` column."
+                          },
+                          "acq_datetime": {
+                            "type": "datetime",
+                            "description": "UTC acquisition timestamp combining `acq_date` and `acq_time` into an ISO-8601 instant (`YYYY-MM-DDTHH:MM:00Z`). Derived by the bridge."
+                          },
+                          "satellite": {
+                            "type": "string",
+                            "altnames": {
+                              "json": "satellite"
+                            },
+                            "description": "Short platform code of the acquiring satellite as reported by FIRMS, e.g. `N` (Suomi-NPP), `1` (NOAA-20/JPSS-1), `2` (NOAA-21/JPSS-2) for VIIRS, and `T` (Terra) / `A` (Aqua) for MODIS. Sourced from the CSV `satellite` column."
+                          },
+                          "instrument": {
+                            "type": "string",
+                            "altnames": {
+                              "json": "instrument"
+                            },
+                            "enum": [
+                              "VIIRS",
+                              "MODIS"
+                            ],
+                            "description": "Sensor that produced the detection: `VIIRS` or `MODIS`. Discriminates which of the brightness fields are populated. Sourced from the CSV `instrument` column."
+                          },
+                          "confidence": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "altnames": {
+                              "json": "confidence"
+                            },
+                            "description": "Raw upstream detection confidence exactly as delivered by FIRMS, kept verbatim for fidelity. For VIIRS this is a class letter `l` (low), `n` (nominal) or `h` (high); for MODIS it is an integer 0–100 (percent) rendered as a string. Use the normalised `confidence_level` for filtering across sensors. Sourced from the CSV `confidence` column."
+                          },
+                          "confidence_level": {
+                            "type": "string",
+                            "enum": [
+                              "low",
+                              "nominal",
+                              "high"
+                            ],
+                            "description": "Sensor-normalised detection confidence as a routing-safe class: `low`, `nominal`, or `high`. Derived by the bridge: VIIRS `l`/`n`/`h` map directly; MODIS integer maps <30 → `low`, 30–80 → `nominal`, >80 → `high`. Used as an MQTT topic level so consumers can subscribe by confidence."
+                          },
+                          "version": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "altnames": {
+                              "json": "version"
+                            },
+                            "description": "Collection and source-processing version of the detection, e.g. `2.0NRT` (Collection 2, near-real-time) or `2.0` (standard processing). Sourced from the CSV `version` column."
+                          },
+                          "frp": {
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "unit": "MW",
+                            "altnames": {
+                              "json": "frp"
+                            },
+                            "symbol": "MW",
+                            "description": "Fire Radiative Power in megawatts — the radiative energy release rate of the detected fire within the pixel, a proxy for combustion intensity and a key OSINT discriminator (a multi-hundred-MW spike differs sharply from routine agricultural burning). Sourced from the CSV `frp` column."
+                          },
+                          "daynight": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "altnames": {
+                              "json": "daynight"
+                            },
+                            "enum": [
+                              "D",
+                              "N"
+                            ],
+                            "description": "Day/Night flag for the overpass: `D` (daytime) or `N` (nighttime), based on solar elevation at the pixel. Night detections are less prone to solar false alarms. Sourced from the CSV `daynight` column."
+                          },
+                          "tile": {
+                            "type": "string",
+                            "description": "Coarse 10° × 10° geographic tile label of the form `lat<LL>_lon<LL>` (south-west corner, e.g. `lat30_lon-120`) covering the detection. Derived by the bridge purely as an MQTT topic level so consumers can geofence a region of interest without per-message coordinate parsing."
+                          }
+                        },
+                        "required": [
+                          "source",
+                          "record_id",
+                          "latitude",
+                          "longitude",
+                          "acq_date",
+                          "acq_time",
+                          "acq_datetime",
+                          "satellite",
+                          "instrument",
+                          "confidence_level",
+                          "tile"
+                        ],
+                        "description": "A single active-fire / thermal-anomaly pixel detection from a NASA FIRMS satellite product (VIIRS or MODIS), normalised across sensors. Each event is one detection in one satellite overpass; the brightness fields populated depend on `instrument`."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "NASA.FIRMS.DataAvailability": {
+          "name": "DataAvailability",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "$id": "https://schemas.vasters.com/NASA/FIRMS/DataAvailability",
+                "name": "DataAvailability",
+                "$root": "#/definitions/NASA/FIRMS/DataAvailability",
+                "definitions": {
+                  "NASA": {
+                    "FIRMS": {
+                      "DataAvailability": {
+                        "name": "DataAvailability",
+                        "type": "object",
+                        "properties": {
+                          "source": {
+                            "type": "string",
+                            "description": "FIRMS product source identifier this coverage record describes, e.g. `VIIRS_SNPP_NRT`, `VIIRS_NOAA20_NRT`, `VIIRS_NOAA21_NRT`, `MODIS_NRT`. First segment of the identity key `{source}/{record_id}`; joins to `FireDetection.source`."
+                          },
+                          "record_id": {
+                            "type": "string",
+                            "description": "Constant literal `coverage` — the second identity-key segment for the single reference record per source (`{source}/coverage`). Keeps the reference family on the same `{source}/{record_id}` shape and topic as telemetry while remaining a stable, idempotent per-source key."
+                          },
+                          "data_id": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "altnames": {
+                              "json": "data_id"
+                            },
+                            "description": "Raw FIRMS data-availability product identifier as returned by the `/api/data_availability` endpoint (the CSV `data_id` column), e.g. `VIIRS_SNPP_NRT`. Usually equal to `source`; preserved verbatim."
+                          },
+                          "min_date": {
+                            "type": [
+                              "null",
+                              "date"
+                            ],
+                            "altnames": {
+                              "json": "min_date"
+                            },
+                            "description": "Earliest UTC date (`YYYY-MM-DD`) for which this FIRMS source currently has data available via the Area API, from the `min_date` column of the data-availability response."
+                          },
+                          "max_date": {
+                            "type": [
+                              "null",
+                              "date"
+                            ],
+                            "altnames": {
+                              "json": "max_date"
+                            },
+                            "description": "Most recent UTC date (`YYYY-MM-DD`) for which this FIRMS source currently has data available — the effective freshness horizon of the source, from the `max_date` column."
+                          },
+                          "instrument": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "enum": [
+                              "VIIRS",
+                              "MODIS"
+                            ],
+                            "description": "Sensor family of the source: `VIIRS` or `MODIS`. Derived by the bridge from the source identifier."
+                          },
+                          "satellite": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "description": "Human-readable platform name(s) carried by the source, e.g. `Suomi-NPP`, `NOAA-20`, `NOAA-21`, `Terra`, `Aqua`. Derived by the bridge from the source identifier."
+                          },
+                          "resolution_m": {
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "unit": "m",
+                            "symbol": "m",
+                            "description": "Nominal nadir spatial resolution of the source sensor in metres (375 for VIIRS I-band fire product, 1000 for MODIS). Static sensor fact supplied by the bridge for downstream scaling/symbology."
+                          },
+                          "retrieved_at": {
+                            "type": "datetime",
+                            "description": "UTC ISO-8601 timestamp at which the bridge fetched this availability record."
+                          }
+                        },
+                        "required": [
+                          "source",
+                          "record_id",
+                          "retrieved_at"
+                        ],
+                        "description": "Reference record describing one FIRMS product source: its current data-availability window (min/max date), sensor family, platform, and nominal resolution. Emitted at bridge startup and refreshed periodically so consumers can interpret detection freshness and coverage on the same topic as the telemetry."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

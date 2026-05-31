@@ -1,107 +1,423 @@
 {
   "_overrides_doc": "Hand-curated overrides for sources where auto-extraction picked a wrong URL. Merged on top of v3 auto-extracted JSON. Keep keys sorted.",
-  "aisstream": {"homepage": "https://aisstream.io/", "api_docs": "https://aisstream.io/documentation"},
-  "australia-wildfires": {"homepage": "https://www.rfs.nsw.gov.au/", "api_docs": "https://www.rfs.nsw.gov.au/news-and-media/current-incidents"},
-  "autobahn": {"homepage": "https://autobahn.de/", "api_docs": "https://autobahn.api.bund.dev/"},
-  "aviationweather": {"homepage": "https://aviationweather.gov/", "api_docs": "https://aviationweather.gov/data/api/"},
-  "bafu-hydro": {"homepage": "https://www.hydrodaten.admin.ch/", "api_docs": "https://www.hydrodaten.admin.ch/en/stations-and-data.html"},
-  "bfs-odl": {"homepage": "https://odlinfo.bfs.de/", "api_docs": "https://odlinfo.bfs.de/ODL/EN/service/datenschnittstelle/datenschnittstelle_node.html"},
-  "billetto": {"homepage": "https://billetto.com/", "api_docs": "https://developer.billetto.com/"},
-  "blitzortung": {"homepage": "https://www.blitzortung.org/", "api_docs": "https://www.lightningmaps.org/"},
-  "bluesky": {"homepage": "https://bsky.app/", "api_docs": "https://docs.bsky.app/"},
-  "bom-australia": {"homepage": "https://www.bom.gov.au/", "api_docs": "http://www.bom.gov.au/catalogue/data-feeds.shtml"},
-  "canada-aqhi": {"homepage": "https://weather.gc.ca/airquality/pages/index_e.html", "api_docs": "https://eccc-msc.github.io/open-data/msc-datamart/readme_en/"},
-  "canada-eccc-wateroffice": {"homepage": "https://wateroffice.ec.gc.ca/", "api_docs": "https://api.weather.gc.ca/openapi"},
-  "carbon-intensity": {"homepage": "https://carbonintensity.org.uk/", "api_docs": "https://carbon-intensity.github.io/api-definitions/"},
-  "cbp-border-wait": {"homepage": "https://bwt.cbp.gov/", "api_docs": "https://bwt.cbp.gov/api/bwtnew"},
-  "cdec-reservoirs": {"homepage": "https://cdec.water.ca.gov/", "api_docs": "https://cdec.water.ca.gov/dynamicapp/wsSensorData"},
-  "chmi-hydro": {"homepage": "https://www.chmi.cz/", "api_docs": "https://opendata.chmi.cz/hydrology/"},
-  "defra-aurn": {"homepage": "https://uk-air.defra.gov.uk/", "api_docs": "https://uk-air.defra.gov.uk/data/"},
-  "digitraffic-maritime": {"homepage": "https://www.digitraffic.fi/en/marine-traffic/", "api_docs": "https://meri.digitraffic.fi/swagger/"},
-  "digitraffic-road": {"homepage": "https://www.digitraffic.fi/en/road-traffic/", "api_docs": "https://tie.digitraffic.fi/swagger/"},
-  "dmi": {"homepage": "https://www.dmi.dk/", "api_docs": "https://opendatadocs.dmi.govcloud.dk/"},
-  "dwd": {"homepage": "https://www.dwd.de/", "api_docs": "https://opendata.dwd.de/"},
-  "dwd-pollenflug": {"homepage": "https://www.dwd.de/EN/specialusers/medical/pollenflug/pollenflug_node.html", "api_docs": "https://opendata.dwd.de/climate_environment/health/alerts/"},
-  "eaws-albina": {"homepage": "https://avalanche.report/", "api_docs": "https://docs.avalanche.report/"},
-  "elexon-bmrs": {"homepage": "https://www.elexon.co.uk/", "api_docs": "https://bmrs.elexon.co.uk/api-documentation"},
-  "energidataservice-dk": {"homepage": "https://www.energidataservice.dk/", "api_docs": "https://www.energidataservice.dk/guides/api-guides"},
-  "energy-charts": {"homepage": "https://www.energy-charts.info/", "api_docs": "https://api.energy-charts.info/"},
-  "entsoe": {"homepage": "https://transparency.entsoe.eu/", "api_docs": "https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html"},
-  "entur-norway": {"homepage": "https://entur.no/", "api_docs": "https://developer.entur.org/"},
-  "environment-canada": {"homepage": "https://weather.gc.ca/", "api_docs": "https://api.weather.gc.ca/openapi"},
-  "epa-uv": {"homepage": "https://www.epa.gov/sunsafety/uv-index-1", "api_docs": "https://www.epa.gov/enviro/web-services"},
-  "eurdep-radiation": {"homepage": "https://remon.jrc.ec.europa.eu/", "api_docs": "https://eurdep.jrc.ec.europa.eu/Basic/Pages/Public/Data/Default.aspx"},
-  "fienta": {"homepage": "https://fienta.com/", "api_docs": "https://fienta.com/api-public-events"},
-  "fmi-finland": {"homepage": "https://en.ilmatieteenlaitos.fi/", "api_docs": "https://en.ilmatieteenlaitos.fi/open-data"},
-  "french-road-traffic": {"homepage": "https://www.bison-fute.gouv.fr/", "api_docs": "https://tipi.bison-fute.gouv.fr/bison-fute-ouvert/publicationsDIR/"},
-  "gdacs": {"homepage": "https://www.gdacs.org/", "api_docs": "https://www.gdacs.org/xml/rss.xml"},
-  "geosphere-austria": {"homepage": "https://www.geosphere.at/", "api_docs": "https://dataset.api.hub.geosphere.at/v1/openapi-docs"},
-  "german-waters": {"homepage": "https://hvz.lubw.baden-wuerttemberg.de/", "api_docs": "https://www.hvz.baden-wuerttemberg.de/php/datenfuerentwickler.php"},
-  "gios-poland": {"homepage": "https://www.gios.gov.pl/", "api_docs": "https://api.gios.gov.pl/pjp-api/swagger-ui/"},
-  "gracedb": {"homepage": "https://gracedb.ligo.org/", "api_docs": "https://gracedb.ligo.org/documentation/"},
-  "gtfs": {"homepage": "https://gtfs.org/", "api_docs": "https://gtfs.org/documentation/realtime/reference/"},
-  "hko-hong-kong": {"homepage": "https://www.hko.gov.hk/", "api_docs": "https://data.weather.gov.hk/weatherAPI/doc/HKO_Open_Data_API_Documentation.pdf"},
-  "hongkong-epd": {"homepage": "https://www.aqhi.gov.hk/", "api_docs": "https://www.aqhi.gov.hk/en/aqhi/statistics-of-aqhi.html"},
-  "hubeau-hydrometrie": {"homepage": "https://hubeau.eaufrance.fr/", "api_docs": "https://hubeau.eaufrance.fr/page/api-hydrometrie"},
-  "imgw-hydro": {"homepage": "https://www.imgw.pl/", "api_docs": "https://danepubliczne.imgw.pl/apiinfo"},
-  "inpe-deter-brazil": {"homepage": "http://terrabrasilis.dpi.inpe.br/", "api_docs": "http://terrabrasilis.dpi.inpe.br/geoserver/web/"},
-  "irail": {"homepage": "https://irail.be/", "api_docs": "https://docs.irail.be/"},
-  "irceline-belgium": {"homepage": "https://www.irceline.be/", "api_docs": "https://geo.irceline.be/sos/api/v1/"},
-  "ireland-opw-waterlevel": {"homepage": "https://waterlevel.ie/", "api_docs": "https://waterlevel.ie/data/"},
-  "jma-bosai-amedas": {"homepage": "https://www.jma.go.jp/bosai/amedas/", "api_docs": "https://www.jma.go.jp/bosai/amedas/"},
-  "jma-bosai-quake": {"homepage": "https://www.jma.go.jp/bosai/map.html?contents=earthquake_map", "api_docs": "https://www.jma.go.jp/bosai/quake/"},
-  "jma-bosai-volcano": {"homepage": "https://www.jma.go.jp/bosai/map.html?contents=volcano", "api_docs": "https://www.jma.go.jp/bosai/volcano/"},
-  "jma-bosai-warning": {"homepage": "https://www.jma.go.jp/bosai/map.html?contents=warning", "api_docs": "https://www.jma.go.jp/bosai/warning/"},
-  "jma-japan": {"homepage": "https://www.jma.go.jp/", "api_docs": "https://www.data.jma.go.jp/developer/index.html"},
-  "king-county-marine": {"homepage": "https://green2.kingcounty.gov/marine/", "api_docs": "https://data.kingcounty.gov/Environment-Waste-Management/Marine-Buoy-Data/9j7t-rs5d"},
-  "kmi-belgium": {"homepage": "https://www.meteo.be/", "api_docs": "https://opendata.meteo.be/"},
-  "kystverket-ais": {"homepage": "https://www.kystverket.no/", "api_docs": "https://kystdatahuset.no/ws/swagger/index.html"},
-  "laqn-london": {"homepage": "https://www.londonair.org.uk/", "api_docs": "https://api.erg.ic.ac.uk/AirQuality/help"},
-  "luchtmeetnet-nl": {"homepage": "https://www.luchtmeetnet.nl/", "api_docs": "https://api-docs.luchtmeetnet.nl/"},
-  "madrid-traffic": {"homepage": "https://datos.madrid.es/", "api_docs": "https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=02f2c23866b93410VgnVCM1000000b205a0aRCRD"},
-  "meteoalarm": {"homepage": "https://meteoalarm.org/", "api_docs": "https://feeds.meteoalarm.org/"},
-  "mode-s": {"homepage": "https://opensky-network.org/", "api_docs": "https://opensky-network.org/apidoc/"},
-  "ndw-road-traffic": {"homepage": "https://www.ndw.nu/", "api_docs": "https://opendata.ndw.nu/"},
-  "nepal-bipad-hydrology": {"homepage": "https://bipadportal.gov.np/", "api_docs": "https://bipadportal.gov.np/api/v1/"},
-  "nextbus": {"homepage": "https://www.umoiq.com/", "api_docs": "https://retro.umoiq.com/xmlFeedDocs/NextBusXMLFeed.pdf"},
-  "nifc-usa-wildfires": {"homepage": "https://www.nifc.gov/", "api_docs": "https://data-nifc.opendata.arcgis.com/"},
-  "nina-bbk": {"homepage": "https://warnung.bund.de/", "api_docs": "https://nina.api.bund.dev/"},
-  "noaa": {"homepage": "https://tidesandcurrents.noaa.gov/", "api_docs": "https://api.tidesandcurrents.noaa.gov/api/prod/"},
-  "noaa-goes": {"homepage": "https://www.swpc.noaa.gov/", "api_docs": "https://services.swpc.noaa.gov/"},
-  "noaa-ndbc": {"homepage": "https://www.ndbc.noaa.gov/", "api_docs": "https://www.ndbc.noaa.gov/realtime.shtml"},
-  "noaa-nws": {"homepage": "https://www.weather.gov/", "api_docs": "https://www.weather.gov/documentation/services-web-api"},
-  "noaa-swpc-l1": {"homepage": "https://www.swpc.noaa.gov/", "api_docs": "https://services.swpc.noaa.gov/"},
-  "nve-hydro": {"homepage": "https://www.nve.no/", "api_docs": "https://hydapi.nve.no/UserDocumentation/"},
-  "nws-alerts": {"homepage": "https://www.weather.gov/", "api_docs": "https://www.weather.gov/documentation/services-web-api"},
-  "nws-forecasts": {"homepage": "https://www.weather.gov/", "api_docs": "https://www.weather.gov/documentation/services-web-api"},
-  "paris-bicycle-counters": {"homepage": "https://opendata.paris.fr/", "api_docs": "https://opendata.paris.fr/explore/dataset/comptage-velo-donnees-compteurs/information/"},
-  "pegelonline": {"homepage": "https://www.pegelonline.wsv.de/", "api_docs": "https://www.pegelonline.wsv.de/webservice/dokuRestapi"},
-  "ptwc-tsunami": {"homepage": "https://www.tsunami.gov/", "api_docs": "https://www.tsunami.gov/?page=message_definitions"},
-  "rss": {"homepage": "https://www.rssboard.org/rss-specification", "api_docs": "https://www.rssboard.org/rss-specification"},
-  "rws-waterwebservices": {"homepage": "https://waterinfo.rws.nl/", "api_docs": "https://rijkswaterstaatdata.nl/waterdata/"},
-  "seattle-911": {"homepage": "https://data.seattle.gov/", "api_docs": "https://data.seattle.gov/Public-Safety/Call-Data/33kz-ixgy"},
-  "seattle-street-closures": {"homepage": "https://data.seattle.gov/", "api_docs": "https://data.seattle.gov/Transportation/Right-of-Way-Closure-Data/qhcj-3xgi"},
-  "sensor-community": {"homepage": "https://sensor.community/", "api_docs": "https://github.com/opendata-stuttgart/meta/wiki/APIs"},
-  "singapore-nea": {"homepage": "https://www.nea.gov.sg/", "api_docs": "https://www.nea.gov.sg/corporate-functions/weather/weather-data-services"},
-  "smhi-hydro": {"homepage": "https://www.smhi.se/", "api_docs": "https://opendata.smhi.se/apidocs/hydroobs/"},
-  "smhi-weather": {"homepage": "https://www.smhi.se/", "api_docs": "https://opendata.smhi.se/apidocs/metobs/"},
-  "snotel": {"homepage": "https://www.nrcs.usda.gov/wps/portal/wcc/home/", "api_docs": "https://wcc.sc.egov.usda.gov/awdbRestWebService/swagger-ui/index.html"},
-  "syke-hydro": {"homepage": "https://www.syke.fi/", "api_docs": "https://rajapinnat.ymparisto.fi/api/Hydrologiarajapinta/1.1/"},
-  "tepco-denkiyoho": {"homepage": "https://www.tepco.co.jp/forecast/", "api_docs": "https://www.tepco.co.jp/forecast/html/download-j.html"},
-  "tfl-road-traffic": {"homepage": "https://tfl.gov.uk/", "api_docs": "https://api.tfl.gov.uk/"},
-  "ticketmaster": {"homepage": "https://www.ticketmaster.com/", "api_docs": "https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/"},
-  "tokyo-docomo-bikeshare": {"homepage": "https://docomo-cycle.jp/tokyo/", "api_docs": "https://developer.odpt.org/info"},
-  "uba-airdata": {"homepage": "https://www.umweltbundesamt.de/", "api_docs": "https://www.umweltbundesamt.de/daten/luft/luftdaten/doc"},
-  "uk-ea-flood-monitoring": {"homepage": "https://environment.data.gov.uk/flood-monitoring/doc/reference", "api_docs": "https://environment.data.gov.uk/flood-monitoring/doc/reference"},
-  "usgs-earthquakes": {"homepage": "https://earthquake.usgs.gov/", "api_docs": "https://earthquake.usgs.gov/fdsnws/event/1/"},
-  "usgs-geomag": {"homepage": "https://www.usgs.gov/programs/geomagnetism", "api_docs": "https://geomag.usgs.gov/ws/"},
-  "usgs-iv": {"homepage": "https://waterdata.usgs.gov/", "api_docs": "https://waterservices.usgs.gov/docs/instantaneous-values/instantaneous-values-details/"},
-  "usgs-nwis-wq": {"homepage": "https://waterdata.usgs.gov/", "api_docs": "https://waterservices.usgs.gov/docs/water-quality-samples/water-quality-samples-details/"},
-  "vatsim": {"homepage": "https://www.vatsim.net/", "api_docs": "https://data.vatsim.net/"},
-  "wallonia-issep": {"homepage": "https://www.issep.be/", "api_docs": "https://www.odwb.be/explore/dataset/last-data-capteurs-qualite-de-l-air-issep/information/"},
-  "waterinfo-vmm": {"homepage": "https://www.waterinfo.be/", "api_docs": "https://www.waterinfo.be/default.aspx?path=NL/Rapporten/Downloaden"},
-  "wikimedia-eventstreams": {"homepage": "https://wikitech.wikimedia.org/wiki/Event_Platform/EventStreams", "api_docs": "https://stream.wikimedia.org/?doc"},
-  "wikimedia-osm-diffs": {"homepage": "https://www.openstreetmap.org/", "api_docs": "https://wiki.openstreetmap.org/wiki/Planet.osm/diffs"},
-  "wsdot": {"homepage": "https://wsdot.wa.gov/", "api_docs": "https://wsdot.wa.gov/traffic/api/"},
-  "xceed": {"homepage": "https://xceed.me/", "api_docs": "https://developers.xceed.me/"}
+  "aisstream": {
+    "homepage": "https://aisstream.io/",
+    "api_docs": "https://aisstream.io/documentation"
+  },
+  "australia-wildfires": {
+    "homepage": "https://www.rfs.nsw.gov.au/",
+    "api_docs": "https://www.rfs.nsw.gov.au/news-and-media/current-incidents"
+  },
+  "autobahn": {
+    "homepage": "https://autobahn.de/",
+    "api_docs": "https://autobahn.api.bund.dev/"
+  },
+  "aviationweather": {
+    "homepage": "https://aviationweather.gov/",
+    "api_docs": "https://aviationweather.gov/data/api/"
+  },
+  "bafu-hydro": {
+    "homepage": "https://www.hydrodaten.admin.ch/",
+    "api_docs": "https://www.hydrodaten.admin.ch/en/stations-and-data.html"
+  },
+  "bfs-odl": {
+    "homepage": "https://odlinfo.bfs.de/",
+    "api_docs": "https://odlinfo.bfs.de/ODL/EN/service/datenschnittstelle/datenschnittstelle_node.html"
+  },
+  "billetto": {
+    "homepage": "https://billetto.com/",
+    "api_docs": "https://developer.billetto.com/"
+  },
+  "blitzortung": {
+    "homepage": "https://www.blitzortung.org/",
+    "api_docs": "https://www.lightningmaps.org/"
+  },
+  "bluesky": {
+    "homepage": "https://bsky.app/",
+    "api_docs": "https://docs.bsky.app/"
+  },
+  "bom-australia": {
+    "homepage": "https://www.bom.gov.au/",
+    "api_docs": "http://www.bom.gov.au/catalogue/data-feeds.shtml"
+  },
+  "canada-aqhi": {
+    "homepage": "https://weather.gc.ca/airquality/pages/index_e.html",
+    "api_docs": "https://eccc-msc.github.io/open-data/msc-datamart/readme_en/"
+  },
+  "canada-eccc-wateroffice": {
+    "homepage": "https://wateroffice.ec.gc.ca/",
+    "api_docs": "https://api.weather.gc.ca/openapi"
+  },
+  "carbon-intensity": {
+    "homepage": "https://carbonintensity.org.uk/",
+    "api_docs": "https://carbon-intensity.github.io/api-definitions/"
+  },
+  "cbp-border-wait": {
+    "homepage": "https://bwt.cbp.gov/",
+    "api_docs": "https://bwt.cbp.gov/api/bwtnew"
+  },
+  "cdec-reservoirs": {
+    "homepage": "https://cdec.water.ca.gov/",
+    "api_docs": "https://cdec.water.ca.gov/dynamicapp/wsSensorData"
+  },
+  "chmi-hydro": {
+    "homepage": "https://www.chmi.cz/",
+    "api_docs": "https://opendata.chmi.cz/hydrology/"
+  },
+  "defra-aurn": {
+    "homepage": "https://uk-air.defra.gov.uk/",
+    "api_docs": "https://uk-air.defra.gov.uk/data/"
+  },
+  "digitraffic-maritime": {
+    "homepage": "https://www.digitraffic.fi/en/marine-traffic/",
+    "api_docs": "https://meri.digitraffic.fi/swagger/"
+  },
+  "digitraffic-road": {
+    "homepage": "https://www.digitraffic.fi/en/road-traffic/",
+    "api_docs": "https://tie.digitraffic.fi/swagger/"
+  },
+  "dmi": {
+    "homepage": "https://www.dmi.dk/",
+    "api_docs": "https://opendatadocs.dmi.govcloud.dk/"
+  },
+  "dwd": {
+    "homepage": "https://www.dwd.de/",
+    "api_docs": "https://opendata.dwd.de/"
+  },
+  "dwd-pollenflug": {
+    "homepage": "https://www.dwd.de/EN/specialusers/medical/pollenflug/pollenflug_node.html",
+    "api_docs": "https://opendata.dwd.de/climate_environment/health/alerts/"
+  },
+  "eaws-albina": {
+    "homepage": "https://avalanche.report/",
+    "api_docs": "https://docs.avalanche.report/"
+  },
+  "elexon-bmrs": {
+    "homepage": "https://www.elexon.co.uk/",
+    "api_docs": "https://bmrs.elexon.co.uk/api-documentation"
+  },
+  "energidataservice-dk": {
+    "homepage": "https://www.energidataservice.dk/",
+    "api_docs": "https://www.energidataservice.dk/guides/api-guides"
+  },
+  "energy-charts": {
+    "homepage": "https://www.energy-charts.info/",
+    "api_docs": "https://api.energy-charts.info/"
+  },
+  "entsoe": {
+    "homepage": "https://transparency.entsoe.eu/",
+    "api_docs": "https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html"
+  },
+  "entur-norway": {
+    "homepage": "https://entur.no/",
+    "api_docs": "https://developer.entur.org/"
+  },
+  "environment-canada": {
+    "homepage": "https://weather.gc.ca/",
+    "api_docs": "https://api.weather.gc.ca/openapi"
+  },
+  "epa-uv": {
+    "homepage": "https://www.epa.gov/sunsafety/uv-index-1",
+    "api_docs": "https://www.epa.gov/enviro/web-services"
+  },
+  "eurdep-radiation": {
+    "homepage": "https://remon.jrc.ec.europa.eu/",
+    "api_docs": "https://eurdep.jrc.ec.europa.eu/Basic/Pages/Public/Data/Default.aspx"
+  },
+  "fienta": {
+    "homepage": "https://fienta.com/",
+    "api_docs": "https://fienta.com/api-public-events"
+  },
+  "fmi-finland": {
+    "homepage": "https://en.ilmatieteenlaitos.fi/",
+    "api_docs": "https://en.ilmatieteenlaitos.fi/open-data"
+  },
+  "french-road-traffic": {
+    "homepage": "https://www.bison-fute.gouv.fr/",
+    "api_docs": "https://tipi.bison-fute.gouv.fr/bison-fute-ouvert/publicationsDIR/"
+  },
+  "gdacs": {
+    "homepage": "https://www.gdacs.org/",
+    "api_docs": "https://www.gdacs.org/xml/rss.xml"
+  },
+  "geosphere-austria": {
+    "homepage": "https://www.geosphere.at/",
+    "api_docs": "https://dataset.api.hub.geosphere.at/v1/openapi-docs"
+  },
+  "german-waters": {
+    "homepage": "https://hvz.lubw.baden-wuerttemberg.de/",
+    "api_docs": "https://www.hvz.baden-wuerttemberg.de/php/datenfuerentwickler.php"
+  },
+  "gios-poland": {
+    "homepage": "https://www.gios.gov.pl/",
+    "api_docs": "https://api.gios.gov.pl/pjp-api/swagger-ui/"
+  },
+  "gracedb": {
+    "homepage": "https://gracedb.ligo.org/",
+    "api_docs": "https://gracedb.ligo.org/documentation/"
+  },
+  "gtfs": {
+    "homepage": "https://gtfs.org/",
+    "api_docs": "https://gtfs.org/documentation/realtime/reference/"
+  },
+  "hko-hong-kong": {
+    "homepage": "https://www.hko.gov.hk/",
+    "api_docs": "https://data.weather.gov.hk/weatherAPI/doc/HKO_Open_Data_API_Documentation.pdf"
+  },
+  "hongkong-epd": {
+    "homepage": "https://www.aqhi.gov.hk/",
+    "api_docs": "https://www.aqhi.gov.hk/en/aqhi/statistics-of-aqhi.html"
+  },
+  "hubeau-hydrometrie": {
+    "homepage": "https://hubeau.eaufrance.fr/",
+    "api_docs": "https://hubeau.eaufrance.fr/page/api-hydrometrie"
+  },
+  "imgw-hydro": {
+    "homepage": "https://www.imgw.pl/",
+    "api_docs": "https://danepubliczne.imgw.pl/apiinfo"
+  },
+  "inpe-deter-brazil": {
+    "homepage": "http://terrabrasilis.dpi.inpe.br/",
+    "api_docs": "http://terrabrasilis.dpi.inpe.br/geoserver/web/"
+  },
+  "irail": {
+    "homepage": "https://irail.be/",
+    "api_docs": "https://docs.irail.be/"
+  },
+  "irceline-belgium": {
+    "homepage": "https://www.irceline.be/",
+    "api_docs": "https://geo.irceline.be/sos/api/v1/"
+  },
+  "ireland-opw-waterlevel": {
+    "homepage": "https://waterlevel.ie/",
+    "api_docs": "https://waterlevel.ie/data/"
+  },
+  "jma-bosai-amedas": {
+    "homepage": "https://www.jma.go.jp/bosai/amedas/",
+    "api_docs": "https://www.jma.go.jp/bosai/amedas/"
+  },
+  "jma-bosai-quake": {
+    "homepage": "https://www.jma.go.jp/bosai/map.html?contents=earthquake_map",
+    "api_docs": "https://www.jma.go.jp/bosai/quake/"
+  },
+  "jma-bosai-volcano": {
+    "homepage": "https://www.jma.go.jp/bosai/map.html?contents=volcano",
+    "api_docs": "https://www.jma.go.jp/bosai/volcano/"
+  },
+  "jma-bosai-warning": {
+    "homepage": "https://www.jma.go.jp/bosai/map.html?contents=warning",
+    "api_docs": "https://www.jma.go.jp/bosai/warning/"
+  },
+  "jma-japan": {
+    "homepage": "https://www.jma.go.jp/",
+    "api_docs": "https://www.data.jma.go.jp/developer/index.html"
+  },
+  "king-county-marine": {
+    "homepage": "https://green2.kingcounty.gov/marine/",
+    "api_docs": "https://data.kingcounty.gov/Environment-Waste-Management/Marine-Buoy-Data/9j7t-rs5d"
+  },
+  "kmi-belgium": {
+    "homepage": "https://www.meteo.be/",
+    "api_docs": "https://opendata.meteo.be/"
+  },
+  "kystverket-ais": {
+    "homepage": "https://www.kystverket.no/",
+    "api_docs": "https://kystdatahuset.no/ws/swagger/index.html"
+  },
+  "laqn-london": {
+    "homepage": "https://www.londonair.org.uk/",
+    "api_docs": "https://api.erg.ic.ac.uk/AirQuality/help"
+  },
+  "luchtmeetnet-nl": {
+    "homepage": "https://www.luchtmeetnet.nl/",
+    "api_docs": "https://api-docs.luchtmeetnet.nl/"
+  },
+  "madrid-traffic": {
+    "homepage": "https://datos.madrid.es/",
+    "api_docs": "https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=02f2c23866b93410VgnVCM1000000b205a0aRCRD"
+  },
+  "meteoalarm": {
+    "homepage": "https://meteoalarm.org/",
+    "api_docs": "https://feeds.meteoalarm.org/"
+  },
+  "mode-s": {
+    "homepage": "https://opensky-network.org/",
+    "api_docs": "https://opensky-network.org/apidoc/"
+  },
+  "ndw-road-traffic": {
+    "homepage": "https://www.ndw.nu/",
+    "api_docs": "https://opendata.ndw.nu/"
+  },
+  "nepal-bipad-hydrology": {
+    "homepage": "https://bipadportal.gov.np/",
+    "api_docs": "https://bipadportal.gov.np/api/v1/"
+  },
+  "nextbus": {
+    "homepage": "https://www.umoiq.com/",
+    "api_docs": "https://retro.umoiq.com/xmlFeedDocs/NextBusXMLFeed.pdf"
+  },
+  "nifc-usa-wildfires": {
+    "homepage": "https://www.nifc.gov/",
+    "api_docs": "https://data-nifc.opendata.arcgis.com/"
+  },
+  "nina-bbk": {
+    "homepage": "https://warnung.bund.de/",
+    "api_docs": "https://nina.api.bund.dev/"
+  },
+  "noaa": {
+    "homepage": "https://tidesandcurrents.noaa.gov/",
+    "api_docs": "https://api.tidesandcurrents.noaa.gov/api/prod/"
+  },
+  "noaa-goes": {
+    "homepage": "https://www.swpc.noaa.gov/",
+    "api_docs": "https://services.swpc.noaa.gov/"
+  },
+  "noaa-ndbc": {
+    "homepage": "https://www.ndbc.noaa.gov/",
+    "api_docs": "https://www.ndbc.noaa.gov/realtime.shtml"
+  },
+  "noaa-nws": {
+    "homepage": "https://www.weather.gov/",
+    "api_docs": "https://www.weather.gov/documentation/services-web-api"
+  },
+  "noaa-swpc-l1": {
+    "homepage": "https://www.swpc.noaa.gov/",
+    "api_docs": "https://services.swpc.noaa.gov/"
+  },
+  "nve-hydro": {
+    "homepage": "https://www.nve.no/",
+    "api_docs": "https://hydapi.nve.no/UserDocumentation/"
+  },
+  "nws-alerts": {
+    "homepage": "https://www.weather.gov/",
+    "api_docs": "https://www.weather.gov/documentation/services-web-api"
+  },
+  "nws-forecasts": {
+    "homepage": "https://www.weather.gov/",
+    "api_docs": "https://www.weather.gov/documentation/services-web-api"
+  },
+  "paris-bicycle-counters": {
+    "homepage": "https://opendata.paris.fr/",
+    "api_docs": "https://opendata.paris.fr/explore/dataset/comptage-velo-donnees-compteurs/information/"
+  },
+  "pegelonline": {
+    "homepage": "https://www.pegelonline.wsv.de/",
+    "api_docs": "https://www.pegelonline.wsv.de/webservice/dokuRestapi"
+  },
+  "ptwc-tsunami": {
+    "homepage": "https://www.tsunami.gov/",
+    "api_docs": "https://www.tsunami.gov/?page=message_definitions"
+  },
+  "rss": {
+    "homepage": "https://www.rssboard.org/rss-specification",
+    "api_docs": "https://www.rssboard.org/rss-specification"
+  },
+  "rws-waterwebservices": {
+    "homepage": "https://waterinfo.rws.nl/",
+    "api_docs": "https://rijkswaterstaatdata.nl/waterdata/"
+  },
+  "seattle-911": {
+    "homepage": "https://data.seattle.gov/",
+    "api_docs": "https://data.seattle.gov/Public-Safety/Call-Data/33kz-ixgy"
+  },
+  "seattle-street-closures": {
+    "homepage": "https://data.seattle.gov/",
+    "api_docs": "https://data.seattle.gov/Transportation/Right-of-Way-Closure-Data/qhcj-3xgi"
+  },
+  "sensor-community": {
+    "homepage": "https://sensor.community/",
+    "api_docs": "https://github.com/opendata-stuttgart/meta/wiki/APIs"
+  },
+  "singapore-nea": {
+    "homepage": "https://www.nea.gov.sg/",
+    "api_docs": "https://www.nea.gov.sg/corporate-functions/weather/weather-data-services"
+  },
+  "smhi-hydro": {
+    "homepage": "https://www.smhi.se/",
+    "api_docs": "https://opendata.smhi.se/apidocs/hydroobs/"
+  },
+  "smhi-weather": {
+    "homepage": "https://www.smhi.se/",
+    "api_docs": "https://opendata.smhi.se/apidocs/metobs/"
+  },
+  "snotel": {
+    "homepage": "https://www.nrcs.usda.gov/wps/portal/wcc/home/",
+    "api_docs": "https://wcc.sc.egov.usda.gov/awdbRestWebService/swagger-ui/index.html"
+  },
+  "syke-hydro": {
+    "homepage": "https://www.syke.fi/",
+    "api_docs": "https://rajapinnat.ymparisto.fi/api/Hydrologiarajapinta/1.1/"
+  },
+  "tepco-denkiyoho": {
+    "homepage": "https://www.tepco.co.jp/forecast/",
+    "api_docs": "https://www.tepco.co.jp/forecast/html/download-j.html"
+  },
+  "tfl-road-traffic": {
+    "homepage": "https://tfl.gov.uk/",
+    "api_docs": "https://api.tfl.gov.uk/"
+  },
+  "ticketmaster": {
+    "homepage": "https://www.ticketmaster.com/",
+    "api_docs": "https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/"
+  },
+  "tokyo-docomo-bikeshare": {
+    "homepage": "https://docomo-cycle.jp/tokyo/",
+    "api_docs": "https://developer.odpt.org/info"
+  },
+  "uba-airdata": {
+    "homepage": "https://www.umweltbundesamt.de/",
+    "api_docs": "https://www.umweltbundesamt.de/daten/luft/luftdaten/doc"
+  },
+  "uk-ea-flood-monitoring": {
+    "homepage": "https://environment.data.gov.uk/flood-monitoring/doc/reference",
+    "api_docs": "https://environment.data.gov.uk/flood-monitoring/doc/reference"
+  },
+  "usgs-earthquakes": {
+    "homepage": "https://earthquake.usgs.gov/",
+    "api_docs": "https://earthquake.usgs.gov/fdsnws/event/1/"
+  },
+  "nasa-firms": {
+    "homepage": "https://firms.modaps.eosdis.nasa.gov/",
+    "api_docs": "https://firms.modaps.eosdis.nasa.gov/api/area/"
+  },
+  "usgs-geomag": {
+    "homepage": "https://www.usgs.gov/programs/geomagnetism",
+    "api_docs": "https://geomag.usgs.gov/ws/"
+  },
+  "usgs-iv": {
+    "homepage": "https://waterdata.usgs.gov/",
+    "api_docs": "https://waterservices.usgs.gov/docs/instantaneous-values/instantaneous-values-details/"
+  },
+  "usgs-nwis-wq": {
+    "homepage": "https://waterdata.usgs.gov/",
+    "api_docs": "https://waterservices.usgs.gov/docs/water-quality-samples/water-quality-samples-details/"
+  },
+  "vatsim": {
+    "homepage": "https://www.vatsim.net/",
+    "api_docs": "https://data.vatsim.net/"
+  },
+  "wallonia-issep": {
+    "homepage": "https://www.issep.be/",
+    "api_docs": "https://www.odwb.be/explore/dataset/last-data-capteurs-qualite-de-l-air-issep/information/"
+  },
+  "waterinfo-vmm": {
+    "homepage": "https://www.waterinfo.be/",
+    "api_docs": "https://www.waterinfo.be/default.aspx?path=NL/Rapporten/Downloaden"
+  },
+  "wikimedia-eventstreams": {
+    "homepage": "https://wikitech.wikimedia.org/wiki/Event_Platform/EventStreams",
+    "api_docs": "https://stream.wikimedia.org/?doc"
+  },
+  "wikimedia-osm-diffs": {
+    "homepage": "https://www.openstreetmap.org/",
+    "api_docs": "https://wiki.openstreetmap.org/wiki/Planet.osm/diffs"
+  },
+  "wsdot": {
+    "homepage": "https://wsdot.wa.gov/",
+    "api_docs": "https://wsdot.wa.gov/traffic/api/"
+  },
+  "xceed": {
+    "homepage": "https://xceed.me/",
+    "api_docs": "https://developers.xceed.me/"
+  }
 }

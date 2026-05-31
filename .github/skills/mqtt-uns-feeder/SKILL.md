@@ -198,7 +198,7 @@ feature. Reject it.
 - Telemetry events whose latest value is meaningful in isolation are
   also retained (LKV). Telemetry that is only meaningful as a stream
   (e.g. discrete alerts, event streams) is **not** retained.
-- The MQTT app is generated through `xrcg 0.10.7` exactly as Kafka is.
+- The MQTT app is generated through `xrcg 0.10.8` exactly as Kafka is.
   The generated producer is never hand-edited.
 - Authentication is configurable at runtime (anonymous / username-password
   / TLS-cert / Entra JWT). The contract does not pin the auth mode.
@@ -271,7 +271,7 @@ After editing the manifest:
 ./generate_producer.ps1   # already exists; regenerates both Kafka and MQTT
 ```
 
-`xrcg 0.10.7` produces a generated MQTT producer sub-package alongside
+`xrcg 0.10.8` produces a generated MQTT producer sub-package alongside
 the Kafka one. Treat it as installable but never editable.
 
 ## Repository Folder Layout (transport split)

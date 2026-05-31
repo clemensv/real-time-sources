@@ -680,6 +680,17 @@
     "amqp": true
   },
   {
+    "id": "nasa-firms",
+    "name": "NASA FIRMS Active Fire",
+    "cat": "Disasters",
+    "key": true,
+    "desc": "Global — active fire & thermal anomaly detections (VIIRS/MODIS), OSINT",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "bfs-odl",
     "name": "BfS ODL",
     "cat": "Radiation",

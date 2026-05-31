@@ -36,7 +36,7 @@ In addition:
 
 ## Repo Conventions
 
-- Use `xrcg` `0.10.7` for producer regeneration.
+- Use `xrcg` `0.10.8` for producer regeneration.
 - Make `generate_producer.ps1` call `tools/require-xrcg.ps1` and fail fast on the wrong generator version.
 - Treat `EVENTS.md` as generated documentation derived from the xreg manifest.
 - Keep Docker and docs aligned with the runtime behavior and environment variables.
