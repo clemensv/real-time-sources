@@ -52,11 +52,20 @@ It polls the Meteoalarm JSON API for warnings from 30+ European national
 meteorological services and emits them as structured CloudEvents using the
 CAP (Common Alerting Protocol) schema.
 
+## Image contract
+
+| Image tag | Transport | Dockerfile | Persistent state share |
+|---|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-meteoalarm:latest` | Kafka / Event Hubs | `Dockerfile` | Yes - stores `METEOALARM_STATE_FILE` dedupe state |
+| `ghcr.io/clemensv/real-time-sources-meteoalarm-mqtt:latest` | MQTT 5 | `Dockerfile.mqtt` | No |
+| `ghcr.io/clemensv/real-time-sources-meteoalarm-amqp:latest` | AMQP 1.0 | `Dockerfile.amqp` | Yes - stores `STATE_FILE` dedupe state |
+
 ## Environment Variables
 
 | Variable | Required | Description |
 |---|---|---|
 | `CONNECTION_STRING` | Yes* | Event Hubs / Fabric connection string |
+| `METEOALARM_CONNECTION_STRING` | No | Feeder-prefixed alias for `CONNECTION_STRING`; useful in Azure templates and orchestrators that standardize source-local settings. |
 | `KAFKA_BOOTSTRAP_SERVERS` | Yes* | Kafka bootstrap servers |
 | `KAFKA_TOPIC` | No | Topic name (default: `meteoalarm`) |
 | `SASL_USERNAME` | No | SASL username |
@@ -208,8 +217,9 @@ docker run --rm \
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS CBS credentials for Service Bus-compatible brokers. | empty |
 | `AMQP_CONTENT_MODE` | CloudEvents AMQP content mode. | `binary` |
 | `POLLING_INTERVAL` | Poll interval in seconds. | source-specific |
+| `METEOALARM_POLL_INTERVAL` | Feeder-prefixed alias for `POLLING_INTERVAL`; useful in Azure templates that surface Meteoalarm-specific settings. | source-specific |
+| `METEOALARM_COUNTRIES` | Comma-separated ISO country codes to limit which Meteoalarm national warning feeds are polled. | all Meteoalarm countries |
 | `STATE_FILE` | Persistent dedupe state file path. | source-specific |
 | `METEOALARM_MOCK` | Emit built-in sample events for Docker E2E and offline validation. | `false` |
 
 Use `azure-template-with-servicebus.json` or `infra/azure-template-amqp.json` for one-click Azure Service Bus deployment. The templates create a queue, Azure Files state share, ACI, user-assigned managed identity, and `Azure Service Bus Data Sender` role assignment scoped to the queue.
-

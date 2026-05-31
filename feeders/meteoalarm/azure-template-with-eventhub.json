@@ -14,15 +14,21 @@
       "maxLength": 63,
       "minLength": 1
     },
+    "meteoalarmStateFile": {
+      "type": "string",
+      "defaultValue": "/mnt/bridge-state/meteoalarm_state.json",
+      "metadata": {
+        "description": "Path inside the container where the Kafka bridge persists Meteoalarm dedupe state."
+      }
+    },
     "eventHubSku": {
       "type": "string",
       "defaultValue": "Standard",
       "allowedValues": [
-        "Basic",
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the kafkaEnabled namespace that backs the Meteoalarm Kafka output."
       }
     },
     "location": {
@@ -167,6 +173,14 @@
                 {
                   "name": "CONNECTION_STRING",
                   "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
+                },
+                {
+                  "name": "METEOALARM_CONNECTION_STRING",
+                  "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
+                },
+                {
+                  "name": "METEOALARM_STATE_FILE",
+                  "value": "[parameters('meteoalarmStateFile')]"
                 },
                 {
                   "name": "LOG_LEVEL",

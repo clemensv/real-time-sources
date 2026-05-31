@@ -21,6 +21,13 @@
       "maxLength": 63,
       "minLength": 1
     },
+    "meteoalarmStateFile": {
+      "type": "string",
+      "defaultValue": "/mnt/bridge-state/meteoalarm_state.json",
+      "metadata": {
+        "description": "Path inside the container where the Kafka bridge persists Meteoalarm dedupe state."
+      }
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -116,6 +123,14 @@
                 {
                   "name": "CONNECTION_STRING",
                   "secureValue": "[parameters('connectionString')]"
+                },
+                {
+                  "name": "METEOALARM_CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionString')]"
+                },
+                {
+                  "name": "METEOALARM_STATE_FILE",
+                  "value": "[parameters('meteoalarmStateFile')]"
                 },
                 {
                   "name": "LOG_LEVEL",

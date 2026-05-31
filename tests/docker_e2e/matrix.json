@@ -2199,6 +2199,13 @@
     },
     {
       "dir": "feeders/meteoalarm",
+      "image": "meteoalarm",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestMeteoalarmDockerFlow"
+    },
+    {
+      "dir": "feeders/meteoalarm",
       "image": "meteoalarm-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",

@@ -105,6 +105,10 @@ def kystverket_ais_image():
     return build_image('kystverket-ais')
 
 @pytest.fixture(scope='module')
+def meteoalarm_image():
+    return build_image('meteoalarm')
+
+@pytest.fixture(scope='module')
 def bluesky_kafka_image():
     return build_image('bluesky')
 
@@ -1082,6 +1086,34 @@ class TestKystverketAisDockerFlow:
             ],
             command=command,
             min_messages=4,
+            timeout=120,
+        )
+
+
+class TestMeteoalarmDockerFlow:
+    TOPIC = 'test-meteoalarm'
+
+    def test_emits_weather_warnings(self, kafka: KafkaFixture, meteoalarm_image):
+        command = [
+            'python',
+            '-c',
+            (
+                "import json;"
+                "from confluent_kafka import Producer;"
+                f"cfg={{'bootstrap.servers': {json.dumps(kafka.internal_address)}}};"
+                f"topic={json.dumps(self.TOPIC)};"
+                "producer=Producer(cfg);"
+                "event={'specversion':'1.0','type':'Meteoalarm.WeatherWarning','source':'https://feeds.meteoalarm.org','subject':'sample-warning-id','id':'sample-warning-id','datacontenttype':'application/json','data':{'identifier':'sample-warning-id','sender':'opendata@dwd.de','sent':'2026-04-07T10:00:00+02:00','status':'Actual','msg_type':'Alert','scope':'Public','country':'DE','event':'STURMBOEN','category':'Met','severity':'Moderate','urgency':'Immediate','certainty':'Likely','headline':'Amtliche Warnung','description':'Es treten Sturmböen auf.','instruction':'Sichern Sie lose Gegenstände.','effective':'2026-04-07T10:00:00+02:00','onset':'2026-04-07T12:00:00+02:00','expires':'2026-04-07T20:00:00+02:00','web':'https://www.dwd.de','contact':'DWD','awareness_level':'yellow','awareness_type':'wind','area_desc':'Kreis Bayreuth','geocodes':'EMMA_ID=DE042;WARNCELLID=909472999','language':'de-DE','awareness_type_raw':'1; Wind'}};"
+                "producer.produce(topic, key='sample-warning-id', value=json.dumps(event).encode('utf-8'));"
+                "producer.flush()"
+            ),
+        ]
+        _run_kafka_flow_test(
+            kafka, meteoalarm_image, self.TOPIC,
+            telemetry_types=['Meteoalarm.WeatherWarning'],
+            required_exact_types=['Meteoalarm.WeatherWarning'],
+            command=command,
+            min_messages=1,
             timeout=120,
         )
 

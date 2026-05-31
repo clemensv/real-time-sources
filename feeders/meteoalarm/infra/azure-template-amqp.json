@@ -41,6 +41,45 @@
         "description": "Queue, topic, or link target address."
       }
     },
+    "meteoalarmConnectionString": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional feeder-prefixed alias for a Kafka/Event Hubs style connection string. Leave empty for the AMQP companion deployment."
+      }
+    },
+    "meteoalarmStateFile": {
+      "type": "string",
+      "defaultValue": "/mnt/bridge-state/meteoalarm_state.json",
+      "metadata": {
+        "description": "Path inside the container where the feeder-prefixed Meteoalarm dedupe state file is mounted."
+      }
+    },
+    "meteoalarmPollInterval": {
+      "type": "string",
+      "defaultValue": "300",
+      "metadata": {
+        "description": "Polling interval in seconds for the Meteoalarm AMQP companion."
+      }
+    },
+    "meteoalarmCountries": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional comma-separated ISO country code filter for the Meteoalarm warnings to ingest. Leave empty for all countries."
+      }
+    },
+    "meteoalarmMock": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "false",
+        "true"
+      ],
+      "metadata": {
+        "description": "Enable built-in Meteoalarm sample events for offline AMQP validation instead of polling the live upstream."
+      }
+    },
     "imageName": {
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-meteoalarm-amqp:latest",
@@ -232,16 +271,36 @@
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
                 },
                 {
+                  "name": "METEOALARM_CONNECTION_STRING",
+                  "value": "[parameters('meteoalarmConnectionString')]"
+                },
+                {
+                  "name": "METEOALARM_STATE_FILE",
+                  "value": "[parameters('meteoalarmStateFile')]"
+                },
+                {
+                  "name": "METEOALARM_POLL_INTERVAL",
+                  "value": "[parameters('meteoalarmPollInterval')]"
+                },
+                {
+                  "name": "METEOALARM_COUNTRIES",
+                  "value": "[parameters('meteoalarmCountries')]"
+                },
+                {
+                  "name": "METEOALARM_MOCK",
+                  "value": "[parameters('meteoalarmMock')]"
+                },
+                {
                   "name": "AMQP_CONTENT_MODE",
                   "value": "binary"
                 },
                 {
                   "name": "POLLING_INTERVAL",
-                  "value": "300"
+                  "value": "[parameters('meteoalarmPollInterval')]"
                 },
                 {
                   "name": "STATE_FILE",
-                  "value": "/mnt/bridge-state/meteoalarm_state.json"
+                  "value": "[parameters('meteoalarmStateFile')]"
                 },
                 {
                   "name": "LOG_LEVEL",
