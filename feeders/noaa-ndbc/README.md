@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#noaa-ndbc/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/noaa_ndbc.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/noaa-ndbc.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.ndbc.noaa.gov/)
 
 </td></tr></table>
@@ -66,7 +66,7 @@ This bridge publishes the NOAA NDBC source as a transport-agnostic event stream 
 All variants share:
 
 - The same upstream polling logic and dedupe state model.
-- The same xRegistry contract (`xreg/noaa_ndbc.xreg.json`).
+- The same xRegistry contract (`xreg/noaa-ndbc.xreg.json`).
 - The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
 
 ## Key features
@@ -81,7 +81,7 @@ All variants share:
 
 ```text
 noaa-ndbc/
-  xreg/noaa_ndbc.xreg.json                 # shared xRegistry contract
+  xreg/noaa-ndbc.xreg.json                 # shared xRegistry contract
   noaa_ndbc/
   noaa_ndbc_amqp/
   noaa_ndbc_amqp_producer/

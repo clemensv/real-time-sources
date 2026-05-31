@@ -584,6 +584,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## References
 
-- xRegistry manifest: [`xreg/noaa_ndbc.xreg.json`](xreg/noaa_ndbc.xreg.json)
+- xRegistry manifest: [`xreg/noaa-ndbc.xreg.json`](xreg/noaa-ndbc.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

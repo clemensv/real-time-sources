@@ -101,7 +101,7 @@ class TestNDBCContainerIntegration:
                 continue
 
             poller.producer.send_microsoft_open_data_us_noaa_ndbc_buoy_observation(
-                obs, obs.station_id, flush_producer=False)
+                obs.station_id, obs, flush_producer=False)
             last_timestamps[obs.station_id] = obs.timestamp
             new_count += 1
 
@@ -207,7 +207,7 @@ class TestNDBCContainerIntegration:
 
         for station in stations:
             poller.producer.send_microsoft_open_data_us_noaa_ndbc_buoy_station(
-                station, flush_producer=False)
+                station.station_id, station, flush_producer=False)
         poller.producer.producer.flush()
 
         # Consume messages from Kafka and verify
@@ -262,7 +262,7 @@ class TestNDBCContainerIntegration:
         sample = stations[:10]
         for station in sample:
             poller.producer.send_microsoft_open_data_us_noaa_ndbc_buoy_station(
-                station, flush_producer=False)
+                station.station_id, station, flush_producer=False)
         poller.producer.producer.flush()
 
         # Consume from Kafka and verify
@@ -316,7 +316,7 @@ class TestNDBCContainerIntegration:
         sample = observations[:5]
         for obs in sample:
             poller.producer.send_microsoft_open_data_us_noaa_ndbc_buoy_observation(
-                obs, obs.station_id, flush_producer=False)
+                obs.station_id, obs, flush_producer=False)
         poller.producer.producer.flush()
 
         # Consume from Kafka and verify

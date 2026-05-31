@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#noaa-ndbc/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/noaa_ndbc.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/noaa-ndbc.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.ndbc.noaa.gov/)
 
 </td></tr></table>
@@ -222,4 +222,4 @@ docker run --rm \
 
 - [README.md](README.md) — project overview and deployment options.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
-- [`xreg/noaa_ndbc.xreg.json`](xreg/noaa_ndbc.xreg.json) — source contract used to generate producer bindings.
+- [`xreg/noaa-ndbc.xreg.json`](xreg/noaa-ndbc.xreg.json) — source contract used to generate producer bindings.
