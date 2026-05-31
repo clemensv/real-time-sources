@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#usgs-earthquakes/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/usgs_earthquakes.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/usgs-earthquakes.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://earthquake.usgs.gov/)
 
 </td></tr></table>
@@ -54,10 +54,10 @@ USGS earthquake feeds are a core public signal for seismic monitoring, civil-pro
 | Variant | Container image | Transport | Default delivery shape |
 |---|---|---|---|
 | **Kafka** | `ghcr.io/clemensv/real-time-sources-usgs-earthquakes` | Apache Kafka 2.x compatible (Azure Event Hubs, Fabric Event Streams, Confluent Cloud, plain Kafka) | One topic, JSON CloudEvents (binary mode) |
-| **MQTT** | `ghcr.io/clemensv/real-time-sources-usgs-earthquakes-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Fabric MQTT broker) | Unified-Namespace topic tree defined in `xreg/usgs_earthquakes.xreg.json` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-usgs-earthquakes-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Fabric MQTT broker) | Unified-Namespace topic tree defined in `xreg/usgs-earthquakes.xreg.json` |
 | **AMQP** | `ghcr.io/clemensv/real-time-sources-usgs-earthquakes-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, Artemis, Qpid Dispatch, Azure Service Bus / Event Hubs) | Single AMQP address, binary CloudEvents |
 
-All three variants share the same source contract in `xreg/usgs_earthquakes.xreg.json`.
+All three variants share the same source contract in `xreg/usgs-earthquakes.xreg.json`.
 
 ## Key features
 
@@ -70,7 +70,7 @@ All three variants share the same source contract in `xreg/usgs_earthquakes.xreg
 
 ```text
 usgs-earthquakes/
-  xreg/usgs_earthquakes.xreg.json
+  xreg/usgs-earthquakes.xreg.json
   usgs_earthquakes/
   usgs_earthquakes_mqtt/
   usgs_earthquakes_amqp/

@@ -135,19 +135,41 @@ async def feed(poller: USGSEarthquakePoller, broker_host: str, broker_port: int,
 
 def _parse_broker_url(url: str) -> tuple[str, int, bool]:
     parsed = urlparse(url if "://" in url else f"amqp://{url}")
-    scheme = (parsed.scheme or "mqtt").lower()
+    scheme = (parsed.scheme or "amqp").lower()
     tls = scheme in ("amqps", "ssl", "tls")
     return parsed.hostname or "localhost", parsed.port or (5671 if tls else 5672), tls
+
+
+def _resolve_broker_endpoint(broker_url: Optional[str], broker_host: Optional[str], broker_port: Optional[int], tls: bool) -> tuple[str, int, bool]:
+    if broker_url:
+        return _parse_broker_url(broker_url)
+    return broker_host or "localhost", broker_port or (5671 if tls else 5672), tls
 
 
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     parser = argparse.ArgumentParser(description="USGS Earthquakes AMQP 1.0 bridge")
     parser.add_argument("feed_command", nargs="?", default="feed")
-    parser.add_argument("--broker-url", default=os.getenv("AMQP_BROKER_URL", "amqp://localhost:5672"))
-    parser.add_argument("--last-polled-file", default=os.getenv("USGS_EARTHQUAKES_LAST_POLLED_FILE", os.path.expanduser("~/.usgs_earthquakes_seen_mqtt.json")))
-    parser.add_argument("--feed", default=os.getenv("USGS_EARTHQUAKES_FEED", DEFAULT_FEED))
-    parser.add_argument("--min-magnitude", type=float, default=float(os.getenv("USGS_EARTHQUAKES_MIN_MAGNITUDE")) if os.getenv("USGS_EARTHQUAKES_MIN_MAGNITUDE") else None)
+    parser.add_argument("--broker-url", default=os.getenv("AMQP_BROKER_URL"))
+    parser.add_argument("--broker-host", default=os.getenv("AMQP_HOST"))
+    parser.add_argument("--broker-port", type=int, default=int(os.getenv("AMQP_PORT", "0")) or None)
+    parser.add_argument("--tls", action="store_true", default=os.getenv("AMQP_TLS", "").lower() in ("1", "true", "yes"))
+    parser.add_argument(
+        "--last-polled-file",
+        default=os.getenv("USGS_EARTHQUAKES_LAST_POLLED_FILE", os.path.expanduser("~/.usgs_earthquakes_seen_amqp.json")),
+        help="Path to the persisted checkpoint and dedupe state file for the USGS Earthquakes AMQP bridge.",
+    )
+    parser.add_argument(
+        "--feed",
+        default=os.getenv("USGS_EARTHQUAKES_FEED", DEFAULT_FEED),
+        help="USGS GeoJSON summary feed to poll, for example all_hour, all_day, or significant_month.",
+    )
+    parser.add_argument(
+        "--min-magnitude",
+        type=float,
+        default=float(os.getenv("USGS_EARTHQUAKES_MIN_MAGNITUDE")) if os.getenv("USGS_EARTHQUAKES_MIN_MAGNITUDE") else None,
+        help="Optional minimum magnitude filter applied before publishing events.",
+    )
     parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))
     parser.add_argument("--username", default=os.getenv("AMQP_USERNAME", ""))
     parser.add_argument("--password", default=os.getenv("AMQP_PASSWORD", ""))
@@ -156,6 +178,6 @@ def main() -> None:
     args = parser.parse_args()
     if args.feed_command != "feed":
         parser.error("only the 'feed' command is supported")
-    host, port, tls = _parse_broker_url(args.broker_url)
+    host, port, tls = _resolve_broker_endpoint(args.broker_url, args.broker_host, args.broker_port, args.tls)
     poller = USGSEarthquakePoller(last_polled_file=args.last_polled_file, feed=args.feed, min_magnitude=args.min_magnitude)
     asyncio.run(feed(poller, host, port, username=args.username or None, password=args.password or None, tls=tls, client_id=args.client_id or None, content_mode=args.content_mode, once=args.once))

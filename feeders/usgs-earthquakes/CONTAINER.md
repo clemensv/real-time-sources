@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#usgs-earthquakes/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/usgs_earthquakes.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/usgs-earthquakes.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://earthquake.usgs.gov/)
 
 </td></tr></table>
@@ -168,7 +168,7 @@ docker run --rm \
 | Variable | Description |
 |---|---|
 | `USGS_EQ_LAST_POLLED_FILE` | Path to persisted checkpoint/dedupe state for the KAFKA bridge runtime. |
-| `USGS_EARTHQUAKES_LAST_POLLED_FILE` | Path to persisted checkpoint/dedupe state for the MQTT bridge runtime. |
+| `USGS_EARTHQUAKES_LAST_POLLED_FILE` | Path to persisted checkpoint/dedupe state for the MQTT and AMQP bridge runtimes. |
 | `USGS_EARTHQUAKES_FEED` | Feed selection (for example `all_hour`, `all_day`, `significant_month`). |
 | `USGS_EARTHQUAKES_MIN_MAGNITUDE` | Optional minimum magnitude filter. |
 | `POLLING_INTERVAL` | Polling interval in seconds. |

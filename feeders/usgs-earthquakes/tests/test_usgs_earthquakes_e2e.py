@@ -55,17 +55,25 @@ class TestLiveAPI:
 
     @pytest.mark.asyncio
     async def test_fetch_significant_month(self):
-        """Test fetching the significant_month feed which typically has events."""
+        """Test fetching the significant_month feed, including non-earthquake events."""
         poller = USGSEarthquakePoller(feed='significant_month')
         features = await poller.fetch_feed()
 
         assert isinstance(features, list)
         if features:
-            event = poller.parse_event(features[0])
-            assert event is not None
-            assert event.magnitude is not None
-            # Significant events should have notable magnitude
-            assert event.magnitude >= 4.0
+            events = []
+            for feature in features:
+                event = poller.parse_event(feature)
+                if event:
+                    events.append(event)
+
+            assert events
+
+            magnitude_events = [event for event in events if event.magnitude is not None]
+            if magnitude_events:
+                assert any(event.magnitude >= 4.0 for event in magnitude_events)
+            else:
+                assert all(event.event_type != "earthquake" for event in events)
 
     @pytest.mark.asyncio
     async def test_event_serialization_roundtrip(self):
