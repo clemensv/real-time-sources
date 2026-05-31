@@ -50,7 +50,7 @@ const SOURCES = [
   { id: "noaa-goes", name: "NOAA GOES / SWPC", cat: "Weather", key: false, desc: "Global — space weather, solar wind, K-index", notebook: true, mqtt: true, amqp: true },
   { id: "noaa-swpc-l1", name: "NOAA SWPC L1", cat: "Weather", key: false, desc: "Global — L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30–60 min Earth-impact lead time", notebook: true, mqtt: true, amqp: true },
   { id: "noaa-nws", name: "NOAA NWS", cat: "Weather", key: false, desc: "United States — weather alerts, CAP", notebook: true, mqtt: true, amqp: true },
-  { id: "nws-alerts", name: "NWS CAP Alerts", cat: "Weather", key: false, desc: "United States — active alerts via api.weather.gov", mqtt: true, amqp: true },
+  { id: "nws-alerts", name: "NWS CAP Alerts", cat: "Weather", key: false, desc: "United States — active alerts via api.weather.gov", notebook: true, mqtt: true, amqp: true },
   { id: "nws-forecasts", name: "NWS Forecast Zones", cat: "Weather", key: false, desc: "United States — configurable land and marine forecast zones", notebook: true, mqtt: true, amqp: true },
   { id: "singapore-nea", name: "Singapore NEA", cat: "Weather", key: false, desc: "Singapore — 62 weather stations + 5 air-quality regions", notebook: true, mqtt: true, amqp: true },
   { id: "smhi-weather", name: "SMHI Weather", cat: "Weather", key: false, desc: "Sweden — ~232 stations, hourly obs", notebook: true, mqtt: true, amqp: true },
