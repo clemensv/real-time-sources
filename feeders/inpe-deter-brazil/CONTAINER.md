@@ -68,6 +68,14 @@ Pull the container image from the GitHub Container Registry:
 $ docker pull ghcr.io/clemensv/real-time-sources-inpe-deter-brazil:latest
 ```
 
+## Image contract
+
+| Image tag | Transport | Dockerfile | Persistent state share |
+|---|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-inpe-deter-brazil:latest` | Kafka / Event Hubs | `Dockerfile` | Yes — stores `INPE_DETER_LAST_POLLED_FILE` dedupe state |
+| `ghcr.io/clemensv/real-time-sources-inpe-deter-brazil-mqtt:latest` | MQTT 5 | `Dockerfile.mqtt` | No |
+| `ghcr.io/clemensv/real-time-sources-inpe-deter-brazil-amqp:latest` | AMQP 1.0 | `Dockerfile.amqp` | No |
+
 ## Using the Container Image
 
 ### With a Kafka Broker
@@ -204,4 +212,3 @@ docker run --rm   -e AMQP_HOST=servicebus-emulator   -e AMQP_PORT=5672   -e AMQP
 | `AMQP_CONTENT_MODE` | CloudEvents content mode: `binary` or `structured`. | `binary` |
 
 [![Deploy AMQP to Azure Service Bus](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Finpe-deter-brazil%2Fazure-template-amqp.json)
-

@@ -421,6 +421,8 @@
     },
     {
       "dir": "feeders/inpe-deter-brazil",
+      "image": "inpe-deter-brazil",
+      "file": "Dockerfile",
       "module": "inpe_deter_brazil"
     },
     {
@@ -2009,6 +2011,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestKingCountyMarineMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/inpe-deter-brazil",
+      "image": "inpe-deter-brazil",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestINPEDeterBrazilDockerFlow"
     },
     {
       "dir": "feeders/inpe-deter-brazil",

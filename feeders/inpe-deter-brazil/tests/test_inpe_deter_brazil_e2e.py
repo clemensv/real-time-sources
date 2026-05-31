@@ -16,8 +16,9 @@ class TestLiveAPI:
     async def test_fetch_amazon_alerts(self):
         """Test fetching Amazon alerts from the live API."""
         poller = INPEDeterPoller(page_size=5)
-        features = await poller.fetch_biome("amazon", since_date="2026-01-01")
-
+        features = await poller.fetch_biome("amazon")
+        if not features:
+            pytest.skip("INPE DETER Amazon WFS endpoint returned no live records")
         assert isinstance(features, list)
         for feature in features:
             assert "properties" in feature
@@ -36,7 +37,9 @@ class TestLiveAPI:
     async def test_fetch_and_parse_amazon_alerts(self):
         """Test fetching and parsing Amazon alerts from the live API."""
         poller = INPEDeterPoller(page_size=5)
-        features = await poller.fetch_biome("amazon", since_date="2026-01-01")
+        features = await poller.fetch_biome("amazon")
+        if not features:
+            pytest.skip("INPE DETER Amazon WFS endpoint returned no live records")
 
         alerts = []
         for feature in features:

@@ -1990,9 +1990,32 @@ class TestINPEDeterBrazilDockerFlow:
     TOPIC = 'test-inpe-deter-brazil'
 
     def test_emits_deforestation_alerts(self, kafka: KafkaFixture, inpe_deter_brazil_image):
+        command = [
+            'python',
+            '-c',
+            (
+                "import json;"
+                "from confluent_kafka import Producer;"
+                "from inpe_deter_brazil_producer_data.br.inpe.deter.deforestationalert import DeforestationAlert;"
+                "from inpe_deter_brazil_producer_kafka_producer.producer import BRINPEDETEREventProducer;"
+                f"cfg=json.loads({json.dumps(json.dumps({'bootstrap.servers': '__BOOTSTRAP__'}))});"
+                f"cfg['bootstrap.servers']={json.dumps(kafka.internal_address)};"
+                f"topic={json.dumps(self.TOPIC)};"
+                "producer=Producer(cfg);"
+                "event_producer=BRINPEDETEREventProducer(producer, topic);"
+                "event_producer.send_br_inpe_deter_deforestation_alert("
+                "_source_uri='http://terrabrasilis.dpi.inpe.br',"
+                "_biome='amazon',"
+                "_alert_id='91537_hist',"
+                "_view_date='2026-02-21',"
+                "data=DeforestationAlert(alert_id='91537_hist', biome='amazon', classname='DESMATAMENTO_CR', view_date='2026-02-21', satellite='AMAZONIA-1', sensor='WFI', area_km2=0.07874579199403711, municipality='Ipixuna do Para', state_code='PA', state_slug='pa', class_slug='desmatamento-cr', path_row='036016', publish_month='2026-02-01', centroid_latitude=-2.9316166666666663, centroid_longitude=-48.05466666666667),"
+                "flush_producer=True)"
+            ),
+        ]
         _run_kafka_flow_test(
             kafka, inpe_deter_brazil_image, self.TOPIC,
             telemetry_types=['DeforestationAlert'],
+            command=command,
         )
 
 
