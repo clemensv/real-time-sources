@@ -1537,6 +1537,12 @@
     },
     {
       "dir": "feeders/jma-japan",
+      "image": "jma-japan-kafka",
+      "file": "Dockerfile",
+      "module": "jma_japan"
+    },
+    {
+      "dir": "feeders/jma-japan",
       "image": "jma-japan-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "jma_japan_mqtt"
@@ -3458,6 +3464,13 @@
       "image": "hko-hong-kong-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestHkoHongKongAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/jma-japan",
+      "image": "jma-japan-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestJmaJapanDockerFlow"
     },
     {
       "dir": "feeders/jma-japan",
