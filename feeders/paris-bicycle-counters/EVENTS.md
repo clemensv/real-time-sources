@@ -183,6 +183,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## References
 
-- xRegistry manifest: [`xreg/paris_bicycle_counters.xreg.json`](xreg/paris_bicycle_counters.xreg.json)
+- xRegistry manifest: [`xreg/paris-bicycle-counters.xreg.json`](xreg/paris-bicycle-counters.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

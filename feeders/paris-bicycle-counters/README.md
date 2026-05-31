@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#paris-bicycle-counters/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/paris_bicycle_counters.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/paris-bicycle-counters.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://opendata.paris.fr/)
 
 </td></tr></table>
@@ -65,7 +65,7 @@ Urban mobility teams, bike-infrastructure planners, shared-mobility operators, a
 
 All variants share:
 
-- The same xRegistry contract (`xreg/paris_bicycle_counters.xreg.json`).
+- The same xRegistry contract (`xreg/paris-bicycle-counters.xreg.json`).
 - The same event-family model and schema set.
 - Poll-based acquisition logic with periodic refresh cycles.
 
@@ -81,7 +81,7 @@ All variants share:
 
 ```text
 paris-bicycle-counters/
-  xreg/paris_bicycle_counters.xreg.json
+  xreg/paris-bicycle-counters.xreg.json
   paris_bicycle_counters/
   paris_bicycle_counters_mqtt/
   paris_bicycle_counters_amqp/

@@ -1,9 +1,9 @@
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = $scriptDir
-$xregFile = Join-Path $projectRoot "xreg\paris_bicycle_counters.xreg.json"
+$xregFile = Join-Path $projectRoot "xreg\paris-bicycle-counters.xreg.json"
 $outputDir = Join-Path $projectRoot "paris_bicycle_counters_producer"
 
 Write-Host "Generating Paris Bicycle Counters producer from xRegistry definitions..." -ForegroundColor Cyan

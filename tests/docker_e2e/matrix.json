@@ -445,6 +445,12 @@
     },
     {
       "dir": "feeders/paris-bicycle-counters",
+      "image": "paris-bicycle-counters",
+      "file": "Dockerfile",
+      "module": "paris_bicycle_counters"
+    },
+    {
+      "dir": "feeders/paris-bicycle-counters",
       "image": "paris-bicycle-counters-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "paris_bicycle_counters_mqtt"
@@ -2141,6 +2147,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestCarbonIntensityMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/paris-bicycle-counters",
+      "image": "paris-bicycle-counters",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestParisBicycleCountersDockerFlow"
     },
     {
       "dir": "feeders/paris-bicycle-counters",

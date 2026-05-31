@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#paris-bicycle-counters/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/paris_bicycle_counters.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/paris-bicycle-counters.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://opendata.paris.fr/)
 
 </td></tr></table>
@@ -248,4 +248,4 @@ Deploy the Kafka container with your own Event Hubs/Fabric/Event Stream connecti
 
 - [README.md](README.md) — project overview and hosting options.
 - [EVENTS.md](EVENTS.md) — event contract and schema details.
-- [`xreg/paris_bicycle_counters.xreg.json`](xreg/paris_bicycle_counters.xreg.json) — authoritative contract source.
+- [`xreg/paris-bicycle-counters.xreg.json`](xreg/paris-bicycle-counters.xreg.json) — authoritative contract source.
