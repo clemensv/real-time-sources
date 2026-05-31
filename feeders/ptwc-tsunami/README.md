@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#ptwc-tsunami/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/ptwc_tsunami.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/ptwc-tsunami.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.tsunami.gov/)
 
 </td></tr></table>
@@ -67,7 +67,7 @@ This bridge provides one reusable feed for common scenarios:
 
 All variants share:
 
-- The xRegistry contract (`xreg/ptwc_tsunami.xreg.json`).
+- The xRegistry contract (`xreg/ptwc-tsunami.xreg.json`).
 - A common upstream acquisition path and normalized event payloads.
 - Stable CloudEvents subject/key identity derived from source-native identifiers.
 

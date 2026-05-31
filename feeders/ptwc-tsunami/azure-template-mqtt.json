@@ -26,6 +26,20 @@
         "description": "Credentials for password mode."
       }
     },
+    "ptwcTsunamiPollInterval": {
+      "type": "string",
+      "defaultValue": "300",
+      "metadata": {
+        "description": "Poll interval in seconds."
+      }
+    },
+    "ptwcTsunamiFeeds": {
+      "type": "string",
+      "defaultValue": "PAAQ,PHEB",
+      "metadata": {
+        "description": "Comma-separated list of feeds (PAAQ, PHEB)."
+      }
+    },
     "containerGroupName": {
       "type": "string",
       "defaultValue": "ptwc-tsunami-mqtt",
@@ -138,6 +152,26 @@
                 {
                   "name": "MQTT_PASSWORD",
                   "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "PTWC_TSUNAMI_CONNECTION_STRING",
+                  "value": ""
+                },
+                {
+                  "name": "PTWC_TSUNAMI_STATE_FILE",
+                  "value": "/mnt/bridge-state/state.json"
+                },
+                {
+                  "name": "PTWC_TSUNAMI_MQTT_STATE_FILE",
+                  "value": "/mnt/bridge-state/state.json"
+                },
+                {
+                  "name": "PTWC_TSUNAMI_POLL_INTERVAL",
+                  "value": "[parameters('ptwcTsunamiPollInterval')]"
+                },
+                {
+                  "name": "PTWC_TSUNAMI_FEEDS",
+                  "value": "[parameters('ptwcTsunamiFeeds')]"
                 },
                 {
                   "name": "LOG_LEVEL",

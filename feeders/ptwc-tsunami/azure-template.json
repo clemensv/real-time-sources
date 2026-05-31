@@ -118,6 +118,14 @@
                   "secureValue": "[parameters('connectionString')]"
                 },
                 {
+                  "name": "PTWC_TSUNAMI_CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionString')]"
+                },
+                {
+                  "name": "PTWC_TSUNAMI_STATE_FILE",
+                  "value": "/mnt/bridge-state/state.json"
+                },
+                {
                   "name": "LOG_LEVEL",
                   "value": "INFO"
                 },

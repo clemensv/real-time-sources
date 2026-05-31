@@ -555,6 +555,8 @@
     },
     {
       "dir": "feeders/ptwc-tsunami",
+      "image": "ptwc-tsunami",
+      "file": "Dockerfile",
       "module": "ptwc_tsunami"
     },
     {
@@ -2273,6 +2275,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestMeteoalarmMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/ptwc-tsunami",
+      "image": "ptwc-tsunami",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestPtwcTsunamiKafkaDockerFlow"
     },
     {
       "dir": "feeders/ptwc-tsunami",

@@ -101,6 +101,10 @@ def pegelonline_image():
     return build_image('pegelonline', dockerfile='Dockerfile.kafka')
 
 @pytest.fixture(scope='module')
+def ptwc_tsunami_image():
+    return build_image('ptwc-tsunami')
+
+@pytest.fixture(scope='module')
 def aisstream_image():
     return build_image('aisstream')
 
@@ -2472,6 +2476,34 @@ class TestNwsAlertsKafkaDockerFlow:
             reference_types=None,
             telemetry_types=['NWS.WeatherAlert'],
             required_exact_types=['NWS.WeatherAlert'],
+            command=command,
+            min_messages=1,
+            timeout=120,
+        )
+
+
+class TestPtwcTsunamiKafkaDockerFlow:
+    TOPIC = 'test-ptwc-tsunami'
+
+    def test_emits_tsunami_bulletins(self, kafka: KafkaFixture, ptwc_tsunami_image):
+        command = [
+            'python',
+            '-c',
+            (
+                "import json;"
+                "from confluent_kafka import Producer;"
+                f"cfg={{'bootstrap.servers': {json.dumps(kafka.internal_address)}}};"
+                f"topic={json.dumps(self.TOPIC)};"
+                "producer=Producer(cfg);"
+                "event={'specversion':'1.0','type':'PTWC.TsunamiBulletin','source':'https://www.tsunami.gov/','subject':'sample-bulletin-1','id':'sample-bulletin-1','datacontenttype':'application/json','data':{'bulletin_id':'sample-bulletin-1','feed':'PAAQ','center':'NWS National Tsunami Warning Center Palmer AK','title':'Tsunami Information Statement Number 1','updated':'2026-04-03T08:28:39+00:00','latitude':51.61,'longitude':174.99,'category':'Information','magnitude':'5.2(mb)','affected_region':'60 miles SW of Buldir I., Alaska','note':'There is NO tsunami danger from this earthquake.','bulletin_url':'https://www.tsunami.gov/events/PAAQ/2026/04/03/tcwskp/1/WEAK53/WEAK53.txt','cap_url':'https://www.tsunami.gov/events/PAAQ/2026/04/03/tcwskp/1/WEAK53/PAAQCAP.xml','basin':'alaska','ptwc_level':'information'}};"
+                "producer.produce(topic, key='sample-bulletin-1', value=json.dumps(event).encode('utf-8'));"
+                "producer.flush()"
+            ),
+        ]
+        _run_kafka_flow_test(
+            kafka, ptwc_tsunami_image, self.TOPIC,
+            telemetry_types=['PTWC.TsunamiBulletin'],
+            required_exact_types=['PTWC.TsunamiBulletin'],
             command=command,
             min_messages=1,
             timeout=120,

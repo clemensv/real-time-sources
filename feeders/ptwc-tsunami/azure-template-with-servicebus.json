@@ -47,6 +47,13 @@
       "metadata": {
         "description": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build."
       }
+    },
+    "ptwcTsunamiFeeds": {
+      "type": "string",
+      "defaultValue": "PAAQ,PHEB",
+      "metadata": {
+        "description": "Comma-separated list of feeds (PAAQ, PHEB)."
+      }
     }
   },
   "variables": {
@@ -238,6 +245,18 @@
                 {
                   "name": "POLLING_INTERVAL",
                   "value": "60"
+                },
+                {
+                  "name": "PTWC_TSUNAMI_CONNECTION_STRING",
+                  "value": ""
+                },
+                {
+                  "name": "PTWC_TSUNAMI_STATE_FILE",
+                  "value": "/mnt/bridge-state/state.json"
+                },
+                {
+                  "name": "PTWC_TSUNAMI_FEEDS",
+                  "value": "[parameters('ptwcTsunamiFeeds')]"
                 },
                 {
                   "name": "STATE_FILE",

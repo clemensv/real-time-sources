@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#ptwc-tsunami/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/ptwc_tsunami.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/ptwc-tsunami.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.tsunami.gov/)
 
 </td></tr></table>
@@ -158,6 +158,9 @@ docker run --rm \
 |---|---|
 | `CONNECTION_STRING` | Event Hubs/Fabric-style connection string for Kafka-mode publishing. |
 | `KAFKA_ENABLE_TLS` | Set `false` for local/plain Kafka; default `true`. |
+| `PTWC_TSUNAMI_CONNECTION_STRING` | Source-prefixed mirror of `CONNECTION_STRING` for Azure templates and source-specific configuration wiring. |
+| `PTWC_TSUNAMI_FEEDS` | Comma-separated PTWC/NTWC feed codes to ingest. Defaults to `PAAQ,PHEB`. |
+| `PTWC_TSUNAMI_POLL_INTERVAL` | Poll interval in seconds for MQTT/UNS deployments. Defaults to `300`. |
 | `PTWC_TSUNAMI_MQTT_STATE_FILE` | Source-specific state/resume setting. |
 | `PTWC_TSUNAMI_STATE_FILE` | Source-specific state/resume setting. |
 
@@ -179,6 +182,8 @@ docker run --rm \
 | `MQTT_AUTH_MODE` | `password` (default) or `entra` for Microsoft Entra JWT. |
 | `MQTT_CLIENT_ID` | Client identifier; must be unique per broker namespace. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `PTWC_TSUNAMI_POLL_INTERVAL` | Poll interval in seconds for MQTT/UNS publishing. Defaults to `300`. |
+| `PTWC_TSUNAMI_FEEDS` | Comma-separated list of bulletin feeds to ingest. Defaults to `PAAQ,PHEB`. |
 
 ### AMQP image
 
@@ -192,6 +197,7 @@ docker run --rm \
 | `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra ID token settings for CBS auth mode. |
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token settings for SAS CBS auth mode. |
 | `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `PTWC_TSUNAMI_FEEDS` | Comma-separated list of bulletin feeds to ingest for the AMQP bridge. Defaults to `PAAQ,PHEB`. |
 
 ## Deploying into Azure Container Instances
 
@@ -212,4 +218,4 @@ One deploy button is provided per ARM template file present in this folder:
 
 - [README.md](README.md) — source overview and quick-start guidance.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract and schemas.
-- [`xreg/ptwc_tsunami.xreg.json`](xreg/ptwc_tsunami.xreg.json) — authoritative xRegistry manifest.
+- [`xreg/ptwc-tsunami.xreg.json`](xreg/ptwc-tsunami.xreg.json) — authoritative xRegistry manifest.

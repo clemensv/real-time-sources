@@ -169,6 +169,6 @@ No source-specific polling cadence, rate limit, or stream characteristic is docu
 
 ## References
 
-- xRegistry manifest: [`xreg/ptwc_tsunami.xreg.json`](xreg/ptwc_tsunami.xreg.json)
+- xRegistry manifest: [`xreg/ptwc-tsunami.xreg.json`](xreg/ptwc-tsunami.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
