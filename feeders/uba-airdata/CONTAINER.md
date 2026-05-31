@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#uba-airdata/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/uba_airdata.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/uba-airdata.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.umweltbundesamt.de/)
 
 </td></tr></table>
@@ -199,4 +199,4 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/uba-airdata.json
 
 - [README.md](README.md) — source overview, deployment options, and quick starts.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
-- [`xreg/uba_airdata.xreg.json`](xreg/uba_airdata.xreg.json) — authoritative event contract manifest.
+- [`xreg/uba-airdata.xreg.json`](xreg/uba-airdata.xreg.json) — authoritative event contract manifest.

@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#uba-airdata/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/uba_airdata.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/uba-airdata.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.umweltbundesamt.de/)
 
 </td></tr></table>
@@ -64,7 +64,7 @@ The upstream source is open and operationally useful, but every downstream team 
 All variants share:
 
 - The same upstream poller semantics and dedupe model.
-- The same xRegistry contract in `xreg/uba_airdata.xreg.json`.
+- The same xRegistry contract in `xreg/uba-airdata.xreg.json`.
 - The same event families in [EVENTS.md](EVENTS.md).
 
 ## Key features
@@ -78,7 +78,7 @@ All variants share:
 
 ```text
 uba-airdata/
-  xreg/uba_airdata.xreg.json                # shared xRegistry contract
+  xreg/uba-airdata.xreg.json                # shared xRegistry contract
   uba_airdata/                        # Kafka feeder application
   uba_airdata_mqtt/                        # MQTT/UNS feeder application
   uba_airdata_amqp/                        # AMQP 1.0 feeder application

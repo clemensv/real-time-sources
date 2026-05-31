@@ -252,6 +252,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## References
 
-- xRegistry manifest: [`xreg/uba_airdata.xreg.json`](xreg/uba_airdata.xreg.json)
+- xRegistry manifest: [`xreg/uba-airdata.xreg.json`](xreg/uba-airdata.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
