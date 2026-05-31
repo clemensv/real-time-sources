@@ -177,7 +177,21 @@
     },
     {
       "dir": "feeders/irceline-belgium",
+      "image": "irceline-belgium",
+      "file": "Dockerfile",
       "module": "irceline_belgium"
+    },
+    {
+      "dir": "feeders/irceline-belgium",
+      "image": "irceline-belgium-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "irceline_belgium_mqtt"
+    },
+    {
+      "dir": "feeders/irceline-belgium",
+      "image": "irceline-belgium-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "irceline_belgium_amqp"
     },
     {
       "dir": "feeders/gtfs",
@@ -1780,6 +1794,13 @@
       "test_class": "TestIrcelineBelgiumDockerFlow"
     },
     {
+      "dir": "feeders/irceline-belgium",
+      "image": "irceline-belgium-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestIrcelineBelgiumMqttDockerFlow"
+    },
+    {
       "dir": "feeders/king-county-marine",
       "test_class": "TestKingCountyMarineDockerFlow"
     },
@@ -2489,6 +2510,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestIRailAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/irceline-belgium",
+      "image": "irceline-belgium-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestIrcelineBelgiumAmqpDockerFlow"
     },
     {
       "dir": "feeders/paris-bicycle-counters",
