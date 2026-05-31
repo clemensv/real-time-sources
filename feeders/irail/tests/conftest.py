@@ -6,6 +6,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCAL_SRC_DIRS = [
+    ROOT,
     ROOT / "irail_producer" / "irail_producer_data" / "src",
     ROOT / "irail_producer" / "irail_producer_kafka_producer" / "src",
 ]

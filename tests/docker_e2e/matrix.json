@@ -171,6 +171,8 @@
     },
     {
       "dir": "feeders/irail",
+      "image": "irail",
+      "file": "Dockerfile",
       "module": "irail"
     },
     {
@@ -1957,6 +1959,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestIRailMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/irail",
+      "image": "irail",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestIRailDockerFlow"
     },
     {
       "dir": "feeders/cbp-border-wait",
