@@ -234,6 +234,18 @@
       "module": "luchtmeetnet_nl"
     },
     {
+      "dir": "feeders/luchtmeetnet-nl",
+      "image": "luchtmeetnet-nl-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "luchtmeetnet_nl_mqtt"
+    },
+    {
+      "dir": "feeders/luchtmeetnet-nl",
+      "image": "luchtmeetnet-nl-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "luchtmeetnet_nl_amqp"
+    },
+    {
       "dir": "feeders/mode-s",
       "module": "mode_s_kafka_bridge"
     },
@@ -1857,6 +1869,20 @@
     {
       "dir": "feeders/luchtmeetnet-nl",
       "test_class": "TestLuchtmeetnetNLDockerFlow"
+    },
+    {
+      "dir": "feeders/luchtmeetnet-nl",
+      "image": "luchtmeetnet-nl-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestLuchtmeetnetNlMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/luchtmeetnet-nl",
+      "image": "luchtmeetnet-nl-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestLuchtmeetnetNlAmqpDockerFlow"
     },
     {
       "dir": "feeders/gracedb",

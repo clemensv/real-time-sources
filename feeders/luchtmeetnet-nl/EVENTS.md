@@ -271,6 +271,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## References
 
-- xRegistry manifest: [`xreg/luchtmeetnet_nl.xreg.json`](xreg/luchtmeetnet_nl.xreg.json)
+- xRegistry manifest: [`xreg/luchtmeetnet-nl.xreg.json`](xreg/luchtmeetnet-nl.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#luchtmeetnet-nl/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/luchtmeetnet_nl.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/luchtmeetnet-nl.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.luchtmeetnet.nl/)
 
 </td></tr></table>
@@ -64,7 +64,7 @@ The upstream source is open and operationally useful, but every downstream team 
 All variants share:
 
 - The same upstream poller semantics and dedupe model.
-- The same xRegistry contract in `xreg/luchtmeetnet_nl.xreg.json`.
+- The same xRegistry contract in `xreg/luchtmeetnet-nl.xreg.json`.
 - The same event families in [EVENTS.md](EVENTS.md).
 
 ## Key features
@@ -78,7 +78,7 @@ All variants share:
 
 ```text
 luchtmeetnet-nl/
-  xreg/luchtmeetnet_nl.xreg.json                # shared xRegistry contract
+  xreg/luchtmeetnet-nl.xreg.json                # shared xRegistry contract
   luchtmeetnet_nl/                        # Kafka feeder application
   luchtmeetnet_nl_mqtt/                        # MQTT/UNS feeder application
   luchtmeetnet_nl_amqp/                        # AMQP 1.0 feeder application

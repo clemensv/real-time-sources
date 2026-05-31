@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#luchtmeetnet-nl/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/luchtmeetnet_nl.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/luchtmeetnet-nl.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.luchtmeetnet.nl/)
 
 </td></tr></table>
@@ -199,4 +199,4 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/luchtmeetnet-nl.
 
 - [README.md](README.md) — source overview, deployment options, and quick starts.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
-- [`xreg/luchtmeetnet_nl.xreg.json`](xreg/luchtmeetnet_nl.xreg.json) — authoritative event contract manifest.
+- [`xreg/luchtmeetnet-nl.xreg.json`](xreg/luchtmeetnet-nl.xreg.json) — authoritative event contract manifest.
