@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#nepal-bipad-hydrology/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/nepal_bipad_hydrology.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/nepal-bipad-hydrology.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://bipadportal.gov.np/)
 
 </td></tr></table>
@@ -66,7 +66,7 @@ This bridge publishes the Nepal BIPAD Hydrology source as a transport-agnostic e
 All variants share:
 
 - The same upstream polling logic and dedupe state model.
-- The same xRegistry contract (`xreg/nepal_bipad_hydrology.xreg.json`).
+- The same xRegistry contract (`xreg/nepal-bipad-hydrology.xreg.json`).
 - The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
 
 ## Key features
@@ -81,7 +81,7 @@ All variants share:
 
 ```text
 nepal-bipad-hydrology/
-  xreg/nepal_bipad_hydrology.xreg.json                 # shared xRegistry contract
+  xreg/nepal-bipad-hydrology.xreg.json                 # shared xRegistry contract
   nepal_bipad_hydrology/
   nepal_bipad_hydrology_amqp/
   nepal_bipad_hydrology_amqp_producer/

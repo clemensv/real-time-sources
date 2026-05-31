@@ -1101,6 +1101,12 @@
     },
     {
       "dir": "feeders/nepal-bipad-hydrology",
+      "image": "nepal-bipad-hydrology",
+      "file": "Dockerfile",
+      "module": "nepal_bipad_hydrology"
+    },
+    {
+      "dir": "feeders/nepal-bipad-hydrology",
       "image": "nepal-bipad-hydrology-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "nepal_bipad_hydrology_mqtt"
@@ -2968,6 +2974,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestIrelandOpwWaterlevelAmqpArtemisFlow"
+    },
+    {
+      "dir": "feeders/nepal-bipad-hydrology",
+      "image": "nepal-bipad-hydrology",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestNepalBipadHydrologyDockerFlow"
     },
     {
       "dir": "feeders/nepal-bipad-hydrology",

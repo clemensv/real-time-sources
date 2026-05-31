@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#nepal-bipad-hydrology/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/nepal_bipad_hydrology.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/nepal-bipad-hydrology.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://bipadportal.gov.np/)
 
 </td></tr></table>
@@ -222,4 +222,4 @@ docker run --rm \
 
 - [README.md](README.md) — project overview and deployment options.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
-- [`xreg/nepal_bipad_hydrology.xreg.json`](xreg/nepal_bipad_hydrology.xreg.json) — source contract used to generate producer bindings.
+- [`xreg/nepal-bipad-hydrology.xreg.json`](xreg/nepal-bipad-hydrology.xreg.json) — source contract used to generate producer bindings.

@@ -1,10 +1,10 @@
 $ErrorActionPreference = 'Stop'
 
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$xregFile = Join-Path $scriptDir "xreg\nepal_bipad_hydrology.xreg.json"
+$xregFile = Join-Path $scriptDir "xreg\nepal-bipad-hydrology.xreg.json"
 
 Write-Host "Generating nepal-bipad-hydrology producers from xRegistry definitions..." -ForegroundColor Cyan
 
