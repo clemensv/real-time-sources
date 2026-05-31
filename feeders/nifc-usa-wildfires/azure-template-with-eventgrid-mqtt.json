@@ -24,7 +24,9 @@
     "eventGridSku": {
       "type": "string",
       "defaultValue": "Standard",
-      "allowedValues": ["Standard"],
+      "allowedValues": [
+        "Standard"
+      ],
       "metadata": {
         "description": "Event Grid namespace SKU."
       }
@@ -43,6 +45,13 @@
       "defaultValue": "wildfire/#",
       "metadata": {
         "description": "Topic-space root for the MQTT/UNS publish surface. Defaults to wildfire/# which covers all nifc-usa-wildfires output (hydro/de/wsv/nifc-usa-wildfires/...)."
+      }
+    },
+    "nifcUsaWildfiresSampleMode": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Usa wildfires sample mode. See feeders/nifc-usa-wildfires/CONTAINER.md for details."
       }
     },
     "imageName": {
@@ -82,7 +91,9 @@
       "name": "[variables('logAnalyticsWorkspaceName')]",
       "location": "[parameters('location')]",
       "properties": {
-        "sku": { "name": "PerGB2018" },
+        "sku": {
+          "name": "PerGB2018"
+        },
         "retentionInDays": 30
       }
     },
@@ -91,7 +102,9 @@
       "apiVersion": "2023-05-01",
       "name": "[variables('storageAccountName')]",
       "location": "[parameters('location')]",
-      "sku": { "name": "Standard_LRS" },
+      "sku": {
+        "name": "Standard_LRS"
+      },
       "kind": "StorageV2",
       "properties": {
         "accessTier": "Hot",
@@ -114,7 +127,9 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ],
-      "properties": { "shareQuota": 1 }
+      "properties": {
+        "shareQuota": 1
+      }
     },
     {
       "type": "Microsoft.EventGrid/namespaces",
@@ -195,15 +210,24 @@
             "properties": {
               "image": "[parameters('imageName')]",
               "resources": {
-                "requests": { "cpu": 0.5, "memoryInGB": 1.0 }
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
               },
               "environmentVariables": [
                 {
                   "name": "MQTT_BROKER_URL",
                   "value": "[concat('mqtts://', reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname, ':8883')]"
                 },
-                { "name": "MQTT_AUTH_MODE", "value": "entra" },
-                { "name": "MQTT_ENTRA_AUDIENCE", "value": "https://eventgrid.azure.net/" },
+                {
+                  "name": "MQTT_AUTH_MODE",
+                  "value": "entra"
+                },
+                {
+                  "name": "MQTT_ENTRA_AUDIENCE",
+                  "value": "https://eventgrid.azure.net/"
+                },
                 {
                   "name": "MQTT_ENTRA_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
@@ -212,11 +236,24 @@
                   "name": "MQTT_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
                 },
-                { "name": "LOG_LEVEL", "value": "INFO" },
-                { "name": "PYTHONUNBUFFERED", "value": "1" }
+                {
+                  "name": "NIFC_USA_WILDFIRES_SAMPLE_MODE",
+                  "value": "[parameters('nifcUsaWildfiresSampleMode')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
               ],
               "volumeMounts": [
-                { "name": "bridge-state", "mountPath": "/mnt/bridge-state" }
+                {
+                  "name": "bridge-state",
+                  "mountPath": "/mnt/bridge-state"
+                }
               ]
             }
           }

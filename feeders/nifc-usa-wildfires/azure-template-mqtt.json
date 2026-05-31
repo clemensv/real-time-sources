@@ -26,6 +26,13 @@
         "description": "Password. See feeders/nifc-usa-wildfires/CONTAINER.md for details."
       }
     },
+    "nifcUsaWildfiresSampleMode": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Usa wildfires sample mode. See feeders/nifc-usa-wildfires/CONTAINER.md for details."
+      }
+    },
     "containerGroupName": {
       "type": "string",
       "defaultValue": "nifc-usa-wildfires-mqtt",
@@ -138,6 +145,10 @@
                 {
                   "name": "MQTT_PASSWORD",
                   "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "NIFC_USA_WILDFIRES_SAMPLE_MODE",
+                  "value": "[parameters('nifcUsaWildfiresSampleMode')]"
                 },
                 {
                   "name": "LOG_LEVEL",

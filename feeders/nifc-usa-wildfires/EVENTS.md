@@ -180,6 +180,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## References
 
-- xRegistry manifest: [`xreg/nifc_usa_wildfires.xreg.json`](xreg/nifc_usa_wildfires.xreg.json)
+- xRegistry manifest: [`xreg/nifc-usa-wildfires.xreg.json`](xreg/nifc-usa-wildfires.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

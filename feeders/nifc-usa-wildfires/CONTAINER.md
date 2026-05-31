@@ -21,7 +21,7 @@
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#nifc-usa-wildfires) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/nifc_usa_wildfires.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/nifc-usa-wildfires.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.nifc.gov/)
 
 </td></tr></table>
@@ -73,6 +73,14 @@ To use it as a base image in a Dockerfile:
 ```dockerfile
 FROM ghcr.io/clemensv/real-time-sources-nifc-usa-wildfires:latest
 ```
+
+## Image contract
+
+| Image tag | Transport | Dockerfile | Persistent state share |
+|---|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-nifc-usa-wildfires:latest` | Kafka / Event Hubs | `Dockerfile` | Yes - stores `NIFC_LAST_POLLED_FILE` dedupe state |
+| `ghcr.io/clemensv/real-time-sources-nifc-usa-wildfires-mqtt:latest` | MQTT 5 | `Dockerfile.mqtt` | No |
+| `ghcr.io/clemensv/real-time-sources-nifc-usa-wildfires-amqp:latest` | AMQP 1.0 | `Dockerfile.amqp` | Yes - stores `STATE_FILE` dedupe state |
 
 ## Using the Container Image
 
@@ -131,6 +139,11 @@ The logging level. Default: `INFO`.
 The file path where the bridge stores the IDs of previously processed incidents
 to avoid duplication after restarts. Default:
 `~/.nifc_usa_wildfires_last_polled.json`.
+
+### `NIFC_USA_WILDFIRES_SAMPLE_MODE`
+
+Emit built-in sample wildfire incidents instead of polling the live NIFC feed.
+Accepts `1`, `true`, or `yes`.
 
 ### `KAFKA_ENABLE_TLS`
 

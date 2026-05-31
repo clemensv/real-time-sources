@@ -41,6 +41,13 @@
         "description": "Address. See feeders/nifc-usa-wildfires/CONTAINER.md for details."
       }
     },
+    "nifcUsaWildfiresSampleMode": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Usa wildfires sample mode. See feeders/nifc-usa-wildfires/CONTAINER.md for details."
+      }
+    },
     "imageName": {
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-nifc-usa-wildfires-amqp:latest",
@@ -242,6 +249,10 @@
                 {
                   "name": "STATE_FILE",
                   "value": "/mnt/bridge-state/nifc_usa_wildfires_state.json"
+                },
+                {
+                  "name": "NIFC_USA_WILDFIRES_SAMPLE_MODE",
+                  "value": "[parameters('nifcUsaWildfiresSampleMode')]"
                 },
                 {
                   "name": "LOG_LEVEL",

@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#nifc-usa-wildfires/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/nifc_usa_wildfires.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/nifc-usa-wildfires.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.nifc.gov/)
 
 </td></tr></table>

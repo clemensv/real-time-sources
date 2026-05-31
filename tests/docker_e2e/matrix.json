@@ -897,6 +897,12 @@
     },
     {
       "dir": "feeders/nifc-usa-wildfires",
+      "image": "nifc-usa-wildfires",
+      "file": "Dockerfile",
+      "module": "nifc_usa_wildfires"
+    },
+    {
+      "dir": "feeders/nifc-usa-wildfires",
       "image": "nifc-usa-wildfires-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "nifc_usa_wildfires_mqtt"
@@ -2739,6 +2745,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestEurdepRadiationAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/nifc-usa-wildfires",
+      "image": "nifc-usa-wildfires",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestNifcUsaWildfiresDockerFlow"
     },
     {
       "dir": "feeders/nifc-usa-wildfires",
