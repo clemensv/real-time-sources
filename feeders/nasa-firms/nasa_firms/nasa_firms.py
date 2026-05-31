@@ -352,6 +352,7 @@ class FirmsPoller:
                 _source_uri=SOURCE_URI,
                 _source=record.source,
                 _record_id=record.record_id,
+                _event_time=record.retrieved_at,
                 data=record,
                 flush_producer=False,
             )
@@ -363,6 +364,7 @@ class FirmsPoller:
             _source_uri=SOURCE_URI,
             _source=det.source,
             _record_id=det.record_id,
+            _event_time=det.acq_datetime or datetime.now(timezone.utc).isoformat(),
             data=det,
             flush_producer=False,
         )

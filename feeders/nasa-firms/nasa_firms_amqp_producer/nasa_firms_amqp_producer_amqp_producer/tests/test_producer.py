@@ -262,6 +262,7 @@ class TestNASAFIRMSAmqpProducer:
                     _source_uri="value",
                     _source="value",
                     _record_id="value",
+                    _event_time="value",
                     content_type="application/json"
                 )
 
@@ -321,6 +322,7 @@ class TestNASAFIRMSAmqpProducer:
                     _source_uri="value",
                     _source="value",
                     _record_id="value",
+                    _event_time="value",
                     content_type="application/json"
                 )
 

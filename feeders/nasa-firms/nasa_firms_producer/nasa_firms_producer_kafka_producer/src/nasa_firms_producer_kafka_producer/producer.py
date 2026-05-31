@@ -1,12 +1,46 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
 import json
+import re
 import uuid
 import typing
-from datetime import datetime
+from datetime import datetime, timezone
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
 from nasa_firms_producer_data import FireDetection
 from nasa_firms_producer_data import DataAvailability
 
@@ -41,7 +75,7 @@ class NASAFIRMSEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_nasa_firms_fire_detection(self,_source_uri : str, _source : str, _record_id : str, data: FireDetection, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FireDetection], str]=None) -> None:
+    def send_nasa_firms_fire_detection(self,_source_uri : str, _source : str, _record_id : str, _event_time : str, data: FireDetection, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FireDetection], str]=None) -> None:
         """
         Sends the 'NASA.FIRMS.FireDetection' event to the Kafka topic
 
@@ -49,6 +83,7 @@ class NASAFIRMSEventProducer:
             _source_uri(str):  Value for placeholder source_uri in attribute source
             _source(str):  Value for placeholder source in attribute subject
             _record_id(str):  Value for placeholder record_id in attribute subject
+            _event_time(str):  Value for placeholder event_time in attribute time
             data: (FireDetection): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
@@ -59,9 +94,16 @@ class NASAFIRMSEventProducer:
         attributes = {
              "type":"NASA.FIRMS.FireDetection",
              "source":"{source_uri}".format(source_uri = _source_uri),
-             "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id)
+             "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id),
+             "time":"{event_time}".format(event_time = _event_time)
         }
         attributes["datacontenttype"] = content_type
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -75,7 +117,7 @@ class NASAFIRMSEventProducer:
             self.producer.flush()
 
 
-    def send_nasa_firms_data_availability(self,_source_uri : str, _source : str, _record_id : str, data: DataAvailability, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DataAvailability], str]=None) -> None:
+    def send_nasa_firms_data_availability(self,_source_uri : str, _source : str, _record_id : str, _event_time : str, data: DataAvailability, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DataAvailability], str]=None) -> None:
         """
         Sends the 'NASA.FIRMS.DataAvailability' event to the Kafka topic
 
@@ -83,6 +125,7 @@ class NASAFIRMSEventProducer:
             _source_uri(str):  Value for placeholder source_uri in attribute source
             _source(str):  Value for placeholder source in attribute subject
             _record_id(str):  Value for placeholder record_id in attribute subject
+            _event_time(str):  Value for placeholder event_time in attribute time
             data: (DataAvailability): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
@@ -93,9 +136,16 @@ class NASAFIRMSEventProducer:
         attributes = {
              "type":"NASA.FIRMS.DataAvailability",
              "source":"{source_uri}".format(source_uri = _source_uri),
-             "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id)
+             "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id),
+             "time":"{event_time}".format(event_time = _event_time)
         }
         attributes["datacontenttype"] = content_type
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -191,7 +241,7 @@ class NASAFIRMSMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_nasa_firms_mqtt_fire_detection(self,_source_uri : str, _source : str, _record_id : str, data: FireDetection, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FireDetection], str]=None) -> None:
+    def send_nasa_firms_mqtt_fire_detection(self,_source_uri : str, _source : str, _record_id : str, _event_time : str, data: FireDetection, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FireDetection], str]=None) -> None:
         """
         Sends the 'NASA.FIRMS.mqtt.FireDetection' event to the Kafka topic
 
@@ -199,6 +249,7 @@ class NASAFIRMSMqttEventProducer:
             _source_uri(str):  Value for placeholder source_uri in attribute source
             _source(str):  Value for placeholder source in attribute subject
             _record_id(str):  Value for placeholder record_id in attribute subject
+            _event_time(str):  Value for placeholder event_time in attribute time
             data: (FireDetection): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
@@ -208,9 +259,16 @@ class NASAFIRMSMqttEventProducer:
         attributes = {
              "type":"NASA.FIRMS.FireDetection",
              "source":"{source_uri}".format(source_uri = _source_uri),
-             "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id)
+             "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id),
+             "time":"{event_time}".format(event_time = _event_time)
         }
         attributes["datacontenttype"] = content_type
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -224,7 +282,7 @@ class NASAFIRMSMqttEventProducer:
             self.producer.flush()
 
 
-    def send_nasa_firms_mqtt_data_availability(self,_source_uri : str, _source : str, _record_id : str, data: DataAvailability, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DataAvailability], str]=None) -> None:
+    def send_nasa_firms_mqtt_data_availability(self,_source_uri : str, _source : str, _record_id : str, _event_time : str, data: DataAvailability, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DataAvailability], str]=None) -> None:
         """
         Sends the 'NASA.FIRMS.mqtt.DataAvailability' event to the Kafka topic
 
@@ -232,6 +290,7 @@ class NASAFIRMSMqttEventProducer:
             _source_uri(str):  Value for placeholder source_uri in attribute source
             _source(str):  Value for placeholder source in attribute subject
             _record_id(str):  Value for placeholder record_id in attribute subject
+            _event_time(str):  Value for placeholder event_time in attribute time
             data: (DataAvailability): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
@@ -241,9 +300,16 @@ class NASAFIRMSMqttEventProducer:
         attributes = {
              "type":"NASA.FIRMS.DataAvailability",
              "source":"{source_uri}".format(source_uri = _source_uri),
-             "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id)
+             "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id),
+             "time":"{event_time}".format(event_time = _event_time)
         }
         attributes["datacontenttype"] = content_type
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -339,7 +405,7 @@ class NASAFIRMSAmqpEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_nasa_firms_amqp_fire_detection(self,_source_uri : str, _source : str, _record_id : str, data: FireDetection, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FireDetection], str]=None) -> None:
+    def send_nasa_firms_amqp_fire_detection(self,_source_uri : str, _source : str, _record_id : str, _event_time : str, data: FireDetection, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FireDetection], str]=None) -> None:
         """
         Sends the 'NASA.FIRMS.amqp.FireDetection' event to the Kafka topic
 
@@ -347,6 +413,7 @@ class NASAFIRMSAmqpEventProducer:
             _source_uri(str):  Value for placeholder source_uri in attribute source
             _source(str):  Value for placeholder source in attribute subject
             _record_id(str):  Value for placeholder record_id in attribute subject
+            _event_time(str):  Value for placeholder event_time in attribute time
             data: (FireDetection): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
@@ -356,9 +423,16 @@ class NASAFIRMSAmqpEventProducer:
         attributes = {
              "type":"NASA.FIRMS.FireDetection",
              "source":"{source_uri}".format(source_uri = _source_uri),
-             "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id)
+             "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id),
+             "time":"{event_time}".format(event_time = _event_time)
         }
         attributes["datacontenttype"] = content_type
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -372,7 +446,7 @@ class NASAFIRMSAmqpEventProducer:
             self.producer.flush()
 
 
-    def send_nasa_firms_amqp_data_availability(self,_source_uri : str, _source : str, _record_id : str, data: DataAvailability, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DataAvailability], str]=None) -> None:
+    def send_nasa_firms_amqp_data_availability(self,_source_uri : str, _source : str, _record_id : str, _event_time : str, data: DataAvailability, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DataAvailability], str]=None) -> None:
         """
         Sends the 'NASA.FIRMS.amqp.DataAvailability' event to the Kafka topic
 
@@ -380,6 +454,7 @@ class NASAFIRMSAmqpEventProducer:
             _source_uri(str):  Value for placeholder source_uri in attribute source
             _source(str):  Value for placeholder source in attribute subject
             _record_id(str):  Value for placeholder record_id in attribute subject
+            _event_time(str):  Value for placeholder event_time in attribute time
             data: (DataAvailability): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
@@ -389,9 +464,16 @@ class NASAFIRMSAmqpEventProducer:
         attributes = {
              "type":"NASA.FIRMS.DataAvailability",
              "source":"{source_uri}".format(source_uri = _source_uri),
-             "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id)
+             "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id),
+             "time":"{event_time}".format(event_time = _event_time)
         }
         attributes["datacontenttype"] = content_type
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))

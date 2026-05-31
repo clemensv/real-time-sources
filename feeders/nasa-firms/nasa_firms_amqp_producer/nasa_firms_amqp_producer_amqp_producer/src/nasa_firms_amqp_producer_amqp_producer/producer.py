@@ -14,15 +14,50 @@ import sys
 import typing
 import uuid
 import json
+import re
 import threading
 import queue
 import concurrent.futures
 from datetime import datetime, timezone
 from urllib.parse import quote_plus
 from proton import Message, symbol
+from proton.reactor import AtMostOnce
 from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
 
 # --- Azure CBS support (azure_cbs_target=servicebus) ---
 # Two CBS auth modes are supported:
@@ -485,9 +520,7 @@ class NASAFIRMSAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -550,6 +583,30 @@ class NASAFIRMSAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -621,6 +678,7 @@ class NASAFIRMSAmqpProducer:
         _source_uri: str,
         _source: str,
         _record_id: str,
+        _event_time: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `NASA.FIRMS.amqp.FireDetection` message
@@ -630,6 +688,7 @@ class NASAFIRMSAmqpProducer:
             _source_uri (str): Value for placeholder source_uri in attribute source
             _source (str): Value for placeholder source in attribute subject
             _record_id (str): Value for placeholder record_id in attribute subject
+            _event_time (str): Value for placeholder event_time in attribute time
             data (FireDetection): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -641,7 +700,15 @@ class NASAFIRMSAmqpProducer:
             "{source_uri}".format(source_uri=_source_uri),
             "subject":
             "{source}/{record_id}".format(source=_source, record_id=_record_id),
+            "time":
+            "{event_time}".format(event_time=_event_time),
         }
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -693,13 +760,14 @@ class NASAFIRMSAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_fire_detection_batch(self,
         data_array: typing.List[FireDetection],
         _source_uri: str,
         _source: str,
         _record_id: str,
+        _event_time: str,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `NASA.FIRMS.amqp.FireDetection` messages
@@ -709,6 +777,7 @@ class NASAFIRMSAmqpProducer:
             _source_uri (str): Value for placeholder source_uri in attribute source
             _source (str): Value for placeholder source in attribute subject
             _record_id (str): Value for placeholder record_id in attribute subject
+            _event_time (str): Value for placeholder event_time in attribute time
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -717,6 +786,7 @@ class NASAFIRMSAmqpProducer:
                 _source_uri=_source_uri,
                 _source=_source,
                 _record_id=_record_id,
+                _event_time=_event_time,
                 content_type=content_type)
     
     
@@ -725,6 +795,7 @@ class NASAFIRMSAmqpProducer:
         _source_uri: str,
         _source: str,
         _record_id: str,
+        _event_time: str,
         content_type: str = 'application/json') -> None:
         """
         Send the `NASA.FIRMS.amqp.DataAvailability` message
@@ -734,6 +805,7 @@ class NASAFIRMSAmqpProducer:
             _source_uri (str): Value for placeholder source_uri in attribute source
             _source (str): Value for placeholder source in attribute subject
             _record_id (str): Value for placeholder record_id in attribute subject
+            _event_time (str): Value for placeholder event_time in attribute time
             data (DataAvailability): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -745,7 +817,15 @@ class NASAFIRMSAmqpProducer:
             "{source_uri}".format(source_uri=_source_uri),
             "subject":
             "{source}/{record_id}".format(source=_source, record_id=_record_id),
+            "time":
+            "{event_time}".format(event_time=_event_time),
         }
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -797,13 +877,14 @@ class NASAFIRMSAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_data_availability_batch(self,
         data_array: typing.List[DataAvailability],
         _source_uri: str,
         _source: str,
         _record_id: str,
+        _event_time: str,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `NASA.FIRMS.amqp.DataAvailability` messages
@@ -813,6 +894,7 @@ class NASAFIRMSAmqpProducer:
             _source_uri (str): Value for placeholder source_uri in attribute source
             _source (str): Value for placeholder source in attribute subject
             _record_id (str): Value for placeholder record_id in attribute subject
+            _event_time (str): Value for placeholder event_time in attribute time
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -821,6 +903,7 @@ class NASAFIRMSAmqpProducer:
                 _source_uri=_source_uri,
                 _source=_source,
                 _record_id=_record_id,
+                _event_time=_event_time,
                 content_type=content_type)
     
     

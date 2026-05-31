@@ -64,7 +64,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _fire_detection = FireDetection()
 
     # sends the 'NASA.FIRMS.FireDetection' event to Kafka topic.
-    await nasafirmsevent_producer.send_nasa_firms_fire_detection(_source_uri = 'TODO: replace me', _source = 'TODO: replace me', _record_id = 'TODO: replace me', data = _fire_detection)
+    await nasafirmsevent_producer.send_nasa_firms_fire_detection(_source_uri = 'TODO: replace me', _source = 'TODO: replace me', _record_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _fire_detection)
     print(f"Sent 'NASA.FIRMS.FireDetection' event: {_fire_detection.to_json()}")
 
     # ---- NASA.FIRMS.DataAvailability ----
@@ -72,7 +72,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _data_availability = DataAvailability()
 
     # sends the 'NASA.FIRMS.DataAvailability' event to Kafka topic.
-    await nasafirmsevent_producer.send_nasa_firms_data_availability(_source_uri = 'TODO: replace me', _source = 'TODO: replace me', _record_id = 'TODO: replace me', data = _data_availability)
+    await nasafirmsevent_producer.send_nasa_firms_data_availability(_source_uri = 'TODO: replace me', _source = 'TODO: replace me', _record_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _data_availability)
     print(f"Sent 'NASA.FIRMS.DataAvailability' event: {_data_availability.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
@@ -88,7 +88,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _fire_detection = FireDetection()
 
     # sends the 'NASA.FIRMS.mqtt.FireDetection' event to Kafka topic.
-    await nasafirmsmqtt_event_producer.send_nasa_firms_mqtt_fire_detection(_source_uri = 'TODO: replace me', _source = 'TODO: replace me', _record_id = 'TODO: replace me', data = _fire_detection)
+    await nasafirmsmqtt_event_producer.send_nasa_firms_mqtt_fire_detection(_source_uri = 'TODO: replace me', _source = 'TODO: replace me', _record_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _fire_detection)
     print(f"Sent 'NASA.FIRMS.mqtt.FireDetection' event: {_fire_detection.to_json()}")
 
     # ---- NASA.FIRMS.mqtt.DataAvailability ----
@@ -96,7 +96,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _data_availability = DataAvailability()
 
     # sends the 'NASA.FIRMS.mqtt.DataAvailability' event to Kafka topic.
-    await nasafirmsmqtt_event_producer.send_nasa_firms_mqtt_data_availability(_source_uri = 'TODO: replace me', _source = 'TODO: replace me', _record_id = 'TODO: replace me', data = _data_availability)
+    await nasafirmsmqtt_event_producer.send_nasa_firms_mqtt_data_availability(_source_uri = 'TODO: replace me', _source = 'TODO: replace me', _record_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _data_availability)
     print(f"Sent 'NASA.FIRMS.mqtt.DataAvailability' event: {_data_availability.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
@@ -112,7 +112,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _fire_detection = FireDetection()
 
     # sends the 'NASA.FIRMS.amqp.FireDetection' event to Kafka topic.
-    await nasafirmsamqp_event_producer.send_nasa_firms_amqp_fire_detection(_source_uri = 'TODO: replace me', _source = 'TODO: replace me', _record_id = 'TODO: replace me', data = _fire_detection)
+    await nasafirmsamqp_event_producer.send_nasa_firms_amqp_fire_detection(_source_uri = 'TODO: replace me', _source = 'TODO: replace me', _record_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _fire_detection)
     print(f"Sent 'NASA.FIRMS.amqp.FireDetection' event: {_fire_detection.to_json()}")
 
     # ---- NASA.FIRMS.amqp.DataAvailability ----
@@ -120,7 +120,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _data_availability = DataAvailability()
 
     # sends the 'NASA.FIRMS.amqp.DataAvailability' event to Kafka topic.
-    await nasafirmsamqp_event_producer.send_nasa_firms_amqp_data_availability(_source_uri = 'TODO: replace me', _source = 'TODO: replace me', _record_id = 'TODO: replace me', data = _data_availability)
+    await nasafirmsamqp_event_producer.send_nasa_firms_amqp_data_availability(_source_uri = 'TODO: replace me', _source = 'TODO: replace me', _record_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _data_availability)
     print(f"Sent 'NASA.FIRMS.amqp.DataAvailability' event: {_data_availability.to_json()}")
 
 if __name__ == "__main__":

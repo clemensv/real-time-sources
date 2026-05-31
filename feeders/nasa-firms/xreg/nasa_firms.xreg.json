@@ -81,6 +81,10 @@
             "subject": {
               "value": "{source}/{record_id}",
               "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
+              "type": "uritemplate"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -100,6 +104,10 @@
             },
             "subject": {
               "value": "{source}/{record_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{event_time}",
               "type": "uritemplate"
             }
           },

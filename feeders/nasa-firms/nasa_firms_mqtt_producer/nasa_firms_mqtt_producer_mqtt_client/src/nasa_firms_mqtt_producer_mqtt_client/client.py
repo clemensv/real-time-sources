@@ -4,6 +4,7 @@ import re
 import typing
 from typing import Callable, Awaitable, Optional, Dict, List
 import asyncio
+from datetime import datetime, timezone
 import paho.mqtt.client as mqtt
 try:
     # paho-mqtt 2.x exposes MQTT5 Properties for the PUBLISH packet type.
@@ -23,6 +24,39 @@ from nasa_firms_mqtt_producer_data import DataAvailability
 
 # URI template regex pattern
 _URI_TEMPLATE_PATTERN = re.compile(r'\{([A-Za-z0-9_]+)\}')
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
 
 
 def _topic_to_mqtt_wildcard(topic: str) -> str:
@@ -360,6 +394,7 @@ class NASAFIRMSMqttMqttClient(_ClientBase):
         source_uri: str,
         source: str,
         record_id: str,
+        event_time: str,
         confidence_level: str,
         tile: str,
         data: nasa_firms_mqtt_producer_data.FireDetection,
@@ -375,6 +410,7 @@ class NASAFIRMSMqttMqttClient(_ClientBase):
             source_uri: URI template variable for 'source_uri'
             source: URI template variable for 'source'
             record_id: URI template variable for 'record_id'
+            event_time: URI template variable for 'event_time'
             confidence_level: URI template variable for 'confidence_level'
             tile: URI template variable for 'tile'
             data: The event data to be published.
@@ -389,6 +425,7 @@ class NASAFIRMSMqttMqttClient(_ClientBase):
             "source_uri": str(source_uri),
             "source": str(source),
             "record_id": str(record_id),
+            "event_time": str(event_time),
             "confidence_level": str(confidence_level),
             "tile": str(tile),
         }
@@ -398,9 +435,16 @@ class NASAFIRMSMqttMqttClient(_ClientBase):
         attributes = {
              "type":"NASA.FIRMS.FireDetection",
              "source":"{source_uri}".format(source_uri = source_uri),
-             "subject":"{source}/{record_id}".format(source = source,record_id = record_id)
+             "subject":"{source}/{record_id}".format(source = source,record_id = record_id),
+             "time":"{event_time}".format(event_time = event_time)
         }
         attributes["datacontenttype"] = content_type
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -445,6 +489,7 @@ class NASAFIRMSMqttMqttClient(_ClientBase):
         source_uri: str,
         source: str,
         record_id: str,
+        event_time: str,
         data: nasa_firms_mqtt_producer_data.DataAvailability,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
@@ -458,6 +503,7 @@ class NASAFIRMSMqttMqttClient(_ClientBase):
             source_uri: URI template variable for 'source_uri'
             source: URI template variable for 'source'
             record_id: URI template variable for 'record_id'
+            event_time: URI template variable for 'event_time'
             data: The event data to be published.
             topic: Optional topic override. If not provided, uses default topic 'geo/fire/firms/{source}/availability'
                 with URI template placeholders substituted from the keyword arguments.
@@ -470,6 +516,7 @@ class NASAFIRMSMqttMqttClient(_ClientBase):
             "source_uri": str(source_uri),
             "source": str(source),
             "record_id": str(record_id),
+            "event_time": str(event_time),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
@@ -477,9 +524,16 @@ class NASAFIRMSMqttMqttClient(_ClientBase):
         attributes = {
              "type":"NASA.FIRMS.DataAvailability",
              "source":"{source_uri}".format(source_uri = source_uri),
-             "subject":"{source}/{record_id}".format(source = source,record_id = record_id)
+             "subject":"{source}/{record_id}".format(source = source,record_id = record_id),
+             "time":"{event_time}".format(event_time = event_time)
         }
         attributes["datacontenttype"] = content_type
+        if 'time' in attributes:
+            normalized_time = _normalize_cloudevents_time(attributes['time'])
+            if normalized_time is None:
+                del attributes['time']
+            else:
+                attributes['time'] = normalized_time
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's

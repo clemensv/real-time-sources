@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -93,6 +94,7 @@ async def test_nasa_firms_mqtt_nasa_firms_mqtt_fire_detection_py(mosquitto_broke
             source_uri=f"test_source_uri_{i}",
             source=f"test_source_{i}",
             record_id=f"test_record_id_{i}",
+            event_time=datetime.datetime.now().isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -160,6 +162,7 @@ async def test_nasa_firms_mqtt_nasa_firms_mqtt_data_availability_py(mosquitto_br
             source_uri=f"test_source_uri_{i}",
             source=f"test_source_{i}",
             record_id=f"test_record_id_{i}",
+            event_time=datetime.datetime.now().isoformat(),
             data=test_data,
             content_type="application/json"
         )

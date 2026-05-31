@@ -140,6 +140,7 @@ def test_send_fire_detection_structured(kafka_emulator):
         _source_uri=SOURCE_URI,
         _source=det.source,
         _record_id=det.record_id,
+        _event_time=det.acq_datetime,
         data=det,
     )
     kafka_producer.flush(timeout=5.0)
@@ -147,6 +148,7 @@ def test_send_fire_detection_structured(kafka_emulator):
     ce = poll_for_event(consumer, "NASA.FIRMS.FireDetection")
     assert ce['type'] == "NASA.FIRMS.FireDetection"
     assert ce['subject'] == "VIIRS_SNPP_NRT/a1b2c3d4e5f60718"
+    assert ce['time'] == "2024-01-15T01:12:00Z"
     data = ce.data
     assert data['source'] == "VIIRS_SNPP_NRT"
     assert data['latitude'] == -12.345
@@ -168,6 +170,7 @@ def test_send_fire_detection_binary(kafka_emulator):
         _source_uri=SOURCE_URI,
         _source=det.source,
         _record_id=det.record_id,
+        _event_time=det.acq_datetime,
         data=det,
     )
     kafka_producer.flush(timeout=5.0)
@@ -201,6 +204,7 @@ def test_send_data_availability_reference(kafka_emulator):
         _source_uri=SOURCE_URI,
         _source=rec.source,
         _record_id=rec.record_id,
+        _event_time=rec.retrieved_at,
         data=rec,
     )
     kafka_producer.flush(timeout=5.0)
