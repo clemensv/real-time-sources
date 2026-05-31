@@ -1667,6 +1667,12 @@
     },
     {
       "dir": "feeders/smhi-weather",
+      "image": "smhi-weather",
+      "file": "Dockerfile",
+      "module": "smhi_weather"
+    },
+    {
+      "dir": "feeders/smhi-weather",
       "image": "smhi-weather-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "smhi_weather_mqtt"
@@ -3721,6 +3727,13 @@
       "image": "noaa-nws-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNoaaNwsAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/smhi-weather",
+      "image": "smhi-weather",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestSMHIWeatherDockerFlow"
     },
     {
       "dir": "feeders/smhi-weather",

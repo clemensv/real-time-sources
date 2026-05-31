@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#smhi-weather/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/smhi_weather.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/smhi-weather.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.smhi.se/)
 
 </td></tr></table>
@@ -194,4 +194,4 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/smhi-weather.jso
 
 - [README.md](README.md) — project overview, use cases, and quick-start paths.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing metadata.
-- [`xreg/smhi_weather.xreg.json`](xreg/smhi_weather.xreg.json) — source contract used for generated producers and EVENTS.md.
+- [`xreg/smhi-weather.xreg.json`](xreg/smhi-weather.xreg.json) — source contract used for generated producers and EVENTS.md.

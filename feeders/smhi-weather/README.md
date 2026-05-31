@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#smhi-weather/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/smhi_weather.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/smhi-weather.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.smhi.se/)
 
 </td></tr></table>
@@ -65,7 +65,7 @@ This source wraps the upstream SMHI Weather APIs into a contract-first event str
 All variants share:
 
 - The upstream polling runtime in this source folder.
-- The xRegistry contract at `xreg/smhi_weather.xreg.json`.
+- The xRegistry contract at `xreg/smhi-weather.xreg.json`.
 - The same CloudEvents event families and identity model.
 
 ## Key features
