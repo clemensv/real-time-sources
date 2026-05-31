@@ -1187,6 +1187,12 @@
     },
     {
       "dir": "feeders/syke-hydro",
+      "image": "syke-hydro",
+      "file": "Dockerfile",
+      "module": "syke_hydro"
+    },
+    {
+      "dir": "feeders/syke-hydro",
       "image": "syke-hydro-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "syke_hydro_mqtt"
@@ -3156,6 +3162,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestSnotelAmqpArtemisFlow"
+    },
+    {
+      "dir": "feeders/syke-hydro",
+      "image": "syke-hydro",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestSYKEHydroDockerFlow"
     },
     {
       "dir": "feeders/syke-hydro",

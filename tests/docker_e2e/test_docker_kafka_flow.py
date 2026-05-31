@@ -113,6 +113,10 @@ def tfl_road_traffic_image():
     return build_image('tfl-road-traffic')
 
 @pytest.fixture(scope='module')
+def tokyo_docomo_bikeshare_image():
+    return build_image('tokyo-docomo-bikeshare')
+
+@pytest.fixture(scope='module')
 def aisstream_image():
     return build_image('aisstream')
 
@@ -2290,6 +2294,21 @@ class TestTicketmasterDockerFlow:
                 'REFERENCE_REFRESH': '3600',
             },
             min_messages=5,
+            timeout=300,
+        )
+
+
+class TestTokyoDocomoBikeshareDockerFlow:
+    TOPIC = 'test-tokyo-docomo-bikeshare'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, tokyo_docomo_bikeshare_image):
+        _run_kafka_flow_test(
+            kafka, tokyo_docomo_bikeshare_image, self.TOPIC,
+            reference_types=['BikeshareSystem', 'BikeshareStation'],
+            telemetry_types=['BikeshareStationStatus'],
+            required_types=['BikeshareSystem', 'BikeshareStation', 'BikeshareStationStatus'],
+            extra_env={'ONCE_MODE': 'true'},
+            min_messages=3,
             timeout=300,
         )
 

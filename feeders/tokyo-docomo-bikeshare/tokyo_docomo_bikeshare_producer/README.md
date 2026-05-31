@@ -15,7 +15,17 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - JPODPTDocomoBikeshareSystemEventDispatcher
+3. [Quick Start](#quick-start)    - JPODPTDocomoBikeshareSystemEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    JPODPTDocomoBikeshareStationsEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    JPODPTDocomoBikeshareSystemMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    JPODPTDocomoBikeshareStationsMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    JPODPTDocomoBikeshareSystemAmqpEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    JPODPTDocomoBikeshareStationsAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +49,26 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - JPODPTDocomoBikeshareSystemProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- JPODPTDocomoBikeshareStationsProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- JPODPTDocomoBikeshareSystemMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- JPODPTDocomoBikeshareStationsMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- JPODPTDocomoBikeshareSystemAmqpProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- JPODPTDocomoBikeshareStationsAmqpProducersolution for event-driven applications.
 
 
 
@@ -194,6 +224,206 @@ jp_odpt_docomo_bikeshare_bikeshare_system_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -297,6 +527,3452 @@ await producer.send_jp_odpt_docomo_bikeshare_bikeshare_system_batch(```
         BikeshareSystem(...),
 
         BikeshareSystem(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### JPODPTDocomoBikeshareStationsEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`JPODPTDocomoBikeshareStationsEventDispatcher` handles events for the JP.ODPT.DocomoBikeshare.Stations message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from tokyo_docomo_bikeshare_producer import JPODPTDocomoBikeshareSystemProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = JPODPTDocomoBikeshareSystemProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_system(```python
+
+    data=BikeshareSystem(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The JPODPTDocomoBikeshareStationsEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = JPODPTDocomoBikeshareSystemProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_odpt_docomo_bikeshare_bikeshare_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_odpt_docomo_bikeshare_bikeshare_station_async:  Callable[[ConsumerRecord,
+CloudEvent, BikeshareStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.ODPT.DocomoBikeshare.BikeshareStation`: A reference record from Docomo Bike Share open
+feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels
+needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_odpt_docomo_bikeshare_bikeshare_station_status_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_odpt_docomo_bikeshare_bikeshare_station_status_async:  Callable[[ConsumerRecord,
+CloudEvent, BikeshareStationStatus], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.ODPT.DocomoBikeshare.BikeshareStationStatus`: A reference record from Docomo Bike
+Share open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers
+and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_jp_odpt_docomo_bikeshare_bikeshare_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_odpt_docomo_bikeshare_bikeshare_station(
+
+    self,##### `_process_event`
+
+    data: BikeshareStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.ODPT.DocomoBikeshare.BikeshareStation` message. A reference record from Docomo Bike Share open feeds
+for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed
+to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BikeshareStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_station(
+
+    data=BikeshareStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.ODPT.DocomoBikeshare.BikeshareStation` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_station_batch(```
+
+    messages=[
+
+        BikeshareStation(...),Initializes the runner with a Kafka consumer.
+
+        BikeshareStation(...),
+
+        BikeshareStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_jp_odpt_docomo_bikeshare_bikeshare_station_status`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_odpt_docomo_bikeshare_bikeshare_station_status(
+
+    self,##### `_process_event`
+
+    data: BikeshareStationStatus,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.ODPT.DocomoBikeshare.BikeshareStationStatus` message. A reference record from Docomo Bike Share open
+feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels
+needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BikeshareStationStatus`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_station_status(
+
+    data=BikeshareStationStatus(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.ODPT.DocomoBikeshare.BikeshareStationStatus` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_station_status_batch(```
+
+    messages=[
+
+        BikeshareStationStatus(...),Initializes the runner with a Kafka consumer.
+
+        BikeshareStationStatus(...),
+
+        BikeshareStationStatus(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### JPODPTDocomoBikeshareSystemMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`JPODPTDocomoBikeshareSystemMqttEventDispatcher` handles events for the JP.ODPT.DocomoBikeshare.System.mqtt message
+group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from tokyo_docomo_bikeshare_producer import JPODPTDocomoBikeshareSystemProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = JPODPTDocomoBikeshareSystemProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_system(```python
+
+    data=BikeshareSystem(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The JPODPTDocomoBikeshareSystemMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = JPODPTDocomoBikeshareSystemProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, BikeshareSystem], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.ODPT.DocomoBikeshare.BikeshareSystem.mqtt`: A transport update from Docomo Bike Share
+open feeds. It carries station status and availability updates for Tokyo bike-share stations.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_jp_odpt_docomo_bikeshare_bikeshare_system_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_odpt_docomo_bikeshare_bikeshare_system_mqtt(
+
+    self,##### `_process_event`
+
+    data: BikeshareSystem,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.ODPT.DocomoBikeshare.BikeshareSystem.mqtt` message. A transport update from Docomo Bike Share open
+feeds. It carries station status and availability updates for Tokyo bike-share stations.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BikeshareSystem`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_system_mqtt(
+
+    data=BikeshareSystem(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.ODPT.DocomoBikeshare.BikeshareSystem.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_system_mqtt_batch(```
+
+    messages=[
+
+        BikeshareSystem(...),Initializes the runner with a Kafka consumer.
+
+        BikeshareSystem(...),
+
+        BikeshareSystem(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### JPODPTDocomoBikeshareStationsMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`JPODPTDocomoBikeshareStationsMqttEventDispatcher` handles events for the JP.ODPT.DocomoBikeshare.Stations.mqtt message
+group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from tokyo_docomo_bikeshare_producer import JPODPTDocomoBikeshareSystemProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = JPODPTDocomoBikeshareSystemProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_system(```python
+
+    data=BikeshareSystem(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The JPODPTDocomoBikeshareStationsMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = JPODPTDocomoBikeshareSystemProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, BikeshareStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.ODPT.DocomoBikeshare.BikeshareStation.mqtt`: A reference record from Docomo Bike Share
+open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and
+labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_async:
+Callable[[ConsumerRecord, CloudEvent, BikeshareStationStatus], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.ODPT.DocomoBikeshare.BikeshareStationStatus.mqtt`: A reference record from Docomo Bike
+Share open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers
+and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_jp_odpt_docomo_bikeshare_bikeshare_station_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_odpt_docomo_bikeshare_bikeshare_station_mqtt(
+
+    self,##### `_process_event`
+
+    data: BikeshareStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.ODPT.DocomoBikeshare.BikeshareStation.mqtt` message. A reference record from Docomo Bike Share open
+feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels
+needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BikeshareStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_station_mqtt(
+
+    data=BikeshareStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.ODPT.DocomoBikeshare.BikeshareStation.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_station_mqtt_batch(```
+
+    messages=[
+
+        BikeshareStation(...),Initializes the runner with a Kafka consumer.
+
+        BikeshareStation(...),
+
+        BikeshareStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt(
+
+    self,##### `_process_event`
+
+    data: BikeshareStationStatus,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.ODPT.DocomoBikeshare.BikeshareStationStatus.mqtt` message. A reference record from Docomo Bike Share
+open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and
+labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BikeshareStationStatus`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt(
+
+    data=BikeshareStationStatus(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.ODPT.DocomoBikeshare.BikeshareStationStatus.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt_batch(```
+
+    messages=[
+
+        BikeshareStationStatus(...),Initializes the runner with a Kafka consumer.
+
+        BikeshareStationStatus(...),
+
+        BikeshareStationStatus(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### JPODPTDocomoBikeshareSystemAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`JPODPTDocomoBikeshareSystemAmqpEventDispatcher` handles events for the JP.ODPT.DocomoBikeshare.System.amqp message
+group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from tokyo_docomo_bikeshare_producer import JPODPTDocomoBikeshareSystemProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = JPODPTDocomoBikeshareSystemProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_system(```python
+
+    data=BikeshareSystem(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The JPODPTDocomoBikeshareSystemAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = JPODPTDocomoBikeshareSystemProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_odpt_docomo_bikeshare_bikeshare_system_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_odpt_docomo_bikeshare_bikeshare_system_amqp_async:  Callable[[ConsumerRecord,
+CloudEvent, BikeshareSystem], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.ODPT.DocomoBikeshare.BikeshareSystem.amqp`: A transport update from Docomo Bike Share
+open feeds. It carries station status and availability updates for Tokyo bike-share stations.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareSystem`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_system_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareSystem) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_system_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_system_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_jp_odpt_docomo_bikeshare_bikeshare_system_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_odpt_docomo_bikeshare_bikeshare_system_amqp(
+
+    self,##### `_process_event`
+
+    data: BikeshareSystem,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.ODPT.DocomoBikeshare.BikeshareSystem.amqp` message. A transport update from Docomo Bike Share open
+feeds. It carries station status and availability updates for Tokyo bike-share stations.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BikeshareSystem`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_system_amqp(
+
+    data=BikeshareSystem(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.ODPT.DocomoBikeshare.BikeshareSystem.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_system_amqp_batch(```
+
+    messages=[
+
+        BikeshareSystem(...),Initializes the runner with a Kafka consumer.
+
+        BikeshareSystem(...),
+
+        BikeshareSystem(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### JPODPTDocomoBikeshareStationsAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`JPODPTDocomoBikeshareStationsAmqpEventDispatcher` handles events for the JP.ODPT.DocomoBikeshare.Stations.amqp message
+group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from tokyo_docomo_bikeshare_producer import JPODPTDocomoBikeshareSystemProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = JPODPTDocomoBikeshareSystemProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_system(```python
+
+    data=BikeshareSystem(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The JPODPTDocomoBikeshareStationsAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = JPODPTDocomoBikeshareSystemProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_odpt_docomo_bikeshare_bikeshare_station_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_odpt_docomo_bikeshare_bikeshare_station_amqp_async:  Callable[[ConsumerRecord,
+CloudEvent, BikeshareStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.ODPT.DocomoBikeshare.BikeshareStation.amqp`: A reference record from Docomo Bike Share
+open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and
+labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStation`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+BikeshareStation) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_async:
+Callable[[ConsumerRecord, CloudEvent, BikeshareStationStatus], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `JP.ODPT.DocomoBikeshare.BikeshareStationStatus.amqp`: A reference record from Docomo Bike
+Share open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers
+and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsMqttProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_mqtt_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareSystemAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.System.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareSystemAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_system_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### JPODPTDocomoBikeshareStationsAmqpProducer- `data`: The event data of type
+`tokyo_docomo_bikeshare_producer_data.BikeshareStationStatus`.
+
+
+
+Producer for `JP.ODPT.DocomoBikeshare.Stations.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: BikeshareStationStatus) -> None:
+
+```python    # Process the event data
+
+JPODPTDocomoBikeshareStationsAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+jp_odpt_docomo_bikeshare_stations_amqp_dispatcher.jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_async =
+jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_jp_odpt_docomo_bikeshare_bikeshare_station_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_odpt_docomo_bikeshare_bikeshare_station_amqp(
+
+    self,##### `_process_event`
+
+    data: BikeshareStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.ODPT.DocomoBikeshare.BikeshareStation.amqp` message. A reference record from Docomo Bike Share open
+feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels
+needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BikeshareStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_station_amqp(
+
+    data=BikeshareStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.ODPT.DocomoBikeshare.BikeshareStation.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_station_amqp_batch(```
+
+    messages=[
+
+        BikeshareStation(...),Initializes the runner with a Kafka consumer.
+
+        BikeshareStation(...),
+
+        BikeshareStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp(
+
+    self,##### `_process_event`
+
+    data: BikeshareStationStatus,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `JP.ODPT.DocomoBikeshare.BikeshareStationStatus.amqp` message. A reference record from Docomo Bike Share
+open feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and
+labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `BikeshareStationStatus`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp(
+
+    data=BikeshareStationStatus(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `JP.ODPT.DocomoBikeshare.BikeshareStationStatus.amqp` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp_batch(```
+
+    messages=[
+
+        BikeshareStationStatus(...),Initializes the runner with a Kafka consumer.
+
+        BikeshareStationStatus(...),
+
+        BikeshareStationStatus(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 
