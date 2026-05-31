@@ -31,7 +31,11 @@ class _MqttProducerAdapter:
     def send_nasa_firms_fire_detection(self, **kwargs: Any) -> None:
         kwargs.pop("flush_producer", None)
         data = kwargs["data"]
-        normalized = {key[1:] if key.startswith("_") else key: value for key, value in kwargs.items()}
+        # Strip the leading underscore from uritemplate placeholder kwargs (the MQTT
+        # client exposes them as bare names), but keep `_time` as-is: the generated
+        # client keeps the CloudEvents time override underscored.
+        normalized = {key if key == "_time" else (key[1:] if key.startswith("_") else key): value
+                      for key, value in kwargs.items()}
         # MQTT topic carries confidence_level + tile as additional placeholders.
         normalized["confidence_level"] = data.confidence_level.value
         normalized["tile"] = data.tile
@@ -39,7 +43,8 @@ class _MqttProducerAdapter:
 
     def send_nasa_firms_data_availability(self, **kwargs: Any) -> None:
         kwargs.pop("flush_producer", None)
-        normalized = {key[1:] if key.startswith("_") else key: value for key, value in kwargs.items()}
+        normalized = {key if key == "_time" else (key[1:] if key.startswith("_") else key): value
+                      for key, value in kwargs.items()}
         self._schedule(self._client.publish_nasa_firms_mqtt_data_availability, normalized)
 
     def _schedule(self, publish_fn: Any, normalized: dict[str, Any]) -> None:

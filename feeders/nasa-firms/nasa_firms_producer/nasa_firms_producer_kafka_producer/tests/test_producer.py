@@ -107,7 +107,8 @@ def test_nasa_firms_nasafirmsfiredetection(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nasa_firms_fire_detection(_source_uri = f'test_{i}', _source = f'test_{i}', _record_id = f'test_{i}', _event_time = f'test_{i}', data = event_data)
+        producer_instance.send_nasa_firms_fire_detection(_source_uri = f'test_{i}', _source = f'test_{i}', _record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +171,8 @@ def test_nasa_firms_nasafirmsdataavailability(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nasa_firms_data_availability(_source_uri = f'test_{i}', _source = f'test_{i}', _record_id = f'test_{i}', _event_time = f'test_{i}', data = event_data)
+        producer_instance.send_nasa_firms_data_availability(_source_uri = f'test_{i}', _source = f'test_{i}', _record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +235,8 @@ def test_nasa_firms_mqtt_nasafirmsmqttfiredetection(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nasa_firms_mqtt_fire_detection(_source_uri = f'test_{i}', _source = f'test_{i}', _record_id = f'test_{i}', _event_time = f'test_{i}', data = event_data)
+        producer_instance.send_nasa_firms_mqtt_fire_detection(_source_uri = f'test_{i}', _source = f'test_{i}', _record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -294,7 +297,8 @@ def test_nasa_firms_mqtt_nasafirmsmqttdataavailability(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nasa_firms_mqtt_data_availability(_source_uri = f'test_{i}', _source = f'test_{i}', _record_id = f'test_{i}', _event_time = f'test_{i}', data = event_data)
+        producer_instance.send_nasa_firms_mqtt_data_availability(_source_uri = f'test_{i}', _source = f'test_{i}', _record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -355,7 +359,8 @@ def test_nasa_firms_amqp_nasafirmsamqpfiredetection(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nasa_firms_amqp_fire_detection(_source_uri = f'test_{i}', _source = f'test_{i}', _record_id = f'test_{i}', _event_time = f'test_{i}', data = event_data)
+        producer_instance.send_nasa_firms_amqp_fire_detection(_source_uri = f'test_{i}', _source = f'test_{i}', _record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -416,7 +421,8 @@ def test_nasa_firms_amqp_nasafirmsamqpdataavailability(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nasa_firms_amqp_data_availability(_source_uri = f'test_{i}', _source = f'test_{i}', _record_id = f'test_{i}', _event_time = f'test_{i}', data = event_data)
+        producer_instance.send_nasa_firms_amqp_data_availability(_source_uri = f'test_{i}', _source = f'test_{i}', _record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -460,8 +466,8 @@ def test_nasa_firms_cross_event_type_kafka_key(kafka_emulator):
     data1 = Test_FireDetection.create_instance()
     data2 = Test_DataAvailability.create_instance()
 
-    producer_instance.send_nasa_firms_fire_detection(_source_uri = shared_key_value, _source = shared_key_value, _record_id = shared_key_value, _event_time = shared_key_value, data = data1)
-    producer_instance.send_nasa_firms_data_availability(_source_uri = shared_key_value, _source = shared_key_value, _record_id = shared_key_value, _event_time = shared_key_value, data = data2)
+    producer_instance.send_nasa_firms_fire_detection(_source_uri = shared_key_value, _source = shared_key_value, _record_id = shared_key_value, data = data1)
+    producer_instance.send_nasa_firms_data_availability(_source_uri = shared_key_value, _source = shared_key_value, _record_id = shared_key_value, data = data2)
     kafka_producer.flush(timeout=5.0)
 
     # Collect keys from both messages

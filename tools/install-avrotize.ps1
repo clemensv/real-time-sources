@@ -66,7 +66,7 @@ $activateScript = "$venvPath\Scripts\Activate.ps1"
 if (Test-Path $activateScript) {
     Write-Host "Activating virtual environment and installing avrotize..."
     & $activateScript
-    pip install avrotize==3.5.7 xrcg==0.10.8
+    pip install avrotize==3.5.7 xrcg==0.10.9
     Write-Host "avrotize has been installed successfully in the virtual environment."
 } else {
     Write-Host "Failed to activate virtual environment."

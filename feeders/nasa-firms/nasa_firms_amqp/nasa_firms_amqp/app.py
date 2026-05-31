@@ -55,8 +55,9 @@ class _AmqpProducerAdapter:
             "_source_uri": kwargs["_source_uri"],
             "_source": kwargs["_source"],
             "_record_id": kwargs["_record_id"],
-            "_event_time": kwargs["_event_time"],
         }
+        if "_time" in kwargs:
+            call["_time"] = kwargs["_time"]
         if "content_type" in kwargs:
             call["content_type"] = kwargs["content_type"]
         try:

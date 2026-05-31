@@ -140,7 +140,7 @@ def test_send_fire_detection_structured(kafka_emulator):
         _source_uri=SOURCE_URI,
         _source=det.source,
         _record_id=det.record_id,
-        _event_time=det.acq_datetime,
+        _time=det.acq_datetime,
         data=det,
     )
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +170,7 @@ def test_send_fire_detection_binary(kafka_emulator):
         _source_uri=SOURCE_URI,
         _source=det.source,
         _record_id=det.record_id,
-        _event_time=det.acq_datetime,
+        _time=det.acq_datetime,
         data=det,
     )
     kafka_producer.flush(timeout=5.0)
@@ -204,7 +204,7 @@ def test_send_data_availability_reference(kafka_emulator):
         _source_uri=SOURCE_URI,
         _source=rec.source,
         _record_id=rec.record_id,
-        _event_time=rec.retrieved_at,
+        _time=rec.retrieved_at,
         data=rec,
     )
     kafka_producer.flush(timeout=5.0)

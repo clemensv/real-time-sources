@@ -59,6 +59,18 @@ def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
         parsed = parsed.replace(tzinfo=timezone.utc)
     return parsed.isoformat().replace('+00:00', 'Z')
 
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
+
 # --- Azure CBS support (azure_cbs_target=servicebus) ---
 # Two CBS auth modes are supported:
 #   1. Entra ID (Azure AD) JWT bearer via an azure-identity TokenCredential
@@ -678,7 +690,7 @@ class NASAFIRMSAmqpProducer:
         _source_uri: str,
         _source: str,
         _record_id: str,
-        _event_time: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `NASA.FIRMS.amqp.FireDetection` message
@@ -688,7 +700,7 @@ class NASAFIRMSAmqpProducer:
             _source_uri (str): Value for placeholder source_uri in attribute source
             _source (str): Value for placeholder source in attribute subject
             _record_id (str): Value for placeholder record_id in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (FireDetection): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -701,14 +713,9 @@ class NASAFIRMSAmqpProducer:
             "subject":
             "{source}/{record_id}".format(source=_source, record_id=_record_id),
             "time":
-            "{event_time}".format(event_time=_event_time),
+            "{event_time}",
         }
-        if 'time' in attributes:
-            normalized_time = _normalize_cloudevents_time(attributes['time'])
-            if normalized_time is None:
-                del attributes['time']
-            else:
-                attributes['time'] = normalized_time
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -767,7 +774,7 @@ class NASAFIRMSAmqpProducer:
         _source_uri: str,
         _source: str,
         _record_id: str,
-        _event_time: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `NASA.FIRMS.amqp.FireDetection` messages
@@ -777,7 +784,7 @@ class NASAFIRMSAmqpProducer:
             _source_uri (str): Value for placeholder source_uri in attribute source
             _source (str): Value for placeholder source in attribute subject
             _record_id (str): Value for placeholder record_id in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -786,7 +793,7 @@ class NASAFIRMSAmqpProducer:
                 _source_uri=_source_uri,
                 _source=_source,
                 _record_id=_record_id,
-                _event_time=_event_time,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -795,7 +802,7 @@ class NASAFIRMSAmqpProducer:
         _source_uri: str,
         _source: str,
         _record_id: str,
-        _event_time: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `NASA.FIRMS.amqp.DataAvailability` message
@@ -805,7 +812,7 @@ class NASAFIRMSAmqpProducer:
             _source_uri (str): Value for placeholder source_uri in attribute source
             _source (str): Value for placeholder source in attribute subject
             _record_id (str): Value for placeholder record_id in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (DataAvailability): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -818,14 +825,9 @@ class NASAFIRMSAmqpProducer:
             "subject":
             "{source}/{record_id}".format(source=_source, record_id=_record_id),
             "time":
-            "{event_time}".format(event_time=_event_time),
+            "{event_time}",
         }
-        if 'time' in attributes:
-            normalized_time = _normalize_cloudevents_time(attributes['time'])
-            if normalized_time is None:
-                del attributes['time']
-            else:
-                attributes['time'] = normalized_time
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -884,7 +886,7 @@ class NASAFIRMSAmqpProducer:
         _source_uri: str,
         _source: str,
         _record_id: str,
-        _event_time: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `NASA.FIRMS.amqp.DataAvailability` messages
@@ -894,7 +896,7 @@ class NASAFIRMSAmqpProducer:
             _source_uri (str): Value for placeholder source_uri in attribute source
             _source (str): Value for placeholder source in attribute subject
             _record_id (str): Value for placeholder record_id in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -903,7 +905,7 @@ class NASAFIRMSAmqpProducer:
                 _source_uri=_source_uri,
                 _source=_source,
                 _record_id=_record_id,
-                _event_time=_event_time,
+                _time=_time,
                 content_type=content_type)
     
     

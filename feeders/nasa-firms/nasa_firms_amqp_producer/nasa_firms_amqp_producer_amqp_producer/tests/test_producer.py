@@ -5,6 +5,7 @@
 Tests for nasa_firms_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -262,7 +263,7 @@ class TestNASAFIRMSAmqpProducer:
                     _source_uri="value",
                     _source="value",
                     _record_id="value",
-                    _event_time="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -322,7 +323,7 @@ class TestNASAFIRMSAmqpProducer:
                     _source_uri="value",
                     _source="value",
                     _record_id="value",
-                    _event_time="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 

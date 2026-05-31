@@ -173,7 +173,6 @@ across sensors. Each event is one detection in one satellite overpass; the brigh
 - `_source_uri` (str): Value for placeholder source_uri in attribute source
 - `_source` (str): Value for placeholder source in attribute subject
 - `_record_id` (str): Value for placeholder record_id in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_fire_detection_batch()`
@@ -185,7 +184,6 @@ Send multiple FireDetection messages in sequence.
 - `_source_uri` (str): Value for placeholder source_uri in attribute source
 - `_source` (str): Value for placeholder source in attribute subject
 - `_record_id` (str): Value for placeholder record_id in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -200,7 +198,6 @@ interpret detection freshness and coverage on the same topic as the telemetry.
 - `_source_uri` (str): Value for placeholder source_uri in attribute source
 - `_source` (str): Value for placeholder source in attribute subject
 - `_record_id` (str): Value for placeholder record_id in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_data_availability_batch()`
@@ -212,7 +209,6 @@ Send multiple DataAvailability messages in sequence.
 - `_source_uri` (str): Value for placeholder source_uri in attribute source
 - `_source` (str): Value for placeholder source in attribute subject
 - `_record_id` (str): Value for placeholder record_id in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
