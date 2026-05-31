@@ -385,6 +385,12 @@
     },
     {
       "dir": "feeders/tfl-road-traffic",
+      "image": "tfl-road-traffic",
+      "file": "Dockerfile",
+      "module": "tfl_road_traffic"
+    },
+    {
+      "dir": "feeders/tfl-road-traffic",
       "image": "tfl-road-traffic-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "tfl_road_traffic_mqtt"
@@ -1817,6 +1823,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestBafuHydroMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/nve-hydro",
+      "image": "nve-hydro-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestNVEHydroDockerFlow"
     },
     {
       "dir": "feeders/nve-hydro",

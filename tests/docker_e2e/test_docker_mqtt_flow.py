@@ -1742,7 +1742,7 @@ class TestNwsAlertsMqttDockerFlow:
 
 
 def _load_tfl_road_traffic_schemas() -> Dict[str, Dict[str, Any]]:
-    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'tfl-road-traffic', 'xreg', 'tfl_road_traffic.xreg.json')
+    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'tfl-road-traffic', 'xreg', 'tfl-road-traffic.xreg.json')
     with open(xreg_path, 'r', encoding='utf-8') as fh:
         manifest = json.load(fh)
     schemas: Dict[str, Dict[str, Any]] = {}
@@ -1935,7 +1935,7 @@ class TestTflRoadTrafficMqttDockerFlow:
         assert all(m['topic'].split('/')[4] == 'roads' for m in replay), replay
         assert all(m['retain'] is True and m['qos'] == 1 for m in replay), replay
 
-        xreg_path = os.path.join(REPO_ROOT, 'feeders', 'tfl-road-traffic', 'xreg', 'tfl_road_traffic.xreg.json')
+        xreg_path = os.path.join(REPO_ROOT, 'feeders', 'tfl-road-traffic', 'xreg', 'tfl-road-traffic.xreg.json')
         with open(xreg_path, 'r', encoding='utf-8') as fh:
             manifest = json.load(fh)
         disruption_key = manifest['endpoints']['uk.gov.tfl.road.disruptions.Kafka']['protocoloptions']['options']['key']

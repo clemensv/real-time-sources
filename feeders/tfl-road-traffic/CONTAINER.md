@@ -205,4 +205,4 @@ One deploy button is provided per ARM template file present in this folder:
 
 - [README.md](README.md) — source overview and quick-start guidance.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract and schemas.
-- [`xreg/tfl_road_traffic.xreg.json`](xreg/tfl_road_traffic.xreg.json) — authoritative xRegistry manifest.
+- [`xreg/tfl-road-traffic.xreg.json`](xreg/tfl-road-traffic.xreg.json) — authoritative xRegistry manifest.

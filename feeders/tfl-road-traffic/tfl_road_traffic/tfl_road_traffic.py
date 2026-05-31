@@ -43,7 +43,7 @@ class UkGovTflRoadDisruptionsEventProducer:
         return default_key or f"{event['type']}:{event['source']}-{event.get('subject', '')}"
 
     def send_uk_gov_tfl_road_road_disruption(self, _road_id: str, _severity: str, _disruption_id: str, data: RoadDisruption, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
-        subject = f"roads/{_road_id}/disruptions/{_severity}/{_disruption_id}"
+        subject = f"disruptions/{_road_id}/{_severity}/{_disruption_id}"
         event = CloudEvent.create(
             {
                 "type": "uk.gov.tfl.road.RoadDisruption",

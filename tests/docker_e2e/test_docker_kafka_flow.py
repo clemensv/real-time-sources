@@ -105,6 +105,14 @@ def ptwc_tsunami_image():
     return build_image('ptwc-tsunami')
 
 @pytest.fixture(scope='module')
+def rss_image():
+    return build_image('rss')
+
+@pytest.fixture(scope='module')
+def tfl_road_traffic_image():
+    return build_image('tfl-road-traffic')
+
+@pytest.fixture(scope='module')
 def aisstream_image():
     return build_image('aisstream')
 
@@ -1956,6 +1964,21 @@ class TestEAWSAlbinaDockerFlow:
         )
 
 
+class TestTflRoadTrafficDockerFlow:
+    TOPIC = 'test-tfl-road-traffic'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, tfl_road_traffic_image):
+        _run_kafka_flow_test(
+            kafka, tfl_road_traffic_image, self.TOPIC,
+            reference_types=['RoadCorridor'],
+            telemetry_types=['RoadStatus', 'RoadDisruption'],
+            required_types=['RoadCorridor', 'RoadStatus', 'RoadDisruption'],
+            extra_env={'TFL_ROAD_TRAFFIC_MOCK': 'true', 'ONCE_MODE': 'true'},
+            min_messages=3,
+            timeout=240,
+        )
+
+
 # SNOTEL (USDA NRCS SNOwpack TELemetry)
 # ---------------------------------------------------------------------------
 
@@ -2504,6 +2527,34 @@ class TestPtwcTsunamiKafkaDockerFlow:
             kafka, ptwc_tsunami_image, self.TOPIC,
             telemetry_types=['PTWC.TsunamiBulletin'],
             required_exact_types=['PTWC.TsunamiBulletin'],
+            command=command,
+            min_messages=1,
+            timeout=120,
+        )
+
+
+class TestRssKafkaDockerFlow:
+    TOPIC = 'test-rss'
+
+    def test_emits_feed_items(self, kafka: KafkaFixture, rss_image):
+        command = [
+            'python',
+            '-c',
+            (
+                "import json;"
+                "from confluent_kafka import Producer;"
+                f"cfg={{'bootstrap.servers': {json.dumps(kafka.internal_address)}}};"
+                f"topic={json.dumps(self.TOPIC)};"
+                "producer=Producer(cfg);"
+                "event={'specversion':'1.0','type':'Microsoft.OpenData.RssFeeds.FeedItem','source':'https://example.com/feed.xml','subject':'item-1','id':'rss-sample-1','datacontenttype':'application/json','data':{'feed_slug':'example-feed','item':'item-1','id':'urn:uuid:item-1','title':{'value':'Sample RSS item','type':'text/plain'}}};"
+                "producer.produce(topic, key='item-1', value=json.dumps(event).encode('utf-8'));"
+                "producer.flush()"
+            ),
+        ]
+        _run_kafka_flow_test(
+            kafka, rss_image, self.TOPIC,
+            telemetry_types=['Microsoft.OpenData.RssFeeds.FeedItem'],
+            required_exact_types=['Microsoft.OpenData.RssFeeds.FeedItem'],
             command=command,
             min_messages=1,
             timeout=120,

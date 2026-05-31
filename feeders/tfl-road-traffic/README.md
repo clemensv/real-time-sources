@@ -21,7 +21,7 @@
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#tfl-road-traffic) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/tfl_road_traffic.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/tfl-road-traffic.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://tfl.gov.uk/)
 
 </td></tr></table>
@@ -66,7 +66,7 @@ This bridge provides one reusable feed for common scenarios:
 
 All variants share:
 
-- The xRegistry contract (`xreg/tfl_road_traffic.xreg.json`).
+- The xRegistry contract (`xreg/tfl-road-traffic.xreg.json`).
 - A common upstream acquisition path and normalized event payloads.
 - Stable CloudEvents subject/key identity derived from source-native identifiers.
 

@@ -290,6 +290,6 @@ No source-specific polling cadence, rate limit, or stream characteristic is docu
 
 ## References
 
-- xRegistry manifest: [`xreg/tfl_road_traffic.xreg.json`](xreg/tfl_road_traffic.xreg.json)
+- xRegistry manifest: [`xreg/tfl-road-traffic.xreg.json`](xreg/tfl-road-traffic.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
