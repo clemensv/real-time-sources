@@ -115,49 +115,49 @@
     "modeSFeedurl": {
       "type": "string",
       "metadata": {
-        "description": "Mode s feedurl option used to filter or tune the mode-s upstream feeder."
+        "description": "Optional explicit dump1090://host:port source URI to stamp into CloudEvent source."
       },
       "defaultValue": ""
     },
     "modeSFlushIntervalSeconds": {
       "type": "string",
       "metadata": {
-        "description": "Mode s flush interval seconds option used to filter or tune the mode-s upstream feeder."
+        "description": "Flush pending Kafka records after this many seconds even if the batch threshold has not been reached."
       },
       "defaultValue": "10"
     },
     "modeSFlushRecordThreshold": {
       "type": "string",
       "metadata": {
-        "description": "Mode s flush record threshold option used to filter or tune the mode-s upstream feeder."
+        "description": "Flush pending Kafka records after this many decoded Mode-S records."
       },
       "defaultValue": "50000"
     },
     "modeSMaxEvents": {
       "type": "string",
       "metadata": {
-        "description": "Maximum number of upstream events to emit before exiting; 0 means no explicit cap."
+        "description": "Stop after publishing this many decoded events; 0 means run continuously."
       },
       "defaultValue": "0"
     },
     "modeSMock": {
       "type": "string",
       "metadata": {
-        "description": "Skip TCP feed, emit one synthetic event per family, then exit"
+        "description": "Emit one synthetic event per DF family and exit instead of connecting to a live receiver."
       },
       "defaultValue": ""
     },
     "modeSQueueCapacity": {
       "type": "string",
       "metadata": {
-        "description": "Mode s queue capacity option used to filter or tune the mode-s upstream feeder."
+        "description": "Maximum in-memory decoded-record queue before the Kafka bridge starts dropping input."
       },
       "defaultValue": "20000"
     },
     "modeSReceiverId": {
       "type": "string",
       "metadata": {
-        "description": "Mode s receiver id option used to filter or tune the mode-s upstream feeder."
+        "description": "Stable receiver identifier used in MQTT topics and CloudEvent subjects."
       },
       "defaultValue": ""
     },

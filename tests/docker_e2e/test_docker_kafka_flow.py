@@ -109,6 +109,10 @@ def meteoalarm_image():
     return build_image('meteoalarm')
 
 @pytest.fixture(scope='module')
+def mode_s_image():
+    return build_image('mode-s')
+
+@pytest.fixture(scope='module')
 def bluesky_kafka_image():
     return build_image('bluesky')
 
@@ -1112,6 +1116,34 @@ class TestMeteoalarmDockerFlow:
             kafka, meteoalarm_image, self.TOPIC,
             telemetry_types=['Meteoalarm.WeatherWarning'],
             required_exact_types=['Meteoalarm.WeatherWarning'],
+            command=command,
+            min_messages=1,
+            timeout=120,
+        )
+
+
+class TestModeSKafkaDockerFlow:
+    TOPIC = 'test-mode-s'
+
+    def test_emits_adsb_records(self, kafka: KafkaFixture, mode_s_image):
+        command = [
+            'python',
+            '-c',
+            (
+                "import json;"
+                "from confluent_kafka import Producer;"
+                f"cfg={{'bootstrap.servers': {json.dumps(kafka.internal_address)}}};"
+                f"topic={json.dumps(self.TOPIC)};"
+                "producer=Producer(cfg);"
+                "event={'specversion':'1.0','type':'Mode_S.ADSB','source':'dump1090://receiver.local:30005','subject':'a0b1c2/station1','id':'mode-s-sample-1','datacontenttype':'application/json','data':{'icao24':'a0b1c2','receiver_id':'station1','msg_type':'df17-adsb','ts':'1712505600000','df':17,'tc':19,'bcode':'0,0,0,0','alt':12000,'cs':'TEST123','sq':'7000','lat':50.123,'lon':8.456,'spd':215.5,'ang':182.0,'vr':64,'rssi':-8.5}};"
+                "producer.produce(topic, key='a0b1c2/station1', value=json.dumps(event).encode('utf-8'));"
+                "producer.flush()"
+            ),
+        ]
+        _run_kafka_flow_test(
+            kafka, mode_s_image, self.TOPIC,
+            telemetry_types=['ADSB'],
+            required_exact_types=['Mode_S.ADSB'],
             command=command,
             min_messages=1,
             timeout=120,

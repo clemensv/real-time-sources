@@ -18,11 +18,10 @@
       "type": "string",
       "defaultValue": "Standard",
       "allowedValues": [
-        "Basic",
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the kafkaEnabled namespace that backs the Mode-S Kafka output."
       }
     },
     "location": {

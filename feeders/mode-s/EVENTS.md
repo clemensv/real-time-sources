@@ -698,6 +698,6 @@ No source-specific polling cadence, rate limit, or stream characteristic is docu
 
 ## References
 
-- xRegistry manifest: [`xreg/mode_s.xreg.json`](xreg/mode_s.xreg.json)
+- xRegistry manifest: [`xreg/mode-s.xreg.json`](xreg/mode-s.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

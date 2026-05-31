@@ -21,7 +21,7 @@
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#mode-s) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/mode_s.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/mode-s.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://opensky-network.org/)
 
 </td></tr></table>
@@ -165,6 +165,9 @@ docker run --rm \
 | `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server list (`host:port,...`). |
 | `KAFKA_TOPIC` | Destination topic (default from contract). |
 | `SASL_USERNAME` / `SASL_PASSWORD` | SASL PLAIN credentials for Kafka-compatible brokers. |
+| `MODE_S_FLUSH_INTERVAL_SECONDS` | Flush pending Kafka records after this many seconds even if the batch threshold has not been reached. |
+| `MODE_S_FLUSH_RECORD_THRESHOLD` | Flush pending Kafka records after this many decoded Mode-S records. |
+| `MODE_S_QUEUE_CAPACITY` | Maximum in-memory decoded-record queue before the Kafka bridge starts dropping input. |
 
 ### MQTT image
 
@@ -176,6 +179,10 @@ docker run --rm \
 | `MQTT_AUTH_MODE` | `password` (default) or `entra` for Microsoft Entra JWT. |
 | `MQTT_CLIENT_ID` | Client identifier; must be unique per broker namespace. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `MODE_S_FEEDURL` | Optional explicit `dump1090://host:port` source URI to stamp into CloudEvent `source`. |
+| `MODE_S_MAX_EVENTS` | Stop after publishing this many decoded events; `0` means run continuously. |
+| `MODE_S_MOCK` | Emit one synthetic event per DF family and exit instead of connecting to a live receiver. |
+| `MODE_S_RECEIVER_ID` | Stable receiver identifier used in MQTT topics and CloudEvent subjects. |
 
 ### AMQP image
 
@@ -189,6 +196,10 @@ docker run --rm \
 | `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra ID token settings for CBS auth mode. |
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token settings for SAS CBS auth mode. |
 | `AMQP_CONTENT_MODE` | `binary` (default) or `structured` CloudEvents content mode. |
+| `MODE_S_FEEDURL` | Optional explicit `dump1090://host:port` source URI to stamp into CloudEvent `source`. |
+| `MODE_S_MAX_EVENTS` | Stop after publishing this many decoded events; `0` means run continuously. |
+| `MODE_S_MOCK` | Emit one synthetic event per DF family and exit instead of connecting to a live receiver. |
+| `MODE_S_RECEIVER_ID` | Stable receiver identifier used in AMQP message subjects and CloudEvent subjects. |
 
 ## Deploying into Azure Container Instances
 
@@ -209,4 +220,4 @@ One deploy button is provided per ARM template file present in this folder:
 
 - [README.md](README.md) — source overview and quick-start guidance.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract and schemas.
-- [`xreg/mode_s.xreg.json`](xreg/mode_s.xreg.json) — authoritative xRegistry manifest.
+- [`xreg/mode-s.xreg.json`](xreg/mode-s.xreg.json) — authoritative xRegistry manifest.

@@ -2524,7 +2524,7 @@ def _load_mode_s_mqtt_schemas() -> Dict[str, Dict[str, Any]]:
     we replicate it under each CE ``type`` value for symmetry with the
     other firehose tests.
     """
-    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'mode-s', 'xreg', 'mode_s.xreg.json')
+    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'mode-s', 'xreg', 'mode-s.xreg.json')
     with open(xreg_path, 'r', encoding='utf-8') as fh:
         manifest = json.load(fh)
     schemagroup = manifest['schemagroups']['Mode_S.jstruct']

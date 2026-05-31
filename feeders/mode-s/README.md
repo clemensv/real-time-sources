@@ -21,7 +21,7 @@
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#mode-s) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/mode_s.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/mode-s.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://opensky-network.org/)
 
 </td></tr></table>
@@ -66,7 +66,7 @@ This bridge provides one reusable feed for common scenarios:
 
 All variants share:
 
-- The xRegistry contract (`xreg/mode_s.xreg.json`).
+- The xRegistry contract (`xreg/mode-s.xreg.json`).
 - A common upstream acquisition path and normalized event payloads.
 - Stable CloudEvents subject/key identity derived from source-native identifiers.
 

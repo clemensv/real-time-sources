@@ -1998,6 +1998,13 @@
     },
     {
       "dir": "feeders/mode-s",
+      "image": "mode-s",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestModeSKafkaDockerFlow"
+    },
+    {
+      "dir": "feeders/mode-s",
       "image": "mode-s-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",

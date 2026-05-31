@@ -41,6 +41,34 @@
         "description": "Target queue/topic/address."
       }
     },
+    "modeSFeedurl": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional explicit dump1090://host:port source URI to stamp into CloudEvent source."
+      }
+    },
+    "modeSMaxEvents": {
+      "type": "string",
+      "defaultValue": "0",
+      "metadata": {
+        "description": "Stop after publishing this many decoded events; 0 means run continuously."
+      }
+    },
+    "modeSMock": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Emit one synthetic event per DF family and exit instead of connecting to a live receiver."
+      }
+    },
+    "modeSReceiverId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Stable receiver identifier used in MQTT topics and CloudEvent subjects."
+      }
+    },
     "imageName": {
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-mode-s-amqp:latest",
@@ -232,6 +260,18 @@
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
                 },
                 {
+                  "name": "MODE_S_FEEDURL",
+                  "value": "[parameters('modeSFeedurl')]"
+                },
+                {
+                  "name": "MODE_S_MAX_EVENTS",
+                  "value": "[parameters('modeSMaxEvents')]"
+                },
+                {
+                  "name": "MODE_S_MOCK",
+                  "value": "[parameters('modeSMock')]"
+                },
+                {
                   "name": "AMQP_CONTENT_MODE",
                   "value": "binary"
                 },
@@ -253,7 +293,7 @@
                 },
                 {
                   "name": "MODE_S_RECEIVER_ID",
-                  "value": "station1"
+                  "value": "[parameters('modeSReceiverId')]"
                 }
               ],
               "volumeMounts": [
