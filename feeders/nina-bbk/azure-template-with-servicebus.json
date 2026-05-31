@@ -41,6 +41,27 @@
         "description": "Target queue/topic/address."
       }
     },
+    "ninaBbkConnectionString": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional feeder-prefixed alias for a Kafka/Event Hubs style connection string. Leave empty for the AMQP companion deployment."
+      }
+    },
+    "ninaBbkStateFile": {
+      "type": "string",
+      "defaultValue": "/mnt/bridge-state/state.json",
+      "metadata": {
+        "description": "Path inside the container where the feeder-prefixed NINA/BBK state file is mounted."
+      }
+    },
+    "ninaBbkProviders": {
+      "type": "string",
+      "defaultValue": "mowas,katwarn,biwapp,dwd,lhp,police",
+      "metadata": {
+        "description": "Comma-separated list of NINA/BBK upstream providers to ingest."
+      }
+    },
     "imageName": {
       "type": "string",
       "defaultValue": "ghcr.io/clemensv/real-time-sources-nina-bbk-amqp:latest",
@@ -232,6 +253,18 @@
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
                 },
                 {
+                  "name": "NINA_BBK_CONNECTION_STRING",
+                  "value": "[parameters('ninaBbkConnectionString')]"
+                },
+                {
+                  "name": "NINA_BBK_STATE_FILE",
+                  "value": "[parameters('ninaBbkStateFile')]"
+                },
+                {
+                  "name": "NINA_BBK_PROVIDERS",
+                  "value": "[parameters('ninaBbkProviders')]"
+                },
+                {
                   "name": "AMQP_CONTENT_MODE",
                   "value": "binary"
                 },
@@ -241,7 +274,7 @@
                 },
                 {
                   "name": "STATE_FILE",
-                  "value": "/mnt/bridge-state/state.json"
+                  "value": "[parameters('ninaBbkStateFile')]"
                 },
                 {
                   "name": "LOG_LEVEL",

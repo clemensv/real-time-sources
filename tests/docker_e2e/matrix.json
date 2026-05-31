@@ -3605,6 +3605,13 @@
       "test_class": "TestHkoHongKongAmqpDockerFlow"
     },
     {
+      "dir": "feeders/nina-bbk",
+      "image": "nina-bbk",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestNinaBbkDockerFlow"
+    },
+    {
       "dir": "feeders/jma-japan",
       "image": "jma-japan-kafka",
       "file": "Dockerfile",

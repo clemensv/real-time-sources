@@ -14,15 +14,21 @@
       "maxLength": 63,
       "minLength": 1
     },
+    "ninaBbkStateFile": {
+      "type": "string",
+      "defaultValue": "/mnt/bridge-state/nina_bbk_state.json",
+      "metadata": {
+        "description": "Path inside the container where the Kafka bridge persists NINA/BBK fetch state."
+      }
+    },
     "eventHubSku": {
       "type": "string",
       "defaultValue": "Standard",
       "allowedValues": [
-        "Basic",
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the kafkaEnabled namespace that backs the NINA/BBK Kafka output."
       }
     },
     "location": {
@@ -167,6 +173,14 @@
                 {
                   "name": "CONNECTION_STRING",
                   "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
+                },
+                {
+                  "name": "NINA_BBK_CONNECTION_STRING",
+                  "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
+                },
+                {
+                  "name": "NINA_BBK_STATE_FILE",
+                  "value": "[parameters('ninaBbkStateFile')]"
                 },
                 {
                   "name": "LOG_LEVEL",

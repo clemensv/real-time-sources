@@ -229,6 +229,6 @@ No source-specific polling cadence, rate limit, or stream characteristic is docu
 
 ## References
 
-- xRegistry manifest: [`xreg/nina_bbk.xreg.json`](xreg/nina_bbk.xreg.json)
+- xRegistry manifest: [`xreg/nina-bbk.xreg.json`](xreg/nina-bbk.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

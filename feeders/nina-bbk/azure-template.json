@@ -21,6 +21,13 @@
       "maxLength": 63,
       "minLength": 1
     },
+    "ninaBbkStateFile": {
+      "type": "string",
+      "defaultValue": "/mnt/bridge-state/nina_bbk_state.json",
+      "metadata": {
+        "description": "Path inside the container where the Kafka bridge persists NINA/BBK fetch state."
+      }
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -116,6 +123,14 @@
                 {
                   "name": "CONNECTION_STRING",
                   "secureValue": "[parameters('connectionString')]"
+                },
+                {
+                  "name": "NINA_BBK_CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionString')]"
+                },
+                {
+                  "name": "NINA_BBK_STATE_FILE",
+                  "value": "[parameters('ninaBbkStateFile')]"
                 },
                 {
                   "name": "LOG_LEVEL",

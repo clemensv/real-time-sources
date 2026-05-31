@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#nina-bbk/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/nina_bbk.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/nina-bbk.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://warnung.bund.de/)
 
 </td></tr></table>
@@ -67,7 +67,7 @@ This bridge provides one reusable feed for common scenarios:
 
 All variants share:
 
-- The xRegistry contract (`xreg/nina_bbk.xreg.json`).
+- The xRegistry contract (`xreg/nina-bbk.xreg.json`).
 - A common upstream acquisition path and normalized event payloads.
 - Stable CloudEvents subject/key identity derived from source-native identifiers.
 

@@ -21,7 +21,7 @@
 [🚀 **Deploy to Azure**](https://clemensv.github.io/real-time-sources#nina-bbk) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/nina_bbk.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/nina-bbk.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://warnung.bund.de/)
 
 </td></tr></table>
@@ -156,8 +156,10 @@ docker run --rm \
 | Variable | Description |
 |---|---|
 | `CONNECTION_STRING` | Event Hubs/Fabric-style connection string for Kafka-mode publishing. |
+| `NINA_BBK_CONNECTION_STRING` | Feeder-prefixed alias for `CONNECTION_STRING`; useful in Azure templates and orchestrators that standardize source-local settings. |
 | `KAFKA_ENABLE_TLS` | Set `false` for local/plain Kafka; default `true`. |
 | `NINA_BBK_MQTT_STATE_FILE` | Source-specific state/resume setting. |
+| `NINA_BBK_PROVIDERS` | Comma-separated list of NINA/BBK upstream providers to ingest (for example `mowas,katwarn,biwapp,dwd,lhp,police`). |
 | `NINA_BBK_STATE_FILE` | Source-specific state/resume setting. |
 
 ### Kafka image
@@ -207,4 +209,4 @@ One deploy button is provided per ARM template file present in this folder:
 
 - [README.md](README.md) — source overview and quick-start guidance.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract and schemas.
-- [`xreg/nina_bbk.xreg.json`](xreg/nina_bbk.xreg.json) — authoritative xRegistry manifest.
+- [`xreg/nina-bbk.xreg.json`](xreg/nina-bbk.xreg.json) — authoritative xRegistry manifest.
