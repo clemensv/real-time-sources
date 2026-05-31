@@ -218,6 +218,18 @@
       "module": "laqn_london"
     },
     {
+      "dir": "feeders/laqn-london",
+      "image": "laqn-london-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "laqn_london_mqtt"
+    },
+    {
+      "dir": "feeders/laqn-london",
+      "image": "laqn-london-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "laqn_london_amqp"
+    },
+    {
       "dir": "feeders/luchtmeetnet-nl",
       "module": "luchtmeetnet_nl"
     },
@@ -1827,6 +1839,20 @@
     {
       "dir": "feeders/laqn-london",
       "test_class": "TestLAQNLondonDockerFlow"
+    },
+    {
+      "dir": "feeders/laqn-london",
+      "image": "laqn-london-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestLaqnLondonMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/laqn-london",
+      "image": "laqn-london-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestLaqnLondonAmqpDockerFlow"
     },
     {
       "dir": "feeders/luchtmeetnet-nl",

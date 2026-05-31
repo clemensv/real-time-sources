@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#laqn-london/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/laqn_london.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/laqn-london.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.londonair.org.uk/)
 
 </td></tr></table>
@@ -199,4 +199,4 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/laqn-london.json
 
 - [README.md](README.md) — source overview, deployment options, and quick starts.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
-- [`xreg/laqn_london.xreg.json`](xreg/laqn_london.xreg.json) — authoritative event contract manifest.
+- [`xreg/laqn-london.xreg.json`](xreg/laqn-london.xreg.json) — authoritative event contract manifest.

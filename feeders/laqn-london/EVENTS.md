@@ -300,6 +300,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## References
 
-- xRegistry manifest: [`xreg/laqn_london.xreg.json`](xreg/laqn_london.xreg.json)
+- xRegistry manifest: [`xreg/laqn-london.xreg.json`](xreg/laqn-london.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

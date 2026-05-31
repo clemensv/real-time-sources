@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#laqn-london/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/laqn_london.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/laqn-london.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.londonair.org.uk/)
 
 </td></tr></table>
@@ -64,7 +64,7 @@ The upstream source is open and operationally useful, but every downstream team 
 All variants share:
 
 - The same upstream poller semantics and dedupe model.
-- The same xRegistry contract in `xreg/laqn_london.xreg.json`.
+- The same xRegistry contract in `xreg/laqn-london.xreg.json`.
 - The same event families in [EVENTS.md](EVENTS.md).
 
 ## Key features
@@ -78,7 +78,7 @@ All variants share:
 
 ```text
 laqn-london/
-  xreg/laqn_london.xreg.json                # shared xRegistry contract
+  xreg/laqn-london.xreg.json                # shared xRegistry contract
   laqn_london/                        # Kafka feeder application
   laqn_london_mqtt/                        # MQTT/UNS feeder application
   laqn_london_amqp/                        # AMQP 1.0 feeder application
