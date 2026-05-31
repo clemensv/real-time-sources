@@ -326,6 +326,10 @@
       "module": "usgs_earthquakes"
     },
     {
+      "dir": "feeders/usgs-geomag",
+      "module": "usgs_geomag"
+    },
+    {
       "dir": "feeders/usgs-iv",
       "module": "usgs_iv"
     },
@@ -2067,6 +2071,10 @@
     {
       "dir": "feeders/usgs-earthquakes",
       "test_class": "TestUSGSEarthquakesDockerFlow"
+    },
+    {
+      "dir": "feeders/usgs-geomag",
+      "test_class": "TestUSGSGeomagDockerFlow"
     },
     {
       "dir": "feeders/usgs-iv",
