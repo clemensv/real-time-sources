@@ -195,6 +195,8 @@ docker run --rm \
 | `MQTT_ENTRA_AUDIENCE` | JWT audience (default `https://eventgrid.azure.net/`). |
 | `MQTT_ENTRA_CLIENT_ID` | User-assigned managed identity client id (optional). |
 | `MQTT_CLIENT_ID` | MQTT client identifier (must be unique per broker). |
+| `JMA_BOSAI_WARNING_MOCK` | Set to `true` to publish deterministic sample warning events instead of polling the live JMA feed. |
+| `JMA_BOSAI_WARNING_MQTT_STATE_FILE` | Path to persisted checkpoint/dedupe state for the MQTT bridge runtime. |
 | `MQTT_CONTENT_MODE` | CloudEvents mode: `binary` (default) or `structured`. |
 
 ### AMQP image variables

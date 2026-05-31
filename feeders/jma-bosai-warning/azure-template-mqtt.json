@@ -41,6 +41,24 @@
       "metadata": {
         "description": "Azure region for all resources."
       }
+    },
+    "jmaBosaiWarningMock": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "true",
+        "false"
+      ],
+      "metadata": {
+        "description": "Set to true to publish deterministic sample JMA Bosai Warning events instead of polling the live upstream API."
+      }
+    },
+    "jmaBosaiWarningMqttStateFile": {
+      "type": "string",
+      "defaultValue": "/mnt/bridge-state/jma-bosai-warning.json",
+      "metadata": {
+        "description": "Path inside the container where the MQTT bridge persists its checkpoint and dedupe state."
+      }
     }
   },
   "variables": {
@@ -138,6 +156,14 @@
                 {
                   "name": "MQTT_PASSWORD",
                   "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "JMA_BOSAI_WARNING_MOCK",
+                  "value": "[parameters('jmaBosaiWarningMock')]"
+                },
+                {
+                  "name": "JMA_BOSAI_WARNING_MQTT_STATE_FILE",
+                  "value": "[parameters('jmaBosaiWarningMqttStateFile')]"
                 },
                 {
                   "name": "LOG_LEVEL",

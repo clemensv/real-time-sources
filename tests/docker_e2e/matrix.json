@@ -2231,6 +2231,13 @@
       "test_class": "TestJmaBosaiVolcanoDockerFlow"
     },
     {
+      "dir": "feeders/jma-bosai-warning",
+      "image": "jma-bosai-warning-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestJmaBosaiWarningDockerFlow"
+    },
+    {
       "dir": "feeders/bafu-hydro",
       "image": "bafu-hydro-amqp",
       "file": "Dockerfile.amqp",
