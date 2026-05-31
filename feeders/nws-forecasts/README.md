@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#nws-forecasts/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/nws_forecasts.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/nws-forecasts.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.weather.gov/)
 
 </td></tr></table>
@@ -65,7 +65,7 @@ This source wraps the upstream NWS Forecast Zones APIs into a contract-first eve
 All variants share:
 
 - The upstream polling runtime in this source folder.
-- The xRegistry contract at `xreg/nws_forecasts.xreg.json`.
+- The xRegistry contract at `xreg/nws-forecasts.xreg.json`.
 - The same CloudEvents event families and identity model.
 
 ## Key features

@@ -273,6 +273,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## References
 
-- xRegistry manifest: [`xreg/nws_forecasts.xreg.json`](xreg/nws_forecasts.xreg.json)
+- xRegistry manifest: [`xreg/nws-forecasts.xreg.json`](xreg/nws-forecasts.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

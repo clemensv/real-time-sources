@@ -1227,6 +1227,12 @@
     },
     {
       "dir": "feeders/nws-forecasts",
+      "image": "nws-forecasts",
+      "file": "Dockerfile",
+      "module": "nws_forecasts"
+    },
+    {
+      "dir": "feeders/nws-forecasts",
       "image": "nws-forecasts-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "nws_forecasts_mqtt"
@@ -3237,6 +3243,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestNoaaGoesAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/nws-forecasts",
+      "image": "nws-forecasts",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestNWSForecastsDockerFlow"
     },
     {
       "dir": "feeders/nws-forecasts",

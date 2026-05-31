@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#nws-forecasts/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/nws_forecasts.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/nws-forecasts.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.weather.gov/)
 
 </td></tr></table>
@@ -191,4 +191,4 @@ docker run --rm   -v "$PWD/state:/state"   -e NWS_FORECAST_STATE_FILE=/state/nws
 
 - [README.md](README.md) — project overview, use cases, and quick-start paths.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract, schemas, and routing metadata.
-- [`xreg/nws_forecasts.xreg.json`](xreg/nws_forecasts.xreg.json) — source contract used for generated producers and EVENTS.md.
+- [`xreg/nws-forecasts.xreg.json`](xreg/nws-forecasts.xreg.json) — source contract used for generated producers and EVENTS.md.
