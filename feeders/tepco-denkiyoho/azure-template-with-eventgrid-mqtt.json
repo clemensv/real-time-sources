@@ -52,7 +52,7 @@
     "tepcoDenkiyohoUrl": {
       "type": "string",
       "metadata": {
-        "description": "Override URL for the TEPCO electricity supply and demand forecast feed."
+        "description": "Override URL for the upstream TEPCO CSV endpoint. Defaults to the published daily CSV URL."
       },
       "defaultValue": "https://www.tepco.co.jp/forecast/html/images/juyo-d1-j.csv"
     }

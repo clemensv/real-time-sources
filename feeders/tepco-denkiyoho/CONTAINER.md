@@ -156,6 +156,7 @@ docker run --rm \
 | Variable | Description |
 |---|---|
 | `CONNECTION_STRING` | Event Hubs/Fabric-style or Kafka-style connection string. |
+| `TEPCO_DENKIYOHO_URL` | Override URL for the upstream TEPCO CSV endpoint. Defaults to the published daily CSV URL. |
 | `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_TOPIC` | Explicit Kafka destination. |
 | `SASL_USERNAME`, `SASL_PASSWORD` | SASL PLAIN credentials when needed. |
 | `KAFKA_ENABLE_TLS` | Set `false` for plaintext Kafka. |
@@ -167,6 +168,7 @@ docker run --rm \
 | Variable | Description |
 |---|---|
 | `MQTT_BROKER_URL` | Broker URL (`mqtt://` or `mqtts://`). |
+| `TEPCO_DENKIYOHO_URL` | Override URL for the upstream TEPCO CSV endpoint. Defaults to the published daily CSV URL. |
 | `MQTT_USERNAME`, `MQTT_PASSWORD` | Optional broker credentials. |
 | `MQTT_CLIENT_ID` | Optional explicit client ID. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured` where supported. |
@@ -177,6 +179,7 @@ docker run --rm \
 | Variable | Description |
 |---|---|
 | `AMQP_BROKER_URL` | Broker URL (`amqp://` or `amqps://`). |
+| `TEPCO_DENKIYOHO_URL` | Override URL for the upstream TEPCO CSV endpoint. Defaults to the published daily CSV URL. |
 | `AMQP_HOST`, `AMQP_PORT`, `AMQP_ADDRESS` | Component-level AMQP endpoint settings. |
 | `AMQP_USERNAME`, `AMQP_PASSWORD` | SASL PLAIN credentials (if used). |
 | `AMQP_AUTH_MODE` | Auth mode where supported (`password`/`entra`/`sas`). |
