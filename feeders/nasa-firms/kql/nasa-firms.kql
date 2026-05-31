@@ -1,0 +1,261 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['NASA.FIRMS.FireDetection'] (
+   [source]: string,
+   [record_id]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [brightness]: real,
+   [bright_t31]: real,
+   [bright_ti4]: real,
+   [bright_ti5]: real,
+   [scan]: real,
+   [track]: real,
+   [acq_date]: datetime,
+   [acq_time]: string,
+   [acq_datetime]: datetime,
+   [satellite]: string,
+   [instrument]: string,
+   [confidence]: string,
+   [confidence_level]: string,
+   [version]: string,
+   [frp]: real,
+   [daynight]: string,
+   [tile]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['NASA.FIRMS.FireDetection'] docstring "{\"description\": \"A single active-fire / thermal-anomaly pixel detection from a NASA FIRMS satellite product (VIIRS or MODIS), normalised across sensors. Each event is one detection in one satellite overpass; the brightness fields populated depend on `instrument`.\"}";
+
+.alter table ['NASA.FIRMS.FireDetection'] column-docstrings (
+   [source]: "{\"description\": \"FIRMS product source identifier for the satellite/sensor that produced this detection, e.g. `VIIRS_SNPP_NRT`, `VIIRS_NOAA20_NRT`, `VIIRS_NOAA21_NRT`, `MODIS_NRT` (and the `*_SP` standard-processing variants). First segment of the stable identity key `{source}/{record_id}` and the leading MQTT topic level. Populated by the bridge from the requested FIRMS Area API source, not from a CSV column.\"}",
+   [record_id]: "{\"description\": \"Deterministic detection identifier \\u2014 second segment of the identity key `{source}/{record_id}`. Computed by the bridge as a stable 16-hex-character SHA-1 digest over the immutable detection tuple (source, latitude, longitude, acq_date, acq_time, satellite). Stable across polling cycles so the same fire pixel re-detected in overlapping day-range windows resolves to the same key and is de-duplicated downstream.\"}",
+   [latitude]: "{\"description\": \"Latitude of the centre of the nominal ~375 m (VIIRS) or ~1 km (MODIS) fire pixel, in decimal degrees (WGS84, positive north). Note this is the pixel centroid, not the precise location of the thermal anomaly within the pixel.\"}",
+   [longitude]: "{\"description\": \"Longitude of the centre of the nominal fire pixel, in decimal degrees (WGS84, positive east). Pixel centroid, not the precise anomaly location.\"}",
+   [brightness]: "{\"description\": \"MODIS only: brightness temperature of the fire pixel measured in MODIS channel 21/22 (~4 \\u00b5m), in Kelvin. Null for VIIRS detections (which report `bright_ti4`/`bright_ti5` instead). Sourced from the MODIS CSV `brightness` column.\"}",
+   [bright_t31]: "{\"description\": \"MODIS only: brightness temperature of the fire pixel measured in MODIS channel 31 (~11 \\u00b5m), in Kelvin. Used with `brightness` to characterise fire intensity and screen false alarms. Null for VIIRS detections. Sourced from the MODIS CSV `bright_t31` column.\"}",
+   [bright_ti4]: "{\"description\": \"VIIRS only: brightness temperature of the fire pixel measured in VIIRS I-4 channel (~3.74 \\u00b5m), in Kelvin. Primary fire channel for VIIRS. Null for MODIS detections (which report `brightness` instead). Sourced from the VIIRS CSV `bright_ti4` column.\"}",
+   [bright_ti5]: "{\"description\": \"VIIRS only: brightness temperature of the fire pixel measured in VIIRS I-5 channel (~11.45 \\u00b5m), in Kelvin. Background/context channel paired with `bright_ti4`. Null for MODIS detections. Sourced from the VIIRS CSV `bright_ti5` column.\"}",
+   [scan]: "{\"description\": \"Along-scan ground dimension of the detected pixel, in kilometres. Grows from nadir toward the swath edge; combined with `track` it gives the actual ground footprint (375 m / 1 km is the nominal nadir resolution only). Sourced from the CSV `scan` column.\"}",
+   [track]: "{\"description\": \"Along-track ground dimension of the detected pixel, in kilometres. Combined with `scan` it gives the actual ground footprint of the detection. Sourced from the CSV `track` column.\"}",
+   [acq_date]: "{\"description\": \"UTC acquisition date of the satellite overpass that produced the detection, formatted `YYYY-MM-DD`. Sourced from the CSV `acq_date` column.\"}",
+   [acq_time]: "{\"description\": \"UTC acquisition time of the satellite overpass, formatted as a zero-padded `HHMM` string (e.g. `0218` = 02:18 UTC). Sourced from the CSV `acq_time` column.\"}",
+   [acq_datetime]: "{\"description\": \"UTC acquisition timestamp combining `acq_date` and `acq_time` into an ISO-8601 instant (`YYYY-MM-DDTHH:MM:00Z`). Derived by the bridge.\"}",
+   [satellite]: "{\"description\": \"Short platform code of the acquiring satellite as reported by FIRMS, e.g. `N` (Suomi-NPP), `1` (NOAA-20/JPSS-1), `2` (NOAA-21/JPSS-2) for VIIRS, and `T` (Terra) / `A` (Aqua) for MODIS. Sourced from the CSV `satellite` column.\"}",
+   [instrument]: "{\"description\": \"Sensor that produced the detection: `VIIRS` or `MODIS`. Discriminates which of the brightness fields are populated. Sourced from the CSV `instrument` column.\"}",
+   [confidence]: "{\"description\": \"Raw upstream detection confidence exactly as delivered by FIRMS, kept verbatim for fidelity. For VIIRS this is a class letter `l` (low), `n` (nominal) or `h` (high); for MODIS it is an integer 0\\u2013100 (percent) rendered as a string. Use the normalised `confidence_level` for filtering across sensors. Sourced from the CSV `confidence` column.\"}",
+   [confidence_level]: "{\"description\": \"Sensor-normalised detection confidence as a routing-safe class: `low`, `nominal`, or `high`. Derived by the bridge: VIIRS `l`/`n`/`h` map directly; MODIS integer maps <30 \\u2192 `low`, 30\\u201380 \\u2192 `nominal`, >80 \\u2192 `high`. Used as an MQTT topic level so consumers can subscribe by confidence.\"}",
+   [version]: "{\"description\": \"Collection and source-processing version of the detection, e.g. `2.0NRT` (Collection 2, near-real-time) or `2.0` (standard processing). Sourced from the CSV `version` column.\"}",
+   [frp]: "{\"description\": \"Fire Radiative Power in megawatts \\u2014 the radiative energy release rate of the detected fire within the pixel, a proxy for combustion intensity and a key OSINT discriminator (a multi-hundred-MW spike differs sharply from routine agricultural burning). Sourced from the CSV `frp` column.\"}",
+   [daynight]: "{\"description\": \"Day/Night flag for the overpass: `D` (daytime) or `N` (nighttime), based on solar elevation at the pixel. Night detections are less prone to solar false alarms. Sourced from the CSV `daynight` column.\"}",
+   [tile]: "{\"description\": \"Coarse 10\\u00b0 \\u00d7 10\\u00b0 geographic tile label of the form `lat<LL>_lon<LL>` (south-west corner, e.g. `lat30_lon-120`) covering the detection. Derived by the bridge purely as an MQTT topic level so consumers can geofence a region of interest without per-message coordinate parsing.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['NASA.FIRMS.FireDetection'] ingestion json mapping "NASA.FIRMS.FireDetection_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "source", "path": "$.source"},
+  {"column": "record_id", "path": "$.record_id"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "brightness", "path": "$.brightness"},
+  {"column": "bright_t31", "path": "$.bright_t31"},
+  {"column": "bright_ti4", "path": "$.bright_ti4"},
+  {"column": "bright_ti5", "path": "$.bright_ti5"},
+  {"column": "scan", "path": "$.scan"},
+  {"column": "track", "path": "$.track"},
+  {"column": "acq_date", "path": "$.acq_date"},
+  {"column": "acq_time", "path": "$.acq_time"},
+  {"column": "acq_datetime", "path": "$.acq_datetime"},
+  {"column": "satellite", "path": "$.satellite"},
+  {"column": "instrument", "path": "$.instrument"},
+  {"column": "confidence", "path": "$.confidence"},
+  {"column": "confidence_level", "path": "$.confidence_level"},
+  {"column": "version", "path": "$.version"},
+  {"column": "frp", "path": "$.frp"},
+  {"column": "daynight", "path": "$.daynight"},
+  {"column": "tile", "path": "$.tile"},
+]
+```
+
+.create-or-alter table ['NASA.FIRMS.FireDetection'] ingestion json mapping "NASA.FIRMS.FireDetection_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "source", "path": "$.data.source"},
+  {"column": "record_id", "path": "$.data.record_id"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "brightness", "path": "$.data.brightness"},
+  {"column": "bright_t31", "path": "$.data.bright_t31"},
+  {"column": "bright_ti4", "path": "$.data.bright_ti4"},
+  {"column": "bright_ti5", "path": "$.data.bright_ti5"},
+  {"column": "scan", "path": "$.data.scan"},
+  {"column": "track", "path": "$.data.track"},
+  {"column": "acq_date", "path": "$.data.acq_date"},
+  {"column": "acq_time", "path": "$.data.acq_time"},
+  {"column": "acq_datetime", "path": "$.data.acq_datetime"},
+  {"column": "satellite", "path": "$.data.satellite"},
+  {"column": "instrument", "path": "$.data.instrument"},
+  {"column": "confidence", "path": "$.data.confidence"},
+  {"column": "confidence_level", "path": "$.data.confidence_level"},
+  {"column": "version", "path": "$.data.version"},
+  {"column": "frp", "path": "$.data.frp"},
+  {"column": "daynight", "path": "$.data.daynight"},
+  {"column": "tile", "path": "$.data.tile"},
+]
+```
+
+.drop materialized-view ['NASA.FIRMS.FireDetectionLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['NASA.FIRMS.FireDetectionLatest'] on table ['NASA.FIRMS.FireDetection'] {
+    ['NASA.FIRMS.FireDetection'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['NASA.FIRMS.FireDetection'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NASA.FIRMS.FireDetection') | project['source'] = tostring(data.['source']),['record_id'] = tostring(data.['record_id']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['brightness'] = toreal(data.['brightness']),['bright_t31'] = toreal(data.['bright_t31']),['bright_ti4'] = toreal(data.['bright_ti4']),['bright_ti5'] = toreal(data.['bright_ti5']),['scan'] = toreal(data.['scan']),['track'] = toreal(data.['track']),['acq_date'] = todatetime(data.['acq_date']),['acq_time'] = tostring(data.['acq_time']),['acq_datetime'] = todatetime(data.['acq_datetime']),['satellite'] = tostring(data.['satellite']),['instrument'] = tostring(data.['instrument']),['confidence'] = tostring(data.['confidence']),['confidence_level'] = tostring(data.['confidence_level']),['version'] = tostring(data.['version']),['frp'] = toreal(data.['frp']),['daynight'] = tostring(data.['daynight']),['tile'] = tostring(data.['tile']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['NASA.FIRMS.DataAvailability'] (
+   [source]: string,
+   [record_id]: string,
+   [data_id]: string,
+   [min_date]: datetime,
+   [max_date]: datetime,
+   [instrument]: string,
+   [satellite]: string,
+   [resolution_m]: real,
+   [retrieved_at]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['NASA.FIRMS.DataAvailability'] docstring "{\"description\": \"Reference record describing one FIRMS product source: its current data-availability window (min/max date), sensor family, platform, and nominal resolution. Emitted at bridge startup and refreshed periodically so consumers can interpret detection freshness and coverage on the same topic as the telemetry.\"}";
+
+.alter table ['NASA.FIRMS.DataAvailability'] column-docstrings (
+   [source]: "{\"description\": \"FIRMS product source identifier this coverage record describes, e.g. `VIIRS_SNPP_NRT`, `VIIRS_NOAA20_NRT`, `VIIRS_NOAA21_NRT`, `MODIS_NRT`. First segment of the identity key `{source}/{record_id}`; joins to `FireDetection.source`.\"}",
+   [record_id]: "{\"description\": \"Constant literal `coverage` \\u2014 the second identity-key segment for the single reference record per source (`{source}/coverage`). Keeps the reference family on the same `{source}/{record_id}` shape and topic as telemetry while remaining a stable, idempotent per-source key.\"}",
+   [data_id]: "{\"description\": \"Raw FIRMS data-availability product identifier as returned by the `/api/data_availability` endpoint (the CSV `data_id` column), e.g. `VIIRS_SNPP_NRT`. Usually equal to `source`; preserved verbatim.\"}",
+   [min_date]: "{\"description\": \"Earliest UTC date (`YYYY-MM-DD`) for which this FIRMS source currently has data available via the Area API, from the `min_date` column of the data-availability response.\"}",
+   [max_date]: "{\"description\": \"Most recent UTC date (`YYYY-MM-DD`) for which this FIRMS source currently has data available \\u2014 the effective freshness horizon of the source, from the `max_date` column.\"}",
+   [instrument]: "{\"description\": \"Sensor family of the source: `VIIRS` or `MODIS`. Derived by the bridge from the source identifier.\"}",
+   [satellite]: "{\"description\": \"Human-readable platform name(s) carried by the source, e.g. `Suomi-NPP`, `NOAA-20`, `NOAA-21`, `Terra`, `Aqua`. Derived by the bridge from the source identifier.\"}",
+   [resolution_m]: "{\"description\": \"Nominal nadir spatial resolution of the source sensor in metres (375 for VIIRS I-band fire product, 1000 for MODIS). Static sensor fact supplied by the bridge for downstream scaling/symbology.\"}",
+   [retrieved_at]: "{\"description\": \"UTC ISO-8601 timestamp at which the bridge fetched this availability record.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['NASA.FIRMS.DataAvailability'] ingestion json mapping "NASA.FIRMS.DataAvailability_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "source", "path": "$.source"},
+  {"column": "record_id", "path": "$.record_id"},
+  {"column": "data_id", "path": "$.data_id"},
+  {"column": "min_date", "path": "$.min_date"},
+  {"column": "max_date", "path": "$.max_date"},
+  {"column": "instrument", "path": "$.instrument"},
+  {"column": "satellite", "path": "$.satellite"},
+  {"column": "resolution_m", "path": "$.resolution_m"},
+  {"column": "retrieved_at", "path": "$.retrieved_at"},
+]
+```
+
+.create-or-alter table ['NASA.FIRMS.DataAvailability'] ingestion json mapping "NASA.FIRMS.DataAvailability_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "source", "path": "$.data.source"},
+  {"column": "record_id", "path": "$.data.record_id"},
+  {"column": "data_id", "path": "$.data.data_id"},
+  {"column": "min_date", "path": "$.data.min_date"},
+  {"column": "max_date", "path": "$.data.max_date"},
+  {"column": "instrument", "path": "$.data.instrument"},
+  {"column": "satellite", "path": "$.data.satellite"},
+  {"column": "resolution_m", "path": "$.data.resolution_m"},
+  {"column": "retrieved_at", "path": "$.data.retrieved_at"},
+]
+```
+
+.drop materialized-view ['NASA.FIRMS.DataAvailabilityLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['NASA.FIRMS.DataAvailabilityLatest'] on table ['NASA.FIRMS.DataAvailability'] {
+    ['NASA.FIRMS.DataAvailability'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['NASA.FIRMS.DataAvailability'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'NASA.FIRMS.DataAvailability') | project['source'] = tostring(data.['source']),['record_id'] = tostring(data.['record_id']),['data_id'] = tostring(data.['data_id']),['min_date'] = todatetime(data.['min_date']),['max_date'] = todatetime(data.['max_date']),['instrument'] = tostring(data.['instrument']),['satellite'] = tostring(data.['satellite']),['resolution_m'] = toreal(data.['resolution_m']),['retrieved_at'] = todatetime(data.['retrieved_at']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

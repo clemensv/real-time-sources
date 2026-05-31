@@ -89,6 +89,10 @@ def usgs_earthquakes_image():
     return build_image('usgs-earthquakes')
 
 @pytest.fixture(scope='module')
+def nasa_firms_image():
+    return build_image('nasa-firms')
+
+@pytest.fixture(scope='module')
 def nifc_usa_wildfires_image():
     return build_image('nifc-usa-wildfires')
 
@@ -918,6 +922,28 @@ class TestUSGSEarthquakesDockerFlow:
             reference_types=None,
             telemetry_types=['Earthquakes.Event'],
             min_messages=1,
+        )
+
+
+# ---------------------------------------------------------------------------
+# NASA FIRMS Active Fire (reference + telemetry; needs FIRMS_MAP_KEY)
+# ---------------------------------------------------------------------------
+
+@pytest.mark.skipif(
+    not os.environ.get('FIRMS_MAP_KEY'),
+    reason='FIRMS_MAP_KEY not set; live NASA FIRMS ingestion unavailable',
+)
+class TestNASAFIRMSDockerFlow:
+    TOPIC = 'test-nasa-firms'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, nasa_firms_image):
+        _run_kafka_flow_test(
+            kafka, nasa_firms_image, self.TOPIC,
+            reference_types=['DataAvailability'],
+            telemetry_types=['FireDetection'],
+            extra_env={'FIRMS_MAP_KEY': os.environ['FIRMS_MAP_KEY']},
+            min_messages=1,
+            timeout=300,
         )
 
 

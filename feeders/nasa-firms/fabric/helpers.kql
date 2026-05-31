@@ -1,0 +1,101 @@
+// ===========================================================================
+// NASA FIRMS Fabric helper functions (OSINT global fire map)
+// ---------------------------------------------------------------------------
+// Shared KQL helpers consumed by the NASA FIRMS global Fabric Map. Apply to the
+// `nasa-firms` KQL database (the one fed by the nasa-firms eventstream). These
+// are ADDITIVE to the generated `kql/nasa-firms.kql` schema and never alter the
+// generated tables, mappings, materialized views, or update policies.
+// Idempotent: every function is .create-or-alter.
+//
+//   FireColor(frp)            - scalar: Fire Radiative Power (MW) -> hex colour
+//                               on a yellow(low)->dark-red(extreme) heat ramp.
+//   FireRadius(frp)           - scalar: FRP (MW) -> bubble radius (px) for the
+//                               symbol layer so intense fires read larger.
+//   ConfidenceRank(level)     - scalar: low/nominal/high -> 1/2/3 ordinal.
+//   RecentFireDetections(...) - raw detections within a lookback window,
+//                               projected to a GeoJSON Point `geometry` column
+//                               plus OSINT attributes (FRP, confidence, day/
+//                               night, satellite, source) for the symbol layer.
+//   FireHeat(...)             - same detection set projected for the heatmap
+//                               layer with an FRP-derived `weight` column.
+//   FireHotspots(...)         - detections aggregated onto a coarse grid for a
+//                               cluster/intensity summary (count + total FRP).
+// ===========================================================================
+
+.create-or-alter function with (docstring="Fire Radiative Power (MW) -> hex colour on a yellow(low)->dark-red(extreme) heat ramp.", folder="nasa-firms/reference") FireColor(frp:real) {
+    case(
+        isnull(frp),   "#FFE08A",
+        frp < 5,       "#FFE08A",
+        frp < 20,      "#FEB24C",
+        frp < 50,      "#FD8D3C",
+        frp < 100,     "#FC4E2A",
+        frp < 300,     "#E31A1C",
+        frp < 1000,    "#BD0026",
+        "#800026")
+}
+
+.create-or-alter function with (docstring="Fire Radiative Power (MW) -> symbol bubble radius (px).", folder="nasa-firms/reference") FireRadius(frp:real) {
+    case(
+        isnull(frp),   4.0,
+        frp < 5,       4.0,
+        frp < 20,      6.0,
+        frp < 50,      8.0,
+        frp < 100,     10.0,
+        frp < 300,     13.0,
+        frp < 1000,    16.0,
+        20.0)
+}
+
+.create-or-alter function with (docstring="FIRMS confidence level (low/nominal/high) -> ordinal rank 1/2/3.", folder="nasa-firms/reference") ConfidenceRank(level:string) {
+    case(
+        level == "high",    3,
+        level == "nominal", 2,
+        level == "low",     1,
+        0)
+}
+
+.create-or-alter function with (docstring="Recent FIRMS active-fire detections as GeoJSON Point markers for the Fabric Map symbol layer. lookback is an ingestion-time window (default 24h); min_confidence filters to low/nominal/high ordinal (0 = all).", folder="nasa-firms/map") RecentFireDetections(lookback:timespan = 24h, min_confidence:int = 0) {
+    ['NASA.FIRMS.FireDetection']
+    | where ___time > ago(lookback)
+    | where ConfidenceRank(confidence_level) >= min_confidence
+    | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(longitude, latitude))
+    | extend fill_color = FireColor(frp)
+    | extend radius = FireRadius(frp)
+    | extend label = strcat(toupper(tostring(instrument)), "  ", tostring(round(frp, 1)), " MW  ", confidence_level)
+    | project geometry, latitude, longitude, frp, brightness, confidence_level,
+              daynight, satellite, instrument, source, acq_datetime, fill_color, radius, label
+}
+
+.create-or-alter function with (docstring="Recent FIRMS detections projected for the Fabric Map heatmap layer with an FRP-derived weight (0..1).", folder="nasa-firms/map") FireHeat(lookback:timespan = 24h) {
+    ['NASA.FIRMS.FireDetection']
+    | where ___time > ago(lookback)
+    | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(longitude, latitude))
+    | extend weight = todouble(min_of(1.0, (coalesce(frp, 1.0) / 200.0) + 0.1))
+    | project geometry, weight, frp, confidence_level
+}
+
+.create-or-alter function with (docstring="Recent FIRMS detections aggregated onto a coarse lat/lon grid (default 1 deg) for an intensity/cluster summary: detection count and total FRP per cell.", folder="nasa-firms/map") FireHotspots(lookback:timespan = 24h, cell:real = 1.0) {
+    ['NASA.FIRMS.FireDetection']
+    | where ___time > ago(lookback)
+    | extend glat = floor(latitude / cell, 1) * cell + cell / 2.0
+    | extend glon = floor(longitude / cell, 1) * cell + cell / 2.0
+    | summarize detections = count(), total_frp = sum(coalesce(frp, 0.0)),
+                max_frp = max(frp), high_conf = countif(confidence_level == "high")
+              by glat, glon
+    | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(glon, glat))
+    | extend fill_color = FireColor(total_frp / 5.0)
+    | extend label = strcat(tostring(detections), " fires  ", tostring(round(total_frp, 0)), " MW")
+    | project geometry, glat, glon, detections, total_frp, max_frp, high_conf, fill_color, label
+}
+
+// ===========================================================================
+// Additive operational policies (KQL Optimizer review, HIGH finding).
+// Not generator output. A 7-day hot cache comfortably covers the 24-72h OSINT
+// dashboard window plus backfill headroom; the tiny reference table/view is
+// pinned for a year. These are applied at column 0 so the post-deploy splitter
+// treats each as its own statement.
+// ===========================================================================
+.alter table ['NASA.FIRMS.FireDetection'] policy caching hot = 7d
+.alter materialized-view ['NASA.FIRMS.FireDetectionLatest'] policy caching hot = 7d
+.alter table ['NASA.FIRMS.DataAvailability'] policy caching hot = 365d
+.alter materialized-view ['NASA.FIRMS.DataAvailabilityLatest'] policy caching hot = 365d

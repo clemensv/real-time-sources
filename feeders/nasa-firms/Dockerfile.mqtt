@@ -1,0 +1,25 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/nasa-firms"
+LABEL org.opencontainers.image.title="NASA FIRMS → MQTT/UNS bridge"
+LABEL org.opencontainers.image.description="Polls global NASA FIRMS VIIRS/MODIS active-fire detections and publishes MQTT 5.0 binary-mode CloudEvents into geo/fire/firms/{source}/{confidence_level}/{tile}/detection topics."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/nasa-firms/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+LABEL source.transport="mqtt"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./nasa_firms_mqtt_producer/nasa_firms_mqtt_producer_data \
+ && pip install --no-cache-dir ./nasa_firms_mqtt_producer/nasa_firms_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./nasa_firms_producer/nasa_firms_producer_data \
+ && pip install --no-cache-dir . \
+ && pip install --no-cache-dir ./nasa_firms_mqtt
+
+ENV FIRMS_MAP_KEY=""
+ENV MQTT_BROKER_URL=""
+
+CMD ["python", "-m", "nasa_firms_mqtt", "feed"]
