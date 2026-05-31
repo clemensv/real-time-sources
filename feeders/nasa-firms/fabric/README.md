@@ -64,7 +64,23 @@ python ./feeders/nasa-firms/fabric/build_map.py --workspace <ws-guid> --db <kql-
 | ----- | ------ | --------- | ------- | ------- |
 | **nasa-firms hotspots** | `FireHotspots(72h, 1.0)` | Grid-cell bubbles sized by detection count, coloured by total FRP (yellow→dark-red) | on, world→zoom 5 | Spot the world's most active fire regions at a glance. |
 | **nasa-firms detections** | `RecentFireDetections(24h, 0)` | One bubble per detection, sized + coloured by FRP, tooltip with instrument / satellite / confidence / day-night / acquisition time | on, zoom 3–8 | Reveal where a fire complex sits once zoomed in. |
-| **nasa-firms footprints** | `FireFootprints(24h, 0)` | One filled polygon per detection — the true `scan`×`track` ground rectangle of the satellite pixel — coloured by FRP, outlined, tooltip adds the scan/track dimensions | on, zoom ≥ 8 | Show the real ground extent of each VIIRS/MODIS thermal-anomaly pixel at high zoom. |
+| **nasa-firms footprints** | `FireFootprints(24h, 0)` | One filled polygon per detection — the true `scan`×`track` ground rectangle of the satellite pixel — coloured by FRP, outlined, tooltip with confidence / satellite / acquisition time | on, zoom ≥ 8 | Show the real ground extent of each VIIRS/MODIS thermal-anomaly pixel at high zoom. |
+
+> [!IMPORTANT]
+> **Footprint layer scale limit.** A live Kusto map layer runs its query
+> **globally** — Fabric does **not** inject the map viewport/zoom into the KQL,
+> and `minZoom` only gates *rendering*, not the query — against a **hard 20 MB
+> result cap** that cannot be raised. A global footprint set (~70k+ polygons/day)
+> is ~39 MB and trips that cap. The footprint layer therefore keeps the payload
+> small (5-dp-rounded polygons, trimmed columns) **and bounds the rows to the top
+> 35 000 detections by FRP** (the most intense recent fires), which fits in
+> ~14 MB. This is a deliberate mitigation, not a true detail layer: zooming into
+> a region whose fires are all low-FRP can show few/no footprints because the
+> global top-N may exclude them. The **durable** Fabric pattern for an unbounded,
+> genuinely viewport-scoped polygon layer is a **PMTiles vector tileset** (tiles
+> are fetched per-viewport, so there is no 20 MB query cap); build it locally in
+> Python (the Fabric `BuildTileset` polygon path is broken) and wire it as a
+> tile layer source. Tracked as a follow-up.
 
 A dark global basemap (`grayscale_dark`, centred near the equator) makes the
 fire colours read clearly. Both layers refresh every 60 s. Tune the lookback

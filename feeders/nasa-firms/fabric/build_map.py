@@ -15,7 +15,12 @@ Two Kusto-backed layers give an OSINT-oriented global view of active fires:
   3. **Fire pixel footprints** (default-on, high zoom >= 8) — one filled GeoJSON
      polygon per detection (`FireFootprints()`), the true scan x track ground
      rectangle of the satellite pixel rather than a point, so the real extent of
-     each thermal anomaly is visible at high zoom.
+     each thermal anomaly is visible at high zoom. A live Kusto map layer runs
+     its query globally with no viewport binding against a hard 20 MB result
+     cap, so this layer is bounded to the most intense recent footprints (top
+     35k by FRP, 5-dp-rounded geometry, trimmed columns). For an unbounded,
+     viewport-scoped polygon layer the durable Fabric pattern is a PMTiles
+     vector tileset (see README) rather than a live Kusto layer.
 
 Both layers query helper functions applied to the live DB by
 `feeders/nasa-firms/fabric/helpers.kql`.
@@ -106,8 +111,13 @@ KQL_DETECTIONS = """RecentFireDetections(24h, 0)
 
 # True pixel footprints (scan x track rectangle) as GeoJSON polygons; shown at
 # high zoom where the real ground extent of each VIIRS/MODIS pixel is visible.
+# A live Kusto map layer runs its query GLOBALLY (no viewport binding) against a
+# hard 20 MB result cap, so the payload is kept small: 5-dp-rounded polygons, a
+# trimmed column set, and a top-N-by-FRP guard that bounds the row count
+# regardless of how busy the fire day is (the most intense fires are kept).
 KQL_FOOTPRINTS = """FireFootprints(24h, 0)
-| project geometry, label, frp, brightness, confidence_level, daynight, satellite, instrument, source, scan, track, acq_datetime, fill_color
+| top 35000 by coalesce(frp, 0.0) desc
+| project geometry, label, frp, confidence_level, satellite, acq_datetime, fill_color
 """
 
 
@@ -191,8 +201,8 @@ def footprints_layer() -> dict:
             "dataLabelOptions": {"enabled": False, "size": 11, "color": "#f5f5f5",
                                   "textStrokeColor": "#000000", "textStrokeWidth": 2.5,
                                   "allowOverlap": True},
-            "tooltipKeys": ["label", "frp", "brightness", "confidence_level", "daynight",
-                            "satellite", "instrument", "source", "scan", "track", "acq_datetime"],
+            "tooltipKeys": ["label", "frp", "confidence_level", "satellite",
+                            "acq_datetime"],
             "enablePopups": True,
         },
     }
