@@ -104,7 +104,7 @@ const SOURCES = [
   { id: "gtfs", name: "GTFS Realtime", cat: "Transport", key: false, desc: "Global — 1,000+ transit agencies, vehicles, trips, alerts", notebook: true, mqtt: true, amqp: true, amqpSb: false },
   { id: "madrid-traffic", name: "Madrid Traffic", cat: "Transport", key: false, desc: "Madrid, Spain — ~4,000 sensors, Informo", notebook: true, mqtt: true, amqp: true, amqpSb: false },
   { id: "ndw-road-traffic", name: "NDW Road Traffic", cat: "Transport", key: false, desc: "Netherlands — national road traffic, DATEX II XML", notebook: true, mqtt: true, amqp: true, amqpSb: false },
-  { id: "nextbus", name: "Nextbus", cat: "Transport", key: true, desc: "North America — public transit arrivals", kql: false, mqtt: true, amqp: true, amqpSb: false },
+  { id: "nextbus", name: "Nextbus", cat: "Transport", key: true, desc: "North America — public transit arrivals", kql: false, notebook: true, mqtt: true, amqp: true, amqpSb: false },
   { id: "paris-bicycle-counters", name: "Paris Bicycle Counters", cat: "Transport", key: false, desc: "Paris — ~141 counting stations, hourly counts", notebook: true, mqtt: true, amqp: true },
   { id: "seattle-street-closures", name: "Seattle Street Closures", cat: "Transport", key: false, desc: "Seattle, WA — permit-driven street closure windows", notebook: true, mqtt: true, amqp: true, amqpSb: false },
   { id: "tfl-road-traffic", name: "TfL Road Traffic", cat: "Transport", key: false, desc: "London, UK — road corridor status and disruptions", kql: false, mqtt: true, amqp: true, kafka: false },
