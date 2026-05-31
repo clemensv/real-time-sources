@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#usgs-iv/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/codes.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/usgs-iv.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://waterdata.usgs.gov/)
 
 </td></tr></table>
@@ -66,7 +66,7 @@ This bridge publishes the USGS Instantaneous Values source as a transport-agnost
 All variants share:
 
 - The same upstream polling logic and dedupe state model.
-- The same xRegistry contract (`xreg/usgs_iv.xreg.json`).
+- The same xRegistry contract (`xreg/usgs-iv.xreg.json`).
 - The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
 
 ## Key features
@@ -81,7 +81,7 @@ All variants share:
 
 ```text
 usgs-iv/
-  xreg/usgs_iv.xreg.json                 # shared xRegistry contract
+  xreg/usgs-iv.xreg.json                 # shared xRegistry contract
   usgs_iv/
   usgs_iv_amqp/
   usgs_iv_amqp_producer/

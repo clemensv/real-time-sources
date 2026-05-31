@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#usgs-iv/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/codes.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/usgs-iv.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://waterdata.usgs.gov/)
 
 </td></tr></table>
@@ -216,4 +216,4 @@ docker run --rm \
 
 - [README.md](README.md) — project overview and deployment options.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
-- [`xreg/usgs_iv.xreg.json`](xreg/usgs_iv.xreg.json) — source contract used to generate producer bindings.
+- [`xreg/usgs-iv.xreg.json`](xreg/usgs-iv.xreg.json) — source contract used to generate producer bindings.
