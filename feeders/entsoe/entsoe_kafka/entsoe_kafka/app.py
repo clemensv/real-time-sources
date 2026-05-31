@@ -159,7 +159,11 @@ def main():
         bootstrap=args.kafka_bootstrap_servers; topic=args.kafka_topic; user=args.sasl_username; pwd=args.sasl_password; cfg={}
     if not bootstrap: raise SystemExit('Kafka bootstrap servers required')
     if not topic: raise SystemExit('Kafka topic required')
-    kafka_config={'bootstrap.servers': bootstrap, 'enable.idempotence': 'true', 'acks': 'all', 'compression.type': 'lz4', 'linger.ms': '20'}; kafka_config.update({k:v for k,v in cfg.items() if k not in ('kafka_topic',)})
+    kafka_config={'bootstrap.servers': bootstrap}; kafka_config.update({k:v for k,v in cfg.items() if k not in ('kafka_topic',)})
+    if args.connection_string:
+        # Azure Event Hubs / Fabric Event Stream Kafka endpoints reject the
+        # idempotent producer (UNSUPPORTED_FOR_MESSAGE_FORMAT); disable it.
+        kafka_config['enable.idempotence'] = False
     if user and pwd:
         kafka_config.update({'sasl.mechanisms':'PLAIN','security.protocol':'SASL_SSL' if os.getenv('KAFKA_ENABLE_TLS','true').lower() not in ('false','0','no') else 'SASL_PLAINTEXT','sasl.username':user,'sasl.password':pwd})
     elif os.getenv('KAFKA_ENABLE_TLS','true').lower() not in ('false','0','no'):

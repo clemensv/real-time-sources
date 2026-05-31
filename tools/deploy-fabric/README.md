@@ -76,8 +76,14 @@ chooses to no-op should `exit 0` so the bootstrap remains green.
 If the hook throws, the deployment is treated as failed (re-run with
 `-SkipPostDeployHook` to bypass and re-run the hook manually later).
 
-Example: see [`pegelonline/fabric/post-deploy.ps1`](../../pegelonline/fabric/post-deploy.ps1)
-(wires a Fabric Map item and ingests static river-segment reference data).
+Examples:
+
+* [`pegelonline/fabric/post-deploy.ps1`](../../feeders/pegelonline/fabric/post-deploy.ps1)
+  — wires a Fabric Map item and ingests static river-segment reference data.
+* [`entsoe/fabric/post-deploy.ps1`](../../feeders/entsoe/fabric/post-deploy.ps1)
+  — applies the shared KQL helper functions and builds both a 3-page
+  Real-Time Dashboard and a cross-border-flow Map
+  (see [`feeders/entsoe/fabric/README.md`](../../feeders/entsoe/fabric/README.md)).
 
 ## Prerequisites
 
