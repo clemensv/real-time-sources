@@ -77,7 +77,7 @@ const SOURCES = [
   { id: "jma-bosai-quake", name: "JMA Bosai Earthquake", cat: "Disasters", key: false, desc: "Japan — JMA earthquake / tsunami / hypocenter feeds", notebook: true, mqtt: true, amqp: true, kafka: false },
   { id: "jma-bosai-volcano", name: "JMA Bosai Volcano", cat: "Disasters", key: false, desc: "Japan — JMA volcanic activity bulletins and alerts", notebook: true, mqtt: true, amqp: true, kafka: false },
   { id: "jma-bosai-warning", name: "JMA Bosai Warning", cat: "Disasters", key: false, desc: "Japan — JMA weather warnings and advisories", notebook: true, mqtt: true, amqp: true, kafka: false },
-  { id: "nifc-usa-wildfires", name: "NIFC USA Wildfires", cat: "Disasters", key: false, desc: "United States — active wildfire incidents, NIFC", mqtt: true, amqp: true },
+  { id: "nifc-usa-wildfires", name: "NIFC USA Wildfires", cat: "Disasters", key: false, desc: "United States — active wildfire incidents, NIFC", notebook: true, mqtt: true, amqp: true },
   { id: "nina-bbk", name: "NINA/BBK", cat: "Disasters", key: false, desc: "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police", mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
   { id: "ptwc-tsunami", name: "PTWC Tsunami", cat: "Disasters", key: false, desc: "Pacific and Atlantic — NOAA tsunami bulletins", mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
   { id: "seattle-911", name: "Seattle Fire 911", cat: "Disasters", key: false, desc: "Seattle, WA — real-time fire dispatch incidents", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
