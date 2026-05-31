@@ -41,6 +41,13 @@
       "metadata": {
         "description": "Azure region for all resources."
       }
+    },
+    "jmaBosaiQuakeMqttStateFile": {
+      "type": "string",
+      "defaultValue": "/mnt/bridge-state/jma-bosai-quake.json",
+      "metadata": {
+        "description": "Path inside the container where the MQTT bridge persists its checkpoint and dedupe state."
+      }
     }
   },
   "variables": {
@@ -138,6 +145,10 @@
                 {
                   "name": "MQTT_PASSWORD",
                   "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "JMA_BOSAI_QUAKE_MQTT_STATE_FILE",
+                  "value": "[parameters('jmaBosaiQuakeMqttStateFile')]"
                 },
                 {
                   "name": "LOG_LEVEL",

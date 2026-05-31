@@ -32,7 +32,7 @@
       "type": "string",
       "defaultValue": "jma-bosai-quake",
       "metadata": {
-        "description": "Destination Kafka topic."
+        "description": "Kafka topic name on the existing broker or Event Hubs / Fabric endpoint that receives JMA Bosai Quake CloudEvents."
       }
     },
     "pollingInterval": {

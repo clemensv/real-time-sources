@@ -51,6 +51,13 @@
       "metadata": {
         "description": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build."
       }
+    },
+    "jmaBosaiQuakeMqttStateFile": {
+      "type": "string",
+      "defaultValue": "/mnt/bridge-state/jma-bosai-quake.json",
+      "metadata": {
+        "description": "Path inside the container where the MQTT bridge persists its checkpoint and dedupe state."
+      }
     }
   },
   "variables": {
@@ -211,6 +218,10 @@
                 {
                   "name": "MQTT_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
+                },
+                {
+                  "name": "JMA_BOSAI_QUAKE_MQTT_STATE_FILE",
+                  "value": "[parameters('jmaBosaiQuakeMqttStateFile')]"
                 },
                 { "name": "LOG_LEVEL", "value": "INFO" },
                 { "name": "PYTHONUNBUFFERED", "value": "1" }
