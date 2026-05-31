@@ -32,3 +32,7 @@ class Test_StationTypeenum(unittest.TestCase):
         self.assertEqual(StationTypeenum.A.value, 'A')
         self.assertEqual(StationTypeenum.B.value, 'B')
         self.assertEqual(StationTypeenum.C.value, 'C')
+        self.assertEqual(StationTypeenum.D.value, 'D')
+        self.assertEqual(StationTypeenum.E.value, 'E')
+        self.assertEqual(StationTypeenum.F.value, 'F')
+        self.assertEqual(StationTypeenum.G.value, 'G')

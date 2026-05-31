@@ -1,6 +1,6 @@
-from .stationtypeenum import StationTypeenum
 from .eventenum import EventEnum
-from .station import Station
 from .observation import Observation
+from .stationtypeenum import StationTypeenum
+from .station import Station
 
-__all__ = ["StationTypeenum", "EventEnum", "Station", "Observation"]
+__all__ = ["EventEnum", "Observation", "StationTypeenum", "Station"]

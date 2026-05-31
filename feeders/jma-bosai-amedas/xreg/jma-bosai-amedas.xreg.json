@@ -278,14 +278,22 @@
                               "enum": [
                                 "A",
                                 "B",
-                                "C"
+                                "C",
+                                "D",
+                                "E",
+                                "F",
+                                "G"
                               ],
                               "descriptions": {
                                 "A": "JMA AMeDAS capability tier A station, typically a major station with pressure and broader meteorological observations.",
                                 "B": "JMA AMeDAS capability tier B station.",
-                                "C": "JMA AMeDAS capability tier C station, commonly an automated regional station with a smaller measurement set."
+                                "C": "JMA AMeDAS capability tier C station, commonly an automated regional station with a smaller measurement set.",
+                                "D": "JMA AMeDAS capability tier D station as published in the live Bosai station table.",
+                                "E": "JMA AMeDAS capability tier E station as published in the live Bosai station table.",
+                                "F": "JMA AMeDAS capability tier F station as published in the live Bosai station table.",
+                                "G": "JMA AMeDAS capability tier G station as published in the Bosai station table. These special-purpose stations expose a non-standard measurement mix compared with the core A/B/C network."
                               },
-                              "description": "JMA AMeDAS station capability tier as published in the station table. The tier controls which measurements may be emitted for a station."
+                              "description": "JMA AMeDAS station capability tier as published in the live Bosai station table. The tier controls which measurements may be emitted for a station, and the current feed uses codes A through G."
                             },
                             "elems_bitmask": {
                               "type": "string",

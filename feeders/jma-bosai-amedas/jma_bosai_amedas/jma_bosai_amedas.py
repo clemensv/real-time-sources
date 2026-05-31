@@ -150,7 +150,7 @@ def _tuple_value(payload: dict, key: str) -> tuple[Any, Any]:
         return None, None
     value = item[0]
     qc = item[-1] if len(item) > 1 else None
-    return (None if value is None else str(value), None if qc is None else str(qc))
+    return value, qc
 
 
 def _measurement_kwargs() -> dict[str, Any]:
@@ -198,10 +198,10 @@ def parse_observation(station_code: str, payload: dict[str, Any], observed_at_lo
     values["normal_pressure_qc_flag"] = qc
     wind = payload.get("wind")
     if isinstance(wind, list) and len(wind) >= 3:
-        values["wind_speed"] = None if wind[0] is None else str(wind[0])
+        values["wind_speed"] = wind[0]
         values["wind_direction"] = wind_direction_to_degrees(wind[1])
-        values["wind_speed_qc_flag"] = str(wind[2]) if wind[2] is not None else None
-        values["wind_direction_qc_flag"] = str(wind[2]) if wind[2] is not None else None
+        values["wind_speed_qc_flag"] = wind[2]
+        values["wind_direction_qc_flag"] = wind[2]
     else:
         value, qc = _tuple_value(payload, "wind")
         values["wind_speed"] = value

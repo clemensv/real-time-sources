@@ -41,6 +41,17 @@
       "metadata": {
         "description": "Azure region for all resources."
       }
+    },
+    "jmaBosaiAmedasMock": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "true",
+        "false"
+      ],
+      "metadata": {
+        "description": "Set to true to publish deterministic sample JMA Bosai AMeDAS station and observation events instead of polling the live upstream API."
+      }
     }
   },
   "variables": {
@@ -138,6 +149,10 @@
                 {
                   "name": "MQTT_PASSWORD",
                   "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "JMA_BOSAI_AMEDAS_MOCK",
+                  "value": "[parameters('jmaBosaiAmedasMock')]"
                 },
                 {
                   "name": "LOG_LEVEL",

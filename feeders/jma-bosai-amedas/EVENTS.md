@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `jp.jma.amedas/{station_code}
 | --- | --- |
 | `KAFKA` | topic `jma-bosai-amedas`, key `jp.jma.amedas/{station_code}` |
 | `MQTT/5.0` | topic `weather/jp/jma/jma-bosai-amedas/{prefecture}/{station_code}/{event}`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-amedas`, message subject `jp.jma.amedas/{station_code}`; application properties prefecture `{prefecture}`, event `{event}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-amedas`, message subject `jp.jma.amedas/{station_code}` |
 
 #### Payload
 
@@ -91,7 +91,7 @@ Each event identifies the real-world resource with `jp.jma.amedas/{station_code}
 - **`latitude`** (double, required, degree (°)): Station latitude in WGS84 decimal degrees. The JMA station table publishes latitude as [degrees, minutes]; the bridge converts it with degrees + minutes/60. Constraints: minimum `-90`, maximum `90`.
 - **`longitude`** (double, required, degree (°)): Station longitude in WGS84 decimal degrees. The JMA station table publishes longitude as [degrees, minutes]; the bridge converts it with degrees + minutes/60. Constraints: minimum `-180`, maximum `180`.
 - **`altitude_m`** (double, required, meter): Station elevation above sea level in meters from the JMA station table alt field.
-- **`station_type`** (enum, required): JMA AMeDAS station capability tier as published in the station table. The tier controls which measurements may be emitted for a station.
+- **`station_type`** (enum, required): JMA AMeDAS station capability tier as published in the live Bosai station table. The tier controls which measurements may be emitted for a station, and the current feed uses codes A through G.
 - **`elems_bitmask`** (string, required): JMA Bosai AMeDAS element bitmask string from the station table. Each non-zero character indicates that the corresponding station capability is enabled in the Bosai web application.
 - **`enabled_measurements`** (array of string, required): Measurement capability names derived by the bridge from the JMA elems_bitmask. The values describe which observation families the station can emit, such as precipitation, wind, temperature, sunshine_duration, snow_depth, humidity, pressure, or visibility.
 - **`prefecture`** (string, required): ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
@@ -101,6 +101,10 @@ Each event identifies the real-world resource with `jp.jma.amedas/{station_code}
 - `A`: JMA AMeDAS capability tier A station, typically a major station with pressure and broader meteorological observations.
 - `B`: JMA AMeDAS capability tier B station.
 - `C`: JMA AMeDAS capability tier C station, commonly an automated regional station with a smaller measurement set.
+- `D`: JMA AMeDAS capability tier D station as published in the live Bosai station table.
+- `E`: JMA AMeDAS capability tier E station as published in the live Bosai station table.
+- `F`: JMA AMeDAS capability tier F station as published in the live Bosai station table.
+- `G`: JMA AMeDAS capability tier G station as published in the Bosai station table. These special-purpose stations expose a non-standard measurement mix compared with the core A/B/C network.
 ##### `event` values
 
 - `info`
@@ -149,7 +153,7 @@ Each event identifies the real-world resource with `jp.jma.amedas/{station_code}
 | --- | --- |
 | `KAFKA` | topic `jma-bosai-amedas`, key `jp.jma.amedas/{station_code}` |
 | `MQTT/5.0` | topic `weather/jp/jma/jma-bosai-amedas/{prefecture}/{station_code}/{event}`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-amedas`, message subject `jp.jma.amedas/{station_code}`; application properties prefecture `{prefecture}`, event `{event}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/jma-bosai-amedas`, message subject `jp.jma.amedas/{station_code}` |
 
 #### Payload
 
@@ -301,3 +305,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/jma-bosai-amedas.xreg.json`](xreg/jma-bosai-amedas.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

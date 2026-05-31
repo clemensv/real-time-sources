@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from jma_bosai_amedas_producer_data.jp.jma.amedas.station import Station
-from jma_bosai_amedas_producer_data.jp.jma.amedas.eventenum import EventEnum
 from jma_bosai_amedas_producer_data.jp.jma.amedas.stationtypeenum import StationTypeenum
+from jma_bosai_amedas_producer_data.jp.jma.amedas.eventenum import EventEnum
 
 
 class Test_Station(unittest.TestCase):
@@ -30,18 +30,18 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_code='rjozopgwsxgnipzlzdmp',
-            kj_name='jbrptjktpgsshxbsocve',
-            kana='ftenzfcylrmmelftifas',
-            en_name='gykaaqzommvxuzeknsuh',
-            latitude=float(90.91894727958352),
-            longitude=float(91.26006622689357),
-            altitude_m=float(70.1387044843063),
+            station_code='qhyfdfxjmnmskalzpseg',
+            kj_name='rfrzyqymetqyjsnfugvw',
+            kana='fpixucbdyhdcgqjqvgap',
+            en_name='hllsycxndpwybwrylhec',
+            latitude=float(0.7423788876036785),
+            longitude=float(5.635693202519754),
+            altitude_m=float(90.85940153987151),
             station_type=StationTypeenum.A,
-            elems_bitmask='yjludrqookfaayqzihtr',
-            enabled_measurements=['kfrfukiaewpvxikhnxkw', 'tvhisklhxjpracehwdka', 'hexudopdxlforiqmgakj'],
-            prefecture='boqemolwbamrkeikorab',
-            event=EventEnum.info
+            elems_bitmask='nstrhujwxrhwuvpmfrtt',
+            enabled_measurements=['hlsupexabrzldrbaphtp', 'ydaeglxdftixunvpqwne', 'zbaxpctzypjtwhynmdhs'],
+            prefecture='altalmyfqimvjpfjpgnh',
+            event=EventEnum.observation
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_code property
         """
-        test_value = 'rjozopgwsxgnipzlzdmp'
+        test_value = 'qhyfdfxjmnmskalzpseg'
         self.instance.station_code = test_value
         self.assertEqual(self.instance.station_code, test_value)
     
@@ -58,7 +58,7 @@ class Test_Station(unittest.TestCase):
         """
         Test kj_name property
         """
-        test_value = 'jbrptjktpgsshxbsocve'
+        test_value = 'rfrzyqymetqyjsnfugvw'
         self.instance.kj_name = test_value
         self.assertEqual(self.instance.kj_name, test_value)
     
@@ -66,7 +66,7 @@ class Test_Station(unittest.TestCase):
         """
         Test kana property
         """
-        test_value = 'ftenzfcylrmmelftifas'
+        test_value = 'fpixucbdyhdcgqjqvgap'
         self.instance.kana = test_value
         self.assertEqual(self.instance.kana, test_value)
     
@@ -74,7 +74,7 @@ class Test_Station(unittest.TestCase):
         """
         Test en_name property
         """
-        test_value = 'gykaaqzommvxuzeknsuh'
+        test_value = 'hllsycxndpwybwrylhec'
         self.instance.en_name = test_value
         self.assertEqual(self.instance.en_name, test_value)
     
@@ -82,7 +82,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(90.91894727958352)
+        test_value = float(0.7423788876036785)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -90,7 +90,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(91.26006622689357)
+        test_value = float(5.635693202519754)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -98,7 +98,7 @@ class Test_Station(unittest.TestCase):
         """
         Test altitude_m property
         """
-        test_value = float(70.1387044843063)
+        test_value = float(90.85940153987151)
         self.instance.altitude_m = test_value
         self.assertEqual(self.instance.altitude_m, test_value)
     
@@ -114,7 +114,7 @@ class Test_Station(unittest.TestCase):
         """
         Test elems_bitmask property
         """
-        test_value = 'yjludrqookfaayqzihtr'
+        test_value = 'nstrhujwxrhwuvpmfrtt'
         self.instance.elems_bitmask = test_value
         self.assertEqual(self.instance.elems_bitmask, test_value)
     
@@ -122,7 +122,7 @@ class Test_Station(unittest.TestCase):
         """
         Test enabled_measurements property
         """
-        test_value = ['kfrfukiaewpvxikhnxkw', 'tvhisklhxjpracehwdka', 'hexudopdxlforiqmgakj']
+        test_value = ['hlsupexabrzldrbaphtp', 'ydaeglxdftixunvpqwne', 'zbaxpctzypjtwhynmdhs']
         self.instance.enabled_measurements = test_value
         self.assertEqual(self.instance.enabled_measurements, test_value)
     
@@ -130,7 +130,7 @@ class Test_Station(unittest.TestCase):
         """
         Test prefecture property
         """
-        test_value = 'boqemolwbamrkeikorab'
+        test_value = 'altalmyfqimvjpfjpgnh'
         self.instance.prefecture = test_value
         self.assertEqual(self.instance.prefecture, test_value)
     
@@ -138,7 +138,7 @@ class Test_Station(unittest.TestCase):
         """
         Test event property
         """
-        test_value = EventEnum.info
+        test_value = EventEnum.observation
         self.instance.event = test_value
         self.assertEqual(self.instance.event, test_value)
     

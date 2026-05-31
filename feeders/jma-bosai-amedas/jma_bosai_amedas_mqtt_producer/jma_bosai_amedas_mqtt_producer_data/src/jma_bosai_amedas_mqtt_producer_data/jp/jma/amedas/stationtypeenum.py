@@ -3,11 +3,15 @@ from enum import Enum
 
 class StationTypeenum(Enum):
     """
-    JMA AMeDAS station capability tier as published in the station table. The tier controls which measurements may be emitted for a station.
+    JMA AMeDAS station capability tier as published in the live Bosai station table. The tier controls which measurements may be emitted for a station, and the current feed uses codes A through G.
     """
     A = 'A'
     B = 'B'
     C = 'C'
+    D = 'D'
+    E = 'E'
+    F = 'F'
+    G = 'G'
 
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'StationTypeenum':

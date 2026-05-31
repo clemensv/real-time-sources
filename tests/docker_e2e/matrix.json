@@ -2210,6 +2210,13 @@
       "test_class": "TestEntsoeKafkaDockerFlow"
     },
     {
+      "dir": "feeders/jma-bosai-amedas",
+      "image": "jma-bosai-amedas-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestJmaBosaiAmedasDockerFlow"
+    },
+    {
       "dir": "feeders/bafu-hydro",
       "image": "bafu-hydro-amqp",
       "file": "Dockerfile.amqp",
