@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#uk-ea-flood-monitoring/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/uk_ea_flood_monitoring.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/uk-ea-flood-monitoring.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://environment.data.gov.uk/flood-monitoring/doc/reference)
 
 </td></tr></table>
@@ -66,7 +66,7 @@ This bridge publishes the UK EA Flood Monitoring source as a transport-agnostic 
 All variants share:
 
 - The same upstream polling logic and dedupe state model.
-- The same xRegistry contract (`xreg/uk_ea_flood_monitoring.xreg.json`).
+- The same xRegistry contract (`xreg/uk-ea-flood-monitoring.xreg.json`).
 - The same CloudEvents event families described in [EVENTS.md](EVENTS.md).
 
 ## Key features
@@ -81,7 +81,7 @@ All variants share:
 
 ```text
 uk-ea-flood-monitoring/
-  xreg/uk_ea_flood_monitoring.xreg.json                 # shared xRegistry contract
+  xreg/uk-ea-flood-monitoring.xreg.json                 # shared xRegistry contract
   uk_ea_flood_monitoring/
   uk_ea_flood_monitoring_amqp/
   uk_ea_flood_monitoring_amqp_producer/

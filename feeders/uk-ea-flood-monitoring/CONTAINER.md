@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#uk-ea-flood-monitoring/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/uk_ea_flood_monitoring.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/uk-ea-flood-monitoring.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://environment.data.gov.uk/flood-monitoring/doc/reference)
 
 </td></tr></table>
@@ -222,4 +222,4 @@ docker run --rm \
 
 - [README.md](README.md) — project overview and deployment options.
 - [EVENTS.md](EVENTS.md) — CloudEvents contract and schema details.
-- [`xreg/uk_ea_flood_monitoring.xreg.json`](xreg/uk_ea_flood_monitoring.xreg.json) — source contract used to generate producer bindings.
+- [`xreg/uk-ea-flood-monitoring.xreg.json`](xreg/uk-ea-flood-monitoring.xreg.json) — source contract used to generate producer bindings.
