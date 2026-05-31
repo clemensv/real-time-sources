@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#madrid-traffic/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/madrid_traffic.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/madrid-traffic.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://datos.madrid.es/)
 
 </td></tr></table>
@@ -248,4 +248,4 @@ Deploy the AMQP container plus a new Azure Service Bus namespace and queue.
 
 - [README.md](README.md) — project overview and hosting options.
 - [EVENTS.md](EVENTS.md) — event contract and schema details.
-- [`xreg/madrid_traffic.xreg.json`](xreg/madrid_traffic.xreg.json) — authoritative contract source.
+- [`xreg/madrid-traffic.xreg.json`](xreg/madrid-traffic.xreg.json) — authoritative contract source.

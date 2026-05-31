@@ -1,8 +1,8 @@
 $ErrorActionPreference = 'Stop'
-. (Join-Path $PSScriptRoot '..\tools\require-xrcg.ps1')
+. (Join-Path $PSScriptRoot '..\..\tools\require-xrcg.ps1')
 Assert-XrcgVersion
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$xregFile = Join-Path $scriptDir 'xreg\madrid_traffic.xreg.json'
+$xregFile = Join-Path $scriptDir 'xreg\madrid-traffic.xreg.json'
 
 xrcg generate --style kafkaproducer --language py --definitions $xregFile --endpoint 'es.madrid.informo.Kafka' --projectname madrid_traffic_producer --output (Join-Path $scriptDir 'madrid_traffic_producer')
 

@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#madrid-traffic/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/madrid_traffic.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/madrid-traffic.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://datos.madrid.es/)
 
 </td></tr></table>
@@ -65,7 +65,7 @@ City traffic-control teams, route-planning systems, mobility dashboards, and res
 
 All variants share:
 
-- The same xRegistry contract (`xreg/madrid_traffic.xreg.json`).
+- The same xRegistry contract (`xreg/madrid-traffic.xreg.json`).
 - The same event-family model and schema set.
 - Poll-based acquisition logic with periodic refresh cycles.
 
@@ -81,7 +81,7 @@ All variants share:
 
 ```text
 madrid-traffic/
-  xreg/madrid_traffic.xreg.json
+  xreg/madrid-traffic.xreg.json
   madrid_traffic/
   madrid_traffic_mqtt/
   madrid_traffic_amqp/

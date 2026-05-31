@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Mapping
 
 PROJECT_DIR = "madrid-traffic"
-XREG_FILE = "madrid_traffic.xreg.json"
+XREG_FILE = "madrid-traffic.xreg.json"
 TRANSPORT = "amqp"
 ROOT = Path(os.getenv("SOURCE_ROOT", os.getcwd()))
 if not (ROOT / "xreg" / XREG_FILE).exists():

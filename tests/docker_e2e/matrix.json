@@ -1311,6 +1311,12 @@
     },
     {
       "dir": "feeders/madrid-traffic",
+      "image": "madrid-traffic-kafka",
+      "file": "Dockerfile",
+      "module": "madrid_traffic"
+    },
+    {
+      "dir": "feeders/madrid-traffic",
       "image": "madrid-traffic-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "madrid_traffic_mqtt"
@@ -3257,6 +3263,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestGTFSAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/madrid-traffic",
+      "image": "madrid-traffic-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestMadridTrafficDockerFlow"
     },
     {
       "dir": "feeders/madrid-traffic",

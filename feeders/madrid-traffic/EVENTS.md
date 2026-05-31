@@ -183,6 +183,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## References
 
-- xRegistry manifest: [`xreg/madrid_traffic.xreg.json`](xreg/madrid_traffic.xreg.json)
+- xRegistry manifest: [`xreg/madrid-traffic.xreg.json`](xreg/madrid-traffic.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
