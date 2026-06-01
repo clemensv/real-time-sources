@@ -12,15 +12,18 @@ Two Kusto-backed layers give an OSINT-oriented global view of active fires:
      individual VIIRS/MODIS detection (`RecentFireDetections()`), coloured by
      FRP and labelled with instrument / FRP / confidence. Reveals where a fire
      complex sits once the analyst zooms in.
-  3. **Fire pixel footprints** (default-on, high zoom >= 8) — one filled GeoJSON
-     polygon per detection (`FireFootprints()`), the true scan x track ground
-     rectangle of the satellite pixel rather than a point, so the real extent of
-     each thermal anomaly is visible at high zoom. A live Kusto map layer runs
-     its query globally with no viewport binding against a hard 20 MB result
-     cap, so this layer is bounded to the most intense recent footprints (top
-     35k by FRP, 5-dp-rounded geometry, trimmed columns). For an unbounded,
-     viewport-scoped polygon layer the durable Fabric pattern is a PMTiles
-     vector tileset (see README) rather than a live Kusto layer.
+  3. **Fire intensity tiles** (default-on, zoom >= 5) — one filled square
+     GeoJSON polygon per populated 0.1-degree grid cell (`FireGrid()`),
+     coloured on a continuous Fire-Radiative-Power ramp by the cell's peak FRP.
+     This mirrors the DWD ICON-D2 map's tile pattern: a live Kusto map layer
+     runs its query globally with no viewport binding against a hard 20 MB
+     result cap, and aggregating detections onto a fixed grid bounds the
+     rendered row count by *grid resolution* (a few thousand cells) rather than
+     by *detection count* (tens of thousands of raw pixels), so the layer never
+     approaches the cap while still covering every fire region. The raw
+     per-pixel scan x track footprint (`FireFootprints()`) remains available as
+     a helper for a viewport-scoped PMTiles tileset (see README) but is not
+     wired as a live Kusto layer because it is unbounded.
 
 Both layers query helper functions applied to the live DB by
 `feeders/nasa-firms/fabric/helpers.kql`.
@@ -51,12 +54,19 @@ MAP_DESC = ("Global active-fire / thermal-anomaly detections from NASA FIRMS "
 
 NAME_HOTSPOTS = "nasa-firms hotspots"
 NAME_DETECTIONS = "nasa-firms detections"
+NAME_TILES = "nasa-firms fire tiles"
+# Old layer name kept here only so re-running this script removes the previous,
+# unbounded per-pixel footprint layer from any map it was already wired onto.
 NAME_FOOTPRINTS = "nasa-firms footprints"
-LAYER_NAMES = {NAME_HOTSPOTS, NAME_DETECTIONS, NAME_FOOTPRINTS}
+LAYER_NAMES = {NAME_HOTSPOTS, NAME_DETECTIONS, NAME_TILES, NAME_FOOTPRINTS}
 
 # Yellow (low FRP) -> dark red (extreme FRP). Must match FireColor() in
 # helpers.kql so the map `match` expressions stay finite and aligned.
 FIRE_COLORS = ["#FFE08A", "#FEB24C", "#FD8D3C", "#FC4E2A", "#E31A1C", "#BD0026", "#800026"]
+
+# FRP (MW) breakpoints aligned with FireColor()'s case() thresholds, used to
+# build the continuous DWD-style `interpolate` ramp for the fire-tile layer.
+FRP_STOPS = [0.0, 5.0, 20.0, 50.0, 100.0, 300.0, 1000.0]
 
 
 def tok(resource: str) -> str:
@@ -109,15 +119,16 @@ KQL_DETECTIONS = """RecentFireDetections(24h, 0)
 | project geometry, label, frp, brightness, confidence_level, daynight, satellite, instrument, source, acq_datetime, fill_color, radius
 """
 
-# True pixel footprints (scan x track rectangle) as GeoJSON polygons; shown at
-# high zoom where the real ground extent of each VIIRS/MODIS pixel is visible.
-# A live Kusto map layer runs its query GLOBALLY (no viewport binding) against a
-# hard 20 MB result cap, so the payload is kept small: 5-dp-rounded polygons, a
-# trimmed column set, and a top-N-by-FRP guard that bounds the row count
-# regardless of how busy the fire day is (the most intense fires are kept).
-KQL_FOOTPRINTS = """FireFootprints(24h, 0)
-| top 35000 by coalesce(frp, 0.0) desc
-| project geometry, label, frp, confidence_level, satellite, acq_datetime, fill_color
+# Fire intensity tiles: detections aggregated onto a fixed 0.1-degree grid and
+# emitted as one square GeoJSON polygon per populated cell, exactly mirroring
+# the DWD ICON-D2 map's tile pattern. A live Kusto map layer runs its query
+# GLOBALLY (no viewport binding) against a hard 20 MB result cap; aggregating
+# onto a fixed grid bounds the row count by GRID RESOLUTION (a few thousand
+# populated cells) instead of by DETECTION COUNT (tens of thousands of raw
+# pixels), so the layer stays well under the cap with full global coverage and
+# no lossy top-N guard. Cells are coloured by peak FRP via a continuous ramp.
+KQL_TILES = """FireGrid(24h, 0.1)
+| project geometry, frp_max, detections, frp_total, high_conf, last_seen, label
 """
 
 
@@ -131,6 +142,15 @@ def _match_expr(get_col: str, colors: list[str]) -> list:
 
 def _custom_colors(colors: list[str]) -> dict:
     return {c: c for c in colors}
+
+
+def _interpolate_expr(get_col: str, stops: list[float], colors: list[str]) -> list:
+    # DWD-style continuous colour ramp: interpolate linearly over the numeric
+    # value column through (stop, colour) pairs.
+    expr = ["interpolate", ["linear"], ["get", get_col]]
+    for v, c in zip(stops, colors):
+        expr += [v, c]
+    return expr
 
 
 def hotspots_layer() -> dict:
@@ -180,29 +200,30 @@ def detections_layer() -> dict:
     }
 
 
-def footprints_layer() -> dict:
-    # Polygon (fill) layer: no pointLayerType; fill via polygonOptions, outline
-    # via the sibling lineOptions block (polygonOptions has no stroke fields).
+def tiles_layer() -> dict:
+    # DWD-style polygon tile field: one filled square per populated 0.1-deg grid
+    # cell, coloured on a continuous FRP interpolate ramp. No pointLayerType
+    # (fill via polygonOptions); a hairline outline keeps adjacent tiles legible
+    # without breaking the raster look. Bounded by grid resolution, so safe
+    # against the 20 MB live-layer cap.
+    color = _interpolate_expr("frp_max", FRP_STOPS, FIRE_COLORS)
     return {
-        "name": NAME_FOOTPRINTS, "kql": KQL_FOOTPRINTS, "geometryColumnName": "geometry",
+        "name": NAME_TILES, "kql": KQL_TILES, "geometryColumnName": "geometry",
         "filters": [],
         "options": {
             "type": "vector", "visible": True,
-            "minZoom": 8.0,
-            "polygonOptions": {
-                "fillColor": _match_expr("fill_color", FIRE_COLORS),
-                "fillOpacity": 0.55, "enableSeriesGroup": True,
-                "seriesGroup": "fill_color", "customColors": _custom_colors(FIRE_COLORS),
-            },
+            "minZoom": 5.0,
+            "color": color,
+            "polygonOptions": {"fillColor": color, "fillOpacity": 0.6},
             "lineOptions": {
-                "strokeColor": "#000000", "strokeWidth": 1, "strokeOpacity": 0.9,
+                "strokeColor": "#000000", "strokeWidth": 0, "strokeOpacity": 0.0,
             },
             "dataLabelKeys": ["label"],
             "dataLabelOptions": {"enabled": False, "size": 11, "color": "#f5f5f5",
                                   "textStrokeColor": "#000000", "textStrokeWidth": 2.5,
-                                  "allowOverlap": True},
-            "tooltipKeys": ["label", "frp", "confidence_level", "satellite",
-                            "acq_datetime"],
+                                  "allowOverlap": False},
+            "tooltipKeys": ["label", "frp_max", "detections", "frp_total",
+                            "high_conf", "last_seen"],
             "enablePopups": True,
         },
     }
@@ -282,8 +303,8 @@ def main():
     for k in ("zoom", "scale", "style", "compass"):
         c.setdefault(k, True)
 
-    # wire layers (hotspots under detections under footprints)
-    for layer in (hotspots_layer(), detections_layer(), footprints_layer()):
+    # wire layers (hotspots under detections under tiles)
+    for layer in (hotspots_layer(), detections_layer(), tiles_layer()):
         src_id = str(uuid.uuid4())
         mp.setdefault("layerSources", []).append({
             "id": src_id, "name": layer["name"].replace(" ", "_") + "_kusto",
