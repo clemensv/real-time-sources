@@ -67,6 +67,20 @@ LAYER_NAMES = {NAME_HOTSPOTS, NAME_DETECTIONS, NAME_TILES, NAME_FOOTPRINTS}
 # helpers.kql so the map `match` expressions stay finite and aligned.
 FIRE_COLORS = ["#FFE08A", "#FEB24C", "#FD8D3C", "#FC4E2A", "#E31A1C", "#BD0026", "#800026"]
 
+# Human-readable total-FRP bands for the hotspot-layer legend, in ascending
+# order. The labels MUST match FireHotspots()'s `frp_band` case() in helpers.kql
+# and the colours MUST stay in step with FIRE_COLORS, so the legend shows
+# meaningful MW ranges instead of raw hex codes.
+FIRE_BANDS = [
+    ("< 25 MW", "#FFE08A"),
+    ("25-100 MW", "#FEB24C"),
+    ("100-250 MW", "#FD8D3C"),
+    ("250-500 MW", "#FC4E2A"),
+    ("500-1500 MW", "#E31A1C"),
+    ("1500-5000 MW", "#BD0026"),
+    (">= 5000 MW", "#800026"),
+]
+
 # FRP (MW) breakpoints aligned with FireColor()'s case() thresholds, used to
 # build the continuous DWD-style `interpolate` ramp for the fire-tile layer.
 FRP_STOPS = [0.0, 5.0, 20.0, 50.0, 100.0, 300.0, 1000.0]
@@ -114,7 +128,7 @@ def poll_lro(headers: dict, token: str):
 # Hotspots aggregate onto a 1-degree grid; sized by count via radius column.
 KQL_HOTSPOTS = """FireHotspots(72h, 1.0)
 | extend radius = todouble(min_of(26.0, 5.0 + log10(todouble(detections) + 1.0) * 9.0))
-| project geometry, label, detections, total_frp, max_frp, high_conf, fill_color, radius
+| project geometry, label, detections, total_frp, max_frp, high_conf, frp_band, radius
 """
 
 # Fire intensity tiles: detections aggregated onto a fixed 0.1-degree grid and
@@ -132,16 +146,13 @@ KQL_TILES = """FireGrid(24h, 0.1)
 """
 
 
-def _match_expr(get_col: str, colors: list[str]) -> list:
+def _band_match_expr(get_col: str, bands: list[tuple[str, str]]) -> list:
+    # Map a labelled band column (e.g. "100-250 MW") to its heat colour.
     expr = ["match", ["get", get_col]]
-    for c in colors:
-        expr += [c, c]
+    for label, color in bands:
+        expr += [label, color]
     expr.append("#888888")  # fallback
     return expr
-
-
-def _custom_colors(colors: list[str]) -> dict:
-    return {c: c for c in colors}
 
 
 def _interpolate_expr(get_col: str, stops: list[float], colors: list[str]) -> list:
@@ -161,10 +172,11 @@ def hotspots_layer() -> dict:
             "type": "vector", "visible": True, "pointLayerType": "bubble",
             "maxZoom": 5.0,
             "bubbleOptions": {
-                "color": _match_expr("fill_color", FIRE_COLORS),
+                "color": _band_match_expr("frp_band", FIRE_BANDS),
                 "radius": ["get", "radius"], "strokeColor": "#1a1a1a", "strokeWidth": 1,
                 "opacity": 0.85, "enableSeriesGroup": True,
-                "seriesGroup": "fill_color", "customColors": _custom_colors(FIRE_COLORS),
+                "seriesGroup": "frp_band",
+                "customColors": {label: color for label, color in FIRE_BANDS},
             },
             "dataLabelKeys": ["label"],
             "dataLabelOptions": {"enabled": False, "size": 11, "color": "#f5f5f5",

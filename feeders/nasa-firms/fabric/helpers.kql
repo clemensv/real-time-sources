@@ -145,8 +145,19 @@
               by glat, glon
     | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(glon, glat))
     | extend fill_color = FireColor(total_frp / 5.0)
+    // Human-readable total-FRP band for the map legend. Thresholds are
+    // FireColor()'s breakpoints x5, because the colour above is keyed on
+    // total_frp/5.0 -- so band and colour always agree on the same cell.
+    | extend frp_band = case(
+        total_frp < 25,    "< 25 MW",
+        total_frp < 100,   "25-100 MW",
+        total_frp < 250,   "100-250 MW",
+        total_frp < 500,   "250-500 MW",
+        total_frp < 1500,  "500-1500 MW",
+        total_frp < 5000,  "1500-5000 MW",
+        ">= 5000 MW")
     | extend label = strcat(tostring(detections), " fires  ", tostring(round(total_frp, 0)), " MW")
-    | project geometry, glat, glon, detections, total_frp, max_frp, high_conf, fill_color, label
+    | project geometry, glat, glon, detections, total_frp, max_frp, high_conf, fill_color, frp_band, label
 }
 
 // ===========================================================================
