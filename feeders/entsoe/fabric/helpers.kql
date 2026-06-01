@@ -161,7 +161,9 @@
           pack_array(l_lon, ly),
           pack_array(t_lon, ty),
           pack_array(r_lon, ry)))
-    | extend stroke_weight = todouble(1.5 + abs(quantity) / 700.0)
+    // Arrow stem width scales with flow magnitude but is capped so heavy
+    // interconnectors (multi-GW) stay legible and do not blot out the map.
+    | extend stroke_weight = todouble(min_of(6.0, 1.5 + abs(quantity) / 700.0))
     | extend label = strcat(out_zone, "\u2192", in_zone, " ", tostring(round(abs(quantity), 0)))
     | project geometry, out_zone, in_zone, quantity, stroke_weight, label
 }

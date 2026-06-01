@@ -42,12 +42,30 @@ NAME_FLOWS = "entsoe cross-border flows"
 NAME_PRICES = "entsoe zone prices"
 LAYER_NAMES = {NAME_FLOWS, NAME_PRICES}
 
-# Bounded colour buckets so the map `match` expressions stay finite.
+# Bounded, human-readable buckets so the map `match` expressions stay finite
+# AND the legend shows meaningful ranges instead of raw hex codes. Each band is
+# (lower_bound, label, colour) in ascending order; the lower bound drives the
+# KQL case(), the label drives the legend entry, and the colour keeps the
+# rendered geometry and the legend swatch in lockstep.
+#
 # Cross-border flows use a dark, multi-hue magnitude ramp (blue = light load
 # -> purple -> red = heavy load) so direction-paired arrows differentiate
 # strongly against the grey basemap.
-FLOW_COLORS = ["#67001f", "#b2182b", "#762a83", "#225ea8", "#2b8cbe"]  # >=2500 / >=1200 / >=600 / >=200 / <200 MW
-PRICE_COLORS = ["#1a9641", "#a6d96a", "#ffffbf", "#fdae61", "#d7191c"]  # cheap→expensive
+FLOW_BANDS = [
+    (0,    "< 200 MW",     "#2b8cbe"),
+    (200,  "200-600 MW",   "#225ea8"),
+    (600,  "600-1200 MW",  "#762a83"),
+    (1200, "1200-2500 MW", "#b2182b"),
+    (2500, ">= 2500 MW",   "#67001f"),
+]
+# Day-ahead bidding-zone prices, cheap (green) -> expensive (red).
+PRICE_BANDS = [
+    (0,   "< 60 EUR/MWh",     "#1a9641"),
+    (60,  "60-90 EUR/MWh",    "#a6d96a"),
+    (90,  "90-120 EUR/MWh",   "#ffffbf"),
+    (120, "120-150 EUR/MWh",  "#fdae61"),
+    (150, ">= 150 EUR/MWh",   "#d7191c"),
+]
 
 
 def tok(resource: str) -> str:
@@ -89,27 +107,37 @@ def poll_lro(headers: dict, token: str):
 
 
 # --- layer KQL --------------------------------------------------------------
+def _band_case(value_expr: str, bands: list[tuple[int, str, str]]) -> str:
+    # Build a KQL case() that maps a numeric column to its band LABEL (not its
+    # hex colour), evaluated high threshold first. Keeps the legend labels in
+    # lockstep with the band table.
+    clauses = [f"{value_expr} >= {lo}, '{label}'"
+               for lo, label, _ in reversed(bands) if lo > 0]
+    return "case(" + ", ".join(clauses) + f", '{bands[0][1]}')"
+
+
 KQL_FLOWS = """ZoneFlowLines()
-| extend stroke_color = case(abs(quantity) >= 2500, '%s', abs(quantity) >= 1200, '%s', abs(quantity) >= 600, '%s', abs(quantity) >= 200, '%s', '%s')
-| project geometry, label, out_zone, in_zone, quantity, stroke_weight, stroke_color
-""" % (FLOW_COLORS[0], FLOW_COLORS[1], FLOW_COLORS[2], FLOW_COLORS[3], FLOW_COLORS[4])
+| extend flow_band = %s
+| project geometry, label, out_zone, in_zone, quantity, stroke_weight, flow_band
+""" % _band_case("abs(quantity)", FLOW_BANDS)
 
 KQL_PRICES = """ZonePriceMarkers()
-| extend fill_color = case(price >= 150, '%s', price >= 120, '%s', price >= 90, '%s', price >= 60, '%s', '%s')
-| project geometry, label, zone, price, fill_color
-""" % (PRICE_COLORS[4], PRICE_COLORS[3], PRICE_COLORS[2], PRICE_COLORS[1], PRICE_COLORS[0])
+| extend price_band = %s
+| project geometry, label, zone, price, price_band
+""" % _band_case("price", PRICE_BANDS)
 
 
-def _match_expr(get_col: str, colors: list[str]) -> list:
+def _band_match_expr(get_col: str, bands: list[tuple[int, str, str]]) -> list:
+    # Map a labelled band column (e.g. "600-1200 MW") to its swatch colour.
     expr = ["match", ["get", get_col]]
-    for c in colors:
-        expr += [c, c]
+    for _, label, color in bands:
+        expr += [label, color]
     expr.append("#888888")  # fallback
     return expr
 
 
-def _custom_colors(colors: list[str]) -> dict:
-    return {c: c for c in colors}
+def _custom_colors(bands: list[tuple[int, str, str]]) -> dict:
+    return {label: color for _, label, color in bands}
 
 
 def flows_layer() -> dict:
@@ -119,10 +147,10 @@ def flows_layer() -> dict:
         "options": {
             "type": "vector", "visible": True,
             "lineOptions": {
-                "strokeWidth": 3, "strokeOpacity": 0.9,
-                "strokeColor": _match_expr("stroke_color", FLOW_COLORS),
-                "enableSeriesGroup": True, "seriesGroup": "stroke_color",
-                "customColors": _custom_colors(FLOW_COLORS),
+                "strokeWidth": ["get", "stroke_weight"], "strokeOpacity": 0.9,
+                "strokeColor": _band_match_expr("flow_band", FLOW_BANDS),
+                "enableSeriesGroup": True, "seriesGroup": "flow_band",
+                "customColors": _custom_colors(FLOW_BANDS),
             },
             "dataLabelKeys": ["label"],
             "dataLabelOptions": {"enabled": True, "size": 11, "color": "#1a1a1a",
@@ -141,10 +169,10 @@ def prices_layer() -> dict:
         "options": {
             "type": "vector", "visible": True, "pointLayerType": "bubble",
             "bubbleOptions": {
-                "color": _match_expr("fill_color", PRICE_COLORS),
+                "color": _band_match_expr("price_band", PRICE_BANDS),
                 "radius": 11, "strokeColor": "#FFFFFF", "strokeWidth": 2,
                 "opacity": 0.95, "enableSeriesGroup": True,
-                "seriesGroup": "fill_color", "customColors": _custom_colors(PRICE_COLORS),
+                "seriesGroup": "price_band", "customColors": _custom_colors(PRICE_BANDS),
             },
             "dataLabelKeys": ["label"],
             "dataLabelOptions": {"enabled": True, "size": 13, "color": "#111111",
