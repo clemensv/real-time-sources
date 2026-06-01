@@ -22,7 +22,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "SKU tier for the new Event Hubs namespace that receives NOAA SWPC L1 propagated-solar-wind CloudEvents from the Kafka bridge container."
       }
     },
     "location": {

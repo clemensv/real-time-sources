@@ -89,6 +89,14 @@ is described in [DATABASE.md](../DATABASE.md). This source ships a typed
 `PropagatedSolarWind` table and `PropagatedSolarWindLatest` materialized
 view script under `kql/`.
 
+## Image contract
+
+| Image tag | Transport | Dockerfile | Persistent state share |
+|---|---|---|---|
+| `ghcr.io/clemensv/real-time-sources-noaa-swpc-l1-kafka:latest` | Kafka / Event Hubs | `Dockerfile.kafka` | Yes - stores `STATE_FILE` dedupe state (`~/.noaa_swpc_l1_state.json` by default) |
+| `ghcr.io/clemensv/real-time-sources-noaa-swpc-l1-mqtt:latest` | MQTT 5 | `Dockerfile.mqtt` | Yes - stores `STATE_FILE` dedupe state (`~/.noaa_swpc_l1_state.json` by default) |
+| `ghcr.io/clemensv/real-time-sources-noaa-swpc-l1-amqp:latest` | AMQP 1.0 | `Dockerfile.amqp` | Yes - stores `STATE_FILE` dedupe state (`~/.noaa_swpc_l1_state.json` by default) |
+
 ## Installing the Container Images
 
 Pull the container images from the GitHub Container Registry:
