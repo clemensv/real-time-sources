@@ -172,6 +172,10 @@ Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/clemensv/real-time-sou
     -Eventhouse ContosoRealTime-eh
 ```
 
+`-SubscriptionId` is optional for both `deploy-fabric.ps1` and
+`deploy-fabric-aci.ps1`; when omitted, the scripts use the current Azure CLI /
+Cloud Shell context.
+
 Sources requiring a secret (`aisstream`, `nve-hydro`, `wsdot`, `entsoe`)
 pass it through with `-ApiKeyParamName <template-param> -ApiKey <secret>`,
 e.g.:

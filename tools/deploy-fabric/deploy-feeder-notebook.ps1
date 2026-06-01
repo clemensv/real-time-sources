@@ -125,6 +125,14 @@ param(
     [switch]$NoSchedule,
     [switch]$NoTriggerNow,
 
+    # Upstream secrets / env vars to inject into the notebook's parameters
+    # cell at deploy time (e.g. ENTSOE_SECURITY_TOKEN=...). Each entry is a
+    # KEY=VALUE string and may be specified multiple times. Values are written
+    # into the deployed notebook (os.environ[...]) but are never committed to
+    # the repo. Use this instead of hand-editing the notebook for sources that
+    # require an upstream API token.
+    [string[]]$EnvVar,
+
     [switch]$SkipInfra
 )
 
@@ -576,6 +584,33 @@ if (-not $SkipEnvironment) {
         Write-Info "    -> HTTP $sc"
     }
 
+    # Public PyPI libraries for the generated producer runtime.
+    #
+    # The avrotize/xrcg-generated `<source>_producer_data` package imports
+    # `avro.schema` and `dataclasses_json` at module load time, but its
+    # generated pyproject declares NO runtime dependencies, so neither dep is
+    # carried by any of the uploaded wheels. In a fresh Fabric Environment that
+    # surfaces as `ModuleNotFoundError: No module named 'avro'`. Declaring them
+    # as public libraries via environment.yml lets Fabric resolve them from
+    # PyPI. (Upstream codegen bug — see the producer_data pyproject. Remove this
+    # once the generator declares these deps.)
+    $envYmlDir  = Join-Path $TempDir "feeder_env_yml_$([System.Guid]::NewGuid().ToString('N'))"
+    New-Item -ItemType Directory -Path $envYmlDir -Force | Out-Null
+    $envYmlPath = Join-Path $envYmlDir "environment.yml"
+    @(
+        "dependencies:"
+        "  - pip:"
+        "    - avro>=1.11.3"
+        "    - dataclasses_json>=0.6.7"
+    ) -join "`n" | Set-Content -LiteralPath $envYmlPath -Encoding ASCII
+    try {
+        Write-Info "Uploading public libraries (environment.yml: avro, dataclasses_json)..."
+        $scYml = Upload-EnvironmentLibrary -WorkspaceId $WorkspaceId -EnvironmentId $EnvironmentId -Wheel (Get-Item $envYmlPath) -Token $fabricToken
+        Write-Info "    -> HTTP $scYml"
+    } finally {
+        Remove-Item $envYmlDir -Recurse -Force -ErrorAction SilentlyContinue
+    }
+
     Write-Info "Setting Spark compute (runtime 1.3, Starter Pool)..."
     try {
         Update-EnvironmentSparkCompute -WorkspaceId $WorkspaceId -EnvironmentId $EnvironmentId
@@ -685,6 +720,19 @@ foreach ($cell in $nb.cells) {
         else                                             { $line }
     }
     $cell.source = @($newLines)
+    if ($EnvVar -and $EnvVar.Count -gt 0) {
+        $envInjection = @("`n", "import os as _os  # injected by deploy-feeder-notebook.ps1 -EnvVar (not committed)`n")
+        foreach ($kv in $EnvVar) {
+            $eq = $kv.IndexOf('=')
+            if ($eq -lt 1) { throw "-EnvVar entries must be 'KEY=VALUE'; got '$kv'." }
+            $k = $kv.Substring(0, $eq).Trim()
+            $v = $kv.Substring($eq + 1)
+            $vEsc = ($v -replace '\\', '\\\\') -replace '"', '\"'
+            $envInjection += "_os.environ[`"$k`"] = `"$vEsc`"`n"
+        }
+        $cell.source = @($newLines) + $envInjection
+        Write-OK ("Injected {0} env var(s) into parameters cell: {1}" -f $EnvVar.Count, (($EnvVar | ForEach-Object { ($_ -split '=', 2)[0] }) -join ', '))
+    }
     $paramsPatched = $true
     break
 }
