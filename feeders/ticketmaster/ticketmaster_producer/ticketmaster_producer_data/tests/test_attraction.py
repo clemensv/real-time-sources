@@ -28,109 +28,100 @@ class Test_Attraction(unittest.TestCase):
         Create instance of Attraction for testing
         """
         instance = Attraction(
-            entity_id='bizithbjyzkjramqjkim',
-            name='gedknazfxeoufdelbmpj',
-            url='jappuxqpwnrtdsquzkni',
-            locale='yjiiunlxljebshcomwtn',
-            segment_id='acvivxyqvfeowstwexvz',
-            segment_name='ffaoczdncvbuauwmqwvg',
-            genre_id='xjymyaggglhzdmyvdqjz',
-            genre_name='lssedowltcwpikqtdxah',
-            subgenre_id='ruzokcfzakefqcdgaora',
-            subgenre_name='sbpknparzotdlinqwggb'
+            entity_id='yciodlahkyberasuintz',
+            name='qaryadqvbbmejlfxxgva',
+            url='zwmocqttwlpuveezuadp',
+            locale='ygfafvqnempfhqjpuyok',
+            segment_id='fteqkgdiniuutajpydpj',
+            segment_name='fauysvdvdjwbdxxxuvkc',
+            genre_id='eeqmkhufivtsdqhbebzt',
+            genre_name='jdyiwcdmquesyazfniqo',
+            subgenre_id='elockuttxbtguhgwdobn',
+            subgenre_name='couhpsrizyfaanbqtmnl'
         )
         return instance
 
-
+    
     def test_entity_id_property(self):
         """
         Test entity_id property
         """
-        test_value = 'bizithbjyzkjramqjkim'
+        test_value = 'yciodlahkyberasuintz'
         self.instance.entity_id = test_value
         self.assertEqual(self.instance.entity_id, test_value)
-
+    
     def test_name_property(self):
         """
         Test name property
         """
-        test_value = 'gedknazfxeoufdelbmpj'
+        test_value = 'qaryadqvbbmejlfxxgva'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
-
+    
     def test_url_property(self):
         """
         Test url property
         """
-        test_value = 'jappuxqpwnrtdsquzkni'
+        test_value = 'zwmocqttwlpuveezuadp'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
-
+    
     def test_locale_property(self):
         """
         Test locale property
         """
-        test_value = 'yjiiunlxljebshcomwtn'
+        test_value = 'ygfafvqnempfhqjpuyok'
         self.instance.locale = test_value
         self.assertEqual(self.instance.locale, test_value)
-
+    
     def test_segment_id_property(self):
         """
         Test segment_id property
         """
-        test_value = 'acvivxyqvfeowstwexvz'
+        test_value = 'fteqkgdiniuutajpydpj'
         self.instance.segment_id = test_value
         self.assertEqual(self.instance.segment_id, test_value)
-
+    
     def test_segment_name_property(self):
         """
         Test segment_name property
         """
-        test_value = 'ffaoczdncvbuauwmqwvg'
+        test_value = 'fauysvdvdjwbdxxxuvkc'
         self.instance.segment_name = test_value
         self.assertEqual(self.instance.segment_name, test_value)
-
+    
     def test_genre_id_property(self):
         """
         Test genre_id property
         """
-        test_value = 'xjymyaggglhzdmyvdqjz'
+        test_value = 'eeqmkhufivtsdqhbebzt'
         self.instance.genre_id = test_value
         self.assertEqual(self.instance.genre_id, test_value)
-
+    
     def test_genre_name_property(self):
         """
         Test genre_name property
         """
-        test_value = 'lssedowltcwpikqtdxah'
+        test_value = 'jdyiwcdmquesyazfniqo'
         self.instance.genre_name = test_value
         self.assertEqual(self.instance.genre_name, test_value)
-
+    
     def test_subgenre_id_property(self):
         """
         Test subgenre_id property
         """
-        test_value = 'ruzokcfzakefqcdgaora'
+        test_value = 'elockuttxbtguhgwdobn'
         self.instance.subgenre_id = test_value
         self.assertEqual(self.instance.subgenre_id, test_value)
-
+    
     def test_subgenre_name_property(self):
         """
         Test subgenre_name property
         """
-        test_value = 'sbpknparzotdlinqwggb'
+        test_value = 'couhpsrizyfaanbqtmnl'
         self.instance.subgenre_name = test_value
         self.assertEqual(self.instance.subgenre_name, test_value)
-
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Attraction.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
+    
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

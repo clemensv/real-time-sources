@@ -70,7 +70,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _event = Event()
 
     # sends the 'Ticketmaster.Events.Event' event to Kafka topic.
-    await ticketmaster_events_event_producer.send_ticketmaster_events_event(_event_id = 'TODO: replace me', _start_datetime_utc = 'TODO: replace me', data = _event)
+    await ticketmaster_events_event_producer.send_ticketmaster_events_event(_event_id = 'TODO: replace me', data = _event)
     print(f"Sent 'Ticketmaster.Events.Event' event: {_event.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
@@ -126,7 +126,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _event = Event()
 
     # sends the 'Ticketmaster.Events.mqtt.Event' event to Kafka topic.
-    await ticketmaster_events_mqtt_event_producer.send_ticketmaster_events_mqtt_event(_event_id = 'TODO: replace me', _start_datetime_utc = 'TODO: replace me', data = _event)
+    await ticketmaster_events_mqtt_event_producer.send_ticketmaster_events_mqtt_event(_event_id = 'TODO: replace me', data = _event)
     print(f"Sent 'Ticketmaster.Events.mqtt.Event' event: {_event.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
@@ -142,7 +142,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _event = Event()
 
     # sends the 'Ticketmaster.Events.amqp.Event' event to Kafka topic.
-    await ticketmaster_events_amqp_event_producer.send_ticketmaster_events_amqp_event(_event_id = 'TODO: replace me', _start_datetime_utc = 'TODO: replace me', data = _event)
+    await ticketmaster_events_amqp_event_producer.send_ticketmaster_events_amqp_event(_event_id = 'TODO: replace me', data = _event)
     print(f"Sent 'Ticketmaster.Events.amqp.Event' event: {_event.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal

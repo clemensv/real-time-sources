@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -98,7 +99,7 @@ async def test_ticketmaster_events_mqtt_ticketmaster_events_mqtt_event_py(mosqui
         await publisher_client.publish_ticketmaster_events_mqtt_event(
             topic=test_topic,
             event_id=f"test_event_id_{i}",
-            start_datetime_utc=f"test_start_datetime_utc_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -167,6 +168,7 @@ async def test_ticketmaster_reference_mqtt_ticketmaster_reference_mqtt_venue_py(
         await publisher_client.publish_ticketmaster_reference_mqtt_venue(
             topic=test_topic,
             entity_id=f"test_entity_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -232,6 +234,7 @@ async def test_ticketmaster_reference_mqtt_ticketmaster_reference_mqtt_attractio
         await publisher_client.publish_ticketmaster_reference_mqtt_attraction(
             topic=test_topic,
             entity_id=f"test_entity_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -297,6 +300,7 @@ async def test_ticketmaster_reference_mqtt_ticketmaster_reference_mqtt_classific
         await publisher_client.publish_ticketmaster_reference_mqtt_classification(
             topic=test_topic,
             entity_id=f"test_entity_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -362,6 +366,7 @@ async def test_ticketmaster_reference_mqtt_ticketmaster_reference_mqtt_info_py(m
         await publisher_client.publish_ticketmaster_reference_mqtt_info(
             topic=test_topic,
             entity_id=f"test_entity_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

@@ -1,12 +1,58 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
 import json
+import re
 import uuid
 import typing
-from datetime import datetime
+from datetime import datetime, timezone
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 from ticketmaster_producer_data import Event
 from ticketmaster_producer_data import Venue
 from ticketmaster_producer_data import Attraction
@@ -44,15 +90,15 @@ class TicketmasterEventsEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_ticketmaster_events_event(self,_event_id : str, _start_datetime_utc : str, data: Event, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Event], str]=None) -> None:
+    def send_ticketmaster_events_event(self,_event_id : str, data: Event, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Event], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Events.Event' event to the Kafka topic
 
         Args:
             _event_id(str):  Value for placeholder event_id in attribute subject
-            _start_datetime_utc(str):  Value for placeholder start_datetime_utc in attribute time
             data: (Event): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Event], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{event_id}'
@@ -62,9 +108,10 @@ class TicketmasterEventsEventProducer:
              "type":"Ticketmaster.Events.Event",
              "source":"https://app.ticketmaster.com/discovery/v2/events",
              "subject":"{event_id}".format(event_id = _event_id),
-             "time":"{start_datetime_utc}".format(start_datetime_utc = _start_datetime_utc)
+             "time":"{start_datetime_utc}"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -160,7 +207,7 @@ class TicketmasterReferenceEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_ticketmaster_reference_venue(self,_entity_id : str, data: Venue, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Venue], str]=None) -> None:
+    def send_ticketmaster_reference_venue(self,_entity_id : str, data: Venue, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Venue], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Reference.Venue' event to the Kafka topic
 
@@ -168,6 +215,7 @@ class TicketmasterReferenceEventProducer:
             _entity_id(str):  Value for placeholder entity_id in attribute subject
             data: (Venue): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Venue], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{entity_id}'
@@ -179,6 +227,7 @@ class TicketmasterReferenceEventProducer:
              "subject":"{entity_id}".format(entity_id = _entity_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -192,7 +241,7 @@ class TicketmasterReferenceEventProducer:
             self.producer.flush()
 
 
-    def send_ticketmaster_reference_attraction(self,_entity_id : str, data: Attraction, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Attraction], str]=None) -> None:
+    def send_ticketmaster_reference_attraction(self,_entity_id : str, data: Attraction, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Attraction], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Reference.Attraction' event to the Kafka topic
 
@@ -200,6 +249,7 @@ class TicketmasterReferenceEventProducer:
             _entity_id(str):  Value for placeholder entity_id in attribute subject
             data: (Attraction): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Attraction], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{entity_id}'
@@ -211,6 +261,7 @@ class TicketmasterReferenceEventProducer:
              "subject":"{entity_id}".format(entity_id = _entity_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -224,7 +275,7 @@ class TicketmasterReferenceEventProducer:
             self.producer.flush()
 
 
-    def send_ticketmaster_reference_classification(self,_entity_id : str, data: Classification, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Classification], str]=None) -> None:
+    def send_ticketmaster_reference_classification(self,_entity_id : str, data: Classification, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Classification], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Reference.Classification' event to the Kafka topic
 
@@ -232,6 +283,7 @@ class TicketmasterReferenceEventProducer:
             _entity_id(str):  Value for placeholder entity_id in attribute subject
             data: (Classification): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Classification], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{entity_id}'
@@ -243,6 +295,7 @@ class TicketmasterReferenceEventProducer:
              "subject":"{entity_id}".format(entity_id = _entity_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -256,7 +309,7 @@ class TicketmasterReferenceEventProducer:
             self.producer.flush()
 
 
-    def send_ticketmaster_reference_info(self,_entity_id : str, data: Info, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Info], str]=None) -> None:
+    def send_ticketmaster_reference_info(self,_entity_id : str, data: Info, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Info], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Reference.Info' event to the Kafka topic
 
@@ -264,6 +317,7 @@ class TicketmasterReferenceEventProducer:
             _entity_id(str):  Value for placeholder entity_id in attribute subject
             data: (Info): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Info], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{entity_id}'
@@ -275,6 +329,7 @@ class TicketmasterReferenceEventProducer:
              "subject":"{entity_id}".format(entity_id = _entity_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -370,15 +425,15 @@ class TicketmasterEventsMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_ticketmaster_events_mqtt_event(self,_event_id : str, _start_datetime_utc : str, data: Event, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Event], str]=None) -> None:
+    def send_ticketmaster_events_mqtt_event(self,_event_id : str, data: Event, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Event], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Events.mqtt.Event' event to the Kafka topic
 
         Args:
             _event_id(str):  Value for placeholder event_id in attribute subject
-            _start_datetime_utc(str):  Value for placeholder start_datetime_utc in attribute time
             data: (Event): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Event], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -387,9 +442,10 @@ class TicketmasterEventsMqttEventProducer:
              "type":"Ticketmaster.Events.Event",
              "source":"https://app.ticketmaster.com/discovery/v2/events",
              "subject":"{event_id}".format(event_id = _event_id),
-             "time":"{start_datetime_utc}".format(start_datetime_utc = _start_datetime_utc)
+             "time":"{start_datetime_utc}"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -485,15 +541,15 @@ class TicketmasterEventsAmqpEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_ticketmaster_events_amqp_event(self,_event_id : str, _start_datetime_utc : str, data: Event, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Event], str]=None) -> None:
+    def send_ticketmaster_events_amqp_event(self,_event_id : str, data: Event, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Event], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Events.amqp.Event' event to the Kafka topic
 
         Args:
             _event_id(str):  Value for placeholder event_id in attribute subject
-            _start_datetime_utc(str):  Value for placeholder start_datetime_utc in attribute time
             data: (Event): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Event], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -502,9 +558,10 @@ class TicketmasterEventsAmqpEventProducer:
              "type":"Ticketmaster.Events.Event",
              "source":"https://app.ticketmaster.com/discovery/v2/events",
              "subject":"{event_id}".format(event_id = _event_id),
-             "time":"{start_datetime_utc}".format(start_datetime_utc = _start_datetime_utc)
+             "time":"{start_datetime_utc}"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -600,7 +657,7 @@ class TicketmasterReferenceMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_ticketmaster_reference_mqtt_venue(self,_entity_id : str, data: Venue, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Venue], str]=None) -> None:
+    def send_ticketmaster_reference_mqtt_venue(self,_entity_id : str, data: Venue, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Venue], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Reference.mqtt.Venue' event to the Kafka topic
 
@@ -608,6 +665,7 @@ class TicketmasterReferenceMqttEventProducer:
             _entity_id(str):  Value for placeholder entity_id in attribute subject
             data: (Venue): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Venue], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -618,6 +676,7 @@ class TicketmasterReferenceMqttEventProducer:
              "subject":"{entity_id}".format(entity_id = _entity_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -631,7 +690,7 @@ class TicketmasterReferenceMqttEventProducer:
             self.producer.flush()
 
 
-    def send_ticketmaster_reference_mqtt_attraction(self,_entity_id : str, data: Attraction, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Attraction], str]=None) -> None:
+    def send_ticketmaster_reference_mqtt_attraction(self,_entity_id : str, data: Attraction, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Attraction], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Reference.mqtt.Attraction' event to the Kafka topic
 
@@ -639,6 +698,7 @@ class TicketmasterReferenceMqttEventProducer:
             _entity_id(str):  Value for placeholder entity_id in attribute subject
             data: (Attraction): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Attraction], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -649,6 +709,7 @@ class TicketmasterReferenceMqttEventProducer:
              "subject":"{entity_id}".format(entity_id = _entity_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -662,7 +723,7 @@ class TicketmasterReferenceMqttEventProducer:
             self.producer.flush()
 
 
-    def send_ticketmaster_reference_mqtt_classification(self,_entity_id : str, data: Classification, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Classification], str]=None) -> None:
+    def send_ticketmaster_reference_mqtt_classification(self,_entity_id : str, data: Classification, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Classification], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Reference.mqtt.Classification' event to the Kafka topic
 
@@ -670,6 +731,7 @@ class TicketmasterReferenceMqttEventProducer:
             _entity_id(str):  Value for placeholder entity_id in attribute subject
             data: (Classification): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Classification], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -680,6 +742,7 @@ class TicketmasterReferenceMqttEventProducer:
              "subject":"{entity_id}".format(entity_id = _entity_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -693,7 +756,7 @@ class TicketmasterReferenceMqttEventProducer:
             self.producer.flush()
 
 
-    def send_ticketmaster_reference_mqtt_info(self,_entity_id : str, data: Info, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Info], str]=None) -> None:
+    def send_ticketmaster_reference_mqtt_info(self,_entity_id : str, data: Info, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Info], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Reference.mqtt.Info' event to the Kafka topic
 
@@ -701,6 +764,7 @@ class TicketmasterReferenceMqttEventProducer:
             _entity_id(str):  Value for placeholder entity_id in attribute subject
             data: (Info): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Info], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -711,6 +775,7 @@ class TicketmasterReferenceMqttEventProducer:
              "subject":"{entity_id}".format(entity_id = _entity_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -806,7 +871,7 @@ class TicketmasterReferenceAmqpEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_ticketmaster_reference_amqp_venue(self,_entity_id : str, data: Venue, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Venue], str]=None) -> None:
+    def send_ticketmaster_reference_amqp_venue(self,_entity_id : str, data: Venue, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Venue], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Reference.amqp.Venue' event to the Kafka topic
 
@@ -814,6 +879,7 @@ class TicketmasterReferenceAmqpEventProducer:
             _entity_id(str):  Value for placeholder entity_id in attribute subject
             data: (Venue): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Venue], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -824,6 +890,7 @@ class TicketmasterReferenceAmqpEventProducer:
              "subject":"{entity_id}".format(entity_id = _entity_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -837,7 +904,7 @@ class TicketmasterReferenceAmqpEventProducer:
             self.producer.flush()
 
 
-    def send_ticketmaster_reference_amqp_attraction(self,_entity_id : str, data: Attraction, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Attraction], str]=None) -> None:
+    def send_ticketmaster_reference_amqp_attraction(self,_entity_id : str, data: Attraction, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Attraction], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Reference.amqp.Attraction' event to the Kafka topic
 
@@ -845,6 +912,7 @@ class TicketmasterReferenceAmqpEventProducer:
             _entity_id(str):  Value for placeholder entity_id in attribute subject
             data: (Attraction): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Attraction], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -855,6 +923,7 @@ class TicketmasterReferenceAmqpEventProducer:
              "subject":"{entity_id}".format(entity_id = _entity_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -868,7 +937,7 @@ class TicketmasterReferenceAmqpEventProducer:
             self.producer.flush()
 
 
-    def send_ticketmaster_reference_amqp_classification(self,_entity_id : str, data: Classification, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Classification], str]=None) -> None:
+    def send_ticketmaster_reference_amqp_classification(self,_entity_id : str, data: Classification, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Classification], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Reference.amqp.Classification' event to the Kafka topic
 
@@ -876,6 +945,7 @@ class TicketmasterReferenceAmqpEventProducer:
             _entity_id(str):  Value for placeholder entity_id in attribute subject
             data: (Classification): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Classification], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -886,6 +956,7 @@ class TicketmasterReferenceAmqpEventProducer:
              "subject":"{entity_id}".format(entity_id = _entity_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -899,7 +970,7 @@ class TicketmasterReferenceAmqpEventProducer:
             self.producer.flush()
 
 
-    def send_ticketmaster_reference_amqp_info(self,_entity_id : str, data: Info, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Info], str]=None) -> None:
+    def send_ticketmaster_reference_amqp_info(self,_entity_id : str, data: Info, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Info], str]=None) -> None:
         """
         Sends the 'Ticketmaster.Reference.amqp.Info' event to the Kafka topic
 
@@ -907,6 +978,7 @@ class TicketmasterReferenceAmqpEventProducer:
             _entity_id(str):  Value for placeholder entity_id in attribute subject
             data: (Info): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Info], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -917,6 +989,7 @@ class TicketmasterReferenceAmqpEventProducer:
              "subject":"{entity_id}".format(entity_id = _entity_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))

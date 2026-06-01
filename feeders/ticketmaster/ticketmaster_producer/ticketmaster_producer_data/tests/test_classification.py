@@ -28,82 +28,73 @@ class Test_Classification(unittest.TestCase):
         Create instance of Classification for testing
         """
         instance = Classification(
-            entity_id='cqdoouvrkruhjljaodrl',
-            name='hxzcipovtoyjscpwlozm',
-            type='hxinidahmypqoancjcvh',
-            primary_genre_id='imognyuyztkpcyhlvruv',
-            primary_genre_name='myrycyukdjbdxdzrbsne',
-            primary_subgenre_id='yryxrvbgimgelanouuoz',
-            primary_subgenre_name='gfamsezdvdpkeatuuuhp'
+            entity_id='ilfjzbqdoveikzjmqbct',
+            name='ewqjjvpdysxgfmvkyuye',
+            type='ezhcxyphxltmlrscymos',
+            primary_genre_id='oclstuzdskwusvahzber',
+            primary_genre_name='bjyijnacmegpwbxzmhor',
+            primary_subgenre_id='kjnxtakwfraswtwfvpcr',
+            primary_subgenre_name='kbpitfpftlnhvapfsoik'
         )
         return instance
 
-
+    
     def test_entity_id_property(self):
         """
         Test entity_id property
         """
-        test_value = 'cqdoouvrkruhjljaodrl'
+        test_value = 'ilfjzbqdoveikzjmqbct'
         self.instance.entity_id = test_value
         self.assertEqual(self.instance.entity_id, test_value)
-
+    
     def test_name_property(self):
         """
         Test name property
         """
-        test_value = 'hxzcipovtoyjscpwlozm'
+        test_value = 'ewqjjvpdysxgfmvkyuye'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
-
+    
     def test_type_property(self):
         """
         Test type property
         """
-        test_value = 'hxinidahmypqoancjcvh'
+        test_value = 'ezhcxyphxltmlrscymos'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
-
+    
     def test_primary_genre_id_property(self):
         """
         Test primary_genre_id property
         """
-        test_value = 'imognyuyztkpcyhlvruv'
+        test_value = 'oclstuzdskwusvahzber'
         self.instance.primary_genre_id = test_value
         self.assertEqual(self.instance.primary_genre_id, test_value)
-
+    
     def test_primary_genre_name_property(self):
         """
         Test primary_genre_name property
         """
-        test_value = 'myrycyukdjbdxdzrbsne'
+        test_value = 'bjyijnacmegpwbxzmhor'
         self.instance.primary_genre_name = test_value
         self.assertEqual(self.instance.primary_genre_name, test_value)
-
+    
     def test_primary_subgenre_id_property(self):
         """
         Test primary_subgenre_id property
         """
-        test_value = 'yryxrvbgimgelanouuoz'
+        test_value = 'kjnxtakwfraswtwfvpcr'
         self.instance.primary_subgenre_id = test_value
         self.assertEqual(self.instance.primary_subgenre_id, test_value)
-
+    
     def test_primary_subgenre_name_property(self):
         """
         Test primary_subgenre_name property
         """
-        test_value = 'gfamsezdvdpkeatuuuhp'
+        test_value = 'kbpitfpftlnhvapfsoik'
         self.instance.primary_subgenre_name = test_value
         self.assertEqual(self.instance.primary_subgenre_name, test_value)
-
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Classification.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
+    
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

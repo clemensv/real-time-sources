@@ -28,127 +28,118 @@ class Test_Venue(unittest.TestCase):
         Create instance of Venue for testing
         """
         instance = Venue(
-            entity_id='bsxyhwufswkspdlzfacn',
-            name='wpsacdlcxievsnpopody',
-            url='qcypbdhymvppctwwzqeg',
-            locale='lormxuuheqeyhkwybsey',
-            timezone='mauymozfgmdfjccaezxv',
-            city='jsoapdkxvxreznaihjig',
-            state_code='zybzvccjmigirgkgfbwe',
-            country_code='amhfuzgxsczdairpuvrx',
-            address='nmpjyuexwudglgabjbnd',
-            postal_code='skhzzwxctobxrhlcpqbx',
-            latitude=float(36.36569137654596),
-            longitude=float(4.676989166833234)
+            entity_id='yitlspgkhilepfxisvtt',
+            name='fgciuabekjwlpnrtnkks',
+            url='qbrerbrdgsllhsihsehu',
+            locale='imwwqidigipykexkgjzw',
+            timezone='jikbubjizleskyyshyoj',
+            city='psikivjfwsxliepfkgps',
+            state_code='cojexnebyygkkasimmnk',
+            country_code='rvosinnbbdbhelqvnuac',
+            address='wfgswryitqxhomsnhkjy',
+            postal_code='bripcvnakmlgrobkdrky',
+            latitude=float(0.26086747021155654),
+            longitude=float(66.65578978086693)
         )
         return instance
 
-
+    
     def test_entity_id_property(self):
         """
         Test entity_id property
         """
-        test_value = 'bsxyhwufswkspdlzfacn'
+        test_value = 'yitlspgkhilepfxisvtt'
         self.instance.entity_id = test_value
         self.assertEqual(self.instance.entity_id, test_value)
-
+    
     def test_name_property(self):
         """
         Test name property
         """
-        test_value = 'wpsacdlcxievsnpopody'
+        test_value = 'fgciuabekjwlpnrtnkks'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
-
+    
     def test_url_property(self):
         """
         Test url property
         """
-        test_value = 'qcypbdhymvppctwwzqeg'
+        test_value = 'qbrerbrdgsllhsihsehu'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
-
+    
     def test_locale_property(self):
         """
         Test locale property
         """
-        test_value = 'lormxuuheqeyhkwybsey'
+        test_value = 'imwwqidigipykexkgjzw'
         self.instance.locale = test_value
         self.assertEqual(self.instance.locale, test_value)
-
+    
     def test_timezone_property(self):
         """
         Test timezone property
         """
-        test_value = 'mauymozfgmdfjccaezxv'
+        test_value = 'jikbubjizleskyyshyoj'
         self.instance.timezone = test_value
         self.assertEqual(self.instance.timezone, test_value)
-
+    
     def test_city_property(self):
         """
         Test city property
         """
-        test_value = 'jsoapdkxvxreznaihjig'
+        test_value = 'psikivjfwsxliepfkgps'
         self.instance.city = test_value
         self.assertEqual(self.instance.city, test_value)
-
+    
     def test_state_code_property(self):
         """
         Test state_code property
         """
-        test_value = 'zybzvccjmigirgkgfbwe'
+        test_value = 'cojexnebyygkkasimmnk'
         self.instance.state_code = test_value
         self.assertEqual(self.instance.state_code, test_value)
-
+    
     def test_country_code_property(self):
         """
         Test country_code property
         """
-        test_value = 'amhfuzgxsczdairpuvrx'
+        test_value = 'rvosinnbbdbhelqvnuac'
         self.instance.country_code = test_value
         self.assertEqual(self.instance.country_code, test_value)
-
+    
     def test_address_property(self):
         """
         Test address property
         """
-        test_value = 'nmpjyuexwudglgabjbnd'
+        test_value = 'wfgswryitqxhomsnhkjy'
         self.instance.address = test_value
         self.assertEqual(self.instance.address, test_value)
-
+    
     def test_postal_code_property(self):
         """
         Test postal_code property
         """
-        test_value = 'skhzzwxctobxrhlcpqbx'
+        test_value = 'bripcvnakmlgrobkdrky'
         self.instance.postal_code = test_value
         self.assertEqual(self.instance.postal_code, test_value)
-
+    
     def test_latitude_property(self):
         """
         Test latitude property
         """
-        test_value = float(36.36569137654596)
+        test_value = float(0.26086747021155654)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
-
+    
     def test_longitude_property(self):
         """
         Test longitude property
         """
-        test_value = float(4.676989166833234)
+        test_value = float(66.65578978086693)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
-
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Venue.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
+    
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

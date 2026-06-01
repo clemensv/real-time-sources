@@ -28,13 +28,13 @@ class Test_Classification(unittest.TestCase):
         Create instance of Classification for testing
         """
         instance = Classification(
-            entity_id='yemxsietouxhsciivkff',
-            name='fhwctyjazbeylpksevbs',
-            type='maoktgakmxvvpcyknpqp',
-            primary_genre_id='xenpsakhsipjrkisqatj',
-            primary_genre_name='vxkpehxwnefmmzjppdsz',
-            primary_subgenre_id='tuzifmvwimlmwczkcayu',
-            primary_subgenre_name='azvnspcvkanftzqxrqbs'
+            entity_id='jltawdalgunptnqzxswo',
+            name='fmnmqjirjoirpqawzujp',
+            type='jbwomkbfhekmbigpmzci',
+            primary_genre_id='cnvimwofhedzdmtiodjr',
+            primary_genre_name='nyvpdenkuwocwsfsuiym',
+            primary_subgenre_id='occjqbamdjbybflatexe',
+            primary_subgenre_name='vqvpttvhphqcqscwbpnk'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Classification(unittest.TestCase):
         """
         Test entity_id property
         """
-        test_value = 'yemxsietouxhsciivkff'
+        test_value = 'jltawdalgunptnqzxswo'
         self.instance.entity_id = test_value
         self.assertEqual(self.instance.entity_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_Classification(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'fhwctyjazbeylpksevbs'
+        test_value = 'fmnmqjirjoirpqawzujp'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -59,7 +59,7 @@ class Test_Classification(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'maoktgakmxvvpcyknpqp'
+        test_value = 'jbwomkbfhekmbigpmzci'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -67,7 +67,7 @@ class Test_Classification(unittest.TestCase):
         """
         Test primary_genre_id property
         """
-        test_value = 'xenpsakhsipjrkisqatj'
+        test_value = 'cnvimwofhedzdmtiodjr'
         self.instance.primary_genre_id = test_value
         self.assertEqual(self.instance.primary_genre_id, test_value)
     
@@ -75,7 +75,7 @@ class Test_Classification(unittest.TestCase):
         """
         Test primary_genre_name property
         """
-        test_value = 'vxkpehxwnefmmzjppdsz'
+        test_value = 'nyvpdenkuwocwsfsuiym'
         self.instance.primary_genre_name = test_value
         self.assertEqual(self.instance.primary_genre_name, test_value)
     
@@ -83,7 +83,7 @@ class Test_Classification(unittest.TestCase):
         """
         Test primary_subgenre_id property
         """
-        test_value = 'tuzifmvwimlmwczkcayu'
+        test_value = 'occjqbamdjbybflatexe'
         self.instance.primary_subgenre_id = test_value
         self.assertEqual(self.instance.primary_subgenre_id, test_value)
     
@@ -91,7 +91,7 @@ class Test_Classification(unittest.TestCase):
         """
         Test primary_subgenre_name property
         """
-        test_value = 'azvnspcvkanftzqxrqbs'
+        test_value = 'vqvpttvhphqcqscwbpnk'
         self.instance.primary_subgenre_name = test_value
         self.assertEqual(self.instance.primary_subgenre_name, test_value)
     

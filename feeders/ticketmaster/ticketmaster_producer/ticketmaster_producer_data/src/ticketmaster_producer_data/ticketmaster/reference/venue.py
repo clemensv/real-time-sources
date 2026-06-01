@@ -1,38 +1,39 @@
 """ Venue dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Venue:
     """
-    Reference data for a Ticketmaster venue.
+    Reference data for a Ticketmaster venue. Carries the venue's stable identifier, location details, timezone, and geographic coordinates as returned by the Discovery API v2 /venues endpoint.
+    
     Attributes:
-        entity_id (str): Stable Ticketmaster venue identifier.
-        name (str): Human-readable name of the venue.
-        url (typing.Optional[str]): URL to the venue page on Ticketmaster.com.
-        locale (typing.Optional[str]): BCP-47 locale string.
-        timezone (typing.Optional[str]): IANA timezone database name.
-        city (typing.Optional[str]): City name.
-        state_code (typing.Optional[str]): ISO 3166-2 state or province code.
-        country_code (typing.Optional[str]): ISO 3166-1 alpha-2 country code.
-        address (typing.Optional[str]): Street address line 1.
-        postal_code (typing.Optional[str]): Postal or ZIP code.
-        latitude (typing.Optional[float]): WGS-84 latitude in decimal degrees.
-        longitude (typing.Optional[float]): WGS-84 longitude in decimal degrees."""
+        entity_id (str)
+        name (str)
+        url (typing.Optional[str])
+        locale (typing.Optional[str])
+        timezone (typing.Optional[str])
+        city (typing.Optional[str])
+        state_code (typing.Optional[str])
+        country_code (typing.Optional[str])
+        address (typing.Optional[str])
+        postal_code (typing.Optional[str])
+        latitude (typing.Optional[float])
+        longitude (typing.Optional[float])
+    """
+    
     
     entity_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="entity_id"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
@@ -46,25 +47,6 @@ class Venue:
     postal_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="postal_code"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Venue\", \"namespace\": \"Ticketmaster.Reference\", \"doc\": \"Reference data for a Ticketmaster venue.\", \"fields\": [{\"name\": \"entity_id\", \"type\": \"string\", \"doc\": \"Stable Ticketmaster venue identifier.\"}, {\"name\": \"name\", \"type\": \"string\", \"doc\": \"Human-readable name of the venue.\"}, {\"name\": \"url\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"URL to the venue page on Ticketmaster.com.\"}, {\"name\": \"locale\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"BCP-47 locale string.\"}, {\"name\": \"timezone\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"IANA timezone database name.\"}, {\"name\": \"city\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"City name.\"}, {\"name\": \"state_code\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"ISO 3166-2 state or province code.\"}, {\"name\": \"country_code\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"ISO 3166-1 alpha-2 country code.\"}, {\"name\": \"address\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Street address line 1.\"}, {\"name\": \"postal_code\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Postal or ZIP code.\"}, {\"name\": \"latitude\", \"type\": [\"null\", \"double\"], \"default\": null, \"doc\": \"WGS-84 latitude in decimal degrees.\"}, {\"name\": \"longitude\", \"type\": [\"null\", \"double\"], \"default\": null, \"doc\": \"WGS-84 longitude in decimal degrees.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.entity_id=str(self.entity_id)
-        self.name=str(self.name)
-        self.url=str(self.url) if self.url else None
-        self.locale=str(self.locale) if self.locale else None
-        self.timezone=str(self.timezone) if self.timezone else None
-        self.city=str(self.city) if self.city else None
-        self.state_code=str(self.state_code) if self.state_code else None
-        self.country_code=str(self.country_code) if self.country_code else None
-        self.address=str(self.address) if self.address else None
-        self.postal_code=str(self.postal_code) if self.postal_code else None
-        self.latitude=float(self.latitude) if self.latitude else None
-        self.longitude=float(self.longitude) if self.longitude else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Venue':
@@ -75,7 +57,7 @@ class Venue:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -94,7 +76,7 @@ class Venue:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -108,8 +90,6 @@ class Venue:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -122,12 +102,6 @@ class Venue:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -156,10 +130,6 @@ class Venue:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -185,18 +155,6 @@ class Venue:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return Venue.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -204,5 +162,27 @@ class Venue:
                 return Venue.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'Venue':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            entity_id='yitlspgkhilepfxisvtt',
+            name='fgciuabekjwlpnrtnkks',
+            url='qbrerbrdgsllhsihsehu',
+            locale='imwwqidigipykexkgjzw',
+            timezone='jikbubjizleskyyshyoj',
+            city='psikivjfwsxliepfkgps',
+            state_code='cojexnebyygkkasimmnk',
+            country_code='rvosinnbbdbhelqvnuac',
+            address='wfgswryitqxhomsnhkjy',
+            postal_code='bripcvnakmlgrobkdrky',
+            latitude=float(0.26086747021155654),
+            longitude=float(66.65578978086693)
+        )

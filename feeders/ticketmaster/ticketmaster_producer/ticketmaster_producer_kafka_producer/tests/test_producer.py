@@ -80,17 +80,17 @@ def test_ticketmaster_events_ticketmastereventsevent(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -113,11 +113,12 @@ def test_ticketmaster_events_ticketmastereventsevent(kafka_emulator):
     producer_instance = TicketmasterEventsEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Event.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_events_event(_event_id = f'test_{i}', _start_datetime_utc = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_events_event(_event_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -143,17 +144,17 @@ def test_ticketmaster_reference_ticketmasterreferencevenue(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -176,11 +177,12 @@ def test_ticketmaster_reference_ticketmasterreferencevenue(kafka_emulator):
     producer_instance = TicketmasterReferenceEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Venue.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_reference_venue(_entity_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_reference_venue(_entity_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -206,17 +208,17 @@ def test_ticketmaster_reference_ticketmasterreferenceattraction(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -239,11 +241,12 @@ def test_ticketmaster_reference_ticketmasterreferenceattraction(kafka_emulator):
     producer_instance = TicketmasterReferenceEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Attraction.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_reference_attraction(_entity_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_reference_attraction(_entity_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -269,17 +272,17 @@ def test_ticketmaster_reference_ticketmasterreferenceclassification(kafka_emulat
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -302,11 +305,12 @@ def test_ticketmaster_reference_ticketmasterreferenceclassification(kafka_emulat
     producer_instance = TicketmasterReferenceEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Classification.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_reference_classification(_entity_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_reference_classification(_entity_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -332,17 +336,17 @@ def test_ticketmaster_reference_ticketmasterreferenceinfo(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -365,11 +369,12 @@ def test_ticketmaster_reference_ticketmasterreferenceinfo(kafka_emulator):
     producer_instance = TicketmasterReferenceEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Info.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_reference_info(_entity_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_reference_info(_entity_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -395,17 +400,17 @@ def test_ticketmaster_events_mqtt_ticketmastereventsmqttevent(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -428,11 +433,12 @@ def test_ticketmaster_events_mqtt_ticketmastereventsmqttevent(kafka_emulator):
     producer_instance = TicketmasterEventsMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Event.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_events_mqtt_event(_event_id = f'test_{i}', _start_datetime_utc = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_events_mqtt_event(_event_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -456,17 +462,17 @@ def test_ticketmaster_events_amqp_ticketmastereventsamqpevent(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -489,11 +495,12 @@ def test_ticketmaster_events_amqp_ticketmastereventsamqpevent(kafka_emulator):
     producer_instance = TicketmasterEventsAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Event.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_events_amqp_event(_event_id = f'test_{i}', _start_datetime_utc = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_events_amqp_event(_event_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -517,17 +524,17 @@ def test_ticketmaster_reference_mqtt_ticketmasterreferencemqttvenue(kafka_emulat
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -550,11 +557,12 @@ def test_ticketmaster_reference_mqtt_ticketmasterreferencemqttvenue(kafka_emulat
     producer_instance = TicketmasterReferenceMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Venue.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_reference_mqtt_venue(_entity_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_reference_mqtt_venue(_entity_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -578,17 +586,17 @@ def test_ticketmaster_reference_mqtt_ticketmasterreferencemqttattraction(kafka_e
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -611,11 +619,12 @@ def test_ticketmaster_reference_mqtt_ticketmasterreferencemqttattraction(kafka_e
     producer_instance = TicketmasterReferenceMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Attraction.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_reference_mqtt_attraction(_entity_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_reference_mqtt_attraction(_entity_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -639,17 +648,17 @@ def test_ticketmaster_reference_mqtt_ticketmasterreferencemqttclassification(kaf
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -672,11 +681,12 @@ def test_ticketmaster_reference_mqtt_ticketmasterreferencemqttclassification(kaf
     producer_instance = TicketmasterReferenceMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Classification.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_reference_mqtt_classification(_entity_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_reference_mqtt_classification(_entity_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -700,17 +710,17 @@ def test_ticketmaster_reference_mqtt_ticketmasterreferencemqttinfo(kafka_emulato
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -733,11 +743,12 @@ def test_ticketmaster_reference_mqtt_ticketmasterreferencemqttinfo(kafka_emulato
     producer_instance = TicketmasterReferenceMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Info.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_reference_mqtt_info(_entity_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_reference_mqtt_info(_entity_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -761,17 +772,17 @@ def test_ticketmaster_reference_amqp_ticketmasterreferenceamqpvenue(kafka_emulat
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -794,11 +805,12 @@ def test_ticketmaster_reference_amqp_ticketmasterreferenceamqpvenue(kafka_emulat
     producer_instance = TicketmasterReferenceAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Venue.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_reference_amqp_venue(_entity_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_reference_amqp_venue(_entity_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -822,17 +834,17 @@ def test_ticketmaster_reference_amqp_ticketmasterreferenceamqpattraction(kafka_e
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -855,11 +867,12 @@ def test_ticketmaster_reference_amqp_ticketmasterreferenceamqpattraction(kafka_e
     producer_instance = TicketmasterReferenceAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Attraction.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_reference_amqp_attraction(_entity_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_reference_amqp_attraction(_entity_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -883,17 +896,17 @@ def test_ticketmaster_reference_amqp_ticketmasterreferenceamqpclassification(kaf
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -916,11 +929,12 @@ def test_ticketmaster_reference_amqp_ticketmasterreferenceamqpclassification(kaf
     producer_instance = TicketmasterReferenceAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Classification.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_reference_amqp_classification(_entity_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_reference_amqp_classification(_entity_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -944,17 +958,17 @@ def test_ticketmaster_reference_amqp_ticketmasterreferenceamqpinfo(kafka_emulato
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -977,11 +991,12 @@ def test_ticketmaster_reference_amqp_ticketmasterreferenceamqpinfo(kafka_emulato
     producer_instance = TicketmasterReferenceAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Info.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ticketmaster_reference_amqp_info(_entity_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_ticketmaster_reference_amqp_info(_entity_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 

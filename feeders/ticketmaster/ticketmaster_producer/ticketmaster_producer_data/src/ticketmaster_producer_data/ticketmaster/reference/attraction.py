@@ -1,36 +1,37 @@
 """ Attraction dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Attraction:
     """
-    Reference data for a Ticketmaster attraction (performer, artist, sports team, or production).
+    Reference data for a Ticketmaster attraction, which represents a performer, musical artist, sports team, theatrical production, or other headline act. Sourced from the Discovery API v2 /attractions endpoint.
+    
     Attributes:
-        entity_id (str): Stable Ticketmaster attraction identifier.
-        name (str): Human-readable name of the attraction.
-        url (typing.Optional[str]): URL to the attraction page on Ticketmaster.com.
-        locale (typing.Optional[str]): BCP-47 locale string.
-        segment_id (typing.Optional[str]): Stable classification segment identifier.
-        segment_name (typing.Optional[str]): Classification segment name.
-        genre_id (typing.Optional[str]): Stable genre identifier.
-        genre_name (typing.Optional[str]): Genre name.
-        subgenre_id (typing.Optional[str]): Stable subgenre identifier.
-        subgenre_name (typing.Optional[str]): Subgenre name."""
+        entity_id (str)
+        name (str)
+        url (typing.Optional[str])
+        locale (typing.Optional[str])
+        segment_id (typing.Optional[str])
+        segment_name (typing.Optional[str])
+        genre_id (typing.Optional[str])
+        genre_name (typing.Optional[str])
+        subgenre_id (typing.Optional[str])
+        subgenre_name (typing.Optional[str])
+    """
+    
     
     entity_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="entity_id"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
@@ -42,23 +43,6 @@ class Attraction:
     genre_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="genre_name"))
     subgenre_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="subgenre_id"))
     subgenre_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="subgenre_name"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Attraction\", \"namespace\": \"Ticketmaster.Reference\", \"doc\": \"Reference data for a Ticketmaster attraction (performer, artist, sports team, or production).\", \"fields\": [{\"name\": \"entity_id\", \"type\": \"string\", \"doc\": \"Stable Ticketmaster attraction identifier.\"}, {\"name\": \"name\", \"type\": \"string\", \"doc\": \"Human-readable name of the attraction.\"}, {\"name\": \"url\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"URL to the attraction page on Ticketmaster.com.\"}, {\"name\": \"locale\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"BCP-47 locale string.\"}, {\"name\": \"segment_id\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Stable classification segment identifier.\"}, {\"name\": \"segment_name\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Classification segment name.\"}, {\"name\": \"genre_id\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Stable genre identifier.\"}, {\"name\": \"genre_name\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Genre name.\"}, {\"name\": \"subgenre_id\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Stable subgenre identifier.\"}, {\"name\": \"subgenre_name\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Subgenre name.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.entity_id=str(self.entity_id)
-        self.name=str(self.name)
-        self.url=str(self.url) if self.url else None
-        self.locale=str(self.locale) if self.locale else None
-        self.segment_id=str(self.segment_id) if self.segment_id else None
-        self.segment_name=str(self.segment_name) if self.segment_name else None
-        self.genre_id=str(self.genre_id) if self.genre_id else None
-        self.genre_name=str(self.genre_name) if self.genre_name else None
-        self.subgenre_id=str(self.subgenre_id) if self.subgenre_id else None
-        self.subgenre_name=str(self.subgenre_name) if self.subgenre_name else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Attraction':
@@ -69,7 +53,7 @@ class Attraction:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -88,7 +72,7 @@ class Attraction:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -102,8 +86,6 @@ class Attraction:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -116,12 +98,6 @@ class Attraction:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
@@ -150,10 +126,6 @@ class Attraction:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -179,18 +151,6 @@ class Attraction:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return Attraction.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -198,5 +158,25 @@ class Attraction:
                 return Attraction.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'Attraction':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            entity_id='yciodlahkyberasuintz',
+            name='qaryadqvbbmejlfxxgva',
+            url='zwmocqttwlpuveezuadp',
+            locale='ygfafvqnempfhqjpuyok',
+            segment_id='fteqkgdiniuutajpydpj',
+            segment_name='fauysvdvdjwbdxxxuvkc',
+            genre_id='eeqmkhufivtsdqhbebzt',
+            genre_name='jdyiwcdmquesyazfniqo',
+            subgenre_id='elockuttxbtguhgwdobn',
+            subgenre_name='couhpsrizyfaanbqtmnl'
+        )

@@ -163,11 +163,11 @@ class Classification:
             An instance of the dataclass.
         """
         return cls(
-            entity_id='yemxsietouxhsciivkff',
-            name='fhwctyjazbeylpksevbs',
-            type='maoktgakmxvvpcyknpqp',
-            primary_genre_id='xenpsakhsipjrkisqatj',
-            primary_genre_name='vxkpehxwnefmmzjppdsz',
-            primary_subgenre_id='tuzifmvwimlmwczkcayu',
-            primary_subgenre_name='azvnspcvkanftzqxrqbs'
+            entity_id='jltawdalgunptnqzxswo',
+            name='fmnmqjirjoirpqawzujp',
+            type='jbwomkbfhekmbigpmzci',
+            primary_genre_id='cnvimwofhedzdmtiodjr',
+            primary_genre_name='nyvpdenkuwocwsfsuiym',
+            primary_subgenre_id='occjqbamdjbybflatexe',
+            primary_subgenre_name='vqvpttvhphqcqscwbpnk'
         )

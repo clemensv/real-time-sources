@@ -165,7 +165,6 @@ a new event is discovered or when an existing event's status or schedule changes
 **Parameters:**
 - `data` (Event): The message data object
 - `_event_id` (str): Value for placeholder event_id in attribute subject
-- `_start_datetime_utc` (str): Value for placeholder start_datetime_utc in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_event_batch()`
@@ -175,7 +174,6 @@ Send multiple Event messages in sequence.
 **Parameters:**
 - `data_array` (List[Event]): Array of message data objects
 - `_event_id` (str): Value for placeholder event_id in attribute subject
-- `_start_datetime_utc` (str): Value for placeholder start_datetime_utc in attribute time
 - `content_type` (str): Content type of the message data
 
 
