@@ -350,8 +350,8 @@ async function openDeployForm(source, mode) {
   if (mode === "fabric-aci") {
     const azSection = el("div", { class: "form-section" });
     azSection.innerHTML = '<div class="form-section-title">Azure (for the ACI feeder container)</div>';
-    azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
-      "", "Azure subscription GUID (leave blank for default)", false));
+    azSection.appendChild(makeField("subscriptionId", "Subscription (name or ID)", "text",
+      "", "Optional. Uses your current Cloud Shell subscription context unless you override it here.", false));
     azSection.appendChild(makeField("resourceGroup", "Resource Group", "text",
       "", "Azure resource group (created on demand)", true));
     azSection.appendChild(makeField("location", "Location", "text",
@@ -362,14 +362,14 @@ async function openDeployForm(source, mode) {
   } else if (mode === "fabric-notebook") {
     const azSection = el("div", { class: "form-section" });
     azSection.innerHTML = '<div class="form-section-title">Azure Subscription</div>';
-    azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
-      "", "Azure subscription GUID (leave blank for default)", false));
+    azSection.appendChild(makeField("subscriptionId", "Subscription (name or ID)", "text",
+      "", "Optional. Enter an Azure subscription name or GUID; leave blank to use your current Cloud Shell context.", false));
     $deployForm.appendChild(azSection);
   } else if (mode === "fabric") {
     const azSection = el("div", { class: "form-section" });
     azSection.innerHTML = '<div class="form-section-title">Azure Subscription <span style="font-weight:normal;color:var(--muted);font-size:11px">(optional)</span></div>';
-    azSection.appendChild(makeField("subscriptionId", "Subscription ID", "text",
-      "", "Optional; leave blank to use your default", false));
+    azSection.appendChild(makeField("subscriptionId", "Subscription (name or ID)", "text",
+      "", "Optional. Enter an Azure subscription name or GUID; leave blank to use your current Cloud Shell context.", false));
     $deployForm.appendChild(azSection);
   }
 
@@ -898,4 +898,3 @@ async function selectFromHash() {
 }
 window.addEventListener("hashchange", selectFromHash);
 selectFromHash();
-

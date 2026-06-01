@@ -36,8 +36,8 @@
     the RG already exists, or 'westeurope' when creating a new RG.
 
 .PARAMETER SubscriptionId
-    Optional Azure subscription override. Used both for Fabric token
-    acquisition and the ACI deployment.
+    Optional Azure subscription override by name or ID. Used both for Fabric
+    token acquisition and the ACI deployment.
 
 .PARAMETER Workspace
     Fabric workspace name OR GUID.
@@ -142,6 +142,61 @@ function Write-Step { param([string]$Step, [string]$Msg)
 function Write-OK { param([string]$Msg) Write-Host "  $Msg" -ForegroundColor Green }
 function Write-Info { param([string]$Msg) Write-Host "  $Msg" -ForegroundColor DarkYellow }
 
+function ConvertFrom-AzCliJson {
+    param(
+        [AllowNull()]
+        [object]$InputObject,
+        [string]$Context = "Azure CLI output"
+    )
+
+    if ($null -eq $InputObject) { return $null }
+
+    $text = if ($InputObject -is [string]) {
+        $InputObject
+    } else {
+        $InputObject | Out-String
+    }
+
+    $trimmed = $text.Trim()
+    if (-not $trimmed) { return $null }
+
+    try {
+        return $trimmed | ConvertFrom-Json
+    } catch {
+        $jsonStarts = [regex]::Matches($trimmed, '(?m)^[\t ]*[\{\[]')
+        foreach ($match in $jsonStarts) {
+            $candidate = $trimmed.Substring($match.Index).Trim()
+            try {
+                return $candidate | ConvertFrom-Json
+            } catch {
+                continue
+            }
+        }
+    }
+
+    throw "Failed to parse JSON from $Context. Raw output:`n$trimmed"
+}
+
+function Resolve-AzSubscriptionContext {
+    param([Parameter(Mandatory = $true)] [string]$Subscription)
+
+    az account set --subscription $Subscription --only-show-errors 2>&1 | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to set subscription '$Subscription' (name or ID)."
+    }
+
+    $account = az account show --only-show-errors --output json 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to resolve the active Azure subscription after selecting '$Subscription': $($account | Out-String)"
+    }
+
+    $parsed = ConvertFrom-AzCliJson -InputObject $account -Context "az account show output for subscription '$Subscription'"
+    return [pscustomobject]@{
+        Id   = $parsed.id
+        Name = $parsed.name
+    }
+}
+
 # ── Stage A: Fabric side (delegated to deploy-fabric.ps1) ───────────────
 
 Write-Step "A" "Provisioning Fabric resources via deploy-fabric.ps1..."
@@ -174,7 +229,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 if (-not (Test-Path $csFile)) {
-    throw "deploy-fabric.ps1 did not produce a connection string at $csFile. Re-run with -SubscriptionId set to a subscription whose principal has Fabric workspace access, or fetch the CS from the portal and use the 'Container only' tile."
+    throw "deploy-fabric.ps1 did not produce a connection string at $csFile. Review the step-A warnings above; if the Event Stream was created successfully, fetch the Custom Endpoint connection string from the Fabric portal and use the 'Container only' tile."
 }
 $esConnectionString = (Get-Content -Path $csFile -Raw).Trim()
 if ([string]::IsNullOrWhiteSpace($esConnectionString)) {
@@ -187,8 +242,9 @@ Write-OK "Captured Event Stream connection string ($($esConnectionString.Length)
 Write-Step "B" "Deploying ACI container into resource group '$ResourceGroup'..."
 
 if ($SubscriptionId) {
-    az account set --subscription $SubscriptionId 2>&1 | Out-Null
-    if ($LASTEXITCODE -ne 0) { throw "Failed to set subscription '$SubscriptionId'" }
+    $selectedSubscription = Resolve-AzSubscriptionContext -Subscription $SubscriptionId
+    $SubscriptionId = $selectedSubscription.Id
+    Write-OK "Subscription set: $($selectedSubscription.Name) ($SubscriptionId)"
 }
 
 # Ensure RG exists

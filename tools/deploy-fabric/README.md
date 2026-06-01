@@ -66,7 +66,7 @@ re-discover them:
 | `DatabaseId`, `DatabaseName` | KQL database. |
 | `EventstreamId`, `EventstreamName` | Eventstream item. |
 | `ConnectionString` | Eventstream custom-endpoint CS (if retrievable). |
-| `SubscriptionId` | Azure subscription used to acquire the Fabric token (may be empty). |
+| `SubscriptionId` | Resolved Azure subscription ID used to acquire the Fabric token (may be empty). |
 | `NotebookId`, `NotebookName` | Notebook item (deploy-feeder-notebook only). |
 
 Hooks should ignore keys they don't care about and may consume additional
@@ -111,7 +111,7 @@ Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/clemensv/real-time-sou
 | `-Workspace` | Yes | — | Fabric workspace name OR GUID |
 | `-Eventhouse` | No | Source name | Fabric Eventhouse name OR GUID (created on demand) |
 | `-DatabaseName` | No | Source name | KQL database name |
-| `-SubscriptionId` | No | active | Azure subscription for Fabric token acquisition |
+| `-SubscriptionId` | No | active | Azure subscription name or ID for Fabric token acquisition |
 | `-OutCsFile` | No | — | Path to write the Event Stream connection string |
 | `-SkipPostDeployHook` | No | `$false` | Skip the source-specific post-deploy hook |
 
@@ -119,6 +119,10 @@ Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/clemensv/real-time-sou
 > ignored. They were used when this script also deployed an ACI feeder,
 > which it no longer does. Old portal commands continue to work; a warning
 > is printed when any of these are supplied.
+
+`-SubscriptionId` is optional and accepts either an Azure subscription name or
+GUID. When omitted, the scripts use the current Azure CLI / Cloud Shell
+context.
 
 ## What happens end-to-end
 
@@ -152,6 +156,10 @@ call, use `deploy-fabric-aci.ps1`. It is a thin wrapper:
 
 The container streams data directly into the Fabric Event Stream — **no
 Event Hubs namespace is created**.
+
+`-SubscriptionId` is optional for both `deploy-fabric.ps1` and
+`deploy-fabric-aci.ps1`, and accepts either an Azure subscription name or GUID.
+When omitted, the scripts use the current Azure CLI / Cloud Shell context.
 
 ```powershell
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/clemensv/real-time-sources/main/tools/deploy-fabric/deploy-fabric-aci.ps1' -OutFile deploy-fabric-aci.ps1

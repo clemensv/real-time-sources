@@ -26,7 +26,7 @@
     Azure region (kept for parity; not used).
 
 .PARAMETER SubscriptionId
-    Azure subscription ID. If set, runs 'az account set' first.
+    Azure subscription ID or name. If set, runs 'az account set' first.
 
 .PARAMETER Workspace
     Fabric workspace name or GUID.
@@ -93,10 +93,67 @@ function Write-Step { param([string]$Step, [string]$Msg) Write-Host "`n[$Step] $
 function Write-OK   { param([string]$Msg) Write-Host "  $Msg" -ForegroundColor Green }
 function Write-Info { param([string]$Msg) Write-Host "  $Msg" -ForegroundColor DarkYellow }
 
+function ConvertFrom-AzCliJson {
+    param(
+        [AllowNull()]
+        [object]$InputObject,
+        [string]$Context = "Azure CLI output"
+    )
+
+    if ($null -eq $InputObject) { return $null }
+
+    $text = if ($InputObject -is [string]) {
+        $InputObject
+    } else {
+        $InputObject | Out-String
+    }
+
+    $trimmed = $text.Trim()
+    if (-not $trimmed) { return $null }
+
+    try {
+        return $trimmed | ConvertFrom-Json
+    } catch {
+        # az rest sometimes prepends WARNING:/INFO: lines ahead of JSON.
+        $jsonStarts = [regex]::Matches($trimmed, '(?m)^[\t ]*[\{\[]')
+        foreach ($match in $jsonStarts) {
+            $candidate = $trimmed.Substring($match.Index).Trim()
+            try {
+                return $candidate | ConvertFrom-Json
+            } catch {
+                continue
+            }
+        }
+    }
+
+    throw "Failed to parse JSON from $Context. Raw output:`n$trimmed"
+}
+
+function Resolve-AzSubscriptionContext {
+    param([Parameter(Mandatory = $true)] [string]$Subscription)
+
+    az account set --subscription $Subscription --only-show-errors 2>&1 | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to set subscription '$Subscription' (name or ID)."
+    }
+
+    $account = az account show --only-show-errors --output json 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        throw "Failed to resolve the active Azure subscription after selecting '$Subscription': $($account | Out-String)"
+    }
+
+    $parsed = ConvertFrom-AzCliJson -InputObject $account -Context "az account show output for subscription '$Subscription'"
+    return [pscustomobject]@{
+        Id   = $parsed.id
+        Name = $parsed.name
+    }
+}
+
 function Invoke-FabricApi {
     param([string]$Method, [string]$Url, [object]$Body)
     $azArgs = @("rest", "--method", $Method, "--url", $Url,
-                "--resource", "https://api.fabric.microsoft.com")
+                "--resource", "https://api.fabric.microsoft.com",
+                "--only-show-errors", "--output", "json")
     if ($Body) {
         $bodyFile = Join-Path $env:TEMP "fabric_body_$(Get-Random).json"
         $json = if ($Body -is [string]) { $Body } else { $Body | ConvertTo-Json -Depth 30 -Compress }
@@ -105,7 +162,7 @@ function Invoke-FabricApi {
     }
     $result = & az @azArgs 2>&1
     if ($LASTEXITCODE -ne 0) { throw "Fabric API error ($Method $Url): $($result | Out-String)" }
-    if ($result) { return $result | ConvertFrom-Json }
+    if ($result) { return ConvertFrom-AzCliJson -InputObject $result -Context "Fabric API response ($Method $Url)" }
     return $null
 }
 
@@ -165,9 +222,9 @@ Write-Host "  Notebook:      $NotebookName"  -ForegroundColor White
 Write-Host "  Notebook file: $NotebookPath"  -ForegroundColor White
 
 if ($SubscriptionId) {
-    az account set --subscription $SubscriptionId 2>&1 | Out-Null
-    if ($LASTEXITCODE -ne 0) { throw "Failed to set subscription '$SubscriptionId'" }
-    Write-OK "Subscription set: $SubscriptionId"
+    $selectedSubscription = Resolve-AzSubscriptionContext -Subscription $SubscriptionId
+    $SubscriptionId = $selectedSubscription.Id
+    Write-OK "Subscription set: $($selectedSubscription.Name) ($SubscriptionId)"
 }
 
 if (-not (Test-Path $NotebookPath)) {
