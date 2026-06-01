@@ -171,6 +171,31 @@ GTFS_FUNCTIONS: list[str] = [
               routeColor, routeTextColor, stroke_color
 }
 ''',
+    # ------------------------------------------------------------------
+    # Colour -> human label lookup. GTFS route colours are branding codes
+    # shared across many routes (e.g. a single NYC trunk colour covers the
+    # A/C/E lines; one local-bus colour covers ~250 bus routes). The Fabric
+    # Map legend is driven by a layer's `seriesGroup` column, so binding it
+    # to the raw hex colour column makes the legend show "#0039A6" instead of
+    # a meaningful label. This function rolls every route designator that
+    # shares a colour up into one compact label ("A C E", or "M1 M2 M3 M4 M5
+    # M6 +249" when the colour spans many routes), giving exactly one legend
+    # entry per colour while preserving the on-map colouring. Source-agnostic:
+    # works for any GTFS feed, no operator-specific colour table.
+    r'''
+.create-or-alter function with (folder = "Map", skipvalidation = "true") gtfs_color_labels() {
+    gtfs_routes()
+    | where isnotempty(stroke_color)
+    | extend short = iff(isnotempty(routeShortName), routeShortName, routeLongName)
+    | where isnotempty(short)
+    | summarize names = make_set(short, 200), n = dcount(short) by stroke_color
+    | extend names = array_sort_asc(names)
+    | extend head = strcat_array(array_slice(names, 0, 5), " ")
+    | extend color_label = iff(n > 6, strcat(head, " +", tostring(n - 6)),
+                               strcat_array(names, " "))
+    | project stroke_color, color_label
+}
+''',
     r'''
 .create-or-alter function with (folder = "Map", skipvalidation = "true") gtfs_stops() {
     ['GeneralTransitFeed.StopsLatest']
@@ -230,8 +255,10 @@ GTFS_FUNCTIONS: list[str] = [
     | extend geometry = parse_json(strcat('{"type":"LineString","coordinates":[',
                                           strcat_array(coordinate_parts, ","), ']}'))
     | extend label = strcat(routeShortName, " ", routeType)
+    | lookup gtfs_color_labels() on stroke_color
+    | extend color_label = coalesce(color_label, stroke_color)
     | project geometry, shapeId, routeId, routeShortName, routeLongName, routeType,
-              trips, point_count, stroke_color, label
+              trips, point_count, stroke_color, color_label, label
 }
 ''',
     # ------------------------------------------------------------------
@@ -254,9 +281,13 @@ GTFS_FUNCTIONS: list[str] = [
                                stop_count >= 20, "#fdae61",
                                stop_count >= 10, "#2c7bb6",
                                "#41ab5d")
+    | extend hub_tier = case(stop_count >= 40, "Mega hub (40+ stops)",
+                             stop_count >= 20, "Major hub (20-39 stops)",
+                             stop_count >= 10, "Hub (10-19 stops)",
+                             "Local hub (< 10 stops)")
     | extend label = strcat(stopName, " (", tostring(stop_count), ")")
     | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(lon, lat))
-    | project geometry, hub_id, stopName, stop_count, stations, platforms, fill_color, label
+    | project geometry, hub_id, stopName, stop_count, stations, platforms, fill_color, hub_tier, label
 }
 ''',
     # ------------------------------------------------------------------
@@ -283,8 +314,13 @@ GTFS_FUNCTIONS: list[str] = [
         locationType == "ENTRANCE_EXIT", "#1E293B",
         locationType == "STOP", "#1E40AF",
         "#475569")
+    | extend stop_kind = case(
+        locationType == "STATION", "Station",
+        locationType == "ENTRANCE_EXIT", "Entrance / exit",
+        locationType == "STOP", "Stop / platform",
+        "Other")
     | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(lon, lat))
-    | project geometry, stopName, platforms, marker_color
+    | project geometry, stopName, platforms, marker_color, stop_kind
 }
 ''',
     # ------------------------------------------------------------------
@@ -326,12 +362,14 @@ GTFS_FUNCTIONS: list[str] = [
                                fill_color in ("#F6BC26", "#FFCC00", "#FCCC0A"), "#111111",
                                "#FFFFFF")
     | extend marker_color = fill_color
+    | lookup gtfs_color_labels() on $left.fill_color == $right.stroke_color
+    | extend color_label = coalesce(color_label, routeType, route_label)
     | extend label = strcat(route_label, " ", vehicle_label)
     | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(longitude, latitude))
     | project geometry, vehicle_id, vehicle_label, route_id, routeShortName, routeType, trip_id,
               latitude, longitude, bearing,
               status, occupancy_status, age_min, freshness, marker_color, fill_color, text_color,
-              route_label, label, timestamp, ___source, ___time
+              route_label, color_label, label, timestamp, ___source, ___time
 }
 ''',
     # ------------------------------------------------------------------
@@ -361,7 +399,7 @@ GTFS_FUNCTIONS: list[str] = [
                                           p1, ",", p2, ",", p3, ",", p4, ",", p1, ']]}'))
     | project geometry, vehicle_id, vehicle_label, route_id, routeShortName, routeType,
               status, occupancy_status, age_min, freshness,
-              fill_color, stroke_color = "#111111", text_color, route_label,
+              fill_color, stroke_color = "#111111", text_color, route_label, color_label,
               heading = round(heading, 0), bearing, timestamp, ___source, ___time
 }
 ''',
@@ -389,12 +427,17 @@ GTFS_FUNCTIONS: list[str] = [
                                avg_delay_s >= 120, "#fdae61",
                                avg_delay_s >= 0,   "#1a9850",
                                "#2c7bb6")
+    | extend delay_band = case(avg_delay_s >= 900, "15+ min late",
+                               avg_delay_s >= 300, "5-15 min late",
+                               avg_delay_s >= 120, "2-5 min late",
+                               avg_delay_s >= 0,   "On time (0-2 min)",
+                               "Running ahead")
     | extend label = strcat(tostring(avg_delay_min), " min avg")
     | extend geometry = bag_pack("type", "Polygon", "coordinates", pack_array(pack_array(
         pack_array(lon0, lat0), pack_array(lon0 + resolution, lat0),
         pack_array(lon0 + resolution, lat0 + resolution), pack_array(lon0, lat0 + resolution),
         pack_array(lon0, lat0))))
-    | project geometry, updates, stops, avg_delay_min, max_delay_min, fill_color, label
+    | project geometry, updates, stops, avg_delay_min, max_delay_min, fill_color, delay_band, label
 }
 ''',
     # ------------------------------------------------------------------
@@ -415,12 +458,16 @@ GTFS_FUNCTIONS: list[str] = [
                                freshness == "fresh", "#7cb342",
                                freshness == "stale", "#fdae61",
                                "#8c8c8c")
+    | extend freshness_label = case(freshness == "live",  "Live (<= 2 min)",
+                                    freshness == "fresh", "Fresh (2-5 min)",
+                                    freshness == "stale", "Stale (5-15 min)",
+                                    "Old (> 15 min)")
     | extend label = strcat(tostring(vehicles), " vehicles, ", freshness)
     | extend geometry = bag_pack("type", "Polygon", "coordinates", pack_array(pack_array(
         pack_array(lon0, lat0), pack_array(lon0 + resolution, lat0),
         pack_array(lon0 + resolution, lat0 + resolution), pack_array(lon0, lat0 + resolution),
         pack_array(lon0, lat0))))
-    | project geometry, vehicles, avg_age, max_age, freshness, fill_color, label
+    | project geometry, vehicles, avg_age, max_age, freshness, fill_color, freshness_label, label
 }
 ''',
     # ------------------------------------------------------------------
@@ -442,9 +489,12 @@ GTFS_FUNCTIONS: list[str] = [
     | extend marker_color = case(alert_count >= 5, "#d7191c",
                                  alert_count >= 2, "#fdae61",
                                  "#ffcc00")
+    | extend alert_band = case(alert_count >= 5, "5+ alerts",
+                               alert_count >= 2, "2-4 alerts",
+                               "1 alert")
     | extend label = strcat(tostring(alert_count), " alert(s)")
     | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(stopLon, stopLat))
-    | project geometry, stop_id, stopName, alert_count, marker_color, label
+    | project geometry, stop_id, stopName, alert_count, marker_color, alert_band, label
 }
 ''',
     # ------------------------------------------------------------------
@@ -511,8 +561,12 @@ GTFS_FUNCTIONS: list[str] = [
                                           strcat_array(coordinate_parts, ","), ']}'))
     | extend label = strcat(routeShortName, " - ", tostring(alert_count), " alerts")
     | extend stroke_color = alert_color
+    | extend severity_label = case(severity == "critical", "Critical (50+ alerts)",
+                                   severity == "major",    "Major (20-49 alerts)",
+                                   severity == "moderate", "Moderate (5-19 alerts)",
+                                   "Minor (< 5 alerts)")
     | project geometry, shapeId, routeId, routeShortName, routeType, severity, alert_count,
-              sample_header, stroke_color, alert_color, label
+              sample_header, stroke_color, alert_color, severity_label, label
 }
 ''',
     # ------------------------------------------------------------------
@@ -540,8 +594,16 @@ GTFS_FUNCTIONS: list[str] = [
         crowding == "not boarding", "#6B7280",
         "#9CA3AF")
     | extend label = strcat(route_label, " - ", crowding)
+    | extend crowding_label = case(
+        crowding == "spacious",     "Many seats free",
+        crowding == "moderate",     "Few seats free",
+        crowding == "crowded",      "Standing room only",
+        crowding == "very crowded", "Crushed standing",
+        crowding == "full",         "Full",
+        crowding == "not boarding", "Not boarding",
+        "Unknown")
     | project geometry, vehicle_id, vehicle_label, route_id, routeShortName, routeType,
-              status, occupancy_status, crowding, crowding_color, age_min, freshness,
+              status, occupancy_status, crowding, crowding_color, crowding_label, age_min, freshness,
               timestamp, ___source, ___time, label
 }
 ''',
@@ -637,9 +699,12 @@ GTFS_FUNCTIONS: list[str] = [
     | extend marker_color = case(mode_count >= 4, "#7C3AED",
                                  mode_count >= 3, "#0891B2",
                                  "#0EA5E9")
+    | extend mode_tier = case(mode_count >= 4, "4+ modes",
+                              mode_count >= 3, "3 modes",
+                              "2 modes")
     | extend label = strcat(stopName, " (", tostring(mode_count), "x)")
     | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(lon, lat))
-    | project geometry, hub_key, stopName, mode_count, modes, marker_color, label
+    | project geometry, hub_key, stopName, mode_count, modes, marker_color, mode_tier, label
 }
 ''',
 ]
@@ -695,12 +760,20 @@ FRESHNESS_PALETTE_SEED = {
 MULTIMODAL_PALETTE_SEED = {"#7C3AED": "#7C3AED", "#0891B2": "#0891B2", "#0EA5E9": "#0EA5E9"}
 
 
-def _series(column: str, palette: dict[str, str]) -> dict[str, Any]:
-    return {
+def _series(column: str, palette: dict[str, str],
+            paint_column: str | None = None) -> dict[str, Any]:
+    series: dict[str, Any] = {
         "enableSeriesGroup": True,
         "seriesGroup": column,
         "customColors": dict(palette),
     }
+    # When the legend column (seriesGroup) differs from the column that
+    # actually carries the paint colour, record the paint column so
+    # _populate_palette can map legend-label -> colour. This non-Fabric key is
+    # consumed and removed before the definition is serialised.
+    if paint_column and paint_column != column:
+        series["_paintColorColumn"] = paint_column
+    return series
 
 
 def _color_match(column: str, palette: dict[str, str], fallback: str = "#888888") -> list[Any]:
@@ -714,8 +787,10 @@ def _color_match(column: str, palette: dict[str, str], fallback: str = "#888888"
 
 def line_options(*, visible: bool, width: int = 3, opacity: float = 0.86,
                  min_zoom: float | None = None, color_column: str = "stroke_color",
+                 legend_column: str | None = None,
                  palette: dict[str, str] | None = None) -> dict[str, Any]:
     pal = palette if palette is not None else {}
+    legend = legend_column or color_column
     opts: dict[str, Any] = {
         "type": "vector",
         "visible": visible,
@@ -723,7 +798,7 @@ def line_options(*, visible: bool, width: int = 3, opacity: float = 0.86,
             "strokeColor": "#888888",
             "strokeWidth": width,
             "strokeOpacity": opacity,
-            **_series(color_column, pal),
+            **_series(legend, pal, paint_column=color_column),
         },
         "dataLabelKeys": ["label"],
         "dataLabelOptions": dict(LABEL_BASE),
@@ -740,10 +815,12 @@ def bubble_options(*, visible: bool, radius: int = 4,
                    labels: bool = False, label_size: int = 11,
                    min_zoom: float | None = None, max_zoom: float | None = None,
                    color_column: str = "fill_color",
+                   legend_column: str | None = None,
                    palette: dict[str, str] | None = None,
                    tooltip_keys: list[str] | None = None,
                    stroke_color: str = "#FFFFFF") -> dict[str, Any]:
     pal = palette if palette is not None else {}
+    legend = legend_column or color_column
     opts: dict[str, Any] = {
         "type": "vector",
         "visible": visible,
@@ -754,7 +831,7 @@ def bubble_options(*, visible: bool, radius: int = 4,
             "strokeColor": stroke_color,
             "strokeWidth": 1,
             "opacity": 0.92,
-            **_series(color_column, pal),
+            **_series(legend, pal, paint_column=color_column),
         },
         "dataLabelKeys": ["label"],
         "dataLabelOptions": dict(LABEL_BASE, enabled=labels, size=label_size),
@@ -769,19 +846,21 @@ def bubble_options(*, visible: bool, radius: int = 4,
 
 
 def polygon_options(*, visible: bool, color_column: str = "fill_color",
+                    legend_column: str | None = None,
                     palette: dict[str, str] | None = None,
                     fill_opacity: float = 0.62,
                     stroke_color: Any = "#202020",
                     stroke_width: int = 0,
                     labels: bool = False, label_size: int = 10) -> dict[str, Any]:
     pal = palette if palette is not None else {}
+    legend = legend_column or color_column
     return {
         "type": "vector",
         "visible": visible,
         "polygonOptions": {
             "fillColor": "#888888",
             "fillOpacity": fill_opacity,
-            **_series(color_column, pal),
+            **_series(legend, pal, paint_column=color_column),
         },
         "lineOptions": {
             "strokeColor": stroke_color,
@@ -836,7 +915,7 @@ def vehicle_rectangle_options() -> dict[str, Any]:
         "polygonOptions": {
             "fillColor": "#888888",
             "fillOpacity": 0.95,
-            **_series("fill_color", {}),
+            **_series("color_label", {}, paint_column="fill_color"),
         },
         "lineOptions": {
             "strokeColor": "#202020",
@@ -889,13 +968,15 @@ def _layers() -> list[Layer]:
         Layer(
             "GTFS - Rail, subway, tram & ferry",
             'gtfs_shape_lines() | where routeType in ("SUBWAY", "RAIL", "TRAM", "FERRY", "CABLE_CAR", "GONDOLA")',
-            line_options(visible=True, width=4, opacity=0.92, min_zoom=8.5),
+            line_options(visible=True, width=4, opacity=0.92, min_zoom=8.5,
+                         legend_column="color_label"),
             [_text_filter("routeType"), _text_filter("routeShortName")],
         ),
         Layer(
             "GTFS - Bus routes",
             'gtfs_shape_lines() | where routeType == "BUS"',
-            line_options(visible=True, width=2, opacity=0.85, min_zoom=11.5),
+            line_options(visible=True, width=2, opacity=0.85, min_zoom=11.5,
+                         legend_column="color_label"),
             [_text_filter("routeShortName")],
         ),
         Layer(
@@ -903,7 +984,7 @@ def _layers() -> list[Layer]:
             "gtfs_vehicle_points(30m)",
             bubble_options(
                 visible=True, radius=4, min_zoom=12, max_zoom=16,
-                color_column="fill_color",
+                color_column="fill_color", legend_column="color_label",
                 tooltip_keys=[
                     "route_label", "vehicle_label", "route_id",
                     "routeType", "status", "freshness", "age_min", "timestamp",
@@ -922,7 +1003,7 @@ def _layers() -> list[Layer]:
             "gtfs_hubs(5)",
             bubble_options(
                 visible=True, radius=6, labels=True, label_size=11, min_zoom=11,
-                color_column="fill_color", palette=HUB_PALETTE_SEED,
+                color_column="fill_color", legend_column="hub_tier", palette=HUB_PALETTE_SEED,
                 tooltip_keys=["label", "stopName", "stop_count", "stations", "platforms"],
             ),
             [],
@@ -932,7 +1013,7 @@ def _layers() -> list[Layer]:
             "gtfs_stops_for_map()",
             bubble_options(
                 visible=True, radius=5, labels=True, label_size=10, min_zoom=11,
-                color_column="marker_color", palette=STOP_PALETTE_SEED,
+                color_column="marker_color", legend_column="stop_kind", palette=STOP_PALETTE_SEED,
                 tooltip_keys=["stopName", "platforms"],
             ),
             [],
@@ -942,7 +1023,7 @@ def _layers() -> list[Layer]:
             "gtfs_alert_stops(24h)",
             bubble_options(
                 visible=False, radius=7, labels=True, label_size=11, min_zoom=10,
-                color_column="marker_color", palette=ALERT_STOP_PALETTE_SEED,
+                color_column="marker_color", legend_column="alert_band", palette=ALERT_STOP_PALETTE_SEED,
                 tooltip_keys=["label", "stopName", "alert_count"],
             ),
             [],
@@ -952,7 +1033,8 @@ def _layers() -> list[Layer]:
             "gtfs_route_alert_lines(2h)",
             line_options(
                 visible=True, width=6, opacity=0.7, min_zoom=10,
-                color_column="alert_color", palette=ALERT_SEVERITY_PALETTE_SEED,
+                color_column="alert_color", legend_column="severity_label",
+                palette=ALERT_SEVERITY_PALETTE_SEED,
             ),
             [_text_filter("severity"), _text_filter("routeType")],
         ),
@@ -961,7 +1043,8 @@ def _layers() -> list[Layer]:
             "gtfs_crowding(30m)",
             bubble_options(
                 visible=False, radius=5, min_zoom=13,
-                color_column="crowding_color", palette=CROWDING_PALETTE_SEED,
+                color_column="crowding_color", legend_column="crowding_label",
+                palette=CROWDING_PALETTE_SEED,
                 tooltip_keys=["label", "route_label", "routeShortName", "crowding",
                               "occupancy_status", "status", "vehicle_label", "age_min"],
             ),
@@ -972,7 +1055,7 @@ def _layers() -> list[Layer]:
             "gtfs_multimodal_stations()",
             bubble_options(
                 visible=True, radius=6, labels=True, label_size=10, min_zoom=8,
-                color_column="marker_color", palette=MULTIMODAL_PALETTE_SEED,
+                color_column="marker_color", legend_column="mode_tier", palette=MULTIMODAL_PALETTE_SEED,
                 tooltip_keys=["label", "stopName", "mode_count", "modes"],
             ),
             [],
@@ -981,7 +1064,8 @@ def _layers() -> list[Layer]:
             "GTFS - Vehicle data freshness",
             "gtfs_vehicle_freshness_grid(30m, 0.01)",
             polygon_options(
-                visible=False, color_column="fill_color", palette=FRESHNESS_PALETTE_SEED,
+                visible=False, color_column="fill_color", legend_column="freshness_label",
+                palette=FRESHNESS_PALETTE_SEED,
             ),
             [_text_filter("freshness")],
         ),
@@ -989,7 +1073,8 @@ def _layers() -> list[Layer]:
             "GTFS - Delay heatmap",
             "gtfs_delay_grid(30m, 0.01)",
             polygon_options(
-                visible=False, color_column="fill_color", palette=DELAY_PALETTE_SEED,
+                visible=False, color_column="fill_color", legend_column="delay_band",
+                palette=DELAY_PALETTE_SEED,
             ),
             [],
         ),
@@ -1141,21 +1226,39 @@ def _populate_palette(ks: requests.Session, kusto_uri: str, kusto_db: str,
         column = block.get("seriesGroup")
         if not column:
             continue
+        # Non-Fabric marker: when present the legend column (seriesGroup) is a
+        # human label distinct from the column carrying the paint colour.
+        paint_column = block.pop("_paintColorColumn", None)
+        if paint_column and paint_column != column:
+            # Any seed palette is keyed on the paint column (hex), not the
+            # human-readable legend column. Discard it up front so a layer with
+            # no live rows does not fall through with a stale hex-keyed legend.
+            block["customColors"] = {}
         try:
-            frame = _kql_query(
-                ks, kusto_uri, kusto_db,
-                f"{layer.kql}\n| where isnotempty({column})"
-                f"\n| distinct {column}\n| take 50",
-            )
-            values = [row[0] for row in (frame.get("Rows") or []) if row and row[0]]
+            if paint_column and paint_column != column:
+                frame = _kql_query(
+                    ks, kusto_uri, kusto_db,
+                    f"{layer.kql}\n| where isnotempty({column}) and isnotempty({paint_column})"
+                    f"\n| distinct {column}, {paint_column}\n| take 200",
+                )
+                pairs = [(row[0], row[1]) for row in (frame.get("Rows") or [])
+                         if row and row[0] and row[1]]
+            else:
+                frame = _kql_query(
+                    ks, kusto_uri, kusto_db,
+                    f"{layer.kql}\n| where isnotempty({column})"
+                    f"\n| distinct {column}\n| take 50",
+                )
+                pairs = [(row[0], row[0]) for row in (frame.get("Rows") or [])
+                         if row and row[0]]
         except Exception as exc:
             print(f"    palette enumeration failed for {layer.name}/{column}: {exc}")
-            values = []
-        if not values:
+            pairs = []
+        if not pairs:
             continue
         block.setdefault("customColors", {})
-        for v in values:
-            block["customColors"].setdefault(v, v)
+        for label, color in pairs:
+            block["customColors"].setdefault(label, color)
         block[paint_key] = _color_match(column, block["customColors"])
         print(f"    palette {column}: {len(block['customColors'])} colors")
 
