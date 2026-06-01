@@ -4,15 +4,12 @@
 
 Two Kusto-backed layers give an OSINT-oriented global view of active fires:
 
-  1. **Fire hotspots** (default-on, world view) — one bubble per 1-degree grid
-     cell (`FireHotspots()`), sized by detection count and coloured on a
-     yellow->dark-red Fire-Radiative-Power ramp. Lets an analyst spot the
-     world's most active fire regions at a glance.
-  2. **Active fire detections** (default-on, mid zoom 3-8) — one bubble per
-     individual VIIRS/MODIS detection (`RecentFireDetections()`), coloured by
-     FRP and labelled with instrument / FRP / confidence. Reveals where a fire
-     complex sits once the analyst zooms in.
-  3. **Fire intensity tiles** (default-on, zoom >= 5) — one filled square
+  1. **Fire hotspots** (default-on, world->zoom 5) — one bubble per 1-degree
+     grid cell (`FireHotspots()`), sized by detection count and coloured on a
+     yellow->dark-red Fire-Radiative-Power ramp. The zoomed-out overview that
+     lets an analyst spot the world's most active fire regions at a glance,
+     where the fine 0.1-degree tiles are still sub-pixel.
+  2. **Fire intensity tiles** (default-on, all zoom levels) — one filled square
      GeoJSON polygon per populated 0.1-degree grid cell (`FireGrid()`),
      coloured on a continuous Fire-Radiative-Power ramp by the cell's peak FRP.
      This mirrors the DWD ICON-D2 map's tile pattern: a live Kusto map layer
@@ -20,16 +17,21 @@ Two Kusto-backed layers give an OSINT-oriented global view of active fires:
      result cap, and aggregating detections onto a fixed grid bounds the
      rendered row count by *grid resolution* (a few thousand cells) rather than
      by *detection count* (tens of thousands of raw pixels), so the layer never
-     approaches the cap while still covering every fire region. The raw
-     per-pixel scan x track footprint (`FireFootprints()`) remains available as
-     a helper for a viewport-scoped PMTiles tileset (see README) but is not
-     wired as a live Kusto layer because it is unbounded.
+     approaches the cap while still covering every fire region. Each tile
+     carries the full per-cell OSINT summary (peak/total FRP, max brightness,
+     detection count, confidence breakdown, day/night split, contributing
+     instruments / satellites / sources, first & last seen), so the tiles are
+     the single all-zoom detail layer and there is no separate per-detection
+     point layer. The raw per-pixel scan x track footprint (`FireFootprints()`)
+     remains available as a helper for a viewport-scoped PMTiles tileset (see
+     README) but is not wired as a live Kusto layer because it is unbounded.
 
 Both layers query helper functions applied to the live DB by
 `feeders/nasa-firms/fabric/helpers.kql`.
 
-Idempotent: re-running drops the two nasa-firms layers by name and re-creates
-them. Creates the Map item if it does not yet exist.
+Idempotent: re-running drops the nasa-firms layers by name (including the
+retired per-detection point layer and per-pixel footprint layer) and re-creates
+the current set. Creates the Map item if it does not yet exist.
 
 Auth: uses `az account get-access-token` for the Fabric API (run `az login`).
 """
@@ -49,8 +51,9 @@ FABRIC = "https://api.fabric.microsoft.com/v1"
 
 MAP_NAME = "NASA FIRMS Global Fire Map"
 MAP_DESC = ("Global active-fire / thermal-anomaly detections from NASA FIRMS "
-            "(VIIRS + MODIS) for OSINT monitoring — fire hotspots and "
-            "individual detections coloured by Fire Radiative Power.")
+            "(VIIRS + MODIS) for OSINT monitoring — a coarse fire-hotspot "
+            "overview plus an all-zoom 0.1-degree fire-intensity tile field "
+            "coloured by Fire Radiative Power.")
 
 NAME_HOTSPOTS = "nasa-firms hotspots"
 NAME_DETECTIONS = "nasa-firms detections"
@@ -114,11 +117,6 @@ KQL_HOTSPOTS = """FireHotspots(72h, 1.0)
 | project geometry, label, detections, total_frp, max_frp, high_conf, fill_color, radius
 """
 
-# Individual detections over the last 24h; colour + radius come from helpers.
-KQL_DETECTIONS = """RecentFireDetections(24h, 0)
-| project geometry, label, frp, brightness, confidence_level, daynight, satellite, instrument, source, acq_datetime, fill_color, radius
-"""
-
 # Fire intensity tiles: detections aggregated onto a fixed 0.1-degree grid and
 # emitted as one square GeoJSON polygon per populated cell, exactly mirroring
 # the DWD ICON-D2 map's tile pattern. A live Kusto map layer runs its query
@@ -128,7 +126,9 @@ KQL_DETECTIONS = """RecentFireDetections(24h, 0)
 # pixels), so the layer stays well under the cap with full global coverage and
 # no lossy top-N guard. Cells are coloured by peak FRP via a continuous ramp.
 KQL_TILES = """FireGrid(24h, 0.1)
-| project geometry, frp_max, detections, frp_total, high_conf, last_seen, label
+| project geometry, frp_max, frp_total, brightness_max, detections, high_conf,
+          nominal_conf, low_conf, day_count, night_count, daynight,
+          instruments, satellites, sources, first_seen, last_seen, label
 """
 
 
@@ -176,43 +176,23 @@ def hotspots_layer() -> dict:
     }
 
 
-def detections_layer() -> dict:
-    return {
-        "name": NAME_DETECTIONS, "kql": KQL_DETECTIONS, "geometryColumnName": "geometry",
-        "filters": [],
-        "options": {
-            "type": "vector", "visible": True, "pointLayerType": "bubble",
-            "minZoom": 3.0, "maxZoom": 8.0,
-            "bubbleOptions": {
-                "color": _match_expr("fill_color", FIRE_COLORS),
-                "radius": ["get", "radius"], "strokeColor": "#000000", "strokeWidth": 1,
-                "opacity": 0.9, "enableSeriesGroup": True,
-                "seriesGroup": "fill_color", "customColors": _custom_colors(FIRE_COLORS),
-            },
-            "dataLabelKeys": ["label"],
-            "dataLabelOptions": {"enabled": False, "size": 11, "color": "#f5f5f5",
-                                  "textStrokeColor": "#000000", "textStrokeWidth": 2.5,
-                                  "allowOverlap": True},
-            "tooltipKeys": ["label", "frp", "brightness", "confidence_level", "daynight",
-                            "satellite", "instrument", "source", "acq_datetime"],
-            "enablePopups": True,
-        },
-    }
-
-
 def tiles_layer() -> dict:
-    # DWD-style polygon tile field: one filled square per populated 0.1-deg grid
-    # cell, coloured on a continuous FRP interpolate ramp. No pointLayerType
-    # (fill via polygonOptions); a hairline outline keeps adjacent tiles legible
-    # without breaking the raster look. Bounded by grid resolution, so safe
-    # against the 20 MB live-layer cap.
+    # DWD-style polygon tile field, now the single all-zoom fire layer: one
+    # filled square per populated 0.1-deg grid cell, coloured on a continuous
+    # FRP interpolate ramp. No pointLayerType (fill via polygonOptions); a
+    # hairline outline keeps adjacent tiles legible without breaking the raster
+    # look. Bounded by grid resolution, so safe against the 20 MB live-layer
+    # cap. Each tile carries the full per-cell OSINT summary (the detail that
+    # used to live on the now-removed per-detection point layer), so the tooltip
+    # answers "what is burning here" at every zoom level. Rendered at all zooms
+    # (no minZoom) so the tiles are visible the moment you zoom past the coarse
+    # hotspot overview.
     color = _interpolate_expr("frp_max", FRP_STOPS, FIRE_COLORS)
     return {
         "name": NAME_TILES, "kql": KQL_TILES, "geometryColumnName": "geometry",
         "filters": [],
         "options": {
             "type": "vector", "visible": True,
-            "minZoom": 5.0,
             "color": color,
             "polygonOptions": {"fillColor": color, "fillOpacity": 0.6},
             "lineOptions": {
@@ -222,8 +202,10 @@ def tiles_layer() -> dict:
             "dataLabelOptions": {"enabled": False, "size": 11, "color": "#f5f5f5",
                                   "textStrokeColor": "#000000", "textStrokeWidth": 2.5,
                                   "allowOverlap": False},
-            "tooltipKeys": ["label", "frp_max", "detections", "frp_total",
-                            "high_conf", "last_seen"],
+            "tooltipKeys": ["label", "frp_max", "frp_total", "brightness_max",
+                            "detections", "high_conf", "nominal_conf", "low_conf",
+                            "daynight", "instruments", "satellites", "sources",
+                            "first_seen", "last_seen"],
             "enablePopups": True,
         },
     }
@@ -303,8 +285,11 @@ def main():
     for k in ("zoom", "scale", "style", "compass"):
         c.setdefault(k, True)
 
-    # wire layers (hotspots under detections under tiles)
-    for layer in (hotspots_layer(), detections_layer(), tiles_layer()):
+    # wire layers: coarse hotspot bubbles for the world/continental overview
+    # (where 0.1-deg tiles are sub-pixel), then the all-zoom fire-tile field
+    # that carries the full per-cell detail. The per-detection point layer was
+    # removed — its info now lives on the tiles.
+    for layer in (hotspots_layer(), tiles_layer()):
         src_id = str(uuid.uuid4())
         mp.setdefault("layerSources", []).append({
             "id": src_id, "name": layer["name"].replace(" ", "_") + "_kusto",
