@@ -1,5 +1,5 @@
 # Regenerate Kafka, MQTT, and AMQP producers from the source xRegistry manifest.
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $xregFile = Join-Path $scriptDir "xreg\fienta.xreg.json"

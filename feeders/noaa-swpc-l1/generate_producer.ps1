@@ -4,7 +4,7 @@
 # messagegroup; the shared base messagegroup is pulled in transitively via
 # basemessageurl resolution.
 
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 xrcg generate `

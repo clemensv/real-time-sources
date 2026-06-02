@@ -1,6 +1,6 @@
 # The checked-in xreg manifest is authoritative. Regenerate the AMQP producer from it.
 
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 xrcg generate `

@@ -1,6 +1,6 @@
 # Generate the ENTSO-E data producers using xrcg: one generated package per transport.
 
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path

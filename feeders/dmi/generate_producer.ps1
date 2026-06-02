@@ -5,7 +5,7 @@
 # (lightning is excluded from MQTT because per-strike events do not fit
 # LKV semantics).
 
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 xrcg generate `
