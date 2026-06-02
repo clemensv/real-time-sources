@@ -46,7 +46,7 @@ const SOURCES = [
   { id: "jma-japan", name: "JMA Japan", cat: "Weather", key: false, desc: "Japan — weather bulletins, warnings, forecasts", notebook: true, mqtt: true, amqp: true },
   { id: "jma-bosai-amedas", name: "JMA Bosai AMeDAS", cat: "Weather", key: false, desc: "Japan — ~1,300 AMeDAS automated weather stations, 10-min obs", notebook: true, mqtt: true, amqp: true, kafka: false },
   { id: "kmi-belgium", name: "KMI Belgium", cat: "Weather", key: false, desc: "Belgium — ~14 AWS stations, 10-min observations", notebook: true, mqtt: true, amqp: true },
-  { id: "meteoalarm", name: "Meteoalarm", cat: "Weather", key: false, desc: "Europe — 37 countries, severe weather warnings", mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
+  { id: "meteoalarm", name: "Meteoalarm", cat: "Weather", key: false, desc: "Europe — 37 countries, severe weather warnings", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
   { id: "noaa-goes", name: "NOAA GOES / SWPC", cat: "Weather", key: false, desc: "Global — space weather, solar wind, K-index", notebook: true, mqtt: true, amqp: true },
   { id: "noaa-swpc-l1", name: "NOAA SWPC L1", cat: "Weather", key: false, desc: "Global — L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30–60 min Earth-impact lead time", notebook: true, mqtt: true, amqp: true },
   { id: "noaa-nws", name: "NOAA NWS", cat: "Weather", key: false, desc: "United States — weather alerts, CAP", notebook: true, mqtt: true, amqp: true },
