@@ -1,6 +1,6 @@
 # The checked-in xreg manifest is authoritative. Regenerate all transport producers from it.
 
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 xrcg generate --style kafkaproducer --language py --definitions xreg\bfs_odl.xreg.json --endpoint de.bfs.odl.Kafka --projectname bfs_odl_producer --output bfs_odl_producer

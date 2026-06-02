@@ -1,5 +1,5 @@
 # Regenerate the Wikimedia EventStreams MQTT producer from the authoritative xreg manifest.
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 xrcg generate `

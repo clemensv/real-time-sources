@@ -1,6 +1,6 @@
 # Generate INPE DETER Brazil producer from xRegistry definitions
 
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 Write-Host "Generating INPE DETER Brazil producer from xRegistry definitions..." -ForegroundColor Cyan

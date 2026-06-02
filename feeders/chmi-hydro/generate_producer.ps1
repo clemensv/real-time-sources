@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 $XREG_ROOT = Join-Path $PSScriptRoot "xreg"

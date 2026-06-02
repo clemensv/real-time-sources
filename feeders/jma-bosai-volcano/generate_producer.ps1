@@ -1,6 +1,6 @@
 # The checked-in xreg manifest is authoritative. Regenerate all transport producers from it.
 $ErrorActionPreference = 'Stop'
-. (Join-Path $PSScriptRoot "..\tools\require-xrcg.ps1")
+. (Join-Path $PSScriptRoot "..\..\tools\require-xrcg.ps1")
 Assert-XrcgVersion
 
 xrcg generate --style kafkaproducer --language py --definitions xreg\jma-bosai-volcano.xreg.json --endpoint JP.JMA.Volcano.Kafka --projectname jma_bosai_volcano_producer --output jma_bosai_volcano_producer
