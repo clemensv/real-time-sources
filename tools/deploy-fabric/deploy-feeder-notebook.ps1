@@ -638,6 +638,22 @@ $nb = $nbJson | ConvertFrom-Json
 
 if (-not $nb.metadata)              { $nb | Add-Member -NotePropertyName metadata     -NotePropertyValue ([pscustomobject]@{}) -Force }
 if (-not $nb.metadata.dependencies) { $nb.metadata | Add-Member -NotePropertyName dependencies -NotePropertyValue ([pscustomobject]@{}) -Force }
+
+# Force the pure-Python (jupyter_python) notebook kernel regardless of what the
+# committed .ipynb declares. Feeder notebooks are single-node Python pollers and
+# do no distributed Spark compute; the Python runtime is cheaper and faster to
+# start, and it still attaches the feeder Environment + custom wheels (verified
+# live on ContosoRealTimeTest). This is a safety net — the committed notebooks
+# are also stored with the Python kernel.
+$nb.metadata | Add-Member -NotePropertyName kernelspec -NotePropertyValue ([pscustomobject]@{
+    name         = 'python3.11'
+    display_name = 'Python 3.11'
+    language     = 'python'
+}) -Force
+$nb.metadata | Add-Member -NotePropertyName language_info -NotePropertyValue ([pscustomobject]@{ name = 'python' }) -Force
+if (-not $nb.metadata.microsoft) { $nb.metadata | Add-Member -NotePropertyName microsoft -NotePropertyValue ([pscustomobject]@{}) -Force }
+$nb.metadata.microsoft | Add-Member -NotePropertyName language       -NotePropertyValue 'python'         -Force
+$nb.metadata.microsoft | Add-Member -NotePropertyName language_group -NotePropertyValue 'jupyter_python' -Force
 $kqlBinding = @(
     [pscustomobject]@{
         name        = $db.displayName

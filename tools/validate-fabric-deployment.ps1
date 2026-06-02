@@ -87,6 +87,16 @@ function Test-Notebook {
             $checks.Add((New-Check 'no-inline-installs' 'ok' 'No inline package installation magic found.'))
         }
 
+        $langGroup = $null
+        if ($notebook.metadata -and $notebook.metadata.microsoft) { $langGroup = $notebook.metadata.microsoft.language_group }
+        if ($langGroup -eq 'jupyter_python') {
+            $checks.Add((New-Check 'python-notebook-kernel' 'ok' 'Notebook uses the pure-Python (jupyter_python) kernel.'))
+        } elseif ($langGroup -eq 'synapse_pyspark') {
+            $checks.Add((New-Check 'python-notebook-kernel' 'blocker' 'Notebook uses the synapse_pyspark (Spark) kernel; feeder notebooks must use the pure-Python kernel (metadata.microsoft.language_group = "jupyter_python").'))
+        } else {
+            $checks.Add((New-Check 'python-notebook-kernel' 'warning' "Notebook metadata.microsoft.language_group is '$langGroup'; expected 'jupyter_python'."))
+        }
+
         if ($codeText -like '*/lakehouse/default/Files/feeder-state/*') {
             $checks.Add((New-Check 'onelake-feeder-state-log' 'ok' 'Notebook references /lakehouse/default/Files/feeder-state/.'))
         } elseif ($codeText -match '(/lakehouse/default/Files/|last-run\.log|LOG_PATH|STATE_FILE)') {
