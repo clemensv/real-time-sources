@@ -172,6 +172,6 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 
 ## References
 
-- xRegistry manifest: [`xreg/usgs_earthquakes.xreg.json`](xreg/usgs_earthquakes.xreg.json)
+- xRegistry manifest: [`xreg/usgs-earthquakes.xreg.json`](xreg/usgs-earthquakes.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)

@@ -7,6 +7,7 @@ import pytest
 from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime, timezone
 from usgs_earthquakes.usgs_earthquakes import USGSEarthquakePoller, FEED_URLS, DEFAULT_FEED, parse_connection_string
+from usgs_earthquakes_amqp.app import _resolve_broker_endpoint
 
 
 @pytest.fixture
@@ -328,3 +329,12 @@ class TestEventDataClass:
         avro_bytes = event.to_byte_array("avro/binary")
         assert avro_bytes is not None
         assert len(avro_bytes) > 0
+
+
+class TestAmqpApp:
+    def test_resolve_broker_endpoint_prefers_host_port_env_shape(self):
+        host, port, tls = _resolve_broker_endpoint(None, "namespace.servicebus.windows.net", 5671, True)
+
+        assert host == "namespace.servicebus.windows.net"
+        assert port == 5671
+        assert tls is True

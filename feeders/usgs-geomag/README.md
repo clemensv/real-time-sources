@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#usgs-geomag/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/usgs_geomag.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/usgs-geomag.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.usgs.gov/programs/geomagnetism)
 
 </td></tr></table>
@@ -54,10 +54,10 @@ USGS geomagnetic observations support space-weather operations, power-grid risk 
 | Variant | Container image | Transport | Default delivery shape |
 |---|---|---|---|
 | **Kafka** | `ghcr.io/clemensv/real-time-sources-usgs-geomag` | Apache Kafka 2.x compatible (Azure Event Hubs, Fabric Event Streams, Confluent Cloud, plain Kafka) | One topic, JSON CloudEvents (binary mode) |
-| **MQTT** | `ghcr.io/clemensv/real-time-sources-usgs-geomag-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Fabric MQTT broker) | Unified-Namespace topic tree defined in `xreg/usgs_geomag.xreg.json` |
+| **MQTT** | `ghcr.io/clemensv/real-time-sources-usgs-geomag-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Fabric MQTT broker) | Unified-Namespace topic tree defined in `xreg/usgs-geomag.xreg.json` |
 | **AMQP** | `ghcr.io/clemensv/real-time-sources-usgs-geomag-amqp` | AMQP 1.0 (RabbitMQ AMQP 1.0 plugin, Artemis, Qpid Dispatch, Azure Service Bus / Event Hubs) | Single AMQP address, binary CloudEvents |
 
-All three variants share the same source contract in `xreg/usgs_geomag.xreg.json`.
+All three variants share the same source contract in `xreg/usgs-geomag.xreg.json`.
 
 ## Key features
 
@@ -70,7 +70,7 @@ All three variants share the same source contract in `xreg/usgs_geomag.xreg.json
 
 ```text
 usgs-geomag/
-  xreg/usgs_geomag.xreg.json
+  xreg/usgs-geomag.xreg.json
   usgs_geomag/
   usgs_geomag_mqtt/
   usgs_geomag_amqp/

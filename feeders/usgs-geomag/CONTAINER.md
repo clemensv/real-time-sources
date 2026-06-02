@@ -22,7 +22,7 @@
 [📓 **Fabric Notebook**](https://clemensv.github.io/real-time-sources#usgs-geomag/fabric-notebook) &nbsp;·&nbsp;
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
-[🗄️ **KQL schema**](kql/usgs_geomag.kql) &nbsp;·&nbsp;
+[🗄️ **KQL schema**](kql/usgs-geomag.kql) &nbsp;·&nbsp;
 [↗ **Upstream**](https://www.usgs.gov/programs/geomagnetism)
 
 </td></tr></table>

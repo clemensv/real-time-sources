@@ -26,6 +26,27 @@
         "description": "Credentials for MQTT_AUTH_MODE=password."
       }
     },
+    "feed": {
+      "type": "string",
+      "defaultValue": "all_hour",
+      "metadata": {
+        "description": "USGS GeoJSON summary feed to poll, for example all_hour, all_day, or significant_month."
+      }
+    },
+    "minMagnitude": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional minimum magnitude filter applied before publishing events. Leave empty to publish all magnitudes in the selected feed."
+      }
+    },
+    "lastPolledFile": {
+      "type": "string",
+      "defaultValue": "/mnt/bridge-state/state.json",
+      "metadata": {
+        "description": "Path to the persisted checkpoint and dedupe state file for the USGS Earthquakes MQTT bridge."
+      }
+    },
     "containerGroupName": {
       "type": "string",
       "defaultValue": "usgs-earthquakes-mqtt",
@@ -138,6 +159,18 @@
                 {
                   "name": "MQTT_PASSWORD",
                   "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "USGS_EARTHQUAKES_FEED",
+                  "value": "[parameters('feed')]"
+                },
+                {
+                  "name": "USGS_EARTHQUAKES_MIN_MAGNITUDE",
+                  "value": "[parameters('minMagnitude')]"
+                },
+                {
+                  "name": "USGS_EARTHQUAKES_LAST_POLLED_FILE",
+                  "value": "[parameters('lastPolledFile')]"
                 },
                 {
                   "name": "LOG_LEVEL",

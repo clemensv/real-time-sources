@@ -5,7 +5,7 @@ Assert-XrcgVersion
 xrcg generate `
     --style mqttclient `
     --language py `
-    --definitions xreg\usgs_earthquakes.xreg.json `
+    --definitions xreg\usgs-earthquakes.xreg.json `
     --endpoint USGS.Earthquakes.Mqtt `
     --projectname usgs_earthquakes_mqtt_producer `
     --output usgs_earthquakes_mqtt_producer

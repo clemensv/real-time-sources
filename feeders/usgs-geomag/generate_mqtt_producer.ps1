@@ -5,7 +5,7 @@ Assert-XrcgVersion
 xrcg generate `
     --style mqttclient `
     --language py `
-    --definitions xreg\usgs_geomag.xreg.json `
+    --definitions xreg\usgs-geomag.xreg.json `
     --endpoint gov.usgs.geomag.Mqtt `
     --projectname usgs_geomag_mqtt_producer `
     --output usgs_geomag_mqtt_producer

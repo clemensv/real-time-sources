@@ -99,6 +99,17 @@ class EAFloodMonitoringAPI:
                     measure_map[measure_id] = station_ref
         return measure_map
 
+    def resolve_station_reference(self, measure_uri: str, measure_map: Dict[str, str]) -> str:
+        """Resolve a station reference from the cached measure map or the measure URI itself."""
+        station_ref = measure_map.get(measure_uri, "")
+        if not station_ref and "/" in measure_uri:
+            parts = measure_uri.split("/")
+            for i, part in enumerate(parts):
+                if part == "measures" and i + 1 < len(parts):
+                    station_ref = parts[i + 1].split("-")[0]
+                    break
+        return station_ref
+
     def parse_connection_string(self, connection_string: str) -> Dict[str, str]:
         """
         Parse the connection string and extract bootstrap server, topic name, username, and password.
@@ -191,14 +202,7 @@ class EAFloodMonitoringAPI:
                         continue
 
                     # Resolve station reference from measure URI
-                    station_ref = self.measure_to_station.get(measure_uri, "")
-                    if not station_ref and "/" in measure_uri:
-                        # Try extracting station ref from measure URI pattern
-                        parts = measure_uri.split("/")
-                        for i, part in enumerate(parts):
-                            if part == "measures" and i + 1 < len(parts):
-                                station_ref = parts[i + 1].split("-")[0]
-                                break
+                    station_ref = self.resolve_station_reference(measure_uri, self.measure_to_station)
 
                     reading_data = Reading(
                         station_reference=station_ref,

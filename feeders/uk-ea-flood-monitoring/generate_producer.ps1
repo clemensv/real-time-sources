@@ -4,7 +4,7 @@ $ErrorActionPreference = 'Stop'
 Assert-XrcgVersion
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$xregFile = Join-Path $scriptDir "xreg\uk_ea_flood_monitoring.xreg.json"
+$xregFile = Join-Path $scriptDir "xreg\uk-ea-flood-monitoring.xreg.json"
 
 Write-Host "Generating uk-ea-flood-monitoring producers from xRegistry definitions..." -ForegroundColor Cyan
 

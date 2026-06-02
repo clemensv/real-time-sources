@@ -4,7 +4,7 @@ Assert-XrcgVersion
 xrcg generate `
     --style amqpproducer `
     --language py `
-    --definitions xreg\usgs_earthquakes.xreg.json `
+    --definitions xreg\usgs-earthquakes.xreg.json `
     --endpoint USGS.Earthquakes.Amqp `
     --projectname usgs_earthquakes_amqp_producer `
     --template-args azure_cbs_target=servicebus `

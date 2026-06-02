@@ -326,6 +326,10 @@
       "module": "usgs_earthquakes"
     },
     {
+      "dir": "feeders/usgs-geomag",
+      "module": "usgs_geomag"
+    },
+    {
       "dir": "feeders/usgs-iv",
       "module": "usgs_iv"
     },
@@ -2069,6 +2073,10 @@
       "test_class": "TestUSGSEarthquakesDockerFlow"
     },
     {
+      "dir": "feeders/usgs-geomag",
+      "test_class": "TestUSGSGeomagDockerFlow"
+    },
+    {
       "dir": "feeders/usgs-iv",
       "test_class": "TestUSGSIVDockerFlow"
     },
@@ -2382,6 +2390,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestGraceDbMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/vatsim",
+      "file": "Dockerfile",
+      "image": "vatsim",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestVatsimDockerFlow"
     },
     {
       "dir": "feeders/vatsim",

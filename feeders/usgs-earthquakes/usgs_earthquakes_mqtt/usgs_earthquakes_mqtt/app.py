@@ -86,9 +86,22 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="USGS Earthquakes MQTT/UNS bridge")
     parser.add_argument("feed_command", nargs="?", default="feed")
     parser.add_argument("--broker-url", default=os.getenv("MQTT_BROKER_URL", "mqtt://localhost:1883"))
-    parser.add_argument("--last-polled-file", default=os.getenv("USGS_EARTHQUAKES_LAST_POLLED_FILE", os.path.expanduser("~/.usgs_earthquakes_seen_mqtt.json")))
-    parser.add_argument("--feed", default=os.getenv("USGS_EARTHQUAKES_FEED", DEFAULT_FEED))
-    parser.add_argument("--min-magnitude", type=float, default=float(os.getenv("USGS_EARTHQUAKES_MIN_MAGNITUDE")) if os.getenv("USGS_EARTHQUAKES_MIN_MAGNITUDE") else None)
+    parser.add_argument(
+        "--last-polled-file",
+        default=os.getenv("USGS_EARTHQUAKES_LAST_POLLED_FILE", os.path.expanduser("~/.usgs_earthquakes_seen_mqtt.json")),
+        help="Path to the persisted checkpoint and dedupe state file for the USGS Earthquakes MQTT bridge.",
+    )
+    parser.add_argument(
+        "--feed",
+        default=os.getenv("USGS_EARTHQUAKES_FEED", DEFAULT_FEED),
+        help="USGS GeoJSON summary feed to poll, for example all_hour, all_day, or significant_month.",
+    )
+    parser.add_argument(
+        "--min-magnitude",
+        type=float,
+        default=float(os.getenv("USGS_EARTHQUAKES_MIN_MAGNITUDE")) if os.getenv("USGS_EARTHQUAKES_MIN_MAGNITUDE") else None,
+        help="Optional minimum magnitude filter applied before publishing events.",
+    )
     parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))
     parser.add_argument("--username", default=os.getenv("MQTT_USERNAME", ""))
     parser.add_argument("--password", default=os.getenv("MQTT_PASSWORD", ""))
