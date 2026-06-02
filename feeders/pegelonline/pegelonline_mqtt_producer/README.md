@@ -149,13 +149,15 @@ make build
 
 ## Test```python
 
-de_wsv_pegelonline_mqtt_station_async:  Callable[[PartitionContext, EventData, CloudEvent, object], Awaitable[None]]
+de_wsv_pegelonline_mqtt_station_async:  Callable[[PartitionContext, EventData, CloudEvent, Station], Awaitable[None]]
 
 ```bash```
 
 make test
 
-```Asynchronous handler hook for `de.wsv.pegelonline.mqtt.Station`:
+```Asynchronous handler hook for `de.wsv.pegelonline.mqtt.Station`: A reference record for one federally administered
+German inland and coastal gauge published by Germany's Federal Waterways and Shipping Administration (WSV). It fires
+when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -163,13 +165,13 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 - `partition_context`: The partition context.
 - `event`: The event data.
 - `cloud_event`: The CloudEvent.
-- `data`: The event data of type `object`.
+- `data`: The event data of type `pegelonline_mqtt_producer_data.Station`.
 
 Example:
 
 ```python
 async def de_wsv_pegelonline_mqtt_station_event(partition_context: PartitionContext, event: EventData, cloud_event:
-CloudEvent, data: object) -> None:
+CloudEvent, data: Station) -> None:
     # Process the event data
     await partition_context.update_checkpoint(event)
 ```
@@ -191,14 +193,16 @@ make build
 
 ## Test```python
 
-de_wsv_pegelonline_mqtt_current_measurement_async:  Callable[[PartitionContext, EventData, CloudEvent, object],
-Awaitable[None]]
+de_wsv_pegelonline_mqtt_current_measurement_async:  Callable[[PartitionContext, EventData, CloudEvent,
+CurrentMeasurement], Awaitable[None]]
 
 ```bash```
 
 make test
 
-```Asynchronous handler hook for `de.wsv.pegelonline.mqtt.CurrentMeasurement`:
+```Asynchronous handler hook for `de.wsv.pegelonline.mqtt.CurrentMeasurement`: A current measurement from Germany's
+Federal Waterways and Shipping Administration (WSV) for one monitoring site. It carries water level measurements for
+rivers, canals, and estuaries when the upstream feed reports a new or refreshed value.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -206,13 +210,13 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 - `partition_context`: The partition context.
 - `event`: The event data.
 - `cloud_event`: The CloudEvent.
-- `data`: The event data of type `object`.
+- `data`: The event data of type `pegelonline_mqtt_producer_data.CurrentMeasurement`.
 
 Example:
 
 ```python
 async def de_wsv_pegelonline_mqtt_current_measurement_event(partition_context: PartitionContext, event: EventData,
-cloud_event: CloudEvent, data: object) -> None:
+cloud_event: CloudEvent, data: CurrentMeasurement) -> None:
     # Process the event data
     await partition_context.update_checkpoint(event)
 ```

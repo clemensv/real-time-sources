@@ -4,6 +4,7 @@ import re
 import typing
 from typing import Callable, Awaitable, Optional, Dict, List
 import asyncio
+from datetime import datetime, timezone
 import paho.mqtt.client as mqtt
 try:
     # paho-mqtt 2.x exposes MQTT5 Properties for the PUBLISH packet type.
@@ -17,10 +18,57 @@ except Exception:  # pragma: no cover - paho < 2 fallback
 from cloudevents.conversion import to_binary, to_structured
 from cloudevents.http import CloudEvent
 import pegelonline_mqtt_producer_data
+from pegelonline_mqtt_producer_data import Station
+from pegelonline_mqtt_producer_data import CurrentMeasurement
 
 
 # URI template regex pattern
 _URI_TEMPLATE_PATTERN = re.compile(r'\{([A-Za-z0-9_]+)\}')
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 
 def _topic_to_mqtt_wildcard(topic: str) -> str:
@@ -239,6 +287,10 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         
         # Message handler callbacks (Dispatcher pattern)
         
+        self.de_wsv_pegelonline_mqtt_station_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, pegelonline_mqtt_producer_data.Station, Dict[str, str]], Awaitable[None]]] = None
+        
+        self.de_wsv_pegelonline_mqtt_current_measurement_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, pegelonline_mqtt_producer_data.CurrentMeasurement, Dict[str, str]], Awaitable[None]]] = None
+        
         
         # Attach message callback
         self.client.on_message = self._on_message
@@ -281,6 +333,30 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         """Dispatch CloudEvent to the appropriate handler based on type."""
         event_type = cloud_event['type']
         
+        
+        if event_type == "de.wsv.pegelonline.Station":
+            if self.de_wsv_pegelonline_mqtt_station_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = pegelonline_mqtt_producer_data.Station.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "de.wsv.pegelonline.mqtt.Station")
+                    await self.de_wsv_pegelonline_mqtt_station_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in de_wsv_pegelonline_mqtt_station handler: {e}")
+            return
+        
+        if event_type == "de.wsv.pegelonline.CurrentMeasurement":
+            if self.de_wsv_pegelonline_mqtt_current_measurement_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = pegelonline_mqtt_producer_data.CurrentMeasurement.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "de.wsv.pegelonline.mqtt.CurrentMeasurement")
+                    await self.de_wsv_pegelonline_mqtt_current_measurement_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in de_wsv_pegelonline_mqtt_current_measurement handler: {e}")
+            return
         
     
     async def subscribe(self, topics: Optional[typing.List[str]] = None, qos: int = 0):
@@ -325,4 +401,168 @@ class DeWsvPegelonlineMqttMqttClient(_ClientBase):
         self.client.disconnect()
 
     # Producer methods
+    
+    async def publish_de_wsv_pegelonline_mqtt_station(self,
+        feedurl: str,
+        station_id: str,
+        water_shortname: str,
+        data: pegelonline_mqtt_producer_data.Station,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'de.wsv.pegelonline.mqtt.Station' event to an MQTT topic.
+
+        Args:
+        
+            feedurl: URI template variable for 'feedurl'
+            station_id: URI template variable for 'station_id'
+            water_shortname: URI template variable for 'water_shortname'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/info"
+        _topic_template_values: Dict[str, str] = {
+            "feedurl": str(feedurl),
+            "station_id": str(station_id),
+            "water_shortname": str(water_shortname),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"de.wsv.pegelonline.Station",
+             "source":"{feedurl}".format(feedurl = feedurl),
+             "subject":"{station_id}".format(station_id = station_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = True if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
+    
+    async def publish_de_wsv_pegelonline_mqtt_current_measurement(self,
+        feedurl: str,
+        station_id: str,
+        water_shortname: str,
+        data: pegelonline_mqtt_producer_data.CurrentMeasurement,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'de.wsv.pegelonline.mqtt.CurrentMeasurement' event to an MQTT topic.
+
+        Args:
+        
+            feedurl: URI template variable for 'feedurl'
+            station_id: URI template variable for 'station_id'
+            water_shortname: URI template variable for 'water_shortname'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/water-level"
+        _topic_template_values: Dict[str, str] = {
+            "feedurl": str(feedurl),
+            "station_id": str(station_id),
+            "water_shortname": str(water_shortname),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"de.wsv.pegelonline.CurrentMeasurement",
+             "source":"{feedurl}".format(feedurl = feedurl),
+             "subject":"{station_id}".format(station_id = station_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = True if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
     
