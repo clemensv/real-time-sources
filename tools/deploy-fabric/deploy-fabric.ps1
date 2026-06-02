@@ -167,6 +167,48 @@ function Resolve-AzSubscriptionContext {
     }
 }
 
+function ConvertTo-GitHubContentsPath {
+    param([Parameter(Mandatory = $true)] [string]$Path)
+
+    return ((($Path -replace '\\', '/') -split '/') |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+        ForEach-Object { [System.Uri]::EscapeDataString($_) }) -join '/'
+}
+
+function Expand-GitHubDirectoryToPath {
+    param(
+        [Parameter(Mandatory = $true)] [string]$Repo,
+        [Parameter(Mandatory = $true)] [string]$Branch,
+        [Parameter(Mandatory = $true)] [string]$SourcePath,
+        [Parameter(Mandatory = $true)] [string]$DestinationPath,
+        [string]$RootPath = $SourcePath
+    )
+
+    $contentsPath = ConvertTo-GitHubContentsPath -Path $SourcePath
+    $url = "https://api.github.com/repos/$Repo/contents/$($contentsPath)?ref=$([System.Uri]::EscapeDataString($Branch))"
+    $headers = @{ "User-Agent" = "GitHubCopilotCLI/1.0" }
+
+    foreach ($item in (Invoke-RestMethod -Uri $url -Headers $headers -ErrorAction Stop)) {
+        if ($item.type -eq 'dir') {
+            Expand-GitHubDirectoryToPath -Repo $Repo -Branch $Branch -SourcePath $item.path -DestinationPath $DestinationPath -RootPath $RootPath
+            continue
+        }
+
+        if ($item.type -ne 'file' -or [string]::IsNullOrWhiteSpace($item.download_url)) {
+            continue
+        }
+
+        $relativePath = $item.path.Substring($RootPath.Length).TrimStart([char[]]@('/', '\'))
+        $targetPath = Join-Path $DestinationPath ($relativePath -replace '/', '\')
+        $targetDir = Split-Path -Parent $targetPath
+        if ($targetDir -and -not (Test-Path $targetDir)) {
+            New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+        }
+
+        Invoke-WebRequest -Uri $item.download_url -OutFile $targetPath -UseBasicParsing -ErrorAction Stop | Out-Null
+    }
+}
+
 function Write-Step { param([string]$Step, [string]$Msg)
     Write-Host "`n[$Step] $Msg" -ForegroundColor Yellow
 }
@@ -384,13 +426,15 @@ function Invoke-SourcePostDeployHook {
         $hookPath = $localPath
         Write-Info "Post-deploy hook found locally: $hookPath"
     } else {
-        $hookUrl = "$RawBase/$rel"
         try {
-            $null = Invoke-WebRequest -Uri $hookUrl -Method Head -UseBasicParsing -ErrorAction Stop
-            $tmp = Join-Path $TempDir "post-deploy-$Source-$([Guid]::NewGuid().ToString('N')).ps1"
-            Invoke-WebRequest -Uri $hookUrl -OutFile $tmp -UseBasicParsing | Out-Null
-            $hookPath = $tmp
-            Write-Info "Post-deploy hook downloaded from $hookUrl"
+            $tmp = Join-Path $TempDir "post-deploy-$Source-$([Guid]::NewGuid().ToString('N'))"
+            New-Item -ItemType Directory -Path $tmp -Force | Out-Null
+            Expand-GitHubDirectoryToPath -Repo $Repo -Branch $Branch -SourcePath "feeders/$Source/fabric" -DestinationPath $tmp
+            $hookPath = Join-Path $tmp "post-deploy.ps1"
+            if (-not (Test-Path $hookPath)) {
+                throw "Downloaded hook bundle did not contain post-deploy.ps1."
+            }
+            Write-Info "Post-deploy hook bundle downloaded from $RawBase/feeders/$Source/fabric/"
         } catch {
             Write-Info "No post-deploy hook for '$Source' (looked for $rel) — skipping"
             return

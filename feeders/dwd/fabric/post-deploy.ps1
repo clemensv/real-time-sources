@@ -63,13 +63,35 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$kustoDatabaseBound = $PSBoundParameters.ContainsKey('KustoDatabase')
+
+function Get-KustoAccessToken {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$KustoUri
+    )
+
+    $resources = @(
+        "https://kusto.kusto.windows.net",
+        $KustoUri
+    ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
+
+    foreach ($resource in $resources) {
+        $token = az account get-access-token --resource $resource --query accessToken -o tsv 2>$null
+        if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($token)) {
+            return $token.Trim()
+        }
+    }
+
+    throw "Failed to acquire a Kusto access token for $KustoUri."
+}
 
 # Merge Context (hook invocation) with explicit params (standalone).
 if ($Context) {
     if (-not $WorkspaceId   -and $Context.ContainsKey('WorkspaceId'))          { $WorkspaceId   = $Context.WorkspaceId }
     if (-not $KqlDatabaseId -and $Context.ContainsKey('DatabaseId'))           { $KqlDatabaseId = $Context.DatabaseId }
     if (-not $KustoUri      -and $Context.ContainsKey('EventhouseClusterUri')) { $KustoUri      = $Context.EventhouseClusterUri }
-    if (-not $KustoDatabase -and $Context.ContainsKey('DatabaseName'))         { $KustoDatabase = $Context.DatabaseName }
+    if (-not $kustoDatabaseBound -and $Context.ContainsKey('DatabaseName'))    { $KustoDatabase = $Context.DatabaseName }
 }
 
 if (-not $MapId) {
@@ -119,13 +141,8 @@ if (-not $env:FABRIC_TOKEN) {
         --query accessToken -o tsv)
 }
 if (-not $env:KUSTO_TOKEN) {
-    # The Kusto audience must be the specific cluster URI: the generic
-    # https://kusto.fabric.microsoft.com is not a registered AAD resource
-    # principal in some tenants (e.g. Microsoft corp).
     Write-Host "  [dwd post-deploy] Acquiring Kusto token via az CLI..."
-    $env:KUSTO_TOKEN = (az account get-access-token `
-        --resource $KustoUri `
-        --query accessToken -o tsv)
+    $env:KUSTO_TOKEN = Get-KustoAccessToken -KustoUri $KustoUri
 }
 
 $py = if ($env:PYTHON) { $env:PYTHON } else { "python" }

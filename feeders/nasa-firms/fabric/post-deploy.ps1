@@ -38,12 +38,37 @@ param(
 
 $ErrorActionPreference = "Stop"
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
+$workspaceIdBound = $PSBoundParameters.ContainsKey('WorkspaceId')
+$kqlDatabaseIdBound = $PSBoundParameters.ContainsKey('KqlDatabaseId')
+$kustoUriBound = $PSBoundParameters.ContainsKey('KustoUri')
+$kustoDatabaseBound = $PSBoundParameters.ContainsKey('KustoDatabase')
+
+function Get-KustoAccessToken {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$KustoUri
+    )
+
+    $resources = @(
+        "https://kusto.kusto.windows.net",
+        $KustoUri
+    ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique
+
+    foreach ($resource in $resources) {
+        $token = az account get-access-token --resource $resource --query accessToken -o tsv 2>$null
+        if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($token)) {
+            return $token.Trim()
+        }
+    }
+
+    throw "Failed to acquire a Kusto access token for $KustoUri."
+}
 
 if ($Context) {
-    if ($Context.ContainsKey('WorkspaceId'))          { $WorkspaceId   = $Context.WorkspaceId }
-    if ($Context.ContainsKey('DatabaseId'))           { $KqlDatabaseId = $Context.DatabaseId }
-    if ($Context.ContainsKey('EventhouseClusterUri')) { $KustoUri      = $Context.EventhouseClusterUri }
-    if ($Context.ContainsKey('DatabaseName'))         { $KustoDatabase = $Context.DatabaseName }
+    if (-not $workspaceIdBound -and $Context.ContainsKey('WorkspaceId'))          { $WorkspaceId   = $Context.WorkspaceId }
+    if (-not $kqlDatabaseIdBound -and $Context.ContainsKey('DatabaseId'))         { $KqlDatabaseId = $Context.DatabaseId }
+    if (-not $kustoUriBound -and $Context.ContainsKey('EventhouseClusterUri'))    { $KustoUri      = $Context.EventhouseClusterUri }
+    if (-not $kustoDatabaseBound -and $Context.ContainsKey('DatabaseName'))    { $KustoDatabase = $Context.DatabaseName }
 }
 
 foreach ($pair in @{ WorkspaceId = $WorkspaceId; KqlDatabaseId = $KqlDatabaseId; KustoUri = $KustoUri }.GetEnumerator()) {
@@ -62,7 +87,10 @@ Write-Host "   cluster   : $KustoUri"
 #    top-level statement starts with '.' at column 0 (functions and policies).
 # ---------------------------------------------------------------------------
 Write-Host "`n[1/2] Applying helpers.kql ..." -ForegroundColor Yellow
-$kustoTok = az account get-access-token --resource $KustoUri --query accessToken -o tsv
+if (-not $env:KUSTO_TOKEN) {
+    $env:KUSTO_TOKEN = Get-KustoAccessToken -KustoUri $KustoUri
+}
+$kustoTok = $env:KUSTO_TOKEN
 $mgmt = "$KustoUri/v1/rest/mgmt"
 $src  = Get-Content (Join-Path $here "helpers.kql") -Raw
 $cmds = [System.Text.RegularExpressions.Regex]::Split($src, "(?m)(?=^\.(create-or-alter function|alter ))") |
