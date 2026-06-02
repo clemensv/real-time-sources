@@ -525,8 +525,14 @@ $db = $dbList.value | Where-Object { $_.displayName -eq $DatabaseName } | Select
 if (-not $db) {
     Write-Host "  Creating KQL database '$DatabaseName'..." -ForegroundColor Yellow
     $dbProps = @{ databaseType = "ReadWrite"; parentEventhouseItemId = $eh.id; oneLakeCachingPeriod = "P36500D"; oneLakeStandardStoragePeriod = "P36500D" }
-    Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" -Body @{ displayName = $DatabaseName; creationPayload = $dbProps } | Out-Null
-    for ($i = 0; $i -lt 12 -and -not $db; $i++) {
+    try {
+        Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" -Body @{ displayName = $DatabaseName; creationPayload = $dbProps } | Out-Null
+    } catch {
+        if ($_.Exception.Message -match 'ItemDisplayNameAlreadyInUse|409') {
+            Write-Host "  Database '$DatabaseName' already exists (auto-created with Eventhouse); waiting for it to appear..." -ForegroundColor Yellow
+        } else { throw }
+    }
+    for ($i = 0; $i -lt 24 -and -not $db; $i++) {
         Start-Sleep -Seconds 5
         $dbList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
         $db = $dbList.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
