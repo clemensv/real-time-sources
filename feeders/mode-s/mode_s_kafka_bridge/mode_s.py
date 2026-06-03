@@ -12,7 +12,7 @@ import threading
 import aiohttp
 import re
 import logging
-from datetime import datetime, time, timedelta, timezone
+from datetime import datetime, time, timezone
 from typing import Dict, List, AsyncIterator, Any
 from zoneinfo import ZoneInfo
 import argparse
@@ -47,6 +47,18 @@ class ADSBClient(TcpClient):
         self.messages_since_last_flush = 0
         self.records_since_last_flush = 0
         self.task_queue = deque()
+        self._dispatch_table = {
+            17: ("df17-adsb", self.producer.send_mode_s_kafka_adsb),
+            18: ("df17-adsb", self.producer.send_mode_s_kafka_adsb),
+            4: ("df4-altitude", self.producer.send_mode_s_kafka_altitude_reply),
+            5: ("df5-identity", self.producer.send_mode_s_kafka_identity_reply),
+            11: ("df11-acquisition", self.producer.send_mode_s_kafka_acquisition_reply),
+            20: ("df20-comm-b", self.producer.send_mode_s_kafka_comm_baltitude),
+            21: ("df21-comm-b", self.producer.send_mode_s_kafka_comm_bidentity),
+        }
+        self._queue_cap = int(os.environ.get('MODE_S_QUEUE_CAPACITY', '20000'))
+        self._flush_interval_s = int(os.environ.get('MODE_S_FLUSH_INTERVAL_SECONDS', '10'))
+        self._flush_record_threshold = int(os.environ.get('MODE_S_FLUSH_RECORD_THRESHOLD', '50000'))
 
     def stop(self):
         self.stop_flag = True
@@ -64,27 +76,30 @@ class ADSBClient(TcpClient):
         try:
             if self.stop_flag:
                 return
-            queue_cap = int(os.environ.get('MODE_S_QUEUE_CAPACITY', '20000'))
-            if (len(self.task_queue) + 1) > queue_cap:
-                logger.warning("Dropping input. Queue capacity exceeded (cap=%d).", queue_cap)
+            if len(self.task_queue) >= self._queue_cap:
+                logger.warning("Dropping input. Queue capacity exceeded (cap=%d).", self._queue_cap)
                 return
             msgs = []
+            _dispatch = self._dispatch_table
+            _ref_lat = self.ref_lat
+            _ref_lon = self.ref_lon
+            _log10 = math.log10
             for msg, ts in messages:
                 try:
                     raw_msg = bytes.fromhex(msg)
                     if len(raw_msg) < 7:
-                        logger.warning("Invalid message (too short): %s", msg)
                         continue
                     
-                    ts_ms = int(ts * 1000)
                     df = pms.df(msg)
+                    if df not in _dispatch:
+                        continue
                     icao = pms.icao(msg)
-                    dbfs_rssi = None
+                    if not icao:
+                        continue
+
+                    ts_ms = int(ts * 1000)
                     raw_rssi = raw_msg[6]
-                    if raw_rssi > 0:
-                        rssi_ratio = raw_rssi / 255
-                        signal_level = rssi_ratio ** 2
-                        dbfs_rssi = round(10 * math.log10(signal_level), 2)
+                    dbfs_rssi = round(10 * _log10((raw_rssi / 255) ** 2), 2) if raw_rssi > 0 else None
 
                     record = ModeS_ADSB_Record(
                         ts=ts_ms, icao=icao, df=df, rssi=dbfs_rssi, tc=None, bcode=None, alt=None, cs=None, sq=None, lat=None, lon=None, 
@@ -97,11 +112,11 @@ class ADSBClient(TcpClient):
                         if 1 <= tc <= 4:
                             record.cs = pms.adsb.callsign(msg)
                         elif 5 <= tc <= 8:
-                            lat, lon = pms.adsb.surface_position_with_ref(msg, self.ref_lat, self.ref_lon)
+                            lat, lon = pms.adsb.surface_position_with_ref(msg, _ref_lat, _ref_lon)
                             record.lat, record.lon = lat, lon
                         elif 9 <= tc <= 18:
                             record.alt = pms.adsb.altitude(msg)
-                            lat, lon = pms.adsb.airborne_position_with_ref(msg, self.ref_lat, self.ref_lon)
+                            lat, lon = pms.adsb.airborne_position_with_ref(msg, _ref_lat, _ref_lon)
                             record.lat, record.lon = lat, lon
                         elif tc == 19:
                             speed, angle, vr, spd_type = pms.adsb.velocity(msg)
@@ -109,7 +124,7 @@ class ADSBClient(TcpClient):
                             record.spd_type = spd_type
                         elif 20 <= tc <= 22:
                             record.alt = pms.adsb.altitude(msg)
-                            lat, lon = pms.adsb.airborne_position_with_ref(msg, self.ref_lat, self.ref_lon)
+                            lat, lon = pms.adsb.airborne_position_with_ref(msg, _ref_lat, _ref_lon)
                             record.lat, record.lon = lat, lon
                     elif df in (20, 21):
                         bds = pms.bds.infer(msg, mrar=True)
@@ -139,17 +154,20 @@ class ADSBClient(TcpClient):
                 except Exception as e:
                     logger.error("Invalid message: %s, error: %s", msg, e)
 
-            if len(msgs) > 0:
-                bundle = Messages(messages=msgs)
-                self.task_queue.append(bundle)
+            if msgs:
+                self.task_queue.append(Messages(messages=msgs))
         except Exception as e:
             logger.error("Error handling messages: %s", e)
-            # we're going to observe a moment of silence and hope the problem goes away
             time.sleep(0.1)
 
-    def _to_record(self, source: ModeS_ADSB_Record, msg_type: str) -> Record:
-        return Record(
-            icao24=source.icao.lower(),
+    def _send_record(self, source: ModeS_ADSB_Record) -> bool:
+        if not source.icao:
+            return False
+
+        msg_type, send = self._dispatch_table[source.df]
+        icao24 = source.icao.lower()
+        data = Record(
+            icao24=icao24,
             receiver_id=self.stationid,
             msg_type=msg_type,
             ts=source.ts,
@@ -166,32 +184,10 @@ class ADSBClient(TcpClient):
             vr=source.vr,
             rssi=source.rssi,
         )
-
-    def _send_record(self, source: ModeS_ADSB_Record) -> bool:
-        if not source.icao:
-            logger.debug("Skipping Mode-S DF%d record without ICAO address", source.df)
-            return False
-
-        dispatch = {
-            17: ("df17-adsb", self.producer.send_mode_s_kafka_adsb),
-            18: ("df17-adsb", self.producer.send_mode_s_kafka_adsb),
-            4: ("df4-altitude", self.producer.send_mode_s_kafka_altitude_reply),
-            5: ("df5-identity", self.producer.send_mode_s_kafka_identity_reply),
-            11: ("df11-acquisition", self.producer.send_mode_s_kafka_acquisition_reply),
-            20: ("df20-comm-b", self.producer.send_mode_s_kafka_comm_baltitude),
-            21: ("df21-comm-b", self.producer.send_mode_s_kafka_comm_bidentity),
-        }
-        target = dispatch.get(source.df)
-        if target is None:
-            logger.debug("Skipping unsupported Mode-S DF%d record", source.df)
-            return False
-
-        msg_type, send = target
-        data = self._to_record(source, msg_type)
         send(
             _feedurl=self.feedurl,
-            _icao24=data.icao24,
-            _receiver_id=data.receiver_id,
+            _icao24=icao24,
+            _receiver_id=self.stationid,
             data=data,
             content_type="application/json",
             flush_producer=False,
@@ -200,6 +196,8 @@ class ADSBClient(TcpClient):
 
     async def queue_consumer(self, stop_event: threading.Event):
         try:
+            flush_interval_s = self._flush_interval_s
+            flush_record_threshold = self._flush_record_threshold
             last_flush = datetime.now()
             last_info_log = datetime.now()
             messages_since_last_log = 0
@@ -207,23 +205,29 @@ class ADSBClient(TcpClient):
             while stop_event.is_set() is False:
                 if self.task_queue:
                     try:
-                        bundle:Messages = self.task_queue.popleft()
-                        self.messages_since_last_flush += 1
-                        self.records_since_last_flush += len(bundle.messages)
-                        messages_since_last_log += 1
-                        records_since_last_log += len(bundle.messages)
-                        sent_records = 0
-                        for record in bundle.messages:
-                            if self._send_record(record):
-                                sent_records += 1
-                        self.records_since_last_flush -= len(bundle.messages) - sent_records
-                        records_since_last_log -= len(bundle.messages) - sent_records
-                        flush_interval_s = int(os.environ.get('MODE_S_FLUSH_INTERVAL_SECONDS', '10'))
-                        flush_record_threshold = int(os.environ.get('MODE_S_FLUSH_RECORD_THRESHOLD', '50000'))
-                        if (datetime.now() - last_flush) > timedelta(seconds=flush_interval_s) or self.records_since_last_flush >= flush_record_threshold:
-                            if last_info_log < datetime.now() - timedelta(seconds=5*60):
+                        # Drain all available bundles in one go before yielding
+                        batch_count = 0
+                        while self.task_queue and batch_count < 100:
+                            bundle: Messages = self.task_queue.popleft()
+                            self.messages_since_last_flush += 1
+                            bundle_len = len(bundle.messages)
+                            self.records_since_last_flush += bundle_len
+                            messages_since_last_log += 1
+                            records_since_last_log += bundle_len
+                            sent_records = 0
+                            for record in bundle.messages:
+                                if self._send_record(record):
+                                    sent_records += 1
+                            self.records_since_last_flush -= bundle_len - sent_records
+                            records_since_last_log -= bundle_len - sent_records
+                            bundle.messages.clear()
+                            del bundle
+                            batch_count += 1
+                        now = datetime.now()
+                        if (now - last_flush).total_seconds() >= flush_interval_s or self.records_since_last_flush >= flush_record_threshold:
+                            if (now - last_info_log).total_seconds() >= 300:
                                 logger.info("Messages %d, records %d, queue length is %d", messages_since_last_log, records_since_last_log, len(self.task_queue))
-                                last_info_log = datetime.now()
+                                last_info_log = now
                                 messages_since_last_log = 0
                                 records_since_last_log = 0
                             else:
@@ -231,20 +235,24 @@ class ADSBClient(TcpClient):
                             self.producer.producer.flush()
                             self.messages_since_last_flush = 0
                             self.records_since_last_flush = 0
-                            last_flush = datetime.now()
+                            last_flush = now
+                        # Yield to event loop briefly so other coroutines can run
+                        await asyncio.sleep(0)
                     except asyncio.CancelledError:
                         logger.info("Queue consumer task cancelled")
                         return
                     except Exception as e:
                         logger.error("Error sending messages: %s", e)
+                        await asyncio.sleep(0.1)
                 else:
-                    await asyncio.sleep(0.05)
+                    # No data available — sleep longer to avoid busy-wait
+                    await asyncio.sleep(0.2)
         except asyncio.CancelledError:
             logger.info("Queue consumer task cancelled")
             return
         except Exception as e:
             logger.error("Queue consumer task error: %s", e)
-            raise e           
+            raise e
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
