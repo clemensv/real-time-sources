@@ -10,6 +10,7 @@ exposes a scoring-only entry point and a full reporting entry point.
 from __future__ import annotations
 
 import asyncio
+import os
 import random
 from dataclasses import dataclass, field
 from typing import Any
@@ -26,6 +27,14 @@ from .bluesky_api import (
     enrich_suspects_sync,
 )
 from .config import Config
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-bluesky/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 from .scoring import (
     BotScore,
     _is_random_handle,
@@ -106,7 +115,7 @@ def _fetch_all_followers_via_api(
     async def _fetch():
         """Run the async follower crawl used by the synchronous pipeline wrapper."""
         bsky = BlueskyClient(concurrency=concurrency)
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        async with httpx.AsyncClient(timeout=30.0, headers={"User-Agent": USER_AGENT}) as client:
             return await bsky.get_followers(client, target_handle, limit=max_followers)
     from ._async import run_async
     return run_async(_fetch())

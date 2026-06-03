@@ -28,12 +28,19 @@ DEFAULT_CONNECT_TIMEOUT_SECONDS = 10
 DEFAULT_READ_TIMEOUT_SECONDS = 120
 DEFAULT_KAFKA_FLUSH_TIMEOUT_SECONDS = 30
 DEFAULT_HTTP_RETRY_TOTAL = 3
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-seattle-street-closures/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 def _build_retrying_session() -> requests.Session:
     """Create an HTTP session with bounded retries for transient upstream failures."""
     session = requests.Session()
-    session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+    session.headers["User-Agent"] = USER_AGENT
     retry = Retry(
         total=DEFAULT_HTTP_RETRY_TOTAL,
         connect=DEFAULT_HTTP_RETRY_TOTAL,

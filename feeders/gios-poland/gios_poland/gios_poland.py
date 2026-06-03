@@ -24,6 +24,15 @@ from gios_poland_producer_kafka_producer.producer import (
 )
 
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-gios-poland/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
+
 # Polish-to-English field mappings for each API endpoint
 STATION_FIELD_MAP = {
     "Identyfikator stacji": "station_id",
@@ -323,7 +332,8 @@ class GIOSPolandPoller:
             List of Station dataclass instances.
         """
         try:
-            response = requests.get(f"{self.BASE_URL}/station/findAll", timeout=60)
+            response = requests.get(
+                f"{self.BASE_URL}/station/findAll", headers={"User-Agent": USER_AGENT}, timeout=60)
             response.raise_for_status()
             data = response.json()
             raw_stations = data.get("Lista stacji pomiarowych", [])
@@ -351,7 +361,7 @@ class GIOSPolandPoller:
         """
         try:
             response = requests.get(
-                f"{self.BASE_URL}/station/sensors/{station_id}", timeout=60)
+                f"{self.BASE_URL}/station/sensors/{station_id}", headers={"User-Agent": USER_AGENT}, timeout=60)
             response.raise_for_status()
             data = response.json()
             raw_sensors = data.get("Lista stanowisk pomiarowych dla podanej stacji", [])
@@ -379,7 +389,7 @@ class GIOSPolandPoller:
         """
         try:
             response = requests.get(
-                f"{self.BASE_URL}/data/getData/{sensor_id}", timeout=60)
+                f"{self.BASE_URL}/data/getData/{sensor_id}", headers={"User-Agent": USER_AGENT}, timeout=60)
             response.raise_for_status()
             data = response.json()
             raw_measurements = data.get("Lista danych pomiarowych", [])
@@ -402,7 +412,7 @@ class GIOSPolandPoller:
         """
         try:
             response = requests.get(
-                f"{self.BASE_URL}/aqindex/getIndex/{station_id}", timeout=60)
+                f"{self.BASE_URL}/aqindex/getIndex/{station_id}", headers={"User-Agent": USER_AGENT}, timeout=60)
             response.raise_for_status()
             data = response.json()
             return data.get("AqIndex")

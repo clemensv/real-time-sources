@@ -22,6 +22,13 @@ from paris_bicycle_counters_producer_kafka_producer.producer import FRParisOpenD
 
 COUNTER_DATA_URL = "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/comptage-velo-donnees-compteurs/records"
 COUNTER_LOCATIONS_URL = "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/comptage-velo-compteurs/records"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-paris-bicycle-counters/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 def ce_datetime(value: datetime) -> str:
@@ -100,7 +107,7 @@ class ParisBicycleCounterPoller:
         limit = 100
         while True:
             params = {"limit": limit, "offset": offset}
-            response = requests.get(COUNTER_LOCATIONS_URL, params=params, timeout=30)
+            response = requests.get(COUNTER_LOCATIONS_URL, params=params, headers={"User-Agent": USER_AGENT}, timeout=30)
             response.raise_for_status()
             data = response.json()
             results = data.get("results", [])
@@ -152,7 +159,7 @@ class ParisBicycleCounterPoller:
                 where_clause = f"date >= '{since.strftime('%Y-%m-%dT%H:%M:%S')}'"
                 params["where"] = where_clause
             try:
-                response = requests.get(COUNTER_DATA_URL, params=params, timeout=30)
+                response = requests.get(COUNTER_DATA_URL, params=params, headers={"User-Agent": USER_AGENT}, timeout=30)
                 response.raise_for_status()
             except requests.HTTPError as e:
                 # 400 typically means we have hit the API's 10000-row paging

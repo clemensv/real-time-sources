@@ -20,6 +20,7 @@ Upstream shape (verbatim, live-confirmed):
 from __future__ import annotations
 
 import logging
+import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Iterable, List, Optional
@@ -47,6 +48,13 @@ EXPECTED_COLUMNS = [
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-noaa-swpc-l1/1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 @dataclass(frozen=True)
 class PropagatedSolarWindRow:
@@ -141,6 +149,9 @@ class SwpcL1API:
         feed_url: str = FEED_URL,
     ) -> None:
         self._session = session or requests.Session()
+        if not hasattr(self._session, "headers"):
+            self._session.headers = {}
+        self._session.headers["User-Agent"] = USER_AGENT
         self._request_timeout = request_timeout
         self._feed_url = feed_url
 

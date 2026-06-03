@@ -16,6 +16,14 @@ import requests
 from energidataservice_dk_producer_data import PowerSystemSnapshot, SpotPrice
 from energidataservice_dk_producer_kafka_producer.producer import DkEnerginetEnergidataserviceEventProducer
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-energidataservice-dk/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 POWER_SYSTEM_URL = "https://api.energidataservice.dk/dataset/PowerSystemRightNow"
 SPOT_PRICES_URL = "https://api.energidataservice.dk/dataset/ElspotPrices"
 
@@ -170,7 +178,7 @@ class EnergiDataServicePoller:
         """Fetch raw records from the PowerSystemRightNow endpoint."""
         url = build_power_system_url(limit)
         try:
-            response = requests.get(url, timeout=30)
+            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
             response.raise_for_status()
             data = response.json()
             return data.get("records", [])
@@ -182,7 +190,7 @@ class EnergiDataServicePoller:
         """Fetch raw records from the ElspotPrices endpoint."""
         url = build_spot_prices_url(limit)
         try:
-            response = requests.get(url, timeout=30)
+            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
             response.raise_for_status()
             data = response.json()
             return data.get("records", [])

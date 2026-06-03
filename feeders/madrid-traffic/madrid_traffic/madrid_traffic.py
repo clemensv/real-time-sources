@@ -21,6 +21,11 @@ from madrid_traffic_producer_kafka_producer.producer import EsMadridInformoEvent
 PM_XML_URL = "https://informo.madrid.es/informo/tmadrid/pm.xml"
 POLL_INTERVAL_SECONDS = 300
 REFERENCE_REFRESH_SECONDS = 3600
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-madrid-traffic/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 def parse_european_float(value: str) -> Optional[float]:
@@ -216,7 +221,7 @@ class MadridTrafficPoller:
             Raw XML text, or None on failure.
         """
         try:
-            response = requests.get(PM_XML_URL, timeout=60)
+            response = requests.get(PM_XML_URL, headers={"User-Agent": USER_AGENT}, timeout=60)
             response.raise_for_status()
             return response.text
         except Exception as err:

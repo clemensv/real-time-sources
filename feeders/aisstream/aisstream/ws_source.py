@@ -2,6 +2,7 @@
 
 import json
 import logging
+import os
 import time
 from typing import Any, Callable, Dict, List, Optional
 
@@ -10,6 +11,13 @@ import websockets.sync.client as ws_client
 logger = logging.getLogger(__name__)
 
 AISSTREAM_WS_URL = "wss://stream.aisstream.io/v0/stream"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-aisstream/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 class WebSocketSource:
@@ -53,7 +61,7 @@ class WebSocketSource:
                 logger.info("Connecting to %s ...", self.url)
                 conn = ws_client.connect(
                     self.url,
-                    additional_headers={"User-Agent": "aisstream-bridge/1.0"},
+                    additional_headers={"User-Agent": USER_AGENT},
                     open_timeout=30,
                     close_timeout=10,
                 )

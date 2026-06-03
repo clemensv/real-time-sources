@@ -16,6 +16,7 @@ Reference:
 from __future__ import annotations
 
 import logging
+import os
 from typing import Any, Dict, Iterable, Iterator, List, Optional
 
 import requests
@@ -30,6 +31,14 @@ LIGHTNING_FEED_ROOT = "https://dmigw.govcloud.dk/v2/lightningdata"
 _DEFAULT_PAGE_LIMIT = 1000
 
 logger = logging.getLogger(__name__)
+
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-dmi/1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 class _DmiBaseAPI:
@@ -49,6 +58,7 @@ class _DmiBaseAPI:
             )
         self._api_key = api_key
         self._session = session or requests.Session()
+        self._session.headers["User-Agent"] = USER_AGENT
         self._request_timeout = request_timeout
 
     def _get(self, path: str, params: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:

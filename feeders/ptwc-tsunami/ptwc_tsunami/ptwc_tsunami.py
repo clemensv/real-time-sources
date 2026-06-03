@@ -37,6 +37,13 @@ NS = {
 DEFAULT_POLL_INTERVAL = 300
 DEFAULT_STATE_FILE = os.path.expanduser("~/.ptwc_tsunami_state.json")
 DEFAULT_TOPIC = "ptwc-tsunami"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-ptwc-tsunami/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 FEED_BASINS = {
     "PAAQ": "alaska",
@@ -228,7 +235,7 @@ class PTWCTsunamiPoller:
 
             async with aiohttp.ClientSession(
                 timeout=aiohttp.ClientTimeout(total=60),
-                headers={"User-Agent": "ptwc-tsunami-bridge/1.0"}
+                headers={"User-Agent": USER_AGENT}
             ) as session:
                 for feed_name in self.feeds:
                     root = await self.fetch_feed(session, feed_name)

@@ -639,4 +639,4 @@ class TestFeedConstants:
         assert JMABulletinPoller.POLL_INTERVAL_SECONDS == 60
 
     def test_user_agent_header(self):
-        assert "real-time-sources" in JMABulletinPoller.HEADERS["User-Agent"]
+        assert JMABulletinPoller.HEADERS["User-Agent"].startswith("real-time-sources-jma-japan/")

@@ -34,6 +34,14 @@ from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 from bluesky_mqtt_producer_data import Block, Follow, Like, Post, Profile, Repost
 from bluesky_mqtt_producer_mqtt_client.client import BlueskyFirehoseMqttMqttClient
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-bluesky/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 logger = logging.getLogger("bluesky_mqtt")
 
 
@@ -220,7 +228,7 @@ class BlueskyMqttBridge:
         url = self.firehose_url
         while True:
             try:
-                async with aiohttp.ClientSession() as session:
+                async with aiohttp.ClientSession(headers={"User-Agent": USER_AGENT}) as session:
                     async with session.ws_connect(url) as ws:
                         logger.info("Connected to Bluesky firehose at %s", url)
                         retry_delay = 1

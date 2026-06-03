@@ -17,6 +17,14 @@ from confluent_kafka import Producer
 from bluesky_producer_kafka_producer.producer import BlueskyFirehoseEventProducer
 from bluesky_producer_data import Post, Like, Repost, Follow, Block, Profile
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-bluesky/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 # Logging setup
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
@@ -531,7 +539,7 @@ class BlueskyFirehose:
 
         while True:
             try:
-                async with aiohttp.ClientSession() as session:
+                async with aiohttp.ClientSession(headers={"User-Agent": USER_AGENT}) as session:
                     async with session.ws_connect(url) as ws:
                         logging.info("Connected to firehose")
                         retry_delay = 1  # Reset on successful connection

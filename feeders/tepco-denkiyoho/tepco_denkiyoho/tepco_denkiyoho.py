@@ -24,6 +24,13 @@ from tepco_denkiyoho_producer_data import DemandActual, DemandForecast, PeakDema
 from tepco_denkiyoho_producer_kafka_producer.producer import JPTEPCODenkiyohoKafkaEventProducer
 
 DAILY_CSV_URL = "https://www.tepco.co.jp/forecast/html/images/juyo-d1-j.csv"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-tepco-denkiyoho/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 DEFAULT_TOPIC = "tepco-denkiyoho"
 DEFAULT_STATE_FILE = "./state/tepco-denkiyoho.json"
 JST = timezone(timedelta(hours=9))
@@ -159,6 +166,7 @@ class DenkiyohoState:
 
 def create_retrying_session() -> requests.Session:
     session = requests.Session()
+    session.headers["User-Agent"] = USER_AGENT
     retry = Retry(
         total=5,
         connect=3,
@@ -464,6 +472,7 @@ class TepcoDenkiyohoAPI:
     def __init__(self, url: str = DAILY_CSV_URL, session: requests.Session | None = None):
         self.url = url
         self.session = session or create_retrying_session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def fetch_daily_csv(self) -> bytes:
         response = self.session.get(self.url, timeout=30)

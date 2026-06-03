@@ -32,8 +32,16 @@ FEED_URL = "https://api.irail.be"
 REQUEST_DELAY = 0.35  # slightly over 1/3 sec to stay within limits
 DEFAULT_HTTP_RETRY_TOTAL = 3
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-irail/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
-def create_retrying_session(user_agent: str) -> requests.Session:
+
+def create_retrying_session(user_agent: str = USER_AGENT) -> requests.Session:
     """Create an HTTP session with bounded retries for transient upstream failures."""
     session = requests.Session()
     session.headers.update({
@@ -59,7 +67,7 @@ def create_retrying_session(user_agent: str) -> requests.Session:
 class IRailAPI:
     """Client for the iRail REST API."""
 
-    def __init__(self, user_agent: str = "real-time-sources/1.0 (github.com/clemensv/real-time-sources)"):
+    def __init__(self, user_agent: str = USER_AGENT):
         self.session = create_retrying_session(user_agent)
 
     def fetch_stations(self) -> List[Dict[str, Any]]:

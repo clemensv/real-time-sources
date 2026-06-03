@@ -18,6 +18,11 @@ from meteoalarm.meteoalarm import DEFAULT_COUNTRIES, DEFAULT_POLL_INTERVAL, DEFA
 from meteoalarm_mqtt_producer_mqtt_client.client import MeteoalarmWarningsMqttMqttClient
 
 logger = logging.getLogger(__name__)
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-meteoalarm/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 def _topic_segment(value: Optional[str]) -> str:
@@ -31,7 +36,10 @@ async def _poll_once(poller: MeteoalarmPoller, mqtt_client: MeteoalarmWarningsMq
     state = poller.load_state()
     count_new = 0
     count_updated = 0
-    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=60)) as session:
+    async with aiohttp.ClientSession(
+        timeout=aiohttp.ClientTimeout(total=60),
+        headers={"User-Agent": USER_AGENT},
+    ) as session:
         for country in poller.countries:
             raw_warnings = await poller.fetch_country(session, country)
             for item in raw_warnings:

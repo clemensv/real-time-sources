@@ -10,12 +10,19 @@ from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_json
 
 NEXTBUS_BASE_URL = "https://retro.umoiq.com/service/publicXMLFeed"   
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-nextbus/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 backoff_time: float = 0
 poll_interval: float = 10
 
 def print_route_predictions(agency_tag, route_tag):
     # Make a request to the NextBus API to get the predictions for the specified route
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "predictions", "a": agency_tag, "r": route_tag})
+    response = requests.get(NEXTBUS_BASE_URL, params={"command": "predictions", "a": agency_tag, "r": route_tag}, headers={"User-Agent": USER_AGENT})
     if response.status_code == 404:
         return
     
@@ -30,7 +37,7 @@ def print_route_predictions(agency_tag, route_tag):
 
 def print_stops(agency_tag, route_tag):
     # Make a request to the NextBus API to get the configuration for the specified route
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeConfig", "a": agency_tag, "r": route_tag})
+    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeConfig", "a": agency_tag, "r": route_tag}, headers={"User-Agent": USER_AGENT})
     if response.status_code == 404:
         return
 
@@ -43,7 +50,7 @@ def print_stops(agency_tag, route_tag):
         
 def print_agencies():
     # Make a request to the NextBus API to get the list of agencies
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "agencyList"})
+    response = requests.get(NEXTBUS_BASE_URL, params={"command": "agencyList"}, headers={"User-Agent": USER_AGENT})
     if response.status_code == 404:
         return
 
@@ -54,7 +61,7 @@ def print_agencies():
 
 def print_routes(agency_tag):
     # Make a request to the NextBus API to get the list of routes for the specified agency
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag})
+    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag}, headers={"User-Agent": USER_AGENT})
     if response.status_code == 404:
         return
     
@@ -86,7 +93,7 @@ def element_to_dict(element):
 route_checksums = {}
 def poll_and_submit_route_config(producer_client: EventHubProducerClient, agency_tag: str):
     # Make a request to the NextBus API to get the list of routes for the specified agency
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag})
+    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag}, headers={"User-Agent": USER_AGENT})
     if response.status_code == 404:
         return
     
@@ -99,10 +106,10 @@ def poll_and_submit_route_config(producer_client: EventHubProducerClient, agency
         # slow down the request rate
         time.sleep(backoff_time)        
         
-        response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeConfig", "a": agency_tag, "r": route_tag})
+        response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeConfig", "a": agency_tag, "r": route_tag}, headers={"User-Agent": USER_AGENT})
         if response.status_code == 404:
             # API is flaky, try again
-            response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeConfig", "a": agency_tag, "r": route_tag})
+            response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeConfig", "a": agency_tag, "r": route_tag}, headers={"User-Agent": USER_AGENT})
             if response.status_code == 404:
                 print(f"404 for {agency_tag}/{route_tag}")
                 continue
@@ -138,7 +145,7 @@ schedule_checksums = {}
 
 def poll_and_submit_schedule(producer_client: EventHubProducerClient, agency_tag: str):
     # Make a request to the NextBus API to get the list of routes for the specified agency
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag})
+    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag}, headers={"User-Agent": USER_AGENT})
     if response.status_code == 404:
         return
     
@@ -150,7 +157,7 @@ def poll_and_submit_schedule(producer_client: EventHubProducerClient, agency_tag
         route_tag = route.get("tag")
         # slow down the request rate
         time.sleep(backoff_time)        
-        response = requests.get(NEXTBUS_BASE_URL, params={"command": "schedule", "a": agency_tag, "r": route_tag})
+        response = requests.get(NEXTBUS_BASE_URL, params={"command": "schedule", "a": agency_tag, "r": route_tag}, headers={"User-Agent": USER_AGENT})
         if response.status_code == 404:
             print(f"404 for {agency_tag}/{route_tag}")
             continue
@@ -183,7 +190,7 @@ def poll_and_submit_schedule(producer_client: EventHubProducerClient, agency_tag
 messages_checksums = {}
 def poll_and_submit_messages(producer_client : EventHubProducerClient, agency_tag : str):
     # Make a request to the NextBus API to get the list of routes for the specified agency
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag})
+    response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag}, headers={"User-Agent": USER_AGENT})
     if response.status_code == 404:
         return
     
@@ -195,7 +202,7 @@ def poll_and_submit_messages(producer_client : EventHubProducerClient, agency_ta
         route_tag = route.get("tag")
         # slow down the request rate
         time.sleep(backoff_time)        
-        response = requests.get(NEXTBUS_BASE_URL, params={"command": "messages", "a": agency_tag, "r": route_tag})
+        response = requests.get(NEXTBUS_BASE_URL, params={"command": "messages", "a": agency_tag, "r": route_tag}, headers={"User-Agent": USER_AGENT})
         if response.status_code == 404:
             print(f"404 for {agency_tag}/{route_tag}")
             continue
@@ -238,7 +245,7 @@ def poll_and_submit_vehicle_locations(producer_client: EventHubProducerClient, a
         params["t"] = int(last_time)
 
     
-    response = requests.get(NEXTBUS_BASE_URL, params=params)
+    response = requests.get(NEXTBUS_BASE_URL, params=params, headers={"User-Agent": USER_AGENT})
     if response.status_code == 404:
         return
     
@@ -340,7 +347,7 @@ def feed(feed_connection_string: str, feed_event_hub_name: str, reference_connec
 
 def print_vehicle_locations(agency, route):
     # Make a request to the NextBus API to get the vehicle locations for the specified route
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "vehicleLocations", "a" : agency, "r": route})
+    response = requests.get(NEXTBUS_BASE_URL, params={"command": "vehicleLocations", "a" : agency, "r": route}, headers={"User-Agent": USER_AGENT})
     response.raise_for_status()
 
     # Parse the XML response and print the vehicle locations for the route
@@ -351,7 +358,7 @@ def print_vehicle_locations(agency, route):
 def print_predictions(agency_tag, stop_id, route_tag):
  
     # Make a request to the NextBus API to get the predictions for the specified stop
-    response = requests.get(NEXTBUS_BASE_URL, params={"command": "predictions", "a": agency_tag, "s": stop_id, "r": route_tag})
+    response = requests.get(NEXTBUS_BASE_URL, params={"command": "predictions", "a": agency_tag, "s": stop_id, "r": route_tag}, headers={"User-Agent": USER_AGENT})
     response.raise_for_status()
 
     # Parse the XML response and print the predictions for the stop

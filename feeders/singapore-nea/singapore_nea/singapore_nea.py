@@ -27,6 +27,13 @@ from singapore_nea.air_quality import (
 logger = logging.getLogger(__name__)
 
 NEA_BASE_URL = "https://api.data.gov.sg/v1/environment"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-singapore-nea/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 AIR_QUALITY_REFERENCE_REFRESH_INTERVAL = 24 * 60 * 60
 
 ENDPOINTS = ["air-temperature", "rainfall", "relative-humidity", "wind-speed", "wind-direction"]
@@ -47,6 +54,7 @@ class NEAWeatherAPI:
         self.base_url = base_url
         self.polling_interval = polling_interval
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def get_endpoint(self, endpoint: str) -> dict:
         """Fetch a single environment endpoint."""

@@ -7,7 +7,10 @@ import requests
 RWS_BASE_URL = "https://ddapi20-waterwebservices.rijkswaterstaat.nl"
 CATALOG_ENDPOINT = "/METADATASERVICES/OphalenCatalogus"
 LATEST_ENDPOINT = "/ONLINEWAARNEMINGENSERVICES/OphalenLaatsteWaarnemingen"
-HEADERS = {"Content-Type": "application/json"}
+HEADERS = {
+    "Content-Type": "application/json",
+    "User-Agent": "real-time-sources-rws-waterwebservices/0.1.0 (+https://github.com/clemensv/real-time-sources; clemensv@microsoft.com)",
+}
 
 
 class TestRWSRealEndpoints:

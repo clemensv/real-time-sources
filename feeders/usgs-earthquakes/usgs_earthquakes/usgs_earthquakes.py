@@ -27,6 +27,14 @@ else:
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-usgs-earthquakes/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 # Available feed URLs by time period and minimum magnitude
 FEED_URLS = {
     "all_hour": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson",
@@ -105,7 +113,10 @@ class USGSEarthquakePoller:
             logger.error("Unknown feed: %s. Available feeds: %s", self.feed, ', '.join(FEED_URLS.keys()))
             return []
 
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
+        async with aiohttp.ClientSession(
+            timeout=aiohttp.ClientTimeout(total=30),
+            headers={"User-Agent": USER_AGENT},
+        ) as session:
             try:
                 async with session.get(url) as response:
                     response.raise_for_status()

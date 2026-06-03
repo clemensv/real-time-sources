@@ -23,7 +23,13 @@ else:
 logger = logging.getLogger(__name__)
 
 NWS_API_URL = "https://api.weather.gov/alerts/active"
-USER_AGENT = "(real-time-sources, https://github.com/clemensv/real-time-sources)"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-nws-alerts/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 DEFAULT_POLL_INTERVAL = 60
 DEFAULT_STATE_FILE = os.path.expanduser("~/.nws_alerts_state.json")
@@ -194,8 +200,8 @@ class NWSAlertsPoller:
     async def fetch_alerts(self) -> List[dict]:
         """Fetch active alerts from the NWS API."""
         headers = {"User-Agent": USER_AGENT, "Accept": "application/geo+json"}
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=60)) as session:
-            async with session.get(NWS_API_URL, headers=headers) as response:
+        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=60), headers=headers) as session:
+            async with session.get(NWS_API_URL) as response:
                 response.raise_for_status()
                 data = await response.json(content_type=None)
                 return data.get("features", [])

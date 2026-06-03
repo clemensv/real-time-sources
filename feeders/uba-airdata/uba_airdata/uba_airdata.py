@@ -22,6 +22,14 @@ from uba_airdata_producer_kafka_producer.producer import (
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-uba-airdata/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 UBA_API_BASE = "https://www.umweltbundesamt.de/api/air_data/v3"
 BERLIN_TZ = ZoneInfo("Europe/Berlin")
 
@@ -84,6 +92,7 @@ class UBAAirDataAPI:
         self.polling_interval = polling_interval
         self.scope_id = scope_id
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def parse_connection_string(self, connection_string: str) -> dict[str, str]:
         """Parse Event Hubs, Fabric, or plain Kafka style connection strings."""

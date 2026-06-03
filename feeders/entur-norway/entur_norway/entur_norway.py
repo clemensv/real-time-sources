@@ -34,6 +34,14 @@ if sys.gettrace() is not None:
 else:
     logging.basicConfig(level=logging.INFO)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-entur-norway/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 SIRI_NS = 'http://www.siri.org.uk/siri'
 NS = {'s': SIRI_NS}
 
@@ -150,7 +158,7 @@ class EnturNorwayBridge:
 
     def _create_session(self) -> requests.Session:
         session = requests.Session()
-        session.headers.update({'ET-Client-Name': self.CLIENT_NAME})
+        session.headers.update({'ET-Client-Name': self.CLIENT_NAME, 'User-Agent': USER_AGENT})
         retry = Retry(
             total=3,
             connect=3,

@@ -6,7 +6,7 @@ Tests core functionality without external dependencies
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime, timezone
-from noaa.noaa import NOAADataPoller
+from noaa.noaa import NOAADataPoller, USER_AGENT
 from noaa_producer_data.microsoft.opendata.us.noaa.station import Station
 
 
@@ -147,6 +147,7 @@ class TestNOAADataPoller:
             assert len(poller.stations) == 2
             mock_get.assert_called_with(
                 "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json",
+                headers={"User-Agent": USER_AGENT},
                 timeout=10
             )
 

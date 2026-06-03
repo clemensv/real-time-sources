@@ -24,6 +24,14 @@ from defra_aurn_producer_kafka_producer.producer import (
 
 LOGGER = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-defra-aurn/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 BASE_URL = "https://uk-air.defra.gov.uk/sos-ukair/api/v1"
 DEFAULT_POLLING_INTERVAL = 3600
 DEFAULT_PAGE_LIMIT = 1000
@@ -115,7 +123,7 @@ def _is_truthy(value: str | None, default: bool = True) -> bool:
 def create_retrying_session() -> requests.Session:
     """Create an HTTP session with bounded retries for transient upstream failures."""
     session = requests.Session()
-    session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+    session.headers["User-Agent"] = USER_AGENT
     retry = Retry(
         total=DEFAULT_HTTP_RETRY_TOTAL,
         connect=DEFAULT_HTTP_RETRY_TOTAL,

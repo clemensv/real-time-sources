@@ -18,6 +18,14 @@ from hongkong_epd_producer_kafka_producer.producer import HKGovEPDAQHIEventProdu
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-hongkong-epd/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 AQHI_FEED_URL = "https://www.aqhi.gov.hk/epd/ddata/html/out/24aqhi_Eng.xml"
 
 STATION_COORDS = {
@@ -85,6 +93,7 @@ class HKEPDAQHIAPI:
         self.base_url = base_url
         self.polling_interval = polling_interval
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def get_feed_xml(self) -> str:
         """Fetch the full 24-hour AQHI XML feed."""

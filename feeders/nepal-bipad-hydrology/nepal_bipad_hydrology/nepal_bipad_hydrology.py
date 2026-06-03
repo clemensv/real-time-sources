@@ -23,6 +23,14 @@ else:
 BIPAD_API_BASE = "https://bipadportal.gov.np/api/v1"
 DEFAULT_PAGE_SIZE = 100
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-nepal-bipad-hydrology/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 
 def _load_state(state_file: str) -> dict:
     """Load persisted dedup state from a JSON file."""
@@ -53,6 +61,7 @@ class NepalBipadHydrologyAPI:
         self.base_url = base_url.rstrip('/')
         self.page_size = page_size
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def fetch_all_stations(self) -> List[Dict[str, Any]]:
         """Fetch all river stations by paginating until the results array is empty.

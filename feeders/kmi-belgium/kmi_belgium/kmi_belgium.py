@@ -20,6 +20,11 @@ logger = logging.getLogger(__name__)
 KMI_AWS_WFS_URL = "https://opendata.meteo.be/service/aws/ows"
 FEATURE_TYPE = "aws:aws_10min"
 LATEST_FETCH_COUNT = 200
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-kmi-belgium/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 OBSERVATION_FIELDS = (
     "precip_quantity",
     "temp_dry_shelter_avg",
@@ -48,6 +53,7 @@ class KMIBelgiumAPI:
         self.base_url = base_url
         self.polling_interval = polling_interval
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def get_observations(self, last_timestamp: str | None = None, count: int | None = None) -> list[dict[str, Any]]:
         """Fetch aws:aws_10min observations as GeoJSON features."""

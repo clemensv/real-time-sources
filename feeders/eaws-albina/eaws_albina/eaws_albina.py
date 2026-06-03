@@ -41,6 +41,14 @@ def topic_segment(value: Optional[str]) -> str:
     return value
 
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-eaws-albina/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 DEFAULT_REGIONS = ["AT-07", "IT-32-BZ", "IT-32-TN", "AT-02"]
 DEFAULT_LANG = "en"
 BASE_URL = "https://avalanche.report/albina_files"
@@ -102,7 +110,7 @@ class AlbinaPoller:
     def fetch_bulletin(url: str, timeout: int = 30) -> Optional[dict]:
         """Fetch a single CAAMLv6 JSON bulletin. Returns None on 404 or error."""
         try:
-            response = requests.get(url, timeout=timeout)
+            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=timeout)
             if response.status_code == 404:
                 return None
             response.raise_for_status()

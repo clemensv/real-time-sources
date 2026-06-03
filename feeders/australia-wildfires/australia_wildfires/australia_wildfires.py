@@ -23,6 +23,14 @@ NSW_RFS_URL = "https://www.rfs.nsw.gov.au/feeds/majorIncidents.json"
 VIC_EMERGENCY_URL = "https://www.emergency.vic.gov.au/public/osom-geojson.json"
 QLD_FIRE_URL = "https://publiccontent-gis-psba-qld-gov-au.s3.amazonaws.com/content/Feeds/BushfireCurrentIncidents/bushfireAlert.json"
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-australia-wildfires/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 # Regex to parse key-value pairs from the NSW RFS HTML description field
 NSW_DESC_PATTERN = re.compile(
     r"(?:ALERT LEVEL|LOCATION|COUNCIL AREA|STATUS|TYPE|FIRE|SIZE|RESPONSIBLE AGENCY|UPDATED)\s*:\s*([^<]+?)(?:<br\s*/?>|$)",
@@ -131,7 +139,7 @@ class AustraliaWildfiresAPI:
     def __init__(self, polling_interval: int = 300):
         self.polling_interval = polling_interval
         self.session = requests.Session()
-        self.session.headers.update({"User-Agent": "real-time-sources-australia-wildfires-bridge/1.0"})
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def fetch_nsw_incidents(self) -> list[FireIncident]:
         """Fetch and parse fire incidents from NSW Rural Fire Service."""

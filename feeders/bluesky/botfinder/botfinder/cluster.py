@@ -12,6 +12,7 @@ surrounding the anchor.
 from __future__ import annotations
 
 import asyncio
+import os
 from ._async import run_async
 from collections import Counter, defaultdict
 from dataclasses import dataclass
@@ -24,6 +25,14 @@ import pandas as pd
 import plotly.graph_objects as go
 
 from .bluesky_api import BlueskyClient
+
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-bluesky/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     from .pipeline import AnalysisResult
@@ -71,7 +80,7 @@ async def _fetch_follows_for_suspects(
     """
     bsky = BlueskyClient(concurrency=concurrency)
     results: dict[str, list[str]] = {}
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=30.0, headers={"User-Agent": USER_AGENT}) as client:
         sem = asyncio.Semaphore(concurrency)
 
         async def _get_one(did: str):
@@ -100,7 +109,7 @@ async def _resolve_handles(dids: list[str], concurrency: int = 25) -> dict[str, 
     """
     bsky = BlueskyClient(concurrency=concurrency)
     handles: dict[str, str] = {}
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=30.0, headers={"User-Agent": USER_AGENT}) as client:
         for i in range(0, len(dids), 25):
             batch = dids[i: i + 25]
             try:

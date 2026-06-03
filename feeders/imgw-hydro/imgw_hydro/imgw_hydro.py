@@ -17,6 +17,14 @@ from imgw_hydro_producer_data import WaterLevelObservation
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-imgw-hydro/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 IMGW_BASE_URL = "https://danepubliczne.imgw.pl/api/data/hydro"
 
 class IMGWHydroAPI:
@@ -26,6 +34,7 @@ class IMGWHydroAPI:
         self.base_url = base_url
         self.polling_interval = polling_interval
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def get_all_data(self) -> typing.List[dict]:
         """Fetch all hydrological station data from the IMGW API."""

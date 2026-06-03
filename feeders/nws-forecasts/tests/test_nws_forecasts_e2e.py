@@ -5,7 +5,7 @@ import requests
 
 
 HEADERS = {
-    "User-Agent": "(real-time-sources-test, clemensv@microsoft.com)",
+    "User-Agent": "real-time-sources-nws-forecasts/0.1.0 (+https://github.com/clemensv/real-time-sources; clemensv@microsoft.com)",
     "Accept": "application/geo+json",
 }
 

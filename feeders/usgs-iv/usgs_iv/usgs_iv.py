@@ -57,6 +57,14 @@ else:
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-usgs-iv/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 state_codes = [
     'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC',
     'FL', 'GA', 'GU', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
@@ -160,7 +168,10 @@ class USGSDataPoller:
 
         url = f'https://waterservices.usgs.gov/nwis/iv/?stateCd={state_code}&format=rdb&modifiedSince=PT2H'
 
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
+        async with aiohttp.ClientSession(
+            timeout=aiohttp.ClientTimeout(total=30),
+            headers={"User-Agent": USER_AGENT},
+        ) as session:
             try:
                 async with session.get(url) as response:
                     response.raise_for_status()
@@ -530,7 +541,10 @@ class USGSDataPoller:
     async def get_sites_in_state(self, state_code: str) -> AsyncIterator[Site]:
         """Get all sites in a state."""
 
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
+        async with aiohttp.ClientSession(
+            timeout=aiohttp.ClientTimeout(total=30),
+            headers={"User-Agent": USER_AGENT},
+        ) as session:
             url = f'https://waterservices.usgs.gov/nwis/site/?format=rdb&stateCd={state_code}&siteOutput=expanded'
             try:
                 async with session.get(url) as response:

@@ -36,6 +36,14 @@ from autobahn_mqtt_producer_mqtt_client.client import DEAutobahnMqttMqttClient
 
 logger = logging.getLogger("autobahn_mqtt")
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-autobahn/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 STABLE_RETAINED_FAMILIES = {
     "weight_limit_35_restriction",
     "webcam",
@@ -186,7 +194,7 @@ class AutobahnMqttBridge:
 
     async def poll_and_publish(self, once: bool = False) -> None:
         timeout = aiohttp.ClientTimeout(total=60)
-        async with aiohttp.ClientSession(timeout=timeout) as session:
+        async with aiohttp.ClientSession(timeout=timeout, headers={"User-Agent": USER_AGENT}) as session:
             while True:
                 cycle_started = datetime.now(timezone.utc)
                 changes = await self.poll_once(session, cycle_started)

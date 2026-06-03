@@ -27,6 +27,14 @@ POLLEN_NAME_MAP = {
     "Ambrosia": "ragweed",
 }
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-dwd-pollenflug/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 FORECAST_API_URL = "https://opendata.dwd.de/climate_environment/health/alerts/s31fg.json"
 POLL_INTERVAL_SECONDS = 3600  # 1 hour
 
@@ -135,7 +143,7 @@ class DWDPollenflugPoller:
     def fetch_data() -> Optional[dict]:
         """Fetch the DWD pollen forecast JSON."""
         try:
-            response = requests.get(FORECAST_API_URL, timeout=60)
+            response = requests.get(FORECAST_API_URL, headers={"User-Agent": USER_AGENT}, timeout=60)
             response.raise_for_status()
             return response.json()
         except Exception as err:

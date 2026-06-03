@@ -33,6 +33,11 @@ HTTP_TIMEOUT = (15, 60)
 HTTP_RETRY_STATUS_CODES = (429, 500, 502, 503, 504)
 HTTP_RETRY_TOTAL = 5
 HTTP_RETRY_BACKOFF_FACTOR = 2.0
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-king-county-marine/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
@@ -145,7 +150,7 @@ def create_retrying_session() -> requests.Session:
     adapter = HTTPAdapter(max_retries=retry)
     session.mount("https://", adapter)
     session.mount("http://", adapter)
-    session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+    session.headers["User-Agent"] = USER_AGENT
     return session
 
 

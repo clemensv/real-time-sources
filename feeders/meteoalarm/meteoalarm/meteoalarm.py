@@ -22,6 +22,11 @@ else:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 logger = logging.getLogger(__name__)
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-meteoalarm/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 BASE_URL = "https://feeds.meteoalarm.org/api/v1/warnings/feeds-{country}"
 
@@ -223,7 +228,10 @@ class MeteoalarmPoller:
             count_new = 0
             count_updated = 0
 
-            async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=60)) as session:
+            async with aiohttp.ClientSession(
+                timeout=aiohttp.ClientTimeout(total=60),
+                headers={"User-Agent": USER_AGENT},
+            ) as session:
                 for country in self.countries:
                     try:
                         raw_warnings = await self.fetch_country(session, country)

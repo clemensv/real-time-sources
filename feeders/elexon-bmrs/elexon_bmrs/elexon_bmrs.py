@@ -18,6 +18,14 @@ from elexon_bmrs_producer_data import GenerationMix, DemandOutturn
 from elexon_bmrs_producer_kafka_producer.producer import UKCoElexonBMRSEventProducer
 
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-elexon-bmrs/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 # Mapping from BMRS fuelType strings to GenerationMix field names
 FUEL_TYPE_FIELD_MAP = {
     "BIOMASS": "biomass_mw",
@@ -199,7 +207,12 @@ class ElexonBMRSPoller:
             Parsed JSON list, or None on failure.
         """
         try:
-            response = requests.get(self.GENERATION_URL, params={"format": "json"}, timeout=30)
+            response = requests.get(
+                self.GENERATION_URL,
+                params={"format": "json"},
+                headers={"User-Agent": USER_AGENT},
+                timeout=30,
+            )
             response.raise_for_status()
             return response.json()
         except Exception as e:
@@ -214,7 +227,12 @@ class ElexonBMRSPoller:
             Parsed JSON dict, or None on failure.
         """
         try:
-            response = requests.get(self.DEMAND_URL, params={"format": "json"}, timeout=30)
+            response = requests.get(
+                self.DEMAND_URL,
+                params={"format": "json"},
+                headers={"User-Agent": USER_AGENT},
+                timeout=30,
+            )
             response.raise_for_status()
             return response.json()
         except Exception as e:

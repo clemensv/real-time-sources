@@ -23,6 +23,14 @@ else:
 WFS_BASE = "https://www.imis.bfs.de/ogc/opendata/ows"
 FEED_URL = "https://odlinfo.bfs.de"
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-bfs-odl/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 # WFS parameters for the ODL layers
 WFS_PARAMS_BASE = {
     "service": "WFS",
@@ -69,6 +77,7 @@ class BfsOdlAPI:
 
     def __init__(self):
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def fetch_stations(self) -> List[Dict[str, Any]]:
         """Fetch all station metadata from the odlinfo_sitelist layer."""

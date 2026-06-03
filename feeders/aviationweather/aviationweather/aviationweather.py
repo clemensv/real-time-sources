@@ -24,6 +24,14 @@ METAR_POLL_INTERVAL = 60
 SIGMET_POLL_INTERVAL = 120
 STATION_REFRESH_HOURS = 24
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-aviationweather/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 
 class AviationWeatherPoller:
     """
@@ -107,7 +115,7 @@ class AviationWeatherPoller:
         """
         try:
             url = f"{API_BASE}/metar?ids={station_ids}&format=json"
-            response = requests.get(url, timeout=30)
+            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
             response.raise_for_status()
             data = response.json()
             if isinstance(data, list):
@@ -130,7 +138,7 @@ class AviationWeatherPoller:
         """
         try:
             url = f"{API_BASE}/stationinfo?ids={station_ids}&format=json"
-            response = requests.get(url, timeout=30)
+            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
             response.raise_for_status()
             data = response.json()
             if isinstance(data, list):
@@ -150,7 +158,7 @@ class AviationWeatherPoller:
         """
         try:
             url = f"{API_BASE}/airsigmet?format=json"
-            response = requests.get(url, timeout=30)
+            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
             response.raise_for_status()
             data = response.json()
             if isinstance(data, list):
@@ -170,7 +178,7 @@ class AviationWeatherPoller:
         """
         try:
             url = f"{API_BASE}/isigmet?format=json"
-            response = requests.get(url, timeout=30)
+            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
             response.raise_for_status()
             data = response.json()
             if isinstance(data, list):

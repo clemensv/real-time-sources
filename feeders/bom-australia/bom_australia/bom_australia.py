@@ -87,6 +87,14 @@ WARNING_TITLE_PATTERN = re.compile(
 )
 WARNING_FEED_STATE_PATTERN = re.compile(r"warnings_(?P<state>[a-z]+)\.xml$", re.IGNORECASE)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-bom-australia/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 
 class BOMAustraliaAPI:
     """Client for the BOM weather observation JSON feeds."""
@@ -97,9 +105,7 @@ class BOMAustraliaAPI:
         self.fetch_workers = max(1, fetch_workers)
         self.session = requests.Session()
         # BOM copyright/etiquette page asks bots to identify themselves.
-        self.session.headers.update({
-            "User-Agent": "real-time-sources-bom-bridge/1.0 (+https://github.com/clemensv/real-time-sources)"
-        })
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def discover_stations(self, state_filter: typing.Optional[str] = None) -> list[tuple[str, int]]:
         """Discover active BOM observing stations.
