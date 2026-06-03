@@ -91,6 +91,11 @@ from meteoalarm_amqp_producer_data import CategoryEnum, CertaintyEnum, MsgTypeen
 from meteoalarm_amqp_producer_amqp_producer.producer import MeteoalarmWarningsAmqpProducer
 
 logger = logging.getLogger(__name__)
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-meteoalarm/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 def _sample_warning() -> WeatherWarning:
@@ -104,7 +109,10 @@ def _send(producer: MeteoalarmWarningsAmqpProducer, warning) -> None:
 async def _poll_once(poller: MeteoalarmPoller, producer: MeteoalarmWarningsAmqpProducer) -> int:
     state = poller.load_state()
     count = 0
-    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=60)) as session:
+    async with aiohttp.ClientSession(
+        timeout=aiohttp.ClientTimeout(total=60),
+        headers={"User-Agent": USER_AGENT},
+    ) as session:
         for country in poller.countries:
             raw_warnings = await poller.fetch_country(session, country)
             for item in raw_warnings:

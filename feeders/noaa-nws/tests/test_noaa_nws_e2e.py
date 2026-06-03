@@ -13,7 +13,7 @@ import requests
 NWS_ALERTS_URL = "https://api.weather.gov/alerts/active"
 NWS_ZONES_URL = "https://api.weather.gov/zones?type=forecast&limit=10"
 NWS_HEADERS = {
-    "User-Agent": "(real-time-sources-test, clemensv@microsoft.com)",
+    "User-Agent": "real-time-sources-noaa-nws/0.1.0 (+https://github.com/clemensv/real-time-sources; clemensv@microsoft.com)",
     "Accept": "application/geo+json"
 }
 

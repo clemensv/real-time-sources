@@ -18,6 +18,7 @@ from carbon_intensity.carbon_intensity import (
     FUEL_TYPES,
     API_BASE,
     POLL_INTERVAL_SECONDS,
+    USER_AGENT,
 )
 
 
@@ -456,7 +457,9 @@ class TestFetchMethods:
         mock_get.return_value.raise_for_status = Mock()
         result = CarbonIntensityPoller.fetch_intensity()
         assert result == SAMPLE_INTENSITY_RESPONSE
-        mock_get.assert_called_once_with(f"{API_BASE}/intensity", timeout=30)
+        mock_get.assert_called_once_with(
+            f"{API_BASE}/intensity", headers={"User-Agent": USER_AGENT}, timeout=30
+        )
 
     @patch('carbon_intensity.carbon_intensity.requests.get')
     def test_fetch_intensity_failure(self, mock_get):

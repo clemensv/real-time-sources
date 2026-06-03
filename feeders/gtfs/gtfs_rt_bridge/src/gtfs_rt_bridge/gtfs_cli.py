@@ -109,6 +109,14 @@ else:
     logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-gtfs/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 def fetch_schedule_file(gtfs_url: str, mdb_source_id: str, gtfs_headers: List[List[str]], etag: str, cache_dir: str | None) -> Tuple[str, str]:
     """
     Fetches the latest schedule file from the schedule URL if the file does not exist in the cache.
@@ -136,7 +144,7 @@ def fetch_schedule_file(gtfs_url: str, mdb_source_id: str, gtfs_headers: List[Li
 
     if etag and os.path.exists(schedule_file_path):
         request_headers["If-None-Match"] = etag
-    response = requests.get(gtfs_url, headers={**request_headers,  "User-Agent": "gtfs-rt-cli/0.1"}, timeout=300, stream=True)
+    response = requests.get(gtfs_url, headers={**request_headers, "User-Agent": USER_AGENT}, timeout=300, stream=True)
     if response.status_code == 304:
         return etag, schedule_file_path
     etag = response.headers.get("ETag")
@@ -227,7 +235,7 @@ def poll_and_submit_realtime_feed(agency_id: str, producer_client: GeneralTransi
             headers[header[0]] = header[1]
 
     # Make a request to the GTFS Realtime API to get the feed data for the specified scope
-    response = requests.get(feed_url, headers={**headers, "User-Agent": "gtfs-rt-cli/0.1"}, timeout=10)
+    response = requests.get(feed_url, headers={**headers, "User-Agent": USER_AGENT}, timeout=10)
     response.raise_for_status()
 
     # Parse the Protocol Buffer message and submit each feed info to the Event Hub
@@ -1099,7 +1107,7 @@ async def print_feed_items(feed_url: str, mdb_source_id: str, gtfs_rt_headers: L
             headers[header[0]] = header[1]
 
     # Make a request to the GTFS Realtime API to get the vehicle locations for the specified route
-    response = requests.get(feed_url, headers={**headers, "User-Agent": "gtfs-rt-cli/0.1"}, timeout=10)
+    response = requests.get(feed_url, headers={**headers, "User-Agent": USER_AGENT}, timeout=10)
     response.raise_for_status()
 
     # Parse the Protocol Buffer message and submit each vehicle location to the Event Hub

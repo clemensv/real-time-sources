@@ -36,6 +36,13 @@ DEFAULT_PAGE_SIZE = 100
 DEFAULT_POLLING_INTERVAL = 300  # seconds
 DEFAULT_TOPIC = "billetto-events"
 MIN_RATE_LIMIT_COOLDOWN_SECONDS = 60.0
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-billetto/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 FILTER_ENV_VARS = {
     "postal_code": "BILLETTO_POSTAL_CODE",
     "macroregion": "BILLETTO_MACROREGION",
@@ -54,6 +61,7 @@ def _make_session(api_keypair: str) -> requests.Session:
     session.headers.update({
         "Api-Keypair": api_keypair,
         "Accept": "application/json",
+        "User-Agent": USER_AGENT,
     })
     retry = Retry(
         total=5,

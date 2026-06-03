@@ -31,6 +31,13 @@ DEFAULT_POLL_INTERVAL = 300
 DEFAULT_EVENT_REFRESH_INTERVAL = 3600
 DEFAULT_EVENT_WINDOW_SIZE = 250
 DEFAULT_EVENT_PAGE_SIZE = 100
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-xceed/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 def create_retrying_session(user_agent: str) -> requests.Session:
@@ -61,7 +68,7 @@ class XceedAPI:
 
     def __init__(
         self,
-        user_agent: str = "real-time-sources/1.0 (github.com/clemensv/real-time-sources)",
+        user_agent: str = USER_AGENT,
         event_window_size: int = DEFAULT_EVENT_WINDOW_SIZE,
         event_page_size: int = DEFAULT_EVENT_PAGE_SIZE,
     ):

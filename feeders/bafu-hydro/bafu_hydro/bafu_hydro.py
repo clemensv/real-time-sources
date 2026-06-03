@@ -19,6 +19,14 @@ logger = logging.getLogger(__name__)
 EXISTENZ_BASE_URL = "https://api.existenz.ch/apiv1/hydro"
 BAFU_SOURCE = "https://www.hydrodaten.admin.ch"
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-bafu-hydro/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 PAR_HEIGHT = "height"
 PAR_FLOW = "flow"
 PAR_TEMPERATURE = "temperature"
@@ -31,6 +39,7 @@ class BAFUHydroAPI:
         self.base_url = base_url
         self.session = requests.Session()
         self.session.headers['Accept'] = 'application/json'
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def get_locations(self) -> dict:
         """Fetch all station locations. Returns dict of station_id -> details."""

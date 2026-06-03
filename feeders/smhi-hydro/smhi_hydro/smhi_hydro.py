@@ -19,6 +19,13 @@ logger = logging.getLogger(__name__)
 
 SMHI_BASE_URL = "https://opendata-download-hydroobs.smhi.se/api/version/1.0"
 SMHI_BULK_DISCHARGE_URL = f"{SMHI_BASE_URL}/parameter/2/station-set/all/period/latest-hour/data.json"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-smhi-hydro/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 class SMHIHydroAPI:
@@ -29,6 +36,7 @@ class SMHIHydroAPI:
         self.bulk_discharge_url = f"{base_url}/parameter/2/station-set/all/period/latest-hour/data.json"
         self.polling_interval = polling_interval
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def get_bulk_discharge_data(self) -> dict:
         """Fetch bulk discharge data for all stations from the latest-hour endpoint."""

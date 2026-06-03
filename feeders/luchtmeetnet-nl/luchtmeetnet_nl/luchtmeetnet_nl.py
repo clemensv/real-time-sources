@@ -21,6 +21,11 @@ from luchtmeetnet_nl_producer_kafka_producer.producer import (
 
 
 LOGGER = logging.getLogger(__name__)
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-luchtmeetnet-nl/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 def _load_state(state_file: str) -> dict[str, str]:
@@ -68,6 +73,7 @@ class LuchtmeetnetAPI:
     def __init__(self, base_url: str = "https://api.luchtmeetnet.nl/open_api", session: requests.Session | None = None):
         self.base_url = base_url.rstrip("/")
         self.session = session or requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def _request_json(self, path: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
         response = self.session.get(f"{self.base_url}{path}", params=params, timeout=30)

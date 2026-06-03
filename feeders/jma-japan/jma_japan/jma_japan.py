@@ -22,6 +22,11 @@ from jma_japan_producer_kafka_producer.producer import (
 
 
 ATOM_NS = "{http://www.w3.org/2005/Atom}"
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-jma-japan/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 class JMABulletinPoller:
@@ -31,7 +36,7 @@ class JMABulletinPoller:
     REGULAR_FEED_URL = "https://www.data.jma.go.jp/developer/xml/feed/regular.xml"
     EXTRA_FEED_URL = "https://www.data.jma.go.jp/developer/xml/feed/extra.xml"
     HEADERS = {
-        "User-Agent": "(real-time-sources, clemensv@microsoft.com)",
+        "User-Agent": USER_AGENT,
         "Accept": "application/xml"
     }
     POLL_INTERVAL_SECONDS = 60

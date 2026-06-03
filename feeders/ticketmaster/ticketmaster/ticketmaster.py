@@ -40,6 +40,13 @@ else:
 logger = logging.getLogger(__name__)
 
 DISCOVERY_API_BASE = "https://app.ticketmaster.com/discovery/v2"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-ticketmaster/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 def _load_state(state_file: str) -> Dict[str, str]:
@@ -100,6 +107,7 @@ EVENT_FILTER_ENV_VARS = {
 def _make_session() -> requests.Session:
     """Create a requests session with bounded retry policy for transient failures."""
     session = requests.Session()
+    session.headers["User-Agent"] = USER_AGENT
     retry = Retry(
         total=5,
         backoff_factor=1.0,

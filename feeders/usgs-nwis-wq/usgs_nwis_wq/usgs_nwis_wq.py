@@ -38,6 +38,14 @@ else:
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-usgs-nwis-wq/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 # Water quality parameter codes
 WQ_PARAMETER_CODES = {
     "00010": "Water Temperature",
@@ -252,7 +260,10 @@ class USGSWaterQualityPoller:
 
     async def fetch_json(self, url: str) -> Optional[dict]:
         """Fetch JSON from the USGS API."""
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=60)) as session:
+        async with aiohttp.ClientSession(
+            timeout=aiohttp.ClientTimeout(total=60),
+            headers={"User-Agent": USER_AGENT},
+        ) as session:
             try:
                 async with asyncio.timeout(60):
                     async with session.get(url) as response:

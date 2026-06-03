@@ -28,6 +28,13 @@ else:
 DEFAULT_SENSOR_TYPES = "SDS011,BME280,SPS30,DHT22,PMS5003,SHT31,BMP280"
 STATE_FILE_DEFAULT = os.path.expanduser("~/.sensor_community_state.json")
 API_BASE_URL = "https://data.sensor.community/airrohr/v1"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-sensor-community/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 MEASUREMENT_FIELD_MAP = {
     "P1": "pm10_ug_m3",
     "P2": "pm2_5_ug_m3",
@@ -135,6 +142,7 @@ class SensorCommunityAPI:
         session: requests.Session | None = None,
     ) -> None:
         self.session = session or requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
         self.sensor_types = self.normalize_sensor_types(sensor_types or DEFAULT_SENSOR_TYPES)
         self.countries = self.normalize_countries(countries or os.getenv("COUNTRIES", ""))
         self.state_file = state_file

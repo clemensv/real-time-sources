@@ -691,7 +691,8 @@ class TestPollAndSend:
         mock_event_producer_class.return_value = mock_event_producer
         mock_event_producer.producer = Mock()
 
-        def side_effect(url, timeout=30):
+        def side_effect(url, headers=None, timeout=30):
+            assert headers["User-Agent"].startswith("real-time-sources-energidataservice-dk/")
             resp = Mock()
             resp.raise_for_status = Mock()
             if "PowerSystemRightNow" in url:
@@ -737,7 +738,8 @@ class TestPollAndSend:
         with open(temp_state_file, 'w', encoding='utf-8') as f:
             json.dump(state_data, f)
 
-        def side_effect(url, timeout=30):
+        def side_effect(url, headers=None, timeout=30):
+            assert headers["User-Agent"].startswith("real-time-sources-energidataservice-dk/")
             resp = Mock()
             resp.raise_for_status = Mock()
             if "PowerSystemRightNow" in url:

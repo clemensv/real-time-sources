@@ -25,6 +25,11 @@ BASE_URL = "http://api.erg.ic.ac.uk/AirQuality/"
 SITES_PATH = "Information/MonitoringSites/GroupName=All/Json"
 SPECIES_PATH = "Information/Species/Json"
 DAILY_INDEX_PATH = "Daily/MonitoringIndex/Latest/GroupName=London/Json"
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-laqn-london/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
@@ -95,6 +100,7 @@ class LAQNLondonAPI:
     def __init__(self, base_url: str = BASE_URL):
         self.base_url = base_url.rstrip("/") + "/"
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def _get_json(self, path: str) -> Dict[str, Any]:
         # Per-request 15s timeout: the LAQN API usually responds in <1s, and

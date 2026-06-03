@@ -25,6 +25,14 @@ DEFAULT_REQUEST_CONCURRENCY = 16
 DEFAULT_STATE_FILE = os.path.expanduser("~/.autobahn_state.json")
 SELECTION_SENTINEL = "*"
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-autobahn/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 RESOURCE_RESPONSE_KEYS: dict[str, str] = {
     "roadworks": "roadworks",
     "warning": "warning",
@@ -551,7 +559,7 @@ class AutobahnPoller:
 
     headers = {
         "Accept": "application/json",
-        "User-Agent": "(real-time-sources, clemensv@microsoft.com)",
+        "User-Agent": USER_AGENT,
     }
 
     def __init__(
@@ -754,7 +762,7 @@ class AutobahnPoller:
 
     async def poll_and_send(self, once: bool = False) -> None:
         timeout = aiohttp.ClientTimeout(total=60)
-        async with aiohttp.ClientSession(timeout=timeout) as session:
+        async with aiohttp.ClientSession(timeout=timeout, headers={"User-Agent": USER_AGENT}) as session:
             while True:
                 cycle_started = datetime.now(timezone.utc)
                 changes = await self.poll_once(session, cycle_started)
@@ -776,7 +784,7 @@ class AutobahnPoller:
 
 async def run_list_roads() -> None:
     timeout = aiohttp.ClientTimeout(total=30)
-    async with aiohttp.ClientSession(timeout=timeout) as session:
+    async with aiohttp.ClientSession(timeout=timeout, headers={"User-Agent": USER_AGENT}) as session:
         poller = AutobahnPoller()
         for road_id in await poller.fetch_roads(session):
             print(road_id)

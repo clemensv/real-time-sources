@@ -19,6 +19,14 @@ from epa_uv_producer_kafka_producer.producer import USEPAUVIndexEventProducer
 
 LOGGER = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-epa-uv/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 HOURLY_URL = "https://data.epa.gov/dmapservice/getEnvirofactsUVHOURLY/CITY/{city}/STATE/{state}/JSON"
 DAILY_URL = "https://data.epa.gov/dmapservice/getEnvirofactsUVDAILY/CITY/{city}/STATE/{state}/JSON"
 DEFAULT_POLL_INTERVAL_SECONDS = 21600
@@ -131,7 +139,7 @@ class EPAUVBridge:
         self.locations = locations
         self.state_file = state_file
         self.session = requests.Session()
-        self.session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+        self.session.headers["User-Agent"] = USER_AGENT
         state = _load_state(state_file)
         self.hourly_order = [str(value) for value in state.get("seen_hourly_ids", [])][-MAX_SEEN_IDS:]
         self.daily_order = [str(value) for value in state.get("seen_daily_ids", [])][-MAX_SEEN_IDS:]

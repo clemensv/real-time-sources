@@ -28,6 +28,14 @@ FILTER_ENV_VARS = {
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 LOGGER = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-fienta/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 
 def _optional_string(value: object) -> Optional[str]:
     """Normalize optional string-like values."""
@@ -108,7 +116,7 @@ def fetch_events(page: int = 1, api_filters: Optional[Dict[str, str]] = None) ->
     """
     try:
         params: Dict[str, object] = {"page": page, **(api_filters or {})}
-        response = requests.get(FIENTA_API_URL, params=params, timeout=60)
+        response = requests.get(FIENTA_API_URL, params=params, headers={"User-Agent": USER_AGENT}, timeout=60)
         response.raise_for_status()
         data = response.json()
 

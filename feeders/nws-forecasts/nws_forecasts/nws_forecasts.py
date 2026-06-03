@@ -41,8 +41,15 @@ MARINE_FORECAST_URL = "https://tgftp.nws.noaa.gov/data/forecasts/marine/coastal/
 DEFAULT_POLL_INTERVAL_SECONDS = 900
 DEFAULT_REFERENCE_REFRESH_SECONDS = 21600
 DEFAULT_STATE_FILE = "/mnt/fileshare/nws_forecasts_state.json"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-nws-forecasts/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 HEADERS = {
-    "User-Agent": "(real-time-sources, clemensv@microsoft.com)",
+    "User-Agent": USER_AGENT,
     "Accept": "application/geo+json",
 }
 MARINE_PERIOD_RE = re.compile(r"^\.(?P<name>[A-Z0-9 /]+)\.\.\.(?P<body>.*)$")

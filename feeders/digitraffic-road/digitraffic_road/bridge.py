@@ -36,6 +36,14 @@ else:
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-digitraffic-road/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 # Maps MQTT situation type values to producer send methods
 _SITUATION_TYPE_SENDERS = {
     "TRAFFIC_ANNOUNCEMENT": "send_fi_digitraffic_road_messages_traffic_announcement",
@@ -103,7 +111,7 @@ def fetch_and_emit_tms_stations(
     stations_producer: "FiDigitrafficRoadStationsEventProducer",
 ) -> int:
     """Fetch all TMS stations from the REST API and emit as reference events. Returns count."""
-    resp = requests.get(_TMS_STATIONS_URL, timeout=60)
+    resp = requests.get(_TMS_STATIONS_URL, headers={"User-Agent": USER_AGENT}, timeout=60)
     resp.raise_for_status()
     features = resp.json().get("features", [])
     count = 0
@@ -126,7 +134,7 @@ def fetch_and_emit_weather_stations(
     stations_producer: "FiDigitrafficRoadStationsEventProducer",
 ) -> int:
     """Fetch all weather stations from the REST API and emit as reference events. Returns count."""
-    resp = requests.get(_WEATHER_STATIONS_URL, timeout=60)
+    resp = requests.get(_WEATHER_STATIONS_URL, headers={"User-Agent": USER_AGENT}, timeout=60)
     resp.raise_for_status()
     features = resp.json().get("features", [])
     count = 0
@@ -149,7 +157,7 @@ def fetch_and_emit_maintenance_tasks(
     tasks_producer: "FiDigitrafficRoadMaintenanceTasksEventProducer",
 ) -> int:
     """Fetch all maintenance task types from the REST API and emit as reference events. Returns count."""
-    resp = requests.get(_MAINTENANCE_TASKS_URL, timeout=30)
+    resp = requests.get(_MAINTENANCE_TASKS_URL, headers={"User-Agent": USER_AGENT}, timeout=30)
     resp.raise_for_status()
     tasks = resp.json()
     count = 0

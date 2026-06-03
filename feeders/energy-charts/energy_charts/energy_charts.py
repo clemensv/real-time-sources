@@ -18,6 +18,14 @@ import requests
 from energy_charts_producer_data import PublicPower, SpotPrice, GridSignal
 from energy_charts_producer_kafka_producer.producer import InfoEnergyChartsEventProducer
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-energy-charts/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 # Map API production type names to schema field names
 PRODUCTION_TYPE_MAP = {
     "Hydro pumped storage consumption": "hydro_pumped_storage_consumption_mw",
@@ -74,7 +82,7 @@ class EnergyChartsPoller:
         self.kafka_topic = kafka_topic
         self.last_polled_file = last_polled_file
         self.session = requests.Session()
-        self.session.headers.update({"Accept": "application/json"})
+        self.session.headers.update({"Accept": "application/json", "User-Agent": USER_AGENT})
 
         from confluent_kafka import Producer
         kafka_producer = Producer(kafka_config)

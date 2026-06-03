@@ -11,6 +11,7 @@ behavior.
 from __future__ import annotations
 
 import asyncio
+import os
 from ._async import run_async
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -20,6 +21,14 @@ import pandas as pd
 
 from .bluesky_api import BlueskyClient
 from .kusto import execute_query
+
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-bluesky/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     from .pipeline import AnalysisResult
@@ -79,7 +88,7 @@ async def _measure_via_api(
     client_obj = BlueskyClient(concurrency=concurrency, timeout=30.0)
     results = []
 
-    async with httpx.AsyncClient(timeout=30.0) as http_client:
+    async with httpx.AsyncClient(timeout=30.0, headers={"User-Agent": USER_AGENT}) as http_client:
         for _, row in sample.iterrows():
             did = row["did"]
             handle = row.get("handle", "")

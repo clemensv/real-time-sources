@@ -29,10 +29,14 @@ DEFAULT_BBOX = (90.0, 180.0, -90.0, -180.0)
 DEFAULT_TOPIC = "blitzortung"
 DEFAULT_SOURCE_MASK = 4
 DEFAULT_STATE_FILE = os.path.expanduser("~/.blitzortung_state.json")
-DEFAULT_USER_AGENT = (
-    "real-time-sources-blitzortung/0.1 "
-    "(https://github.com/clemensv/real-time-sources)"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-blitzortung/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
 )
+DEFAULT_USER_AGENT = USER_AGENT
 
 
 if sys.gettrace() is not None:

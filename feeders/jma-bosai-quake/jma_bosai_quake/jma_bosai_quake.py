@@ -39,6 +39,14 @@ _JST = timezone(timedelta(hours=9))
 
 logging.basicConfig(level=logging.DEBUG if sys.gettrace() else logging.INFO)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-jma-bosai-quake/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 _ISO6709_RE = re.compile(r"^([+-]\d+(?:\.\d+)?)([+-]\d+(?:\.\d+)?)([+-]\d+(?:\.\d+)?)/$")
 _INFO_TYPE_MAP = {"発表": "ISSUED", "訂正": "CORRECTED", "取消": "CANCELLED"}
 _NO_TSUNAMI_MARKERS = (
@@ -75,6 +83,7 @@ _PREFECTURE_NAMES = set(_PREFECTURE_BY_CODE.values())
 def create_retry_session() -> requests.Session:
     """Create a requests session with bounded retries for public HTTP polling."""
     session = requests.Session()
+    session.headers["User-Agent"] = USER_AGENT
     retry = Retry(
         total=3,
         connect=3,

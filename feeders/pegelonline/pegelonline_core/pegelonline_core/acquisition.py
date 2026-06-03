@@ -12,12 +12,20 @@ bookkeeping.
 from __future__ import annotations
 
 import logging
+import os
 from typing import Any, Dict, List, Optional
 
 import requests
 
 
 FEED_URL_ROOT = "https://www.pegelonline.wsv.de/webservices/rest-api/v2"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-pegelonline/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 class PegelOnlineAPI:
@@ -25,6 +33,7 @@ class PegelOnlineAPI:
 
     def __init__(self, session: Optional[requests.Session] = None, request_timeout: float = 10.0) -> None:
         self._session = session or requests.Session()
+        self._session.headers["User-Agent"] = USER_AGENT
         self._request_timeout = request_timeout
         # URLs that returned non-200/304 are sidelined for the lifetime of the process.
         self.skip_urls: List[str] = []

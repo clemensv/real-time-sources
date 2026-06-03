@@ -10,6 +10,7 @@ through it, all later scoring, clustering, and dossier steps.
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
@@ -19,6 +20,14 @@ import pandas as pd
 from .config import Config
 from .kusto import execute_query
 
+
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-bluesky/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 @dataclass
 class AcquiredData:
@@ -127,6 +136,7 @@ def _resolve_target_did(config: Config) -> str:
         r = httpx.get(
             "https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle",
             params={"handle": handle},
+            headers={"User-Agent": USER_AGENT},
         )
         r.raise_for_status()
         return r.json()["did"]

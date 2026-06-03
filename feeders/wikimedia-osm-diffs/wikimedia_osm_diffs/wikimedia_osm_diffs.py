@@ -29,10 +29,14 @@ STATE_URL = "https://planet.openstreetmap.org/replication/minute/state.txt"
 DIFF_BASE_URL = "https://planet.openstreetmap.org/replication/minute"
 DEFAULT_TOPIC = "wikimedia-osm-diffs"
 DEFAULT_STATE_FILE = os.path.expanduser("~/.wikimedia_osm_diffs_state.json")
-DEFAULT_USER_AGENT = (
-    "real-time-sources-wikimedia-osm-diffs/0.1 "
-    "(https://github.com/clemensv/real-time-sources)"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-wikimedia-osm-diffs/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
 )
+DEFAULT_USER_AGENT = USER_AGENT
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s")

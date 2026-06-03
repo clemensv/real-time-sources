@@ -15,6 +15,7 @@ from typing import Dict, List, Optional, Any
 import requests
 
 from german_waters.providers import BaseProvider, StationData, ObservationData
+from german_waters.user_agent import USER_AGENT
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,7 @@ class HessenHLNUGProvider(BaseProvider):
 
     def __init__(self) -> None:
         self._session = requests.Session()
-        self._session.headers["User-Agent"] = "german-waters-bridge/1.0"
+        self._session.headers["User-Agent"] = USER_AGENT
         self._w_cache: Optional[List[Dict[str, Any]]] = None
         self._q_cache: Optional[List[Dict[str, Any]]] = None
 

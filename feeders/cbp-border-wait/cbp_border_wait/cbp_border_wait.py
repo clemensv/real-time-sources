@@ -24,6 +24,14 @@ if sys.gettrace() is not None:
 else:
     logging.basicConfig(level=logging.INFO)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-cbp-border-wait/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 API_URL = "https://bwt.cbp.gov/api/bwtnew"
 
 
@@ -147,6 +155,7 @@ class CbpBorderWaitAPI:
     def __init__(self, api_url: str = API_URL):
         self.api_url = api_url
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def fetch_ports(self) -> List[Dict[str, Any]]:
         """Fetch all port data from the CBP API.

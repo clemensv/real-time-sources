@@ -49,6 +49,14 @@ POINT_DETAIL_FIELDS = [
 
 logging.basicConfig(level=logging.DEBUG if sys.gettrace() else logging.INFO)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-jma-bosai-amedas/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 
 def _load_state(state_file: str) -> dict:
     try:
@@ -72,6 +80,7 @@ def _save_state(state_file: str, data: dict) -> None:
 
 def create_retrying_session() -> requests.Session:
     session = requests.Session()
+    session.headers["User-Agent"] = USER_AGENT
     retry = Retry(
         total=3,
         connect=3,
@@ -85,7 +94,6 @@ def create_retrying_session() -> requests.Session:
     adapter = HTTPAdapter(max_retries=retry)
     session.mount("https://", adapter)
     session.mount("http://", adapter)
-    session.headers.update({"User-Agent": "real-time-sources-jma-bosai-amedas/0.1"})
     return session
 
 

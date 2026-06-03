@@ -27,11 +27,13 @@ from wikimedia_eventstreams_producer_kafka_producer.producer import (
 STREAM_URL = "https://stream.wikimedia.org/v2/stream/recentchange"
 DEFAULT_TOPIC = "wikimedia-eventstreams"
 DEFAULT_STATE_FILE = os.path.expanduser("~/.wikimedia_eventstreams_state.json")
-DEFAULT_USER_AGENT = (
-    "real-time-sources-wikimedia-eventstreams/0.1 "
-    "(https://github.com/clemensv/real-time-sources)"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+DEFAULT_USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-wikimedia-eventstreams/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
 )
-
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s")

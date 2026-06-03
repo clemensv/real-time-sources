@@ -19,6 +19,14 @@ from ptwc_tsunami_mqtt_producer_mqtt_client.client import PTWCBulletinsMqttMqttC
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-ptwc-tsunami/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 
 def _topic_segment(value: Optional[str]) -> str:
     text = (value or "unknown").strip() or "unknown"
@@ -31,7 +39,7 @@ async def _poll_once(poller: PTWCTsunamiPoller, mqtt_client: PTWCBulletinsMqttMq
     state = poller.load_state()
     count_new = 0
     count_updated = 0
-    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=60), headers={"User-Agent": "ptwc-tsunami-mqtt-bridge/1.0"}) as session:
+    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=60), headers={"User-Agent": USER_AGENT}) as session:
         for feed_name in poller.feeds:
             root = await poller.fetch_feed(session, feed_name)
             if root is None:

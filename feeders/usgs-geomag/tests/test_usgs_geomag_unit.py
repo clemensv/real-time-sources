@@ -10,7 +10,7 @@ import tempfile
 from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime, timezone
 from usgs_geomag_producer_data import Observatory, MagneticFieldReading
-from usgs_geomag.usgs_geomag import USGSGeomagPoller, parse_connection_string
+from usgs_geomag.usgs_geomag import USGSGeomagPoller, USER_AGENT, parse_connection_string
 
 
 SAMPLE_OBSERVATORIES_GEOJSON = {
@@ -666,4 +666,7 @@ class TestUrlConstruction:
 
         USGSGeomagPoller.fetch_observatories()
         mock_get.assert_called_once_with(
-            "https://geomag.usgs.gov/ws/observatories/", timeout=60)
+            "https://geomag.usgs.gov/ws/observatories/",
+            headers={"User-Agent": USER_AGENT},
+            timeout=60,
+        )

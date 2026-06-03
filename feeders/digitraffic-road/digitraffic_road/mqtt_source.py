@@ -4,6 +4,7 @@ import base64
 import gzip
 import json
 import logging
+import os
 import time
 import uuid
 from typing import Any, Callable, Dict, Optional, Set
@@ -11,6 +12,14 @@ from typing import Any, Callable, Dict, Optional, Set
 import paho.mqtt.client as mqtt
 
 logger = logging.getLogger(__name__)
+
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-digitraffic-road/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 DIGITRAFFIC_MQTT_HOST = "tie.digitraffic.fi"
 DIGITRAFFIC_MQTT_PORT = 443
@@ -151,6 +160,7 @@ class MQTTSource:
         client.on_disconnect = on_disconnect
         client.on_message = on_message
 
+        client.ws_set_options(headers={"User-Agent": USER_AGENT})
         client.tls_set()
         logger.info("Connecting to %s:%d ...", self.host, self.port)
         client.connect(self.host, self.port)

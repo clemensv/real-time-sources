@@ -26,6 +26,13 @@ from carbon_intensity_producer_kafka_producer.producer import (
 API_BASE = "https://api.carbonintensity.org.uk"
 POLL_INTERVAL_SECONDS = 1800  # 30 minutes
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-carbon-intensity/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 FUEL_TYPES = [
     "biomass", "coal", "imports", "gas", "nuclear",
@@ -177,7 +184,7 @@ class CarbonIntensityPoller:
     def fetch_intensity() -> Optional[Dict]:
         """GET /intensity — current national carbon intensity."""
         try:
-            resp = requests.get(f"{API_BASE}/intensity", timeout=30)
+            resp = requests.get(f"{API_BASE}/intensity", headers={"User-Agent": USER_AGENT}, timeout=30)
             resp.raise_for_status()
             return resp.json()
         except Exception as exc:
@@ -188,7 +195,7 @@ class CarbonIntensityPoller:
     def fetch_generation() -> Optional[Dict]:
         """GET /generation — current national generation mix."""
         try:
-            resp = requests.get(f"{API_BASE}/generation", timeout=30)
+            resp = requests.get(f"{API_BASE}/generation", headers={"User-Agent": USER_AGENT}, timeout=30)
             resp.raise_for_status()
             return resp.json()
         except Exception as exc:
@@ -199,7 +206,7 @@ class CarbonIntensityPoller:
     def fetch_regional() -> Optional[Dict]:
         """GET /regional — all 17 DNO regions."""
         try:
-            resp = requests.get(f"{API_BASE}/regional", timeout=30)
+            resp = requests.get(f"{API_BASE}/regional", headers={"User-Agent": USER_AGENT}, timeout=30)
             resp.raise_for_status()
             return resp.json()
         except Exception as exc:

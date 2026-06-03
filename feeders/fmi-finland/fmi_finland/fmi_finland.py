@@ -22,6 +22,14 @@ from fmi_finland_producer_kafka_producer.producer import FiFmiOpendataAirquality
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-fmi-finland/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 FMI_WFS_URL = "https://opendata.fmi.fi/wfs"
 STATIONS_STORED_QUERY = "fmi::ef::stations"
 OBSERVATIONS_STORED_QUERY = "urban::observations::airquality::hourly::simple"
@@ -120,7 +128,7 @@ class FMIAirQualityAPI:
 def create_retrying_session() -> requests.Session:
     """Create an HTTP session with bounded retries for transient upstream failures."""
     session = requests.Session()
-    session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+    session.headers["User-Agent"] = USER_AGENT
     retry = Retry(
         total=DEFAULT_HTTP_RETRY_TOTAL,
         connect=DEFAULT_HTTP_RETRY_TOTAL,

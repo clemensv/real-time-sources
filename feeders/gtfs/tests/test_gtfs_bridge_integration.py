@@ -88,7 +88,7 @@ class TestScheduleFileFetching:
             assert 'Authorization' in headers
             assert headers['Authorization'] == 'Bearer token123'
             assert headers['X-Custom'] == 'value'
-            assert headers['User-Agent'] == 'gtfs-rt-cli/0.1'
+            assert headers['User-Agent'].startswith('real-time-sources-gtfs/')
 
     def test_fetch_schedule_file_timeout_raises_error(self, tmp_path):
         """Test that request timeout is handled"""

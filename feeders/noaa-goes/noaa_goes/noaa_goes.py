@@ -30,6 +30,13 @@ from noaa_goes_producer_kafka_producer.producer import (
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-noaa-goes/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 class SWPCPoller:
     """
@@ -80,7 +87,7 @@ class SWPCPoller:
 
     def _get_json(self, url: str) -> Optional[list]:
         try:
-            response = requests.get(url, timeout=30)
+            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
             response.raise_for_status()
             data = response.json()
             return data if isinstance(data, list) else [data] if isinstance(data, dict) else []
@@ -100,10 +107,10 @@ class SWPCPoller:
 
     def poll_solar_wind(self) -> List[dict]:
         try:
-            speed_response = requests.get(self.SOLAR_WIND_SPEED_URL, timeout=30)
+            speed_response = requests.get(self.SOLAR_WIND_SPEED_URL, headers={"User-Agent": USER_AGENT}, timeout=30)
             speed_response.raise_for_status()
             speed_data = speed_response.json()
-            mag_response = requests.get(self.SOLAR_WIND_MAG_FIELD_URL, timeout=30)
+            mag_response = requests.get(self.SOLAR_WIND_MAG_FIELD_URL, headers={"User-Agent": USER_AGENT}, timeout=30)
             mag_response.raise_for_status()
             mag_data = mag_response.json()
             if isinstance(speed_data, list) and speed_data:

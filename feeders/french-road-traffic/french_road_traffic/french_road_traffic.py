@@ -34,6 +34,14 @@ else:
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-french-road-traffic/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 # DATEX II XML namespace
 DATEX2_NS = "http://datex2.eu/schema/2/2_0"
 XSI_NS = "http://www.w3.org/2001/XMLSchema-instance"
@@ -373,6 +381,7 @@ def run_bridge(
     flow_producer = FrGouvTransportBisonFuteTrafficFlowEventProducer(producer, topic_flow)
     event_producer = FrGouvTransportBisonFuteRoadEventEventProducer(producer, topic_events)
     session = requests.Session()
+    session.headers["User-Agent"] = USER_AGENT
 
     logger.info(
         "Starting French Road Traffic bridge — flow topic=%s, events topic=%s, interval=%ds",

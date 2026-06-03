@@ -17,7 +17,7 @@ from noaa_ndbc_producer_data import BuoyOceanographicObservation
 from noaa_ndbc_producer_data import BuoySolarRadiationObservation
 from noaa_ndbc_producer_data import BuoyStation
 from noaa_ndbc_producer_data import BuoySupplementalMeasurement
-from noaa_ndbc.noaa_ndbc import NDBCBuoyPoller, parse_connection_string, parse_float
+from noaa_ndbc.noaa_ndbc import NDBCBuoyPoller, USER_AGENT, parse_connection_string, parse_float
 
 
 SAMPLE_STATION_TABLE_TEXT = """\
@@ -530,7 +530,7 @@ class TestNDBCBuoyPoller:
 
         observations = poller.poll_observations()
         assert len(observations) == 3
-        mock_get.assert_called_once_with(NDBCBuoyPoller.LATEST_OBS_URL, timeout=60)
+        mock_get.assert_called_once_with(NDBCBuoyPoller.LATEST_OBS_URL, headers={"User-Agent": USER_AGENT}, timeout=60)
 
     @patch('noaa_ndbc.noaa_ndbc.requests.get')
     @patch('noaa_ndbc.noaa_ndbc.MicrosoftOpenDataUSNOAANDBCEventProducer')

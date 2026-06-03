@@ -29,6 +29,13 @@ else:
 logger = logging.getLogger(__name__)
 
 REPORT_GENERATOR_BASE = "https://wcc.sc.egov.usda.gov/reportGenerator/view_csv"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-snotel/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 # Representative set of SNOTEL stations across western US states
 DEFAULT_STATION_TRIPLETS = [
@@ -310,7 +317,7 @@ class SnotelPoller:
             requests.RequestException: On HTTP failure.
         """
         url = build_station_csv_url(station_triplet)
-        response = requests.get(url, timeout=60)
+        response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=60)
         response.raise_for_status()
         return response.text
 

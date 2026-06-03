@@ -18,6 +18,13 @@ from nve_hydro_producer_kafka_producer.producer import NONVEHydrologyEventProduc
 logger = logging.getLogger(__name__)
 
 NVE_BASE_URL = "https://hydapi.nve.no/api/v1"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-nve-hydro/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 PARAM_STAGE = 1000       # Water level / Vannstand (m)
 PARAM_DISCHARGE = 1001   # Discharge / Vannføring (m³/s)
@@ -31,6 +38,7 @@ class NVEHydroAPI:
     def __init__(self, api_key: str, base_url: str = NVE_BASE_URL):
         self.base_url = base_url
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
         self.session.headers['X-API-Key'] = api_key
         self.session.headers['Accept'] = 'application/json'
 

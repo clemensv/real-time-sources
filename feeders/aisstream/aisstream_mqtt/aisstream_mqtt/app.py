@@ -62,6 +62,14 @@ from aisstream_mqtt.enrichment import (
 logger = logging.getLogger("aisstream_mqtt")
 
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-aisstream/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 POSITION_REPORT_TYPES = {
     "PositionReport",
     "StandardClassBPositionReport",
@@ -277,7 +285,11 @@ class AisStreamMqttBridge:
         max_retry_delay = 60
         while True:
             try:
-                async with websockets.connect(self.ws_url, max_size=2 ** 22) as ws:
+                async with websockets.connect(
+                    self.ws_url,
+                    additional_headers={"User-Agent": USER_AGENT},
+                    max_size=2 ** 22,
+                ) as ws:
                     await ws.send(subscription)
                     logger.info("Connected to AISstream WS at %s", self.ws_url)
                     retry_delay = 1

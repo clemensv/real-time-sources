@@ -28,6 +28,14 @@ else:
 
 LOGGER = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-irceline-belgium/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 
 def _load_state(state_file: str) -> Dict[str, int]:
     """Load persisted per-timeseries dedup state from disk."""
@@ -83,6 +91,7 @@ class IrcelineBelgiumAPI:
         self.reference_refresh_interval = reference_refresh_interval
         self.session = session or requests.Session()
         self.session.headers.setdefault("Accept", "application/json")
+        self.session.headers["User-Agent"] = USER_AGENT
 
     @staticmethod
     def parse_connection_string(connection_string: str) -> Tuple[Dict[str, str], Optional[str]]:

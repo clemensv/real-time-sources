@@ -16,6 +16,14 @@ from environment_canada_producer_data import Station, WeatherObservation
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-environment-canada/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 EC_API_BASE = "https://api.weather.gc.ca/collections"
 SWOB_STATIONS_URL = f"{EC_API_BASE}/swob-stations/items"
 SWOB_REALTIME_URL = f"{EC_API_BASE}/swob-realtime/items"
@@ -33,6 +41,7 @@ class ECWeatherAPI:
         self.station_limit = station_limit
         self.obs_limit = obs_limit
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def get_stations(self) -> list[dict]:
         """Fetch station metadata from swob-stations collection."""

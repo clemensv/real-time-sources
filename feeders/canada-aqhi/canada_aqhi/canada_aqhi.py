@@ -31,6 +31,14 @@ else:
 
 LOGGER = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-canada-aqhi/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 AQHI_BASE_URL = "https://dd.weather.gc.ca/today/air_quality/aqhi"
 COMMUNITY_GEOJSON_URL = (
     "https://collaboration.cmc.ec.gc.ca/cmc/cmos/public_doc/msc-data/aqhi/aqhi_community.geojson"
@@ -168,7 +176,7 @@ def canonicalize_feed_url(feed_url: str | None) -> str | None:
 def create_retrying_session() -> requests.Session:
     """Create an HTTP session with bounded retries for transient upstream failures."""
     session = requests.Session()
-    session.headers.update({"User-Agent": "GitHub-Copilot-CLI/1.0"})
+    session.headers["User-Agent"] = USER_AGENT
     retry = Retry(
         total=DEFAULT_HTTP_RETRY_TOTAL,
         connect=DEFAULT_HTTP_RETRY_TOTAL,

@@ -28,6 +28,11 @@ TSUNAMI_LIST_URL = "https://www.jma.go.jp/bosai/tsunami/data/list.json"
 TSUNAMI_DETAIL_BASE = "https://www.jma.go.jp/bosai/tsunami/data/"
 STATE_CAP = 5000
 OFFICE_AREA_CODE = None
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-jma-bosai-warning/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 WARNING_CODE_DESCRIPTIONS: dict[str, tuple[str, str]] = {
     "03": ("大雨", "Heavy rain"), "04": ("洪水", "Flood"), "05": ("暴風", "Storm"),
@@ -62,6 +67,7 @@ def make_retrying_session() -> requests.Session:
     retry = Retry(total=3, connect=3, read=3, status=3, backoff_factor=0.5, status_forcelist=(429, 500, 502, 503, 504), allowed_methods=("GET",))
     adapter = HTTPAdapter(max_retries=retry)
     session = requests.Session()
+    session.headers["User-Agent"] = USER_AGENT
     session.mount("https://", adapter)
     session.mount("http://", adapter)
     return session

@@ -30,6 +30,14 @@ from noaa_producer_data import QualityLevel
 from noaa_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAAEventProducer
 
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-noaa/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 class NOAADataPoller:
     """
     Class to poll NOAA data and send it to a Kafka topic.
@@ -84,7 +92,7 @@ class NOAADataPoller:
         """
         url = "https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json"
         try:
-            response = requests.get(url, timeout=10)
+            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=10)
             response.raise_for_status()
             stations_data = response.json()
             raw_stations = stations_data.get('stations', [])
@@ -157,7 +165,7 @@ class NOAADataPoller:
         else:
             data_key = "data"
         try:
-            response = requests.get(product_url, timeout=10)
+            response = requests.get(product_url, headers={"User-Agent": USER_AGENT}, timeout=10)
             response.raise_for_status()
             if data_key is None:
                 data = response.json().get("current_predictions", {}).get("cp", [])

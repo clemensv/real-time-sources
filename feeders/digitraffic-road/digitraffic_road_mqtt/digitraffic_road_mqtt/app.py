@@ -33,6 +33,14 @@ from digitraffic_road_mqtt_producer_mqtt_client.client import FiDigitrafficRoadM
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-digitraffic-road/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 DIGITRAFFIC_MQTT_HOST = "tie.digitraffic.fi"
 DIGITRAFFIC_MQTT_PORT = 443
 
@@ -171,6 +179,7 @@ class MQTTSource:
         client.on_disconnect = on_disconnect
         client.on_message = on_message
 
+        client.ws_set_options(headers={"User-Agent": USER_AGENT})
         client.tls_set()
         logger.info("Connecting to %s:%d ...", self.host, self.port)
         client.connect(self.host, self.port)
@@ -633,7 +642,7 @@ class DigitrafficRoadMqttBridge:
         await self._client.publish_fi_digitraffic_road_mqtt_maintenance_tracking(domain="state-roads", data=maintenance)
 
     async def _emit_reference_data(self) -> None:
-        tms_response = requests.get(_TMS_STATIONS_URL, timeout=60)
+        tms_response = requests.get(_TMS_STATIONS_URL, headers={"User-Agent": USER_AGENT}, timeout=60)
         tms_response.raise_for_status()
         for feature in tms_response.json().get("features", []):
             flat = _flatten_station(feature)
@@ -644,7 +653,7 @@ class DigitrafficRoadMqttBridge:
                 retain=True,
             )
 
-        weather_response = requests.get(_WEATHER_STATIONS_URL, timeout=60)
+        weather_response = requests.get(_WEATHER_STATIONS_URL, headers={"User-Agent": USER_AGENT}, timeout=60)
         weather_response.raise_for_status()
         for feature in weather_response.json().get("features", []):
             flat = _flatten_station(feature)
@@ -655,7 +664,7 @@ class DigitrafficRoadMqttBridge:
                 retain=True,
             )
 
-        tasks_response = requests.get(_MAINTENANCE_TASKS_URL, timeout=30)
+        tasks_response = requests.get(_MAINTENANCE_TASKS_URL, headers={"User-Agent": USER_AGENT}, timeout=30)
         tasks_response.raise_for_status()
         for task in tasks_response.json():
             flat = {

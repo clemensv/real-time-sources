@@ -7,6 +7,7 @@ XRPC endpoints into typed dataclasses that downstream scoring, cluster, and
 cross-follow stages can consume without parsing raw JSON repeatedly.
 """
 
+import os
 import httpx
 import asyncio
 from dataclasses import dataclass, field
@@ -14,6 +15,14 @@ from datetime import datetime
 
 
 XRPC_BASE = "https://public.api.bsky.app/xrpc"
+
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-bluesky/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 @dataclass
@@ -348,7 +357,7 @@ async def enrich_suspects(
     bsky = BlueskyClient(concurrency=concurrency)
     results: dict[str, dict] = {}
 
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=30.0, headers={"User-Agent": USER_AGENT}) as client:
         # Batch-resolve profiles (25 per request)
         all_profiles: dict[str, BlueskyProfile] = {}
         for i in range(0, len(dids), 25):

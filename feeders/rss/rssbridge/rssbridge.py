@@ -46,7 +46,13 @@ STATE_FILE = os.path.join(USER_DIR, ".rss-grabber.json")
 FEEDSTORE_FILE = os.path.join(USER_DIR, ".rss-grabber-feedstore.xml")
 __version__ = "1.0.0"
 
-USER_AGENT = f"Event Stream RSS Agent {__version__}"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-rss/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 
 def topic_token(value: str, fallback: str = "unknown") -> str:
@@ -431,7 +437,7 @@ def process_feed(feed_url: str, state: dict, producer_instance: MicrosoftOpenDat
             }
             return
 
-        feed = feedparser.parse(response.content)
+        feed = feedparser.parse(response.content, agent=USER_AGENT)
         # Check for redirection
         actual_url = response.url
 
@@ -658,7 +664,7 @@ async def run():
 
         for url in args.urls:
             if url.endswith(".opml"):
-                opml_content = requests.get(url, timeout=10).content
+                opml_content = requests.get(url, headers={'User-Agent': USER_AGENT}, timeout=10).content
                 opml_tree = listparser.parse(opml_content)
                 feed_urls.extend([outline.url for outline in opml_tree.feeds])
             else:

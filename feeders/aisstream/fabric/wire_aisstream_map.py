@@ -30,6 +30,15 @@ from typing import Any, Optional
 import requests
 
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-aisstream/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
+
 def _get_token(env_name: str, scope: str | list[str]) -> str:
     token = os.environ.get(env_name)
     if token:
@@ -58,6 +67,7 @@ def _session(token: str) -> requests.Session:
     session = requests.Session()
     session.headers["Authorization"] = f"Bearer {token}"
     session.headers["Content-Type"] = "application/json"
+    session.headers["User-Agent"] = USER_AGENT
     return session
 
 

@@ -17,6 +17,13 @@ from smhi_weather_producer_data import Station, WeatherObservation
 logger = logging.getLogger(__name__)
 
 SMHI_BASE_URL = "https://opendata-download-metobs.smhi.se/api/version/1.0"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-smhi-weather/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 # SMHI parameter IDs for hourly weather observations
 PARAM_AIR_TEMP = 1        # Lufttemperatur, momentanvärde, 1 gång/tim
@@ -50,6 +57,7 @@ class SMHIWeatherAPI:
         self.base_url = base_url
         self.polling_interval = polling_interval
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def get_stations_for_parameter(self, parameter_id: int) -> list[dict]:
         """Fetch the station list for a given parameter."""

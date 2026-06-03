@@ -30,6 +30,11 @@ VOLCANO_LIST_URL = "https://www.jma.go.jp/bosai/volcano/const/volcano_list.json"
 DEFAULT_TOPIC = "jma-bosai-volcano"
 DEFAULT_STATE_FILE = "./state/jma-bosai-volcano.json"
 TARGET_VOLCANO_INFO = "噴火警報・予報（対象火山）"
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-jma-bosai-volcano/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 logging.basicConfig(level=logging.INFO)
 
@@ -68,6 +73,7 @@ ERUPTION_TYPE_MAP = {
 
 def make_retrying_session() -> requests.Session:
     session = requests.Session()
+    session.headers["User-Agent"] = USER_AGENT
     retry = Retry(
         total=3,
         connect=3,

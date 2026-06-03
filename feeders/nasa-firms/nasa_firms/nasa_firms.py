@@ -53,6 +53,11 @@ FIRMS_BASE = "https://firms.modaps.eosdis.nasa.gov/"
 API_BASE = FIRMS_BASE + "api/"
 # CloudEvents `source` attribute value for every emitted event.
 SOURCE_URI = API_BASE + "area/"
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-nasa-firms/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 # Global near-real-time sources suited to worldwide OSINT monitoring.
 DEFAULT_SOURCES = [
@@ -307,7 +312,10 @@ class FirmsPoller:
 
         while True:
             start = datetime.now(timezone.utc)
-            async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=120)) as session:
+            async with aiohttp.ClientSession(
+                timeout=aiohttp.ClientTimeout(total=120),
+                headers={"User-Agent": USER_AGENT},
+            ) as session:
                 # Reference data first, refreshed roughly once per hour.
                 if not availability_sent or start.minute < self.poll_minutes:
                     await self._send_availability(session)
@@ -372,7 +380,10 @@ class FirmsPoller:
 
 async def run_recent_detections(map_key: str, sources: List[str], area: str, day_range: int) -> None:
     poller = FirmsPoller(map_key=map_key, sources=sources, area=area, day_range=day_range)
-    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=120)) as session:
+    async with aiohttp.ClientSession(
+        timeout=aiohttp.ClientTimeout(total=120),
+        headers={"User-Agent": USER_AGENT},
+    ) as session:
         for source in poller.sources:
             detections = await poller.fetch_detections(session, source)
             print(f"{source}: {len(detections)} detections")

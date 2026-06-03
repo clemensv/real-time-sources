@@ -17,6 +17,13 @@ from syke_hydro_producer_kafka_producer.producer import FISYKEHydrologyEventProd
 logger = logging.getLogger(__name__)
 
 SYKE_BASE_URL = "https://rajapinnat.ymparisto.fi/api/Hydrologiarajapinta/1.1/odata"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-syke-hydro/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 MAX_ODATA_TOP = 5000
 
@@ -74,6 +81,7 @@ class SYKEHydroAPI:
         self.base_url = base_url
         self.session = requests.Session()
         self.session.headers['Accept'] = 'application/json'
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def _odata_get_all(self, entity: str, params: dict = None) -> list:
         """Fetch all records from an OData endpoint, handling pagination."""

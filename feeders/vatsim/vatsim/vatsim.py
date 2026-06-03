@@ -29,6 +29,14 @@ else:
 VATSIM_DATA_URL = "https://data.vatsim.net/v3/vatsim-data.json"
 
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-vatsim/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 def _parse_iso(value: str) -> datetime.datetime:
     """Parse an ISO-8601 timestamp tolerating 'Z' suffix and >6-digit fractional seconds.
 
@@ -98,6 +106,7 @@ class VatsimBridge:
 
     def __init__(self, session: Optional[requests.Session] = None):
         self.session = session or requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def fetch_data(self) -> Dict[str, Any]:
         """Fetch the current VATSIM data snapshot."""

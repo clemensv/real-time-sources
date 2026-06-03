@@ -70,6 +70,13 @@ else:
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-tfl-road-traffic/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 TFL_ROAD_URL = "https://api.tfl.gov.uk/Road"
 TFL_STATUS_URL = "https://api.tfl.gov.uk/Road/all/Status"
 TFL_DISRUPTION_URL = "https://api.tfl.gov.uk/Road/all/Disruption"
@@ -78,6 +85,7 @@ TFL_DISRUPTION_URL = "https://api.tfl.gov.uk/Road/all/Disruption"
 def _make_session() -> requests.Session:
     """Create a requests session with bounded retry logic for transient upstream failures."""
     session = requests.Session()
+    session.headers["User-Agent"] = USER_AGENT
     retry = Retry(
         total=3,
         backoff_factor=1.5,
@@ -342,6 +350,7 @@ class TflRoadTrafficPoller:
         self.polling_interval = polling_interval
         self.reference_refresh_interval = reference_refresh_interval
         self.session = session or _make_session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
         self._kafka_producer = KafkaProducer(kafka_config)
         self.corridors_producer = UkGovTflRoadCorridorsEventProducer(

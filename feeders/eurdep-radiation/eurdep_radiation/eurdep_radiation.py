@@ -28,6 +28,14 @@ else:
 WFS_BASE = "https://www.imis.bfs.de/ogc/opendata/ows"
 FEED_URL = "https://www.imis.bfs.de/ogc/opendata/ows"
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-eurdep-radiation/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 WFS_PARAMS_BASE = {
     "service": "WFS",
     "version": "2.0.0",
@@ -66,6 +74,7 @@ class EurdepAPI:
 
     def __init__(self):
         self.session = requests.Session()
+        self.session.headers["User-Agent"] = USER_AGENT
 
     def fetch_all_features(self) -> List[Dict[str, Any]]:
         """Fetch all EURDEP features with WFS pagination."""

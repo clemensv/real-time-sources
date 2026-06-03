@@ -29,6 +29,14 @@ else:
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-nifc-usa-wildfires/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 BASE_URL = "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/USA_Wildfires_v1/FeatureServer/0/query"
 SOURCE_URI = "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/USA_Wildfires_v1/FeatureServer/0"
 MAX_RECORD_COUNT = 2000
@@ -90,7 +98,7 @@ class NIFCWildfirePoller:
         """Fetch wildfire incidents from the ArcGIS Feature Service, paging through all results."""
         all_features: List[Dict[str, Any]] = []
         offset = 0
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=60)) as session:
+        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=60), headers={"User-Agent": USER_AGENT}) as session:
             while True:
                 url = build_query_url(where_clause, offset)
                 try:

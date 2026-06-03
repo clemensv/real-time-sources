@@ -24,6 +24,14 @@ if sys.gettrace() is not None:
 else:
     logging.basicConfig(level=logging.INFO)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-rws-waterwebservices/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 
 def _load_state(state_file: str) -> dict:
     """Load persisted dedup state from a JSON file."""
@@ -65,7 +73,7 @@ class RWSWaterwebservicesAPI:
 
     def __init__(self):
         self.session = requests.Session()
-        self.session.headers.update({"Content-Type": "application/json"})
+        self.session.headers.update({"Content-Type": "application/json", "User-Agent": USER_AGENT})
 
     BATCH_SIZE = 100  # Max locations per observations request
 

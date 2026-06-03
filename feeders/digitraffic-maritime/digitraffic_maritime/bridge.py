@@ -35,6 +35,14 @@ else:
 
 logger = logging.getLogger(__name__)
 
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-digitraffic-maritime/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
+
 # Map MQTT topic type to (data class, send method name)
 _MESSAGE_MAP: Dict[str, tuple] = {
     "location": (VesselLocation, "send_fi_digitraffic_marine_ais_vessel_location"),
@@ -159,7 +167,7 @@ class DigitrafficPortCallPoller:
         self._state_file = state_file
         self._poll_interval = poll_interval
         self._session = session or requests.Session()
-        self._session.headers.update({"User-Agent": "real-time-sources-digitraffic-maritime/1.0"})
+        self._session.headers["User-Agent"] = USER_AGENT
 
     @classmethod
     def _empty_state(cls) -> Dict[str, Dict[str, str]]:

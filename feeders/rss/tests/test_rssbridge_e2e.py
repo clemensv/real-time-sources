@@ -23,6 +23,7 @@ from rssbridge.rssbridge import (
     save_feedstore,
     extract_feed_urls_from_webpage,
     parse_connection_string,
+    USER_AGENT,
 )
 
 
@@ -36,7 +37,7 @@ class TestRealFeedParsing:
         feed_url = "https://www.w3.org/blog/news/feed/"
         
         try:
-            parsed = feedparser.parse(feed_url)
+            parsed = feedparser.parse(feed_url, agent=USER_AGENT)
             
             # Verify feed was successfully parsed
             assert parsed is not None
@@ -62,7 +63,7 @@ class TestRealFeedParsing:
         feed_url = "https://datatracker.ietf.org/feed/group/httpbis/"
         
         try:
-            parsed = feedparser.parse(feed_url)
+            parsed = feedparser.parse(feed_url, agent=USER_AGENT)
             
             # Verify feed was successfully parsed
             assert parsed is not None

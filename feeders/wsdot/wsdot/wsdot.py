@@ -98,6 +98,13 @@ else:
 TRAVELER_BASE = "https://www.wsdot.wa.gov/Traffic/api"
 FERRIES_BASE = "https://www.wsdot.wa.gov/ferries/api/vessels/rest"
 FEED_URL = "https://www.wsdot.wa.gov/Traffic/api"
+# Outbound HTTP identity. Operators can override the entire string with the
+# USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
+USER_AGENT = os.environ.get("USER_AGENT") or (
+    "real-time-sources-wsdot/0.1.0 "
+    "(+https://github.com/clemensv/real-time-sources; "
+    + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
+)
 
 _WCF_DATE_RE = re.compile(r"/Date\((-?\d+)([+-]\d{4})?\)/")
 
@@ -147,7 +154,7 @@ class WSDOTApi:
         self.session = requests.Session()
         self.session.headers.update({
             "Accept": "application/json",
-            "User-Agent": "real-time-sources/1.0 (github.com/clemensv/real-time-sources)",
+            "User-Agent": USER_AGENT,
         })
 
     def _traveler_get(self, service: str, method: str) -> Any:

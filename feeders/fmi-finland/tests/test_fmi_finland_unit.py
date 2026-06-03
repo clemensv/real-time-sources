@@ -105,7 +105,7 @@ class TestHttpResilience:
         session = create_retrying_session()
         https_adapter = session.get_adapter("https://opendata.fmi.fi/wfs")
 
-        assert session.headers["User-Agent"] == "GitHub-Copilot-CLI/1.0"
+        assert session.headers["User-Agent"].startswith("real-time-sources-fmi-finland/")
         assert https_adapter.max_retries.total == 3
         assert https_adapter.max_retries.backoff_factor == 1
 
