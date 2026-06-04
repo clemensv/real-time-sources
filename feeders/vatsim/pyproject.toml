@@ -19,7 +19,7 @@ vatsim_producer_data = {path = "vatsim_producer/vatsim_producer_data"}
 vatsim_producer_kafka_producer = {path = "vatsim_producer/vatsim_producer_kafka_producer"}
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
+pytest = ">=9.0.3"
 pytest-cov = ">=5.0.0"
 requests-mock = ">=1.12.1"
 
