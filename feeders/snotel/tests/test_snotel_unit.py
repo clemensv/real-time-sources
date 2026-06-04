@@ -181,6 +181,7 @@ class TestParseObservationRow:
         obs = parse_observation_row("838:CO:SNTL", row)
         assert obs is not None
         assert obs.station_triplet == "838:CO:SNTL"
+        assert obs.state == "CO"
         assert obs.snow_water_equivalent == 9.0
         assert obs.precipitation == 16.40
         assert obs.air_temperature == 36.3
@@ -579,6 +580,7 @@ class TestDataClasses:
         dt = datetime(2026, 4, 8, 0, 0, tzinfo=timezone.utc)
         obs = SnowObservation(
             station_triplet="838:CO:SNTL",
+            state="CO",
             date_time=dt,
             snow_water_equivalent=9.0,
             snow_depth=26.0,
@@ -586,6 +588,7 @@ class TestDataClasses:
             air_temperature=36.3,
         )
         assert obs.station_triplet == "838:CO:SNTL"
+        assert obs.state == "CO"
         assert obs.snow_water_equivalent == 9.0
         assert obs.date_time == dt
 
@@ -593,6 +596,7 @@ class TestDataClasses:
         dt = datetime(2026, 4, 8, 0, 0, tzinfo=timezone.utc)
         obs = SnowObservation(
             station_triplet="838:CO:SNTL",
+            state="CO",
             date_time=dt,
             snow_water_equivalent=None,
             snow_depth=None,
@@ -608,6 +612,7 @@ class TestDataClasses:
         dt = datetime(2026, 4, 8, 0, 0, tzinfo=timezone.utc)
         obs = SnowObservation(
             station_triplet="838:CO:SNTL",
+            state="CO",
             date_time=dt,
             snow_water_equivalent=9.0,
             snow_depth=26.0,
@@ -622,6 +627,7 @@ class TestDataClasses:
         dt = datetime(2026, 4, 8, 0, 0, tzinfo=timezone.utc)
         obs = SnowObservation(
             station_triplet="838:CO:SNTL",
+            state="CO",
             date_time=dt,
             snow_water_equivalent=9.0,
             snow_depth=26.0,
