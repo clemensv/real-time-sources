@@ -10,11 +10,11 @@ authors = ["Clemens Vasters"]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
-requests = ">=2.32.3"
+requests = ">=2.34.2"
 urllib3 = ">=2.7.0"  # CVE pin (transitive via requests)
 idna = ">=3.15"  # CVE pin (transitive via requests)
-confluent-kafka = ">=2.5.3"
-cloudevents = ">=1.11.0,<2.0.0"
+confluent-kafka = ">=2.14.2"
+cloudevents = ">=1.12.1,<2.0.0"
 dataclasses_json = ">=0.6.7"
 avro = ">=1.11.3"
 waterinfo_vmm_producer_data = {path = "waterinfo_vmm_producer/waterinfo_vmm_producer_data"}
