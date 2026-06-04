@@ -97,34 +97,22 @@ def _kql_query(session: requests.Session, kusto_uri: str, db: str, csl: str) -> 
 SIRI_FUNCTIONS = [
     """
 .create-or-alter function with (folder = "Map", skipvalidation = "true") siri_live_vehicles(lookback:timespan) {
-    let latest =
-        ['org.siri.VehiclePositionLatest']
-        | where isnotnull(latitude) and isnotnull(longitude)
-        | where latitude between (-89.999 .. 89.999)
-        | where longitude between (-179.999 .. 179.999)
-        | extend observed_at = coalesce(recorded_at_time, ___time)
-        | where observed_at > ago(lookback)
-        | summarize arg_max(observed_at, *) by operator_ref, vehicle_ref;
-    let top_operators =
-        latest
-        | summarize vehicle_count = count() by operator_ref
-        | top 5 by vehicle_count desc
-        | serialize
-        | extend operator_bucket = strcat("top-", tostring(row_number()))
-        | project operator_ref, operator_bucket;
-    latest
-    | join kind = leftouter top_operators on operator_ref
+    ['org.siri.VehiclePosition']
+    | where isnotnull(latitude) and isnotnull(longitude)
+    | where latitude between (-89.999 .. 89.999)
+    | where longitude between (-179.999 .. 179.999)
+    | extend observed_at = coalesce(recorded_at_time, ___time)
+    | where observed_at > ago(lookback)
+    | summarize arg_max(observed_at, *) by vehicle_ref
     | extend
-        operator_bucket = coalesce(operator_bucket, "other"),
         line_label = iff(isnotempty(line_ref), line_ref, published_line_name),
         destination = iff(isnotempty(destination_name), destination_name, destination_ref),
         age_sec = datetime_diff('second', now(), observed_at),
-        age_label = strcat(tostring(age_sec), " sec"),
         geometry = bag_pack("type", "Point", "coordinates", pack_array(todouble(longitude), todouble(latitude)))
+    | extend age_label = strcat(tostring(age_sec), " sec")
     | project
         geometry,
         operator_ref,
-        operator_bucket,
         vehicle_ref,
         line_ref,
         line_label,
@@ -439,7 +427,7 @@ def _layers() -> list[Layer]:
                 visible=True,
                 size=18,
                 icon="VehicleBus",
-                color=_color_match("operator_bucket", OPERATOR_BUCKET_PALETTE, "#94A3B8"),
+                color=_color_match("operator_ref", OPERATOR_BUCKET_PALETTE, "#94A3B8"),
                 stroke_color="#FFFFFF",
                 min_zoom=11.0,
                 tooltip_keys=[
