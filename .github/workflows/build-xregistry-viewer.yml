@@ -44,7 +44,7 @@ jobs:
     steps:
       # ── 1. Checkout xregistry/viewer ─────────────────────────────────────
       - name: Checkout xregistry/viewer
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: xregistry/viewer
           ref: ${{ env.VIEWER_REF }}
@@ -101,7 +101,7 @@ jobs:
 
       # ── 6. Push to ghpages/registry-viewer/ ──────────────────────────────
       - name: Checkout ghpages
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ghpages
           path: ghpages
