@@ -6213,3 +6213,61 @@ def mosquitto_digitraffic_road():
 class TestDigitrafficRoadMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_digitraffic_road, digitraffic_road_mqtt_image):
         _run_mqtt_contract_flow('digitraffic-road', digitraffic_road_mqtt_image, mosquitto_digitraffic_road, extra_env={'DIGITRAFFIC_ROAD_MOCK': 'true'}, timeout=300)
+
+class TestUkBodsSiriMqttDockerFlow:
+    def test_emits_expected_mqtt_topics(self):
+        client = docker.from_env()
+        broker, network, host_port = _generic_mosquitto('uk-bods-siri-mqtt-e2e', 'uk-bods-siri-mqtt-e2e-broker')
+        subscriber = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        messages = []
+
+        def on_message(_client, _userdata, msg):
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+            try:
+                payload = json.loads(msg.payload)
+            except Exception:
+                payload = None
+            messages.append({'topic': msg.topic, 'user_properties': props, 'payload': payload, 'retain': bool(msg.retain)})
+
+        subscriber.on_message = on_message
+        subscriber.connect('127.0.0.1', host_port, 30)
+        subscriber.subscribe('transit/uk/dft/bods/#', qos=1)
+        subscriber.loop_start()
+        try:
+            image = build_image('uk-bods-siri', dockerfile='Dockerfile.mqtt', tag='test-uk-bods-siri-mqtt')
+            feeder = client.containers.run(
+                image.id,
+                detach=True,
+                remove=False,
+                network=network.name,
+                environment={
+                    'MQTT_BROKER_URL': 'mqtt://uk-bods-siri-mqtt-e2e-broker:1883',
+                    'BODS_SAMPLE_MODE': 'true',
+                    'ONCE_MODE': 'true',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            result = feeder.wait(timeout=240)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            feeder.remove(force=True)
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            deadline = time.time() + 10
+            while time.time() < deadline and len(messages) < 4:
+                time.sleep(0.5)
+            assert len(messages) >= 4, messages
+            topics = [m['topic'] for m in messages]
+            assert any(t.endswith('/info') for t in topics), topics
+            assert any(t.endswith('/position') for t in topics), topics
+            for msg in messages:
+                for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                    assert required in msg['user_properties'], msg
+        finally:
+            subscriber.loop_stop()
+            subscriber.disconnect()
+            try: broker.kill()
+            except docker.errors.APIError: pass
+            try: network.remove()
+            except docker.errors.APIError: pass

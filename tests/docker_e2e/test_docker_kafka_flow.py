@@ -2640,3 +2640,70 @@ class TestDMIDockerFlow:
                 'DMI_LIGHTNING_API_KEY': os.environ['DMI_LIGHTNING_API_KEY'],
             },
         )
+
+@pytest.fixture(scope='module')
+def uk_bods_siri_image():
+    return build_image('uk-bods-siri', dockerfile='Dockerfile.kafka', tag='test-uk-bods-siri-kafka')
+
+
+class TestUkBodsSiriKafkaDockerFlow:
+    def test_uk_bods_siri_flow(self, kafka, uk_bods_siri_image):
+        topic = 'uk-bods-siri'
+        kafka.create_topic(topic, partitions=4)
+        container = run_container_detached(
+            uk_bods_siri_image,
+            environment={
+                'CONNECTION_STRING': f'BootstrapServer={kafka.internal_address};EntityPath={topic}',
+                'KAFKA_ENABLE_TLS': 'false',
+                'BODS_SAMPLE_MODE': 'true',
+                'ONCE_MODE': 'true',
+            },
+        )
+        records = []
+        try:
+            consumer = Consumer({
+                'bootstrap.servers': kafka.external_address,
+                'group.id': 'test-uk-bods-siri',
+                'auto.offset.reset': 'earliest',
+            })
+            consumer.subscribe([topic])
+            deadline = time.time() + 120
+            try:
+                while time.time() < deadline and len(records) < 3:
+                    msg = consumer.poll(1.0)
+                    if msg and not msg.error():
+                        records.append(
+                            ConsumedKafkaMessage(
+                                key=msg.key(),
+                                value=msg.value(),
+                                partition=msg.partition(),
+                                offset=msg.offset(),
+                            )
+                        )
+            finally:
+                consumer.close()
+
+            status = container.wait(timeout=120)
+            logs = container.logs().decode('utf-8', errors='replace')
+            assert status.get('StatusCode') == 0, logs[-4000:]
+            assert len(records) >= 3, logs[-4000:]
+
+            decoded = [json.loads(record.value) for record in records]
+            observed = {event['type'] for event in decoded}
+            assert {'uk.gov.dft.bods.Operator', 'uk.gov.dft.bods.VehiclePosition'} <= observed
+
+            telemetry_records = [record for record, event in zip(records, decoded) if event['type'] == 'uk.gov.dft.bods.VehiclePosition']
+            assert_kafka_contract('uk-bods-siri', telemetry_records)
+
+            operator_events = [event for event in decoded if event['type'] == 'uk.gov.dft.bods.Operator']
+            assert operator_events, decoded
+            for event in operator_events:
+                operator_ref = event['data']['operator_ref']
+                assert event['subject'] == operator_ref
+            operator_keys = {record.key.decode('utf-8') for record, event in zip(records, decoded) if event['type'] == 'uk.gov.dft.bods.Operator'}
+            assert operator_keys == {event['data']['operator_ref'] for event in operator_events}
+        finally:
+            try:
+                container.remove(force=True)
+            except Exception:
+                pass

@@ -914,3 +914,10 @@ class TestDigitrafficRoadAmqpDockerFlow(AmqpDockerFlowBase):
         "fi.digitraffic.road.messages.TrafficAnnouncement",
     }
     expected_count = 4
+
+class TestUkBodsSiriAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = 'uk-bods-siri'
+    image = 'uk-bods-siri-amqp'
+    env = {'BODS_SAMPLE_MODE': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'uk.gov.dft.bods.Operator', 'uk.gov.dft.bods.VehiclePosition'}
+    expected_count = 3

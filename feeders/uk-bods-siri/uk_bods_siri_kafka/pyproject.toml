@@ -1,0 +1,23 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "uk_bods_siri_kafka"
+version = "0.1.0"
+description = "Kafka feeder for the UK BODS SIRI-VM AVL archive."
+authors = []
+packages = [{ include = "uk_bods_siri_kafka" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+uk_bods_siri_core = { path = "../uk_bods_siri_core" }
+uk_bods_siri_producer_data = { path = "../uk_bods_siri_producer/uk_bods_siri_producer_data" }
+uk_bods_siri_producer_kafka_producer = { path = "../uk_bods_siri_producer/uk_bods_siri_producer_kafka_producer" }
+
+[tool.poetry.scripts]
+uk-bods-siri-kafka = "uk_bods_siri_kafka.app:main"
