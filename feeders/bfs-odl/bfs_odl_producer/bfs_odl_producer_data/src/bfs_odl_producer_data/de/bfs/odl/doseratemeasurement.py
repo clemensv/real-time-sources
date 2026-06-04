@@ -21,6 +21,7 @@ class DoseRateMeasurement:
     
     Attributes:
         station_id (str)
+        state (str)
         start_measure (str)
         end_measure (str)
         value (typing.Optional[float])
@@ -28,11 +29,11 @@ class DoseRateMeasurement:
         value_terrestrial (typing.Optional[float])
         validated (int)
         nuclide (str)
-        canton (str)
     """
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
+    state: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
     start_measure: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start_measure"))
     end_measure: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end_measure"))
     value: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
@@ -40,7 +41,6 @@ class DoseRateMeasurement:
     value_terrestrial: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value_terrestrial"))
     validated: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="validated"))
     nuclide: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="nuclide"))
-    canton: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="canton"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'DoseRateMeasurement':
@@ -167,13 +167,13 @@ class DoseRateMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='dfggkryonnwvjbasdgfw',
-            start_measure='tdagqtghxwxhqjtjqnlp',
-            end_measure='kjsuozxedncywtvnjcvk',
-            value=float(84.8974453337415),
-            value_cosmic=float(98.341472964917),
-            value_terrestrial=float(16.86751796387793),
-            validated=int(36),
-            nuclide='ncqhwhpnetbskhtuiswv',
-            canton='qsgxxewadtzjajqfmgbx'
+            station_id='wqgpmkdxzyxnskfiojjd',
+            state='bmralenbnaveslhdbgwj',
+            start_measure='yldkrjanpbplisxrfdbk',
+            end_measure='hpdpumkeaavztxmyicbz',
+            value=float(74.75892231758088),
+            value_cosmic=float(34.515429762000124),
+            value_terrestrial=float(30.897715231593924),
+            validated=int(38),
+            nuclide='cssnfqgtmowcttyfghel'
         )

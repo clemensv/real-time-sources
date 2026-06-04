@@ -167,13 +167,13 @@ class DoseRateMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='eafrxhjwmgwqgesrcdiu',
-            state='egrmhihqdxrlewhsuibv',
-            start_measure='esxkdyalfhuetuvyxvjz',
-            end_measure='wwnizfsbieeudeeyeywg',
-            value=float(38.519546619522835),
-            value_cosmic=float(42.75577415358166),
-            value_terrestrial=float(88.08235898273202),
-            validated=int(65),
-            nuclide='lkvqtwtzhqtetsyvazhu'
+            station_id='wgcqaznxtcztyjjomymo',
+            state='eijmxeefozivkzljtxic',
+            start_measure='fkmsdzwmujxqznvndxyb',
+            end_measure='dzkctzfkcaucpomanfod',
+            value=float(92.8440988503963),
+            value_cosmic=float(68.43473178275724),
+            value_terrestrial=float(48.620626228530675),
+            validated=int(37),
+            nuclide='iawkcnajibyucmvilfgt'
         )

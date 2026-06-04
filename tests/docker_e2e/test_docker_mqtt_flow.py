@@ -2363,7 +2363,7 @@ class TestAisstreamMqttDockerFlow:
 
 def _load_kystverket_ais_mqtt_schemas() -> Dict[str, Dict[str, Any]]:
     """Return ``{type_value: jstruct_schema}`` for all 3 kystverket-ais MQTT families."""
-    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'kystverket-ais', 'xreg', 'ais.xreg.json')
+    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'kystverket-ais', 'xreg', 'kystverket-ais.xreg.json')
     with open(xreg_path, 'r', encoding='utf-8') as fh:
         manifest = json.load(fh)
     schemagroup = manifest['schemagroups']['NO.Kystverket.AIS.jstruct']

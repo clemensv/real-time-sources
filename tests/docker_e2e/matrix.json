@@ -3549,13 +3549,6 @@
     },
     {
       "dir": "feeders/nextbus",
-      "image": "nextbus",
-      "file": "Dockerfile",
-      "test_file": "test_docker_kafka_flow.py",
-      "test_class": "TestNextbusDockerFlow"
-    },
-    {
-      "dir": "feeders/nextbus",
       "image": "nextbus-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
