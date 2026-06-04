@@ -22,7 +22,7 @@ blitzortung_producer_kafka_producer = {path = "blitzortung_producer/blitzortung_
 
 [tool.poetry.dev-dependencies]
 pytest = ">=8.3.3"
-pytest-cov = ">=5.0.0"
+pytest-cov = ">=7.1.0"
 
 [tool.poetry.scripts]
 blitzortung = "blitzortung.blitzortung:main"
