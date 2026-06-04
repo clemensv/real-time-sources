@@ -20,7 +20,7 @@ meteoalarm_producer_data = { path = "meteoalarm_producer/meteoalarm_producer_dat
 meteoalarm_producer_kafka_producer = { path = "meteoalarm_producer/meteoalarm_producer_kafka_producer" }
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
+pytest = ">=9.0.3"
 pytest-asyncio = ">=0.24.0"
 pytest-cov = ">=7.0.0"
 
