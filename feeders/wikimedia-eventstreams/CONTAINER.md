@@ -89,6 +89,7 @@ docker run --rm   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/wik
 | `KAFKA_TOPIC` | Core configuration for this image variant. |
 | `WIKIMEDIA_EVENTSTREAMS_USER_AGENT` | Core configuration for this image variant. |
 | `WIKIMEDIA_EVENTSTREAMS_STATE_FILE` | Core configuration for this image variant. |
+| `WIKIMEDIA_EVENTSTREAMS_FLUSH_INTERVAL` | Number of recentchange events to buffer before flushing the producer (default `250`). Lower values reduce end-to-end latency; higher values improve throughput. |
 | `WIKIMEDIA_EVENTSTREAMS_DEDUPE_SIZE` | Core configuration for this image variant. |
 | `WIKIMEDIA_EVENTSTREAMS_MAX_RETRY_DELAY` | Core configuration for this image variant. |
 

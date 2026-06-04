@@ -119,6 +119,29 @@ docker run --rm `
 - Re-emits reference data every 24 hours to keep downstream state temporally consistent
 - Continues past per-record errors and retries on the next cycle
 
+## Image contract
+
+All three images share the same operational contract:
+
+| Aspect | Value |
+| --- | --- |
+| Base image | `python:3.10-slim` |
+| Default entry point | `python -m wallonia_issep_{kafka,mqtt,amqp} feed` (the Kafka image runs `python -m wallonia_issep feed`) |
+| Default user | root (no `USER` directive) |
+| Exposed ports | none — the feeder is an outbound publisher only |
+| Health check | none defined; treat process liveness as health |
+| Signals | terminates cleanly on `SIGTERM`; the polling loop flushes producers before exit |
+| Persistent state | `STATE_FILE` (default `~/.wallonia_issep_state.json`, or `~/.wallonia_issep_mqtt_state.json` for the MQTT image). **Mount a volume** to keep dedupe state across restarts. |
+| Image tags | `:latest` tracks the default branch; immutable tags `:v<MAJOR>.<MINOR>.<PATCH>` and `:sha-<git-sha>` are published per release. |
+
+| Image | Transport | Base Dockerfile | State share required |
+| --- | --- | --- | --- |
+| `real-time-sources-wallonia-issep:latest` | Kafka / Event Hubs | `Dockerfile` | yes (`STATE_FILE`) |
+| `real-time-sources-wallonia-issep-mqtt:latest` | MQTT 5 / UNS | `Dockerfile.mqtt` | yes (`STATE_FILE`) |
+| `real-time-sources-wallonia-issep-amqp:latest` | AMQP 1.0 | `Dockerfile.amqp` | yes (`STATE_FILE`) |
+
+Pull and inspect available tags at <https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-wallonia-issep-kafka>.
+
 ## Deploying into Azure Container Instances
 
 You can deploy this bridge directly to Azure Container Instances. Two deployment
