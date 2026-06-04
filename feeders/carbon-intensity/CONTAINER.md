@@ -209,6 +209,24 @@ Portal links:
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcarbon-intensity%2Fazure-template.json)
 
+### MQTT — bring your own broker
+
+Provisions the `-mqtt` container against an existing MQTT 5 broker. You supply the `mqtts://` URL and optional credentials; the template provisions only the container and a storage account for persistent dedupe state.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcarbon-intensity%2Fazure-template-mqtt.json)
+
+### MQTT — provision a new Event Grid namespace MQTT broker
+
+Provisions the `-mqtt` container together with a new Azure Event Grid namespace (MQTT broker enabled), a topic space, a user-assigned managed identity, and the **EventGrid TopicSpaces Publisher** role assignment. The feeder authenticates with MQTT v5 enhanced authentication (`OAUTH2-JWT`).
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcarbon-intensity%2Fazure-template-with-eventgrid-mqtt.json)
+
+### AMQP — provision a new Azure Service Bus namespace
+
+Provisions the `-amqp` container together with a new Azure Service Bus Standard namespace and queue, a user-assigned managed identity, and the **Azure Service Bus Data Sender** role assignment. The feeder authenticates via AMQP CBS put-token with Microsoft Entra ID.
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcarbon-intensity%2Fazure-template-with-servicebus.json)
+
 ## Related
 - [README.md](README.md) — source overview, use cases, and quick start.
 - [EVENTS.md](EVENTS.md) — event contract and schema details.
