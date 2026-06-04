@@ -1,4 +1,4 @@
-requests>=2.33.1
+requests>=2.34.2
 azure-eventhub>=5.15.1
 cloudevents>=1.9.0,<2.0.0
 flit>=3.12.0
