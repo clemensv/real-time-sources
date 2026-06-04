@@ -1,4 +1,4 @@
-confluent-kafka>=2.5.3
+confluent-kafka>=2.14.2
 cloudevents>=1.11.0,<2.0.0
 requests>=2.32.3
 aiohttp>=3.10.5
