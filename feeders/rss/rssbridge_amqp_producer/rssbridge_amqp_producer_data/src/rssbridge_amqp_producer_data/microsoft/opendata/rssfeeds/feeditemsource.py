@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.link import Link
 from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.link import Link
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -48,7 +48,7 @@ class FeedItemSource:
     rights: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rights"))
     subtitle: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="subtitle"))
     title: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title"))
-    updated: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated"))
+    updated: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'FeedItemSource':
@@ -61,6 +61,8 @@ class FeedItemSource:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'updated' in data and isinstance(data['updated'], str):
+            data['updated'] = int(data['updated'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -71,6 +73,8 @@ class FeedItemSource:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'updated' in asdict_result and asdict_result['updated'] is not None:
+            asdict_result['updated'] = str(asdict_result['updated'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -175,16 +179,16 @@ class FeedItemSource:
             An instance of the dataclass.
         """
         return cls(
-            author='dgqvuobdptmxnjkqxasq',
+            author='qwczfmpddtrgrqqzgqrh',
             author_detail=None,
-            contributors=[None, None],
-            icon='bbaikaxwgybundiuphzy',
-            id='fxucjwqpkactofdgaziz',
-            link='jbhkjkkxruaqoyobuncm',
-            links=[None, None, None, None],
-            logo='mjzcrqytgxemwbavtptk',
-            rights='yunycfiqsugepwhgattf',
-            subtitle='ghaemdulnhnkllyoctyu',
-            title='kvmzqhznpbjwvvfkbdlm',
-            updated=int(62)
+            contributors=[None, None, None, None, None],
+            icon='rtrdeotkcrmsyhvrvyfy',
+            id='dxdlqmygpdpjfmxtprny',
+            link='biljfbomqduqquddorbn',
+            links=[None],
+            logo='hrgktyvevhfnyumjccxc',
+            rights='lvzeefqafyvtpzhipcuq',
+            subtitle='afplhtvymyxvtigungqc',
+            title='masnffguxrctgsxyjumv',
+            updated=int(8)
         )

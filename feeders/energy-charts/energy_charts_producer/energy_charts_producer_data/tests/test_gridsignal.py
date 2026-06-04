@@ -29,11 +29,11 @@ class Test_GridSignal(unittest.TestCase):
         Create instance of GridSignal for testing
         """
         instance = GridSignal(
-            country='tmtnqyghwvfvnipbfafi',
+            country='yzqglafgicxhnraezxfg',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(72),
-            signal=int(14),
-            renewable_share_pct=float(96.66500513689328),
+            unix_seconds=int(68),
+            signal=int(3),
+            renewable_share_pct=float(17.974200460479384),
             substitute=True
         )
         return instance
@@ -43,7 +43,7 @@ class Test_GridSignal(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'tmtnqyghwvfvnipbfafi'
+        test_value = 'yzqglafgicxhnraezxfg'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -59,7 +59,7 @@ class Test_GridSignal(unittest.TestCase):
         """
         Test unix_seconds property
         """
-        test_value = int(72)
+        test_value = int(68)
         self.instance.unix_seconds = test_value
         self.assertEqual(self.instance.unix_seconds, test_value)
     
@@ -67,7 +67,7 @@ class Test_GridSignal(unittest.TestCase):
         """
         Test signal property
         """
-        test_value = int(14)
+        test_value = int(3)
         self.instance.signal = test_value
         self.assertEqual(self.instance.signal, test_value)
     
@@ -75,7 +75,7 @@ class Test_GridSignal(unittest.TestCase):
         """
         Test renewable_share_pct property
         """
-        test_value = float(96.66500513689328)
+        test_value = float(17.974200460479384)
         self.instance.renewable_share_pct = test_value
         self.assertEqual(self.instance.renewable_share_pct, test_value)
     
@@ -87,15 +87,6 @@ class Test_GridSignal(unittest.TestCase):
         self.instance.substitute = test_value
         self.assertEqual(self.instance.substitute, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = GridSignal.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

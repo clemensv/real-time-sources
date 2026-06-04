@@ -159,8 +159,8 @@ class Timeframes:
             An instance of the dataclass.
         """
         return cls(
-            timeframeGroupId='lqcmjopizrwmzjaaggrh',
-            startTime='zsrdxzirywpxyhmgbtcb',
-            endTime='zfzgokhcutewufqxcpnq',
+            timeframeGroupId='vkgoncmeftkdywsopquz',
+            startTime='uqisorvobnspxngnzpnx',
+            endTime='qfreykqgzfmieocysssg',
             serviceDates=None
         )

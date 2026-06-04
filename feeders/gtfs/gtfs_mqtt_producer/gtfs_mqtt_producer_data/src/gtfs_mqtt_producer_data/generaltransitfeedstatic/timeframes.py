@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from gtfs_mqtt_producer_data.generaltransitfeedstatic.calendar import Calendar
 from gtfs_mqtt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
+from gtfs_mqtt_producer_data.generaltransitfeedstatic.calendar import Calendar
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -159,8 +159,8 @@ class Timeframes:
             An instance of the dataclass.
         """
         return cls(
-            timeframeGroupId='rozagblryoquvggkapql',
-            startTime='iudsuglhyghxfkwkfgtd',
-            endTime='egvegoqhvjryvdtqhdxp',
+            timeframeGroupId='iemzqbxtjjlhrmmecmjm',
+            startTime='mvtehpvjeumsscljhvhy',
+            endTime='lkgvcbcuyicbxxezxbjh',
             serviceDates=None
         )

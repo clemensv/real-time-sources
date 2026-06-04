@@ -103,7 +103,8 @@ def test_modes_kafka_modeskafkaadsb(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_mode_s_kafka_adsb(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', data = event_data)
+        producer_instance.send_mode_s_kafka_adsb(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -166,7 +167,8 @@ def test_modes_kafka_modeskafkaaltitudereply(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_mode_s_kafka_altitude_reply(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', data = event_data)
+        producer_instance.send_mode_s_kafka_altitude_reply(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -229,7 +231,8 @@ def test_modes_kafka_modeskafkaidentityreply(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_mode_s_kafka_identity_reply(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', data = event_data)
+        producer_instance.send_mode_s_kafka_identity_reply(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -292,7 +295,8 @@ def test_modes_kafka_modeskafkaacquisitionreply(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_mode_s_kafka_acquisition_reply(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', data = event_data)
+        producer_instance.send_mode_s_kafka_acquisition_reply(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -355,7 +359,8 @@ def test_modes_kafka_modeskafkacommbaltitude(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_mode_s_kafka_comm_baltitude(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', data = event_data)
+        producer_instance.send_mode_s_kafka_comm_baltitude(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -418,7 +423,8 @@ def test_modes_kafka_modeskafkacommbidentity(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_mode_s_kafka_comm_bidentity(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', data = event_data)
+        producer_instance.send_mode_s_kafka_comm_bidentity(_feedurl = f'test_{i}', _icao24 = f'test_{i}', _receiver_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

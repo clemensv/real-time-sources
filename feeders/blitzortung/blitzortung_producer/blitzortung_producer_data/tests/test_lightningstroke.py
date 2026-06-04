@@ -29,18 +29,18 @@ class Test_LightningStroke(unittest.TestCase):
         Create instance of LightningStroke for testing
         """
         instance = LightningStroke(
-            source_id=int(81),
-            stroke_id='nymikanyecdzhmmrechg',
-            event_time='dmemuavsjphuipqdzvxb',
-            event_timestamp_ms=int(48),
-            latitude=float(70.64115031622048),
-            longitude=float(89.46994491723731),
-            server_id=int(16),
-            server_delay_ms=int(83),
-            accuracy_diameter_m=float(39.37401912582803),
-            detector_participations=[None],
-            geohash5='vdzypgvcrqigzvrdslil',
-            geohash7='espheibxrbwqysakyhlb'
+            source_id=int(13),
+            stroke_id='uplvqqnqxdnufwkikugh',
+            event_time='ohkvuesqbdecaqelpzzs',
+            event_timestamp_ms=int(55),
+            latitude=float(24.404863249545482),
+            longitude=float(47.68156452295561),
+            server_id=int(67),
+            server_delay_ms=int(11),
+            accuracy_diameter_m=float(0.8835384315873052),
+            detector_participations=[None, None, None],
+            geohash5='cdyynwmujrqtivyaauzm',
+            geohash7='pqjvkotlokubqieuqzcc'
         )
         return instance
 
@@ -49,7 +49,7 @@ class Test_LightningStroke(unittest.TestCase):
         """
         Test source_id property
         """
-        test_value = int(81)
+        test_value = int(13)
         self.instance.source_id = test_value
         self.assertEqual(self.instance.source_id, test_value)
     
@@ -57,7 +57,7 @@ class Test_LightningStroke(unittest.TestCase):
         """
         Test stroke_id property
         """
-        test_value = 'nymikanyecdzhmmrechg'
+        test_value = 'uplvqqnqxdnufwkikugh'
         self.instance.stroke_id = test_value
         self.assertEqual(self.instance.stroke_id, test_value)
     
@@ -65,7 +65,7 @@ class Test_LightningStroke(unittest.TestCase):
         """
         Test event_time property
         """
-        test_value = 'dmemuavsjphuipqdzvxb'
+        test_value = 'ohkvuesqbdecaqelpzzs'
         self.instance.event_time = test_value
         self.assertEqual(self.instance.event_time, test_value)
     
@@ -73,7 +73,7 @@ class Test_LightningStroke(unittest.TestCase):
         """
         Test event_timestamp_ms property
         """
-        test_value = int(48)
+        test_value = int(55)
         self.instance.event_timestamp_ms = test_value
         self.assertEqual(self.instance.event_timestamp_ms, test_value)
     
@@ -81,7 +81,7 @@ class Test_LightningStroke(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(70.64115031622048)
+        test_value = float(24.404863249545482)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -89,7 +89,7 @@ class Test_LightningStroke(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(89.46994491723731)
+        test_value = float(47.68156452295561)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -97,7 +97,7 @@ class Test_LightningStroke(unittest.TestCase):
         """
         Test server_id property
         """
-        test_value = int(16)
+        test_value = int(67)
         self.instance.server_id = test_value
         self.assertEqual(self.instance.server_id, test_value)
     
@@ -105,7 +105,7 @@ class Test_LightningStroke(unittest.TestCase):
         """
         Test server_delay_ms property
         """
-        test_value = int(83)
+        test_value = int(11)
         self.instance.server_delay_ms = test_value
         self.assertEqual(self.instance.server_delay_ms, test_value)
     
@@ -113,7 +113,7 @@ class Test_LightningStroke(unittest.TestCase):
         """
         Test accuracy_diameter_m property
         """
-        test_value = float(39.37401912582803)
+        test_value = float(0.8835384315873052)
         self.instance.accuracy_diameter_m = test_value
         self.assertEqual(self.instance.accuracy_diameter_m, test_value)
     
@@ -121,7 +121,7 @@ class Test_LightningStroke(unittest.TestCase):
         """
         Test detector_participations property
         """
-        test_value = [None]
+        test_value = [None, None, None]
         self.instance.detector_participations = test_value
         self.assertEqual(self.instance.detector_participations, test_value)
     
@@ -129,7 +129,7 @@ class Test_LightningStroke(unittest.TestCase):
         """
         Test geohash5 property
         """
-        test_value = 'vdzypgvcrqigzvrdslil'
+        test_value = 'cdyynwmujrqtivyaauzm'
         self.instance.geohash5 = test_value
         self.assertEqual(self.instance.geohash5, test_value)
     
@@ -137,19 +137,10 @@ class Test_LightningStroke(unittest.TestCase):
         """
         Test geohash7 property
         """
-        test_value = 'espheibxrbwqysakyhlb'
+        test_value = 'pqjvkotlokubqieuqzcc'
         self.instance.geohash7 = test_value
         self.assertEqual(self.instance.geohash7, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = LightningStroke.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

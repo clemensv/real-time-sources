@@ -28,17 +28,17 @@ class Test_Attributions(unittest.TestCase):
         Create instance of Attributions for testing
         """
         instance = Attributions(
-            attributionId='hwlnmasbxsrlryurhevz',
-            agencyId='myjbsvnlvqmcupytocbb',
-            routeId='espdbmjdjdsvtvapwaxl',
-            tripId='rkifbpvpymrqdpqofjpr',
-            organizationName='tbeqgbtyqccyactliawo',
-            isProducer=int(69),
-            isOperator=int(5),
-            isAuthority=int(20),
-            attributionUrl='gjjfqgwfisonrwhgtavt',
-            attributionEmail='kwyllgbhfdngddtofmyl',
-            attributionPhone='dpkiboxdvatgbeedmfey'
+            attributionId='mikrvjrejfwdicdanmwx',
+            agencyId='ribtrvzkfcshnwhmpxkp',
+            routeId='igutkbmtlkycmdvzvlit',
+            tripId='leyiqnzdksdbghzihjph',
+            organizationName='zrfhmrzpxivlyacdcjce',
+            isProducer=int(48),
+            isOperator=int(1),
+            isAuthority=int(30),
+            attributionUrl='kskxmodsgaofrtlymuwj',
+            attributionEmail='kabdgetfbzncwdeokdvm',
+            attributionPhone='eafojgnzcfdjrnsmxbko'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test attributionId property
         """
-        test_value = 'hwlnmasbxsrlryurhevz'
+        test_value = 'mikrvjrejfwdicdanmwx'
         self.instance.attributionId = test_value
         self.assertEqual(self.instance.attributionId, test_value)
     
@@ -55,7 +55,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test agencyId property
         """
-        test_value = 'myjbsvnlvqmcupytocbb'
+        test_value = 'ribtrvzkfcshnwhmpxkp'
         self.instance.agencyId = test_value
         self.assertEqual(self.instance.agencyId, test_value)
     
@@ -63,7 +63,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test routeId property
         """
-        test_value = 'espdbmjdjdsvtvapwaxl'
+        test_value = 'igutkbmtlkycmdvzvlit'
         self.instance.routeId = test_value
         self.assertEqual(self.instance.routeId, test_value)
     
@@ -71,7 +71,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test tripId property
         """
-        test_value = 'rkifbpvpymrqdpqofjpr'
+        test_value = 'leyiqnzdksdbghzihjph'
         self.instance.tripId = test_value
         self.assertEqual(self.instance.tripId, test_value)
     
@@ -79,7 +79,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test organizationName property
         """
-        test_value = 'tbeqgbtyqccyactliawo'
+        test_value = 'zrfhmrzpxivlyacdcjce'
         self.instance.organizationName = test_value
         self.assertEqual(self.instance.organizationName, test_value)
     
@@ -87,7 +87,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test isProducer property
         """
-        test_value = int(69)
+        test_value = int(48)
         self.instance.isProducer = test_value
         self.assertEqual(self.instance.isProducer, test_value)
     
@@ -95,7 +95,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test isOperator property
         """
-        test_value = int(5)
+        test_value = int(1)
         self.instance.isOperator = test_value
         self.assertEqual(self.instance.isOperator, test_value)
     
@@ -103,7 +103,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test isAuthority property
         """
-        test_value = int(20)
+        test_value = int(30)
         self.instance.isAuthority = test_value
         self.assertEqual(self.instance.isAuthority, test_value)
     
@@ -111,7 +111,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test attributionUrl property
         """
-        test_value = 'gjjfqgwfisonrwhgtavt'
+        test_value = 'kskxmodsgaofrtlymuwj'
         self.instance.attributionUrl = test_value
         self.assertEqual(self.instance.attributionUrl, test_value)
     
@@ -119,7 +119,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test attributionEmail property
         """
-        test_value = 'kwyllgbhfdngddtofmyl'
+        test_value = 'kabdgetfbzncwdeokdvm'
         self.instance.attributionEmail = test_value
         self.assertEqual(self.instance.attributionEmail, test_value)
     
@@ -127,7 +127,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test attributionPhone property
         """
-        test_value = 'dpkiboxdvatgbeedmfey'
+        test_value = 'eafojgnzcfdjrnsmxbko'
         self.instance.attributionPhone = test_value
         self.assertEqual(self.instance.attributionPhone, test_value)
     

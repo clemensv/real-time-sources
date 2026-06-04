@@ -164,7 +164,8 @@ def test_generaltransitfeedrealtime_generaltransitfeedrealtimevehiclevehicleposi
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_real_time_vehicle_vehicle_position(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_real_time_vehicle_vehicle_position(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -227,7 +228,8 @@ def test_generaltransitfeedrealtime_generaltransitfeedrealtimetriptripupdate(kaf
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_real_time_trip_trip_update(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_real_time_trip_trip_update(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -290,7 +292,8 @@ def test_generaltransitfeedrealtime_generaltransitfeedrealtimealertalert(kafka_e
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_real_time_alert_alert(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_real_time_alert_alert(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -353,7 +356,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticagency(kafka_emulator)
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_agency(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_agency(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -416,7 +420,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticareas(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_areas(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_areas(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -479,7 +484,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticattributions(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_attributions(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_attributions(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -542,7 +548,8 @@ def test_generaltransitfeedstatic_generaltransitfeedbookingrules(kafka_emulator)
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_booking_rules(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_booking_rules(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -605,7 +612,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfareattributes(kafka_e
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_fare_attributes(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_fare_attributes(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -668,7 +676,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfarelegrules(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_fare_leg_rules(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_fare_leg_rules(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -731,7 +740,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfaremedia(kafka_emulat
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_fare_media(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_fare_media(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -794,7 +804,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfareproducts(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_fare_products(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_fare_products(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -857,7 +868,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfarerules(kafka_emulat
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_fare_rules(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_fare_rules(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -920,7 +932,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfaretransferrules(kafk
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_fare_transfer_rules(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_fare_transfer_rules(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -983,7 +996,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfeedinfo(kafka_emulato
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_feed_info(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_feed_info(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1046,7 +1060,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticfrequencies(kafka_emul
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_frequencies(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_frequencies(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1109,7 +1124,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlevels(kafka_emulator)
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_levels(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_levels(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1172,7 +1188,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgeojson(kafka_
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_location_geo_json(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_location_geo_json(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1235,7 +1252,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgroups(kafka_e
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_location_groups(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_location_groups(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1298,7 +1316,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticlocationgroupstores(ka
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_location_group_stores(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_location_group_stores(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1361,7 +1380,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticnetworks(kafka_emulato
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_networks(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_networks(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1424,7 +1444,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticpathways(kafka_emulato
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_pathways(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_pathways(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1487,7 +1508,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticroutenetworks(kafka_em
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_route_networks(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_route_networks(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1550,7 +1572,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticroutes(kafka_emulator)
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_routes(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_routes(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1613,7 +1636,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticshapes(kafka_emulator)
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_shapes(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_shapes(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1676,7 +1700,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticstopareas(kafka_emulat
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_stop_areas(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_stop_areas(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1739,7 +1764,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticstops(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_stops(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_stops(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1802,7 +1828,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstaticstoptimes(kafka_emulat
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_stop_times(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_stop_times(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1865,7 +1892,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictimeframes(kafka_emula
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_timeframes(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_timeframes(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1928,7 +1956,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictransfers(kafka_emulat
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_transfers(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_transfers(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1991,7 +2020,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictranslations(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_translations(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_translations(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -2054,7 +2084,8 @@ def test_generaltransitfeedstatic_generaltransitfeedstatictrips(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_general_transit_feed_static_trips(_feedurl = f'test_{i}', _agencyid = f'test_{i}', data = event_data)
+        producer_instance.send_general_transit_feed_static_trips(_feedurl = f'test_{i}', _agencyid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

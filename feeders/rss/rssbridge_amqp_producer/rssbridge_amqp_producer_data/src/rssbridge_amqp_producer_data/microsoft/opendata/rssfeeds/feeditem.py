@@ -11,14 +11,14 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.link import Link
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
 from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
 from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.link import Link
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -58,10 +58,10 @@ class FeedItem:
     source: typing.Optional[FeedItemSource]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source"))
     content: typing.Optional[typing.List[FeedItemContent]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="content"))
     enclosures: typing.Optional[typing.List[FeedItemEnclosure]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="enclosures"))
-    published: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="published"))
-    updated: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated"))
-    created: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="created"))
-    expired: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="expired"))
+    published: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="published", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
+    updated: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
+    created: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="created", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
+    expired: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="expired", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="id"))
     license: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="license"))
     comments: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="comments"))
@@ -79,6 +79,14 @@ class FeedItem:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'published' in data and isinstance(data['published'], str):
+            data['published'] = int(data['published'])
+        if 'updated' in data and isinstance(data['updated'], str):
+            data['updated'] = int(data['updated'])
+        if 'created' in data and isinstance(data['created'], str):
+            data['created'] = int(data['created'])
+        if 'expired' in data and isinstance(data['expired'], str):
+            data['expired'] = int(data['expired'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -89,6 +97,14 @@ class FeedItem:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'published' in asdict_result and asdict_result['published'] is not None:
+            asdict_result['published'] = str(asdict_result['published'])
+        if 'updated' in asdict_result and asdict_result['updated'] is not None:
+            asdict_result['updated'] = str(asdict_result['updated'])
+        if 'created' in asdict_result and asdict_result['created'] is not None:
+            asdict_result['created'] = str(asdict_result['created'])
+        if 'expired' in asdict_result and asdict_result['expired'] is not None:
+            asdict_result['expired'] = str(asdict_result['expired'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -193,22 +209,22 @@ class FeedItem:
             An instance of the dataclass.
         """
         return cls(
-            feed_slug='ndyvlishaoflkofwhbic',
-            item='mzpugboputtonkxrprar',
+            feed_slug='bgyomihcacxvciyopqzj',
+            item='ehpqpgtmkhrgrgkrgtjt',
             author=None,
             publisher=None,
             summary=None,
             title=None,
             source=None,
-            content=[None],
+            content=[None, None, None, None],
             enclosures=[None, None, None],
-            published=int(46),
-            updated=int(60),
-            created=int(26),
-            expired=int(42),
-            id='bvxkbffqnlvxibrcwcjm',
-            license='nbzguovwgbidsjgrgdbx',
-            comments='jarqhsqrycswnrztsmja',
-            contributors=[None, None, None, None],
-            links=[None, None, None]
+            published=int(69),
+            updated=int(28),
+            created=int(7),
+            expired=int(58),
+            id='omnrjcvgtkcujnveubqe',
+            license='hhcbghzdgabrlhxfagoa',
+            comments='mbptifvyonflqcorharc',
+            contributors=[None],
+            links=[None, None, None, None, None]
         )

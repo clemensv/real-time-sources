@@ -28,17 +28,17 @@ class Test_Attributions(unittest.TestCase):
         Create instance of Attributions for testing
         """
         instance = Attributions(
-            attributionId='uddriinaozjcsbtigkfr',
-            agencyId='siwddmanlgzyfosnneux',
-            routeId='yaqncaegotceihiqenyb',
-            tripId='zimsstaviaxxiyxcyxht',
-            organizationName='aonytpwpfitdfjxrftxj',
+            attributionId='hkdixmqbrnvfsphjhjko',
+            agencyId='aqapdhfkpzuctmhzqnmw',
+            routeId='ylllmxyfgnpwglbuixnl',
+            tripId='nkpwqbnerjjhuppgicpr',
+            organizationName='perzmxpwsazfsjqyrtcj',
             isProducer=int(56),
             isOperator=int(37),
-            isAuthority=int(53),
-            attributionUrl='wmvavxdqosykrivcnian',
-            attributionEmail='wwpaflenpgzquwqrmaht',
-            attributionPhone='awdwvpdxfeoucscrgwdv'
+            isAuthority=int(37),
+            attributionUrl='ylhmphhynyizamcnaxdi',
+            attributionEmail='ucyxmxsorvarpzjglauq',
+            attributionPhone='gbmpyfolecthxevlmbwt'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test attributionId property
         """
-        test_value = 'uddriinaozjcsbtigkfr'
+        test_value = 'hkdixmqbrnvfsphjhjko'
         self.instance.attributionId = test_value
         self.assertEqual(self.instance.attributionId, test_value)
     
@@ -55,7 +55,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test agencyId property
         """
-        test_value = 'siwddmanlgzyfosnneux'
+        test_value = 'aqapdhfkpzuctmhzqnmw'
         self.instance.agencyId = test_value
         self.assertEqual(self.instance.agencyId, test_value)
     
@@ -63,7 +63,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test routeId property
         """
-        test_value = 'yaqncaegotceihiqenyb'
+        test_value = 'ylllmxyfgnpwglbuixnl'
         self.instance.routeId = test_value
         self.assertEqual(self.instance.routeId, test_value)
     
@@ -71,7 +71,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test tripId property
         """
-        test_value = 'zimsstaviaxxiyxcyxht'
+        test_value = 'nkpwqbnerjjhuppgicpr'
         self.instance.tripId = test_value
         self.assertEqual(self.instance.tripId, test_value)
     
@@ -79,7 +79,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test organizationName property
         """
-        test_value = 'aonytpwpfitdfjxrftxj'
+        test_value = 'perzmxpwsazfsjqyrtcj'
         self.instance.organizationName = test_value
         self.assertEqual(self.instance.organizationName, test_value)
     
@@ -103,7 +103,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test isAuthority property
         """
-        test_value = int(53)
+        test_value = int(37)
         self.instance.isAuthority = test_value
         self.assertEqual(self.instance.isAuthority, test_value)
     
@@ -111,7 +111,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test attributionUrl property
         """
-        test_value = 'wmvavxdqosykrivcnian'
+        test_value = 'ylhmphhynyizamcnaxdi'
         self.instance.attributionUrl = test_value
         self.assertEqual(self.instance.attributionUrl, test_value)
     
@@ -119,7 +119,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test attributionEmail property
         """
-        test_value = 'wwpaflenpgzquwqrmaht'
+        test_value = 'ucyxmxsorvarpzjglauq'
         self.instance.attributionEmail = test_value
         self.assertEqual(self.instance.attributionEmail, test_value)
     
@@ -127,7 +127,7 @@ class Test_Attributions(unittest.TestCase):
         """
         Test attributionPhone property
         """
-        test_value = 'awdwvpdxfeoucscrgwdv'
+        test_value = 'gbmpyfolecthxevlmbwt'
         self.instance.attributionPhone = test_value
         self.assertEqual(self.instance.attributionPhone, test_value)
     

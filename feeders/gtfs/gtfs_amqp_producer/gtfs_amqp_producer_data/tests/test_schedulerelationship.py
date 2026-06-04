@@ -4,7 +4,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeupdate_types.schedulerelationship import ScheduleRelationship
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor_types.schedulerelationship import ScheduleRelationship
 
 
 class Test_ScheduleRelationship(unittest.TestCase):
@@ -30,5 +30,6 @@ class Test_ScheduleRelationship(unittest.TestCase):
         Test that all enum values are defined
         """
         self.assertEqual(ScheduleRelationship.SCHEDULED.value, 'SCHEDULED')
-        self.assertEqual(ScheduleRelationship.SKIPPED.value, 'SKIPPED')
-        self.assertEqual(ScheduleRelationship.NO_DATA.value, 'NO_DATA')
+        self.assertEqual(ScheduleRelationship.ADDED.value, 'ADDED')
+        self.assertEqual(ScheduleRelationship.UNSCHEDULED.value, 'UNSCHEDULED')
+        self.assertEqual(ScheduleRelationship.CANCELED.value, 'CANCELED')

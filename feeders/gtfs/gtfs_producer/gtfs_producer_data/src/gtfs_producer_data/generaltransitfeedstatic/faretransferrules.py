@@ -35,7 +35,7 @@ class FareTransferRules:
     transferCount: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transferCount"))
     fromLegGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fromLegGroupId"))
     toLegGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="toLegGroupId"))
-    duration: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="duration"))
+    duration: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="duration", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     durationType: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="durationType"))
 
     @classmethod
@@ -49,6 +49,8 @@ class FareTransferRules:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'duration' in data and isinstance(data['duration'], str):
+            data['duration'] = int(data['duration'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -59,6 +61,8 @@ class FareTransferRules:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'duration' in asdict_result and asdict_result['duration'] is not None:
+            asdict_result['duration'] = str(asdict_result['duration'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -163,11 +167,11 @@ class FareTransferRules:
             An instance of the dataclass.
         """
         return cls(
-            fareTransferRuleId='daeiytiqkhuzkazgmqvy',
-            fareProductId='wtemjgcliioyizullspn',
-            transferCount=int(38),
-            fromLegGroupId='tjhxjqurlzvotsubiain',
-            toLegGroupId='bwlzyywzrkcdpgrafxub',
-            duration=int(25),
-            durationType='vgngxjkoamqpbjekvfks'
+            fareTransferRuleId='xempduecssdmsdihzzpp',
+            fareProductId='khqesrdayoqzusreictw',
+            transferCount=int(10),
+            fromLegGroupId='srnykpuguisxbkqgfmiy',
+            toLegGroupId='nmbenmoyzfthwwgdsqas',
+            duration=int(7),
+            durationType='vqooucgubcdvlvoyafpx'
         )

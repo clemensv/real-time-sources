@@ -165,12 +165,12 @@ class Agency:
             An instance of the dataclass.
         """
         return cls(
-            agencyId='xymeshgaiqggsopfdfhg',
-            agencyName='wccmphtbgbyhyyqvsogi',
-            agencyUrl='mxiencstsjlksslzxdsl',
-            agencyTimezone='ywpuozdqboyhtynoswbw',
-            agencyLang='luacrcfhcjlsulhcsoma',
-            agencyPhone='amfouqwtqfxtaicbpeci',
-            agencyFareUrl='oorsyhzhqrxugoaclnrn',
-            agencyEmail='ztbbegeyuqgvyahktkpv'
+            agencyId='oiyftcmgurnomhavkuwi',
+            agencyName='ceexzhbpqouxpjmwvjhz',
+            agencyUrl='ycmtgemosjjyqiyqxdfz',
+            agencyTimezone='hzuqlrgtljatiycbibuc',
+            agencyLang='lgknbbbkwzxxalwjschx',
+            agencyPhone='mxwvaxfuwhcdebjbdlca',
+            agencyFareUrl='wkyzeyibmeoeiciafpkm',
+            agencyEmail='ktapcqzrbaigralhlqoj'
         )

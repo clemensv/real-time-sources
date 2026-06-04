@@ -174,15 +174,15 @@ class Trips:
             An instance of the dataclass.
         """
         return cls(
-            routeId='haekickpphishxsorhud',
+            routeId='xzxkhnzyocetwdkahmkt',
             serviceDates=None,
-            serviceExceptions=[None],
-            tripId='ttqcuiqrbnzfzusqxgfu',
-            tripHeadsign='najzsuqxehehiknzxswg',
-            tripShortName='ladooffypsnvdfvvxclq',
+            serviceExceptions=[None, None, None, None, None],
+            tripId='mmjejbzqivjhhgxxznqu',
+            tripHeadsign='pvdstpbkvszvbbhrjbqj',
+            tripShortName='gakrnbbgqtzhkcwxwvyk',
             directionId=None,
-            blockId='htuaaikxvhzlfligzenp',
-            shapeId='jagvhziyqnlhglrejmwz',
+            blockId='didmdpavqaksojkqarkx',
+            shapeId='picrkggktkluaeyvaovu',
             wheelchairAccessible=None,
             bikesAllowed=None
         )

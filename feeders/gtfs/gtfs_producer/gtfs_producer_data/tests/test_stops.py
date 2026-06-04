@@ -29,21 +29,21 @@ class Test_Stops(unittest.TestCase):
         Create instance of Stops for testing
         """
         instance = Stops(
-            stopId='jalxaztwackhibmbjezh',
-            stopCode='ebedxvsbzbyhyisrrawy',
-            stopName='moyvducqsgzymtkhpkcp',
-            ttsStopName='nienpuofnlytzkwvqjvw',
-            stopDesc='qdhmedwygwvosbzgufvf',
-            stopLat=float(71.81175572439994),
-            stopLon=float(15.541202056704229),
-            zoneId='kuacmhaxjxxxhxuvrbix',
-            stopUrl='bmydstedipizmwfjuenv',
+            stopId='oiwfmomiqrvguhrrgmrx',
+            stopCode='lgbsiubirumrcjlwqyqt',
+            stopName='ofrhfgfjjelxgkbkrwhu',
+            ttsStopName='scahaahhcggphzhrojaz',
+            stopDesc='jfncspbyzuhumnusyjqa',
+            stopLat=float(5.501777251747497),
+            stopLon=float(47.971847617100735),
+            zoneId='gukvnlamdiclznlkxpxt',
+            stopUrl='uylowebmjpknoaadcqgv',
             locationType=None,
-            parentStation='pdgcygcurutkjdwybytx',
-            stopTimezone='sisdtqrbvncwhbcquoni',
+            parentStation='leyytmkujwdusuzmpblw',
+            stopTimezone='pigedpqncxfcrxxxbarw',
             wheelchairBoarding=None,
-            levelId='nhkbaeemsrxbyimqodxd',
-            platformCode='svelwxqfuamducmpvdak'
+            levelId='smwvjpelymbrytpsokng',
+            platformCode='kejqzhfizixadbvddlcd'
         )
         return instance
 
@@ -52,7 +52,7 @@ class Test_Stops(unittest.TestCase):
         """
         Test stopId property
         """
-        test_value = 'jalxaztwackhibmbjezh'
+        test_value = 'oiwfmomiqrvguhrrgmrx'
         self.instance.stopId = test_value
         self.assertEqual(self.instance.stopId, test_value)
     
@@ -60,7 +60,7 @@ class Test_Stops(unittest.TestCase):
         """
         Test stopCode property
         """
-        test_value = 'ebedxvsbzbyhyisrrawy'
+        test_value = 'lgbsiubirumrcjlwqyqt'
         self.instance.stopCode = test_value
         self.assertEqual(self.instance.stopCode, test_value)
     
@@ -68,7 +68,7 @@ class Test_Stops(unittest.TestCase):
         """
         Test stopName property
         """
-        test_value = 'moyvducqsgzymtkhpkcp'
+        test_value = 'ofrhfgfjjelxgkbkrwhu'
         self.instance.stopName = test_value
         self.assertEqual(self.instance.stopName, test_value)
     
@@ -76,7 +76,7 @@ class Test_Stops(unittest.TestCase):
         """
         Test ttsStopName property
         """
-        test_value = 'nienpuofnlytzkwvqjvw'
+        test_value = 'scahaahhcggphzhrojaz'
         self.instance.ttsStopName = test_value
         self.assertEqual(self.instance.ttsStopName, test_value)
     
@@ -84,7 +84,7 @@ class Test_Stops(unittest.TestCase):
         """
         Test stopDesc property
         """
-        test_value = 'qdhmedwygwvosbzgufvf'
+        test_value = 'jfncspbyzuhumnusyjqa'
         self.instance.stopDesc = test_value
         self.assertEqual(self.instance.stopDesc, test_value)
     
@@ -92,7 +92,7 @@ class Test_Stops(unittest.TestCase):
         """
         Test stopLat property
         """
-        test_value = float(71.81175572439994)
+        test_value = float(5.501777251747497)
         self.instance.stopLat = test_value
         self.assertEqual(self.instance.stopLat, test_value)
     
@@ -100,7 +100,7 @@ class Test_Stops(unittest.TestCase):
         """
         Test stopLon property
         """
-        test_value = float(15.541202056704229)
+        test_value = float(47.971847617100735)
         self.instance.stopLon = test_value
         self.assertEqual(self.instance.stopLon, test_value)
     
@@ -108,7 +108,7 @@ class Test_Stops(unittest.TestCase):
         """
         Test zoneId property
         """
-        test_value = 'kuacmhaxjxxxhxuvrbix'
+        test_value = 'gukvnlamdiclznlkxpxt'
         self.instance.zoneId = test_value
         self.assertEqual(self.instance.zoneId, test_value)
     
@@ -116,7 +116,7 @@ class Test_Stops(unittest.TestCase):
         """
         Test stopUrl property
         """
-        test_value = 'bmydstedipizmwfjuenv'
+        test_value = 'uylowebmjpknoaadcqgv'
         self.instance.stopUrl = test_value
         self.assertEqual(self.instance.stopUrl, test_value)
     
@@ -132,7 +132,7 @@ class Test_Stops(unittest.TestCase):
         """
         Test parentStation property
         """
-        test_value = 'pdgcygcurutkjdwybytx'
+        test_value = 'leyytmkujwdusuzmpblw'
         self.instance.parentStation = test_value
         self.assertEqual(self.instance.parentStation, test_value)
     
@@ -140,7 +140,7 @@ class Test_Stops(unittest.TestCase):
         """
         Test stopTimezone property
         """
-        test_value = 'sisdtqrbvncwhbcquoni'
+        test_value = 'pigedpqncxfcrxxxbarw'
         self.instance.stopTimezone = test_value
         self.assertEqual(self.instance.stopTimezone, test_value)
     
@@ -156,7 +156,7 @@ class Test_Stops(unittest.TestCase):
         """
         Test levelId property
         """
-        test_value = 'nhkbaeemsrxbyimqodxd'
+        test_value = 'smwvjpelymbrytpsokng'
         self.instance.levelId = test_value
         self.assertEqual(self.instance.levelId, test_value)
     
@@ -164,7 +164,7 @@ class Test_Stops(unittest.TestCase):
         """
         Test platformCode property
         """
-        test_value = 'svelwxqfuamducmpvdak'
+        test_value = 'kejqzhfizixadbvddlcd'
         self.instance.platformCode = test_value
         self.assertEqual(self.instance.platformCode, test_value)
     

@@ -33,7 +33,7 @@ class GridSignal:
     
     country: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    unix_seconds: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unix_seconds"))
+    unix_seconds: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unix_seconds", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     signal: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="signal"))
     renewable_share_pct: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="renewable_share_pct"))
     substitute: typing.Optional[bool]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="substitute"))
@@ -49,6 +49,8 @@ class GridSignal:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'unix_seconds' in data and isinstance(data['unix_seconds'], str):
+            data['unix_seconds'] = int(data['unix_seconds'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -59,6 +61,8 @@ class GridSignal:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'unix_seconds' in asdict_result and asdict_result['unix_seconds'] is not None:
+            asdict_result['unix_seconds'] = str(asdict_result['unix_seconds'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -163,10 +167,10 @@ class GridSignal:
             An instance of the dataclass.
         """
         return cls(
-            country='hivivzrpnlywofcpmnti',
+            country='tzguociejqrwexobnfdy',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(75),
-            signal=int(57),
-            renewable_share_pct=float(96.50665003520972),
-            substitute=False
+            unix_seconds=int(29),
+            signal=int(70),
+            renewable_share_pct=float(90.92307803986758),
+            substitute=True
         )

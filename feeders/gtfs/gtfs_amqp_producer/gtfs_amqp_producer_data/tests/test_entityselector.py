@@ -29,11 +29,11 @@ class Test_EntitySelector(unittest.TestCase):
         Create instance of EntitySelector for testing
         """
         instance = EntitySelector(
-            agency_id='zryhplcwnlgsrylrfnkz',
-            route_id='cfckjgzivhoqouurpudj',
-            route_type=int(69),
+            agency_id='sbgkavircqgebghbkgaq',
+            route_id='izlvntxlnluwmvltxnbn',
+            route_type=int(17),
             trip=None,
-            stop_id='mhdybshximjenhnqtosi'
+            stop_id='mxwhmhijnvwcccfxqpor'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_EntitySelector(unittest.TestCase):
         """
         Test agency_id property
         """
-        test_value = 'zryhplcwnlgsrylrfnkz'
+        test_value = 'sbgkavircqgebghbkgaq'
         self.instance.agency_id = test_value
         self.assertEqual(self.instance.agency_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_EntitySelector(unittest.TestCase):
         """
         Test route_id property
         """
-        test_value = 'cfckjgzivhoqouurpudj'
+        test_value = 'izlvntxlnluwmvltxnbn'
         self.instance.route_id = test_value
         self.assertEqual(self.instance.route_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_EntitySelector(unittest.TestCase):
         """
         Test route_type property
         """
-        test_value = int(69)
+        test_value = int(17)
         self.instance.route_type = test_value
         self.assertEqual(self.instance.route_type, test_value)
     
@@ -74,7 +74,7 @@ class Test_EntitySelector(unittest.TestCase):
         """
         Test stop_id property
         """
-        test_value = 'mhdybshximjenhnqtosi'
+        test_value = 'mxwhmhijnvwcccfxqpor'
         self.instance.stop_id = test_value
         self.assertEqual(self.instance.stop_id, test_value)
     

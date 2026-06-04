@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -95,6 +96,7 @@ async def test_info_energy_charts_mqtt_info_energy_charts_mqtt_public_power_py(m
         await publisher_client.publish_info_energy_charts_mqtt_public_power(
             topic=test_topic,
             country=f"test_country_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -160,6 +162,7 @@ async def test_info_energy_charts_mqtt_info_energy_charts_mqtt_spot_price_py(mos
         await publisher_client.publish_info_energy_charts_mqtt_spot_price(
             topic=test_topic,
             country=f"test_country_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -225,6 +228,7 @@ async def test_info_energy_charts_mqtt_info_energy_charts_mqtt_grid_signal_py(mo
         await publisher_client.publish_info_energy_charts_mqtt_grid_signal(
             topic=test_topic,
             country=f"test_country_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -290,6 +294,7 @@ async def test_info_energy_charts_mqtt_info_energy_charts_mqtt_info_py(mosquitto
         await publisher_client.publish_info_energy_charts_mqtt_info(
             topic=test_topic,
             country=f"test_country_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

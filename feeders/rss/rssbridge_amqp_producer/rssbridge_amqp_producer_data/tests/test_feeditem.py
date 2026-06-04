@@ -9,14 +9,14 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditem import FeedItem
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.link import Link
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
 from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
 from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.link import Link
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
 
 
 class Test_FeedItem(unittest.TestCase):
@@ -36,24 +36,24 @@ class Test_FeedItem(unittest.TestCase):
         Create instance of FeedItem for testing
         """
         instance = FeedItem(
-            feed_slug='ndyvlishaoflkofwhbic',
-            item='mzpugboputtonkxrprar',
+            feed_slug='bgyomihcacxvciyopqzj',
+            item='ehpqpgtmkhrgrgkrgtjt',
             author=None,
             publisher=None,
             summary=None,
             title=None,
             source=None,
-            content=[None],
+            content=[None, None, None, None],
             enclosures=[None, None, None],
-            published=int(46),
-            updated=int(60),
-            created=int(26),
-            expired=int(42),
-            id='bvxkbffqnlvxibrcwcjm',
-            license='nbzguovwgbidsjgrgdbx',
-            comments='jarqhsqrycswnrztsmja',
-            contributors=[None, None, None, None],
-            links=[None, None, None]
+            published=int(69),
+            updated=int(28),
+            created=int(7),
+            expired=int(58),
+            id='omnrjcvgtkcujnveubqe',
+            license='hhcbghzdgabrlhxfagoa',
+            comments='mbptifvyonflqcorharc',
+            contributors=[None],
+            links=[None, None, None, None, None]
         )
         return instance
 
@@ -62,7 +62,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test feed_slug property
         """
-        test_value = 'ndyvlishaoflkofwhbic'
+        test_value = 'bgyomihcacxvciyopqzj'
         self.instance.feed_slug = test_value
         self.assertEqual(self.instance.feed_slug, test_value)
     
@@ -70,7 +70,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test item property
         """
-        test_value = 'mzpugboputtonkxrprar'
+        test_value = 'ehpqpgtmkhrgrgkrgtjt'
         self.instance.item = test_value
         self.assertEqual(self.instance.item, test_value)
     
@@ -118,7 +118,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test content property
         """
-        test_value = [None]
+        test_value = [None, None, None, None]
         self.instance.content = test_value
         self.assertEqual(self.instance.content, test_value)
     
@@ -134,7 +134,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test published property
         """
-        test_value = int(46)
+        test_value = int(69)
         self.instance.published = test_value
         self.assertEqual(self.instance.published, test_value)
     
@@ -142,7 +142,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test updated property
         """
-        test_value = int(60)
+        test_value = int(28)
         self.instance.updated = test_value
         self.assertEqual(self.instance.updated, test_value)
     
@@ -150,7 +150,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test created property
         """
-        test_value = int(26)
+        test_value = int(7)
         self.instance.created = test_value
         self.assertEqual(self.instance.created, test_value)
     
@@ -158,7 +158,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test expired property
         """
-        test_value = int(42)
+        test_value = int(58)
         self.instance.expired = test_value
         self.assertEqual(self.instance.expired, test_value)
     
@@ -166,7 +166,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test id property
         """
-        test_value = 'bvxkbffqnlvxibrcwcjm'
+        test_value = 'omnrjcvgtkcujnveubqe'
         self.instance.id = test_value
         self.assertEqual(self.instance.id, test_value)
     
@@ -174,7 +174,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test license property
         """
-        test_value = 'nbzguovwgbidsjgrgdbx'
+        test_value = 'hhcbghzdgabrlhxfagoa'
         self.instance.license = test_value
         self.assertEqual(self.instance.license, test_value)
     
@@ -182,7 +182,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test comments property
         """
-        test_value = 'jarqhsqrycswnrztsmja'
+        test_value = 'mbptifvyonflqcorharc'
         self.instance.comments = test_value
         self.assertEqual(self.instance.comments, test_value)
     
@@ -190,7 +190,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test contributors property
         """
-        test_value = [None, None, None, None]
+        test_value = [None]
         self.instance.contributors = test_value
         self.assertEqual(self.instance.contributors, test_value)
     
@@ -198,7 +198,7 @@ class Test_FeedItem(unittest.TestCase):
         """
         Test links property
         """
-        test_value = [None, None, None]
+        test_value = [None, None, None, None, None]
         self.instance.links = test_value
         self.assertEqual(self.instance.links, test_value)
     

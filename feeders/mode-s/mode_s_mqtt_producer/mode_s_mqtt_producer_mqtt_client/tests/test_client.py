@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -91,6 +92,7 @@ async def test_mode_s_mqtt_mode_s_adsb_mqtt_py(mosquitto_broker):
             feedurl=f"test_feedurl_{i}",
             icao24=f"test_icao24_{i}",
             receiver_id=f"test_receiver_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -158,6 +160,7 @@ async def test_mode_s_mqtt_mode_s_altitude_reply_mqtt_py(mosquitto_broker):
             feedurl=f"test_feedurl_{i}",
             icao24=f"test_icao24_{i}",
             receiver_id=f"test_receiver_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -225,6 +228,7 @@ async def test_mode_s_mqtt_mode_s_identity_reply_mqtt_py(mosquitto_broker):
             feedurl=f"test_feedurl_{i}",
             icao24=f"test_icao24_{i}",
             receiver_id=f"test_receiver_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -292,6 +296,7 @@ async def test_mode_s_mqtt_mode_s_acquisition_reply_mqtt_py(mosquitto_broker):
             feedurl=f"test_feedurl_{i}",
             icao24=f"test_icao24_{i}",
             receiver_id=f"test_receiver_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -359,6 +364,7 @@ async def test_mode_s_mqtt_mode_s_comm_baltitude_mqtt_py(mosquitto_broker):
             feedurl=f"test_feedurl_{i}",
             icao24=f"test_icao24_{i}",
             receiver_id=f"test_receiver_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -426,6 +432,7 @@ async def test_mode_s_mqtt_mode_s_comm_bidentity_mqtt_py(mosquitto_broker):
             feedurl=f"test_feedurl_{i}",
             icao24=f"test_icao24_{i}",
             receiver_id=f"test_receiver_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
