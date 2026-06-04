@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/gbfs-bikeshare"
+LABEL org.opencontainers.image.title="GBFS bikeshare -> MQTT bridge"
+LABEL org.opencontainers.image.description="Polls one or more user-configured GBFS bikeshare auto-discovery feeds and publishes MQTT 5.0 binary-mode CloudEvents into a mobility/gbfs Unified Namespace tree."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/gbfs-bikeshare/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY . /app
+
+RUN pip install --no-cache-dir ./gbfs_bikeshare_mqtt_producer/gbfs_bikeshare_mqtt_producer_data \
+ && pip install --no-cache-dir ./gbfs_bikeshare_mqtt_producer/gbfs_bikeshare_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./gbfs_bikeshare_core \
+ && pip install --no-cache-dir ./gbfs_bikeshare_mqtt
+
+ENV MQTT_BROKER_URL=""
+ENV GBFS_FEEDS=""
+ENV POLL_INTERVAL="60"
+
+CMD ["python", "-m", "gbfs_bikeshare_mqtt", "feed"]

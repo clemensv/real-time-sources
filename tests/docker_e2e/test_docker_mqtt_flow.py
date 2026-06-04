@@ -5534,6 +5534,31 @@ class TestTokyoDocomoBikeshareMqttDockerFlow:
         _run_mqtt_contract_flow('tokyo-docomo-bikeshare', tokyo_docomo_bikeshare_mqtt_image, mosquitto_tokyo_docomo_bikeshare, timeout=240)
 
 @pytest.fixture(scope='module')
+def gbfs_bikeshare_mqtt_image():
+    return build_image('gbfs-bikeshare', dockerfile='Dockerfile.mqtt', tag='test-gbfs-bikeshare-mqtt')
+
+@pytest.fixture()
+def mosquitto_gbfs_bikeshare():
+    container, network, host_port = _generic_mosquitto('gbfs-bikeshare-mqtt-e2e', 'gbfs-bikeshare-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'gbfs-bikeshare-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestGbfsBikeshareMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_gbfs_bikeshare, gbfs_bikeshare_mqtt_image):
+        _run_mqtt_contract_flow(
+            'gbfs-bikeshare',
+            gbfs_bikeshare_mqtt_image,
+            mosquitto_gbfs_bikeshare,
+            extra_env={'GBFS_FEEDS': 'https://gbfs.citibikenyc.com/gbfs/gbfs.json', 'ONCE_MODE': 'true'},
+            timeout=240,
+        )
+
+@pytest.fixture(scope='module')
 def wsdot_mqtt_image():
     return build_image('wsdot', dockerfile='Dockerfile.mqtt', tag='test-wsdot-mqtt')
 

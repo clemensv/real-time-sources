@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip install ./gbfs_bikeshare_producer_data
+pip install ./gbfs_bikeshare_producer_kafka_producer
