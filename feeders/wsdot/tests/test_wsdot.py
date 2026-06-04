@@ -295,7 +295,7 @@ class TestDataClassSerialization:
         json_str = reading.to_json()
         restored = reading.from_json(json_str)
         assert restored.flow_data_id == reading.flow_data_id
-        assert restored.flow_reading == reading.flow_reading
+        assert restored.flow_reading.value == reading.flow_reading
 
 
 # ---------------------------------------------------------------------------
