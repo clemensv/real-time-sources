@@ -179,6 +179,7 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://static.avalanche.report/schemas/AvalancheBulletin",
                 "type": "object",
                 "name": "AvalancheBulletin",
                 "required": [
@@ -310,6 +311,7 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://static.avalanche.report/schemas/AvalancheRegion",
                 "type": "object",
                 "name": "AvalancheRegion",
                 "description": "Reference event describing an EAWS region (or super-region) that the bridge is configured to observe. Emitted at bridge startup and whenever the configured region set changes. Acts as the catalog backbone for downstream consumers, ensuring the regional context is available even outside the avalanche season when no bulletins are being published.",

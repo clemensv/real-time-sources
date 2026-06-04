@@ -253,7 +253,7 @@
             "1": {
               "format": "JsonStructure/draft-02",
               "schema": {
-                "$id": "uk.org.carbonintensity.Intensity",
+                "$id": "https://api.carbonintensity.org.uk/schemas/Intensity",
                 "type": "object",
                 "description": "National half-hourly carbon intensity for the Great Britain electricity grid, published by National Grid ESO. Contains the forecast and actual carbon dioxide emission intensity in grams of CO2 per kilowatt-hour, along with a qualitative index band.",
                 "properties": {
@@ -317,7 +317,7 @@
             "1": {
               "format": "JsonStructure/draft-02",
               "schema": {
-                "$id": "uk.org.carbonintensity.GenerationMix",
+                "$id": "https://api.carbonintensity.org.uk/schemas/GenerationMix",
                 "type": "object",
                 "description": "National half-hourly electricity generation fuel mix for Great Britain, published by National Grid ESO. Each field represents the percentage contribution of a specific fuel type to total generation during the settlement period.",
                 "properties": {
@@ -438,7 +438,7 @@
             "1": {
               "format": "JsonStructure/draft-02",
               "schema": {
-                "$id": "uk.org.carbonintensity.RegionalIntensity",
+                "$id": "https://api.carbonintensity.org.uk/schemas/RegionalIntensity",
                 "type": "object",
                 "description": "Half-hourly carbon intensity and generation mix for one of the 17 GB Distribution Network Operator (DNO) regions, published by National Grid ESO. Each record covers a specific DNO region identified by its numeric region ID.",
                 "properties": {
