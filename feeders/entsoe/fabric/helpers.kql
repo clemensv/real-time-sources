@@ -1,0 +1,169 @@
+// ===========================================================================
+// ENTSO-E Fabric helper functions
+// ---------------------------------------------------------------------------
+// Shared KQL helpers consumed by the entsoe Real-Time Dashboard and the entsoe
+// Fabric Map. Apply to the `entsoe` KQL database (the one fed by the
+// entsoe eventstream). Idempotent: every function is .create-or-alter.
+//
+//   PsrType()          - ENTSO-E production-type code -> fuel label / renewable
+//                        flag / hex colour (B01..B20).
+//   EICZone()          - EIC area code -> bidding-zone label, country, centroid
+//                        lat/lon (for map markers and human-readable labels).
+//   PriceColor(price)  - scalar: day-ahead price (EUR/MWh) -> hex colour ramp.
+//   ZonePriceMarkers() - DayAheadPricesLatest joined to EICZone, projected to a
+//                        GeoJSON Point `geometry` column for the map symbol layer.
+//   ZoneFlowLines()    - CrossBorderPhysicalFlowsLatest joined to EICZone on both
+//                        endpoints, projected to a GeoJSON LineString `geometry`
+//                        column for the map flow layer (bidirectional pairs
+//                        netted to a single directed arrow).
+// ===========================================================================
+
+.create-or-alter function with (docstring="ENTSO-E production type (psrType) lookup: fuel label, renewable flag, hex colour.", folder="entsoe/reference") PsrType() {
+    datatable(code:string, fuel:string, isRenewable:bool, color:string)
+    [
+        "B01", "Biomass",                    true,  "#2E8B57",
+        "B02", "Fossil Brown coal/Lignite",  false, "#6B4423",
+        "B03", "Fossil Coal-derived gas",    false, "#5B4636",
+        "B04", "Fossil Gas",                 false, "#E66C37",
+        "B05", "Fossil Hard coal",           false, "#3F3A36",
+        "B06", "Fossil Oil",                 false, "#8B5A2B",
+        "B07", "Fossil Oil shale",           false, "#7A5230",
+        "B08", "Fossil Peat",                false, "#80664D",
+        "B09", "Geothermal",                 true,  "#B5651D",
+        "B10", "Hydro Pumped Storage",       false, "#17A2B8",
+        "B11", "Hydro Run-of-river",         true,  "#2E86C1",
+        "B12", "Hydro Water Reservoir",      true,  "#1F6FB2",
+        "B13", "Marine",                     true,  "#0E7C7B",
+        "B14", "Nuclear",                    false, "#A21CAF",
+        "B15", "Other renewable",            true,  "#88C057",
+        "B16", "Solar",                      true,  "#F4C20D",
+        "B17", "Waste",                      false, "#7D6608",
+        "B18", "Wind Offshore",              true,  "#15607A",
+        "B19", "Wind Onshore",               true,  "#4FB0E3",
+        "B20", "Other",                      false, "#8A8886",
+        "B25", "Energy storage",             false, "#9AA0A6"
+    ]
+}
+
+.create-or-alter function with (docstring="ENTSO-E EIC area code -> bidding-zone label, country, centroid lat/lon.", folder="entsoe/reference") EICZone() {
+    datatable(eic:string, zone:string, country:string, lat:real, lon:real)
+    [
+        // --- Central / Western continental ---
+        "10Y1001A1001A82H", "DE-LU", "DE/LU", 51.16, 10.45,
+        "10Y1001A1001A83F", "DE",    "DE",    51.16, 10.45,
+        "10YDE-AT-LU---Q",  "DE-AT-LU", "DE", 50.00, 11.00,
+        "10YFR-RTE------C", "FR",    "FR",    46.60,  2.40,
+        "10YNL----------L", "NL",    "NL",    52.20,  5.30,
+        "10YBE----------2", "BE",    "BE",    50.60,  4.60,
+        "10YAT-APG------L", "AT",    "AT",    47.60, 14.10,
+        "10YCH-SWISSGRIDZ", "CH",    "CH",    46.80,  8.20,
+        "10YCZ-CEPS-----N", "CZ",    "CZ",    49.80, 15.50,
+        "10YPL-AREA-----S", "PL",    "PL",    52.10, 19.40,
+        "10YSK-SEPS-----K", "SK",    "SK",    48.70, 19.50,
+        "10YHU-MAVIR----U", "HU",    "HU",    47.20, 19.40,
+        "10YSI-ELES-----O", "SI",    "SI",    46.15, 14.99,
+        // --- Iberia ---
+        "10YES-REE------0", "ES",    "ES",    40.30, -3.70,
+        "10YPT-REN------W", "PT",    "PT",    39.50, -8.00,
+        // --- Italy (north node for continental borders; south node for the GR link) ---
+        "10YIT-GRTN-----B", "IT",    "IT",    42.50, 12.50,
+        "10Y1001A1001A73I", "IT-N",  "IT",    45.40,  9.50,
+        "10Y1001A1001A699", "IT-BR", "IT",    40.45, 17.95,
+        "10Y1001A1001A66F", "IT-GR", "IT",    40.05, 18.15,
+        // --- British Isles ---
+        "10YGB----------A", "GB",    "GB",    52.80, -1.50,
+        "10Y1001A1001A59C", "IE-SEM","IE",    53.20, -7.80,
+        "10YIE-1001A00010", "IE",    "IE",    53.40, -7.90,
+        "10Y1001A1001A016", "NIE",   "GB",    54.60, -6.80,
+        // --- Nordic ---
+        "10YDK-1--------W", "DK1",   "DK",    56.20,  9.20,
+        "10YDK-2--------M", "DK2",   "DK",    55.50, 11.90,
+        "10YFI-1--------U", "FI",    "FI",    62.00, 25.70,
+        "10YNO-1--------2", "NO1",   "NO",    60.20,  9.80,
+        "10YNO-2--------T", "NO2",   "NO",    59.00,  7.50,
+        "10YNO-3--------J", "NO3",   "NO",    63.20, 10.60,
+        "10YNO-4--------9", "NO4",   "NO",    68.20, 16.50,
+        "10Y1001A1001A48H", "NO5",   "NO",    60.70,  6.40,
+        "10Y1001A1001A44P", "SE1",   "SE",    66.50, 19.80,
+        "10Y1001A1001A45N", "SE2",   "SE",    63.50, 16.50,
+        "10Y1001A1001A46L", "SE3",   "SE",    59.30, 16.00,
+        "10Y1001A1001A47J", "SE4",   "SE",    56.40, 13.60,
+        // --- Baltics ---
+        "10Y1001A1001A39I", "EE",    "EE",    58.70, 25.50,
+        "10YLV-1001A00074", "LV",    "LV",    56.90, 24.60,
+        "10YLT-1001A0008Q", "LT",    "LT",    55.20, 23.90,
+        // --- South-East Europe / Balkans ---
+        "10YGR-HTSO-----Y", "GR",    "GR",    39.50, 22.00,
+        "10YRO-TEL------P", "RO",    "RO",    45.90, 24.90,
+        "10YCA-BULGARIA-R", "BG",    "BG",    42.70, 25.30,
+        "10YCS-SERBIATSOV", "RS",    "RS",    44.00, 20.90,
+        "10YHR-HEP------M", "HR",    "HR",    45.50, 16.00,
+        "10YBA-JPCC-----D", "BA",    "BA",    44.00, 17.80,
+        "10YCS-CG-TSO---S", "ME",    "ME",    42.70, 19.30,
+        "10YMK-MEPSO----8", "MK",    "MK",    41.60, 21.70,
+        "10YAL-KESH-----5", "AL",    "AL",    41.00, 20.00,
+        "10Y1001C--00100H", "XK",    "XK",    42.60, 20.90,
+        // --- Eastern periphery ---
+        "10YTR-TEIAS----W", "TR",    "TR",    39.50, 33.00,
+        "10Y1001A1001A990", "MD",    "MD",    47.00, 28.50,
+        "10Y1001C--00003F", "UA",    "UA",    49.00, 27.00
+    ]
+}
+
+.create-or-alter function with (docstring="Day-ahead price (EUR/MWh) -> hex colour ramp (green cheap -> red expensive).", folder="entsoe/reference") PriceColor(price:real) {
+    case(
+        price < 0,    "#1A9850",
+        price < 40,   "#66BD63",
+        price < 70,   "#A6D96A",
+        price < 100,  "#FEE08B",
+        price < 130,  "#FDAE61",
+        price < 170,  "#F46D43",
+        "#D73027")
+}
+
+.create-or-alter function with (docstring="Day-ahead zone prices as GeoJSON Point markers for the Fabric Map symbol layer.", folder="entsoe/map") ZonePriceMarkers() {
+    ['eu.entsoe.transparency.DayAheadPricesLatest']
+    | join kind=inner (EICZone()) on $left.inDomain == $right.eic
+    | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(lon, lat))
+    | extend marker_color = PriceColor(price)
+    | extend label = strcat(zone, "  ", tostring(round(price, 1)), " EUR/MWh")
+    | project geometry, zone, country, price, unitName, marker_color, label
+}
+
+.create-or-alter function with (docstring="Cross-border physical flows as GeoJSON arrow LineStrings (exporter -> importer). Each directed flow is offset perpendicular to the border axis so the two directions of a border render as separate parallel arrows; the path carries an explicit arrowhead so direction is readable. Coordinates are cosine-corrected for longitude so arrows stay perpendicular on the map.", folder="entsoe/map") ZoneFlowLines() {
+    let off = 0.34;     // max perpendicular separation between the two directions (projected deg)
+    let t0  = 0.16;     // shaft start, fraction along the exporter->importer axis
+    let t1  = 0.80;     // arrow tip, fraction along the axis
+    ['eu.entsoe.transparency.CrossBorderPhysicalFlowsLatest']
+    | join kind=inner (EICZone() | project ineic=eic,  in_zone=zone,  in_lat=lat,  in_lon=lon)  on $left.inDomain  == $right.ineic
+    | join kind=inner (EICZone() | project outeic=eic, out_zone=zone, out_lat=lat, out_lon=lon) on $left.outDomain == $right.outeic
+    | where in_zone != out_zone and abs(quantity) > 0
+    // local equirectangular projection: scale longitude by cos(mean latitude)
+    | extend mlat = (in_lat + out_lat) / 2.0
+    | extend kx   = cos(mlat * pi() / 180.0)
+    | extend ogx  = out_lon * kx, igx = in_lon * kx
+    | extend vx   = igx - ogx, vy = in_lat - out_lat
+    | extend L    = sqrt(vx * vx + vy * vy)
+    | where L > 0
+    | extend ux = vx / L, uy = vy / L           // unit vector exporter->importer
+    | extend px = -uy,    py = ux               // left-hand perpendicular
+    | extend offe = todouble(min_of(off, 0.30 * L))  // shrink offset on short borders so arrows hug the axis
+    | extend hb = todouble(min_of(0.22, 0.08 * L))   // arrowhead length (compact)
+    | extend hw = hb * 0.5                            // arrowhead half-width
+    | extend sgx = ogx + ux * (L * t0) + px * offe, sy = out_lat + uy * (L * t0) + py * offe
+    | extend tgx = ogx + ux * (L * t1) + px * offe, ty = out_lat + uy * (L * t1) + py * offe
+    | extend lgx = tgx - ux * hb + px * hw, ly = ty - uy * hb + py * hw
+    | extend rgx = tgx - ux * hb - px * hw, ry = ty - uy * hb - py * hw
+    | extend s_lon = sgx / kx, t_lon = tgx / kx, l_lon = lgx / kx, r_lon = rgx / kx
+    | extend geometry = bag_pack("type", "LineString", "coordinates", pack_array(
+          pack_array(s_lon, sy),
+          pack_array(t_lon, ty),
+          pack_array(l_lon, ly),
+          pack_array(t_lon, ty),
+          pack_array(r_lon, ry)))
+    // Arrow stem width scales with flow magnitude but is capped so heavy
+    // interconnectors (multi-GW) stay legible and do not blot out the map.
+    | extend stroke_weight = todouble(min_of(6.0, 1.5 + abs(quantity) / 700.0))
+    | extend label = strcat(out_zone, "\u2192", in_zone, " ", tostring(round(abs(quantity), 0)))
+    | project geometry, out_zone, in_zone, quantity, stroke_weight, label
+}

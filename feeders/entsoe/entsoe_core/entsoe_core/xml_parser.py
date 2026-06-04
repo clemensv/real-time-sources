@@ -84,12 +84,20 @@ def parse_entsoe_xml(xml_text: str, document_type: str) -> List[TimeSeriesPoint]
         in_domain_el = ts.find(_ns(ns, "inBiddingZone_Domain.mRID"))
         if in_domain_el is None:
             in_domain_el = ts.find(_ns(ns, "in_Domain.mRID"))
-        in_domain = in_domain_el.text if in_domain_el is not None else ""
 
         out_domain_el = ts.find(_ns(ns, "outBiddingZone_Domain.mRID"))
         if out_domain_el is None:
             out_domain_el = ts.find(_ns(ns, "out_Domain.mRID"))
-        out_domain = out_domain_el.text if out_domain_el is not None else None
+
+        if in_domain_el is None and document_type in LOAD_DOMAIN_DOC_TYPES:
+            # Load documents (A65/A70) identify the bidding zone via
+            # ``outBiddingZone_Domain`` only; promote it to the subject domain
+            # (which is the Kafka key) and leave the out-domain unset.
+            in_domain = out_domain_el.text if out_domain_el is not None else ""
+            out_domain = None
+        else:
+            in_domain = in_domain_el.text if in_domain_el is not None else ""
+            out_domain = out_domain_el.text if out_domain_el is not None else None
 
         # PSR type (generation per type only)
         psr_type = ""
@@ -168,15 +176,27 @@ def parse_entsoe_xml(xml_text: str, document_type: str) -> List[TimeSeriesPoint]
     return points
 
 
-def _process_type_for_document(document_type: str) -> str:
-    """Return the appropriate processType for the given ENTSO-E document type."""
+# Document types whose subject bidding zone is supplied via
+# ``outBiddingZone_Domain`` rather than ``in_Domain`` (the ENTSO-E load family).
+LOAD_DOMAIN_DOC_TYPES = ("A65", "A70")
+
+
+def _process_type_for_document(document_type: str) -> Optional[str]:
+    """Return the appropriate processType for the given ENTSO-E document type.
+
+    Day-ahead prices (A44) are queried without a ``processType`` parameter; the
+    Transparency Platform returns HTTP 400 if one is supplied.
+    """
+    # Day-ahead prices take no processType.
+    if document_type == "A44":
+        return None
     # Forecast types use day-ahead process
     if document_type in ("A69", "A70", "A71"):
         return "A01"
     # Installed capacity uses year-ahead
     if document_type == "A68":
         return "A33"
-    # Everything else (A75, A65, A73, A74, A72, A11, A44) uses realised
+    # Everything else (A75, A65, A73, A74, A72, A11) uses realised
     return "A16"
 
 
@@ -205,13 +225,26 @@ def build_api_url(base_url: str, security_token: str, document_type: str,
     process_type = _process_type_for_document(document_type)
 
     url = (f"{base_url}?securityToken={security_token}"
-           f"&documentType={document_type}"
-           f"&processType={process_type}"
-           f"&in_Domain={in_domain}"
-           f"&periodStart={start_str}"
-           f"&periodEnd={end_str}")
+           f"&documentType={document_type}")
 
-    if out_domain:
+    if process_type:
+        url += f"&processType={process_type}"
+
+    # The load family (A65 actual load, A70 load-forecast margin) identifies the
+    # bidding zone via ``outBiddingZone_Domain``; everything else uses ``in_Domain``.
+    if document_type in LOAD_DOMAIN_DOC_TYPES:
+        url += f"&outBiddingZone_Domain={in_domain}"
+    else:
+        url += f"&in_Domain={in_domain}"
+
+    url += (f"&periodStart={start_str}"
+            f"&periodEnd={end_str}")
+
+    if document_type == "A44":
+        # Day-ahead prices require out_Domain to equal in_Domain.
+        url += f"&out_Domain={out_domain or in_domain}"
+    elif out_domain:
+        # Cross-border physical flows (A11) carry a distinct out_Domain.
         url += f"&out_Domain={out_domain}"
 
     if psr_type:
