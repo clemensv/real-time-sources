@@ -29,9 +29,9 @@ class Test_ReplicationState(unittest.TestCase):
         Create instance of ReplicationState for testing
         """
         instance = ReplicationState(
-            sequence_number=int(51),
+            sequence_number=int(80),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            source_url='vobcmihxkhdcwrtojmvb'
+            source_url='bpvoonrdncmnrujezkzz'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_ReplicationState(unittest.TestCase):
         """
         Test sequence_number property
         """
-        test_value = int(51)
+        test_value = int(80)
         self.instance.sequence_number = test_value
         self.assertEqual(self.instance.sequence_number, test_value)
     
@@ -56,7 +56,7 @@ class Test_ReplicationState(unittest.TestCase):
         """
         Test source_url property
         """
-        test_value = 'vobcmihxkhdcwrtojmvb'
+        test_value = 'bpvoonrdncmnrujezkzz'
         self.instance.source_url = test_value
         self.assertEqual(self.instance.source_url, test_value)
     
