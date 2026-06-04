@@ -28,19 +28,19 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         Create instance of IconD2ForecastFile for testing
         """
         instance = IconD2ForecastFile(
-            file_url='zsqnleaomvkfpkedxygy',
-            model='cbjsrcpbbpzsiuwjrkkc',
-            file_name='hqqgvbsgeibxafiupwmf',
-            run='cznqwiwmavlgrcsfrota',
-            forecast_hour=int(32),
-            parameter='bnalsadstakgdzuuxmjy',
-            level_type='crbnlgfindawjqlfmumi',
-            level='thzqjlmaqxqzkwyzqoha',
-            modified='bpbzwphgrzdkaexbvvaq',
-            size_bytes=int(39),
-            state='aigmknnlndbjnxroexei',
-            variable='rhjwlfvcjgdlfieyenze',
-            file_id='vwpawrjeluoqywaqqutb'
+            file_url='jnaggijtkqyxizqnytts',
+            model='cpiofhjxkskzzursqpri',
+            file_name='jsbqggdaceirhotvlchi',
+            run='aabmzxoojynwwnvzukzl',
+            forecast_hour=int(59),
+            parameter='uvgxljhqyyprvcohbxnl',
+            level_type='sexbcsuqmhmchtdoejef',
+            level='bpnehcbkxrlkboyfkuai',
+            modified='ekdfrmzwqsilyhxquqzz',
+            size_bytes=int(33),
+            state='eucsvapeupjimftdwfyx',
+            variable='alifvyweniagobvggphy',
+            file_id='lgvwsykbcloonlnexppz'
         )
         return instance
 
@@ -49,7 +49,7 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         """
         Test file_url property
         """
-        test_value = 'zsqnleaomvkfpkedxygy'
+        test_value = 'jnaggijtkqyxizqnytts'
         self.instance.file_url = test_value
         self.assertEqual(self.instance.file_url, test_value)
     
@@ -57,7 +57,7 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         """
         Test model property
         """
-        test_value = 'cbjsrcpbbpzsiuwjrkkc'
+        test_value = 'cpiofhjxkskzzursqpri'
         self.instance.model = test_value
         self.assertEqual(self.instance.model, test_value)
     
@@ -65,7 +65,7 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         """
         Test file_name property
         """
-        test_value = 'hqqgvbsgeibxafiupwmf'
+        test_value = 'jsbqggdaceirhotvlchi'
         self.instance.file_name = test_value
         self.assertEqual(self.instance.file_name, test_value)
     
@@ -73,7 +73,7 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         """
         Test run property
         """
-        test_value = 'cznqwiwmavlgrcsfrota'
+        test_value = 'aabmzxoojynwwnvzukzl'
         self.instance.run = test_value
         self.assertEqual(self.instance.run, test_value)
     
@@ -81,7 +81,7 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         """
         Test forecast_hour property
         """
-        test_value = int(32)
+        test_value = int(59)
         self.instance.forecast_hour = test_value
         self.assertEqual(self.instance.forecast_hour, test_value)
     
@@ -89,7 +89,7 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         """
         Test parameter property
         """
-        test_value = 'bnalsadstakgdzuuxmjy'
+        test_value = 'uvgxljhqyyprvcohbxnl'
         self.instance.parameter = test_value
         self.assertEqual(self.instance.parameter, test_value)
     
@@ -97,7 +97,7 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         """
         Test level_type property
         """
-        test_value = 'crbnlgfindawjqlfmumi'
+        test_value = 'sexbcsuqmhmchtdoejef'
         self.instance.level_type = test_value
         self.assertEqual(self.instance.level_type, test_value)
     
@@ -105,7 +105,7 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         """
         Test level property
         """
-        test_value = 'thzqjlmaqxqzkwyzqoha'
+        test_value = 'bpnehcbkxrlkboyfkuai'
         self.instance.level = test_value
         self.assertEqual(self.instance.level, test_value)
     
@@ -113,7 +113,7 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         """
         Test modified property
         """
-        test_value = 'bpbzwphgrzdkaexbvvaq'
+        test_value = 'ekdfrmzwqsilyhxquqzz'
         self.instance.modified = test_value
         self.assertEqual(self.instance.modified, test_value)
     
@@ -121,7 +121,7 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         """
         Test size_bytes property
         """
-        test_value = int(39)
+        test_value = int(33)
         self.instance.size_bytes = test_value
         self.assertEqual(self.instance.size_bytes, test_value)
     
@@ -129,7 +129,7 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'aigmknnlndbjnxroexei'
+        test_value = 'eucsvapeupjimftdwfyx'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -137,7 +137,7 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         """
         Test variable property
         """
-        test_value = 'rhjwlfvcjgdlfieyenze'
+        test_value = 'alifvyweniagobvggphy'
         self.instance.variable = test_value
         self.assertEqual(self.instance.variable, test_value)
     
@@ -145,7 +145,7 @@ class Test_IconD2ForecastFile(unittest.TestCase):
         """
         Test file_id property
         """
-        test_value = 'vwpawrjeluoqywaqqutb'
+        test_value = 'lgvwsykbcloonlnexppz'
         self.instance.file_id = test_value
         self.assertEqual(self.instance.file_id, test_value)
     

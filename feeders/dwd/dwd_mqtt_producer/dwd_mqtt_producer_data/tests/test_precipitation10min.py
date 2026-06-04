@@ -28,12 +28,12 @@ class Test_Precipitation10Min(unittest.TestCase):
         Create instance of Precipitation10Min for testing
         """
         instance = Precipitation10Min(
-            station_id='iczufvbmpsbyzntstgyf',
-            timestamp='oxlvrvxhgruajotywjpy',
-            quality_level=int(1),
-            precipitation_height=float(70.2884362481035),
-            precipitation_indicator=int(83),
-            state='zceljgedhsbaaagougeu'
+            station_id='prgjzwqdvqwmayamxaqy',
+            timestamp='jikxjcznfvfxzaedwymb',
+            quality_level=int(6),
+            precipitation_height=float(5.345596740898495),
+            precipitation_indicator=int(78),
+            state='mjedbvxarbujtcrhvnwi'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'iczufvbmpsbyzntstgyf'
+        test_value = 'prgjzwqdvqwmayamxaqy'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'oxlvrvxhgruajotywjpy'
+        test_value = 'jikxjcznfvfxzaedwymb'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -58,7 +58,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(1)
+        test_value = int(6)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
@@ -66,7 +66,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test precipitation_height property
         """
-        test_value = float(70.2884362481035)
+        test_value = float(5.345596740898495)
         self.instance.precipitation_height = test_value
         self.assertEqual(self.instance.precipitation_height, test_value)
     
@@ -74,7 +74,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test precipitation_indicator property
         """
-        test_value = int(83)
+        test_value = int(78)
         self.instance.precipitation_indicator = test_value
         self.assertEqual(self.instance.precipitation_indicator, test_value)
     
@@ -82,7 +82,7 @@ class Test_Precipitation10Min(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'zceljgedhsbaaagougeu'
+        test_value = 'mjedbvxarbujtcrhvnwi'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     

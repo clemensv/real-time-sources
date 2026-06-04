@@ -28,11 +28,11 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         Create instance of ForecastModelCatalog for testing
         """
         instance = ForecastModelCatalog(
-            model='hftqwcvkzteqnedsqawm',
-            file_url='hgjcclgcqywhkgdfvgav',
-            description='rnvcppxzjhpmkbmktnos',
-            state='eiakhwfnbeitxxzsrnvx',
-            kind='hdebzoomykfxtccvletv'
+            model='ewpdwhnlnzcqowpfcrll',
+            file_url='ozoghuniphphzrrhocxi',
+            description='thnrbfdggflruzjpqmot',
+            state='oukafgzylpzsoqwxmygs',
+            kind='tfmqkbexiwlzmwsnvqwg'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         """
         Test model property
         """
-        test_value = 'hftqwcvkzteqnedsqawm'
+        test_value = 'ewpdwhnlnzcqowpfcrll'
         self.instance.model = test_value
         self.assertEqual(self.instance.model, test_value)
     
@@ -49,7 +49,7 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         """
         Test file_url property
         """
-        test_value = 'hgjcclgcqywhkgdfvgav'
+        test_value = 'ozoghuniphphzrrhocxi'
         self.instance.file_url = test_value
         self.assertEqual(self.instance.file_url, test_value)
     
@@ -57,7 +57,7 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'rnvcppxzjhpmkbmktnos'
+        test_value = 'thnrbfdggflruzjpqmot'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -65,7 +65,7 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'eiakhwfnbeitxxzsrnvx'
+        test_value = 'oukafgzylpzsoqwxmygs'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -73,7 +73,7 @@ class Test_ForecastModelCatalog(unittest.TestCase):
         """
         Test kind property
         """
-        test_value = 'hdebzoomykfxtccvletv'
+        test_value = 'tfmqkbexiwlzmwsnvqwg'
         self.instance.kind = test_value
         self.assertEqual(self.instance.kind, test_value)
     
