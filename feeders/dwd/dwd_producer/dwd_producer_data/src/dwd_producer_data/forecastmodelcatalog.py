@@ -159,9 +159,9 @@ class ForecastModelCatalog:
             An instance of the dataclass.
         """
         return cls(
-            model='cwlfvacdumnqoymxogbt',
-            file_url='lvyirujueblxjsgqmdzp',
-            description='gbjsgropzblhnuzswtsr',
-            state='fdfbgutpgnkimkkmxjwv',
-            kind='kwjdpoldujoworuggxbs'
+            model='cncrncwsyvtgxomhqkzs',
+            file_url='pjfpwrnrojkmgfteesib',
+            description='kidhiskkdrdmyzttmrmp',
+            state='jsbkbldwdgtmcasaumez',
+            kind='edepvvaodgauvgjajgas'
         )
