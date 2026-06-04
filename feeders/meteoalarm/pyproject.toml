@@ -22,7 +22,7 @@ meteoalarm_producer_kafka_producer = { path = "meteoalarm_producer/meteoalarm_pr
 [tool.poetry.dev-dependencies]
 pytest = ">=8.3.3"
 pytest-asyncio = ">=0.24.0"
-pytest-cov = ">=7.0.0"
+pytest-cov = ">=7.1.0"
 
 [tool.poetry.scripts]
 meteoalarm = "meteoalarm.meteoalarm:main"
