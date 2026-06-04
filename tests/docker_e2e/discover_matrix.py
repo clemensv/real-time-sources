@@ -69,7 +69,11 @@ def is_additive_candidate(path: str) -> bool:
 def top_dir(path: str) -> str:
     parts = path.split("/")
     if len(parts) >= 2 and parts[0] == "feeders":
-        return parts[1]
+        # matrix.json entries use dir="feeders/<name>" (since feeders were
+        # moved under feeders/), so we must return the same prefixed form for
+        # the scoped filter `m["dir"] in touched_dirs` to match. Returning the
+        # bare name silently scoped every feeder change to zero jobs.
+        return f"feeders/{parts[1]}"
     return parts[0]
 
 
