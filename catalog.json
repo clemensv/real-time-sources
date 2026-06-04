@@ -818,11 +818,11 @@
     "notebook": true
   },
   {
-    "id": "uk-bods-siri",
-    "name": "UK BODS SIRI",
+    "id": "siri",
+    "name": "SIRI",
     "cat": "Transport",
     "key": true,
-    "desc": "England — 28,000+ buses, BODS AVL (requires free API key)",
+    "desc": "Configurable SIRI VehicleMonitoring bridge (BODS, Trafiklab, custom)",
     "kql": true,
     "notebook": true,
     "mqtt": true,

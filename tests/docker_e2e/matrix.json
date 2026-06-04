@@ -1758,22 +1758,22 @@
       "module": "digitraffic_road_amqp"
     },
     {
-      "dir": "feeders/uk-bods-siri",
-      "image": "uk-bods-siri-kafka",
+      "dir": "feeders/siri",
+      "image": "siri-kafka",
       "file": "Dockerfile.kafka",
-      "module": "uk_bods_siri_kafka"
+      "module": "siri_kafka"
     },
     {
-      "dir": "feeders/uk-bods-siri",
-      "image": "uk-bods-siri-mqtt",
+      "dir": "feeders/siri",
+      "image": "siri-mqtt",
       "file": "Dockerfile.mqtt",
-      "module": "uk_bods_siri_mqtt"
+      "module": "siri_mqtt"
     },
     {
-      "dir": "feeders/uk-bods-siri",
-      "image": "uk-bods-siri-amqp",
+      "dir": "feeders/siri",
+      "image": "siri-amqp",
       "file": "Dockerfile.amqp",
-      "module": "uk_bods_siri_amqp"
+      "module": "siri_amqp"
     }
   ],
   "flow": [
@@ -3900,21 +3900,21 @@
       "test_class": "TestDigitrafficRoadAmqpDockerFlow"
     },
     {
-      "dir": "feeders/uk-bods-siri",
+      "dir": "feeders/siri",
       "test_file": "test_docker_kafka_flow.py",
-      "test_class": "TestUkBodsSiriKafkaDockerFlow"
+      "test_class": "TestSiriKafkaDockerFlow"
     },
     {
-      "dir": "feeders/uk-bods-siri",
-      "image": "uk-bods-siri-mqtt",
+      "dir": "feeders/siri",
+      "image": "siri-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
-      "test_class": "TestUkBodsSiriMqttDockerFlow"
+      "test_class": "TestSiriMqttDockerFlow"
     },
     {
-      "dir": "feeders/uk-bods-siri",
-      "image": "uk-bods-siri-amqp",
+      "dir": "feeders/siri",
+      "image": "siri-amqp",
       "test_file": "test_docker_amqp_flow.py",
-      "test_class": "TestUkBodsSiriAmqpDockerFlow"
+      "test_class": "TestSiriAmqpDockerFlow"
     }
   ]
 }

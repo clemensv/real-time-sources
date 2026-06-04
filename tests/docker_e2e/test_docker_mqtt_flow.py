@@ -6214,10 +6214,10 @@ class TestDigitrafficRoadMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_digitraffic_road, digitraffic_road_mqtt_image):
         _run_mqtt_contract_flow('digitraffic-road', digitraffic_road_mqtt_image, mosquitto_digitraffic_road, extra_env={'DIGITRAFFIC_ROAD_MOCK': 'true'}, timeout=300)
 
-class TestUkBodsSiriMqttDockerFlow:
+class TestSiriMqttDockerFlow:
     def test_emits_expected_mqtt_topics(self):
         client = docker.from_env()
-        broker, network, host_port = _generic_mosquitto('uk-bods-siri-mqtt-e2e', 'uk-bods-siri-mqtt-e2e-broker')
+        broker, network, host_port = _generic_mosquitto('siri-mqtt-e2e', 'siri-mqtt-e2e-broker')
         subscriber = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
         messages = []
 
@@ -6234,18 +6234,18 @@ class TestUkBodsSiriMqttDockerFlow:
 
         subscriber.on_message = on_message
         subscriber.connect('127.0.0.1', host_port, 30)
-        subscriber.subscribe('transit/uk/dft/bods/#', qos=1)
+        subscriber.subscribe('transit/siri/#', qos=1)
         subscriber.loop_start()
         try:
-            image = build_image('uk-bods-siri', dockerfile='Dockerfile.mqtt', tag='test-uk-bods-siri-mqtt')
+            image = build_image('siri', dockerfile='Dockerfile.mqtt', tag='test-siri-mqtt')
             feeder = client.containers.run(
                 image.id,
                 detach=True,
                 remove=False,
                 network=network.name,
                 environment={
-                    'MQTT_BROKER_URL': 'mqtt://uk-bods-siri-mqtt-e2e-broker:1883',
-                    'BODS_SAMPLE_MODE': 'true',
+                    'MQTT_BROKER_URL': 'mqtt://siri-mqtt-e2e-broker:1883',
+                    'SIRI_SAMPLE_MODE': 'true',
                     'ONCE_MODE': 'true',
                     'PYTHONUNBUFFERED': '1',
                 },

@@ -915,9 +915,9 @@ class TestDigitrafficRoadAmqpDockerFlow(AmqpDockerFlowBase):
     }
     expected_count = 4
 
-class TestUkBodsSiriAmqpDockerFlow(AmqpDockerFlowBase):
-    source_dir = 'uk-bods-siri'
-    image = 'uk-bods-siri-amqp'
-    env = {'BODS_SAMPLE_MODE': 'true', 'ONCE_MODE': 'true'}
-    expected_types = {'uk.gov.dft.bods.Operator', 'uk.gov.dft.bods.VehiclePosition'}
+class TestSiriAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = 'siri'
+    image = 'siri-amqp'
+    env = {'SIRI_SAMPLE_MODE': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'org.siri.Operator', 'org.siri.VehiclePosition'}
     expected_count = 3

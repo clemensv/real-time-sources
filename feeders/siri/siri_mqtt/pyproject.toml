@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "siri_mqtt"
+version = "0.1.0"
+description = "MQTT feeder for generic SIRI VehicleMonitoring feeds."
+authors = []
+packages = [{ include = "siri_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+azure-identity = ">=1.17.0"
+siri_core = { path = "../siri_core" }
+siri_mqtt_producer_data = { path = "../siri_mqtt_producer/siri_mqtt_producer_data" }
+siri_mqtt_producer_mqtt_client = { path = "../siri_mqtt_producer/siri_mqtt_producer_mqtt_client" }
+
+[tool.poetry.scripts]
+siri-mqtt = "siri_mqtt.app:main"
