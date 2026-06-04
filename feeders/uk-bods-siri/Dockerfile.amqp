@@ -1,0 +1,31 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/uk-bods-siri"
+LABEL org.opencontainers.image.title="UK BODS SIRI → AMQP 1.0 bridge"
+LABEL org.opencontainers.image.description="Polls the UK Department for Transport Bus Open Data Service AVL bulk archive, extracts operator reference data and live SIRI-VM vehicle positions, and publishes CloudEvents over AMQP 1.0 to generic brokers or Azure Service Bus / Event Hubs."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/uk-bods-siri/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends --fix-missing \
+        build-essential cmake pkg-config swig \
+        libssl-dev libsasl2-dev python3-dev \
+        libsasl2-2 libsasl2-modules; \
+    rm -rf /var/lib/apt/lists/*
+
+COPY . /app
+
+RUN pip install --no-cache-dir ./uk_bods_siri_amqp_producer/uk_bods_siri_amqp_producer_data \
+ && pip install --no-cache-dir ./uk_bods_siri_amqp_producer/uk_bods_siri_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir ./uk_bods_siri_core \
+ && pip install --no-cache-dir ./uk_bods_siri_amqp \
+ && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \
+ && rm -rf /root/.cache /var/lib/apt/lists/*
+
+ENV AMQP_BROKER_URL=""
+ENV AMQP_ADDRESS="uk-bods-siri"
+CMD ["python", "-m", "uk_bods_siri_amqp", "feed"]
