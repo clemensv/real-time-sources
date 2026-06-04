@@ -11,7 +11,7 @@ packages = [{ include = "meteoalarm" }]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
-aiohttp = ">=3.10.5"
+aiohttp = ">=3.14.0"
 avro = ">=1.12.1"
 cloudevents = ">=1.11.0,<2.0.0"
 confluent-kafka = ">=2.5.3"
