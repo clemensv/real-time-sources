@@ -98,23 +98,21 @@ def _kql_query(session: requests.Session, kusto_uri: str, db: str, csl: str) -> 
 FDSN_FUNCTIONS = [
     """
 .create-or-alter function with (folder = "Map", skipvalidation = "true") fdsn_recent_events(lookback:timespan) {
-    ['org.fdsn.event.EarthquakeLatest']
+    ['org.fdsn.event.Earthquake']
     | where isnotnull(latitude) and isnotnull(longitude)
     | where latitude between (-89.999 .. 89.999)
     | where longitude between (-179.999 .. 179.999)
-    | extend event_time = coalesce(time, ___time)
+    | extend event_time = coalesce(['time'], ___time)
     | where event_time > ago(lookback)
     | extend
         place = iff(isnotempty(event_location_name), event_location_name, event_id),
-        magnitude = todouble(magnitude),
-        depth_km = todouble(depth_km),
         depth_bucket = case(
             isnull(depth_km), "unknown",
             depth_km < 70, "shallow",
             depth_km < 300, "intermediate",
             "deep"),
         depth_km_label = iff(isnull(depth_km), "", strcat(tostring(round(depth_km, 1)), " km")),
-        event_time_utc = format_datetime(event_time, "yyyy-MM-dd HH:mm:ss'Z'"),
+        event_time_utc = strcat(format_datetime(event_time, "yyyy-MM-dd HH:mm:ss"), "Z"),
         geometry = bag_pack("type", "Point", "coordinates", pack_array(todouble(longitude), todouble(latitude)))
     | project
         geometry,
@@ -585,7 +583,22 @@ def _put_definition(
         json={"definition": {"parts": list(parts.values())}},
     )
     print(f"updateDefinition HTTP {response.status_code}")
-    _poll_lro(fabric, response)
+    try:
+        _poll_lro(fabric, response)
+    except RuntimeError as exc:
+        # Fabric sometimes reports LRO "Failed" with "unknown error" even though
+        # the definition was actually written. Verify by re-fetching.
+        if "unknown error" in str(exc).lower():
+            print("  LRO reported 'unknown error' — verifying definition was saved...")
+            time.sleep(3)
+            try:
+                check_mp, _ = _get_definition(fabric, api_base, workspace_id, map_id)
+                if len(check_mp.get("layerSources", [])) == len(mp.get("layerSources", [])):
+                    print("  Definition verified OK (Fabric false-negative LRO).")
+                    return
+            except Exception:
+                pass
+        raise
 
 
 def _set_basemap(mp: dict[str, Any]) -> None:
