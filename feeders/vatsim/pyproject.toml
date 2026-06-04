@@ -14,7 +14,7 @@ requests = ">=2.34.2"
 confluent-kafka = ">=2.14.2"
 cloudevents = ">=1.12.1,<2.0.0"
 dataclasses_json = ">=0.6.7"
-avro = ">=1.11.3"
+avro = ">=1.12.1"
 vatsim_producer_data = {path = "vatsim_producer/vatsim_producer_data"}
 vatsim_producer_kafka_producer = {path = "vatsim_producer/vatsim_producer_kafka_producer"}
 
