@@ -12,7 +12,7 @@ packages = [{ include = "irail" }]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
-requests = ">=2.32.3"
+requests = ">=2.34.2"
 confluent-kafka = ">=2.5.3"
 cloudevents = ">=1.11.0,<2.0.0"
 dataclasses_json = ">=0.6.7"
