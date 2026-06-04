@@ -16,7 +16,7 @@ idna = ">=3.15"  # CVE pin (transitive via requests)
 confluent-kafka = ">=2.14.2"
 cloudevents = ">=1.12.1,<2.0.0"
 dataclasses_json = ">=0.6.7"
-avro = ">=1.11.3"
+avro = ">=1.12.1"
 smhi_weather_producer_data = {path = "smhi_weather_producer/smhi_weather_producer_data"}
 smhi_weather_producer_kafka_producer = {path = "smhi_weather_producer/smhi_weather_producer_kafka_producer"}
 
