@@ -65,7 +65,7 @@ class TestWaterinfoContainerIntegration:
                 unit_name="meter",
                 parameter_name="H",
             )
-            waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_water_level_reading(reading)
+            waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_water_level_reading(reading.station_no, reading)
 
             # Send a mock station
             station = Station(
@@ -79,7 +79,7 @@ class TestWaterinfoContainerIntegration:
                 ts_id="306367042",
                 ts_unitname="meter",
             )
-            waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_station(station)
+            waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_station(station.station_no, station)
 
             # Consume and verify
             consumer = _create_consumer(bootstrap_servers)
@@ -136,7 +136,7 @@ class TestWaterinfoLiveContainerIntegration:
                     ts_id="",
                     ts_unitname="",
                 )
-                waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_station(station, flush_producer=False)
+                waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_station(station.station_no, station, flush_producer=False)
             producer.flush()
 
             consumer = _create_consumer(bootstrap_servers)
@@ -177,7 +177,7 @@ class TestWaterinfoLiveContainerIntegration:
                     unit_name=entry.get("ts_unitname", "meter"),
                     parameter_name=entry.get("stationparameter_name", "H"),
                 )
-                waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_water_level_reading(reading, flush_producer=False)
+                waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_water_level_reading(reading.station_no, reading, flush_producer=False)
                 sent_count += 1
             producer.flush()
 
