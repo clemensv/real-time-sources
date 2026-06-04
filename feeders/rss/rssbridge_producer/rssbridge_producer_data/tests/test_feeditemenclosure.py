@@ -28,9 +28,9 @@ class Test_FeedItemEnclosure(unittest.TestCase):
         Create instance of FeedItemEnclosure for testing
         """
         instance = FeedItemEnclosure(
-            href='poqkbsolmzqnkjohqndm',
-            length=int(1),
-            type='jpzwsksbufhzysdnnxvb'
+            href='ghfohxsnbhpiucwbrsmj',
+            length=int(38),
+            type='nyfunbazwfekecgjgglo'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_FeedItemEnclosure(unittest.TestCase):
         """
         Test href property
         """
-        test_value = 'poqkbsolmzqnkjohqndm'
+        test_value = 'ghfohxsnbhpiucwbrsmj'
         self.instance.href = test_value
         self.assertEqual(self.instance.href, test_value)
     
@@ -47,7 +47,7 @@ class Test_FeedItemEnclosure(unittest.TestCase):
         """
         Test length property
         """
-        test_value = int(1)
+        test_value = int(38)
         self.instance.length = test_value
         self.assertEqual(self.instance.length, test_value)
     
@@ -55,7 +55,7 @@ class Test_FeedItemEnclosure(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'jpzwsksbufhzysdnnxvb'
+        test_value = 'nyfunbazwfekecgjgglo'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     

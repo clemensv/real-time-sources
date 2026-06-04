@@ -2117,27 +2117,6 @@ class TestJMAJapanDockerFlow:
 class TestWikimediaOsmDiffsDockerFlow:
     TOPIC = 'test-wikimedia-osm-diffs'
 
-    # WORKAROUND(https://github.com/clemensv/avrotize/issues/348): avrotize 3.5.9
-    # fixed int64-as-string serialization for *bare* int64 fields
-    # (sequence_number, element_id, changeset_id now serialize correctly as JSON
-    # strings — see clemensv/avrotize#346). But the fix does NOT cover *nullable*
-    # union fields typed ["int64","null"]: MapChange.user_id still serializes as a
-    # JSON number, which JSON Structure Core forbids. The E2E schema validator
-    # (correctly) rejects it, so this deterministic synthetic-producer test now
-    # fails on `Expected int64 as string at #/user_id, got int` (the failure moved
-    # from sequence_number to user_id). This is a real generator bug, not a test
-    # issue; do NOT set user_id=None or string-encode the synthetic data to
-    # force-green it (that would hide the production defect). Skip loudly until the
-    # upstream nullable-union codegen fix lands, then delete this marker — the test
-    # body already exercises the corrected wire format. A second, related
-    # under-reporting bug in the reference validator was tracked at
-    # https://github.com/json-structure/sdk/issues/160.
-    @pytest.mark.skip(reason=(
-        "WORKAROUND(clemensv/avrotize#348): avrotize 3.5.9 fixed bare int64 "
-        "string-encoding (#346) but nullable [\"int64\",\"null\"] fields "
-        "(MapChange.user_id) still emit JSON numbers; JSON Structure Core "
-        "requires int64 as string. Blocked on upstream nullable-union fix."
-    ))
     def test_emits_telemetry(self, kafka: KafkaFixture, wikimedia_osm_diffs_image):
         # The live feeder must download the OpenStreetMap minutely replication
         # state plus a full diff file and reassemble element changes before it

@@ -155,7 +155,7 @@ class StopAreas:
             An instance of the dataclass.
         """
         return cls(
-            stopAreaId='csypzmgagowrrmrzsnve',
-            stopId='ndvzxngxzjuqgvaqffxm',
-            areaId='dmgqaasdoczzeqcqlxjt'
+            stopAreaId='jquqqoomjvqhxvybpccm',
+            stopId='qtmiqvrszuovtfwwndol',
+            areaId='lsiwyogiphoqpcuuzsfe'
         )

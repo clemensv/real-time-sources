@@ -178,10 +178,10 @@ class VehiclePosition:
             trip=None,
             vehicle=None,
             position=None,
-            current_stop_sequence=int(4),
-            stop_id='dookojsxojvqvcqtlsao',
+            current_stop_sequence=int(28),
+            stop_id='kyezzvskupsazmztseei',
             current_status=None,
-            timestamp=int(2),
+            timestamp=int(14),
             congestion_level=None,
             occupancy_status=None
         )

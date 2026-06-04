@@ -185,20 +185,20 @@ class Record:
             An instance of the dataclass.
         """
         return cls(
-            icao24='qbwrdehnmkiuilmyystr',
-            receiver_id='jtpppdyfkmcvnpktkmzc',
-            msg_type='nzlzeydqkdxwftnhztge',
-            ts=int(96),
-            df=int(50),
-            tc=int(70),
-            bcode='blvumxkaqxvyqhugeqyv',
-            alt=int(89),
-            cs='lqvcchrbdguntuymicyf',
-            sq='bqbzatpbfncjnfcqivkm',
-            lat=float(16.161695719354764),
-            lon=float(41.31001988343771),
-            spd=float(10.173805575391592),
-            ang=float(85.68910177233435),
-            vr=int(20),
-            rssi=float(85.385421122737)
+            icao24='kngvggsmkcjufarpdklk',
+            receiver_id='yvdpqurxtgilfzruasjj',
+            msg_type='vmgaodpstpmdelpxuniw',
+            ts=int(86),
+            df=int(63),
+            tc=int(6),
+            bcode='drupvimpsuyfeppjyvuh',
+            alt=int(54),
+            cs='xptdtdjkfcwcinhwsnkn',
+            sq='fqehureanrcgmlhsnlsd',
+            lat=float(84.45820137389084),
+            lon=float(54.859419218022744),
+            spd=float(95.60778742689273),
+            ang=float(99.07927448046253),
+            vr=int(69),
+            rssi=float(63.089101375703564)
         )

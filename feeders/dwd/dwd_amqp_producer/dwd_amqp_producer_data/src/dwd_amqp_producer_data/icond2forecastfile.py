@@ -45,7 +45,7 @@ class IconD2ForecastFile:
     level_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="level_type"))
     level: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="level"))
     modified: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="modified"))
-    size_bytes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="size_bytes"))
+    size_bytes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="size_bytes", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
     variable: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="variable"))
     file_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_id"))
@@ -61,6 +61,8 @@ class IconD2ForecastFile:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'size_bytes' in data and isinstance(data['size_bytes'], str):
+            data['size_bytes'] = int(data['size_bytes'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -71,6 +73,8 @@ class IconD2ForecastFile:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'size_bytes' in asdict_result and asdict_result['size_bytes'] is not None:
+            asdict_result['size_bytes'] = str(asdict_result['size_bytes'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -175,17 +179,17 @@ class IconD2ForecastFile:
             An instance of the dataclass.
         """
         return cls(
-            file_url='ngjdgygbmdvlipdhlwdp',
-            model='fnykyflqiegvtcstrqwy',
-            file_name='vhsvgktoefykndqovwid',
-            run='goxayybiunemiftmebej',
-            forecast_hour=int(18),
-            parameter='hqboqiozxbtgblsaktzb',
-            level_type='ypljxpfwdzoykyqldkmx',
-            level='hoocswsagalysjlafxrt',
-            modified='vhwjildjmgnjxqyavsko',
-            size_bytes=int(4),
-            state='ddasfaoqjsmvjkfdwrxw',
-            variable='aocdaixyeevzuccbyiik',
-            file_id='yaekiuyogmczeygteaod'
+            file_url='yzuwkwoatadihcsjclva',
+            model='dcilnqhvvrvnvbzkvvwc',
+            file_name='qczxolhwwijtabdktpku',
+            run='kjhqigzbkpxcwbpcmkxi',
+            forecast_hour=int(25),
+            parameter='htaxstocpqsfcrsixrry',
+            level_type='bliiacjctwbgzcetbofz',
+            level='kqncxjwzeeafguycznqc',
+            modified='yctgfntmyalteabgbygs',
+            size_bytes=int(41),
+            state='birpslrnkqahktonqlrr',
+            variable='bzmpfvgntewanxpwuriq',
+            file_id='esyhpuysjnvyniazvnyq'
         )

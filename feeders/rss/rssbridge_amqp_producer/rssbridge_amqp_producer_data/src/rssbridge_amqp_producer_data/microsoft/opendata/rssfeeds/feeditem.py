@@ -11,14 +11,14 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.link import Link
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
 from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
 from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
-from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.link import Link
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
+from rssbridge_amqp_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -209,22 +209,22 @@ class FeedItem:
             An instance of the dataclass.
         """
         return cls(
-            feed_slug='bgyomihcacxvciyopqzj',
-            item='ehpqpgtmkhrgrgkrgtjt',
+            feed_slug='rzlttftxocnloreojugd',
+            item='ujltaaprgrqbifehhdbt',
             author=None,
             publisher=None,
             summary=None,
             title=None,
             source=None,
-            content=[None, None, None, None],
-            enclosures=[None, None, None],
-            published=int(69),
-            updated=int(28),
-            created=int(7),
-            expired=int(58),
-            id='omnrjcvgtkcujnveubqe',
-            license='hhcbghzdgabrlhxfagoa',
-            comments='mbptifvyonflqcorharc',
-            contributors=[None],
-            links=[None, None, None, None, None]
+            content=[None, None, None],
+            enclosures=[None, None, None, None, None],
+            published=int(62),
+            updated=int(6),
+            created=int(18),
+            expired=int(18),
+            id='hgcsxekqxcvltgcoqprs',
+            license='fjbjmynzipvxslmemtxf',
+            comments='paydlpcctovlfdsamrem',
+            contributors=[None, None, None, None],
+            links=[None]
         )

@@ -29,12 +29,12 @@ class Test_GridSignal(unittest.TestCase):
         Create instance of GridSignal for testing
         """
         instance = GridSignal(
-            country='ojedftlweijzxmzrvwwc',
+            country='rfimfxjjjiuidnuvfcpl',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(57),
-            signal=int(23),
-            renewable_share_pct=float(53.49697711334485),
-            substitute=True
+            unix_seconds=int(8),
+            signal=int(32),
+            renewable_share_pct=float(20.86940228328913),
+            substitute=False
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_GridSignal(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'ojedftlweijzxmzrvwwc'
+        test_value = 'rfimfxjjjiuidnuvfcpl'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -59,7 +59,7 @@ class Test_GridSignal(unittest.TestCase):
         """
         Test unix_seconds property
         """
-        test_value = int(57)
+        test_value = int(8)
         self.instance.unix_seconds = test_value
         self.assertEqual(self.instance.unix_seconds, test_value)
     
@@ -67,7 +67,7 @@ class Test_GridSignal(unittest.TestCase):
         """
         Test signal property
         """
-        test_value = int(23)
+        test_value = int(32)
         self.instance.signal = test_value
         self.assertEqual(self.instance.signal, test_value)
     
@@ -75,7 +75,7 @@ class Test_GridSignal(unittest.TestCase):
         """
         Test renewable_share_pct property
         """
-        test_value = float(53.49697711334485)
+        test_value = float(20.86940228328913)
         self.instance.renewable_share_pct = test_value
         self.assertEqual(self.instance.renewable_share_pct, test_value)
     
@@ -83,7 +83,7 @@ class Test_GridSignal(unittest.TestCase):
         """
         Test substitute property
         """
-        test_value = True
+        test_value = False
         self.instance.substitute = test_value
         self.assertEqual(self.instance.substitute, test_value)
     

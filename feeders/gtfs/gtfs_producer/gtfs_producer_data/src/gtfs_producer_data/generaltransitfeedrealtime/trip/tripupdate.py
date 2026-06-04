@@ -169,6 +169,6 @@ class TripUpdate:
             trip=None,
             vehicle=None,
             stop_time_update=[None, None, None],
-            timestamp=int(13),
-            delay=int(27)
+            timestamp=int(54),
+            delay=int(84)
         )

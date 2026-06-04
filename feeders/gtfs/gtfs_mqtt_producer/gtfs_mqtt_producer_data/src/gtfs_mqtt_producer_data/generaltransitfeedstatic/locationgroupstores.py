@@ -155,7 +155,7 @@ class LocationGroupStores:
             An instance of the dataclass.
         """
         return cls(
-            locationGroupStoreId='pxlvjsukfitsvecgdhtf',
-            locationGroupId='iqvxasuhijdmnfbezpwg',
-            storeId='dxwjhzwgzrhmalahdrmu'
+            locationGroupStoreId='pnfryzvckunsidnjkjlm',
+            locationGroupId='wirjjtrwrlpdjvwphqvv',
+            storeId='ksxfmtuokzztrfnpgxnw'
         )

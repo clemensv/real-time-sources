@@ -157,8 +157,8 @@ class Link:
             An instance of the dataclass.
         """
         return cls(
-            rel='oclhgddwhlyzzuzsvazk',
-            href='tjfdjtesctpkzufjsvlc',
-            type='mximzgyfxqgpnbhztsvy',
-            title='jnllbayjrzzpfzgxjpnr'
+            rel='meagzpdslcvpwvhlziln',
+            href='vqbldgiyhsbbrxuoqlbt',
+            type='enmvxhkzruviwizrgjcg',
+            title='kywzfbxcedefcouhhxaq'
         )

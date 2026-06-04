@@ -157,8 +157,8 @@ class FeedItemSummary:
             An instance of the dataclass.
         """
         return cls(
-            value='yvufrgijktmhcueeckdr',
-            type='ptgcbadjbrnkbatkyakp',
-            language='vmekflrmydukrjhckmym',
-            base='vxsfzgzacgiidefpwtul'
+            value='rncgacmdclbcthqnrflu',
+            type='ygdmwulrkxuuusfeakra',
+            language='soofauvhpkjkoeusuiuu',
+            base='mhqhbvgjbnkctxuoydcz'
         )

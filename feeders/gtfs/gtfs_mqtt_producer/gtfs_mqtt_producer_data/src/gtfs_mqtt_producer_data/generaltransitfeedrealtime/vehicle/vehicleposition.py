@@ -11,9 +11,9 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.position import Position
 from typing import Any
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.position import Position
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
 
 
@@ -178,10 +178,10 @@ class VehiclePosition:
             trip=None,
             vehicle=None,
             position=None,
-            current_stop_sequence=int(84),
-            stop_id='hawrrnlsuyjkjtddbduc',
+            current_stop_sequence=int(27),
+            stop_id='pvmadilgqwnfcmlpimqc',
             current_status=None,
-            timestamp=int(47),
+            timestamp=int(82),
             congestion_level=None,
             occupancy_status=None
         )

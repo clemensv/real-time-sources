@@ -35,7 +35,7 @@ class RadarFileProduct:
     product: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="product"))
     file_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_name"))
     modified: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="modified"))
-    size_bytes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="size_bytes"))
+    size_bytes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="size_bytes", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     file_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_id"))
     state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
     product_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="product_type"))
@@ -51,6 +51,8 @@ class RadarFileProduct:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'size_bytes' in data and isinstance(data['size_bytes'], str):
+            data['size_bytes'] = int(data['size_bytes'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -61,6 +63,8 @@ class RadarFileProduct:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'size_bytes' in asdict_result and asdict_result['size_bytes'] is not None:
+            asdict_result['size_bytes'] = str(asdict_result['size_bytes'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -165,12 +169,12 @@ class RadarFileProduct:
             An instance of the dataclass.
         """
         return cls(
-            file_url='ssuzclwcbhywhncpbmsl',
-            product='lbohbulvsevaklhjyxrj',
-            file_name='relybinnusxvsgldvfcx',
-            modified='zrgvbouytapybvbxtobe',
-            size_bytes=int(48),
-            file_id='ltfvnpdwlyfvboerlqoc',
-            state='bespnrwlnpwwrsuhhcmf',
-            product_type='gephfjxgqruimkozktxq'
+            file_url='zzryucualtyokkrmxtij',
+            product='symyceoyrtedrufsgwky',
+            file_name='ajnapypbydloboxqhmeg',
+            modified='eeohzmmdyuhohozugpat',
+            size_bytes=int(86),
+            file_id='lmfmflcbwezxwsyspodp',
+            state='oonmqpkqjiwyvzfxnyvr',
+            product_type='axzremkvqqtivcjitawg'
         )

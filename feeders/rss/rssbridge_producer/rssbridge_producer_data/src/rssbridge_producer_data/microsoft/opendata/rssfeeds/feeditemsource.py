@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -179,16 +179,16 @@ class FeedItemSource:
             An instance of the dataclass.
         """
         return cls(
-            author='mezxrgogsnzsoudqhiop',
+            author='nnmqifnsgjowjerbzoze',
             author_detail=None,
-            contributors=[None, None, None, None, None],
-            icon='safwikzlrxjcjvkzxwpg',
-            id='sgmwbgqybijfqynoists',
-            link='yymwljbnjlstcljtvows',
-            links=[None, None, None, None, None],
-            logo='xoolbyoqsowtecxleoin',
-            rights='pzbsdhnykjhxyajjmlbz',
-            subtitle='wsdgnkwmavbkhipxspax',
-            title='fivzljovzjfxlvgpvxzq',
-            updated=int(66)
+            contributors=[None, None],
+            icon='uzzlqrdjilfjnpreirtc',
+            id='wbxeseneffnfhfjtenqw',
+            link='sydgrhhsjpepiuqmejba',
+            links=[None, None, None],
+            logo='dcgoprszrdbwzyioprmd',
+            rights='bckjixynhlyxgvlghliu',
+            subtitle='qubhatevfsmeazukwbkq',
+            title='qwuecaocgijbjsmthnks',
+            updated=int(93)
         )

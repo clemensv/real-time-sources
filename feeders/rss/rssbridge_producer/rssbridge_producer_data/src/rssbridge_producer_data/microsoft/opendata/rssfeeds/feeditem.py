@@ -11,14 +11,14 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -209,22 +209,22 @@ class FeedItem:
             An instance of the dataclass.
         """
         return cls(
-            feed_slug='wyaimgrxswnxwyuwwqgy',
-            item='gbhfyjaetrrxsnfmwclc',
+            feed_slug='kxuwsemufdbyekwdcwfs',
+            item='pvpdbybxlgtowergqbmh',
             author=None,
             publisher=None,
             summary=None,
             title=None,
             source=None,
             content=[None, None],
-            enclosures=[None, None, None],
-            published=int(74),
-            updated=int(19),
-            created=int(8),
-            expired=int(93),
-            id='eriesuosfshlszuqkpsd',
-            license='epbbbwptcxuixdiglrxl',
-            comments='mnzkqkccrmlpipyjdjpq',
-            contributors=[None, None],
-            links=[None, None]
+            enclosures=[None],
+            published=int(83),
+            updated=int(77),
+            created=int(92),
+            expired=int(35),
+            id='xhyicfxyjhaumxqjxxae',
+            license='aqafquooynkmepntyncj',
+            comments='sdlskummhvxxyzsdgkck',
+            contributors=[None],
+            links=[None]
         )

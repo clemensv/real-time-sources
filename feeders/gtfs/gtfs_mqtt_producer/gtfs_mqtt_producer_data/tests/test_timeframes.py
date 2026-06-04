@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from gtfs_mqtt_producer_data.generaltransitfeedstatic.timeframes import Timeframes
-from gtfs_mqtt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 from gtfs_mqtt_producer_data.generaltransitfeedstatic.calendar import Calendar
+from gtfs_mqtt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 
 
 class Test_Timeframes(unittest.TestCase):
@@ -30,9 +30,9 @@ class Test_Timeframes(unittest.TestCase):
         Create instance of Timeframes for testing
         """
         instance = Timeframes(
-            timeframeGroupId='iemzqbxtjjlhrmmecmjm',
-            startTime='mvtehpvjeumsscljhvhy',
-            endTime='lkgvcbcuyicbxxezxbjh',
+            timeframeGroupId='nmrpoywhjwphobtihyrl',
+            startTime='qughnucfhgkbknjjaptp',
+            endTime='sckmhlzknjprskoxuahh',
             serviceDates=None
         )
         return instance
@@ -42,7 +42,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test timeframeGroupId property
         """
-        test_value = 'iemzqbxtjjlhrmmecmjm'
+        test_value = 'nmrpoywhjwphobtihyrl'
         self.instance.timeframeGroupId = test_value
         self.assertEqual(self.instance.timeframeGroupId, test_value)
     
@@ -50,7 +50,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test startTime property
         """
-        test_value = 'mvtehpvjeumsscljhvhy'
+        test_value = 'qughnucfhgkbknjjaptp'
         self.instance.startTime = test_value
         self.assertEqual(self.instance.startTime, test_value)
     
@@ -58,7 +58,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test endTime property
         """
-        test_value = 'lkgvcbcuyicbxxezxbjh'
+        test_value = 'sckmhlzknjprskoxuahh'
         self.instance.endTime = test_value
         self.assertEqual(self.instance.endTime, test_value)
     

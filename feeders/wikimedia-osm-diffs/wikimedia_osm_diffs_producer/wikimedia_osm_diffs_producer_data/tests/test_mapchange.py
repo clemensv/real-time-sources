@@ -29,19 +29,19 @@ class Test_MapChange(unittest.TestCase):
         Create instance of MapChange for testing
         """
         instance = MapChange(
-            change_type='qswzolxmjhjqnbzbenar',
-            element_type='rbeeeimljytznmvmebhb',
-            element_id=int(86),
-            geohash5='yothjyzupjzyhezfegqy',
-            version=int(42),
+            change_type='miakfljmaigszxeojeaj',
+            element_type='awecjujlbbxdmdnxyqxi',
+            element_id=int(9),
+            geohash5='qwolsoqmnikylhdbpmke',
+            version=int(82),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            changeset_id=int(93),
-            user_name='qrfxzmgcbmecfhgybljy',
-            user_id=int(74),
-            latitude=float(59.77712121711628),
-            longitude=float(39.76279761215301),
-            tags='lrdgqunkxhqhqxvvgxeu',
-            sequence_number=int(97)
+            changeset_id=int(56),
+            user_name='oedudcnkvqooxlexygnc',
+            user_id=int(2),
+            latitude=float(34.431206358819125),
+            longitude=float(20.00634572853879),
+            tags='blhhxegqkvridcniwmae',
+            sequence_number=int(42)
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_MapChange(unittest.TestCase):
         """
         Test change_type property
         """
-        test_value = 'qswzolxmjhjqnbzbenar'
+        test_value = 'miakfljmaigszxeojeaj'
         self.instance.change_type = test_value
         self.assertEqual(self.instance.change_type, test_value)
     
@@ -58,7 +58,7 @@ class Test_MapChange(unittest.TestCase):
         """
         Test element_type property
         """
-        test_value = 'rbeeeimljytznmvmebhb'
+        test_value = 'awecjujlbbxdmdnxyqxi'
         self.instance.element_type = test_value
         self.assertEqual(self.instance.element_type, test_value)
     
@@ -66,7 +66,7 @@ class Test_MapChange(unittest.TestCase):
         """
         Test element_id property
         """
-        test_value = int(86)
+        test_value = int(9)
         self.instance.element_id = test_value
         self.assertEqual(self.instance.element_id, test_value)
     
@@ -74,7 +74,7 @@ class Test_MapChange(unittest.TestCase):
         """
         Test geohash5 property
         """
-        test_value = 'yothjyzupjzyhezfegqy'
+        test_value = 'qwolsoqmnikylhdbpmke'
         self.instance.geohash5 = test_value
         self.assertEqual(self.instance.geohash5, test_value)
     
@@ -82,7 +82,7 @@ class Test_MapChange(unittest.TestCase):
         """
         Test version property
         """
-        test_value = int(42)
+        test_value = int(82)
         self.instance.version = test_value
         self.assertEqual(self.instance.version, test_value)
     
@@ -98,7 +98,7 @@ class Test_MapChange(unittest.TestCase):
         """
         Test changeset_id property
         """
-        test_value = int(93)
+        test_value = int(56)
         self.instance.changeset_id = test_value
         self.assertEqual(self.instance.changeset_id, test_value)
     
@@ -106,7 +106,7 @@ class Test_MapChange(unittest.TestCase):
         """
         Test user_name property
         """
-        test_value = 'qrfxzmgcbmecfhgybljy'
+        test_value = 'oedudcnkvqooxlexygnc'
         self.instance.user_name = test_value
         self.assertEqual(self.instance.user_name, test_value)
     
@@ -114,7 +114,7 @@ class Test_MapChange(unittest.TestCase):
         """
         Test user_id property
         """
-        test_value = int(74)
+        test_value = int(2)
         self.instance.user_id = test_value
         self.assertEqual(self.instance.user_id, test_value)
     
@@ -122,7 +122,7 @@ class Test_MapChange(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(59.77712121711628)
+        test_value = float(34.431206358819125)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -130,7 +130,7 @@ class Test_MapChange(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(39.76279761215301)
+        test_value = float(20.00634572853879)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -138,7 +138,7 @@ class Test_MapChange(unittest.TestCase):
         """
         Test tags property
         """
-        test_value = 'lrdgqunkxhqhqxvvgxeu'
+        test_value = 'blhhxegqkvridcniwmae'
         self.instance.tags = test_value
         self.assertEqual(self.instance.tags, test_value)
     
@@ -146,7 +146,7 @@ class Test_MapChange(unittest.TestCase):
         """
         Test sequence_number property
         """
-        test_value = int(97)
+        test_value = int(42)
         self.instance.sequence_number = test_value
         self.assertEqual(self.instance.sequence_number, test_value)
     

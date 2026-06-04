@@ -155,7 +155,7 @@ class FeedItemAuthor:
             An instance of the dataclass.
         """
         return cls(
-            name='pksuwcgyoxohowlytaxq',
-            href='pygnyqlraevrjijkbyka',
-            email='mrrxkdbblhxnfycfksfh'
+            name='xexywjqfadsesqthuuvn',
+            href='eqvpydozadhnqmpnqvsf',
+            email='grlwvrcsxicgecemaqtn'
         )

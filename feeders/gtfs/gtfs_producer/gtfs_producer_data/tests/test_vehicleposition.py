@@ -35,10 +35,10 @@ class Test_VehiclePosition(unittest.TestCase):
             trip=None,
             vehicle=None,
             position=None,
-            current_stop_sequence=int(76),
-            stop_id='xpjdhysfkopkuneifmff',
+            current_stop_sequence=int(92),
+            stop_id='ujrbopdrajgcxzkuwprm',
             current_status=None,
-            timestamp=int(8),
+            timestamp=int(7),
             congestion_level=None,
             occupancy_status=None
         )
@@ -73,7 +73,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test current_stop_sequence property
         """
-        test_value = int(76)
+        test_value = int(92)
         self.instance.current_stop_sequence = test_value
         self.assertEqual(self.instance.current_stop_sequence, test_value)
     
@@ -81,7 +81,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test stop_id property
         """
-        test_value = 'xpjdhysfkopkuneifmff'
+        test_value = 'ujrbopdrajgcxzkuwprm'
         self.instance.stop_id = test_value
         self.assertEqual(self.instance.stop_id, test_value)
     
@@ -97,7 +97,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(8)
+        test_value = int(7)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     

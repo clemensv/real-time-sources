@@ -157,8 +157,8 @@ class Translations:
             An instance of the dataclass.
         """
         return cls(
-            tableName='nxbezxydjdimfquweffn',
-            fieldName='xlkbqlnfqcvyiwnqbgbk',
-            language='hbmosbryvkvohpuuaqul',
-            translation='aqaoydljvjkjwaaxswqk'
+            tableName='qfhbcbeddykwjzypbura',
+            fieldName='vcoqxplehlhttqpanshk',
+            language='ctbqqbosmpjwlgpxvgqi',
+            translation='uzmlqmrbkothyjxqdnfv'
         )

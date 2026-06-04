@@ -155,7 +155,7 @@ class VehicleDescriptor:
             An instance of the dataclass.
         """
         return cls(
-            id='vowrblkzipumamuslctf',
-            label='mcdrqxpniyrmvxtippey',
-            license_plate='fmuzabaawomgtbisvhap'
+            id='hzmqcwnyinbxsyyglwwb',
+            label='ypefulbvenlohyhppgwm',
+            license_plate='iodjvojwvxkvkjmhudww'
         )

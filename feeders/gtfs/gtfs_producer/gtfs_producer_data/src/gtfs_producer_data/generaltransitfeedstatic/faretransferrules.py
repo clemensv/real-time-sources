@@ -167,11 +167,11 @@ class FareTransferRules:
             An instance of the dataclass.
         """
         return cls(
-            fareTransferRuleId='xempduecssdmsdihzzpp',
-            fareProductId='khqesrdayoqzusreictw',
-            transferCount=int(10),
-            fromLegGroupId='srnykpuguisxbkqgfmiy',
-            toLegGroupId='nmbenmoyzfthwwgdsqas',
-            duration=int(7),
-            durationType='vqooucgubcdvlvoyafpx'
+            fareTransferRuleId='zvieathgbtacyiqymdba',
+            fareProductId='xomqgwwfpkrcrkujrsei',
+            transferCount=int(47),
+            fromLegGroupId='yyhtpytikhrnfphfrgpy',
+            toLegGroupId='nrernagbkyaskumidawg',
+            duration=int(45),
+            durationType='dzjrbjrdsvxhflfacpcu'
         )

@@ -159,9 +159,9 @@ class Shapes:
             An instance of the dataclass.
         """
         return cls(
-            shapeId='iixjpzykljehzwxjdmvm',
-            shapePtLat=float(89.3962610370999),
-            shapePtLon=float(96.32932711306644),
-            shapePtSequence=int(65),
-            shapeDistTraveled=float(94.25638692006387)
+            shapeId='cbnkwpotrqrhrwtrdzdg',
+            shapePtLat=float(65.14343933375169),
+            shapePtLon=float(8.179347641793777),
+            shapePtSequence=int(61),
+            shapeDistTraveled=float(16.489144164989288)
         )

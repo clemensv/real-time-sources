@@ -28,14 +28,14 @@ class Test_StationMetadata(unittest.TestCase):
         Create instance of StationMetadata for testing
         """
         instance = StationMetadata(
-            station_id='lyzhfnzlalbdtpnzihnu',
-            station_name='kujnyhyhzxgetkbbhnyx',
-            latitude=float(52.17100803355499),
-            longitude=float(35.7968339705412),
-            elevation=float(53.5716295745416),
-            state='tzlscjyqfhefngmyytqo',
-            from_date='uqtyorhbtwmffknzkhmv',
-            to_date='nlxvxbaqdbsfmwdjojlg'
+            station_id='ecmwiopxjjlqxcxvxghw',
+            station_name='qxupbigruqryjbrumdmm',
+            latitude=float(41.17651299399887),
+            longitude=float(75.03515850231206),
+            elevation=float(45.892195485563256),
+            state='yyvdclaxzusztnjmocim',
+            from_date='abymnnpusbmmhfkdgcpz',
+            to_date='hbcnmtybewucnjvlvcrm'
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'lyzhfnzlalbdtpnzihnu'
+        test_value = 'ecmwiopxjjlqxcxvxghw'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -52,7 +52,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'kujnyhyhzxgetkbbhnyx'
+        test_value = 'qxupbigruqryjbrumdmm'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -60,7 +60,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(52.17100803355499)
+        test_value = float(41.17651299399887)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -68,7 +68,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(35.7968339705412)
+        test_value = float(75.03515850231206)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -76,7 +76,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test elevation property
         """
-        test_value = float(53.5716295745416)
+        test_value = float(45.892195485563256)
         self.instance.elevation = test_value
         self.assertEqual(self.instance.elevation, test_value)
     
@@ -84,7 +84,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'tzlscjyqfhefngmyytqo'
+        test_value = 'yyvdclaxzusztnjmocim'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -92,7 +92,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test from_date property
         """
-        test_value = 'uqtyorhbtwmffknzkhmv'
+        test_value = 'abymnnpusbmmhfkdgcpz'
         self.instance.from_date = test_value
         self.assertEqual(self.instance.from_date, test_value)
     
@@ -100,7 +100,7 @@ class Test_StationMetadata(unittest.TestCase):
         """
         Test to_date property
         """
-        test_value = 'nlxvxbaqdbsfmwdjojlg'
+        test_value = 'hbcnmtybewucnjvlvcrm'
         self.instance.to_date = test_value
         self.assertEqual(self.instance.to_date, test_value)
     

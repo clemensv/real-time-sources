@@ -29,17 +29,17 @@ class Test_StopTimes(unittest.TestCase):
         Create instance of StopTimes for testing
         """
         instance = StopTimes(
-            tripId='bjaljieemsbnwhyuhskm',
-            arrivalTime='rwsqgcdzpkqwtshixnjj',
-            departureTime='dpryykdiogptwwpdmgsy',
-            stopId='ngxdbhlmbewpbsbinqcq',
-            stopSequence=int(90),
-            stopHeadsign='himombclsyzeoeuwbrub',
+            tripId='bwpwczlryczbhwkxkwcz',
+            arrivalTime='pticjyohzekffnximzzy',
+            departureTime='wgfuxfxawuwtpqzfyije',
+            stopId='aefapfrkpgeyoqqhhmpc',
+            stopSequence=int(33),
+            stopHeadsign='aqfjtiejkpobrsmzamza',
             pickupType=None,
             dropOffType=None,
             continuousPickup=None,
             continuousDropOff=None,
-            shapeDistTraveled=float(42.394333827350636),
+            shapeDistTraveled=float(96.50540079628355),
             timepoint=None
         )
         return instance
@@ -49,7 +49,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test tripId property
         """
-        test_value = 'bjaljieemsbnwhyuhskm'
+        test_value = 'bwpwczlryczbhwkxkwcz'
         self.instance.tripId = test_value
         self.assertEqual(self.instance.tripId, test_value)
     
@@ -57,7 +57,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test arrivalTime property
         """
-        test_value = 'rwsqgcdzpkqwtshixnjj'
+        test_value = 'pticjyohzekffnximzzy'
         self.instance.arrivalTime = test_value
         self.assertEqual(self.instance.arrivalTime, test_value)
     
@@ -65,7 +65,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test departureTime property
         """
-        test_value = 'dpryykdiogptwwpdmgsy'
+        test_value = 'wgfuxfxawuwtpqzfyije'
         self.instance.departureTime = test_value
         self.assertEqual(self.instance.departureTime, test_value)
     
@@ -73,7 +73,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test stopId property
         """
-        test_value = 'ngxdbhlmbewpbsbinqcq'
+        test_value = 'aefapfrkpgeyoqqhhmpc'
         self.instance.stopId = test_value
         self.assertEqual(self.instance.stopId, test_value)
     
@@ -81,7 +81,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test stopSequence property
         """
-        test_value = int(90)
+        test_value = int(33)
         self.instance.stopSequence = test_value
         self.assertEqual(self.instance.stopSequence, test_value)
     
@@ -89,7 +89,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test stopHeadsign property
         """
-        test_value = 'himombclsyzeoeuwbrub'
+        test_value = 'aqfjtiejkpobrsmzamza'
         self.instance.stopHeadsign = test_value
         self.assertEqual(self.instance.stopHeadsign, test_value)
     
@@ -129,7 +129,7 @@ class Test_StopTimes(unittest.TestCase):
         """
         Test shapeDistTraveled property
         """
-        test_value = float(42.394333827350636)
+        test_value = float(96.50540079628355)
         self.instance.shapeDistTraveled = test_value
         self.assertEqual(self.instance.shapeDistTraveled, test_value)
     

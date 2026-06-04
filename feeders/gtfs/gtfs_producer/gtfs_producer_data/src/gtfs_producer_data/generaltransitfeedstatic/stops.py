@@ -180,19 +180,19 @@ class Stops:
             An instance of the dataclass.
         """
         return cls(
-            stopId='oiwfmomiqrvguhrrgmrx',
-            stopCode='lgbsiubirumrcjlwqyqt',
-            stopName='ofrhfgfjjelxgkbkrwhu',
-            ttsStopName='scahaahhcggphzhrojaz',
-            stopDesc='jfncspbyzuhumnusyjqa',
-            stopLat=float(5.501777251747497),
-            stopLon=float(47.971847617100735),
-            zoneId='gukvnlamdiclznlkxpxt',
-            stopUrl='uylowebmjpknoaadcqgv',
+            stopId='uieiwopfsjnuhknhlqhv',
+            stopCode='rjwycddrmygvwseuectr',
+            stopName='avyvsdksnymprxgqepdy',
+            ttsStopName='ukwphydxmoitbwmyloxr',
+            stopDesc='zkcqkfdiqumbiyiqzmne',
+            stopLat=float(18.057511627867562),
+            stopLon=float(74.86739356074689),
+            zoneId='vttvuopcepdjdldpmecz',
+            stopUrl='svofgiumtcrekmhzvtcz',
             locationType=None,
-            parentStation='leyytmkujwdusuzmpblw',
-            stopTimezone='pigedpqncxfcrxxxbarw',
+            parentStation='vaxmlddjavskfblyyquj',
+            stopTimezone='rqzdncbwigtxsrckspyy',
             wheelchairBoarding=None,
-            levelId='smwvjpelymbrytpsokng',
-            platformCode='kejqzhfizixadbvddlcd'
+            levelId='xdwjcwyhubcskwzbmuak',
+            platformCode='varxhdntfszscxzslqkf'
         )

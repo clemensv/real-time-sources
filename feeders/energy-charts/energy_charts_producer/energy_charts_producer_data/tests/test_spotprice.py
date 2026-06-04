@@ -29,12 +29,12 @@ class Test_SpotPrice(unittest.TestCase):
         Create instance of SpotPrice for testing
         """
         instance = SpotPrice(
-            country='qexlkkavhtaljrjsilft',
-            bidding_zone='wuhbnpvnqatwnstjwibv',
+            country='xmhkvjuyczangsspqkvp',
+            bidding_zone='kgsnnujxccmndgyglbkn',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(36),
-            price_eur_per_mwh=float(99.75092952929027),
-            unit='sgzpbdazpngvvclogzyy'
+            unix_seconds=int(28),
+            price_eur_per_mwh=float(58.50900416132415),
+            unit='ifrvsuplmwopvuxyxkma'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_SpotPrice(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'qexlkkavhtaljrjsilft'
+        test_value = 'xmhkvjuyczangsspqkvp'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -51,7 +51,7 @@ class Test_SpotPrice(unittest.TestCase):
         """
         Test bidding_zone property
         """
-        test_value = 'wuhbnpvnqatwnstjwibv'
+        test_value = 'kgsnnujxccmndgyglbkn'
         self.instance.bidding_zone = test_value
         self.assertEqual(self.instance.bidding_zone, test_value)
     
@@ -67,7 +67,7 @@ class Test_SpotPrice(unittest.TestCase):
         """
         Test unix_seconds property
         """
-        test_value = int(36)
+        test_value = int(28)
         self.instance.unix_seconds = test_value
         self.assertEqual(self.instance.unix_seconds, test_value)
     
@@ -75,7 +75,7 @@ class Test_SpotPrice(unittest.TestCase):
         """
         Test price_eur_per_mwh property
         """
-        test_value = float(99.75092952929027)
+        test_value = float(58.50900416132415)
         self.instance.price_eur_per_mwh = test_value
         self.assertEqual(self.instance.price_eur_per_mwh, test_value)
     
@@ -83,7 +83,7 @@ class Test_SpotPrice(unittest.TestCase):
         """
         Test unit property
         """
-        test_value = 'sgzpbdazpngvvclogzyy'
+        test_value = 'ifrvsuplmwopvuxyxkma'
         self.instance.unit = test_value
         self.assertEqual(self.instance.unit, test_value)
     

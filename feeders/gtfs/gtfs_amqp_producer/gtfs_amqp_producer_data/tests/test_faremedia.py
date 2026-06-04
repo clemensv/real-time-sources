@@ -28,10 +28,10 @@ class Test_FareMedia(unittest.TestCase):
         Create instance of FareMedia for testing
         """
         instance = FareMedia(
-            fareMediaId='vjpzehlulsnrmblbaozs',
-            fareMediaName='macaauvgeqmjmiovuilx',
-            fareMediaDesc='ftqnlmprjktbatxlgmzd',
-            fareMediaUrl='jlzcttggpffpaifofdeb'
+            fareMediaId='jimihyobrfktleaimrsp',
+            fareMediaName='kgbufhcpnadtglgxxodh',
+            fareMediaDesc='mnzezofzbvxsdmyfkewr',
+            fareMediaUrl='vqmnjlhayjueocqsgrgw'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_FareMedia(unittest.TestCase):
         """
         Test fareMediaId property
         """
-        test_value = 'vjpzehlulsnrmblbaozs'
+        test_value = 'jimihyobrfktleaimrsp'
         self.instance.fareMediaId = test_value
         self.assertEqual(self.instance.fareMediaId, test_value)
     
@@ -48,7 +48,7 @@ class Test_FareMedia(unittest.TestCase):
         """
         Test fareMediaName property
         """
-        test_value = 'macaauvgeqmjmiovuilx'
+        test_value = 'kgbufhcpnadtglgxxodh'
         self.instance.fareMediaName = test_value
         self.assertEqual(self.instance.fareMediaName, test_value)
     
@@ -56,7 +56,7 @@ class Test_FareMedia(unittest.TestCase):
         """
         Test fareMediaDesc property
         """
-        test_value = 'ftqnlmprjktbatxlgmzd'
+        test_value = 'mnzezofzbvxsdmyfkewr'
         self.instance.fareMediaDesc = test_value
         self.assertEqual(self.instance.fareMediaDesc, test_value)
     
@@ -64,7 +64,7 @@ class Test_FareMedia(unittest.TestCase):
         """
         Test fareMediaUrl property
         """
-        test_value = 'jlzcttggpffpaifofdeb'
+        test_value = 'vqmnjlhayjueocqsgrgw'
         self.instance.fareMediaUrl = test_value
         self.assertEqual(self.instance.fareMediaUrl, test_value)
     
