@@ -19,7 +19,7 @@ elexon_bmrs_producer_data = {path = "elexon_bmrs_producer/elexon_bmrs_producer_d
 elexon_bmrs_producer_kafka_producer = {path = "elexon_bmrs_producer/elexon_bmrs_producer_kafka_producer"}
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.2"
+pytest = ">=9.0.3"
 pytest-cov = ">=5.0.0"
 testcontainers = ">=4.8.1"
 requests-mock = ">=1.12.1"
