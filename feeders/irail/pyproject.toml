@@ -14,7 +14,7 @@ packages = [{ include = "irail" }]
 python = ">=3.10,<4.0"
 requests = ">=2.32.3"
 confluent-kafka = ">=2.5.3"
-cloudevents = ">=1.11.0,<2.0.0"
+cloudevents = ">=1.12.1,<2.0.0"
 dataclasses_json = ">=0.6.7"
 avro = ">=1.11.3"
 irail_producer_data = {path = "irail_producer/irail_producer_data"}
