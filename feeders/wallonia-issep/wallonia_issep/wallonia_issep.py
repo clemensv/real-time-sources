@@ -85,6 +85,12 @@ def _safe_float(value: Any) -> Optional[float]:
         return None
 
 
+def _province_from_record(record: Dict[str, Any]) -> str:
+    """Return the Walloon province slug when present, otherwise the contract sentinel."""
+    province = record.get("province")
+    return str(province).strip() if province else "unknown"
+
+
 class WalloniaISsePAPI:
     """Poll the Wallonia ISSeP Opendatasoft API and emit CloudEvents."""
 
@@ -177,9 +183,11 @@ class WalloniaISsePAPI:
         """Normalize one upstream Opendatasoft record into an Observation."""
         config_id = str(record.get("id_configuration", ""))
         moment = str(record.get("moment", ""))
+        province = _province_from_record(record)
 
         return Observation(
             configuration_id=config_id,
+            province=province,
             moment=moment,
             co=_safe_int(record.get("co")),
             no=_safe_int(record.get("no")),
@@ -232,7 +240,9 @@ class WalloniaISsePAPI:
             config_id = str(record.get("id_configuration", ""))
             if config_id and config_id not in seen:
                 seen.add(config_id)
-                configs.append(SensorConfiguration(configuration_id=config_id))
+                configs.append(
+                    SensorConfiguration(configuration_id=config_id, province=_province_from_record(record))
+                )
         return configs
 
     @staticmethod
